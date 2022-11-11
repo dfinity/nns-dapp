@@ -1,12 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { routeStore } from "$lib/stores/route.store";
+import { authStore } from "$lib/stores/auth.store";
+import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { principal } from "../../mocks/sns-projects.mock";
+import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -15,20 +17,32 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Wallet", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   describe("nns context", () => {
     it("should render NnsWallet", () => {
-      const snsWalletPath = `${CONTEXT_PATH}/${OWN_CANISTER_ID.toText()}/wallet/1234`;
-      routeStore.update({ path: snsWalletPath });
-      const { getByTestId } = render(Wallet);
+      const { getByTestId } = render(Wallet, {
+        props: {
+          accountIdentifier: OWN_CANISTER_ID_TEXT,
+        },
+      });
       expect(getByTestId("nns-wallet")).toBeInTheDocument();
     });
   });
 
   describe("sns context", () => {
-    it("should render NnsWallet", () => {
-      const snsWalletPath = `${CONTEXT_PATH}/${principal(0)}/wallet/1234`;
-      routeStore.update({ path: snsWalletPath });
-      const { getByTestId } = render(Wallet);
+    it("should render SnsWallet", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+
+      const { getByTestId } = render(Wallet, {
+        props: {
+          accountIdentifier: principal(0).toText(),
+        },
+      });
       expect(getByTestId("sns-wallet")).toBeInTheDocument();
     });
   });

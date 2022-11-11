@@ -11,5 +11,25 @@
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
+    <url>
+        <loc>https://nns.ic0.app/accounts/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://nns.ic0.app/neurons/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://nns.ic0.app/proposals/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://nns.ic0.app/canisters/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
 </urlset>

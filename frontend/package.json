@@ -1,10 +1,11 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
     "build:robots": "node scripts/build.robots.mjs",
+    "build:preload": "node scripts/build.preload.mjs",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
     "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp && ./scripts/make-reproducible",
@@ -51,7 +52,7 @@
     "svelte2tsx": "^0.5.19",
     "ts-jest": "^29.0.3",
     "typescript": "^4.6.4",
-    "vite": "^3.1.4"
+    "vite": "^3.2.2"
   },
   "type": "module",
   "dependencies": {

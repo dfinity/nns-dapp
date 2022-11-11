@@ -3,9 +3,11 @@ import { Principal } from "@dfinity/principal";
 import type { SnsCanisterStatus } from "@dfinity/sns";
 import { principal } from "./sns-projects.mock";
 
+export const mockSnsCanisterIdText = "pin7y-wyaaa-aaaaa-aacpa-cai";
+
 export const deployedSnsMock: DeployedSns[] = [
   {
-    root_canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+    root_canister_id: [Principal.fromText(mockSnsCanisterIdText)],
     governance_canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
     index_canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
     swap_canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],

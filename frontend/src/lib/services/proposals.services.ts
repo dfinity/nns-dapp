@@ -8,7 +8,6 @@ import {
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -16,7 +15,6 @@ import {
   type ProposalsFiltersStore,
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
 import { hashCode } from "$lib/utils/dev.utils";
 import { errorToString } from "$lib/utils/error.utils";
 import {
@@ -358,15 +356,4 @@ export const loadProposalPayload = async ({
       err,
     });
   }
-};
-
-export const routePathProposalId = (
-  path: string
-): { proposalId: ProposalId | undefined } | undefined => {
-  if (!isRoutePath({ paths: [AppPath.ProposalDetail], routePath: path })) {
-    return undefined;
-  }
-
-  const proposalId: ProposalId | undefined = getLastPathDetailId(path);
-  return { proposalId };
 };

@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import type { storeLocalStorageKey } from "$lib/constants/stores.constants";
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
@@ -13,6 +14,10 @@ export const writableStored = <T>({
   defaultValue: T;
 }): WritableStored<T> => {
   const getInitialValue = (): T => {
+    if (!browser) {
+      return defaultValue;
+    }
+
     // Do not break UI if local storage fails
     try {
       const storedValue = localStorage.getItem(key);
@@ -33,6 +38,10 @@ export const writableStored = <T>({
   const store = writable<T>(getInitialValue());
 
   const unsubscribeStorage = store.subscribe((store: T) => {
+    if (!browser) {
+      return;
+    }
+
     // Do not break UI if local storage fails
     try {
       localStorage.setItem(key, JSON.stringify(store));

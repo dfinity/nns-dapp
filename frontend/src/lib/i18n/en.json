@@ -103,6 +103,7 @@
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
+    "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -368,10 +369,10 @@
     "add_controller": "Add Controller"
   },
   "transaction_names": {
-    "receive": "Received ICP",
-    "send": "Sent ICP",
-    "mint": "Received ICP",
-    "burn": "Sent ICP",
+    "receive": "Received $tokenSymbol",
+    "send": "Sent $tokenSymbol",
+    "mint": "Received $tokenSymbol",
+    "burn": "Sent $tokenSymbol",
     "stakeNeuron": "Stake Neuron",
     "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
     "topUpNeuron": "Top-up Neuron",
@@ -585,6 +586,11 @@
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
+  "sns_neurons": {
+    "stake_sns_neuron": "Stake $tokenSymbol Neuron",
+    "sns_neuron_destination": "Subaccount of",
+    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully."
+  },
   "time": {
     "year": "year",
     "year_plural": "years",
@@ -659,6 +665,8 @@
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
+    "sns_stake": "There was an error while staking the neuron.",
+    "sns_neuron_account": "There was an error while staking the neuron.",
     "sns_dissolve_delay_action": "There was an error while updating dissolve delay of the neuron.",
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
@@ -668,5 +676,26 @@
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
     "sns_add_hotkey": "There was an error adding the hotkey."
+  },
+  "auth_accounts": {
+    "title": "Your ICP wallet",
+    "text": "Create and link accounts (including hardware wallets), transfer ICP, participate in Internet Computer governance by staking ICP in neurons, and earn voting rewards."
+  },
+  "auth_neurons": {
+    "title": "Earn staking rewards",
+    "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by submitting and voting on Network Nervous System (NNS) proposals."
+  },
+  "auth_proposals": {
+    "title": "Be part of the ICP community!",
+    "text": "Participate in the governance of the Internet Computer and receive voting rewards. Shape the future of the web by submitting your own proposals.",
+    "sign_in": "Sign in to vote"
+  },
+  "auth_canisters": {
+    "title": "Run your code on the Internet Computer",
+    "text": "Create and manage your canister smart contracts and top them up with cycles here. Anywhere, anytime."
+  },
+  "auth_sns": {
+    "title": "Service Nervous Systems (SNS)",
+    "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
   }
 }

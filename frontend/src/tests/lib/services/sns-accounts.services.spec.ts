@@ -4,6 +4,7 @@
 
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
+import { loadAccountTransactions } from "$lib/services/sns-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -13,6 +14,10 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+
+jest.mock("$lib/services/sns-transactions.services", () => ({
+  loadAccountTransactions: jest.fn(),
+}));
 
 describe("sns-accounts-services", () => {
   describe("loadSnsAccounts", () => {
@@ -104,11 +109,31 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         e8s: BigInt(10_000_000),
+        loadTransactions: false,
       });
 
       expect(success).toBe(true);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
+    });
+
+    it("should load transactions if flag is passed", async () => {
+      const spyTransfer = jest
+        .spyOn(ledgerApi, "transfer")
+        .mockResolvedValue(undefined);
+
+      const { success } = await services.snsTransferTokens({
+        rootCanisterId: mockPrincipal,
+        source: mockSnsMainAccount,
+        destinationAddress: "aaaaa-aa",
+        e8s: BigInt(10_000_000),
+        loadTransactions: true,
+      });
+
+      expect(success).toBe(true);
+      expect(spyTransfer).toBeCalled();
+      expect(spyAccounts).toBeCalled();
+      expect(loadAccountTransactions).toBeCalled();
     });
 
     it("should show toast and return success false if transfer fails", async () => {
@@ -122,6 +147,7 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         e8s: BigInt(10_000_000),
+        loadTransactions: false,
       });
 
       expect(success).toBe(false);

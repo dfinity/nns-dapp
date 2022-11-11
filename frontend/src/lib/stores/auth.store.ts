@@ -50,29 +50,21 @@ const initAuthStore = () => {
       });
     },
 
-    signIn: () =>
-      new Promise<void>((resolve, reject) => {
-        // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
-        // @see `Guard.svelte`
-        if (authClient === undefined) {
-          reject();
-          return;
-        }
+    signIn: async (onError: (error?: string) => void) => {
+      authClient = authClient ?? (await createAuthClient());
 
-        authClient?.login({
-          identityProvider: IDENTITY_SERVICE_URL,
-          maxTimeToLive: AUTH_SESSION_DURATION,
-          onSuccess: () => {
-            update((state: AuthStore) => ({
-              ...state,
-              identity: authClient?.getIdentity(),
-            }));
-
-            resolve();
-          },
-          onError: reject,
-        });
-      }),
+      await authClient?.login({
+        identityProvider: IDENTITY_SERVICE_URL,
+        maxTimeToLive: AUTH_SESSION_DURATION,
+        onSuccess: () => {
+          update((state: AuthStore) => ({
+            ...state,
+            identity: authClient?.getIdentity(),
+          }));
+        },
+        onError,
+      });
+    },
 
     signOut: async () => {
       const client: AuthClient = authClient ?? (await createAuthClient());

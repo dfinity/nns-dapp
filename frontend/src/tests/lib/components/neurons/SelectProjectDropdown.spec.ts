@@ -2,11 +2,13 @@
  * @jest-environment jsdom
  */
 import SelectProjectDropdown from "$lib/components/neurons/SelectProjectDropdown.svelte";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
@@ -28,7 +30,7 @@ describe("SelectProjectDropdown", () => {
 
   beforeEach(() => {
     // Dropdown changes context only in the Neurons page for now.
-    routeStore.update({ path: AppPath.LegacyNeurons });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
   it("should render NNS and projects as options", () => {
@@ -78,10 +80,10 @@ describe("SelectProjectDropdown", () => {
     selectElement && expect(selectElement.value).toBe(projectCanisterId);
   });
 
-  it("changes in dropdown are propagated to the snsProjectSelectedStore", async () => {
+  it("changes in dropdown are propagated to the snsProjectIdSelectedStore", async () => {
     const { container } = render(SelectProjectDropdown);
 
-    const $store1 = get(snsProjectSelectedStore);
+    const $store1 = get(snsProjectIdSelectedStore);
     expect($store1.toText()).toEqual(OWN_CANISTER_ID.toText());
 
     const selectElement = container.querySelector("select");
@@ -92,7 +94,7 @@ describe("SelectProjectDropdown", () => {
       });
 
     await waitFor(() => {
-      const $store2 = get(snsProjectSelectedStore);
+      const $store2 = get(snsProjectIdSelectedStore);
       return expect($store2.toText()).toEqual(projectCanisterId);
     });
   });

@@ -8,10 +8,12 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let visible = false;
   let transferring = false;
@@ -28,7 +30,7 @@
 
     transferring = true;
 
-    const selectedProjectId = get(snsProjectSelectedStore);
+    const selectedProjectId = get(snsProjectIdSelectedStore);
 
     try {
       if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
@@ -64,17 +66,22 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore || ICPToken;
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
-<button
-  role="menuitem"
-  data-tid="get-icp-button"
-  on:click|preventDefault|stopPropagation={() => (visible = true)}
-  class="open"
->
-  <IconAccountBalance />
-  <span>{`Get ${token.symbol}`}</span>
-</button>
+{#if signedIn}
+  <button
+    role="menuitem"
+    data-tid="get-icp-button"
+    on:click|preventDefault|stopPropagation={() => (visible = true)}
+    class="open"
+  >
+    <IconAccountBalance />
+    <span>{`Get ${token.symbol}`}</span>
+  </button>
+{/if}
 
 <Modal {visible} role="alert" on:nnsClose={onClose}>
   <span slot="title">{`Get ${token.symbol}`}</span>
@@ -120,9 +127,7 @@
     align-items: center;
 
     font-size: var(--font-size-h5);
-    font-weight: 700;
-
-    letter-spacing: var(--letter-spacing-title);
+    font-weight: var(--font-weight-bold);
 
     padding: var(--padding-2x);
 

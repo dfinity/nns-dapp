@@ -8,6 +8,7 @@ import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
 import { getIdentity } from "./auth.services";
+import { loadAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -64,11 +65,13 @@ export const snsTransferTokens = async ({
   source,
   destinationAddress,
   e8s,
+  loadTransactions,
 }: {
   rootCanisterId: Principal;
   source: Account;
   destinationAddress: string;
   e8s: bigint;
+  loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity = await getSnsAccountIdentity(source);
@@ -82,7 +85,12 @@ export const snsTransferTokens = async ({
       rootCanisterId,
     });
 
-    await loadSnsAccounts(rootCanisterId);
+    await Promise.all([
+      loadSnsAccounts(rootCanisterId),
+      loadTransactions
+        ? loadAccountTransactions({ account: source, rootCanisterId })
+        : Promise.resolve(),
+    ]);
 
     return { success: true };
   } catch (err) {

@@ -6,12 +6,17 @@ import {
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
-import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
+import {
+  querySnsNeuron,
+  querySnsNeurons,
+  stakeNeuron as stakeNeuronApi,
+} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   getSnsDissolveDelaySeconds,
@@ -21,6 +26,7 @@ import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
+  decodeSnsAccount,
   SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
@@ -324,6 +330,34 @@ export const updateDelay = async ({
       labelKey: "error__sns.sns_dissolve_delay_action",
       err,
     });
+  }
+};
+
+export const stakeNeuron = async ({
+  rootCanisterId,
+  amount,
+  account,
+}: {
+  rootCanisterId: Principal;
+  amount: bigint;
+  account: Account;
+}): Promise<{ success: boolean }> => {
+  try {
+    // TODO: Get identity depending on account to support HW accounts
+    const identity = await getIdentity();
+    await stakeNeuronApi({
+      controller: identity.getPrincipal(),
+      rootCanisterId,
+      stakeE8s: amount,
+      identity,
+      source: decodeSnsAccount(account.identifier),
+    });
+    await loadSnsNeurons(rootCanisterId);
+    return { success: true };
+  } catch (err) {
+    toastsError(
+      toToastError({ err, fallbackErrorLabelKey: "error__sns.sns_stake" })
+    );
     return { success: false };
   }
 };

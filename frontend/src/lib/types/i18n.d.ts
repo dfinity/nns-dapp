@@ -107,6 +107,7 @@ interface I18nError {
   swap_not_loaded: string;
   transaction_fee_not_found: string;
   fetch_transactions: string;
+  transaction_data: string;
   canister_invalid_transaction: string;
 }
 
@@ -612,6 +613,12 @@ interface I18nSns_neuron_detail {
   add_hotkey_tooltip: string;
 }
 
+interface I18nSns_neurons {
+  stake_sns_neuron: string;
+  sns_neuron_destination: string;
+  stake_sns_neuron_success: string;
+}
+
 interface I18nTime {
   year: string;
   year_plural: string;
@@ -692,6 +699,8 @@ interface I18nError__sns {
   sns_disburse: string;
   sns_start_dissolving: string;
   sns_stop_dissolving: string;
+  sns_stake: string;
+  sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
   project_not_open: string;
@@ -701,6 +710,32 @@ interface I18nError__sns {
   cannot_participate: string;
   invalid_root_canister_id: string;
   sns_add_hotkey: string;
+}
+
+interface I18nAuth_accounts {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_neurons {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_proposals {
+  title: string;
+  text: string;
+  sign_in: string;
+}
+
+interface I18nAuth_canisters {
+  title: string;
+  text: string;
+}
+
+interface I18nAuth_sns {
+  title: string;
+  text: string;
 }
 
 interface I18nNeuron_state {
@@ -915,6 +950,7 @@ interface I18n {
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   sns_neuron_detail: I18nSns_neuron_detail;
+  sns_neurons: I18nSns_neurons;
   time: I18nTime;
   error__ledger: I18nError__ledger;
   error__attach_wallet: I18nError__attach_wallet;
@@ -922,6 +958,11 @@ interface I18n {
   error__canister: I18nError__canister;
   theme: I18nTheme;
   error__sns: I18nError__sns;
+  auth_accounts: I18nAuth_accounts;
+  auth_neurons: I18nAuth_neurons;
+  auth_proposals: I18nAuth_proposals;
+  auth_canisters: I18nAuth_canisters;
+  auth_sns: I18nAuth_sns;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

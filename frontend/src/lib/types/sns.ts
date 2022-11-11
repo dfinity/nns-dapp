@@ -7,12 +7,13 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
+import type { PngDataUrl } from "./assets";
 
 /**
  * Metadata are full optional in Candid files but mandatory currently in NNS-dapp
  */
 export interface SnsSummaryMetadata {
-  url: string;
+  url: PngDataUrl;
   logo: string;
   name: string;
   description: string;
@@ -43,6 +44,8 @@ export interface SnsSummary {
   rootCanisterId: Principal;
   // Used to calculate the account for the participation.
   swapCanisterId: Principal;
+  // Used to show destination when staking sns neurons.
+  governanceCanisterId: Principal;
 
   /**
    * The metadata of the Sns project (title, description, etc.)

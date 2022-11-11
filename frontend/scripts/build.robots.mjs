@@ -2,23 +2,20 @@
 
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
-const buildRobots = () => {
-  const updatedIndexHTML = updateRobots();
-  writeFileSync("./public/index.html", updatedIndexHTML);
+const buildRobots = (htmlFile) => {
+  const updatedIndexHTML = updateRobots(htmlFile);
+  writeFileSync(htmlFile, updatedIndexHTML);
 };
 
 /**
  * No search engines indexation locally or testnet otherwise remove comments.
  */
-const updateRobots = () => {
-  const content = readFileSync(
-    join(process.cwd(), "public", "index.html"),
-    "utf-8"
-  );
+const updateRobots = (htmlFile) => {
+  const content = readFileSync(htmlFile, "utf-8");
 
   return content.replace(
     "<!-- ROBOTS -->",
@@ -28,4 +25,5 @@ const updateRobots = () => {
   );
 };
 
-buildRobots();
+const htmlFiles = findHtmlFiles();
+htmlFiles.forEach((htmlFile) => buildRobots(htmlFile));

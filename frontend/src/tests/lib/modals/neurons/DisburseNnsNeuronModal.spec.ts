@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { routeStore } from "$lib/stores/route.store";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -32,10 +34,6 @@ describe("DisburseNnsNeuronModal", () => {
       props: { neuron },
     });
   };
-
-  const spyNavigate = jest
-    .spyOn(routeStore, "replace")
-    .mockImplementation(jest.fn());
 
   beforeAll(() => {
     jest
@@ -115,6 +113,9 @@ describe("DisburseNnsNeuronModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
     expect(disburse).toBeCalled();
-    await waitFor(() => expect(spyNavigate).toBeCalled());
+    await waitFor(() => {
+      const { path } = get(pageStore);
+      expect(path).toEqual(AppPath.Neurons);
+    });
   });
 });

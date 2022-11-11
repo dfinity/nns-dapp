@@ -4,12 +4,13 @@
   import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
-  import { routeStore } from "$lib/stores/route.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { isSpawning } from "$lib/utils/neuron.utils";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { Value } from "@dfinity/gix-components";
-  import { neuronPathStore } from "$lib/derived/paths.derived";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -19,10 +20,13 @@
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  const goToNeuronDetails = (id: NeuronId) => () =>
-    routeStore.navigate({
-      path: `${$neuronPathStore}/${id}`,
-    });
+  const goToNeuronDetails = async (id: NeuronId) =>
+    await goto(
+      buildNeuronUrl({
+        universe: $pageStore.universe,
+        neuronId: id,
+      })
+    );
 </script>
 
 <section data-tid="neurons-body">
@@ -53,7 +57,7 @@
         <NeuronCard
           role="link"
           ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
+          on:click={async () => await goToNeuronDetails(neuron.neuronId)}
           {neuron}
         />
       {/if}

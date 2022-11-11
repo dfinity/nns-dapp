@@ -3,8 +3,10 @@
  */
 
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
+import { ICPToken } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import {
   mockMainAccount,
@@ -29,25 +31,27 @@ describe("NnsTransactionCard", () => {
     });
 
   it("renders received headline", () => {
-    const { container } = renderTransactionCard(
+    const { getByText } = renderTransactionCard(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.receive
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.receive, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders sent headline", () => {
-    const { container } = renderTransactionCard(
+    const { getByText } = renderTransactionCard(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.send
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.send, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders transaction ICPs with - sign", () => {

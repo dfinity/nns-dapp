@@ -1,14 +1,8 @@
-import { AppPath } from "$lib/constants/routes.constants";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
-import {
-  getLastPathDetail,
-  getParentPathDetail,
-  isRoutePath,
-} from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
@@ -103,22 +97,6 @@ export const getSnsNeuronIdAsHexString = ({
   id: neuronId,
 }: SnsNeuron): string =>
   bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
-
-export const routePathSnsNeuronId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
-    return undefined;
-  }
-  return getLastPathDetail(path);
-};
-
-export const routePathSnsNeuronRootCanisterId = (
-  path: string
-): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
-    return undefined;
-  }
-  return getParentPathDetail(path);
-};
 
 export const canIdentityManageHotkeys = ({
   neuron,

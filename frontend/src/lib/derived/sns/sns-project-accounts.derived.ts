@@ -1,4 +1,4 @@
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { mainAccount } from "$lib/utils/accounts.utils";
@@ -19,7 +19,7 @@ const sortAccounts = (accounts: Account[]): Account[] => {
 };
 
 export const snsProjectAccountsStore: Readable<Account[] | undefined> = derived(
-  [snsAccountsStore, snsProjectSelectedStore],
+  [snsAccountsStore, snsProjectIdSelectedStore],
   ([store, selectedSnsRootCanisterId]) => {
     const projectStore = store[selectedSnsRootCanisterId.toText()];
     return projectStore === undefined
@@ -30,7 +30,7 @@ export const snsProjectAccountsStore: Readable<Account[] | undefined> = derived(
 
 export const snsProjectMainAccountStore: Readable<Account | undefined> =
   derived(
-    [snsAccountsStore, snsProjectSelectedStore],
+    [snsAccountsStore, snsProjectIdSelectedStore],
     ([store, selectedSnsRootCanisterId]) => {
       const projectStore = store[selectedSnsRootCanisterId.toText()];
       return projectStore === undefined

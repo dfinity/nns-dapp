@@ -9,12 +9,15 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
 
+  // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
+  // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
+  export let loadTransactions = false;
 
   let currentStep: WizardStep;
 
@@ -35,7 +38,8 @@
       source: sourceAccount,
       destinationAddress,
       e8s: numberToE8s(amount),
-      rootCanisterId: $snsProjectSelectedStore,
+      loadTransactions,
+      rootCanisterId: $snsProjectIdSelectedStore,
     });
 
     stopBusy("accounts");
@@ -49,7 +53,7 @@
 
 {#if $snsSelectedTransactionFeeStore !== undefined}
   <TransactionModal
-    rootCanisterId={$snsProjectSelectedStore}
+    rootCanisterId={$snsProjectIdSelectedStore}
     on:nnsSubmit={transfer}
     on:nnsClose
     bind:currentStep

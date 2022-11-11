@@ -22,6 +22,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     "^\\$lib(.*)$": "<rootDir>/src/lib$1",
+    "^\\$routes(.*)$": "<rootDir>/src/routes$1",
+    "^\\$mocks(.*)$": "<rootDir>/__mocks__$1",
   },
   setupFiles: ["fake-indexeddb/auto"],
 };

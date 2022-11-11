@@ -14,8 +14,10 @@
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { neuronPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 
   let loading = true;
 
@@ -23,7 +25,10 @@
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
-        await loadSnsNeurons(selectedProjectCanisterId);
+        await Promise.all([
+          loadSnsNeurons(selectedProjectCanisterId),
+          syncSnsAccounts(selectedProjectCanisterId),
+        ]);
         loading = false;
       }
     }
@@ -34,11 +39,14 @@
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  const goToNeuronDetails = (neuron: SnsNeuron) => () => {
+  const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
-    routeStore.navigate({
-      path: `${$neuronPathStore}/${neuronId}`,
-    });
+    await goto(
+      buildNeuronUrl({
+        universe: $pageStore.universe,
+        neuronId,
+      })
+    );
   };
 </script>
 
@@ -57,7 +65,7 @@
         role="link"
         {neuron}
         ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={goToNeuronDetails(neuron)}
+        on:click={async () => await goToNeuronDetails(neuron)}
       />
     {/each}
     {#if $sortedSnsCFNeuronsStore.length > 0}
@@ -72,7 +80,7 @@
           role="link"
           {neuron}
           ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron)}
+          on:click={async () => await goToNeuronDetails(neuron)}
         />
       {/each}
     {/if}

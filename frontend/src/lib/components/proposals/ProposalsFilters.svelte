@@ -7,6 +7,7 @@
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import { enumsExclude } from "$lib/utils/enum.utils";
   import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -34,13 +35,18 @@
     obj: ProposalStatus as unknown as ProposalStatus,
     values: [ProposalStatus.Unknown],
   }).length;
+
+  let activeFiltersCount: number;
+  $: activeFiltersCount = topics.filter(
+    (topic) => !DEPRECATED_TOPICS.includes(topic)
+  ).length;
 </script>
 
 <div class="filters">
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
-    activeFilters={topics.length}
+    activeFilters={activeFiltersCount}
     on:nnsFilter={() =>
       openModal({
         category: "topics",

@@ -1,19 +1,24 @@
 export enum AppPath {
   Authentication = "/",
-  LegacyAccounts = "/#/accounts",
-  Accounts = "/#/u/:rootCanisterId/accounts",
-  LegacyNeurons = "/#/neurons",
-  Neurons = "/#/u/:rootCanisterId/neurons",
-  Proposals = "/#/proposals",
-  Canisters = "/#/canisters",
-  LegacyWallet = "/#/wallet",
-  Wallet = "/#/u/:rootCanisterId/wallet",
-  ProposalDetail = "/#/proposal",
-  LegacyNeuronDetail = "/#/neuron",
-  CanisterDetail = "/#/canister",
-  Launchpad = "/#/launchpad",
-  ProjectDetail = "/#/u",
-  NeuronDetail = "/#/u/:rootCanisterId/neuron",
+  Accounts = "/accounts",
+  Wallet = "/wallet",
+  Neurons = "/neurons",
+  Neuron = "/neuron",
+  Proposals = "/proposals",
+  Proposal = "/proposal",
+  Canisters = "/canisters",
+  Canister = "/canister",
+  Launchpad = "/launchpad",
+  Project = "/project",
 }
 
-export const CONTEXT_PATH = "/#/u";
+// SvelteKit uses the group defined in src/routes/(app)/ as part of the routeId
+export const ROUTE_ID_GROUP_APP = "(app)";
+
+export const UNIVERSE_PARAM = "u";
+
+export const CANISTER_PARAM = "canister";
+export const NEURON_PARAM = "neuron";
+export const PROJECT_PARAM = "project";
+export const PROPOSAL_PARAM = "proposal";
+export const ACCOUNT_PARAM = "account";
