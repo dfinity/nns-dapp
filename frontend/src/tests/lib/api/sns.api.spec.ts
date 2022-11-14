@@ -11,6 +11,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
+  stakeNeuron,
 } from "$lib/api/sns.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { NotAuthorizedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
@@ -28,7 +29,7 @@ import {
 import { Principal } from "@dfinity/principal";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
@@ -69,6 +70,7 @@ describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
+  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
 
   beforeEach(() => {
     jest
@@ -97,6 +99,7 @@ describe("sns-api", () => {
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
         getNeuron: queryNeuronSpy,
+        stakeNeuron: stakeNeuronSpy,
       })
     );
   });
@@ -229,5 +232,20 @@ describe("sns-api", () => {
 
     expect(neuron).not.toBeNull();
     expect(queryNeuronSpy).toBeCalled();
+  });
+
+  it("should stake neuron", async () => {
+    const neuronId = await stakeNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      stakeE8s: BigInt(200_000_000),
+      source: {
+        owner: mockPrincipal,
+      },
+      controller: mockPrincipal,
+    });
+
+    expect(neuronId).toEqual(mockSnsNeuron.id);
+    expect(stakeNeuronSpy).toBeCalled();
   });
 });

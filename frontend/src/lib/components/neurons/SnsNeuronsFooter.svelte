@@ -3,9 +3,8 @@
   import { Modal, Spinner, Toolbar } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import StakeSnsNeuronModal from "$lib/modals/sns/StakeSnsNeuronModal.svelte";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
-  import { decodeSnsAccount } from "@dfinity/sns";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
   type ModalKey = "stake-neuron";
   let showModal: ModalKey | undefined = undefined;
@@ -25,16 +24,14 @@
 </Footer>
 
 {#if showModal === "stake-neuron"}
-  <!-- TODO: Use governance canister id as destination or the subaccount slot for this neuron -->
   {#if $snsSelectedProjectNewTxData !== undefined && $snsProjectSelectedStore !== undefined}
     <StakeSnsNeuronModal
       token={$snsSelectedProjectNewTxData.token}
       on:nnsClose={closeModal}
       rootCanisterId={$snsSelectedProjectNewTxData.rootCanisterId}
       transactionFee={$snsSelectedProjectNewTxData.transactionFee}
-      destination={decodeSnsAccount(
-        $snsProjectSelectedStore.summary.rootCanisterId.toText()
-      )}
+      governanceCanisterId={$snsProjectSelectedStore.summary
+        .governanceCanisterId}
     />
   {:else}
     <!-- A toast error is shown if there is an error fetching any of the needed data -->

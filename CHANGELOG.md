@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal 90917
+* New routing.
+* New login.
+* New public page for each tab.
+* UI improvements.
+* Fonts and font size update.
+* Fix bug in topics filter.
+
 ## Proposal 89325
 * Text improvements in Maturity card.
 * Two new NNS Proposal topics.
