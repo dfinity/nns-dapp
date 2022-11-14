@@ -1,10 +1,8 @@
 import * as api from "$lib/api/ledger.api";
 import * as snsApi from "$lib/api/sns-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
-import {
-  loadSnsTransactionFee,
-  p_loadMainTransactionFee,
-} from "$lib/services/transaction-fees.services";
+import { loadMainTransactionFee } from "$lib/services/$public/transaction-fees.services";
+import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 import {
   mainTransactionFeeStore,
   transactionsFeesStore,
@@ -34,7 +32,7 @@ describe("transactionFee-services", () => {
     );
 
     it("set transaction fee to the ledger canister value", async () => {
-      await p_loadMainTransactionFee();
+      await loadMainTransactionFee();
 
       expect(spyTranactionFeeApi).toHaveBeenCalled();
 
@@ -45,7 +43,7 @@ describe("transactionFee-services", () => {
     it("should not set new fee if no identity", async () => {
       setNoIdentity();
 
-      await p_loadMainTransactionFee();
+      await loadMainTransactionFee();
 
       const storeFee = get(mainTransactionFeeStore);
       expect(storeFee).toEqual(DEFAULT_TRANSACTION_FEE_E8S);

@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { initApp } from "$lib/services/app.services";
 import {
-  p_loadSnsSummaries,
-  p_loadSnsSwapCommitments,
-} from "$lib/services/sns.services";
+  loadSnsSummaries,
+  loadSnsSwapCommitments,
+} from "$lib/services/$public/sns.services";
+import { initApp } from "$lib/services/app.services";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { mockAccountDetails } from "../../mocks/accounts.store.mock";
@@ -72,7 +72,7 @@ describe("app-services", () => {
   it("should init Sns", async () => {
     await initApp();
 
-    await expect(p_loadSnsSummaries).toHaveBeenCalledTimes(1);
-    await expect(p_loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
+    await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
+    await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
   });
 });

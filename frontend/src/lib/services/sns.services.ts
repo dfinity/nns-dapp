@@ -1,18 +1,11 @@
 import {
   participateInSnsSwap,
-  queryAllSnsMetadata,
   querySnsMetadata,
   querySnsSwapCommitment,
-  querySnsSwapCommitments,
   querySnsSwapState,
-  querySnsSwapStates,
 } from "$lib/api/sns.api";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
-import {
-  snsProposalsStore,
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -26,50 +19,12 @@ import {
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import {
-  Topic,
-  type AccountIdentifier,
-  type ProposalInfo,
-  type TokenAmount,
-} from "@dfinity/nns";
+import { type AccountIdentifier, type TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
-import { loadProposalsByTopic } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
-
-export const p_loadSnsSummaries = (): Promise<void> => {
-  snsQueryStore.setLoadingState();
-
-  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
-    anonymousIdentity: true,
-    request: ({ certified, identity }) =>
-      Promise.all([
-        queryAllSnsMetadata({ certified, identity }),
-        querySnsSwapStates({ certified, identity }),
-      ]),
-    onLoad: ({ response }) => snsQueryStore.setData(response),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsQueryStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_summaries",
-        })
-      );
-    },
-    logMessage: "Syncing Sns summaries",
-  });
-};
 
 /** Combined request: querySnsSummary + querySnsSwapState */
 export const loadSnsSummary = async ({
@@ -113,42 +68,6 @@ export const loadSnsSummary = async ({
     logMessage: "Syncing Sns summary",
   });
 
-export const p_loadSnsSwapCommitments = (): Promise<void> => {
-  snsSwapCommitmentsStore.setLoadingState();
-
-  return queryAndUpdate<SnsSwapCommitment[], unknown>({
-    anonymousIdentity: true,
-    request: ({ certified, identity }) =>
-      querySnsSwapCommitments({ certified, identity }),
-    onLoad: ({ response: swapCommitments, certified }) => {
-      for (const swapCommitment of swapCommitments) {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-      }
-    },
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsSwapCommitmentsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
-        })
-      );
-    },
-    logMessage: "Syncing Sns swap commitments",
-  });
-};
-
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
@@ -183,43 +102,6 @@ export const loadSnsSwapCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
-
-export const p_listSnsProposals = async (): Promise<void> => {
-  snsProposalsStore.setLoadingState();
-
-  return queryAndUpdate<ProposalInfo[], unknown>({
-    anonymousIdentity: true,
-    request: ({ certified, identity }) =>
-      loadProposalsByTopic({
-        certified,
-        identity,
-        topic: Topic.SnsAndCommunityFund,
-      }),
-    onLoad: ({ response: proposals, certified }) =>
-      snsProposalsStore.setProposals({
-        proposals,
-        certified,
-      }),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsProposalsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.proposal_not_found",
-        })
-      );
-    },
-    logMessage: "Syncing Sns proposals",
-  });
-};
 
 /**
  * Requests swap state and loads it in the store.

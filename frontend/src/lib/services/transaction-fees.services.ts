@@ -1,22 +1,8 @@
-import { transactionFee as nnsTransactionFee } from "$lib/api/ledger.api";
 import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Principal } from "@dfinity/principal/lib/cjs";
-import { getAnonymousIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
-
-export const p_loadMainTransactionFee = async () => {
-  try {
-    const identity = getAnonymousIdentity();
-    const fee = await nnsTransactionFee({ identity });
-    transactionsFeesStore.setMain(fee);
-  } catch (error: unknown) {
-    // Swallow error and continue with the DEFAULT_TRANSACTION_FEE value
-    console.error("Error getting the transaction fee from the ledger");
-    console.error(error);
-  }
-};
 
 export const loadSnsTransactionFee = async (rootCanisterId: Principal) => {
   return queryAndUpdate<bigint, unknown>({

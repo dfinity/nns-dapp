@@ -1,4 +1,4 @@
-const importAppServices = () => import("../services/app.services");
+const importAppServices = () => import("../../services/$public/app.services");
 
 export const initAppProxy = async (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
