@@ -65,6 +65,7 @@ export const getSnsLockedTimeInSeconds = (
   }
 };
 
+// Delay from now
 export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {

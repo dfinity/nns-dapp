@@ -304,14 +304,16 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
+    const spyOnIncreaseDissolveDelay = jest
+      .spyOn(governanceApi, "increaseDissolveDelay")
+      .mockImplementation(() => Promise.resolve());
+
+    beforeEach(spyOnIncreaseDissolveDelay.mockClear);
+
     it("should call sns api increaseDissolveDelay", async () => {
       const neuronId = fromDefinedNullable(mockSnsNeuron.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
-      const spyOnIncreaseDissolveDelay = jest
-        .spyOn(governanceApi, "increaseDissolveDelay")
-        .mockImplementation(() => Promise.resolve());
-
       const { success } = await updateDelay({
         rootCanisterId,
         dissolveDelaySeconds: 123,
@@ -326,6 +328,27 @@ describe("sns-neurons-services", () => {
         rootCanisterId,
         additionalDissolveDelaySeconds: 123,
       });
+    });
+
+    it("should calculate additionalDissolveDelaySeconds", async () => {
+      const rootCanisterId = mockPrincipal;
+      const { success } = await updateDelay({
+        rootCanisterId,
+        dissolveDelaySeconds: 333,
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: BigInt(111) }],
+        },
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseDissolveDelay).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          additionalDissolveDelaySeconds: 222,
+        })
+      );
     });
   });
 
