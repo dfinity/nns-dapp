@@ -22,7 +22,7 @@
     display: block;
 
     background: var(--body-background);
-    color: var(--body-color);
+    color: var(--label-color);
   }
 
   main {

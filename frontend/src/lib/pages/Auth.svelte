@@ -135,6 +135,8 @@
     margin: 0 0 var(--padding-2x);
     max-width: 330px;
 
+    color: var(--value-color);
+
     span {
       display: block;
     }
@@ -169,12 +171,6 @@
       justify-content: center;
       gap: var(--padding-6x);
       padding: var(--padding-6x);
-    }
-  }
-
-  @include media.light-theme() {
-    ul {
-      color: var(--label-color);
     }
   }
 
