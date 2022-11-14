@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, getContext } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -34,7 +34,7 @@
   let neuronId: string;
   neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  const updateNeuron = async () => {
+  const updateDissolveDelay = async () => {
     startBusy({
       initiator: "dissolve-sns-action",
     });
@@ -42,6 +42,8 @@
     let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
 
     assertNonNullish(rootCanisterId);
+
+    console.log("👻 UPDATE", delayInSeconds);
 
     const { success } = await updateDelay({
       rootCanisterId,
@@ -103,7 +105,7 @@
       class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
-      on:click={updateNeuron}
+      on:click={updateDissolveDelay}
     >
       {confirmButtonText}
     </button>
