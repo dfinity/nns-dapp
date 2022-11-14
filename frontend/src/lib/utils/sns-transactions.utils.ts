@@ -135,7 +135,7 @@ const getTransactionInformation = (
     throw new Error(`Unknown transaction type ${JSON.stringify(transaction)}`);
   }
   // Fee is only present in "transfer" transactions.
-  const fee = fromNullable(transaction.transfer[0]?.fee ?? []);
+  const fee = fromNullable(fromNullable(transaction.transfer)?.fee ?? []);
   return {
     from:
       "from" in data
