@@ -1,11 +1,11 @@
 const importSnsServices = () => import("../services/sns.services");
 
-export const loadSnsSummariesProxy = async (): Promise<void> => {
-  const { loadSnsSummaries } = await importSnsServices();
-  return loadSnsSummaries();
+export const p_loadSnsSummariesProxy = async (): Promise<void> => {
+  const { p_loadSnsSummaries } = await importSnsServices();
+  return p_loadSnsSummaries();
 };
 
-export const loadSnsSwapCommitmentsProxy = async (): Promise<void> => {
-  const { loadSnsSwapCommitments } = await importSnsServices();
-  return loadSnsSwapCommitments();
+export const p_loadSnsSwapCommitmentsProxy = async (): Promise<void> => {
+  const { p_loadSnsSwapCommitments } = await importSnsServices();
+  return p_loadSnsSwapCommitments();
 };

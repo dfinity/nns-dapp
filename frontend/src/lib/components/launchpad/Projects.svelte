@@ -25,7 +25,7 @@
 
   let loading = false;
   $: loading =
-    isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
+    isNullish($snsSummariesStore);
 
   let noProjectsMessageLabel: string;
   $: noProjectsMessageLabel =

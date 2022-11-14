@@ -13,6 +13,7 @@
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -44,15 +45,16 @@
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
+  <SignInGuard>
   {#if userCanParticipateToSwap}
-    <button
-      on:click={openModal}
-      class="primary"
-      data-tid="sns-project-participate-button"
+      <button
+              on:click={openModal}
+              class="primary"
+              data-tid="sns-project-participate-button"
       >{userHasParticipatedToSwap
-        ? $i18n.sns_project_detail.increase_participation
-        : $i18n.sns_project_detail.participate}</button
-    >
+              ? $i18n.sns_project_detail.increase_participation
+              : $i18n.sns_project_detail.participate}</button
+      >
   {:else}
     <Tooltip
       id="sns-project-participate-button-tooltip"
@@ -63,6 +65,8 @@
       >
     </Tooltip>
   {/if}
+      <span slot="signin-cta">Sign in to participate</span>
+  </SignInGuard>
 {/if}
 
 {#if showModal}

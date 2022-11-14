@@ -1,11 +1,11 @@
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import {
-  loadSnsSummariesProxy,
-  loadSnsSwapCommitmentsProxy,
+  p_loadSnsSummariesProxy,
+  p_loadSnsSwapCommitmentsProxy,
 } from "$lib/proxy/sns.services.proxy";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
-import { loadMainTransactionFee } from "./transaction-fees.services";
+import { p_loadMainTransactionFee } from "./transaction-fees.services";
 
 export const initApp = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
@@ -13,13 +13,29 @@ export const initApp = (): Promise<
   const initNns: Promise<void>[] = [
     syncAccounts(),
     listNeurons(),
-    loadMainTransactionFee(),
   ];
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
   const initSns: Promise<void>[] = ENABLE_SNS
-    ? [loadSnsSummariesProxy(), loadSnsSwapCommitmentsProxy()]
+    ? []
     : [];
+
+  /**
+   * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
+   */
+  return Promise.allSettled([Promise.all(initNns), Promise.all(initSns)]);
+};
+
+
+export const p_initApp = (): Promise<
+    [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
+    > => {
+  const initNns: Promise<void>[] = [p_loadMainTransactionFee()];
+
+  // Sns in an initiative currently under development and not proposed on mainnet yet
+  const initSns: Promise<void>[] = ENABLE_SNS
+      ? [p_loadSnsSummariesProxy(), p_loadSnsSwapCommitmentsProxy()]
+      : [];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.

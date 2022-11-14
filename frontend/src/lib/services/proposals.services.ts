@@ -191,7 +191,6 @@ const findProposals = async ({
   });
 };
 
-// TODO L2-751: switch to real data
 export const loadProposalsByTopic = async ({
   topic,
   certified,

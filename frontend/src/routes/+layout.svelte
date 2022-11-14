@@ -3,7 +3,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initWorker } from "$lib/services/worker.services";
-  import { initAppProxy } from "$lib/proxy/app.services.proxy";
+  import {initAppProxy, p_initAppProxy} from "$lib/proxy/app.services.proxy";
 
   let ready = false;
 
@@ -29,10 +29,12 @@
     await initAppProxy();
   };
 
-  onMount(async () => {
-    worker = await initWorker();
-    await syncAuth($authStore);
-  });
+  const onMountWorker = async () => {
+      worker = await initWorker();
+      await syncAuth($authStore);
+  }
+
+  onMount(async () => await Promise.all([p_initAppProxy(), onMountWorker()]));
 
   const unsubscribeAuth = authStore.subscribe(syncAuth);
 

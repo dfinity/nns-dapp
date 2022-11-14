@@ -6,6 +6,7 @@ import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
+import {AnonymousIdentity} from "@dfinity/agent";
 
 const msgParam = "msg";
 const levelParam = "level";
@@ -33,6 +34,8 @@ export const logout = async ({
   window.location.reload();
 };
 
+export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
+
 /**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
@@ -43,9 +46,10 @@ export const getIdentity = async (): Promise<Identity> => {
     const identity: Identity | undefined | null = get(authStore).identity;
 
     if (!identity) {
-      await logout({
-        msg: { labelKey: "error.missing_identity", level: "error" },
-      });
+      // TODO: reredirect root
+      // await logout({
+      // msg: { labelKey: "error.missing_identity", level: "error" },
+      // });
 
       // We do not resolve on purpose. logout() does reload the browser
       return;

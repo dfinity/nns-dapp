@@ -3,7 +3,7 @@
  */
 
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
-import { listSnsProposals } from "$lib/services/sns.services";
+import { p_listSnsProposals } from "$lib/services/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -29,7 +29,7 @@ describe("Proposals", () => {
   it("should trigger listSnsProposals", () => {
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(p_listSnsProposals).toBeCalled();
   });
 
   it("should not trigger listSnsProposals if already loaded", () => {
@@ -40,7 +40,7 @@ describe("Proposals", () => {
 
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(p_listSnsProposals).toBeCalled();
   });
 
   it("should display skeletons", async () => {

@@ -32,6 +32,8 @@ export const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
           rootCanisterId.toText() === summaryPrincipalAsText
       );
 
+      console.log(summary)
+
       return {
         rootCanisterId,
         summary,

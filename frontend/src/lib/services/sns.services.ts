@@ -39,10 +39,11 @@ import { getIdentity } from "./auth.services";
 import { loadProposalsByTopic } from "./proposals.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsSummaries = (): Promise<void> => {
+export const p_loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
 
   return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
+    anonymousIdentity: true,
     request: ({ certified, identity }) =>
       Promise.all([
         queryAllSnsMetadata({ certified, identity }),
@@ -112,10 +113,11 @@ export const loadSnsSummary = async ({
     logMessage: "Syncing Sns summary",
   });
 
-export const loadSnsSwapCommitments = (): Promise<void> => {
+export const p_loadSnsSwapCommitments = (): Promise<void> => {
   snsSwapCommitmentsStore.setLoadingState();
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
+    anonymousIdentity: true,
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
@@ -182,10 +184,11 @@ export const loadSnsSwapCommitment = async ({
     logMessage: "Syncing Sns swap commitment",
   });
 
-export const listSnsProposals = async (): Promise<void> => {
+export const p_listSnsProposals = async (): Promise<void> => {
   snsProposalsStore.setLoadingState();
 
   return queryAndUpdate<ProposalInfo[], unknown>({
+    anonymousIdentity: true,
     request: ({ certified, identity }) =>
       loadProposalsByTopic({
         certified,
