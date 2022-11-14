@@ -183,7 +183,7 @@
       width: 20px;
       vertical-align: bottom;
       margin: 0 var(--padding-0_5x) 0 0;
-      color: var(--primary);
+
     }
   }
 
