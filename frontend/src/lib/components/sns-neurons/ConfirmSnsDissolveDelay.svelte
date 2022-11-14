@@ -26,7 +26,6 @@
   export let reloadNeuron: () => Promise<void>;
 
   const dispatcher = createEventDispatcher();
-  // const { reload: reloadNeuron } = getContext(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuronStake: bigint;
   $: neuronStake = getSnsNeuronStake(neuron);
@@ -43,15 +42,13 @@
 
     assertNonNullish(rootCanisterId);
 
-    console.log("👻 UPDATE", delayInSeconds);
-
     const { success } = await updateDelay({
       rootCanisterId,
       neuron,
       dissolveDelaySeconds: delayInSeconds,
     });
 
-    await Promise.all([reloadNeuron()]);
+    await reloadNeuron();
 
     stopBusy("dissolve-sns-action");
 
