@@ -46,26 +46,28 @@
 
 {#if lifecycle === SnsSwapLifecycle.Open}
   <SignInGuard>
-  {#if userCanParticipateToSwap}
+    {#if userCanParticipateToSwap}
       <button
-              on:click={openModal}
-              class="primary"
-              data-tid="sns-project-participate-button"
-      >{userHasParticipatedToSwap
-              ? $i18n.sns_project_detail.increase_participation
-              : $i18n.sns_project_detail.participate}</button
+        on:click={openModal}
+        class="primary"
+        data-tid="sns-project-participate-button"
+        >{userHasParticipatedToSwap
+          ? $i18n.sns_project_detail.increase_participation
+          : $i18n.sns_project_detail.participate}</button
       >
-  {:else}
-    <Tooltip
-      id="sns-project-participate-button-tooltip"
-      text={$i18n.sns_project_detail.max_user_commitment_reached}
-    >
-      <button class="primary" data-tid="sns-project-participate-button" disabled
-        >{$i18n.sns_project_detail.participate}</button
+    {:else}
+      <Tooltip
+        id="sns-project-participate-button-tooltip"
+        text={$i18n.sns_project_detail.max_user_commitment_reached}
       >
-    </Tooltip>
-  {/if}
-      <span slot="signin-cta">Sign in to participate</span>
+        <button
+          class="primary"
+          data-tid="sns-project-participate-button"
+          disabled>{$i18n.sns_project_detail.participate}</button
+        >
+      </Tooltip>
+    {/if}
+    <span slot="signin-cta">Sign in to participate</span>
   </SignInGuard>
 {/if}
 

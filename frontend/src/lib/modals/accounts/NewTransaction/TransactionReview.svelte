@@ -76,12 +76,12 @@
       >{$i18n.accounts.edit_transaction}</button
     >
     <SignInGuard>
-    <button
-      class="primary"
-      data-tid="transaction-button-execute"
-      disabled={$busy || disableSubmit}
-      on:click={submit}>{$i18n.accounts.execute}</button
-    >
+      <button
+        class="primary"
+        data-tid="transaction-button-execute"
+        disabled={$busy || disableSubmit}
+        on:click={submit}>{$i18n.accounts.execute}</button
+      >
     </SignInGuard>
   </div>
 </div>

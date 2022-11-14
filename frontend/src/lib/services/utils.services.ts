@@ -1,6 +1,6 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import {getAnonymousIdentity, getIdentity} from "./auth.services";
+import { getAnonymousIdentity, getIdentity } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean;
@@ -26,7 +26,7 @@ export const queryAndUpdate = async <R, E>({
   onError,
   strategy = "query_and_update",
   logMessage,
-    anonymousIdentity = false
+  anonymousIdentity = false,
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
@@ -46,7 +46,9 @@ export const queryAndUpdate = async <R, E>({
     logWithTimestamp(`${logPrefix} calls${postfix}`);
   };
 
-  const identity: Identity = anonymousIdentity ? getAnonymousIdentity() : await getIdentity();
+  const identity: Identity = anonymousIdentity
+    ? getAnonymousIdentity()
+    : await getIdentity();
 
   const queryOrUpdate = (certified: boolean) =>
     request({ certified, identity })

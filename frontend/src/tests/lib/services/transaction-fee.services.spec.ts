@@ -2,8 +2,8 @@ import * as api from "$lib/api/ledger.api";
 import * as snsApi from "$lib/api/sns-ledger.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
-  p_loadMainTransactionFee,
   loadSnsTransactionFee,
+  p_loadMainTransactionFee,
 } from "$lib/services/transaction-fees.services";
 import {
   mainTransactionFeeStore,

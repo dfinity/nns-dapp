@@ -4,9 +4,9 @@ import { toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import {AnonymousIdentity} from "@dfinity/agent";
 
 const msgParam = "msg";
 const levelParam = "level";

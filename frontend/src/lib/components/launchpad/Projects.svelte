@@ -24,8 +24,7 @@
   });
 
   let loading = false;
-  $: loading =
-    isNullish($snsSummariesStore);
+  $: loading = isNullish($snsSummariesStore);
 
   let noProjectsMessageLabel: string;
   $: noProjectsMessageLabel =

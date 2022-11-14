@@ -8,8 +8,8 @@ export const initAppProxy = async (): Promise<
 };
 
 export const p_initAppProxy = async (): Promise<
-    [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
-    > => {
+  [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
+> => {
   const { p_initApp } = await importAppServices();
   return p_initApp();
 };
