@@ -12,7 +12,6 @@
 
 <style lang="scss">
   @use "../../themes/mixins/img";
-  @use "../../themes/mixins/login";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/display";
 
@@ -22,7 +21,8 @@
 
     display: block;
 
-    @include login.background;
+    background: var(--body-background);
+    color: var(--body-color);
   }
 
   main {
