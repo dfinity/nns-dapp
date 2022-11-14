@@ -17,14 +17,16 @@
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { assertNonNullish } from "@dfinity/utils";
   import { updateDelay } from "$lib/services/sns-neurons.services";
-  import { SELECTED_SNS_NEURON_CONTEXT_KEY } from "$lib/types/sns-neuron-detail.context";
+  import type { Token } from "@dfinity/nns";
 
   export let delayInSeconds: number;
   export let neuron: SnsNeuron;
   export let confirmButtonText: string;
+  export let token: Token;
+  export let reloadNeuron: () => Promise<void>;
 
   const dispatcher = createEventDispatcher();
-  const { reload: reloadNeuron } = getContext(SELECTED_SNS_NEURON_CONTEXT_KEY);
+  // const { reload: reloadNeuron } = getContext(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuronStake: bigint;
   $: neuronStake = getSnsNeuronStake(neuron);
@@ -69,10 +71,11 @@
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p>
       <Html
-        text={replacePlaceholders($i18n.neurons.icp_stake, {
+        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
             formatToken({ value: neuronStake, detailed: true })
           ),
+          $token: token.symbol,
         })}
       />
     </p>

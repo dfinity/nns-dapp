@@ -10,8 +10,11 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
+  import type { Token } from "@dfinity/nns";
 
   export let neuron: SnsNeuron;
+  export let token: Token;
+  export let reloadNeuron: () => Promise<void>;
 
   const steps: WizardSteps = [
     {
@@ -46,6 +49,7 @@
   {#if currentStep.name === "SetSnsDissolveDelay"}
     <SetSnsDissolveDelay
       {neuron}
+      {token}
       cancelButtonText={$i18n.core.cancel}
       confirmButtonText={$i18n.neurons.update_delay}
       {minDelayInSeconds}
@@ -58,7 +62,9 @@
     <ConfirmSnsDissolveDelay
       confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}
+      {token}
       {delayInSeconds}
+      {reloadNeuron}
       on:nnsUpdated={closeModal}
       on:nnsBack={modal.back}
     />

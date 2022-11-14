@@ -1,7 +1,8 @@
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronPermissionType } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
+import { mockIdentity } from "./auth.store.mock";
 
 export const createMockSnsNeuron = ({
   stake = BigInt(1_000_000_000),
@@ -43,6 +44,21 @@ export const createMockSnsNeuron = ({
 export const mockSnsNeuron = createMockSnsNeuron({
   stake: BigInt(1_000_000_000),
   id: [1, 5, 3, 9, 9, 3, 2],
+});
+
+export const mockSnsNeuronWithPermissions = (
+  permissions: SnsNeuronPermissionType[]
+): SnsNeuron => ({
+  ...createMockSnsNeuron({
+    stake: BigInt(1_000_000_000),
+    id: [1, 5, 3, 9, 9, 3, 2],
+  }),
+  permissions: [
+    {
+      principal: [mockIdentity.getPrincipal()],
+      permission_type: Int32Array.from(permissions),
+    },
+  ],
 });
 
 export const buildMockSortedSnsNeuronsStoreSubscribe =

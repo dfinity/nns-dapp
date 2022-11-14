@@ -617,6 +617,7 @@ interface I18nSns_neurons {
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
+  token_stake: string;
 }
 
 interface I18nTime {

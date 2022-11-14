@@ -124,7 +124,6 @@ export const hasPermissionToDisburse = ({
     permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
   });
 
-// TODO: add unit test
 export const hasPermissionToDissolve = ({
   neuron,
   identity,
@@ -135,7 +134,10 @@ export const hasPermissionToDissolve = ({
   hasPermissions({
     neuron,
     identity,
-    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
+    // TODO: recheck
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+    ],
   });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {

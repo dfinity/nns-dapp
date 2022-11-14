@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import {
     SECONDS_IN_EIGHT_YEARS,
@@ -21,6 +21,7 @@
   } from "$lib/utils/sns-neuron.utils";
 
   export let neuron: SnsNeuron;
+  export let token: Token;
   export let delayInSeconds = 0; // bound
   export let cancelButtonText: string;
   export let confirmButtonText: string;
@@ -65,10 +66,11 @@
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p data-tid="neuron-stake">
       <Html
-        text={replacePlaceholders($i18n.neurons.icp_stake, {
+        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
             formatToken({ value: neuronStake, detailed: true })
           ),
+          $token: token.symbol,
         })}
       />
     </p>

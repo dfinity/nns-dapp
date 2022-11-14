@@ -16,17 +16,21 @@
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState, type Token } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
+
+  let token: Token;
+  $: token = $snsTokenSymbolSelectedStore as Token;
 
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
@@ -58,7 +62,11 @@
 
       <div class="buttons">
         {#if allowedToDissolve}
-          <IncreaseSnsDissolveDelayButton {neuron} />
+          <IncreaseSnsDissolveDelayButton
+            {neuron}
+            {token}
+            reloadNeuron={reloadContext}
+          />
         {/if}
         {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseSnsButton {neuron} {reloadContext} />

@@ -589,7 +589,8 @@
   "sns_neurons": {
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
-    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully."
+    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
+    "token_stake": "$amount $token Stake"
   },
   "time": {
     "year": "year",
