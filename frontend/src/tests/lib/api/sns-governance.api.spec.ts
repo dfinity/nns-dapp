@@ -5,6 +5,7 @@
 import {
   addNeuronPermissions,
   disburse,
+  increaseDissolveDelay,
   removeNeuronPermissions,
   startDissolving,
   stopDissolving,
@@ -132,6 +133,17 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(stopDissolvingSpy).toBeCalled();
+  });
+
+  it("should increaseDissolveDelay", async () => {
+    await increaseDissolveDelay({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      additionalDissolveDelaySeconds: 123,
     });
 
     expect(stopDissolvingSpy).toBeCalled();
