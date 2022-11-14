@@ -2,7 +2,7 @@ import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 
-export const initApp = (): Promise<
+export const initAppData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [syncAccounts(), listNeurons()];

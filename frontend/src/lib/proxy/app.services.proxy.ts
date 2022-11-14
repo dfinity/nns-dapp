@@ -1,8 +1,8 @@
 const importAppServices = () => import("../services/app.services");
 
-export const initAppProxy = async (): Promise<
+export const initAppDataProxy = async (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
-  const { initApp } = await importAppServices();
-  return initApp();
+  const { initAppData } = await importAppServices();
+  return initAppData();
 };
