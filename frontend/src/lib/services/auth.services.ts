@@ -46,10 +46,9 @@ export const getIdentity = async (): Promise<Identity> => {
     const identity: Identity | undefined | null = get(authStore).identity;
 
     if (!identity) {
-      // TODO: reredirect root
-      // await logout({
-      // msg: { labelKey: "error.missing_identity", level: "error" },
-      // });
+      await logout({
+        msg: { labelKey: "error.missing_identity", level: "error" },
+      });
 
       // We do not resolve on purpose. logout() does reload the browser
       return;
