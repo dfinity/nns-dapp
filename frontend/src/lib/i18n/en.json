@@ -588,6 +588,7 @@
   },
   "sns_neurons": {
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
+    "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully."
   },
   "time": {
@@ -664,6 +665,8 @@
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
+    "sns_stake": "There was an error while staking the neuron.",
+    "sns_neuron_account": "There was an error while staking the neuron.",
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",

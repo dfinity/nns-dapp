@@ -14,9 +14,11 @@ import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
-const { loadSnsNeurons, getSnsNeuron, addHotkey, removeHotkey } = services;
+const { loadSnsNeurons, getSnsNeuron, addHotkey, removeHotkey, stakeNeuron } =
+  services;
 
 describe("sns-neurons-services", () => {
   describe("loadSnsNeurons", () => {
@@ -296,6 +298,27 @@ describe("sns-neurons-services", () => {
         identity,
         rootCanisterId,
       });
+    });
+  });
+
+  describe("stakeNeuron", () => {
+    it("should call sns api stakeNeuron and query neurons again", async () => {
+      const spyStake = jest
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: BigInt(200_000_000),
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBeTruthy();
+      expect(spyStake).toBeCalled();
+      expect(spyQuery).toBeCalled();
     });
   });
 });

@@ -5,7 +5,11 @@ import {
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
-import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
+import {
+  querySnsNeuron,
+  querySnsNeurons,
+  stakeNeuron as stakeNeuronApi,
+} from "$lib/api/sns.api";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -18,6 +22,7 @@ import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
+  decodeSnsAccount,
   SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
@@ -292,7 +297,6 @@ export const stopDissolving = async ({
   }
 };
 
-// TODO: Implement in sns-js, create an api function and use it here
 export const stakeNeuron = async ({
   rootCanisterId,
   amount,
@@ -302,11 +306,22 @@ export const stakeNeuron = async ({
   amount: bigint;
   account: Account;
 }): Promise<{ success: boolean }> => {
-  console.log(
-    "Staking neuron",
-    rootCanisterId.toText(),
-    amount,
-    account.identifier
-  );
-  return { success: true };
+  try {
+    // TODO: Get identity depending on account to support HW accounts
+    const identity = await getIdentity();
+    await stakeNeuronApi({
+      controller: identity.getPrincipal(),
+      rootCanisterId,
+      stakeE8s: amount,
+      identity,
+      source: decodeSnsAccount(account.identifier),
+    });
+    await loadSnsNeurons(rootCanisterId);
+    return { success: true };
+  } catch (err) {
+    toastsError(
+      toToastError({ err, fallbackErrorLabelKey: "error__sns.sns_stake" })
+    );
+    return { success: false };
+  }
 };
