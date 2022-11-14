@@ -135,7 +135,6 @@ export const hasPermissionToDissolve = ({
   hasPermissions({
     neuron,
     identity,
-    // TODO: recheck
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
     ],
