@@ -4,8 +4,11 @@
 
 import {
   addNeuronPermissions,
+  claimNeuron,
   disburse,
+  getNeuronBalance,
   increaseDissolveDelay,
+  refreshNeuron,
   removeNeuronPermissions,
   startDissolving,
   stopDissolving,
@@ -48,6 +51,9 @@ describe("sns-api", () => {
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
+  const getNeuronBalanceSpy = jest.fn().mockResolvedValue(undefined);
+  const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
+  const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -77,6 +83,9 @@ describe("sns-api", () => {
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
         increaseDissolveDelay: increaseDissolveDelaySpy,
+        getNeuronBalance: getNeuronBalanceSpy,
+        refreshNeuron: refreshNeuronSpy,
+        claimNeuron: claimNeuronSpy,
       })
     );
   });
@@ -149,5 +158,38 @@ describe("sns-api", () => {
     });
 
     expect(increaseDissolveDelaySpy).toBeCalled();
+  });
+
+  it("should getNeuronBalance", async () => {
+    await getNeuronBalance({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      certified: true,
+    });
+
+    expect(getNeuronBalanceSpy).toBeCalled();
+  });
+
+  it("should refreshNeuron", async () => {
+    await refreshNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(refreshNeuronSpy).toBeCalled();
+  });
+
+  it("should claimNeuron", async () => {
+    await claimNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      memo: BigInt(2),
+      controller: Principal.fromText("aaaaa-aa"),
+      subaccount: arrayOfNumberToUint8Array([1, 2, 3]),
+    });
+
+    expect(claimNeuronSpy).toBeCalled();
   });
 });

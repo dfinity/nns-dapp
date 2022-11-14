@@ -97,7 +97,17 @@ export const getSnsNeuronByHexId = ({
 export const getSnsNeuronIdAsHexString = ({
   id: neuronId,
 }: SnsNeuron): string =>
-  bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
+  subaccountToHexString(fromNullable(neuronId)?.id ?? new Uint8Array());
+
+/**
+ * Convert a subaccount to a hex string.
+ * SnsNeuron id is a subaccount.
+ *
+ * @param {Uint8Array} subaccount
+ * @returns {string} hex string
+ */
+export const subaccountToHexString = (subaccount: Uint8Array): string =>
+  bytesToHexString(Array.from(subaccount));
 
 export const canIdentityManageHotkeys = ({
   neuron,
@@ -249,3 +259,21 @@ export const formattedSnsMaturity = (
  */
 export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
   nonNullish(fromNullable(source_nns_neuron_id));
+
+/**
+ * Returns true if the neuron needs to be refreshed.
+ * Refresh means to make a call to the backend to get the latest data.
+ * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake.
+ *
+ * @param {Object}
+ * @param {SnsNeuron} param.neuron neuron to check
+ * @param {bigint} param.balanceE8s  subaccount balance
+ * @returns
+ */
+export const needsRefresh = ({
+  neuron,
+  balanceE8s,
+}: {
+  neuron: SnsNeuron;
+  balanceE8s: bigint;
+}): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
