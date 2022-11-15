@@ -3,9 +3,11 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import {
   createTransferableAmount,
@@ -19,6 +21,12 @@ import { renderContextCmp } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("ParticipateButton", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   it("should render project participate button", () => {
     const { queryByTestId } = renderContextCmp({
       summary: mockSnsFullProject.summary,

@@ -6,13 +6,17 @@ import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
+import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import {
   mockSnsAccountsStoreSubscribe,
@@ -34,6 +38,12 @@ describe("SnsTransactionModal", () => {
         selectedAccount,
       },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest
