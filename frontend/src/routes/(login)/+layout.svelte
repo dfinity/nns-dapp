@@ -1,9 +1,9 @@
 <script lang="ts">
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
-  import { initAppSignIn } from "$lib/services/$public/app.services";
+  import { initAppAuth } from "$lib/services/$public/app.services";
 
-  onMount(async () => await initAppSignIn());
+  onMount(async () => await initAppAuth());
 </script>
 
 <div class="container" data-tid="auth-layout">

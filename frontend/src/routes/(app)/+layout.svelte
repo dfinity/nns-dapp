@@ -7,12 +7,10 @@
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
   import {
     initAppData as initAppDataPublic,
-    initAppSignIn,
+    initAppAuth,
   } from "$lib/services/$public/app.services";
 
-  onMount(
-    async () => await Promise.all([initAppSignIn(), initAppDataPublic()])
-  );
+  onMount(async () => await Promise.all([initAppAuth(), initAppDataPublic()]));
 
   const unsubscribeVoteInProgress = voteRegistrationStore.subscribe(
     ({ registrations }) =>
