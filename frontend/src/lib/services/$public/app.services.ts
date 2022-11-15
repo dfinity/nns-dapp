@@ -13,7 +13,7 @@ import { toastsError } from "$lib/stores/toasts.store";
  * Load the application public data that are available globally ("global stores").
  * These data can be read by any users without being signed-in.
  */
-export const initAppData = (): Promise<
+export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];

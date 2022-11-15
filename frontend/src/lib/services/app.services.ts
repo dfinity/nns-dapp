@@ -3,7 +3,7 @@ import { loadMainTransactionFee } from "$lib/services/transaction-fees.services"
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 
-export const initAppData = (): Promise<
+export const initAppPrivateData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [
