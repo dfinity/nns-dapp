@@ -19,7 +19,7 @@ import {
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import { type AccountIdentifier, type TokenAmount } from "@dfinity/nns";
+import type { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
