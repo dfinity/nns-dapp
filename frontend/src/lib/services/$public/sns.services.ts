@@ -20,7 +20,7 @@ export const loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
 
   return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
-    anonymousIdentity: true,
+    identityType: "anonymous",
     request: ({ certified, identity }) =>
       Promise.all([
         queryAllSnsMetadata({ certified, identity }),
@@ -52,7 +52,7 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
   snsSwapCommitmentsStore.setLoadingState();
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
-    anonymousIdentity: true,
+    identityType: "anonymous",
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
@@ -88,7 +88,7 @@ export const listSnsProposals = async (): Promise<void> => {
   snsProposalsStore.setLoadingState();
 
   return queryAndUpdate<ProposalInfo[], unknown>({
-    anonymousIdentity: true,
+    identityType: "anonymous",
     request: ({ certified }) =>
       loadProposalsByTopic({
         certified,

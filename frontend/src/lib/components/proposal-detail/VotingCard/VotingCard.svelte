@@ -24,6 +24,8 @@
   import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import {isSignedIn} from "$lib/utils/auth.utils";
+  import {authStore} from "$lib/stores/auth.store";
 
   export let proposalInfo: ProposalInfo;
 
@@ -95,10 +97,13 @@
 
   let neuronsReady = false;
   $: $neuronsStore, (neuronsReady = neuronsStoreReady());
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 <BottomSheet>
-  <div class="container">
+  <div class="container" class:signedIn>
     <SignInGuard>
       {#if $definedNeuronsStore.length > 0}
         {#if neuronsReady}
@@ -126,7 +131,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  .container {
+  .container:not(.signedIn) {
     display: flex;
     justify-content: center;
     padding: var(--padding-2x) 0;
@@ -139,7 +144,7 @@
 
   .loader {
     // Observed values that match bottom sheet height
-    padding: calc(2.6 * var(--padding)) 0;
+    padding: var(--padding-3x) var(--padding-2x);
 
     @include media.min-width(large) {
       padding: var(--padding-3x) 0;

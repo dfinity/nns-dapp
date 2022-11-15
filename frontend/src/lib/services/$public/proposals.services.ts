@@ -23,7 +23,7 @@ import {
 } from "$lib/utils/proposals.utils";
 import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getAnonymousIdentity } from "../auth.services";
+import { getBestMatchIdentity } from "../auth.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
@@ -168,7 +168,7 @@ const findProposals = async ({
   let uncertifiedProposals: ProposalInfo[] | undefined;
 
   return queryAndUpdate<ProposalInfo[], unknown>({
-    anonymousIdentity: true,
+    identityType: "best_match",
     request: ({ certified, identity }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
     onLoad: ({ response: proposals, certified }) => {
@@ -209,7 +209,7 @@ export const loadProposalsByTopic = async ({
 
   return queryProposals({
     beforeProposal: undefined,
-    identity: getAnonymousIdentity(),
+    identity: getBestMatchIdentity(),
     filters,
     certified,
   });
@@ -294,7 +294,7 @@ const getProposal = async ({
   strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<ProposalInfo | undefined, unknown>({
-    anonymousIdentity: true,
+    identityType: "best_match",
     request: ({ certified, identity }) =>
       queryProposal({ proposalId, identity, certified }),
     onLoad,
@@ -320,7 +320,7 @@ export const loadProposalPayload = async ({
     proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
     const payload = await queryProposalPayload({
       proposalId,
-      identity: getAnonymousIdentity(),
+      identity: getBestMatchIdentity(),
     });
     proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {
