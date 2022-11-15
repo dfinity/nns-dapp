@@ -36,7 +36,7 @@
     :global(button) {
       width: 50%;
 
-      outline: 4px solid var(--primary-contrast);
+      outline: var(--padding-0_5x) solid var(--primary-contrast);
     }
   }
 </style>
