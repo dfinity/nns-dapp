@@ -19,7 +19,9 @@
     }
 
     :global(.main) {
-      grid-gap: var(--padding-1_5x);
+      padding: var(--padding-0_5x);
+      background: var(--focus-background);
+      border-radius: var(--border-radius);
 
       @include media.min-width(xsmall) {
         min-width: 280px;
@@ -35,8 +37,6 @@
 
     :global(button) {
       width: 50%;
-
-      outline: var(--padding-0_5x) solid var(--primary-contrast);
     }
   }
 </style>
