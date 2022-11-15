@@ -15,6 +15,7 @@
   import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
+  import {authStore} from "$lib/stores/auth.store";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
@@ -85,7 +86,7 @@
     });
   };
 
-  $: proposalId,
+  $: $authStore.identity, proposalId,
     (async () => {
       if (proposalId === undefined) {
         await goBack();
