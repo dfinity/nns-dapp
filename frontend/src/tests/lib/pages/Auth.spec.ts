@@ -78,4 +78,32 @@ describe("Auth", () => {
       window.history.back();
     });
   });
+
+  describe("Links", () => {
+    const shouldRenderLink = ({
+      path,
+      testId,
+    }: {
+      path: AppPath;
+      testId: string;
+    }) => {
+      const { getByTestId } = render(Auth);
+      expect(
+        (getByTestId(testId) as HTMLLinkElement | null)?.getAttribute("href")
+      ).toEqual(path);
+    };
+
+    it("should render a link to accounts", () =>
+      shouldRenderLink({
+        testId: "auth-link-accounts",
+        path: AppPath.Accounts,
+      }));
+    it("should render a link to neurons", () =>
+      shouldRenderLink({ testId: "auth-link-neurons", path: AppPath.Neurons }));
+    it("should render a link to proposals", () =>
+      shouldRenderLink({
+        testId: "auth-link-proposals",
+        path: AppPath.Proposals,
+      }));
+  });
 });
