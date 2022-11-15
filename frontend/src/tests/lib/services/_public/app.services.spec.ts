@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { initAppData } from "$lib/services/$public/app.services";
+import { initAppPublicData } from "$lib/services/$public/app.services";
 import {
   loadSnsSummaries,
   loadSnsSwapCommitments,
@@ -20,7 +20,7 @@ describe("$public/app-services", () => {
   });
 
   it("should init Sns", async () => {
-    await initAppData();
+    await initAppPublicData();
 
     await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
     await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);

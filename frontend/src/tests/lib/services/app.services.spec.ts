@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { initAppData } from "$lib/services/app.services";
+import { initAppPrivateData } from "$lib/services/app.services";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { mockAccountDetails } from "../../mocks/accounts.store.mock";
@@ -40,7 +40,7 @@ describe("app-services", () => {
   });
 
   it("should init Nns", async () => {
-    await initAppData();
+    await initAppPrivateData();
 
     // query + update calls
     const numberOfCalls = 2;

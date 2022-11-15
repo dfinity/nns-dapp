@@ -580,7 +580,8 @@
     "completed": "Completed",
     "sale_end": "Sale End",
     "max_left": "max left",
-    "max_user_commitment_reached": "Maximum commitment reached"
+    "max_user_commitment_reached": "Maximum commitment reached",
+    "sign_in": "Sign in to participate"
   },
   "sns_neuron_detail": {
     "header": "Neuron",

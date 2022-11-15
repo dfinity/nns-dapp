@@ -67,7 +67,7 @@
         >
       </Tooltip>
     {/if}
-    <span slot="signin-cta">Sign in to participate</span>
+    <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
   </SignInGuard>
 {/if}
 

@@ -114,6 +114,11 @@
     justify-content: center;
     padding: var(--padding-2x);
 
+    @include media.min-width(medium) {
+      align-items: center;
+      justify-content: center;
+    }
+
     @include media.min-width(large) {
       align-items: flex-start;
       justify-content: flex-start;

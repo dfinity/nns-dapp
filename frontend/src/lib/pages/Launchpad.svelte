@@ -4,9 +4,15 @@
   import { i18n } from "$lib/stores/i18n";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { committedProjectsStore } from "$lib/stores/projects.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let showCommitted = false;
   $: showCommitted = ($committedProjectsStore?.length ?? []) > 0;
+
+  // TODO: remove once proposals also public
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 <main>
@@ -18,8 +24,10 @@
     <Projects status={SnsSwapLifecycle.Committed} />
   {/if}
 
-  <h2>{$i18n.sns_launchpad.proposals}</h2>
-  <Proposals />
+  {#if signedIn}
+    <h2>{$i18n.sns_launchpad.proposals}</h2>
+    <Proposals />
+  {/if}
 </main>
 
 <style lang="scss">
