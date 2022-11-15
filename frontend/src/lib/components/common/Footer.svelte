@@ -23,6 +23,8 @@
       background: var(--focus-background);
       border-radius: var(--border-radius);
 
+      gap: var(--padding-0_5x);
+
       @include media.min-width(xsmall) {
         min-width: 280px;
         max-width: calc(var(--section-max-width) * 0.7);
@@ -31,7 +33,6 @@
 
       @include media.min-width(medium) {
         margin-bottom: var(--padding-2x);
-        gap: var(--padding-2x);
       }
     }
 
