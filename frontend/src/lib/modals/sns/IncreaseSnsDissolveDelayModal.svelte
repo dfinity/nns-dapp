@@ -11,6 +11,11 @@
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
   import type { Token } from "@dfinity/nns";
+  import {startBusy, stopBusy} from "$lib/stores/busy.store";
+  import type {Principal} from "@dfinity/principal";
+  import {snsOnlyProjectStore} from "$lib/derived/selected-project.derived";
+  import {assertNonNullish} from "@dfinity/utils";
+  import {updateDelay} from "$lib/services/sns-neurons.services";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -39,8 +44,31 @@
   const goNext = () => {
     modal.next();
   };
-  const closeModal = () => {
-    dispatcher("nnsClose");
+  const closeModal = () => dispatcher("nnsClose");
+  const updateDissolveDelay = async () => {
+    startBusy({
+      initiator: "dissolve-sns-action",
+    });
+
+    let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
+
+    assertNonNullish(rootCanisterId);
+
+    const { success } = await updateDelay({
+      rootCanisterId,
+      neuron,
+      dissolveDelaySeconds: delayInSeconds,
+    });
+
+    await reloadNeuron();
+
+    stopBusy("dissolve-sns-action");
+
+    if (success) {
+      dispatcher("nnsUpdated");
+    }
+
+    closeModal();
   };
 </script>
 
@@ -50,8 +78,6 @@
     <SetSnsDissolveDelay
       {neuron}
       {token}
-      cancelButtonText={$i18n.core.cancel}
-      confirmButtonText={$i18n.neurons.update_delay}
       {minDelayInSeconds}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
@@ -60,12 +86,10 @@
   {/if}
   {#if currentStep.name === "ConfirmSnsDissolveDelay"}
     <ConfirmSnsDissolveDelay
-      confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}
       {token}
       {delayInSeconds}
-      {reloadNeuron}
-      on:nnsUpdated={closeModal}
+      on:nnsConfirm={updateDissolveDelay}
       on:nnsBack={modal.back}
     />
   {/if}

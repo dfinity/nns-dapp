@@ -31,7 +31,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, fromDefinedNullable } from "@dfinity/utils";
+import {arrayOfNumberToUint8Array, assertNonNullish, fromDefinedNullable} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -316,6 +316,8 @@ export const updateDelay = async ({
       getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
     const additionalDissolveDelaySeconds =
       dissolveDelaySeconds - Number(currentDissolveDelay);
+
+    assertNonNullish(rootCanisterId);
 
     await increaseDissolveDelayApi({
       rootCanisterId,

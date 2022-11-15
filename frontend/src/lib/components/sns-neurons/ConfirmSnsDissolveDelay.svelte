@@ -5,7 +5,6 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
   import {
@@ -13,17 +12,11 @@
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import type { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import { assertNonNullish } from "@dfinity/utils";
-  import { updateDelay } from "$lib/services/sns-neurons.services";
   import type { Token } from "@dfinity/nns";
 
   export let delayInSeconds: number;
   export let neuron: SnsNeuron;
-  export let confirmButtonText: string;
   export let token: Token;
-  export let reloadNeuron: () => Promise<void>;
 
   const dispatcher = createEventDispatcher();
 
@@ -31,31 +24,7 @@
   $: neuronStake = getSnsNeuronStake(neuron);
 
   let neuronId: string;
-  neuronId = getSnsNeuronIdAsHexString(neuron);
-
-  const updateDissolveDelay = async () => {
-    startBusy({
-      initiator: "dissolve-sns-action",
-    });
-
-    let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
-
-    assertNonNullish(rootCanisterId);
-
-    const { success } = await updateDelay({
-      rootCanisterId,
-      neuron,
-      dissolveDelaySeconds: delayInSeconds,
-    });
-
-    await reloadNeuron();
-
-    stopBusy("dissolve-sns-action");
-
-    if (success) {
-      dispatcher("nnsUpdated");
-    }
-  };
+  $: neuronId = getSnsNeuronIdAsHexString(neuron);
 </script>
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
@@ -102,9 +71,9 @@
       class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
-      on:click={updateDissolveDelay}
+      on:click={() => dispatcher("nnsConfirm")}
     >
-      {confirmButtonText}
+      {$i18n.neurons.confirm_update_delay}
     </button>
   </div>
 </div>

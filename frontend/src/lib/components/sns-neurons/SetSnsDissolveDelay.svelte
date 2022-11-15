@@ -23,8 +23,6 @@
   export let neuron: SnsNeuron;
   export let token: Token;
   export let delayInSeconds = 0; // bound
-  export let cancelButtonText: string;
-  export let confirmButtonText: string;
   export let minDelayInSeconds = 0;
 
   const checkMinimum = () => {
@@ -127,7 +125,7 @@
 
   <div class="toolbar">
     <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
-      >{cancelButtonText}</button
+      >{$i18n.core.cancel}</button
     >
     <button
       class="primary"
@@ -135,7 +133,7 @@
       on:click={goToConfirmation}
       data-tid="go-confirm-delay-button"
     >
-      {confirmButtonText}
+      {$i18n.neurons.update_delay}
     </button>
   </div>
 </div>

@@ -15,7 +15,7 @@
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isDefined, isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState, type Token } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
@@ -50,9 +50,15 @@
         neuron,
         identity: $authStore.identity,
       });
+
+  let canDissolve = false;
+  $: canDissolve =
+    nonNullish(neuronState) &&
+    [NeuronState.Dissolving, NeuronState.Locked].includes(neuronState) &&
+    allowedToDissolve;
 </script>
 
-{#if nonNullish(neuron)}
+{#if nonNullish(neuron) && nonNullish(neuronState)}
   <SnsNeuronCard {neuron} cardType="info">
     <section>
       <p>
@@ -70,7 +76,7 @@
         {/if}
         {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseSnsButton {neuron} {reloadContext} />
-        {:else if (neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked) && allowedToDissolve}
+        {:else if canDissolve}
           <DissolveSnsNeuronButton
             neuronId={fromDefinedNullable(neuron.id)}
             {neuronState}
