@@ -19,6 +19,8 @@
     }
 
     :global(.main) {
+      grid-gap: var(--padding-1_5x);
+
       @include media.min-width(xsmall) {
         min-width: 280px;
         max-width: calc(var(--section-max-width) * 0.7);
@@ -33,6 +35,8 @@
 
     :global(button) {
       width: 50%;
+
+      outline: 4px solid var(--primary-contrast);
     }
   }
 </style>
