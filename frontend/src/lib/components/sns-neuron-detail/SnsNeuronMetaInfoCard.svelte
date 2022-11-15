@@ -70,7 +70,7 @@
         {/if}
         {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
           <DisburseSnsButton {neuron} {reloadContext} />
-        {:else if neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked}
+        {:else if (neuronState === NeuronState.Dissolving || neuronState === NeuronState.Locked) && allowedToDissolve}
           <DissolveSnsNeuronButton
             neuronId={fromDefinedNullable(neuron.id)}
             {neuronState}
