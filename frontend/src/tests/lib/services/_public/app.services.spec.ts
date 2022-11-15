@@ -1,11 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import { initAppData } from "$lib/services/$public/app.services";
 import {
   loadSnsSummaries,
   loadSnsSwapCommitments,
 } from "$lib/services/$public/sns.services";
-import { initAppData } from "$lib/services/$public/app.services";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

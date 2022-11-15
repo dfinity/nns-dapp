@@ -10,7 +10,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-jest.mock("$lib/services/sns.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
     listSnsProposals: jest.fn().mockResolvedValue(Promise.resolve()),
   };
