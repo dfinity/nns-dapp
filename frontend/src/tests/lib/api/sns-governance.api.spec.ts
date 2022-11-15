@@ -47,6 +47,7 @@ describe("sns-api", () => {
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
+  const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -75,6 +76,7 @@ describe("sns-api", () => {
         disburse: disburseSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
+        increaseDissolveDelay: increaseDissolveDelaySpy,
       })
     );
   });
@@ -146,6 +148,6 @@ describe("sns-api", () => {
       additionalDissolveDelaySeconds: 123,
     });
 
-    expect(stopDissolvingSpy).toBeCalled();
+    expect(increaseDissolveDelaySpy).toBeCalled();
   });
 });
