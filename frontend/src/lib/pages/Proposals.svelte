@@ -141,10 +141,7 @@
   };
 
   let nothingFound: boolean;
-  $: initialized,
-    loading,
-    $filteredProposals,
-    (() => updateNothingFound())();
+  $: initialized, loading, $filteredProposals, (() => updateNothingFound())();
 
   let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
   $: loadingAnimation = !loading

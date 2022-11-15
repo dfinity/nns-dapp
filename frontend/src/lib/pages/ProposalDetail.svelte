@@ -103,23 +103,6 @@
 
   // END: loading and navigation
 
-  const neuronsStoreReady = (): boolean => {
-    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
-    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
-    if (neuronsReady) {
-      return true;
-    }
-
-    return (
-      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
-    );
-  };
-
-  let neuronsReady = false;
-  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
-
-  // TODO: reload after vote $proposalsStore
-
   $: layoutTitleStore.set(
     `${$i18n.proposal_detail.title}${
       $selectedProposalStore.proposalId !== undefined
@@ -130,5 +113,5 @@
 </script>
 
 <main>
-  <Proposal {neuronsReady} />
+  <Proposal />
 </main>

@@ -17,9 +17,9 @@
 <ProposalsFilters />
 
 <InfiniteScroll
-        on:nnsIntersect
-        layout="grid"
-        disabled={disableInfiniteScroll || loading}
+  on:nnsIntersect
+  layout="grid"
+  disabled={disableInfiniteScroll || loading}
 >
   {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
     <ProposalCard {hidden} {proposalInfo} />
