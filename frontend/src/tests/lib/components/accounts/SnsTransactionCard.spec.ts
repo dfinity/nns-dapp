@@ -4,9 +4,7 @@
 
 import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { mapSnsTransaction } from "$lib/utils/sns-transactions.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
@@ -17,17 +15,12 @@ import {
 import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
 describe("SnsTransactionCard", () => {
-  const transactoinFee = TokenAmount.fromE8s({
-    amount: BigInt(10_000),
-    token: { name: "Test", symbol: "TST" },
-  });
   const renderTransactionCard = (account, transactionWithId) =>
     render(SnsTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
-        fee: transactoinFee,
       },
     });
 
@@ -69,15 +62,12 @@ describe("SnsTransactionCard", () => {
     const account = mockSnsMainAccount;
     const transaction = transactionFromMainToSubaccount;
     const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapSnsTransaction({
-      account,
-      toSelfTransaction: false,
-      transaction,
-    });
 
+    const fee = transaction.transaction.transfer[0]?.fee[0];
+    const amount = transaction.transaction.transfer[0]?.amount;
     expect(getByTestId("token-value")?.textContent).toBe(
       `-${formatToken({
-        value: displayAmount.toE8s() + transactoinFee.toE8s(),
+        value: amount + fee,
         detailed: true,
       })}`
     );
@@ -86,18 +76,11 @@ describe("SnsTransactionCard", () => {
   it("renders transaction Tokens with + sign", () => {
     const account = mockSnsSubAccount;
     const transaction = transactionFromMainToSubaccount;
-    const { getByTestId } = renderTransactionCard(
-      mockSnsSubAccount,
-      transactionFromMainToSubaccount
-    );
-    const { displayAmount } = mapSnsTransaction({
-      account,
-      transaction,
-      toSelfTransaction: false,
-    });
+    const { getByTestId } = renderTransactionCard(account, transaction);
 
+    const amount = transaction.transaction.transfer[0]?.amount;
     expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
+      `+${formatToken({ value: amount, detailed: true })}`
     );
   });
 

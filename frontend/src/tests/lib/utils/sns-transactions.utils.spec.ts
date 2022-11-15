@@ -5,7 +5,6 @@ import {
   isTransactionsCompleted,
   mapSnsTransaction,
 } from "$lib/utils/sns-transactions.utils";
-import { TokenAmount } from "@dfinity/nns";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
@@ -176,10 +175,6 @@ describe("sns-transaction utils", () => {
       const data = mapSnsTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsMainAccount,
-        fee: TokenAmount.fromE8s({
-          amount: BigInt(100),
-          token: mockSnsMainAccount.balance.token,
-        }),
         toSelfTransaction: false,
       });
       expect(data.isSend).toBe(true);
@@ -190,10 +185,6 @@ describe("sns-transaction utils", () => {
       const data = mapSnsTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsSubAccount,
-        fee: TokenAmount.fromE8s({
-          amount: BigInt(100),
-          token: mockSnsSubAccount.balance.token,
-        }),
         toSelfTransaction: false,
       });
       expect(data.isSend).toBe(false);
@@ -204,10 +195,6 @@ describe("sns-transaction utils", () => {
       const data = mapSnsTransaction({
         transaction: selfTransaction,
         account: mockSnsSubAccount,
-        fee: TokenAmount.fromE8s({
-          amount: BigInt(100),
-          token: mockSnsSubAccount.balance.token,
-        }),
         toSelfTransaction: true,
       });
       expect(data.isSend).toBe(false);
@@ -215,21 +202,14 @@ describe("sns-transaction utils", () => {
     });
 
     it("adds fee to sent transactions", () => {
-      const fee = TokenAmount.fromE8s({
-        amount: BigInt(100),
-        token: mockSnsMainAccount.balance.token,
-      });
       const data = mapSnsTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsMainAccount,
-        fee,
         toSelfTransaction: false,
       });
       expect(data.isSend).toBe(true);
-      expect(data.displayAmount.toE8s()).toBe(
-        transactionFromMainToSubaccount.transaction.transfer[0].amount +
-          fee.toE8s()
-      );
+      const txData = transactionFromMainToSubaccount.transaction.transfer[0];
+      expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
     });
   });
 });

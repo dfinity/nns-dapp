@@ -20,6 +20,7 @@ const mockSnsTransaction: SnsTransaction = {
       memo: [],
       created_at_time: [BigInt(123)],
       amount: BigInt(33),
+      fee: [BigInt(1)],
     },
   ],
 };
@@ -51,6 +52,7 @@ export const createSnstransactionWithId = (
         memo: [],
         created_at_time: [BigInt(123)],
         amount: BigInt(33),
+        fee: [BigInt(1)],
       },
     ],
   },
