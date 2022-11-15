@@ -5,11 +5,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    IconWallet,
-    IconPassword,
-    IconUsers,
-  } from "@dfinity/gix-components";
+  import { IconWallet, IconPassword, IconUsers } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -190,7 +186,6 @@
       width: 20px;
       vertical-align: bottom;
       margin: 0 var(--padding-0_5x) 0 0;
-
     }
   }
 
@@ -213,7 +208,9 @@
     color: inherit;
     text-decoration: none;
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
       text-decoration: underline;
     }
   }
