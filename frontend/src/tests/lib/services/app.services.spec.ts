@@ -6,7 +6,7 @@ import {
   loadSnsSummaries,
   loadSnsSwapCommitments,
 } from "$lib/services/$public/sns.services";
-import { initApp } from "$lib/services/app.services";
+import { initAppData } from "$lib/services/app.services";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { mockAccountDetails } from "../../mocks/accounts.store.mock";
@@ -51,7 +51,7 @@ describe("app-services", () => {
   });
 
   it("should init Nns", async () => {
-    await initApp();
+    await initAppData();
 
     // query + update calls
     const numberOfCalls = 2;
@@ -70,7 +70,7 @@ describe("app-services", () => {
   });
 
   it("should init Sns", async () => {
-    await initApp();
+    await initAppData();
 
     await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
     await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);

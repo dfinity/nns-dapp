@@ -34,8 +34,12 @@ export const logout = async ({
   window.location.reload();
 };
 
+/**
+ * An anonymous identity that can be use for public call to the IC.
+ */
 export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
 
+// TODO: rename getAuthenticatedIdentity
 /**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
