@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import { loadProposal } from "$lib/services/proposals.services";
+  import { loadProposal } from "$lib/services/$public/proposals.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "$lib/stores/neurons.store";

@@ -13,7 +13,7 @@ import {
   listProposals,
   loadProposal,
   loadProposalPayload,
-} from "$lib/services/proposals.services";
+} from "$lib/services/$public/proposals.services";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,

@@ -14,7 +14,7 @@
   import {
     listNextProposals,
     listProposals,
-  } from "$lib/services/proposals.services";
+  } from "$lib/services/$public/proposals.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
@@ -143,12 +143,8 @@
   let nothingFound: boolean;
   $: initialized,
     loading,
-    neuronsLoaded,
     $filteredProposals,
     (() => updateNothingFound())();
-
-  let neuronsLoaded: boolean;
-  $: neuronsLoaded = $neuronsStore.neurons !== undefined;
 
   let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
   $: loadingAnimation = !loading
@@ -161,7 +157,6 @@
 <main data-tid={`proposals-scroll-${disableInfiniteScroll ? "off" : "on"}`}>
   <ProposalsList
     {hidden}
-    {neuronsLoaded}
     {nothingFound}
     {disableInfiniteScroll}
     {loading}
