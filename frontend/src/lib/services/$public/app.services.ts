@@ -4,7 +4,6 @@ import {
   loadSnsSummariesProxy,
   loadSnsSwapCommitmentsProxy,
 } from "$lib/proxy/$public/sns.services.proxy";
-import { loadMainTransactionFee } from "$lib/services/$public/transaction-fees.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
@@ -17,7 +16,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 export const initAppData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
-  const initNns: Promise<void>[] = [loadMainTransactionFee()];
+  const initNns: Promise<void>[] = [];
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
   const initSns: Promise<void>[] = ENABLE_SNS
