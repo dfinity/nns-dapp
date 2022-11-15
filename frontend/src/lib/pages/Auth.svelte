@@ -17,6 +17,7 @@
     buildProposalUrl,
   } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
 
@@ -70,16 +71,22 @@
 
 <ul>
   <li>
-    <IconWallet />
-    {$i18n.auth.wallet}
+    <a href={AppPath.Accounts} data-tid="auth-link-accounts"
+      ><IconWallet />
+      {$i18n.auth.wallet}</a
+    >
   </li>
   <li>
-    <IconPassword />
-    {$i18n.auth.stake}
+    <a href={AppPath.Neurons} data-tid="auth-link-neurons"
+      ><IconPassword />
+      {$i18n.auth.stake}</a
+    >
   </li>
   <li>
-    <IconUsers />
-    {$i18n.auth.earn}
+    <a href={AppPath.Proposals} data-tid="auth-link-proposals"
+      ><IconUsers />
+      {$i18n.auth.earn}</a
+    >
   </li>
 </ul>
 
@@ -199,6 +206,15 @@
     @media (min-width: 768px) and (min-height: 620px) {
       margin: var(--padding-6x) 0 calc(14 * var(--padding));
       width: auto;
+    }
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover, &:active, &:focus {
+      text-decoration: underline;
     }
   }
 </style>
