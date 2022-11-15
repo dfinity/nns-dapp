@@ -444,6 +444,7 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
+  sign_in: string;
 }
 
 interface I18nProposal_detail__vote {
