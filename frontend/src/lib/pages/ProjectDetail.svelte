@@ -3,7 +3,7 @@
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
@@ -28,7 +28,7 @@
       onError: () => {
         // Set to not found
         $projectDetailStore.summary = undefined;
-        goBack(true);
+        goBack();
       },
     });
 
@@ -38,7 +38,7 @@
       onError: () => {
         // Set to not found
         $projectDetailStore.swapCommitment = undefined;
-        goBack(true);
+        goBack();
       },
     });
 
@@ -66,8 +66,8 @@
     reload,
   });
 
-  const goBack = (replaceState: boolean): Promise<void> =>
-    goto(AppPath.Launchpad, { replaceState });
+  const goBack = (): Promise<void> =>
+    goto(AppPath.Launchpad, { replaceState: true });
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
@@ -111,13 +111,11 @@
     $snsSwapCommitmentsStore,
     (async () => {
       if (rootCanisterId === undefined || rootCanisterId === null) {
-        await goBack(true);
+        await goBack();
         return;
       }
       mapProjectDetail(rootCanisterId);
     })();
-
-  layoutBackStore.set(async () => goBack(false));
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
@@ -130,7 +128,7 @@
         labelKey: "error__sns.project_not_found",
       });
 
-      await goBack(true);
+      await goBack();
     }
   })();
 </script>

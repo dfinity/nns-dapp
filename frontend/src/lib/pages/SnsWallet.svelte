@@ -18,10 +18,7 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
-  import { pageStore } from "$lib/derived/page.derived";
   import { goto } from "$app/navigation";
-  import { layoutBackStore } from "$lib/stores/layout.store";
-  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
@@ -31,11 +28,6 @@
       return;
     }
   });
-
-  const goBack = (): Promise<void> =>
-    goto(buildAccountsUrl({ universe: $pageStore.universe }));
-
-  layoutBackStore.set(goBack);
 
   let showNewTransactionModal = false;
 

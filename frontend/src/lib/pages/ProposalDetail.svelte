@@ -4,7 +4,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { writable } from "svelte/store";
   import type {
     SelectedProposalContext,
@@ -49,8 +49,6 @@
     goto(
       referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
     );
-
-  layoutBackStore.set(goBack);
 
   const findProposal = async () => {
     const onError = (certified: boolean) => {
