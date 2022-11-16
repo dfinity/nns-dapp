@@ -11,7 +11,7 @@ import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/app.services", () => ({
   initAppAuth: jest.fn(() => Promise.resolve()),
-  initAppData: jest.fn(() => Promise.resolve()),
+  initAppPublicData: jest.fn(() => Promise.resolve()),
 }));
 
 describe("Layout", () => {
