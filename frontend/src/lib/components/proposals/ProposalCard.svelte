@@ -13,7 +13,7 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
-  import type {ProposalStatusColor} from "$lib/constants/proposals.constants";
+  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;

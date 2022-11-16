@@ -30,7 +30,10 @@ export enum ProposalStatusColor {
   ERROR = "error",
 }
 
-export const PROPOSAL_COLOR: Record<ProposalStatus, ProposalStatusColor | undefined> = {
+export const PROPOSAL_COLOR: Record<
+  ProposalStatus,
+  ProposalStatusColor | undefined
+> = {
   [ProposalStatus.Executed]: ProposalStatusColor.SUCCESS,
   [ProposalStatus.Open]: ProposalStatusColor.WARNING,
   [ProposalStatus.Unknown]: undefined,
