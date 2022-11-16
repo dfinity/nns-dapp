@@ -1,13 +1,12 @@
 <script lang="ts">
   import Banner from "../header/Banner.svelte";
   import MenuItems from "./MenuItems.svelte";
-  import { layoutTitleStore, layoutBackStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { Layout, HeaderTitle, Content } from "@dfinity/gix-components";
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
   import { triggerDebugReport } from "$lib/services/debug.services";
 
-  let back = false;
-  $: back = $layoutBackStore !== undefined;
+  export let back: () => Promise<void> | undefined = undefined;
 
   export let contrast = false;
 </script>
@@ -20,7 +19,7 @@
   <Content
     {back}
     {contrast}
-    on:nnsBack={async () => await $layoutBackStore?.()}
+    on:nnsBack={async () => await back?.()}
   >
     <div use:triggerDebugReport slot="title">
       <HeaderTitle>{$layoutTitleStore}</HeaderTitle>

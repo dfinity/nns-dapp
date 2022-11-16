@@ -15,7 +15,7 @@
     isSpawning,
     neuronVoting,
   } from "$lib/utils/neuron.utils";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -39,10 +39,7 @@
 
   // BEGIN: loading and navigation
 
-  const goBack = (replaceState: boolean): Promise<void> =>
-    goto(AppPath.Neurons, { replaceState });
-
-  layoutBackStore.set(async () => goBack(false));
+  const goBack = (): Promise<void> => goto(AppPath.Neurons, { replaceState: true });
 
   type NeuronFromStore = { neuron: NeuronInfo | undefined };
 

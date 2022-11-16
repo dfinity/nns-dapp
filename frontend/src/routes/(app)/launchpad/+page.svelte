@@ -3,7 +3,7 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInSns from "$lib/pages/SignInSns.svelte";
   import { onMount } from "svelte";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
@@ -20,9 +20,6 @@
     }
 
     layoutTitleStore.set($i18n.sns_launchpad.header);
-
-    // Reset back action because only detail routes have such feature other views use the menu
-    layoutBackStore.set(undefined);
   });
 </script>
 
