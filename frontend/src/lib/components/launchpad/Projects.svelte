@@ -4,6 +4,7 @@
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { isNullish } from "$lib/utils/utils";
   import {
+    snsQueryStore,
     snsSummariesStore,
     snsSwapCommitmentsStore,
   } from "$lib/stores/sns.store";
@@ -24,7 +25,7 @@
   });
 
   let loading = false;
-  $: loading = isNullish($snsSummariesStore);
+  $: loading = isNullish($snsSummariesStore) || isNullish($snsQueryStore);
 
   let noProjectsMessageLabel: string;
   $: noProjectsMessageLabel =
