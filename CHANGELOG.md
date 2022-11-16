@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal XXX
+* New design colors, spacing and layout
+* Link to sub-pages on main login screen
+* UI/UX fixes
+* Stake SNS neuron functionality
+* Improve Participate Button
+
 ## Proposal 90917
 * New routing.
 * New login.
