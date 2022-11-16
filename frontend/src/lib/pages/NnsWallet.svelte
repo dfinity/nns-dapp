@@ -1,7 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
   import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";

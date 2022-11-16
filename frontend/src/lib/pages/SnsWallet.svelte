@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Spinner, Toolbar, busy } from "@dfinity/gix-components";
+  import { Spinner, busy } from "@dfinity/gix-components";
   import { onMount } from "svelte";
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";

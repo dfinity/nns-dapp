@@ -2,7 +2,7 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar, Value } from "@dfinity/gix-components";
+  import { Value } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
