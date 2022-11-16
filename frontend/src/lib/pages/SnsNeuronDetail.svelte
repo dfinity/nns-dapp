@@ -3,7 +3,6 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import {
     type SelectedSnsNeuronContext,
@@ -17,6 +16,8 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import SnsNeuronMaturityCard from "$lib/components/neuron-detail/SnsNeuronMaturityCard.svelte";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let neuronId: string | null | undefined;
 
@@ -33,13 +34,13 @@
   // BEGIN: loading and navigation
 
   const goBack = (replaceState: boolean): Promise<void> =>
-    goto(AppPath.Neurons, { replaceState });
+    goto($neuronsPathStore, { replaceState });
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
   ) => {
     const { selected } = $selectedSnsNeuronStore;
-    if (selected !== undefined) {
+    if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
       await getSnsNeuron({
         forceFetch,
         rootCanisterId: selected.rootCanisterId,
