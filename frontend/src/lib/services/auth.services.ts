@@ -44,7 +44,7 @@ export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
  * e.g. querying a proposals returns ballots information only if signed-in.
  */
 export const getBestMatchIdentity = (): Identity =>
-    get(authStore).identity ?? new AnonymousIdentity();
+  get(authStore).identity ?? new AnonymousIdentity();
 
 // TODO: rename getAuthenticatedIdentity
 /**

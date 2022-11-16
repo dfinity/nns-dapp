@@ -1,7 +1,8 @@
 import {
   participateInSnsSwap,
   querySnsMetadata,
-  querySnsSwapCommitment, querySnsSwapCommitments,
+  querySnsSwapCommitment,
+  querySnsSwapCommitments,
   querySnsSwapState,
 } from "$lib/api/sns.api";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
@@ -31,7 +32,7 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
 
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
-        querySnsSwapCommitments({ certified, identity }),
+      querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
       for (const swapCommitment of swapCommitments) {
         snsSwapCommitmentsStore.setSwapCommitment({
@@ -51,10 +52,10 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
       snsSwapCommitmentsStore.setLoadingState();
 
       toastsError(
-          toToastError({
-            err,
-            fallbackErrorLabelKey: "error__sns.list_swap_commitments",
-          })
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
+        })
       );
     },
     logMessage: "Syncing Sns swap commitments",

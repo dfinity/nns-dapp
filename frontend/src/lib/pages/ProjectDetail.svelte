@@ -71,9 +71,7 @@
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
-    if (
-      $snsSummariesStore.length === 0
-    ) {
+    if ($snsSummariesStore.length === 0) {
       return;
     }
     // Check valid rootCanisterId

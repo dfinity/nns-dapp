@@ -51,12 +51,12 @@
   <ProjectCardSwapInfo {project} />
 
   <SignedInOnly>
-  <!-- TODO L2-751: handle fetching errors -->
-  {#if swapCommitment === undefined}
-    <div class="spinner">
-      <Spinner size="small" inline />
-    </div>
-  {/if}
+    <!-- TODO L2-751: handle fetching errors -->
+    {#if swapCommitment === undefined}
+      <div class="spinner">
+        <Spinner size="small" inline />
+      </div>
+    {/if}
   </SignedInOnly>
 </Card>
 

@@ -1,17 +1,8 @@
-import {
-  queryAllSnsMetadata,
-  querySnsSwapCommitments,
-  querySnsSwapStates,
-} from "$lib/api/sns.api";
+import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { loadProposalsByTopic } from "$lib/services/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import {
-  snsProposalsStore,
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
+import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";

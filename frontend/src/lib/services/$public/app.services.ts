@@ -1,10 +1,10 @@
 import { browser, prerendering } from "$app/environment";
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
+import { loadSnsSummaries } from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import {loadSnsSummaries} from "$lib/services/$public/sns.services";
 
 /**
  * Load the application public data that are available globally ("global stores").
@@ -16,9 +16,7 @@ export const initAppPublicData = (): Promise<
   const initNns: Promise<void>[] = [];
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
-  const initSns: Promise<void>[] = ENABLE_SNS
-    ? [loadSnsSummaries()]
-    : [];
+  const initSns: Promise<void>[] = ENABLE_SNS ? [loadSnsSummaries()] : [];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
