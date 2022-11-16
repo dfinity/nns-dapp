@@ -45,7 +45,7 @@
 
       @include media.min-width(small) {
         grid-template-columns: repeat(
-          auto-fit,
+          var(--footer-columns),
           minmax(calc(var(--footer-main-inner-width) / 2), 180px)
         );
       }
