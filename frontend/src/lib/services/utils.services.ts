@@ -14,7 +14,7 @@ export type QueryAndUpdateOnError<E> = (options: {
 
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
 
-export type QueryAndUpdateIdentity = "authorized" | "anonymous" | "best_match";
+export type QueryAndUpdateIdentity = "authorized" | "anonymous";
 
 let lastIndex = 0;
 
@@ -52,9 +52,7 @@ export const queryAndUpdate = async <R, E>({
   const identity: Identity =
       identityType === "anonymous"
           ? getAnonymousIdentity()
-          : identityType === "best_match"
-              ? getBestMatchIdentity()
-              : await getIdentity();
+          : await getIdentity();
 
   const queryOrUpdate = (certified: boolean) =>
     request({ certified, identity })
