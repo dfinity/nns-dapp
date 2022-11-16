@@ -2,7 +2,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   getAnonymousIdentity,
-  getBestMatchIdentity,
+  getCurrentIdentity,
   getIdentity,
 } from "./auth.services";
 
@@ -18,7 +18,7 @@ export type QueryAndUpdateOnError<E> = (options: {
 
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
 
-export type QueryAndUpdateIdentity = "authorized" | "anonymous" | "best_match";
+export type QueryAndUpdateIdentity = "authorized" | "anonymous" | "current";
 
 let lastIndex = 0;
 
@@ -56,8 +56,8 @@ export const queryAndUpdate = async <R, E>({
   const identity: Identity =
     identityType === "anonymous"
       ? getAnonymousIdentity()
-      : identityType === "best_match"
-      ? getBestMatchIdentity()
+      : identityType === "current"
+      ? getCurrentIdentity()
       : await getIdentity();
 
   const queryOrUpdate = (certified: boolean) =>
