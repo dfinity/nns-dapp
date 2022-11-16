@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { SkeletonText, busy, Toolbar } from "@dfinity/gix-components";
+  import { SkeletonText, busy } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
@@ -212,15 +212,13 @@
   </section>
 </main>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showAddCyclesModal = true)}
-      disabled={canisterInfo === undefined || $busy}
-      >{$i18n.canister_detail.add_cycles}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    class="primary"
+    on:click={() => (showAddCyclesModal = true)}
+    disabled={canisterInfo === undefined || $busy}
+    >{$i18n.canister_detail.add_cycles}</button
+  >
 </Footer>
 
 {#if showAddCyclesModal}

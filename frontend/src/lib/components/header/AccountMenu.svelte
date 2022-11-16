@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconAccount, ThemeToggle, Popover } from "@dfinity/gix-components";
+  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -23,7 +23,7 @@
     on:click={toggle}
     aria-label={$i18n.header.account_menu}
   >
-    <IconAccount />
+    <IconUser />
   </button>
 
   <Popover bind:visible anchor={button} direction="rtl">
@@ -38,12 +38,11 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/overlay";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/header";
 
   .info {
-    @include overlay.content;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
@@ -53,6 +52,6 @@
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--brand-sea-buckthorn);
+    @include header.button(--primary-tint);
   }
 </style>

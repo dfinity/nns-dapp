@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Layout from "$lib/components/common/Layout.svelte";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
@@ -20,9 +19,7 @@
   onDestroy(() => unsubscribeVoteInProgress());
 </script>
 
-<Layout>
-  <slot />
-</Layout>
+<slot />
 
 <Toasts />
 <BusyScreen />

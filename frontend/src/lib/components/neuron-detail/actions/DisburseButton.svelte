@@ -10,7 +10,7 @@
   const closeModal = () => (showModal = false);
 </script>
 
-<button class="warning" on:click={openModal} data-tid="disburse-button"
+<button class="secondary" on:click={openModal} data-tid="disburse-button"
   >{$i18n.neuron_detail.disburse}</button
 >
 
