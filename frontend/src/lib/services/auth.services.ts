@@ -39,13 +39,6 @@ export const logout = async ({
  */
 export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
 
-/**
- * Some services return data regardless if signed-in or not but, returns more information if signed-in.
- * e.g. querying a proposals returns ballots information only if signed-in.
- */
-export const getBestMatchIdentity = (): Identity =>
-  get(authStore).identity ?? new AnonymousIdentity();
-
 // TODO: rename getAuthenticatedIdentity
 /**
  * Provide the identity that has been authorized.
