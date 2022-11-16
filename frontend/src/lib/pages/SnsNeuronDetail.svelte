@@ -5,7 +5,6 @@
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
-  import { layoutBackStore } from "$lib/stores/layout.store";
   import {
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
@@ -35,8 +34,6 @@
 
   const goBack = (replaceState: boolean): Promise<void> =>
     goto(AppPath.Neurons, { replaceState });
-
-  layoutBackStore.set(async () => goBack(false));
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }

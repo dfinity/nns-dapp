@@ -18,7 +18,6 @@
   } from "$lib/types/selected-account.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
-  import { layoutBackStore } from "$lib/stores/layout.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -29,8 +28,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
-
-  layoutBackStore.set(goBack);
 
   let transactions: Transaction[] | undefined;
 

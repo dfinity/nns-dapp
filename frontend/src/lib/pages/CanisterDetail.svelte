@@ -30,7 +30,6 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
-  import { layoutBackStore } from "$lib/stores/layout.store";
   import Footer from "$lib/components/common/Footer.svelte";
   import { goto } from "$app/navigation";
 
@@ -61,8 +60,6 @@
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
-
-  layoutBackStore.set(goBack);
 
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({
     info: undefined,
