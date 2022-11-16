@@ -1,8 +1,7 @@
-import { PROPOSAL_COLOR } from "$lib/constants/proposals.constants";
+import {PROPOSAL_COLOR, type ProposalStatusColor} from "$lib/constants/proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistration } from "$lib/stores/vote-registration.store";
-import type { Color } from "@dfinity/gix-components";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -330,7 +329,7 @@ export type ProposalInfoMap = {
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  color: Color | undefined;
+  color: ProposalStatusColor | undefined;
 
   created: bigint;
   decided: bigint | undefined;
