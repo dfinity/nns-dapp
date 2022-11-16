@@ -1,7 +1,7 @@
 import {
   participateInSnsSwap,
   querySnsMetadata,
-  querySnsSwapCommitment,
+  querySnsSwapCommitment, querySnsSwapCommitments,
   querySnsSwapState,
 } from "$lib/api/sns.api";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
@@ -25,6 +25,41 @@ import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+
+export const loadSnsSwapCommitments = (): Promise<void> => {
+  snsSwapCommitmentsStore.setLoadingState();
+
+  return queryAndUpdate<SnsSwapCommitment[], unknown>({
+    request: ({ certified, identity }) =>
+        querySnsSwapCommitments({ certified, identity }),
+    onLoad: ({ response: swapCommitments, certified }) => {
+      for (const swapCommitment of swapCommitments) {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
+          certified,
+        });
+      }
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // hide unproven data
+      snsSwapCommitmentsStore.setLoadingState();
+
+      toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.list_swap_commitments",
+          })
+      );
+    },
+    logMessage: "Syncing Sns swap commitments",
+  });
+};
 
 /** Combined request: querySnsSummary + querySnsSwapState */
 export const loadSnsSummary = async ({

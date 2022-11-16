@@ -48,42 +48,6 @@ export const loadSnsSummaries = (): Promise<void> => {
   });
 };
 
-export const loadSnsSwapCommitments = (): Promise<void> => {
-  snsSwapCommitmentsStore.setLoadingState();
-
-  return queryAndUpdate<SnsSwapCommitment[], unknown>({
-    identityType: "best_match",
-    request: ({ certified, identity }) =>
-      querySnsSwapCommitments({ certified, identity }),
-    onLoad: ({ response: swapCommitments, certified }) => {
-      for (const swapCommitment of swapCommitments) {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-      }
-    },
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsSwapCommitmentsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
-        })
-      );
-    },
-    logMessage: "Syncing Sns swap commitments",
-  });
-};
-
 export const listSnsProposals = async (): Promise<void> => {
   snsProposalsStore.setLoadingState();
 

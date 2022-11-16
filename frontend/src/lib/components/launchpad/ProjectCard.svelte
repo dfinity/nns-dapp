@@ -9,6 +9,7 @@
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { goto } from "$app/navigation";
+  import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
 
   export let project: SnsFullProject;
 
@@ -49,12 +50,14 @@
 
   <ProjectCardSwapInfo {project} />
 
+  <SignedInOnly>
   <!-- TODO L2-751: handle fetching errors -->
   {#if swapCommitment === undefined}
     <div class="spinner">
       <Spinner size="small" inline />
     </div>
   {/if}
+  </SignedInOnly>
 </Card>
 
 <style lang="scss">

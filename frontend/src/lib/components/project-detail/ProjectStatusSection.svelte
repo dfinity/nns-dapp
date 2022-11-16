@@ -35,8 +35,6 @@
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
-  let loadingSwapState: boolean;
-  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
 
   let lifecycle: number;
   $: ({
@@ -50,7 +48,6 @@
   let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
-    !loadingSwapState &&
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
 </script>
 
