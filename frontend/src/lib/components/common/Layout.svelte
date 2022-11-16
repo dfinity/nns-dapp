@@ -6,7 +6,7 @@
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
   import { triggerDebugReport } from "$lib/services/debug.services";
 
-  export let back: () => Promise<void> | undefined = undefined;
+  export let back: (() => Promise<void>) | undefined = undefined;
 
   export let contrast = false;
 </script>
@@ -16,7 +16,11 @@
 <Layout>
   <MenuItems slot="menu-items" />
 
-  <Content {back} {contrast} on:nnsBack={async () => await back?.()}>
+  <Content
+    back={back !== undefined}
+    {contrast}
+    on:nnsBack={async () => await back?.()}
+  >
     <div use:triggerDebugReport slot="title">
       <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
     </div>
