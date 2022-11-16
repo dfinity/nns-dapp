@@ -65,7 +65,7 @@ export const getSnsLockedTimeInSeconds = (
   }
 };
 
-// Delay from now
+// Delay from now. Source depends on the neuron state.
 export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
