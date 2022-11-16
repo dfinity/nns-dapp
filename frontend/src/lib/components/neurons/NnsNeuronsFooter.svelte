@@ -21,37 +21,31 @@
 </script>
 
 <Footer>
-  <Toolbar>
+  <button
+    data-tid="stake-neuron-button"
+    class="primary full-width"
+    on:click={() => openModal("stake-neuron")}
+    >{$i18n.neurons.stake_neurons}</button
+  >
+  {#if enoughNeuronsToMerge}
     <button
-      data-tid="stake-neuron-button"
+      disabled={votingInProgress}
+      data-tid="merge-neurons-button"
       class="primary full-width"
-      on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
+      on:click={() => openModal("merge-neurons")}
+      >{$i18n.neurons.merge_neurons}</button
     >
-    {#if enoughNeuronsToMerge}
+  {:else}
+    <Tooltip id="merge-neurons-info" top text={$i18n.neurons.need_two_to_merge}>
       <button
-        disabled={votingInProgress}
+        disabled
         data-tid="merge-neurons-button"
-        class="primary full-width"
+        class="primary full-width tooltip-button"
         on:click={() => openModal("merge-neurons")}
         >{$i18n.neurons.merge_neurons}</button
       >
-    {:else}
-      <Tooltip
-        id="merge-neurons-info"
-        top
-        text={$i18n.neurons.need_two_to_merge}
-      >
-        <button
-          disabled
-          data-tid="merge-neurons-button"
-          class="primary full-width tooltip-button"
-          on:click={() => openModal("merge-neurons")}
-          >{$i18n.neurons.merge_neurons}</button
-        >
-      </Tooltip>
-    {/if}
-  </Toolbar>
+    </Tooltip>
+  {/if}
 </Footer>
 
 {#if showModal === "stake-neuron"}

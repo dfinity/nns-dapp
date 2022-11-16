@@ -212,15 +212,13 @@
   </section>
 </main>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showAddCyclesModal = true)}
-      disabled={canisterInfo === undefined || $busy}
-      >{$i18n.canister_detail.add_cycles}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    class="primary"
+    on:click={() => (showAddCyclesModal = true)}
+    disabled={canisterInfo === undefined || $busy}
+    >{$i18n.canister_detail.add_cycles}</button
+  >
 </Footer>
 
 {#if showAddCyclesModal}

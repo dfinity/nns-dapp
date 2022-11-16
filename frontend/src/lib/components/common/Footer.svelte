@@ -1,5 +1,13 @@
-<footer>
-  <slot />
+<script lang="ts">
+  import { Toolbar } from "@dfinity/gix-components";
+
+  export let columns = 2;
+</script>
+
+<footer style={`--footer-columns: ${columns}`}>
+  <Toolbar>
+    <slot />
+  </Toolbar>
 </footer>
 
 <style lang="scss">
@@ -19,25 +27,36 @@
     }
 
     :global(.main) {
+      display: grid;
+      --footer-main-inner-width: calc(
+        100% - (2 * var(--padding-0_5x)) -
+          ((var(--footer-columns) - 1) * var(--padding-0_5x))
+      );
+      grid-template-columns: repeat(
+        auto-fit,
+        calc(var(--footer-main-inner-width) / var(--footer-columns))
+      );
+
       padding: var(--padding-0_5x);
       background: var(--focus-background);
       border-radius: var(--border-radius);
 
       gap: var(--padding-0_5x);
 
-      @include media.min-width(xsmall) {
-        min-width: 280px;
-        max-width: calc(var(--section-max-width) * 0.7);
-        width: 100%;
+      @include media.min-width(small) {
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(calc(var(--footer-main-inner-width) / 2), 180px)
+        );
       }
 
       @include media.min-width(medium) {
         margin-bottom: var(--padding-2x);
       }
-    }
 
-    :global(button) {
-      width: 50%;
+      :global(div.tooltip-wrapper) {
+        width: 100%;
+      }
     }
   }
 </style>

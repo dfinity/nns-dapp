@@ -17,13 +17,11 @@
 
 {#if $snsProjectAccountsStore !== undefined}
   <Footer>
-    <Toolbar>
-      <button
-        class="primary full-width"
-        on:click={openNewTransaction}
-        data-tid="open-new-sns-transaction"
-        >{$i18n.accounts.new_transaction}</button
-      >
-    </Toolbar>
+    <button
+      class="primary full-width"
+      on:click={openNewTransaction}
+      data-tid="open-new-sns-transaction"
+      >{$i18n.accounts.new_transaction}</button
+    >
   </Footer>
 {/if}

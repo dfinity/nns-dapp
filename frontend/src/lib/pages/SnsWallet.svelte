@@ -91,16 +91,13 @@
   </section>
 </main>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
-      data-tid="open-new-sns-transaction"
-      >{$i18n.accounts.new_transaction}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    class="primary"
+    on:click={() => (showNewTransactionModal = true)}
+    disabled={$selectedAccountStore.account === undefined || $busy}
+    data-tid="open-new-sns-transaction">{$i18n.accounts.new_transaction}</button
+  >
 </Footer>
 
 {#if showNewTransactionModal}
