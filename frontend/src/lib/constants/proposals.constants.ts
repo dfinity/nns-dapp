@@ -1,4 +1,3 @@
-import { Color } from "@dfinity/gix-components";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 
 // TODO: suggest to move into the store and add typing
@@ -24,13 +23,23 @@ export const DEFAULT_PROPOSALS_FILTERS = {
   lastAppliedFilter: undefined,
 };
 
-export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
-  [ProposalStatus.Executed]: Color.SUCCESS,
-  [ProposalStatus.Open]: Color.WARNING,
+export enum ProposalStatusColor {
+  PRIMARY = "primary",
+  SUCCESS = "success",
+  WARNING = "warning",
+  ERROR = "error",
+}
+
+export const PROPOSAL_COLOR: Record<
+  ProposalStatus,
+  ProposalStatusColor | undefined
+> = {
+  [ProposalStatus.Executed]: ProposalStatusColor.SUCCESS,
+  [ProposalStatus.Open]: ProposalStatusColor.WARNING,
   [ProposalStatus.Unknown]: undefined,
-  [ProposalStatus.Rejected]: Color.ERROR,
+  [ProposalStatus.Rejected]: ProposalStatusColor.ERROR,
   [ProposalStatus.Accepted]: undefined,
-  [ProposalStatus.Failed]: Color.ERROR,
+  [ProposalStatus.Failed]: ProposalStatusColor.ERROR,
 };
 
 export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];

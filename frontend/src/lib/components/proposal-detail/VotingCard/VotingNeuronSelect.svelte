@@ -104,7 +104,7 @@
   }
 
   .icon {
-    color: var(--primary);
+    color: var(--line);
     display: flex;
     align-items: center;
     justify-content: center;

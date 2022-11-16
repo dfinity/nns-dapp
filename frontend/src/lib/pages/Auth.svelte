@@ -5,11 +5,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    IconWallet,
-    IconPsychology,
-    IconHowToVote,
-  } from "@dfinity/gix-components";
+  import { IconWallet, IconPassword, IconUsers } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -78,13 +74,13 @@
   </li>
   <li>
     <a href={AppPath.Neurons} data-tid="auth-link-neurons"
-      ><IconPsychology />
+      ><IconPassword />
       {$i18n.auth.stake}</a
     >
   </li>
   <li>
     <a href={AppPath.Proposals} data-tid="auth-link-proposals"
-      ><IconHowToVote />
+      ><IconUsers />
       {$i18n.auth.earn}</a
     >
   </li>
@@ -142,6 +138,8 @@
     margin: 0 0 var(--padding-2x);
     max-width: 330px;
 
+    color: var(--value-color);
+
     span {
       display: block;
     }
@@ -179,12 +177,6 @@
     }
   }
 
-  @include media.light-theme() {
-    ul {
-      color: var(--label-color);
-    }
-  }
-
   li {
     font-size: var(--font-size-small);
     padding: var(--padding-1_5x) 0;
@@ -193,8 +185,7 @@
       height: 20px;
       width: 20px;
       vertical-align: bottom;
-      margin: 0 var(--padding-1_5x) 0 0;
-      color: var(--primary);
+      margin: 0 var(--padding-0_5x) 0 0;
     }
   }
 
@@ -215,5 +206,12 @@
 
   a {
     color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      text-decoration: underline;
+    }
   }
 </style>

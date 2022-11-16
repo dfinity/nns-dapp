@@ -2,7 +2,7 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar, Value } from "@dfinity/gix-components";
+  import { Value } from "@dfinity/gix-components";
   import { authStore } from "$lib/stores/auth.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
@@ -104,20 +104,18 @@
 {/if}
 
 <Footer>
-  <Toolbar>
-    <button
-      data-tid="create-canister-button"
-      class="primary"
-      on:click={() => openModal("CreateCanister")}
-      >{$i18n.canisters.create_canister}</button
-    >
-    <button
-      data-tid="link-canister-button"
-      class="primary"
-      on:click={() => openModal("LinkCanister")}
-      >{$i18n.canisters.link_canister}</button
-    >
-  </Toolbar>
+  <button
+    data-tid="create-canister-button"
+    class="primary"
+    on:click={() => openModal("CreateCanister")}
+    >{$i18n.canisters.create_canister}</button
+  >
+  <button
+    data-tid="link-canister-button"
+    class="primary"
+    on:click={() => openModal("LinkCanister")}
+    >{$i18n.canisters.link_canister}</button
+  >
 </Footer>
 
 <style lang="scss">
