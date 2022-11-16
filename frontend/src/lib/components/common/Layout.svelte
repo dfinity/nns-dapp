@@ -16,11 +16,7 @@
 <Layout>
   <MenuItems slot="menu-items" />
 
-  <Content
-    {back}
-    {contrast}
-    on:nnsBack={async () => await back?.()}
-  >
+  <Content {back} {contrast} on:nnsBack={async () => await back?.()}>
     <div use:triggerDebugReport slot="title">
       <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
     </div>

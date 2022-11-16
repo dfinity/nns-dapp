@@ -39,7 +39,8 @@
 
   // BEGIN: loading and navigation
 
-  const goBack = (): Promise<void> => goto(AppPath.Neurons, { replaceState: true });
+  const goBack = (): Promise<void> =>
+    goto(AppPath.Neurons, { replaceState: true });
 
   type NeuronFromStore = { neuron: NeuronInfo | undefined };
 
