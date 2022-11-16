@@ -32,7 +32,8 @@
 
 <style lang="scss">
   .content-cell-details {
-    background: var(--line);
+    background: var(--secondary);
+    color: var(--secondary-contrast);
     padding: var(--padding-2x);
     border-radius: var(--border-radius);
   }

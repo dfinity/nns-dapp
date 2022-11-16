@@ -4,7 +4,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { writable } from "svelte/store";
   import type {
     SelectedProposalContext,
@@ -15,7 +15,7 @@
   import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import {authStore} from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
@@ -51,8 +51,6 @@
       referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
     );
 
-  layoutBackStore.set(goBack);
-
   const findProposal = async () => {
     const onError = (certified: boolean) => {
       // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
@@ -86,7 +84,8 @@
     });
   };
 
-  $: $authStore.identity, proposalId,
+  $: $authStore.identity,
+    proposalId,
     (async () => {
       if (proposalId === undefined) {
         await goBack();

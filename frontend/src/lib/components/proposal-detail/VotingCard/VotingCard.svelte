@@ -24,8 +24,8 @@
   import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import {isSignedIn} from "$lib/utils/auth.utils";
-  import {authStore} from "$lib/stores/auth.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposalInfo: ProposalInfo;
 

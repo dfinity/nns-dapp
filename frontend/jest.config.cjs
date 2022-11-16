@@ -10,6 +10,7 @@ module.exports = {
         tsconfig: "tsconfig.spec.json",
       },
     ],
+    "\\.(svg|png)$": "<rootDir>/jest-transform.cjs",
   },
   moduleFileExtensions: ["js", "ts", "svelte"],
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],

@@ -12,7 +12,7 @@
     width: var(--padding-4x);
     height: auto;
     line-height: 0;
-    color: var(--primary);
+    color: var(--primary-contrast);
 
     :global(svg) {
       width: 100%;

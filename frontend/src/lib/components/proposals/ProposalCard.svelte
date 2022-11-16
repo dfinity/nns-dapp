@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, Value, type Color } from "@dfinity/gix-components";
+  import { Card, Value } from "@dfinity/gix-components";
   import {
     type ProposalInfo,
     type NeuronId,
@@ -13,6 +13,7 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
@@ -20,7 +21,7 @@
   let status: ProposalStatus = ProposalStatus.Unknown;
   let id: ProposalId | undefined;
   let title: string | undefined;
-  let color: Color | undefined;
+  let color: ProposalStatusColor | undefined;
 
   let topic: string | undefined;
   let proposer: NeuronId | undefined;
@@ -129,23 +130,23 @@
    * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
    */
   .status {
-    // Default color: Color.PRIMARY
+    // Default color: ProposalStatusColor.PRIMARY
     --badge-color: var(--primary);
     color: var(--badge-color);
 
     margin-bottom: 0;
 
-    // Color.WARNING
+    // ProposalStatusColor.WARNING
     &.warning {
       --badge-color: var(--warning-emphasis);
     }
 
-    // Color.SUCCESS
+    // ProposalStatusColor.SUCCESS
     &.success {
       --badge-color: var(--positive-emphasis);
     }
 
-    // Color.ERROR
+    // ProposalStatusColor.ERROR
     &.error {
       --badge-color: var(--negative-emphasis-light);
     }

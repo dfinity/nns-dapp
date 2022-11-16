@@ -15,7 +15,6 @@
 </div>
 
 <style lang="scss">
-  @use "../../lib/themes/mixins/login";
   @use "@dfinity/gix-components/styles/mixins/display";
 
   .container {
@@ -24,7 +23,8 @@
 
     display: block;
 
-    @include login.background;
+    background: var(--body-background);
+    color: var(--label-color);
   }
 
   main {

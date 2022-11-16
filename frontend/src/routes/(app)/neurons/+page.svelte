@@ -3,7 +3,7 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInNeurons from "$lib/pages/SignInNeurons.svelte";
   import { onMount } from "svelte";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -11,12 +11,7 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  onMount(() => {
-    layoutTitleStore.set($i18n.navigation.neurons);
-
-    // Reset back action because only detail routes have such feature other views use the menu
-    layoutBackStore.set(undefined);
-  });
+  onMount(() => layoutTitleStore.set($i18n.navigation.neurons));
 </script>
 
 {#if signedIn}
