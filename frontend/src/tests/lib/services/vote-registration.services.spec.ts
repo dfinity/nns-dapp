@@ -30,7 +30,7 @@ const proposalInfo = (): ProposalInfo => ({
   ...mockProposalInfo,
   id: BigInt(++proposalInfoIdIndex),
 });
-jest.mock("$lib/services/proposals.services", () => {
+jest.mock("$lib/services/$public/proposals.services", () => {
   return {
     loadProposal: ({ setProposal }) => {
       setProposal(proposalInfo);
