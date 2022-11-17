@@ -23,11 +23,12 @@ import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
-  mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import { mockProposals } from "../../mocks/proposals.store.mock";
+} from "../../../mocks/auth.store.mock";
+import { mockProposals } from "../../../mocks/proposals.store.mock";
+import {getCurrentIdentity} from "$lib/services/auth.services";
+import {AnonymousIdentity} from "@dfinity/agent";
 
 describe("proposals-services", () => {
   describe("list", () => {
@@ -197,7 +198,7 @@ describe("proposals-services", () => {
     });
   });
 
-  describe("errors", () => {
+  describe("no identity", () => {
     beforeAll(() => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(jest.fn);
@@ -210,7 +211,11 @@ describe("proposals-services", () => {
       resetIdentity();
     });
 
-    it("should not list proposals if no identity", async () => {
+    it("should use anonymous identity", () => {
+      expect(getCurrentIdentity().getPrincipal().toText()).toEqual(new AnonymousIdentity().getPrincipal().toText());
+    })
+
+    it("should list proposals if no identity", async () => {
       const call = async () =>
         await listProposals({
           loadFinished: () => {
@@ -218,10 +223,10 @@ describe("proposals-services", () => {
           },
         });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      await expect(call).resolves;
     });
 
-    it("should not list next proposals if no identity", async () => {
+    it("should list next proposals if no identity", async () => {
       const call = async () =>
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
@@ -230,15 +235,23 @@ describe("proposals-services", () => {
           },
         });
 
-      await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+      await expect(call).resolves;
     });
 
-    it("should not load proposal if no identity", (done) => {
-      loadProposal({
-        proposalId: mockProposals[0].id as bigint,
-        setProposal: jest.fn(),
-        handleError: () => done(),
+    it("should load proposal if no identity", async () => {
+      const spyQueryProposal = jest
+          .spyOn(api, "queryProposal")
+          .mockImplementation(() =>
+              Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
+          );
+
+      let result;
+      await loadProposal({
+        proposalId: BigInt(666),
+        setProposal: (proposal: ProposalInfo) => (result = proposal),
       });
+      expect(result?.id).toBe(BigInt(666));
+      expect(spyQueryProposal).toBeCalledTimes(2);
     });
   });
 

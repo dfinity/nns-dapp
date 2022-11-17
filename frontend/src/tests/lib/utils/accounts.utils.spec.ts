@@ -27,6 +27,7 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../../mocks/sns-accounts.mock";
+import {AnonymousIdentity} from "@dfinity/agent";
 
 describe("accounts-utils", () => {
   describe("getAccountByPrincipal", () => {
@@ -72,7 +73,7 @@ describe("accounts-utils", () => {
       const subaccount = new Uint8Array(32).fill(0);
       subaccount[31] = 1;
       const account = {
-        owner: Principal.fromText("2vxsx-fae"),
+        owner: new AnonymousIdentity().getPrincipal(),
         subaccount: subaccount,
       };
       const subaccountString = encodeSnsAccount(account);
