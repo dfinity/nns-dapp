@@ -3,7 +3,6 @@
   import { loadProposal } from "$lib/services/$public/proposals.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { neuronsStore } from "$lib/stores/neurons.store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { writable } from "svelte/store";
   import type {
