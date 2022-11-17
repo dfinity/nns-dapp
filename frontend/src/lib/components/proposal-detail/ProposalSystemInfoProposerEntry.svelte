@@ -10,7 +10,7 @@
 
   let modalOpen = false;
 
-  // For simplicity reason, currently we do not display the proposer details if not signed-in
+  // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 </script>
