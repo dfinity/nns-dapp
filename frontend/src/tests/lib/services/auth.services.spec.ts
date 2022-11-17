@@ -156,7 +156,7 @@ describe("auth-services", () => {
     });
   });
 
-  describe("identity", () => {
+  describe("getCurrentIdentity", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mutableMockAuthStoreSubscribe);
