@@ -5,12 +5,14 @@ import {
   disburse,
   startDissolving,
   stopDissolving,
+  updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -298,6 +300,55 @@ describe("sns-neurons-services", () => {
         identity,
         rootCanisterId,
       });
+    });
+  });
+
+  describe("updateDelay ", () => {
+    const spyOnIncreaseDissolveDelay = jest
+      .spyOn(governanceApi, "increaseDissolveDelay")
+      .mockImplementation(() => Promise.resolve());
+
+    beforeEach(spyOnIncreaseDissolveDelay.mockClear);
+
+    it("should call sns api increaseDissolveDelay", async () => {
+      const neuronId = fromDefinedNullable(mockSnsNeuron.id);
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const { success } = await updateDelay({
+        rootCanisterId,
+        dissolveDelaySeconds: 123,
+        neuron: mockSnsNeuron,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
+        neuronId,
+        identity,
+        rootCanisterId,
+        additionalDissolveDelaySeconds: 123,
+      });
+    });
+
+    it("should calculate additionalDissolveDelaySeconds", async () => {
+      const rootCanisterId = mockPrincipal;
+      const { success } = await updateDelay({
+        rootCanisterId,
+        dissolveDelaySeconds: 333,
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: BigInt(111) }],
+        },
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseDissolveDelay).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          additionalDissolveDelaySeconds: 222,
+        })
+      );
     });
   });
 

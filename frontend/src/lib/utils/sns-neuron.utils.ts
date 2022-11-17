@@ -65,6 +65,15 @@ export const getSnsLockedTimeInSeconds = (
   }
 };
 
+// Delay from now. Source depends on the neuron state.
+export const getSnsDissolveDelaySeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const delay =
+    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
+  return delay;
+};
+
 export const getSnsNeuronStake = ({
   cached_neuron_stake_e8s,
   neuron_fees_e8s,
@@ -114,6 +123,21 @@ export const hasPermissionToDisburse = ({
     neuron,
     identity,
     permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
+  });
+
+export const hasPermissionToDissolve = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+    ],
   });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {

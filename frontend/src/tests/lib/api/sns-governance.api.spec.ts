@@ -5,6 +5,7 @@
 import {
   addNeuronPermissions,
   disburse,
+  increaseDissolveDelay,
   removeNeuronPermissions,
   startDissolving,
   stopDissolving,
@@ -46,6 +47,7 @@ describe("sns-api", () => {
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
+  const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     jest
@@ -74,6 +76,7 @@ describe("sns-api", () => {
         disburse: disburseSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
+        increaseDissolveDelay: increaseDissolveDelaySpy,
       })
     );
   });
@@ -135,5 +138,16 @@ describe("sns-api", () => {
     });
 
     expect(stopDissolvingSpy).toBeCalled();
+  });
+
+  it("should increaseDissolveDelay", async () => {
+    await increaseDissolveDelay({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      additionalDissolveDelaySeconds: 123,
+    });
+
+    expect(increaseDissolveDelaySpy).toBeCalled();
   });
 });

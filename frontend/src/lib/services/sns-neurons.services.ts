@@ -1,6 +1,7 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
+  increaseDissolveDelay as increaseDissolveDelayApi,
   removeNeuronPermissions,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -17,7 +18,10 @@ import {
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
+import {
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronByHexId,
+} from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -27,7 +31,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { arrayOfNumberToUint8Array, fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -293,6 +297,40 @@ export const stopDissolving = async ({
       labelKey: "error__sns.sns_stop_dissolving",
       err,
     });
+    return { success: false };
+  }
+};
+
+export const updateDelay = async ({
+  rootCanisterId,
+  neuron,
+  dissolveDelaySeconds,
+}: {
+  rootCanisterId: Principal;
+  neuron: SnsNeuron;
+  dissolveDelaySeconds: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+    const currentDissolveDelay =
+      getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
+    const additionalDissolveDelaySeconds =
+      dissolveDelaySeconds - Number(currentDissolveDelay);
+
+    await increaseDissolveDelayApi({
+      rootCanisterId,
+      identity,
+      neuronId: fromDefinedNullable(neuron.id),
+      additionalDissolveDelaySeconds,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_dissolve_delay_action",
+      err,
+    });
+
     return { success: false };
   }
 };
