@@ -14,7 +14,6 @@
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "$lib/utils/utils";
   import { writable } from "svelte/store";
   import { snsSummariesStore } from "$lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
