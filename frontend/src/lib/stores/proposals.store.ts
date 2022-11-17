@@ -204,6 +204,7 @@ const initNeuronSelectStore = () => {
       });
     },
 
+    // Used for testing purpose
     reset() {
       this.set([]);
     },
