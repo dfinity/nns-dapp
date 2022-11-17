@@ -71,8 +71,8 @@
     justify-content: center;
     align-items: center;
 
-    background: var(--negative-emphasis-light);
-    color: var(--negative-emphasis-light-contrast);
+    background: var(--negative-emphasis);
+    color: var(--negative-emphasis-contrast);
 
     :global(:root) {
       --header-offset: 60px;

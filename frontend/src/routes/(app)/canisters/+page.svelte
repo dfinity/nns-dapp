@@ -3,7 +3,7 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInCanisters from "$lib/pages/SignInCanisters.svelte";
   import { onMount } from "svelte";
-  import { layoutBackStore, layoutTitleStore } from "$lib/stores/layout.store";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -17,12 +17,7 @@
   let referrerPath: AppPath | undefined = undefined;
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 
-  onMount(() => {
-    layoutTitleStore.set($i18n.navigation.canisters);
-
-    // Reset back action because only detail routes have such feature other views use the menu
-    layoutBackStore.set(undefined);
-  });
+  onMount(() => layoutTitleStore.set($i18n.navigation.canisters));
 </script>
 
 {#if signedIn}

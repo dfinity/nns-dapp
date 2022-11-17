@@ -21,6 +21,8 @@ export const createMockSnsNeuron = ({
   created_timestamp_seconds: BigInt(
     Math.floor(Date.now() / 1000 - 3600 * 24 * 6)
   ),
+  staked_maturity_e8s_equivalent: [],
+  auto_stake_maturity: [],
   aging_since_timestamp_seconds: BigInt(100),
   voting_power_percentage_multiplier: BigInt(1),
   dissolve_state:

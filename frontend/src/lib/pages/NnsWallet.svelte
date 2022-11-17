@@ -1,7 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
   import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -19,7 +18,6 @@
   } from "$lib/types/selected-account.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
-  import { layoutBackStore } from "$lib/stores/layout.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -30,8 +28,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
-
-  layoutBackStore.set(goBack);
 
   let transactions: Transaction[] | undefined;
 
@@ -112,15 +108,13 @@
   </section>
 </main>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
-      data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    class="primary"
+    on:click={() => (showNewTransactionModal = true)}
+    disabled={$selectedAccountStore.account === undefined || $busy}
+    data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+  >
 </Footer>
 
 {#if showNewTransactionModal}

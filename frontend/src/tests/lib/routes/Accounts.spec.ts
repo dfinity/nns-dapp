@@ -31,11 +31,11 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Accounts", () => {
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
 
   jest
     .spyOn(committedProjectsStore, "subscribe")

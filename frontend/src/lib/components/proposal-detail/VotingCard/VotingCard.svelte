@@ -72,10 +72,7 @@
         })),
     });
 
-  onDestroy(() => {
-    unsubscribe();
-    votingNeuronSelectStore.reset();
-  });
+  onDestroy(() => unsubscribe());
 </script>
 
 {#if $definedNeuronsStore.length > 0}

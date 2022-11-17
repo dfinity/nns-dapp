@@ -77,10 +77,4 @@
     gap: var(--padding-1_5x);
     align-items: center;
   }
-
-  a {
-    font-size: inherit;
-
-    color: var(--primary);
-  }
 </style>

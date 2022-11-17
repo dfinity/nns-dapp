@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { SkeletonText, busy, Toolbar } from "@dfinity/gix-components";
+  import { SkeletonText, busy } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
@@ -30,7 +30,6 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
-  import { layoutBackStore } from "$lib/stores/layout.store";
   import Footer from "$lib/components/common/Footer.svelte";
   import { goto } from "$app/navigation";
 
@@ -61,8 +60,6 @@
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
-
-  layoutBackStore.set(goBack);
 
   const selectedCanisterStore = writable<SelectCanisterDetailsStore>({
     info: undefined,
@@ -212,15 +209,13 @@
   </section>
 </main>
 
-<Footer>
-  <Toolbar>
-    <button
-      class="primary"
-      on:click={() => (showAddCyclesModal = true)}
-      disabled={canisterInfo === undefined || $busy}
-      >{$i18n.canister_detail.add_cycles}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    class="primary"
+    on:click={() => (showAddCyclesModal = true)}
+    disabled={canisterInfo === undefined || $busy}
+    >{$i18n.canister_detail.add_cycles}</button
+  >
 </Footer>
 
 {#if showAddCyclesModal}

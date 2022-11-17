@@ -12,7 +12,6 @@
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionCard from "./SnsTransactionCard.svelte";
-  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
 
   export let account: Account;
@@ -68,7 +67,6 @@
           transactionWithId={transaction}
           {toSelfTransaction}
           {account}
-          fee={$snsSelectedTransactionFeeStore}
         />
       {/each}
     </InfiniteScroll>

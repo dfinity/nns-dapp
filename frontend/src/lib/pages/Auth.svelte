@@ -5,11 +5,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    IconWallet,
-    IconPsychology,
-    IconHowToVote,
-  } from "@dfinity/gix-components";
+  import { IconWallet, IconPassword, IconUsers } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -17,6 +13,7 @@
     buildProposalUrl,
   } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let signedIn = false;
 
@@ -70,16 +67,22 @@
 
 <ul>
   <li>
-    <IconWallet />
-    {$i18n.auth.wallet}
+    <a href={AppPath.Accounts} data-tid="auth-link-accounts"
+      ><IconWallet />
+      {$i18n.auth.wallet}</a
+    >
   </li>
   <li>
-    <IconPsychology />
-    {$i18n.auth.stake}
+    <a href={AppPath.Neurons} data-tid="auth-link-neurons"
+      ><IconPassword />
+      {$i18n.auth.stake}</a
+    >
   </li>
   <li>
-    <IconHowToVote />
-    {$i18n.auth.earn}
+    <a href={AppPath.Proposals} data-tid="auth-link-proposals"
+      ><IconUsers />
+      {$i18n.auth.earn}</a
+    >
   </li>
 </ul>
 
@@ -135,6 +138,8 @@
     margin: 0 0 var(--padding-2x);
     max-width: 330px;
 
+    color: var(--value-color);
+
     span {
       display: block;
     }
@@ -172,12 +177,6 @@
     }
   }
 
-  @include media.light-theme() {
-    ul {
-      color: var(--label-color);
-    }
-  }
-
   li {
     font-size: var(--font-size-small);
     padding: var(--padding-1_5x) 0;
@@ -186,8 +185,7 @@
       height: 20px;
       width: 20px;
       vertical-align: bottom;
-      margin: 0 var(--padding-1_5x) 0 0;
-      color: var(--primary);
+      margin: 0 var(--padding-0_5x) 0 0;
     }
   }
 
@@ -203,6 +201,17 @@
     @media (min-width: 768px) and (min-height: 620px) {
       margin: var(--padding-6x) 0 calc(14 * var(--padding));
       width: auto;
+    }
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      text-decoration: underline;
     }
   }
 </style>
