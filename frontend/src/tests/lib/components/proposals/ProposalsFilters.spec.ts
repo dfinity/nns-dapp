@@ -7,14 +7,18 @@ import {
   DEFAULT_PROPOSALS_FILTERS,
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
+import { authStore } from "$lib/stores/auth.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import {
+  authStoreMock,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
-import {authStore} from "$lib/stores/auth.store";
-import {authStoreMock, mockIdentity, mutableMockAuthStoreSubscribe} from "../../../mocks/auth.store.mock";
 
 describe("ProposalsFilters", () => {
   const shouldRenderFilter = ({
@@ -39,8 +43,8 @@ describe("ProposalsFilters", () => {
 
   describe("default filters", () => {
     jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mutableMockAuthStoreSubscribe);
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
     it("should render topics filters", () => {
       const { container } = render(ProposalsFilters);
