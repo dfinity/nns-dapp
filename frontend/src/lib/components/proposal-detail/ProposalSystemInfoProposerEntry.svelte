@@ -32,7 +32,9 @@
           >
         </button>
       {:else}
-        <span class="value" data-tid="proposal-system-info-proposer-value">{proposer}</span>
+        <span class="value" data-tid="proposal-system-info-proposer-value"
+          >{proposer}</span
+        >
       {/if}
     </svelte:fragment>
 

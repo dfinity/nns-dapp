@@ -14,21 +14,18 @@ import {
   loadProposal,
   loadProposalPayload,
 } from "$lib/services/$public/proposals.services";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
+import { AnonymousIdentity } from "@dfinity/agent";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  resetIdentity,
-  setNoIdentity,
-} from "../../../mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "../../../mocks/auth.store.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
-import {getCurrentIdentity} from "$lib/services/auth.services";
-import {AnonymousIdentity} from "@dfinity/agent";
 
 describe("proposals-services", () => {
   describe("list", () => {
@@ -212,8 +209,10 @@ describe("proposals-services", () => {
     });
 
     it("should use anonymous identity", () => {
-      expect(getCurrentIdentity().getPrincipal().toText()).toEqual(new AnonymousIdentity().getPrincipal().toText());
-    })
+      expect(getCurrentIdentity().getPrincipal().toText()).toEqual(
+        new AnonymousIdentity().getPrincipal().toText()
+      );
+    });
 
     it("should list proposals if no identity", async () => {
       const call = async () =>
@@ -240,10 +239,10 @@ describe("proposals-services", () => {
 
     it("should load proposal if no identity", async () => {
       const spyQueryProposal = jest
-          .spyOn(api, "queryProposal")
-          .mockImplementation(() =>
-              Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
-          );
+        .spyOn(api, "queryProposal")
+        .mockImplementation(() =>
+          Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
+        );
 
       let result;
       await loadProposal({

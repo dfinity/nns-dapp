@@ -3,17 +3,21 @@
  */
 
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import {
+  authStoreMock,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "../../../mocks/auth.store.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
-import {authStore} from "$lib/stores/auth.store";
-import {authStoreMock, mockIdentity, mutableMockAuthStoreSubscribe} from "../../../mocks/auth.store.mock";
 
 describe("ProposalMeta", () => {
   jest.spyOn(console, "error").mockImplementation(jest.fn);
 
   jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    .spyOn(authStore, "subscribe")
+    .mockImplementation(mutableMockAuthStoreSubscribe);
 
   const props = {
     proposer: mockProposalInfo.proposer,
@@ -47,7 +51,7 @@ describe("ProposalMeta", () => {
       button && (await fireEvent.click(button));
 
       await waitFor(() =>
-          expect(container.querySelector("div.modal")).not.toBeNull()
+        expect(container.querySelector("div.modal")).not.toBeNull()
       );
     });
   });
@@ -64,7 +68,11 @@ describe("ProposalMeta", () => {
         props,
       });
 
-      expect(getByTestId("proposal-system-info-proposer-value").nodeName.toLowerCase()).toEqual("span");
+      expect(
+        getByTestId(
+          "proposal-system-info-proposer-value"
+        ).nodeName.toLowerCase()
+      ).toEqual("span");
     });
   });
 });

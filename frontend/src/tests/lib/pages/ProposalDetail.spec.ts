@@ -55,7 +55,7 @@ describe("ProposalDetail", () => {
   it("should render proposal detail", async () => {
     const { queryByTestId } = render(ProposalDetail, props);
     await waitFor(() =>
-        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
     );
   });
 });

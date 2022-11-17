@@ -12,6 +12,7 @@ import {
   isAccountHardwareWallet,
   mainAccount,
 } from "$lib/utils/accounts.utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { encodeSnsAccount } from "@dfinity/sns";
@@ -27,7 +28,6 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../../mocks/sns-accounts.mock";
-import {AnonymousIdentity} from "@dfinity/agent";
 
 describe("accounts-utils", () => {
   describe("getAccountByPrincipal", () => {
