@@ -11,11 +11,12 @@
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
   import type { Token } from "@dfinity/nns";
-  import {startBusy, stopBusy} from "$lib/stores/busy.store";
-  import type {Principal} from "@dfinity/principal";
-  import {snsOnlyProjectStore} from "$lib/derived/selected-project.derived";
-  import {assertNonNullish} from "@dfinity/utils";
-  import {updateDelay} from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import type { Principal } from "@dfinity/principal";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import { assertNonNullish } from "@dfinity/utils";
+  import { updateDelay } from "$lib/services/sns-neurons.services";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -46,26 +47,33 @@
   };
   const closeModal = () => dispatcher("nnsClose");
   const updateDissolveDelay = async () => {
-    startBusy({
-      initiator: "dissolve-sns-action",
-    });
+    try {
+      startBusy({
+        initiator: "dissolve-sns-action",
+      });
 
-    let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
+      let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
 
-    assertNonNullish(rootCanisterId);
+      assertNonNullish(rootCanisterId);
 
-    const { success } = await updateDelay({
-      rootCanisterId,
-      neuron,
-      dissolveDelaySeconds: delayInSeconds,
-    });
+      const { success } = await updateDelay({
+        rootCanisterId,
+        neuron,
+        dissolveDelaySeconds: delayInSeconds,
+      });
 
-    await reloadNeuron();
+      await reloadNeuron();
 
-    stopBusy("dissolve-sns-action");
+      stopBusy("dissolve-sns-action");
 
-    if (success) {
-      dispatcher("nnsUpdated");
+      if (success) {
+        dispatcher("nnsUpdated");
+      }
+    } catch (err) {
+      toastsError({
+        labelKey: "error__sns.sns_dissolve_delay_action",
+        err,
+      });
     }
 
     closeModal();
