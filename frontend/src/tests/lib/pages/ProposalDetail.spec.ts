@@ -10,7 +10,6 @@ import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import en from "../../mocks/i18n.mock";
 import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
 import { buildMockNeuronsStoreSubscribe } from "../../mocks/neurons.mock";
 import {
@@ -53,13 +52,10 @@ describe("ProposalDetail", () => {
     proposalIdText: `${mockProposals[0].id}`,
   };
 
-  it("should render loading neurons", async () => {
-    const { getByText } = render(ProposalDetail, props);
-
+  it("should render proposal detail", async () => {
+    const { queryByTestId } = render(ProposalDetail, props);
     await waitFor(() =>
-      expect(
-        getByText(en.proposal_detail.loading_neurons, { exact: false })
-      ).toBeInTheDocument()
+        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
     );
   });
 });
