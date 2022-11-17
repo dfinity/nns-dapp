@@ -1,8 +1,10 @@
 <script lang="ts">
   import SelectProjectDropdown from "$lib/components/neurons/SelectProjectDropdown.svelte";
+
+  export let legacy = false;
 </script>
 
-<div class="dropdown-wrapper">
+<div class="dropdown-wrapper" class:legacy>
   <SelectProjectDropdown />
 </div>
 
@@ -12,6 +14,10 @@
     justify-content: center;
     align-items: center;
 
-    padding-top: var(--padding-4x);
+    padding: 0 0 var(--padding-4x);
+  }
+
+  .legacy {
+    padding: var(--padding-4x) 0 0;
   }
 </style>

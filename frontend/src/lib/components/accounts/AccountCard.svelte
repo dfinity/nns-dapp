@@ -18,18 +18,33 @@
 
 <Card on:click {role} testId="account-card">
   <div slot="start" class="title">
-    <h3 data-tid="account-name"><slot /></h3>
+    <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />
   </div>
-  <AmountDisplay slot="end" amount={balance} />
+  <AmountDisplay title amount={balance} />
   <Identifier {identifier} {showCopy} />
 </Card>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .title {
     @include card.stacked-title;
     @include card.title;
+  }
+
+  p {
+    margin: 0 0 var(--padding-0_5x);
+    @include fonts.standard(true);
+  }
+
+  .title {
+    min-height: 36px;
+    justify-content: flex-start;
+  }
+
+  .main {
+    color: var(--primary-tint);
   }
 </style>

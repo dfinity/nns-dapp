@@ -11,5 +11,5 @@
 </script>
 
 {#if validName}
-  <Identifier identifier={canisterId} showCopy />
+  <Identifier identifier={canisterId} showCopy size="small" />
 {/if}

@@ -40,8 +40,9 @@
       : undefined;
 </script>
 
-<section data-tid="accounts-body">
-  <AccountsTitle balance={totalBalance} />
+<AccountsTitle balance={totalBalance} />
+
+<div class="card-grid" data-tid="accounts-body">
   {#if accounts?.main?.identifier}
     <AccountCard
       role="link"
@@ -68,4 +69,4 @@
   {:else}
     <SkeletonCard />
   {/if}
-</section>
+</div>

@@ -28,7 +28,7 @@
         $amount: totalTokens,
       })}
     >
-      <AmountDisplay amount={balance} />
+      <AmountDisplay title amount={balance} />
     </Tooltip>
   {/if}
 </div>
@@ -37,22 +37,11 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
-    display: block;
-    width: 100%;
+    display: inline-flex;
+    gap: var(--padding-0_5x);
 
     margin-bottom: var(--padding-2x);
 
-    --token-font-size: var(--font-size-h1);
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--token-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
+    --amount-color: var(--content-color);
   }
 </style>

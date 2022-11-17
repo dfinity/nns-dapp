@@ -23,8 +23,7 @@
 
 <style lang="scss">
   span {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
+    display: inline-flex;
+    gap: var(--padding-0_5x);
   }
 </style>
