@@ -19,6 +19,7 @@
   class:title
   class:plus-sign={sign === "+"}
 >
+  <slot />
   <span data-tid="token-value" class="value"
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
@@ -71,6 +72,7 @@
 
     &.title {
       display: block;
+      word-break: break-word;
 
       span:first-of-type {
         @include fonts.h1(true);

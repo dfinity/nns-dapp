@@ -18,17 +18,17 @@
       : "";
 </script>
 
-<div class="title">
-  <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
-
+<div>
   {#if balance !== undefined}
     <Tooltip
-      id="wallet-total-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_total, {
+            id="wallet-total-icp"
+            text={replacePlaceholders($i18n.accounts.current_balance_total, {
         $amount: totalTokens,
       })}
     >
-      <AmountDisplay title amount={balance} />
+      <AmountDisplay title amount={balance} >
+        <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
+      </AmountDisplay>
     </Tooltip>
   {/if}
 </div>
@@ -36,12 +36,12 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  .title {
-    display: inline-flex;
-    gap: var(--padding-0_5x);
-
+  div {
     margin-bottom: var(--padding-2x);
-
     --amount-color: var(--content-color);
+  }
+
+  h1 {
+    display: inline-block;
   }
 </style>
