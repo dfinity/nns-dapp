@@ -46,8 +46,9 @@
     );
 </script>
 
-<section data-tid="sns-accounts-body">
-  <AccountsTitle balance={totalAmountToken} />
+<AccountsTitle balance={totalAmountToken} />
+
+<div class="card-grid" data-tid="sns-accounts-body">
   {#if loading}
     <SkeletonCard />
   {:else}
@@ -60,4 +61,4 @@
       >
     {/each}
   {/if}
-</section>
+</div>

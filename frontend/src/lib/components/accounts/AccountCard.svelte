@@ -28,6 +28,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
   @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
     @include card.stacked-title;
@@ -45,6 +46,12 @@
   }
 
   .main {
-    color: var(--primary-tint);
+    color: var(--secondary);
+  }
+
+  @include media.light-theme {
+    .main {
+      color: var(--primary-tint);
+    }
   }
 </style>
