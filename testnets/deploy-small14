@@ -63,6 +63,8 @@ echo Setting the cycles exchange rate...
 
 export NNS_URL="$(jq -r '.networks[env.DFX_NETWORK].providers[0]' dfx.json)"
 
+./deploy.sh --sns-wasm "$DFX_NETWORK"
+
 $(dfx cache show)/ic-admin \
   --nns-url "$NNS_URL" \
   propose-to-update-sns-subnet-ids-in-sns-wasm \
