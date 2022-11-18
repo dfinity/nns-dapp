@@ -45,7 +45,7 @@ describe("CanisterCardTitle", () => {
         canister: mockCanister,
       },
     });
-    expect(container.querySelector("h3")).not.toBeNull();
+    expect(container.querySelector("h4")).not.toBeNull();
   });
 
   it("renders title as h1", async () => {
