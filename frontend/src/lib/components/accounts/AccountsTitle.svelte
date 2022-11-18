@@ -18,7 +18,7 @@
       : "";
 </script>
 
-<div>
+<div data-tid="accounts-total">
   {#if balance !== undefined}
     <Tooltip
       id="wallet-total-icp"

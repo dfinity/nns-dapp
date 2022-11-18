@@ -23,10 +23,10 @@ describe("ProjectCommitment", () => {
       Component: ProjectCommitment,
     });
     expect(
-      queryByTestId("commitment-max-indicator-value")?.textContent
+      queryByTestId("commitment-max-indicator-value")?.textContent.trim()
     ).toEqual(`${formatToken({ value: summary.swap.params.max_icp_e8s })} ICP`);
     expect(
-      queryByTestId("commitment-min-indicator-value")?.textContent
+      queryByTestId("commitment-min-indicator-value")?.textContent.trim()
     ).toEqual(`${formatToken({ value: summary.swap.params.min_icp_e8s })} ICP`);
   });
 
@@ -37,7 +37,7 @@ describe("ProjectCommitment", () => {
       Component: ProjectCommitment,
     });
     expect(
-      queryByTestId("sns-project-current-commitment")?.textContent
+      queryByTestId("sns-project-current-commitment")?.textContent.trim()
     ).toEqual(
       `${en.sns_project_detail.current_overall_commitment} ${formatToken({
         value: summary.derived.buyer_total_icp_e8s,

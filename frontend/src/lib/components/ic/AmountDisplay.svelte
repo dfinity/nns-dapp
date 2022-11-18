@@ -18,6 +18,7 @@
   class:inheritSize
   class:title
   class:plus-sign={sign === "+"}
+  data-tid="token-value-label"
 >
   <slot />
   <span data-tid="token-value" class="value"
