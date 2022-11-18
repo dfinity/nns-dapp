@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import {
@@ -12,7 +12,7 @@
 </script>
 
 <main>
-  {#if ENABLE_SNS_2}
+  {#if ENABLE_SNS}
     <SelectProjectDropdownHeader />
   {/if}
 

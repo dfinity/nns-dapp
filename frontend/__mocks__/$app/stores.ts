@@ -14,6 +14,7 @@ const initPageStoreMock = () => {
     subscribe,
 
     mock: ({
+      // routeId is the path
       routeId = undefined,
       data = { universe: OWN_CANISTER_ID_TEXT },
     }: {
