@@ -17,34 +17,30 @@
 </script>
 
 {#if stateInfo !== undefined}
-  <div class="info">
-    <p style={iconStyle} class="status">
-      {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
-      <svelte:component this={stateInfo.Icon} />
-    </p>
+  <div style={iconStyle} class="status">
+    <svelte:component this={stateInfo.Icon} />
+    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
   </div>
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .status {
     display: inline-flex;
-    color: var(--value-color);
-
-    :global {
-      svg {
-        margin-left: var(--padding-0_5x);
-      }
-    }
-  }
-
-  .info {
-    @include display.space-between;
+    gap: var(--padding-0_5x);
     align-items: center;
 
-    p {
-      margin: 0;
+    background: var(--card-badge-background);
+    color: var(--card-badge-color, var(--value-color));
+
+    border-radius: var(--border-radius-0_5x);
+    padding: var(--padding) var(--padding-2x) var(--padding) var(--padding);
+
+    @include fonts.small;
+
+    :global(svg) {
+      color: var(--tertiary);
     }
   }
 </style>

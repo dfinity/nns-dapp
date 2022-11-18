@@ -64,7 +64,7 @@
     {/if}
   </div>
 
-  <div class:disabled>
+  <div class:disabled class="content">
     {#if isSpawning(neuron)}
       <IconStackedLineChart />
     {:else if proposerNeuron}
@@ -80,9 +80,9 @@
     {:else if neuronICP}
       <AmountDisplay title amount={neuronICP} detailed />
     {/if}
-  </div>
 
-  <NeuronStateInfo state={neuron.state} />
+    <NeuronStateInfo state={neuron.state} />
+  </div>
 
   <NeuronStateRemainingTime
     state={neuron.state}
@@ -113,5 +113,13 @@
 
   .disabled {
     --amount-color: rgba(var(--disable-contrast-rgb), 0.2);
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
   }
 </style>
