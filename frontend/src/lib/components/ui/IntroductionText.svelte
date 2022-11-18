@@ -15,13 +15,13 @@
 {/if}
 
 <p class="value principal">
-  <span>{$i18n.neurons.principal_is}</span>
+  <span>{$i18n.core.principal_is}</span>
   <Hash id="neuron-id" text={principalText} tagName="p" />
 </p>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/fonts";
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/fonts";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
 
   .text {
     @include fonts.small;
@@ -31,7 +31,7 @@
     }
 
     @include media.min-width(large) {
-      max-width: 50%;
+      max-width: 55%;
     }
   }
 

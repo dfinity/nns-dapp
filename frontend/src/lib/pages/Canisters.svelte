@@ -19,6 +19,7 @@
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import IntroductionText from "$lib/components/ui/IntroductionText.svelte";
 
   export let referrerPath: AppPath | undefined = undefined;
 
@@ -68,14 +69,12 @@
   const closeModal = () => (modal = undefined);
 </script>
 
-<main class="legacy">
-  <section>
-    <p>{$i18n.canisters.text}</p>
-    <p class="last-info">
-      {$i18n.canisters.principal_is}
-      <Value>{$authStore.identity?.getPrincipal().toText()}</Value>
-    </p>
+<main>
+  <IntroductionText>
+    <svelte:fragment slot="text">{$i18n.canisters.text}</svelte:fragment>
+  </IntroductionText>
 
+  <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister}
       <CanisterCard
         role="link"
@@ -93,7 +92,7 @@
       <SkeletonCard />
       <SkeletonCard />
     {/if}
-  </section>
+  </div>
 </main>
 
 {#if modal === "CreateCanister"}
@@ -112,7 +111,7 @@
   >
   <button
     data-tid="link-canister-button"
-    class="primary"
+    class="secondary"
     on:click={() => openModal("LinkCanister")}
     >{$i18n.canisters.link_canister}</button
   >
@@ -121,5 +120,9 @@
 <style lang="scss">
   .last-info {
     margin-bottom: var(--padding-3x);
+  }
+
+  main {
+    padding-bottom: var(--footer-height);
   }
 </style>

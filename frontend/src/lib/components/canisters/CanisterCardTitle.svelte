@@ -4,7 +4,7 @@
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
-  export let titleTag: "h1" | "h3" = "h3";
+  export let titleTag: "h1" | "h4" = "h4";
 
   let canisterId: string;
   let validName: boolean;
@@ -22,16 +22,9 @@
 </div>
 
 <style lang="scss">
-  .h3 {
-    :global(button) {
-      margin-bottom: var(--padding-0_5x);
-    }
-  }
-
-  .h1 {
-    :global(button) {
-      margin-bottom: var(--padding);
-    }
+  .h4 {
+    display: flex;
+    align-items: end;
   }
 
   .title {

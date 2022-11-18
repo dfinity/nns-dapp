@@ -29,6 +29,7 @@ interface I18nCore {
   nns: string;
   previous: string;
   next: string;
+  principal_is: string;
 }
 
 interface I18nError {
@@ -209,7 +210,6 @@ interface I18nAccounts {
 interface I18nNeurons {
   title: string;
   text: string;
-  principal_is: string;
   stake_neurons: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -332,7 +332,6 @@ interface I18nVoting {
 interface I18nCanisters {
   title: string;
   text: string;
-  principal_is: string;
   create_canister: string;
   link_canister: string;
   empty: string;
