@@ -33,7 +33,7 @@
     @include fonts.small;
 
     :global(svg) {
-      color: var(--tertiary)
+      color: var(--tertiary);
     }
   }
 </style>
