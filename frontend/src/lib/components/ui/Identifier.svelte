@@ -11,5 +11,5 @@
 {#if size === "small"}
   <Hash id="identifier" tagName="p" testId="identifier" text={identifier} />
 {:else}
-  <IdentifierPlain {size} {label} {identifier} {showCopy} />
+  <IdentifierPlain {label} {identifier} {showCopy} />
 {/if}
