@@ -16,7 +16,7 @@
 
 <p class="value principal">
   <span>{$i18n.neurons.principal_is}</span>
-  <Hash text={principalText} tagName="p" />
+  <Hash id="neuron-id" text={principalText} tagName="p" />
 </p>
 
 <style lang="scss">
