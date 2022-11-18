@@ -78,7 +78,7 @@
     {#each $canistersStore.canisters ?? [] as canister}
       <CanisterCard
         role="link"
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
+        ariaLabel={$i18n.canisters.aria_label_canister_card}
         on:click={goToCanisterDetails(canister.canister_id)}
         {canister}
       />

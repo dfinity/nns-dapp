@@ -13,22 +13,17 @@
 
 <div class={`title-block ${titleTag}`}>
   <svelte:element this={titleTag} class="title value"
-    >{validName ? canister.name : canisterId}</svelte:element
-  >
-
-  {#if !validName}
-    <Copy value={canisterId} />
-  {/if}
+    ><span>{validName ? canister.name : canisterId}</span>
+    {#if !validName}
+      <Copy value={canisterId} />
+    {/if}
+  </svelte:element>
 </div>
 
 <style lang="scss">
-  .h4 {
-    display: flex;
-    align-items: end;
-  }
-
   .title {
     white-space: pre-wrap;
     display: initial;
+    text-align: left;
   }
 </style>
