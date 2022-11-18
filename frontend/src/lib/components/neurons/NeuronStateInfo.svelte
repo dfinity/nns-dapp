@@ -10,14 +10,10 @@
 
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getStateInfo(state);
-
-  let iconStyle: string;
-  $: iconStyle =
-    stateInfo?.color !== undefined ? `--neuron-state-color: ${stateInfo.color};` : "";
 </script>
 
 {#if stateInfo !== undefined}
-  <div style={iconStyle} class="status">
+  <div class="status">
     <svelte:component this={stateInfo.Icon} />
     {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
   </div>
@@ -31,16 +27,13 @@
     gap: var(--padding-0_5x);
     align-items: center;
 
-    background: var(--card-badge-background);
-    color: var(--neuron-state-color, var(--card-badge-color));
-
     border-radius: var(--border-radius-0_5x);
     padding: var(--padding) var(--padding-2x) var(--padding) var(--padding);
 
     @include fonts.small;
 
     :global(svg) {
-      color: var(--neuron-state-color, var(--tertiary));
+      color: var(--tertiary)
     }
   }
 </style>

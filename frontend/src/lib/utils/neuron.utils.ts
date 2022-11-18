@@ -53,7 +53,6 @@ export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
   status: "ok" | "warn" | "spawning";
-  color?: "var(--warning-emphasis)" | "var(--primary)";
 };
 
 type StateMapper = {
@@ -78,13 +77,11 @@ export const stateTextMapper: StateMapper = {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
-    color: "var(--warning-emphasis)",
   },
   [NeuronState.Spawning]: {
     textKey: "spawning",
     Icon: IconHistoryToggleOff,
     status: "spawning",
-    color: "var(--primary)",
   },
 };
 
