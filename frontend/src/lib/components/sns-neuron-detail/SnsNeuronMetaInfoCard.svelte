@@ -15,7 +15,7 @@
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { isDefined, isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState, type Token } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";

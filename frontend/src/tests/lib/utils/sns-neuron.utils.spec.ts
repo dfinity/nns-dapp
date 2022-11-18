@@ -12,6 +12,7 @@ import {
   getSnsNeuronState,
   hasPermissions,
   hasPermissionToDisburse,
+  hasPermissionToDissolve,
   hasValidStake,
   isCommunityFund,
   isSnsNeuron,
@@ -538,6 +539,46 @@ describe("sns-neuron utils", () => {
 
       expect(
         hasPermissionToDisburse({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("hasPermissionToDissolve", () => {
+    it("returns true when user has disburse rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+        ],
+      });
+
+      expect(
+        hasPermissionToDissolve({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no disburse rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        ],
+      });
+
+      expect(
+        hasPermissionToDissolve({
           neuron,
           identity: mockIdentity,
         })
