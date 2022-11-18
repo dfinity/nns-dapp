@@ -45,7 +45,7 @@ say Created canisters
 	cd "$IC_DIR"
 	cat <<-EOF > test-accounts.json
 	{
-	  "init_ledger_accounts":["5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"],
+	  "init_ledger_accounts":["5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087", "2b8fbde99de881f695f279d2a892b1137bfe81a42d7694e064b1be58701e1138"],
 	  "custom_canister_dir": "$ND_DIR/target/ic/"
 	}
 	EOF
