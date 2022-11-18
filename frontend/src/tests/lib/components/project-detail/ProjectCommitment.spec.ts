@@ -36,12 +36,18 @@ describe("ProjectCommitment", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectCommitment,
     });
+
+    const textContent: string =
+      queryByTestId("sns-project-current-commitment")?.textContent ?? "";
+
     expect(
-      queryByTestId("sns-project-current-commitment")?.textContent.trim()
-    ).toEqual(
-      `${en.sns_project_detail.current_overall_commitment} ${formatToken({
-        value: summary.derived.buyer_total_icp_e8s,
-      })} ICP`
-    );
+      textContent.includes(en.sns_project_detail.current_overall_commitment)
+    ).toBeTruthy();
+
+    expect(
+      textContent.includes(
+        `${formatToken({ value: summary.derived.buyer_total_icp_e8s })} ICP`
+      )
+    ).toBeTruthy();
   });
 });
