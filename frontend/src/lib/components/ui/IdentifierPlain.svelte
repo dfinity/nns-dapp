@@ -10,9 +10,7 @@
 </script>
 
 <p>
-    <span data-tid="identifier"
-    >{labelText}<Value>{identifier}</Value></span
-    >
+  <span data-tid="identifier">{labelText}<Value>{identifier}</Value></span>
   {#if showCopy}
     <Copy value={identifier} />
   {/if}

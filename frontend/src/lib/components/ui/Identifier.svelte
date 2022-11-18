@@ -13,4 +13,3 @@
 {:else}
   <IdentifierPlain {size} {label} {identifier} {showCopy} />
 {/if}
-
