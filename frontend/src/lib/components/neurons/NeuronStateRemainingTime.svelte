@@ -20,7 +20,7 @@
     </p>
   {:else if state === NeuronState.Locked}
     <p class="duration description">
-      {secondsToDuration(timeInSeconds)} - {$i18n.neurons.dissolve_delay_title}
+      {secondsToDuration(timeInSeconds)} – {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
 {/if}
