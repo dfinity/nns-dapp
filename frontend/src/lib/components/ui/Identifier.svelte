@@ -13,16 +13,16 @@
 
 {#if size === "small"}
   <Hash id="identifier" tagName="p" testId="identifier" text={identifier} />
-  {:else}
+{:else}
   <p>
-  <span data-tid="identifier" class:text_small={size === "small"}
-  >{labelText}<Value>{identifier}</Value></span
-  >
+    <span data-tid="identifier" class:text_small={size === "small"}
+      >{labelText}<Value>{identifier}</Value></span
+    >
     {#if showCopy}
       <Copy value={identifier} />
     {/if}
   </p>
-  {/if}
+{/if}
 
 <style lang="scss">
   span {

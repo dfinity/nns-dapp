@@ -21,12 +21,12 @@
 <div>
   {#if balance !== undefined}
     <Tooltip
-            id="wallet-total-icp"
-            text={replacePlaceholders($i18n.accounts.current_balance_total, {
+      id="wallet-total-icp"
+      text={replacePlaceholders($i18n.accounts.current_balance_total, {
         $amount: totalTokens,
       })}
     >
-      <AmountDisplay title amount={balance} >
+      <AmountDisplay title amount={balance}>
         <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
       </AmountDisplay>
     </Tooltip>

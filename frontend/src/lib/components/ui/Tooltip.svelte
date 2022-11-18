@@ -39,7 +39,7 @@
 
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
-    const spaceLeft = targetCenter - ((innerWidth - clientWidth) / 2);
+    const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
     const spaceRight = innerWidth - scrollbarWidth - targetCenter;
 
     const overflowLeft = tooltipWidth / 2 - spaceLeft;
@@ -96,7 +96,10 @@
     left: 50%;
     bottom: var(--padding-0_5x);
     --tooltip-transform-x-default: calc(-50% + var(--padding-2x));
-    transform: translate(var(--tooltip-transform-x, var(--tooltip-transform-x-default)), 100%);
+    transform: translate(
+      var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+      100%
+    );
 
     opacity: 0;
     visibility: hidden;
@@ -123,7 +126,10 @@
     &.top {
       bottom: unset;
       top: calc(-1 * var(--padding));
-      transform: translate(var(--tooltip-transform-x, var(--tooltip-transform-x-default)), -100%);
+      transform: translate(
+        var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+        -100%
+      );
     }
 
     pointer-events: none;
