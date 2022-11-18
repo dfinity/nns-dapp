@@ -28,6 +28,7 @@
 
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
+  <!-- Staking SNS Neurons has not yet been reviewed by security -->
 {:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_2}
   <SnsNeuronsFooter />
 {/if}
