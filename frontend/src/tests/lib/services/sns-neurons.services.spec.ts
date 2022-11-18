@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import * as services from "$lib/services/sns-neurons.services";
@@ -5,38 +9,138 @@ import {
   disburse,
   startDissolving,
   stopDissolving,
+  updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
+import {
+  neuronSubaccount,
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+  type SnsNeuronId,
+} from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
+import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
-const { loadSnsNeurons, getSnsNeuron, addHotkey, removeHotkey, stakeNeuron } =
+const { syncSnsNeurons, getSnsNeuron, addHotkey, removeHotkey, stakeNeuron } =
   services;
 
 describe("sns-neurons-services", () => {
-  describe("loadSnsNeurons", () => {
+  describe("syncSnsNeurons", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       snsNeuronsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
+
     it("should call api.querySnsNeurons and load neurons in store", async () => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
       const spyQuery = jest
         .spyOn(api, "querySnsNeurons")
-        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
-      await loadSnsNeurons(mockPrincipal);
+        .mockImplementation(() => Promise.resolve([neuron]));
+      const spyNeuronBalance = jest
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
+        )
+        .mockImplementation(() => Promise.resolve(BigInt(0)));
+      await syncSnsNeurons(mockPrincipal);
 
       await tick();
       const store = get(snsNeuronsStore);
       expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
       expect(spyQuery).toBeCalled();
+      expect(spyNeuronBalance).toBeCalled();
+    });
+
+    it("should refresh and refetch the neuron if balance doesn't match", async () => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
+      const spyNeuronQuery = jest
+        .spyOn(api, "querySnsNeuron")
+        .mockImplementation(() => Promise.resolve(neuron));
+      const spyNeuronBalance = jest
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() =>
+          Promise.resolve(
+            mockSnsNeuron.cached_neuron_stake_e8s + BigInt(10_000)
+          )
+        )
+        .mockImplementation(() => Promise.resolve(BigInt(0)));
+      const spyRefreshNeuron = jest
+        .spyOn(governanceApi, "refreshNeuron")
+        .mockImplementation(() => Promise.resolve(undefined));
+      await syncSnsNeurons(mockPrincipal);
+
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      expect(spyQuery).toBeCalled();
+      expect(spyNeuronBalance).toBeCalled();
+      expect(spyRefreshNeuron).toBeCalled();
+      expect(spyNeuronQuery).toBeCalled();
+    });
+
+    it("should claim neuron if find a subaccount without neuron", async () => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 1,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
+      const spyNeuronQuery = jest
+        .spyOn(api, "querySnsNeuron")
+        .mockImplementation(() => Promise.resolve(neuron));
+      const spyNeuronBalance = jest
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
+        )
+        .mockImplementationOnce(() => Promise.resolve(BigInt(200_000_000)))
+        .mockImplementation(() => Promise.resolve(BigInt(0)));
+      const spyClaimNeuron = jest
+        .spyOn(governanceApi, "claimNeuron")
+        .mockImplementation(() => Promise.resolve(undefined));
+      await syncSnsNeurons(mockPrincipal);
+
+      await tick();
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      expect(spyQuery).toBeCalled();
+      expect(spyNeuronBalance).toBeCalled();
+      expect(spyClaimNeuron).toBeCalled();
+      expect(spyNeuronQuery).toBeCalled();
     });
 
     it("should empty store if update call fails", async () => {
@@ -49,7 +153,7 @@ describe("sns-neurons-services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.reject(undefined));
 
-      await loadSnsNeurons(mockPrincipal);
+      await syncSnsNeurons(mockPrincipal);
 
       await tick();
       const store = get(snsNeuronsStore);
@@ -65,19 +169,89 @@ describe("sns-neurons-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", (done) => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyNeuronBalance = jest
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
+        )
+        .mockImplementation(() => Promise.resolve(BigInt(0)));
       const spyQuery = jest
         .spyOn(api, "querySnsNeuron")
-        .mockImplementation(() => Promise.resolve(mockSnsNeuron));
-      const onLoad = ({
-        neuron,
+        .mockImplementation(() => Promise.resolve(neuron));
+      const onLoad = async ({
+        neuron: neuronToLoad,
         certified,
       }: {
         neuron: SnsNeuron;
         certified: boolean;
       }) => {
         expect(spyQuery).toBeCalled();
-        expect(neuron).toEqual(mockSnsNeuron);
+        expect(neuronToLoad).toEqual(neuron);
         if (certified) {
+          await waitFor(() => expect(spyNeuronBalance).toBeCalled());
+          done();
+        }
+      };
+      getSnsNeuron({
+        neuronIdHex: bytesToHexString(
+          Array.from(mockSnsNeuron.id[0]?.id as Uint8Array)
+        ),
+        rootCanisterId: mockPrincipal,
+        onLoad,
+      });
+    });
+
+    it("should refresh neuron if balance does not match and load again", (done) => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const stake = neuron.cached_neuron_stake_e8s + BigInt(10_000);
+      const updatedNeuron = {
+        ...neuron,
+        cached_neuron_stake_e8s: stake,
+      };
+      const spyNeuronBalance = jest
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() => Promise.resolve(stake))
+        .mockImplementation(() => Promise.resolve(BigInt(0)));
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeuron")
+        // First is the query call and returns old neuron
+        .mockImplementationOnce(() => Promise.resolve(neuron))
+        // Second is the update call and returns old neuron. It will be checked.
+        .mockImplementationOnce(() => Promise.resolve(neuron))
+        // After refreshing we get the updated neuron.
+        .mockImplementation(() => Promise.resolve(updatedNeuron));
+      const spyRefreshNeuron = jest
+        .spyOn(governanceApi, "refreshNeuron")
+        .mockImplementation(() => Promise.resolve(undefined));
+      const onLoad = ({
+        neuron: neuronToLoad,
+      }: {
+        neuron: SnsNeuron;
+        certified: boolean;
+      }) => {
+        // Wait until we get the updated neuron to finish the test.
+        if (neuronToLoad.cached_neuron_stake_e8s === stake) {
+          expect(spyQuery).toBeCalledTimes(3);
+          expect(spyNeuronBalance).toBeCalledTimes(1);
+          expect(spyRefreshNeuron).toBeCalledTimes(1);
+          expect(neuronToLoad).toEqual(updatedNeuron);
           done();
         }
       };
@@ -298,6 +472,55 @@ describe("sns-neurons-services", () => {
         identity,
         rootCanisterId,
       });
+    });
+  });
+
+  describe("updateDelay ", () => {
+    const spyOnIncreaseDissolveDelay = jest
+      .spyOn(governanceApi, "increaseDissolveDelay")
+      .mockImplementation(() => Promise.resolve());
+
+    beforeEach(spyOnIncreaseDissolveDelay.mockClear);
+
+    it("should call sns api increaseDissolveDelay", async () => {
+      const neuronId = fromDefinedNullable(mockSnsNeuron.id);
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const { success } = await updateDelay({
+        rootCanisterId,
+        dissolveDelaySeconds: 123,
+        neuron: mockSnsNeuron,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
+        neuronId,
+        identity,
+        rootCanisterId,
+        additionalDissolveDelaySeconds: 123,
+      });
+    });
+
+    it("should calculate additionalDissolveDelaySeconds", async () => {
+      const rootCanisterId = mockPrincipal;
+      const { success } = await updateDelay({
+        rootCanisterId,
+        dissolveDelaySeconds: 333,
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: BigInt(111) }],
+        },
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseDissolveDelay).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          additionalDissolveDelaySeconds: 222,
+        })
+      );
     });
   });
 

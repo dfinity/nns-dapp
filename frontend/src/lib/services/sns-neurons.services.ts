@@ -1,6 +1,8 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
+  increaseDissolveDelay as increaseDissolveDelayApi,
+  refreshNeuron,
   removeNeuronPermissions,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -17,7 +19,10 @@ import {
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
+import {
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronByHexId,
+} from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -27,12 +32,30 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  fromDefinedNullable,
+  fromNullable,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getIdentity } from "./auth.services";
+import {
+  checkSnsNeuronBalances,
+  neuronNeedsRefresh,
+} from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsNeurons = async (
+/**
+ * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
+ *
+ * On update, it will check whether there are neurons that need to be refreshed or claimed.
+ * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake of the neuron.
+ * A neuron needs to be claimed if there is a subaccount with balance and no neuron.
+ *
+ * @param {Principal} rootCanisterId
+ * @returns {void}
+ */
+export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
   return queryAndUpdate<SnsNeuron[], unknown>({
@@ -42,12 +65,19 @@ export const loadSnsNeurons = async (
         identity,
         certified,
       }),
-    onLoad: ({ response: neurons, certified }) => {
+    onLoad: async ({ response: neurons, certified }) => {
       snsNeuronsStore.setNeurons({
         rootCanisterId,
         neurons,
         certified,
       });
+
+      if (certified) {
+        checkSnsNeuronBalances({
+          rootCanisterId,
+          neurons,
+        });
+      }
     },
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -67,6 +97,26 @@ export const loadSnsNeurons = async (
       );
     },
     logMessage: "Syncing Sns Neurons",
+  });
+};
+
+const loadNeurons = async ({
+  rootCanisterId,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<void> => {
+  const identity = await getIdentity();
+  const neurons = await querySnsNeurons({
+    identity,
+    rootCanisterId,
+    certified,
+  });
+  snsNeuronsStore.setNeurons({
+    rootCanisterId,
+    certified,
+    neurons,
   });
 };
 
@@ -140,8 +190,26 @@ export const getSnsNeuron = async ({
         certified,
         neuronId: { id: neuronId },
       }),
-    onLoad: ({ response: neuron, certified }) => {
+    onLoad: async ({ response: neuron, certified }) => {
       onLoad({ neuron, certified });
+
+      if (certified) {
+        // Check that the neuron's stake is in sync with the subaccount's balance
+        const neuronId = fromNullable(neuron.id);
+        if (neuronId !== undefined) {
+          const identity = await getNeuronIdentity();
+          if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
+            await refreshNeuron({ rootCanisterId, identity, neuronId });
+            const updatedNeuron = await querySnsNeuron({
+              identity,
+              rootCanisterId,
+              neuronId,
+              certified,
+            });
+            onLoad({ neuron: updatedNeuron, certified });
+          }
+        }
+      }
     },
     onError: ({ certified, error }) => {
       onError?.({ certified, error });
@@ -297,6 +365,40 @@ export const stopDissolving = async ({
   }
 };
 
+export const updateDelay = async ({
+  rootCanisterId,
+  neuron,
+  dissolveDelaySeconds,
+}: {
+  rootCanisterId: Principal;
+  neuron: SnsNeuron;
+  dissolveDelaySeconds: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+    const currentDissolveDelay =
+      getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
+    const additionalDissolveDelaySeconds =
+      dissolveDelaySeconds - Number(currentDissolveDelay);
+
+    await increaseDissolveDelayApi({
+      rootCanisterId,
+      identity,
+      neuronId: fromDefinedNullable(neuron.id),
+      additionalDissolveDelaySeconds,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_dissolve_delay_action",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
 export const stakeNeuron = async ({
   rootCanisterId,
   amount,
@@ -316,7 +418,7 @@ export const stakeNeuron = async ({
       identity,
       source: decodeSnsAccount(account.identifier),
     });
-    await loadSnsNeurons(rootCanisterId);
+    await loadNeurons({ rootCanisterId, certified: true });
     return { success: true };
   } catch (err) {
     toastsError(

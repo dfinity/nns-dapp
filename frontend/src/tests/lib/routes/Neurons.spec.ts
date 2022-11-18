@@ -26,7 +26,7 @@ jest.mock("$lib/services/sns.services", () => {
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    loadSnsNeurons: jest.fn().mockResolvedValue(undefined),
+    syncSnsNeurons: jest.fn().mockResolvedValue(undefined),
   };
 });
 
