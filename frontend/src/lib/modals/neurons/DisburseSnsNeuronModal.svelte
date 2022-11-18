@@ -118,7 +118,11 @@
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
+      on:nnsBack={() => {
+        dispatcher("nnsClose");
+      }}
       on:nnsConfirm={executeTransaction}
+      secondaryButtonText={$i18n.core.cancel}
       {amount}
       {source}
       {loading}
