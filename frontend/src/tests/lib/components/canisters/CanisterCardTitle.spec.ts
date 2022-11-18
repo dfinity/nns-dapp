@@ -39,7 +39,7 @@ describe("CanisterCardTitle", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("renders title as h3 per default", async () => {
+  it("renders title as h4 per default", async () => {
     const { container } = render(CanisterCardTitle, {
       props: {
         canister: mockCanister,
