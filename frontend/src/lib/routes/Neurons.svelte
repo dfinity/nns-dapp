@@ -13,7 +13,7 @@
 
 <main class="legacy">
   {#if ENABLE_SNS}
-    <SelectProjectDropdownHeader />
+    <SelectProjectDropdownHeader legacy />
   {/if}
 
   {#if $isNnsProjectStore}

@@ -6,6 +6,7 @@
   export let label: string | undefined = undefined;
   export let inline = false;
   export let singleLine = false;
+  export let title = false;
   export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
   export let detailed = false;
@@ -15,8 +16,11 @@
   class:inline
   class:singleLine
   class:inheritSize
+  class:title
   class:plus-sign={sign === "+"}
+  data-tid="token-value-label"
 >
+  <slot />
   <span data-tid="token-value" class="value"
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
@@ -25,6 +29,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   div {
     display: inline-grid;
@@ -65,5 +70,22 @@
         color: rgba(var(--positive-emphasis-rgb), var(--light-opacity));
       }
     }
+
+    &.title {
+      display: block;
+      word-break: break-word;
+
+      span:first-of-type {
+        @include fonts.h1(true);
+      }
+
+      span.label {
+        @include fonts.small;
+      }
+    }
+  }
+
+  .value {
+    color: var(--amount-color, var(--value-color));
   }
 </style>

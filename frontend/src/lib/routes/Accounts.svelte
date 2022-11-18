@@ -11,7 +11,7 @@
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 </script>
 
-<main class="legacy">
+<main>
   {#if ENABLE_SNS_2}
     <SelectProjectDropdownHeader />
   {/if}
@@ -28,3 +28,9 @@
 {:else}
   <SnsAccountsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

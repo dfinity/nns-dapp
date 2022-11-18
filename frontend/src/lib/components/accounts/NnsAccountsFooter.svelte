@@ -37,7 +37,7 @@
       data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
     >
     <button
-      class="primary full-width"
+      class="secondary full-width"
       on:click={openAddAccountModal}
       data-tid="open-add-account-modal">{$i18n.accounts.add_account}</button
     >

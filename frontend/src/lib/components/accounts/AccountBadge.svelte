@@ -7,5 +7,5 @@
 
 <!-- No badge for main account -->
 {#if account.type !== "main"}
-  <small>{$i18n.accounts[account.type]}</small>
+  <small class="label">{$i18n.accounts[account.type]}</small>
 {/if}
