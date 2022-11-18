@@ -10,9 +10,7 @@
 </script>
 
 <Card {role} {ariaLabel} on:click testId="canister-card">
-  <div slot="start" class="title-block">
-    <CanisterCardTitle {canister} />
-  </div>
+  <CanisterCardTitle {canister} />
 
   <CanisterCardSubTitle {canister} />
 </Card>

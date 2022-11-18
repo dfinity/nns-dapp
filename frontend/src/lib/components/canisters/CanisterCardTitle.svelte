@@ -21,6 +21,13 @@
 </div>
 
 <style lang="scss">
+  .title-block {
+    :global(h4) {
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
   .title {
     white-space: pre-wrap;
     display: initial;
