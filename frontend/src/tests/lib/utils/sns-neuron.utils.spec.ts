@@ -16,13 +16,16 @@ import {
   isCommunityFund,
   isSnsNeuron,
   isUserHotkey,
+  needsRefresh,
   sortSnsNeuronsByCreatedTimestamp,
+  subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import {
@@ -183,6 +186,18 @@ describe("sns-neuron utils", () => {
         id,
       });
       expect(getSnsNeuronIdAsHexString(neuron)).toBe(
+        "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
+      );
+    });
+  });
+
+  describe("subaccountToHexString", () => {
+    it("returns id numbers concatenated", () => {
+      const subaccount = arrayOfNumberToUint8Array([
+        154, 174, 251, 49, 236, 17, 214, 189, 195, 140, 58, 89, 61, 29, 138,
+        113, 79, 48, 136, 37, 96, 61, 215, 50, 182, 65, 198, 97, 8, 19, 238, 36,
+      ]);
+      expect(subaccountToHexString(subaccount)).toBe(
         "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
       );
     });
@@ -701,6 +716,33 @@ describe("sns-neuron utils", () => {
         source_nns_neuron_id: [],
       };
       expect(isCommunityFund(neuron)).toBeFalsy();
+    });
+  });
+
+  describe("needsRefresh", () => {
+    it("returns true when neuron stake does not match the balance", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(2),
+      };
+      expect(
+        needsRefresh({
+          neuron,
+          balanceE8s: BigInt(1),
+        })
+      ).toBeTruthy();
+    });
+    it("returns false when the neuron stake matches the balance", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: BigInt(2),
+      };
+      expect(
+        needsRefresh({
+          neuron,
+          balanceE8s: BigInt(2),
+        })
+      ).toBeFalsy();
     });
   });
 });
