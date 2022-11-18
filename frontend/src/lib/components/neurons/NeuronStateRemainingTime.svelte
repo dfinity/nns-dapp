@@ -27,6 +27,6 @@
 
 <style lang="scss">
   p {
-    margin: 0;
+    margin: var(--padding) 0 0;
   }
 </style>
