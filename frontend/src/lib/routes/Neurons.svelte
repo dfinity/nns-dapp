@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
+  import {
+    ENABLE_SNS,
+    ENABLE_SNS_2,
+  } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
@@ -25,6 +28,6 @@
 
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
-{:else if $snsProjectIdSelectedStore !== undefined && IS_TESTNET}
+{:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_2}
   <SnsNeuronsFooter />
 {/if}
