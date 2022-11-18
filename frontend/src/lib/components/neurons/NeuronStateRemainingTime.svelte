@@ -3,8 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html, Value } from "@dfinity/gix-components";
+  import { Html } from "@dfinity/gix-components";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
@@ -12,17 +11,16 @@
 
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
-    <p class="duration">
+    <p class="duration description">
       <Html
         text={replacePlaceholders($i18n.neurons.remaining, {
-          $duration: valueSpan(secondsToDuration(timeInSeconds)),
+          $duration: secondsToDuration(timeInSeconds),
         })}
       />
     </p>
   {:else if state === NeuronState.Locked}
-    <p class="duration">
-      <Value>{secondsToDuration(timeInSeconds)}</Value>
-      - {$i18n.neurons.dissolve_delay_title}
+    <p class="duration description">
+      {secondsToDuration(timeInSeconds)}- {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
 {/if}

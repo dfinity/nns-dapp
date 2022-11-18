@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
@@ -10,15 +9,12 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-  import { Value } from "@dfinity/gix-components";
+  import NeuronsTitle from "$lib/components/neurons/NeuronsTitle.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
-
-  let principalText = "";
-  $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   const goToNeuronDetails = async (id: NeuronId) =>
     await goto(
@@ -29,14 +25,11 @@
     );
 </script>
 
-<section data-tid="neurons-body">
-  <p class="description">{$i18n.neurons.text}</p>
+<NeuronsTitle>
+  <svelte:fragment slot="text">{$i18n.neurons.text}</svelte:fragment>
+</NeuronsTitle>
 
-  <p class="description">
-    {$i18n.neurons.principal_is}
-    <Value>{principalText}</Value>
-  </p>
-
+<div class="card-grid" data-tid="neurons-body">
   {#if isLoading}
     <SkeletonCard />
     <SkeletonCard />
@@ -63,10 +56,4 @@
       {/if}
     {/each}
   {/if}
-</section>
-
-<style lang="scss">
-  p:last-of-type {
-    margin-bottom: var(--padding-3x);
-  }
-</style>
+</div>

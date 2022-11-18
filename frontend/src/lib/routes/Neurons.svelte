@@ -11,9 +11,9 @@
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 </script>
 
-<main class="legacy">
+<main>
   {#if ENABLE_SNS}
-    <SelectProjectDropdownHeader legacy />
+    <SelectProjectDropdownHeader />
   {/if}
 
   {#if $isNnsProjectStore}
@@ -28,3 +28,9 @@
 {:else if $snsProjectIdSelectedStore !== undefined && IS_TESTNET}
   <SnsNeuronsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

@@ -1,7 +1,5 @@
 <script lang="ts">
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { Value } from "@dfinity/gix-components";
-  import { authStore } from "$lib/stores/auth.store";
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
@@ -18,6 +16,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import NeuronsTitle from "$lib/components/neurons/NeuronsTitle.svelte";
 
   let loading = true;
 
@@ -36,9 +35,6 @@
 
   onDestroy(unsubscribe);
 
-  let principalText = "";
-  $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
-
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
     await goto(
@@ -50,12 +46,9 @@
   };
 </script>
 
-<section data-tid="sns-neurons-body">
-  <p class="description">
-    {$i18n.neurons.principal_is}
-    <Value>{principalText}</Value>
-  </p>
+<NeuronsTitle />
 
+<div class="card-grid" data-tid="sns-neurons-body">
   {#if loading}
     <SkeletonCard />
     <SkeletonCard />
@@ -85,13 +78,9 @@
       {/each}
     {/if}
   {/if}
-</section>
+</div>
 
 <style lang="scss">
-  p:last-of-type {
-    margin-bottom: var(--padding-3x);
-  }
-
   .top-margin {
     margin-top: var(--padding-4x);
   }

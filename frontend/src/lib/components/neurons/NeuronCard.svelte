@@ -54,21 +54,22 @@
   {cardType}
 >
   <div slot="start" class="lock" data-tid="neuron-card-title">
-    <h3 data-tid="neuron-id">{neuron.neuronId}</h3>
+    <p data-tid="neuron-id">{neuron.neuronId}</p>
 
     {#if isCommunityFund}
-      <span>{$i18n.neurons.community_fund}</span>
+      <small class="label">{$i18n.neurons.community_fund}</small>
     {/if}
     {#if isHotKeyControl}
-      <span>{$i18n.neurons.hotkey_control}</span>
+      <small class="label">{$i18n.neurons.hotkey_control}</small>
     {/if}
   </div>
 
-  <div slot="end" class="currency">
+  <div class:disabled>
     {#if isSpawning(neuron)}
       <IconStackedLineChart />
     {:else if proposerNeuron}
       <AmountDisplay
+        title
         label={$i18n.neurons.voting_power}
         amount={TokenAmount.fromE8s({
           amount: neuron.votingPower,
@@ -77,7 +78,7 @@
         detailed
       />
     {:else if neuronICP}
-      <AmountDisplay amount={neuronICP} detailed />
+      <AmountDisplay title amount={neuronICP} detailed />
     {/if}
   </div>
 
@@ -110,9 +111,7 @@
     @include card.stacked-title;
   }
 
-  .currency {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  .disabled {
+    --amount-color: rgba(var(--disable-contrast-rgb), 0.2);
   }
 </style>
