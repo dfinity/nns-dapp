@@ -56,7 +56,7 @@
       <AccountCard
         role="link"
         on:click={() => goToDetails(account)}
-        showCopy
+        hash
         {account}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}

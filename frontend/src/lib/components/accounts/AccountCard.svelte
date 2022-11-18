@@ -3,11 +3,12 @@
   import { Card } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import type { TokenAmount } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
 
   export let account: Account;
-  export let showCopy = false;
+  export let hash = false;
   export let role: "button" | "link" | undefined = undefined;
 
   let identifier: string;
@@ -21,8 +22,14 @@
     <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />
   </div>
+
   <AmountDisplay title amount={balance} />
-  <Identifier {identifier} {showCopy} />
+
+  {#if hash}
+    <IdentifierHash {identifier} />
+  {:else}
+    <Identifier {identifier} />
+  {/if}
 </Card>
 
 <style lang="scss">

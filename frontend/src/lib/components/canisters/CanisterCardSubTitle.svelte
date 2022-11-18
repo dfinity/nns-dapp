@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import Identifier from "$lib/components/ui/Identifier.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
@@ -11,5 +11,5 @@
 </script>
 
 {#if validName}
-  <Identifier identifier={canisterId} showCopy size="small" />
+  <IdentifierHash identifier={canisterId} />
 {/if}
