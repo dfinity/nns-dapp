@@ -7,7 +7,7 @@
     sortedSnsUserNeuronsStore,
   } from "$lib/derived/sorted-sns-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
@@ -26,7 +26,7 @@
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
         await Promise.all([
-          loadSnsNeurons(selectedProjectCanisterId),
+          syncSnsNeurons(selectedProjectCanisterId),
           syncSnsAccounts(selectedProjectCanisterId),
         ]);
         loading = false;

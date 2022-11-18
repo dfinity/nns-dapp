@@ -617,6 +617,7 @@ interface I18nSns_neurons {
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
+  token_stake: string;
 }
 
 interface I18nTime {
@@ -701,6 +702,7 @@ interface I18nError__sns {
   sns_stop_dissolving: string;
   sns_stake: string;
   sns_neuron_account: string;
+  sns_dissolve_delay_action: string;
   project_not_found: string;
   project_not_open: string;
   not_enough_amount: string;

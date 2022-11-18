@@ -8,7 +8,10 @@ import {
   type SelectedSnsNeuronContext,
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
-import { formattedSnsMaturity } from "$lib/utils/sns-neuron.utils";
+import {
+  formattedSnsMaturity,
+  getSnsNeuronIdAsHexString,
+} from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
@@ -24,7 +27,7 @@ describe("SnsNeuronMaturityCard", () => {
         contextValue: {
           store: writable<SelectedSnsNeuronStore>({
             selected: {
-              neuronIdHex: neuron.id.toString(),
+              neuronIdHex: getSnsNeuronIdAsHexString(neuron),
               rootCanisterId: null,
             },
             neuron,
