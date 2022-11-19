@@ -11,6 +11,7 @@ import {
   stopDissolving,
   updateDelay,
 } from "$lib/services/sns-neurons.services";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
@@ -26,10 +27,17 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
-const { syncSnsNeurons, getSnsNeuron, addHotkey, removeHotkey, stakeNeuron } =
-  services;
+const {
+  syncSnsNeurons,
+  getSnsNeuron,
+  addHotkey,
+  removeHotkey,
+  stakeNeuron,
+  loadSnsTopics,
+} = services;
 
 describe("sns-neurons-services", () => {
   describe("syncSnsNeurons", () => {
@@ -542,6 +550,22 @@ describe("sns-neurons-services", () => {
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("loadSnsTopics", () => {
+    it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
+      const spyGetFunctions = jest
+        .spyOn(governanceApi, "getNervousSystemFunctions")
+        .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
+
+      await loadSnsTopics(mockPrincipal);
+
+      const store = get(snsFunctionsStore);
+      expect(store[mockPrincipal.toText()]).toEqual([
+        nervousSystemFunctionMock,
+      ]);
+      expect(spyGetFunctions).toBeCalled();
     });
   });
 });

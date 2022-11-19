@@ -69,6 +69,12 @@ describe("SnsNeuronDetail", () => {
 
       expect(queryByTestId("sns-hotkeys-card")).toBeInTheDocument();
     });
+
+    it("should render following card", async () => {
+      const { queryByTestId } = render(SnsNeuronDetail, props);
+
+      expect(queryByTestId("sns-neuron-following")).toBeInTheDocument();
+    });
   });
 
   describe("when project is an invalid canister id", () => {

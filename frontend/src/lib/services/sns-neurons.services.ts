@@ -1,6 +1,7 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
+  getNervousSystemFunctions,
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
@@ -12,6 +13,7 @@ import {
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -426,4 +428,20 @@ export const stakeNeuron = async ({
     );
     return { success: false };
   }
+};
+
+// This is a public service.
+export const loadSnsTopics = async (rootCanisterId: Principal) => {
+  const identity = await getIdentity();
+  // We load with a query call only. Nervous System Functions are public and not related to the user.
+  const functions = await getNervousSystemFunctions({
+    rootCanisterId,
+    identity,
+    certified: true,
+  });
+
+  snsFunctionsStore.setFunctions({
+    rootCanisterId,
+    functions,
+  });
 };

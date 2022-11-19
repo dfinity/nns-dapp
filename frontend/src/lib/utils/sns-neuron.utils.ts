@@ -119,7 +119,10 @@ export const canIdentityManageHotkeys = ({
   hasPermissions({
     neuron,
     identity,
-    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+    ],
   });
 
 export const hasPermissionToDisburse = ({
@@ -148,6 +151,19 @@ export const hasPermissionToDissolve = ({
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
     ],
+  });
+
+export const hasPermissionToVote = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
   });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {
