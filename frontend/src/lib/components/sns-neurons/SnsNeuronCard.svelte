@@ -64,7 +64,7 @@
   </div>
 
   <div class="content">
-    <div class="currency">
+    <div>
       {#if neuronStake !== undefined}
         <AmountDisplay amount={neuronStake} title />
       {:else}
