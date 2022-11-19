@@ -46,7 +46,7 @@ describe("CanisterDetail", () => {
     const title = container.querySelector("h1");
 
     await waitFor(() => expect(title).not.toBeNull());
-    expect((title as HTMLElement).textContent).toEqual(
+    expect((title as HTMLElement).textContent.trim()).toEqual(
       mockCanister.canister_id.toText()
     );
   });

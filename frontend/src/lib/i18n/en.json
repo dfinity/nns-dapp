@@ -25,7 +25,8 @@
     "badgeNew": "New",
     "nns": "Network Nervous System",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "principal_is": "Your principal id is"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -199,7 +200,6 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
-    "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -224,8 +224,8 @@
     "may_take_while": "This may take up to one minute",
     "create": "Create",
     "edit_source": "Edit Source Account",
-    "community_fund": "COMMUNITY FUND",
-    "hotkey_control": "HOTKEY CONTROL",
+    "community_fund": "Community fund",
+    "hotkey_control": "Hotkey control",
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
@@ -317,8 +317,8 @@
   },
   "canisters": {
     "title": "Canisters",
+    "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
-    "principal_is": "Your principal id is",
     "create_canister": "Create Canister",
     "link_canister": "Link Canister",
     "empty": "No canisters yet.",

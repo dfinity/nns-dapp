@@ -95,7 +95,7 @@
 
     left: 50%;
     bottom: var(--padding-0_5x);
-    --tooltip-transform-x-default: calc(-50% + var(--padding-2x));
+    --tooltip-transform-x-default: calc(-50% + var(--padding-4x));
     transform: translate(
       var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
       100%
