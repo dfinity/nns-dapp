@@ -3,14 +3,20 @@
  */
 
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
+import { loadSnsTopics } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+
+jest.mock("../../../../../src/lib/services/sns-neurons.services", () => ({
+  loadSnsTopics: jest.fn(),
+}));
 
 describe("SnsNeuronFollowingCard", () => {
   beforeAll(() =>
@@ -42,6 +48,12 @@ describe("SnsNeuronFollowingCard", () => {
 
     afterEach(() => jest.clearAllMocks());
 
+    it("loads sns topics", async () => {
+      renderCard(controlledNeuron);
+
+      await waitFor(() => expect(loadSnsTopics).toHaveBeenCalled());
+    });
+
     it("renders button to follow neurons", () => {
       const { queryByTestId } = renderCard(controlledNeuron);
 
@@ -69,6 +81,12 @@ describe("SnsNeuronFollowingCard", () => {
       });
 
     afterEach(() => jest.clearAllMocks());
+
+    it("loads sns topics", async () => {
+      renderCard(uncontrolledNeuron);
+
+      await waitFor(() => expect(loadSnsTopics).toHaveBeenCalled());
+    });
 
     it("does not render button to follow neurons", () => {
       const { queryByTestId } = renderCard(uncontrolledNeuron);

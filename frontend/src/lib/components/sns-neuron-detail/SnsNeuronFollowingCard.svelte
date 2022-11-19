@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { loadSnsTopics } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -13,6 +14,13 @@
   import { getContext } from "svelte";
   import CardInfo from "../ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
+
+  $: {
+    if (rootCanisterId !== undefined) {
+      // To render the topics of the followees we need to fetch all the topics.
+      loadSnsTopics(rootCanisterId);
+    }
+  }
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

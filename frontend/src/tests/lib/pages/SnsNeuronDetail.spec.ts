@@ -25,6 +25,7 @@ jest.mock("$lib/services/sns-neurons.services", () => {
         onError();
       }
     }),
+    loadSnsTopics: jest.fn(),
   };
 });
 
