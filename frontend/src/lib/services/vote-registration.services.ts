@@ -31,7 +31,7 @@ import {
 import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { loadProposal } from "./$public/proposals.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
 
 /**
@@ -270,7 +270,7 @@ const registerNeuronsVote = async ({
   updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
-  const identity: Identity = await getIdentity();
+  const identity: Identity = await getAuthenticatedIdentity();
   const { id, topic } = proposalInfo;
   const proposalId = id as ProposalId;
 

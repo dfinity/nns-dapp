@@ -13,7 +13,7 @@ import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 
 export interface ConnectToHardwareWalletParams {
   connectionState: LedgerConnectionState;
@@ -74,7 +74,7 @@ export const registerHardwareWallet = async ({
 
   logWithTimestamp(`Register hardware wallet ${hashCode(name)}...`);
 
-  const identity: Identity = await getIdentity();
+  const identity: Identity = await getAuthenticatedIdentity();
 
   try {
     const { canister } = await nnsDappCanister({ identity });

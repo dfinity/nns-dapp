@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IconClose, Value } from "@dfinity/gix-components";
-  import { getIdentity } from "$lib/services/auth.services";
+  import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -35,7 +35,7 @@
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
-    const currentIdentityPrincipal = (await getIdentity())
+    const currentIdentityPrincipal = (await getAuthenticatedIdentity())
       .getPrincipal()
       .toText();
     // If the user removes itself from the hotkeys, it has no more access to the detail page.

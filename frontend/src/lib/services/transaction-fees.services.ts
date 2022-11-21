@@ -3,12 +3,12 @@ import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Principal } from "@dfinity/principal/lib/cjs";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadMainTransactionFee = async () => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     const fee = await nnsTransactionFee({ identity });
     transactionsFeesStore.setMain(fee);
   } catch (error: unknown) {
