@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { INTERNET_COMPUTER } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -31,12 +32,13 @@ describe("NnsAccounts", () => {
       const titleRow = getByTestId("accounts-total");
 
       expect(
-        titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatToken({
+        titleRow?.textContent?.includes(
+          `${formatToken({
             value: mockMainAccount.balance.toE8s(),
           })} ICP`
         )
       ).toBeTruthy();
+      expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
     });
 
     it("should render a main card", () => {
@@ -133,10 +135,11 @@ describe("NnsAccounts", () => {
       const titleRow = getByTestId("accounts-total");
 
       expect(
-        titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatToken({ value: totalBalance })} ICP`
+        titleRow?.textContent?.includes(
+          `${formatToken({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
+      expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
     });
 
     it("should contain a tooltip", () => {
