@@ -17,6 +17,7 @@
   import { assertNonNullish } from "@dfinity/utils";
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { syncSnsParameters } from "$lib/services/sns-parameters.services";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -40,6 +41,10 @@
 
   let minDelayInSeconds: number | undefined;
   $: minDelayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
+
+  $: if ($snsOnlyProjectStore !== undefined) {
+    syncSnsParameters({ rootCanisterId: $snsOnlyProjectStore });
+  }
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {

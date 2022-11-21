@@ -19,6 +19,8 @@
     getSnsNeuronStake,
     getSnsNeuronState,
   } from "$lib/utils/sns-neuron.utils";
+  import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
+  import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -48,6 +50,9 @@
 
   let dissolveDelaySeconds: bigint;
   $: dissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
+
+  let snsParameters: SnsParameters | undefined;
+  $: snsParameters = $snsProjectParametersStore;
 
   const goToConfirmation = async () => {
     dispatcher("nnsConfirmDelay");

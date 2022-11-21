@@ -3,6 +3,7 @@ import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId, SnsNeuronPermissionType } from "@dfinity/sns";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -238,4 +239,29 @@ export const claimNeuron = async ({
 
   logWithTimestamp(`Claiming neuron call complete.`);
   return neuronId;
+};
+
+export const nervousSystemParameters = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<NervousSystemParameters> => {
+  logWithTimestamp(`Querying nervous system parameters...`);
+
+  const { nervousSystemParameters: nervousSystemParametersApi } = await wrapper(
+    {
+      identity,
+      rootCanisterId: rootCanisterId.toText(),
+      certified,
+    }
+  );
+
+  const props = await nervousSystemParametersApi({});
+
+  logWithTimestamp(`Querying nervous system parameters complete.`);
+  return props;
 };
