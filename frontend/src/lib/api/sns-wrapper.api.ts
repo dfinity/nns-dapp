@@ -14,7 +14,7 @@ import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 
 interface IdentityWrapper {
-  [principal: string]: Map<QueryRootCanisterId, SnsWrapper>;
+  [principal: string]: Promise<Map<QueryRootCanisterId, SnsWrapper>>;
 }
 const identitiesCertifiedWrappers: IdentityWrapper = {};
 const identitiesNotCertifiedWrappers: IdentityWrapper = {};
@@ -148,7 +148,9 @@ export const wrappers = async ({
   const principalText = identity.getPrincipal().toText();
   if (certified) {
     if (identitiesCertifiedWrappers[principalText] === undefined) {
-      identitiesCertifiedWrappers[principalText] = await initWrappers({
+      // the initialization of the wrappers can be called mutliple times at the same time when the app loads.
+      // We cache the promise so that if multiple calls are made then all will resolve when the first init resolve.
+      identitiesCertifiedWrappers[principalText] = initWrappers({
         identity,
         certified,
       });
@@ -156,7 +158,7 @@ export const wrappers = async ({
     return identitiesCertifiedWrappers[principalText];
   } else {
     if (identitiesNotCertifiedWrappers[principalText] === undefined) {
-      identitiesNotCertifiedWrappers[principalText] = await initWrappers({
+      identitiesNotCertifiedWrappers[principalText] = initWrappers({
         identity,
         certified,
       });
