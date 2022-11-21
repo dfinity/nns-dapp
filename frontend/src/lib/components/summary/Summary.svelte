@@ -61,6 +61,7 @@
   h1 {
     display: inline-block;
     @include text.truncate;
+    margin: 0;
   }
 
   .logo {
