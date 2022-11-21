@@ -5,7 +5,7 @@ import {
 } from "$lib/api/sns-governance.api";
 import { querySnsNeuron } from "$lib/api/sns.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
-import { getIdentity } from "$lib/services/auth.services";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   getSnsNeuronIdAsHexString,
@@ -285,7 +285,7 @@ export const checkSnsNeuronBalances = async ({
   neurons: SnsNeuron[];
 }): Promise<void> => {
   // TODO: Check neurons controlled by linked HW?
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
 
   const unvisitedNeurons = await checkNeuronsSubaccounts({
     identity,

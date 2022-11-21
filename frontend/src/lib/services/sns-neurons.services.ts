@@ -38,7 +38,7 @@ import {
   fromNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import {
   checkSnsNeuronBalances,
   neuronNeedsRefresh,
@@ -107,7 +107,7 @@ const loadNeurons = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<void> => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   const neurons = await querySnsNeurons({
     identity,
     rootCanisterId,
@@ -220,7 +220,7 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (): Promise<Identity> => getIdentity();
+const getNeuronIdentity = (): Promise<Identity> => getAuthenticatedIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -410,7 +410,7 @@ export const stakeNeuron = async ({
 }): Promise<{ success: boolean }> => {
   try {
     // TODO: Get identity depending on account to support HW accounts
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await stakeNeuronApi({
       controller: identity.getPrincipal(),
       rootCanisterId,

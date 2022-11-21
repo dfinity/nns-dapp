@@ -46,12 +46,11 @@ export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
 export const getCurrentIdentity = (): Identity =>
   get(authStore).identity ?? new AnonymousIdentity();
 
-// TODO: rename getAuthenticatedIdentity
 /**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
  */
-export const getIdentity = async (): Promise<Identity> => {
+export const getAuthenticatedIdentity = async (): Promise<Identity> => {
   /* eslint-disable-next-line no-async-promise-executor */
   return new Promise<Identity>(async (resolve) => {
     const identity: Identity | undefined | null = get(authStore).identity;

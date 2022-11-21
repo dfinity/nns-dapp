@@ -26,7 +26,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
@@ -63,7 +63,7 @@ export const addSubAccount = async ({
   name: string;
 }): Promise<void> => {
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await createSubAccount({ name, identity });
 
@@ -173,7 +173,7 @@ export const getAccountIdentity = async (
     return getLedgerIdentityProxy(identifier);
   }
 
-  return getIdentity();
+  return getAuthenticatedIdentity();
 };
 
 export const getAccountIdentityByPrincipal = async (
@@ -208,7 +208,7 @@ export const renameSubAccount = async ({
   }
 
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await renameSubAccountApi({
       newName,
