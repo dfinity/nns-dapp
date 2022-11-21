@@ -25,6 +25,7 @@ jest.mock("$lib/services/sns-neurons.services", () => {
         onError();
       }
     }),
+    loadSnsNervousSystemFunctions: jest.fn(),
   };
 });
 
@@ -68,6 +69,12 @@ describe("SnsNeuronDetail", () => {
       const { queryByTestId } = render(SnsNeuronDetail, props);
 
       expect(queryByTestId("sns-hotkeys-card")).toBeInTheDocument();
+    });
+
+    it("should render following card", async () => {
+      const { queryByTestId } = render(SnsNeuronDetail, props);
+
+      expect(queryByTestId("sns-neuron-following")).toBeInTheDocument();
     });
   });
 
