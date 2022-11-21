@@ -3,14 +3,14 @@
  */
 
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
-import { listSnsProposals } from "$lib/services/sns.services";
+import { listSnsProposals } from "$lib/services/$public/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-jest.mock("$lib/services/sns.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
     listSnsProposals: jest.fn().mockResolvedValue(Promise.resolve()),
   };

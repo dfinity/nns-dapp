@@ -6,13 +6,17 @@ import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import StakeSnsNeuronModal from "$lib/modals/sns/StakeSnsNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
+import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
@@ -38,6 +42,12 @@ describe("StakeSnsNeuronModal", () => {
         governanceCanisterId: mockPrincipal,
       },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest

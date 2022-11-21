@@ -11,44 +11,36 @@ jest.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("Proposal", () => {
-  const renderProposalModern = (neuronsReady: boolean) =>
+  const renderProposalModern = () =>
     render(ProposalTest, {
       props: {
         proposalInfo: mockProposalInfo,
-        neuronsReady,
       },
     });
 
-  it("should be hidden if neurons are not ready", async () => {
-    const { queryByTestId } = renderProposalModern(false);
-    await waitFor(() =>
-      expect(queryByTestId("proposal-details-grid")).not.toBeInTheDocument()
-    );
-  });
-
-  it("should be visible if neurons are ready", async () => {
-    const { queryByTestId } = renderProposalModern(true);
+  it("should render a detail grid", async () => {
+    const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
       expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
     );
   });
 
   it("should render system info", async () => {
-    const { queryByTestId } = renderProposalModern(true);
+    const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
       expect(queryByTestId("proposal-system-info-details")).toBeInTheDocument()
     );
   });
 
   it("should render proposer proposal info", async () => {
-    const { queryByTestId } = renderProposalModern(true);
+    const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
       expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument()
     );
   });
 
   it("should render proposer proposal data", async () => {
-    const { queryByTestId } = renderProposalModern(true);
+    const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
       expect(
         queryByTestId("proposal-proposer-actions-entry-title")

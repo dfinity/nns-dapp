@@ -5,12 +5,14 @@
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -28,6 +30,12 @@ describe("IncreaseNeuronStakeModal", () => {
         neuron: mockNeuron,
       },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest

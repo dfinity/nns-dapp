@@ -9,7 +9,6 @@
   import { writable } from "svelte/store";
 
   export let proposalInfo: ProposalInfo;
-  export let neuronsReady: boolean;
 
   const store = writable<SelectedProposalStore>({
     proposalId: proposalInfo.id,
@@ -19,4 +18,4 @@
   setContext(SELECTED_PROPOSAL_CONTEXT_KEY, { store });
 </script>
 
-<Proposal {neuronsReady} />
+<Proposal />

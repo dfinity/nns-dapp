@@ -1,7 +1,4 @@
 <script lang="ts">
-  import SignInSns from "$lib/pages/SignInSns.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { onMount } from "svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
@@ -15,9 +12,6 @@
     }
   });
 
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   // Preloaded by +page.ts
   export let data: { project: string | null | undefined };
 
@@ -25,8 +19,4 @@
   $: ({ project: rootCanisterId } = data);
 </script>
 
-{#if signedIn}
-  <RouteModule path={AppPath.Project} params={{ rootCanisterId }} />
-{:else}
-  <SignInSns />
-{/if}
+<RouteModule path={AppPath.Project} params={{ rootCanisterId }} />

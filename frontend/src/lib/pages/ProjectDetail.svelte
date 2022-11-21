@@ -14,7 +14,6 @@
     type ProjectDetailContext,
     type ProjectDetailStore,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "$lib/utils/utils";
   import { writable } from "svelte/store";
   import { snsSummariesStore } from "$lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
@@ -71,10 +70,7 @@
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
-    if (
-      $snsSummariesStore.length === 0 ||
-      isNullish($snsSwapCommitmentsStore)
-    ) {
+    if ($snsSummariesStore.length === 0) {
       return;
     }
     // Check valid rootCanisterId

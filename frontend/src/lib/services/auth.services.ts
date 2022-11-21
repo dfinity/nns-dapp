@@ -4,6 +4,7 @@ import { toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
@@ -33,6 +34,19 @@ export const logout = async ({
   window.location.reload();
 };
 
+/**
+ * An anonymous identity that can be use for public call to the IC.
+ */
+export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
+
+/**
+ * Some services return data regardless if signed-in or not but, returns more information if signed-in.
+ * e.g. querying a proposals returns ballots information only if signed-in.
+ */
+export const getCurrentIdentity = (): Identity =>
+  get(authStore).identity ?? new AnonymousIdentity();
+
+// TODO: rename getAuthenticatedIdentity
 /**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.

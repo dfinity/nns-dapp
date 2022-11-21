@@ -2,8 +2,14 @@
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import {
+    initAppPublicData,
+    initAppAuth,
+  } from "$lib/services/$public/app.services";
+
+  onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
   const unsubscribeVoteInProgress = voteRegistrationStore.subscribe(
     ({ registrations }) =>
