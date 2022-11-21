@@ -5,11 +5,12 @@
   import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
 
   export let balance: TokenAmount | undefined;
 
   let totalTokens: string;
-  totalTokens =
+  $: totalTokens =
     balance !== undefined
       ? formatToken({
           value: balance.toE8s(),
@@ -18,27 +19,38 @@
       : "";
 </script>
 
-<div data-tid="accounts-total">
-  {#if balance !== undefined}
-    <Tooltip
-      id="wallet-total-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_total, {
+<div class="summary">
+  <Logo src="/assets/ic-logo-rounded.svg" alt="ICP" size="big" framed={false} />
+
+  <div data-tid="accounts-total">
+    <h1 data-tid="accounts-title">Internet Computer</h1>
+    {#if balance !== undefined}
+      <Tooltip
+              id="wallet-total-icp"
+              text={replacePlaceholders($i18n.accounts.current_balance_total, {
         $amount: totalTokens,
       })}
-    >
-      <AmountDisplay title amount={balance}>
-        <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
-      </AmountDisplay>
-    </Tooltip>
-  {/if}
+      >
+        <AmountDisplay inline amount={balance} />
+      </Tooltip>
+    {/if}
+  </div>
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  div {
-    margin-bottom: var(--padding-2x);
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+
+    margin: var(--padding) 0 var(--padding-3x);
     --amount-color: var(--content-color);
+
+    gap: var(--padding-2x);
+  }
+
+  div {
     width: fit-content;
   }
 
