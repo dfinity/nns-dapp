@@ -6,8 +6,11 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
 
   export let balance: TokenAmount | undefined;
+  export let logo = IC_LOGO;
+  export let title = INTERNET_COMPUTER;
 
   let totalTokens: string;
   $: totalTokens =
@@ -20,16 +23,16 @@
 </script>
 
 <div class="summary">
-  <Logo src="/assets/ic-logo-rounded.svg" alt="ICP" size="big" framed={false} />
+  <Logo src={logo} alt="" size="big" framed={false} />
 
   <div data-tid="accounts-total">
-    <h1 data-tid="accounts-title">Internet Computer</h1>
+    <h1 data-tid="accounts-title">{title}</h1>
     {#if balance !== undefined}
       <Tooltip
-              id="wallet-total-icp"
-              text={replacePlaceholders($i18n.accounts.current_balance_total, {
-        $amount: totalTokens,
-      })}
+        id="wallet-total-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+          $amount: totalTokens,
+        })}
       >
         <AmountDisplay inline amount={balance} />
       </Tooltip>

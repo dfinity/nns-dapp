@@ -1,11 +1,18 @@
 <script lang="ts">
   export let src: string;
   export let alt: string;
-  export let size: "big" | "small" = "small"
+  export let size: "big" | "small" = "small";
   export let framed = true;
 </script>
 
-<img {src} {alt} loading="lazy" class:big={size === "big"} class:framed />
+<img
+  {src}
+  {alt}
+  role="presentation"
+  loading="lazy"
+  class:big={size === "big"}
+  class:framed
+/>
 
 <style lang="scss">
   img {
