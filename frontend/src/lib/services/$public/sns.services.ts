@@ -1,5 +1,5 @@
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
-import { loadProposalsByTopic } from "$lib/services/proposals.services";
+import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -44,10 +44,9 @@ export const listSnsProposals = async (): Promise<void> => {
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
-    request: ({ certified, identity }) =>
+    request: ({ certified }) =>
       loadProposalsByTopic({
         certified,
-        identity,
         topic: Topic.SnsAndCommunityFund,
       }),
     onLoad: ({ response: proposals, certified }) =>

@@ -424,7 +424,8 @@
     "voting_results": "Voting Results",
     "remaining": "remaining",
     "next": "Navigate to next proposal",
-    "previous": "Navigate to previous proposal"
+    "previous": "Navigate to previous proposal",
+    "sign_in": "Sign in to vote"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",

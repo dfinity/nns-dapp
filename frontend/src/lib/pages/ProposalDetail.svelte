@@ -1,9 +1,8 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import { loadProposal } from "$lib/services/proposals.services";
+  import { loadProposal } from "$lib/services/$public/proposals.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { neuronsStore } from "$lib/stores/neurons.store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { writable } from "svelte/store";
   import type {
@@ -15,6 +14,7 @@
   import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
@@ -83,7 +83,8 @@
     });
   };
 
-  $: proposalId,
+  $: $authStore.identity,
+    proposalId,
     (async () => {
       if (proposalId === undefined) {
         await goBack();
@@ -101,23 +102,6 @@
 
   // END: loading and navigation
 
-  const neuronsStoreReady = (): boolean => {
-    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
-    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
-    if (neuronsReady) {
-      return true;
-    }
-
-    return (
-      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
-    );
-  };
-
-  let neuronsReady = false;
-  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
-
-  // TODO: reload after vote $proposalsStore
-
   $: layoutTitleStore.set(
     `${$i18n.proposal_detail.title}${
       $selectedProposalStore.proposalId !== undefined
@@ -128,5 +112,5 @@
 </script>
 
 <main>
-  <Proposal {neuronsReady} />
+  <Proposal />
 </main>
