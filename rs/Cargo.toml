@@ -49,6 +49,7 @@ ledger-canister = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a0
 on_wire = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 # Registry canister deploy as of 2022-11-23, ahead of Blessed Replica Version
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "0a729806f2fbc717f2183b07efac19f24f32e717" }
+idl2json = { git = "https://github.com/dfinity/idl2json", rev="3f81d545dc2c798495945fd50e96585e74968adf" }
 
 [dev-dependencies]
 maplit = "1.0.2"

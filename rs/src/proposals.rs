@@ -12,18 +12,21 @@ use crate::proposals::def::{
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
+use candid::parser::types::{IDLType, PrimType};
+use candid::parser::value::IDLValue;
 use candid::{CandidType, Decode, Deserialize};
 use ic_base_types::CanisterId;
+use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
-use serde::de::{DeserializeOwned};
+use idl2json::candid_types::internal_candid_type_to_idl_type;
+use idl2json::idl2json_with_weak_names;
+use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
-use candid::parser::value::IDLValue;
-use ic_nns_constants::IDENTITY_CANISTER_ID;
 
 type Json = String;
 
@@ -72,25 +75,20 @@ struct InternetIdentityInit {
     pub canister_creation_cycles_cost: Option<u64>,
 }
 
-fn decode_arg(arg: Vec<u8>, canister_id: CanisterId) -> Json {
+fn decode_arg(arg: &[u8], canister_id: CanisterId) -> String {
     // If canister id is II
     // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
-    if canister_id == IDENTITY_CANISTER_ID {
-        let ii_arg = Decode!(&arg, InternetIdentityInit).map_err(debug);
-        return serde_json::to_string(&ii_arg).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
+    let idl_type = if canister_id == IDENTITY_CANISTER_ID {
+        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
+        IDLType::OptT(Box::new(idl_type))
     } else {
-        // Operating on untyped Candid values
-        // https://docs.rs/candid/latest/candid/#operating-on-untyped-candid-values
-        let mut de = candid::de::IDLDeserialize::new(&arg)?;
-        let idl_value = de.get_value::<IDLValue>()?;
-        de.done()?;
-        serde_json::to_string(&idl_value).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
-    }
-    // We need the type to use `decode_one`
-    // match candid::decode_one(&arg) {
-    //     Ok(decoded) => serde_json::to_string(&decoded).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap()),
-    //     _ => serde_json::to_string("Proposal has no payload").unwrap()
-    // }
+        // This will be ignored, so we won't have any type information.
+        IDLType::PrimT(PrimType::Null)
+    };
+
+    let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
+    let json_value = idl2json_with_weak_names(&idl_value, &idl_type);
+    serde_json::to_string(&json_value).expect("Failed to serialize JSON")
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
@@ -174,6 +172,7 @@ fn debug<T: Debug>(value: T) -> String {
 }
 
 mod def {
+    use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha::Sha256;
@@ -182,7 +181,6 @@ mod def {
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
-    use crate::proposals::{decode_arg, Json};
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
@@ -253,7 +251,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(payload.arg, payload.canister_id);
+            let candid_arg = decode_arg(&payload.arg, payload.canister_id);
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,

@@ -3031,6 +3031,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
+name = "idl2json"
+version = "0.8.1"
+source = "git+https://github.com/dfinity/idl2json?rev=3f81d545dc2c798495945fd50e96585e74968adf#3f81d545dc2c798495945fd50e96585e74968adf"
+dependencies = [
+ "candid",
+ "serde_json",
+]
+
+[[package]]
 name = "idna"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3364,6 +3373,7 @@ dependencies = [
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
  "ic-sns-swap",
  "ic-sns-wasm",
+ "idl2json",
  "itertools",
  "lazy_static",
  "ledger-canister",
