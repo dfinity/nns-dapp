@@ -13,10 +13,11 @@ import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 
-let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
-let snsUpdateWrappers:
-  | Promise<Map<QueryRootCanisterId, SnsWrapper>>
-  | undefined;
+interface IdentityWrapper {
+  [principal: string]: Map<QueryRootCanisterId, SnsWrapper>;
+}
+const identitiesCertifiedWrappers: IdentityWrapper = {};
+const identitiesNotCertifiedWrappers: IdentityWrapper = {};
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -144,17 +145,23 @@ export const wrappers = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
-  switch (certified) {
-    case false:
-      if (!snsQueryWrappers) {
-        snsQueryWrappers = initWrappers({ identity, certified: false });
-      }
-      return snsQueryWrappers;
-    default:
-      if (!snsUpdateWrappers) {
-        snsUpdateWrappers = initWrappers({ identity, certified: true });
-      }
-      return snsUpdateWrappers;
+  const principalText = identity.getPrincipal().toText();
+  if (certified) {
+    if (identitiesCertifiedWrappers[principalText] === undefined) {
+      identitiesCertifiedWrappers[principalText] = await initWrappers({
+        identity,
+        certified,
+      });
+    }
+    return identitiesCertifiedWrappers[principalText];
+  } else {
+    if (identitiesNotCertifiedWrappers[principalText] === undefined) {
+      identitiesNotCertifiedWrappers[principalText] = await initWrappers({
+        identity,
+        certified,
+      });
+    }
+    return identitiesNotCertifiedWrappers[principalText];
   }
 };
 

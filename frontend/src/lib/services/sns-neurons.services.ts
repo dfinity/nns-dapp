@@ -22,6 +22,7 @@ import {
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
@@ -416,7 +417,10 @@ export const stakeNeuron = async ({
     return { success: true };
   } catch (err) {
     toastsError(
-      toToastError({ err, fallbackErrorLabelKey: "error__sns.sns_stake" })
+      ledgerErrorToToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.sns_stake",
+      })
     );
     return { success: false };
   }

@@ -678,6 +678,12 @@
     "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
     "cannot_participate": "Sorry, There was an unexpected error while participating.",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
+    "ledger_temporarily_unavailable": "Sorry, the ledger is not available at the moment. Please try again later.",
+    "ledger_duplicate": "Sorry, the transaction is duplicated. Please try again.",
+    "ledger_bad_fee": "Sorry, wrong transaction fee applied. Please try again.",
+    "ledger_created_future": "Sorry, the transaction can't be created in the future. Please try again.",
+    "ledger_too_old": "Sorry, the transaction is too old. Please try again.",
+    "ledger_unsufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   },
   "auth_accounts": {
