@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
@@ -18,6 +18,7 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
+    snsVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
   import type { SnsParameters } from "$lib/stores/sns-parameters.store";
@@ -53,6 +54,16 @@
 
   let snsParameters: SnsParameters | undefined;
   $: snsParameters = $snsProjectParametersStore;
+
+  let votingPower: number | undefined;
+  $: if (neuron !== undefined && $snsProjectParametersStore !== undefined) {
+    votingPower = snsVotingPower({
+      stake: Number(neuronStake),
+      dissolveDelayInSeconds: delayInSeconds,
+      neuron,
+      snsParameters: $snsProjectParametersStore.parameters,
+    });
+  }
 
   const goToConfirmation = async () => {
     dispatcher("nnsConfirmDelay");
@@ -107,12 +118,9 @@
       <div class="details">
         <div>
           <p class="label">
-            {formatVotingPower(
-              votingPower({
-                stake: neuronStake,
-                dissolveDelayInSeconds: delayInSeconds,
-              })
-            )}
+            {#if votingPower}
+              {formatVotingPower(votingPower)}
+            {/if}
           </p>
           <p>{$i18n.neurons.voting_power}</p>
         </div>

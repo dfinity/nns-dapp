@@ -2,7 +2,8 @@ import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
@@ -71,7 +72,8 @@ export const getSnsDissolveDelaySeconds = (
 ): bigint | undefined => {
   const delay =
     getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
-  return delay;
+  // TODO: review, is it a right place (https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L428)
+  return delay > 0n ? delay : 0n;
 };
 
 export const getSnsNeuronStake = ({
@@ -277,3 +279,112 @@ export const needsRefresh = ({
   neuron: SnsNeuron;
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
+
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L158
+export const snsVotingPower = ({
+  stake,
+  dissolveDelayInSeconds,
+  neuron,
+  snsParameters,
+}: {
+  stake: number; // e8s
+  dissolveDelayInSeconds: number;
+  neuron: SnsNeuron;
+  snsParameters: NervousSystemParameters;
+}) => {
+  console.log('')
+  console.log('stake', stake)
+  console.log('dissolveDelayInSeconds', dissolveDelayInSeconds)
+  const now_seconds = nowInSeconds();
+  // neuron
+  const { aging_since_timestamp_seconds, voting_power_percentage_multiplier } =
+    neuron;
+  const agingSinceTimestampSeconds = Number(aging_since_timestamp_seconds);
+  const votingPowerPercentageMultiplier = Number(
+    voting_power_percentage_multiplier
+  );
+  console.log('votingPowerPercentageMultiplier', votingPowerPercentageMultiplier)
+  console.log('agingSinceTimestampSeconds', agingSinceTimestampSeconds)
+  // params
+  const {
+    max_dissolve_delay_seconds,
+    max_neuron_age_for_age_bonus,
+    max_dissolve_delay_bonus_percentage,
+    max_age_bonus_percentage,
+  } = snsParameters;
+  const maxDissolveDelaySeconds = Number(
+    fromDefinedNullable(max_dissolve_delay_seconds)
+  );
+  const maxNeuronAgeForAgeBonus = Number(
+    fromDefinedNullable(max_neuron_age_for_age_bonus)
+  );
+  const maxDissolveDelayBonusPercentage = Number(
+    fromDefinedNullable(max_dissolve_delay_bonus_percentage)
+  );
+  const maxAgeBonusPercentage = Number(
+    fromDefinedNullable(max_age_bonus_percentage)
+  );
+
+  // Dissolve delay is capped to max_dissolve_delay_seconds, but we cap it
+  // again here to make sure, e.g., if this changes in the future.
+  const dissolveDelay = Math.min(
+    dissolveDelayInSeconds,
+    maxDissolveDelaySeconds
+  );
+
+  console.log('dissolveDelay', dissolveDelay)
+  // let d = std::cmp::min(
+  //   self.dissolve_delay_seconds(now_seconds),
+  //   max_dissolve_delay_seconds,
+  // ) as u128;
+
+  // 'd_stake' is the stake with bonus for dissolve delay.
+  const stakeWithDissolveDelayBonus =
+    stake + maxDissolveDelaySeconds > 0
+      ? (stake * dissolveDelay * maxDissolveDelayBonusPercentage) /
+        (100 * maxDissolveDelaySeconds)
+      : 0;
+
+  console.log('stakeWithDissolveDelayBonus', stakeWithDissolveDelayBonus)
+  // Sanity check.
+  // assert!(d_stake <= stake + (stake * (max_dissolve_delay_bonus_percentage as u128) / 100));
+
+  // The voting power is also a function of the age of the
+  // neuron, giving a bonus of up to max_age_bonus_percentage at max_neuron_age_for_age_bonus.
+  // TODO: review because `aging_since_timestamp_seconds` is updated after the increaseDissolveDelay call
+  const ageSeconds = Math.max(now_seconds - agingSinceTimestampSeconds, 0);
+
+  console.log('ageSeconds', ageSeconds)
+  const age = Math.min(ageSeconds, maxNeuronAgeForAgeBonus);
+  console.log('age', age)
+  const stakeWithDissolveDelayAndAgeBonus =
+    stakeWithDissolveDelayBonus + maxNeuronAgeForAgeBonus > 0
+      ? (stakeWithDissolveDelayBonus * age * maxAgeBonusPercentage) /
+        (100 * maxNeuronAgeForAgeBonus)
+      : 0;
+  console.log('stakeWithDissolveDelayAndAgeBonus', stakeWithDissolveDelayAndAgeBonus)
+  // Final stake 'ad_stake' has is not more than max_age_bonus_percentage above 'd_stake'.
+  // assert!(ad_stake <= d_stake + (d_stake * (max_age_bonus_percentage) / 100));
+
+  // Convert the multiplier to u128. The voting_power_percentage_multiplier represents
+  // a percent and will always be within the range 0 to 100.
+  // let v = self.voting_power_percentage_multiplier as u128;
+
+  // Apply the multiplier to 'ad_stake' and divide by 100 to have the same effect as
+  // multiplying by a percent.
+  // let vad_stake = ad_stake
+  //   .checked_mul(v)
+  //   .expect("Overflow detected when calculating voting power")
+  //   .checked_div(100)
+  //   .expect("Underflow detected when calculating voting power");
+  console.log('res',  (stakeWithDissolveDelayAndAgeBonus * votingPowerPercentageMultiplier) / 100)
+  return (
+    (stakeWithDissolveDelayAndAgeBonus * votingPowerPercentageMultiplier) / 100
+  );
+
+  // The final voting power is the stake adjusted by both age,
+  // dissolve delay, and voting power multiplier. If the stake is greater than
+  // u64::MAX divided by 2.5, the voting power may actually not
+  // fit in a u64.
+  // Math.min(vad_stake, u64::MAX as u128) as u64
+};
