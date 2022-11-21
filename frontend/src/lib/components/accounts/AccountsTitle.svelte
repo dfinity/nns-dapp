@@ -28,7 +28,7 @@
           $amount: totalTokens,
         })}
       >
-        <AmountDisplay copy amount={balance} >
+        <AmountDisplay copy amount={balance}>
           <span>Total balance is</span>
         </AmountDisplay>
       </Tooltip>

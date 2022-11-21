@@ -3,9 +3,7 @@
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
-  import {
-    snsOnlyProjectStore,
-  } from "$lib/derived/selected-project.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";

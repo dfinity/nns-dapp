@@ -20,6 +20,8 @@
   img {
     width: var(--padding-3x);
     height: var(--padding-3x);
+
+    display: var(--logo-display);
   }
 
   .framed {

@@ -31,7 +31,7 @@
 
   {#if copy}
     <Copy value={formatToken({ value: amount.toE8s(), detailed: true })} />
-    {/if}
+  {/if}
 </div>
 
 <style lang="scss">
@@ -78,7 +78,8 @@
       }
     }
 
-    &.title, &.copy {
+    &.title,
+    &.copy {
       display: block;
       word-break: break-word;
 

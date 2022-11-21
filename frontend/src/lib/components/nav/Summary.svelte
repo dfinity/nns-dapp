@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Logo from "$lib/components/ui/Logo.svelte";
+  import ProjectLogo from "$lib/components/nav/ProjectLogo.svelte";
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownHeader from "$lib/components/nav/SelectProjectDropdownHeader.svelte";
-  import type {SnsSummary} from "$lib/types/sns";
-  import {snsProjectSelectedStore} from "$lib/derived/selected-project.derived";
+  import type { SnsSummary } from "$lib/types/sns";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
   let summary: SnsSummary | undefined;
   $: summary = $snsProjectSelectedStore?.summary;
@@ -14,12 +14,17 @@
 
   let title: string;
   $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
+
+  // TODO: clean CSS when removing ENABLE_SNS - i.e. remove style not(.sns)
+  let sns = ENABLE_SNS;
 </script>
 
-<div class="summary" data-tid="accounts-summary">
-  <Logo src={logo} alt="" size="big" framed={false} testId="accounts-logo" />
+<div class="summary" data-tid="accounts-summary" class:sns>
+  <div class="logo" class:sns>
+    <ProjectLogo size="big" />
+  </div>
 
-  {#if ENABLE_SNS}
+  {#if sns}
     <SelectProjectDropdownHeader />
   {:else}
     <h1 data-tid="accounts-title">{title}</h1>
@@ -33,26 +38,51 @@
   @use "@dfinity/gix-components/styles/mixins/text";
 
   .summary {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-
-    margin: var(--padding) 0 var(--padding-3x);
-
-    column-gap: var(--padding-2x);
-
-    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 0 var(--padding-3x);
     max-width: 100%;
+
+    @include media.min-width(small) {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+
+      column-gap: var(--padding-2x);
+
+      margin: var(--padding) 0 var(--padding-3x);
+
+      width: fit-content;
+    }
 
     word-break: break-all;
 
-    :global(img) {
-      grid-row-start: 1;
-      grid-row-end: 3;
+    &:not(.sns) {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+
+      column-gap: var(--padding-2x);
+
+      margin: var(--padding) 0 var(--padding-3x);
+
+      width: fit-content;
     }
   }
 
   h1 {
     display: inline-block;
     @include text.truncate;
+  }
+
+  .logo {
+    grid-row: 1 / 3;
+
+    &.sns {
+      --logo-display: none;
+
+      @include media.min-width(small) {
+        --logo-display: block;
+      }
+    }
   }
 </style>

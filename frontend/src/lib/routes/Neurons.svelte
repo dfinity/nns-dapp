@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    ENABLE_SNS_2,
-  } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
