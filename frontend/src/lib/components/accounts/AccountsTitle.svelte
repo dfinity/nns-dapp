@@ -7,6 +7,10 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
+  import {
+    ENABLE_SNS,
+  } from "$lib/constants/environment.constants";
+  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 
   export let balance: TokenAmount | undefined;
   export let logo = IC_LOGO;
@@ -25,16 +29,23 @@
 <div class="summary" data-tid="accounts-summary">
   <Logo src={logo} alt="" size="big" framed={false} testId="accounts-logo" />
 
-  <h1 data-tid="accounts-title">{title}</h1>
+  {#if ENABLE_SNS}
+    <SelectProjectDropdownHeader />
+    {:else}
+    <h1 data-tid="accounts-title">{title}</h1>
+  {/if}
+
   {#if balance !== undefined}
-    <Tooltip
-      id="wallet-total-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_total, {
+    <div class="total" class:sns={ENABLE_SNS}>
+      <Tooltip
+              id="wallet-total-icp"
+              text={replacePlaceholders($i18n.accounts.current_balance_total, {
         $amount: totalTokens,
       })}
-    >
-      <AmountDisplay inline amount={balance} />
-    </Tooltip>
+      >
+        <AmountDisplay inline amount={balance} />
+      </Tooltip>
+    </div>
   {/if}
 </div>
 
@@ -59,6 +70,12 @@
     :global(img) {
       grid-row-start: 1;
       grid-row-end: 3;
+    }
+  }
+
+  .total {
+    &.sns {
+      margin-left: var(--padding-2x);
     }
   }
 

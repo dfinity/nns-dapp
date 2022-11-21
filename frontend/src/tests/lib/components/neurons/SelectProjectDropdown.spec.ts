@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import SelectProjectDropdown from "$lib/components/neurons/SelectProjectDropdown.svelte";
+import SelectProjectDropdown from "$lib/components/ic/SelectProjectDropdown.svelte";
 import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
