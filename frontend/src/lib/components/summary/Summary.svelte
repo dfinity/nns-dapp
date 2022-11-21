@@ -3,34 +3,23 @@
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownWrapper from "$lib/components/summary/SelectProjectDropdownWrapper.svelte";
-  import type { SnsSummary } from "$lib/types/sns";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let projectDropdown = ENABLE_SNS;
-
-  let summary: SnsSummary | undefined;
-  $: summary = $snsProjectSelectedStore?.summary;
-
-  let logo: string;
-  $: logo = summary?.metadata.logo ?? IC_LOGO;
-
-  let title: string;
-  $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
+  export let selectProjects = ENABLE_SNS;
 </script>
 
 <div
   class="summary"
   data-tid="accounts-summary"
-  class:dropdown={projectDropdown}
+  class:dropdown={selectProjects}
 >
-  <div class="logo" class:dropdown={projectDropdown}>
-    <ProjectLogo size="big" />
+  <div class="logo" class:dropdown={selectProjects}>
+    <ProjectLogo size="big" {selectProjects} />
   </div>
 
-  {#if projectDropdown}
+  {#if selectProjects}
     <SelectProjectDropdownWrapper />
   {:else}
-    <h1 data-tid="accounts-title">{title}</h1>
+    <h1 data-tid="accounts-title">{INTERNET_COMPUTER}</h1>
   {/if}
 
   <slot name="details" />
