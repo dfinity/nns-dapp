@@ -3,7 +3,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initWorker } from "$lib/services/worker.services";
-  import { initAppProxy } from "$lib/proxy/app.services.proxy";
+  import { initAppDataProxy } from "$lib/proxy/app.services.proxy";
 
   let ready = false;
 
@@ -26,7 +26,7 @@
     ready = true;
 
     // Load app global stores data
-    await initAppProxy();
+    await initAppDataProxy();
   };
 
   onMount(async () => {

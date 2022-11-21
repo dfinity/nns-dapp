@@ -7,6 +7,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -74,12 +75,14 @@
     <button class="secondary" data-tid="transaction-button-back" on:click={back}
       >{$i18n.accounts.edit_transaction}</button
     >
-    <button
-      class="primary"
-      data-tid="transaction-button-execute"
-      disabled={$busy || disableSubmit}
-      on:click={submit}>{$i18n.accounts.execute}</button
-    >
+    <SignInGuard>
+      <button
+        class="primary"
+        data-tid="transaction-button-execute"
+        disabled={$busy || disableSubmit}
+        on:click={submit}>{$i18n.accounts.execute}</button
+      >
+    </SignInGuard>
   </div>
 </div>
 

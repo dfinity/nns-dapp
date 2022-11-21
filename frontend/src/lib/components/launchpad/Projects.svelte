@@ -3,10 +3,7 @@
   import ProjectCard from "./ProjectCard.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { isNullish } from "$lib/utils/utils";
-  import {
-    snsSummariesStore,
-    snsSwapCommitmentsStore,
-  } from "$lib/stores/sns.store";
+  import { snsQueryStore, snsSummariesStore } from "$lib/stores/sns.store";
   import {
     activePadProjectsStore,
     type SnsFullProject,
@@ -24,8 +21,7 @@
   });
 
   let loading = false;
-  $: loading =
-    isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
+  $: loading = isNullish($snsSummariesStore) || isNullish($snsQueryStore);
 
   let noProjectsMessageLabel: string;
   $: noProjectsMessageLabel =

@@ -21,16 +21,15 @@ import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
-import type { Identity } from "@dfinity/agent";
 import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { getCurrentIdentity } from "../auth.services";
 import {
   queryAndUpdate,
   type QueryAndUpdateOnError,
   type QueryAndUpdateOnResponse,
   type QueryAndUpdateStrategy,
-} from "./utils.services";
+} from "../utils.services";
 
 const handleFindProposalsError = ({
   error: err,
@@ -65,6 +64,7 @@ export const listProposals = async ({
     loadFinished,
     onLoad: ({ response: proposals, certified }) => {
       proposalsStore.setProposals({ proposals, certified });
+
       loadFinished({
         paginationOver: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
         certified,
@@ -124,7 +124,6 @@ const findProposals = async ({
     certified: boolean | undefined;
   }) => void;
 }): Promise<void> => {
-  const identity: Identity = await getIdentity();
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
   const { topics, rewards, status } = filters;
@@ -169,7 +168,8 @@ const findProposals = async ({
   let uncertifiedProposals: ProposalInfo[] | undefined;
 
   return queryAndUpdate<ProposalInfo[], unknown>({
-    request: ({ certified }) =>
+    identityType: "current",
+    request: ({ certified, identity }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
     onLoad: ({ response: proposals, certified }) => {
       if (certified === false) {
@@ -191,15 +191,12 @@ const findProposals = async ({
   });
 };
 
-// TODO L2-751: switch to real data
 export const loadProposalsByTopic = async ({
   topic,
   certified,
-  identity,
 }: {
   topic: Topic;
   certified: boolean;
-  identity: Identity;
 }): Promise<ProposalInfo[]> => {
   const filters: ProposalsFiltersStore = {
     ...get(proposalsFiltersStore),
@@ -212,7 +209,7 @@ export const loadProposalsByTopic = async ({
 
   return queryProposals({
     beforeProposal: undefined,
-    identity,
+    identity: getCurrentIdentity(),
     filters,
     certified,
   });
@@ -296,10 +293,9 @@ const getProposal = async ({
   onError: QueryAndUpdateOnError<Error | unknown | undefined>;
   strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
-  const identity: Identity = await getIdentity();
-
   return queryAndUpdate<ProposalInfo | undefined, unknown>({
-    request: ({ certified }) =>
+    identityType: "current",
+    request: ({ certified, identity }) =>
       queryProposal({ proposalId, identity, certified }),
     onLoad,
     onError,
@@ -320,11 +316,12 @@ export const loadProposalPayload = async ({
 }: {
   proposalId: ProposalId;
 }): Promise<void> => {
-  const identity: Identity = await getIdentity();
-
   try {
     proposalPayloadsStore.setPayload({ proposalId, payload: undefined });
-    const payload = await queryProposalPayload({ proposalId, identity });
+    const payload = await queryProposalPayload({
+      proposalId,
+      identity: getCurrentIdentity(),
+    });
     proposalPayloadsStore.setPayload({ proposalId, payload });
   } catch (err) {
     console.error(err);

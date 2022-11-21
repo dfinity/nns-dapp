@@ -20,13 +20,20 @@ import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
-    routePathRootCanisterId: jest
-      .fn()
-      .mockImplementation(() => mockSnsFullProject.rootCanisterId.toText()),
+  };
+});
+
+jest.mock("$lib/services/$public/sns.services", () => {
+  return {
+    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+  };
+});
+
+jest.mock("$lib/services/sns.services", () => {
+  return {
+    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 

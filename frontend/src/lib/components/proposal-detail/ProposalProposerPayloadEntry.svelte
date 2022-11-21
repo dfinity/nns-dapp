@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalId } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import { loadProposalPayload } from "$lib/services/proposals.services";
+  import { loadProposalPayload } from "$lib/services/$public/proposals.services";
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";

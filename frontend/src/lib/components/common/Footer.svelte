@@ -28,10 +28,7 @@
 
     :global(.main) {
       display: grid;
-      --footer-main-inner-width: calc(
-        100% - (2 * var(--padding-0_5x)) -
-          ((var(--footer-columns) - 1) * var(--padding-0_5x))
-      );
+      --footer-main-inner-width: calc(100% - (2 * var(--padding-0_5x)));
       grid-template-columns: repeat(
         auto-fit,
         calc(var(--footer-main-inner-width) / var(--footer-columns))
@@ -41,7 +38,7 @@
       background: var(--focus-background);
       border-radius: var(--border-radius);
 
-      gap: var(--padding-0_5x);
+      gap: calc(var(--padding) * 2 / 3);
 
       @include media.min-width(small) {
         grid-template-columns: repeat(

@@ -93,30 +93,6 @@ describe("Proposals", () => {
       );
     });
 
-    describe("neuron loading", () => {
-      beforeEach(() => {
-        const mockNeuronsStoreSubscribe = (
-          run: Subscriber<NeuronsStore>
-        ): (() => void) => {
-          run({ neurons: undefined, certified: false });
-
-          return () => undefined;
-        };
-        jest
-          .spyOn(neuronsStore, "subscribe")
-          .mockImplementation(mockNeuronsStoreSubscribe);
-      });
-      afterEach(() => jest.clearAllMocks());
-
-      it("should render skeletons while loading neurons", async () => {
-        const { getByTestId } = render(Proposals);
-
-        await waitFor(() =>
-          expect(getByTestId("proposals-loading")).not.toBeNull()
-        );
-      });
-    });
-
     it("should render proposals", () => {
       mockLoadProposals();
 

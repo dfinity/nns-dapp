@@ -29,6 +29,7 @@ interface I18nCore {
   nns: string;
   previous: string;
   next: string;
+  principal_is: string;
 }
 
 interface I18nError {
@@ -209,7 +210,6 @@ interface I18nAccounts {
 interface I18nNeurons {
   title: string;
   text: string;
-  principal_is: string;
   stake_neurons: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
@@ -331,8 +331,8 @@ interface I18nVoting {
 
 interface I18nCanisters {
   title: string;
+  aria_label_canister_card: string;
   text: string;
-  principal_is: string;
   create_canister: string;
   link_canister: string;
   empty: string;
@@ -444,6 +444,7 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
+  sign_in: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -605,6 +606,7 @@ interface I18nSns_project_detail {
   sale_end: string;
   max_left: string;
   max_user_commitment_reached: string;
+  sign_in: string;
 }
 
 interface I18nSns_neuron_detail {

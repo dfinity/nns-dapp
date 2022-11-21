@@ -39,6 +39,7 @@
   div {
     margin-bottom: var(--padding-2x);
     --amount-color: var(--content-color);
+    width: fit-content;
   }
 
   h1 {
