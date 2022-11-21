@@ -29,7 +29,7 @@
         })}
       >
         <AmountDisplay copy amount={balance}>
-          <span>Total balance is</span>
+          <span>{$i18n.accounts.total}</span>
         </AmountDisplay>
       </Tooltip>
     {/if}
