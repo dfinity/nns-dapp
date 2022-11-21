@@ -12,16 +12,18 @@ use crate::proposals::def::{
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
-use candid::CandidType;
+use candid::{CandidType, Decode, Deserialize};
 use ic_base_types::CanisterId;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
-use serde::de::DeserializeOwned;
+use serde::de::{DeserializeOwned};
 use serde::Serialize;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
+use candid::parser::value::IDLValue;
+use ic_nns_constants::IDENTITY_CANISTER_ID;
 
 type Json = String;
 
@@ -59,6 +61,36 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
     }
 
     cache.insert(proposal_id, payload_json);
+}
+
+// Types used to decode arg's payload of nns_function type 4 for II upgrades
+pub type UserNumber = u64;
+#[derive(CandidType, Serialize, Deserialize)]
+struct InternetIdentityInit {
+    pub assigned_user_number_range: Option<(UserNumber, UserNumber)>,
+    pub archive_module_hash: Option<[u8; 32]>,
+    pub canister_creation_cycles_cost: Option<u64>,
+}
+
+fn decode_arg(arg: Vec<u8>, canister_id: CanisterId) -> Json {
+    // If canister id is II
+    // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
+    if canister_id == IDENTITY_CANISTER_ID {
+        let ii_arg = Decode!(&arg, InternetIdentityInit).map_err(debug);
+        return serde_json::to_string(&ii_arg).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
+    } else {
+        // Operating on untyped Candid values
+        // https://docs.rs/candid/latest/candid/#operating-on-untyped-candid-values
+        let mut de = candid::de::IDLDeserialize::new(&arg)?;
+        let idl_value = de.get_value::<IDLValue>()?;
+        de.done()?;
+        serde_json::to_string(&idl_value).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
+    }
+    // We need the type to use `decode_one`
+    // match candid::decode_one(&arg) {
+    //     Ok(decoded) => serde_json::to_string(&decoded).unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap()),
+    //     _ => serde_json::to_string("Proposal has no payload").unwrap()
+    // }
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
@@ -150,6 +182,7 @@ mod def {
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
+    use crate::proposals::{decode_arg, Json};
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
@@ -208,6 +241,7 @@ mod def {
         pub wasm_module_hash: String,
         #[serde(with = "serde_bytes")]
         pub arg: Vec<u8>,
+        pub candid_arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -220,6 +254,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
+            let candid_arg = decode_arg(payload.arg, payload.canister_id);
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -227,6 +262,7 @@ mod def {
                 canister_id: payload.canister_id,
                 wasm_module_hash,
                 arg: payload.arg,
+                candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
