@@ -24,9 +24,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
 
@@ -40,9 +38,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
 
@@ -56,9 +52,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
 
@@ -74,9 +68,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
     const value = formatVotingPower(
@@ -94,9 +86,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
     expect(getByText(en.neurons.edit_delay)).toBeInTheDocument();
@@ -107,9 +97,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       props: {
         delayInSeconds,
         neuron: mockSnsNeuron,
-        confirmButtonText: en.neurons.confirm_update_delay,
         token: ICPToken,
-        reloadNeuron: jest.fn(),
       },
     });
     expect(getByText(en.neurons.confirm_update_delay)).toBeInTheDocument();
