@@ -2,8 +2,8 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   getAnonymousIdentity,
-  getCurrentIdentity,
   getAuthenticatedIdentity,
+  getCurrentIdentity,
 } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
