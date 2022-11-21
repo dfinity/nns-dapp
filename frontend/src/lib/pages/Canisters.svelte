@@ -17,6 +17,7 @@
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
 
   export let referrerPath: AppPath | undefined = undefined;
@@ -68,7 +69,9 @@
 </script>
 
 <main>
-  <PrincipalText />
+  <Summary projectDropdown={false} >
+    <PrincipalText slot="details" inline />
+  </Summary>
 
   <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister}

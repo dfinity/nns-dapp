@@ -6,6 +6,8 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
+  export let projectDropdown = ENABLE_SNS;
+
   let summary: SnsSummary | undefined;
   $: summary = $snsProjectSelectedStore?.summary;
 
@@ -14,17 +16,14 @@
 
   let title: string;
   $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
-
-  // TODO: clean CSS when removing ENABLE_SNS - i.e. remove style not(.sns)
-  let sns = ENABLE_SNS;
 </script>
 
-<div class="summary" data-tid="accounts-summary" class:sns>
-  <div class="logo" class:sns>
+<div class="summary" data-tid="accounts-summary" class:dropdown={projectDropdown}>
+  <div class="logo" class:dropdown={projectDropdown}>
     <ProjectLogo size="big" />
   </div>
 
-  {#if sns}
+  {#if projectDropdown}
     <SelectProjectDropdownWrapper />
   {:else}
     <h1 data-tid="accounts-title">{title}</h1>
@@ -37,6 +36,17 @@
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/text";
 
+  @mixin columns {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+
+    column-gap: var(--padding-2x);
+
+    margin: var(--padding) 0 var(--padding-3x);
+
+    width: fit-content;
+  }
+
   .summary {
     display: flex;
     flex-direction: column;
@@ -44,29 +54,15 @@
     margin: 0 0 var(--padding-3x);
     max-width: 100%;
 
+    &:not(.dropdown) {
+      @include columns;
+    }
+
     @include media.min-width(small) {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-
-      column-gap: var(--padding-2x);
-
-      margin: var(--padding) 0 var(--padding-3x);
-
-      width: fit-content;
+      @include columns;
     }
 
     word-break: break-all;
-
-    &:not(.sns) {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-
-      column-gap: var(--padding-2x);
-
-      margin: var(--padding) 0 var(--padding-3x);
-
-      width: fit-content;
-    }
   }
 
   h1 {
@@ -77,7 +73,7 @@
   .logo {
     grid-row: 1 / 3;
 
-    &.sns {
+    &.dropdown {
       --logo-display: none;
 
       @include media.min-width(small) {
