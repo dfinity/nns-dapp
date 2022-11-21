@@ -139,6 +139,13 @@ describe("NnsAccounts", () => {
           `${formatToken({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
+    });
+
+    it("should render icp name", () => {
+      const { getByTestId } = render(NnsAccounts);
+
+      const titleRow = getByTestId("accounts-total");
+
       expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
     });
 

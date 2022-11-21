@@ -2,16 +2,23 @@
  * @jest-environment jsdom
  */
 
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
+import {
+  mockSnsAccountsStoreSubscribe,
+  mockSnsMainAccount,
+} from "../../mocks/sns-accounts.mock";
+import { mockSnsFullProject, mockSummary } from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -25,6 +32,10 @@ describe("SnsAccounts", () => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+
+      jest
+        .spyOn(snsProjectSelectedStore, "subscribe")
+        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
       page.mock({ data: { universe: mockPrincipal.toText() } });
     });
@@ -67,6 +78,33 @@ describe("SnsAccounts", () => {
       render(SnsAccounts);
 
       expect(syncSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
+    });
+
+    it("should render total accounts sns project", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const titleRow = getByTestId("accounts-total");
+
+      // we are testing with only one account so we can use it to check the total is displayed
+      await waitFor(() =>
+        expect(
+          titleRow?.textContent?.includes(
+            `${formatToken({ value: mockSnsMainAccount.balance.toE8s() })} ${
+              mockSnsMainAccount.balance.token.symbol
+            }`
+          )
+        ).toBeTruthy()
+      );
+    });
+
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const titleRow = getByTestId("accounts-total");
+
+      expect(
+        titleRow?.textContent?.includes(mockSummary.metadata.name)
+      ).toBeTruthy();
     });
   });
 
