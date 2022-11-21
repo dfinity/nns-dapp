@@ -1,4 +1,5 @@
 export const prerender = true;
+// TODO: no ssr for local development until https://github.com/dfinity/ic-js/issues/238 solved
 export const ssr = import.meta.env.PROD;
 
 // Polyfill Buffer for development purpose. node_modules/@ledgerhq needs buffer.
