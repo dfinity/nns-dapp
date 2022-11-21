@@ -135,7 +135,7 @@
     "ic_logo": "Internet Computer logo"
   },
   "accounts": {
-    "total": "Total",
+    "total": "Total balance is",
     "main": "Main",
     "balance": "Balance",
     "new_transaction": "New Transaction",
@@ -432,7 +432,7 @@
     "neurons": "Neurons",
     "voting_power": "Voting Power",
     "vote_progress": "Vote Progress",
-    "total": "Total balance is",
+    "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
     "confirm_adopt_headline": "Adopt Proposal",
