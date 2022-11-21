@@ -3,9 +3,17 @@
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownHeader from "$lib/components/nav/SelectProjectDropdownHeader.svelte";
+  import type {SnsSummary} from "$lib/types/sns";
+  import {snsProjectSelectedStore} from "$lib/derived/selected-project.derived";
 
-  export let logo = IC_LOGO;
-  export let title = INTERNET_COMPUTER;
+  let summary: SnsSummary | undefined;
+  $: summary = $snsProjectSelectedStore?.summary;
+
+  let logo: string;
+  $: logo = summary?.metadata.logo ?? IC_LOGO;
+
+  let title: string;
+  $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
 </script>
 
 <div class="summary" data-tid="accounts-summary">

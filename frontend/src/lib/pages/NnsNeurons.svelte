@@ -9,7 +9,6 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-  import IntroductionText from "$lib/components/ui/IntroductionText.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -24,10 +23,6 @@
       })
     );
 </script>
-
-<IntroductionText>
-  <svelte:fragment slot="text">{$i18n.neurons.text}</svelte:fragment>
-</IntroductionText>
 
 <div class="card-grid" data-tid="neurons-body">
   {#if isLoading}
