@@ -39,13 +39,13 @@ describe("CanisterCardTitle", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("renders title as h3 per default", async () => {
+  it("renders title as h4 per default", async () => {
     const { container } = render(CanisterCardTitle, {
       props: {
         canister: mockCanister,
       },
     });
-    expect(container.querySelector("h3")).not.toBeNull();
+    expect(container.querySelector("h4")).not.toBeNull();
   });
 
   it("renders title as h1", async () => {

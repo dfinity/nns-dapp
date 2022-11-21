@@ -12,6 +12,6 @@
     justify-content: center;
     align-items: center;
 
-    padding-top: var(--padding-4x);
+    padding: 0 0 var(--padding-4x);
   }
 </style>

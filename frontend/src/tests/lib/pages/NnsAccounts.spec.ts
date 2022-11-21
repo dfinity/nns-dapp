@@ -26,9 +26,9 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = container.querySelector("section > div");
+      const titleRow = getByTestId("accounts-total");
 
       expect(
         titleRow?.textContent?.startsWith(
@@ -56,10 +56,10 @@ describe("NnsAccounts", () => {
       const { container } = render(NnsAccounts);
 
       const cardTitleRow = container.querySelector(
-        "article > div div:last-of-type"
+        'article > div[data-tid="token-value-label"]'
       );
 
-      expect(cardTitleRow?.textContent).toEqual(
+      expect(cardTitleRow?.textContent.trim()).toEqual(
         `${formatToken({ value: mockMainAccount.balance.toE8s() })} ICP`
       );
     });
@@ -128,9 +128,9 @@ describe("NnsAccounts", () => {
     afterAll(jest.clearAllMocks);
 
     it("should render total accounts icp", () => {
-      const { container } = render(NnsAccounts);
+      const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = container.querySelector("section > div");
+      const titleRow = getByTestId("accounts-total");
 
       expect(
         titleRow?.textContent?.startsWith(

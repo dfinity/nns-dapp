@@ -77,10 +77,7 @@
         })),
     });
 
-  onDestroy(() => {
-    unsubscribe();
-    votingNeuronSelectStore.reset();
-  });
+  onDestroy(() => unsubscribe());
 
   // UI loader
   const neuronsStoreReady = (): boolean => {

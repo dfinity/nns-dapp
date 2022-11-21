@@ -25,7 +25,8 @@
     "badgeNew": "New",
     "nns": "Network Nervous System",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "principal_is": "Your principal id is"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -159,8 +160,8 @@
     "edit_name": "Edit Name",
     "new_linked_account_enter_name": "Enter Account Name",
     "new_linked_account_placeholder": "Account Name",
-    "subAccount": "LINKED ACCOUNT",
-    "hardwareWallet": "HARDWARE WALLET",
+    "subAccount": "Linked account",
+    "hardwareWallet": "Hardware wallet",
     "select_source": "Select Source Account",
     "select_destination": "Select Destination",
     "address": "Address",
@@ -199,7 +200,6 @@
   "neurons": {
     "title": "Neurons",
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
-    "principal_is": "Your principal id is",
     "stake_neurons": "Stake Neurons",
     "merge_neurons": "Merge Neurons",
     "merge_neurons_modal_title": "Select two neurons to merge",
@@ -224,8 +224,8 @@
     "may_take_while": "This may take up to one minute",
     "create": "Create",
     "edit_source": "Edit Source Account",
-    "community_fund": "COMMUNITY FUND",
-    "hotkey_control": "HOTKEY CONTROL",
+    "community_fund": "Community fund",
+    "hotkey_control": "Hotkey control",
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
@@ -317,8 +317,8 @@
   },
   "canisters": {
     "title": "Canisters",
+    "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
-    "principal_is": "Your principal id is",
     "create_canister": "Create Canister",
     "link_canister": "Link Canister",
     "empty": "No canisters yet.",
@@ -591,7 +591,8 @@
   "sns_neurons": {
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
-    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully."
+    "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
+    "token_stake": "$amount $token Stake"
   },
   "time": {
     "year": "year",
@@ -669,6 +670,7 @@
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
     "sns_stake": "There was an error while staking the neuron.",
     "sns_neuron_account": "There was an error while staking the neuron.",
+    "sns_dissolve_delay_action": "There was an error while updating dissolve delay of the neuron.",
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
     "project_not_open": "Sorry, the project does not accept participations yet.",
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",

@@ -30,7 +30,7 @@
     <button
       disabled={votingInProgress}
       data-tid="merge-neurons-button"
-      class="primary full-width"
+      class="secondary full-width"
       on:click={() => openModal("merge-neurons")}
       >{$i18n.neurons.merge_neurons}</button
     >
@@ -39,7 +39,7 @@
       <button
         disabled
         data-tid="merge-neurons-button"
-        class="primary full-width tooltip-button"
+        class="secondary full-width tooltip-button"
         on:click={() => openModal("merge-neurons")}
         >{$i18n.neurons.merge_neurons}</button
       >

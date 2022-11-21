@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
+  import {
+    ENABLE_SNS,
+    ENABLE_SNS_2,
+  } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
@@ -11,7 +14,7 @@
   import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
 </script>
 
-<main class="legacy">
+<main>
   {#if ENABLE_SNS}
     <SelectProjectDropdownHeader />
   {/if}
@@ -25,6 +28,13 @@
 
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
-{:else if $snsProjectIdSelectedStore !== undefined && IS_TESTNET}
+  <!-- Staking SNS Neurons has not yet been reviewed by security -->
+{:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_2}
   <SnsNeuronsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

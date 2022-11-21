@@ -1,6 +1,6 @@
 <script lang="ts">
   import Footer from "$lib/components/common/Footer.svelte";
-  import { Modal, Spinner, Toolbar } from "@dfinity/gix-components";
+  import { Modal, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import StakeSnsNeuronModal from "$lib/modals/sns/StakeSnsNeuronModal.svelte";
   import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
@@ -12,15 +12,13 @@
   const closeModal = () => (showModal = undefined);
 </script>
 
-<Footer>
-  <Toolbar>
-    <button
-      data-tid="stake-sns-neuron-button"
-      class="primary full-width"
-      on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
-    >
-  </Toolbar>
+<Footer columns={1}>
+  <button
+    data-tid="stake-sns-neuron-button"
+    class="primary full-width"
+    on:click={() => openModal("stake-neuron")}
+    >{$i18n.neurons.stake_neurons}</button
+  >
 </Footer>
 
 {#if showModal === "stake-neuron"}

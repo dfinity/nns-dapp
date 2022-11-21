@@ -40,20 +40,21 @@
       : undefined;
 </script>
 
-<section data-tid="accounts-body">
-  <AccountsTitle balance={totalBalance} />
+<AccountsTitle balance={totalBalance} />
+
+<div class="card-grid" data-tid="accounts-body">
   {#if accounts?.main?.identifier}
     <AccountCard
       role="link"
       on:click={() => cardClick(accounts?.main?.identifier ?? "")}
-      showCopy
+      hash
       account={accounts?.main}>{$i18n.accounts.main}</AccountCard
     >
     {#each accounts.subAccounts ?? [] as subAccount}
       <AccountCard
         role="link"
         on:click={() => cardClick(subAccount.identifier)}
-        showCopy
+        hash
         account={subAccount}>{subAccount.name}</AccountCard
       >
     {/each}
@@ -61,11 +62,11 @@
       <AccountCard
         role="link"
         on:click={() => cardClick(walletAccount.identifier)}
-        showCopy
+        hash
         account={walletAccount}>{walletAccount.name}</AccountCard
       >
     {/each}
   {:else}
     <SkeletonCard />
   {/if}
-</section>
+</div>

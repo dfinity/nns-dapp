@@ -42,7 +42,10 @@ describe("SnsNeuronDetail", () => {
 
   describe("when neuron and projects are valid and present", () => {
     beforeEach(() =>
-      page.mock({ data: { universe: rootCanisterIdMock.toText() } })
+      page.mock({
+        data: { universe: rootCanisterIdMock.toText() },
+        routeId: AppPath.Neuron,
+      })
     );
 
     const props = {

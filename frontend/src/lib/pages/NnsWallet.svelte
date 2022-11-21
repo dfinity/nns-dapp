@@ -26,6 +26,7 @@
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -66,7 +67,11 @@
     }
 
     // handle unknown accountIdentifier from URL
-    if (account === undefined && $accountsStore.main !== undefined) {
+    if (
+      account === undefined &&
+      $accountsStore.main !== undefined &&
+      $pageStore.path === AppPath.Wallet
+    ) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
