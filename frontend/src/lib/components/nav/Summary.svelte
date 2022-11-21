@@ -25,21 +25,18 @@
     <h1 data-tid="accounts-title">{title}</h1>
   {/if}
 
-  <div class="details" class:sns={ENABLE_SNS}>
-    <slot name="details" />
-  </div>
+  <slot name="details" />
 </div>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .summary {
     display: grid;
     grid-template-columns: repeat(2, auto);
 
     margin: var(--padding) 0 var(--padding-3x);
-    --amount-color: var(--content-color);
 
     column-gap: var(--padding-2x);
 
@@ -51,12 +48,6 @@
     :global(img) {
       grid-row-start: 1;
       grid-row-end: 3;
-    }
-  }
-
-  .details {
-    &.sns {
-      margin-left: var(--padding-2x);
     }
   }
 

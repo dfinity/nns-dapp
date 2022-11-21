@@ -1,12 +1,14 @@
 <script lang="ts">
   import type { TokenAmount } from "@dfinity/nns";
   import { formatToken } from "$lib/utils/token.utils";
+  import { Copy } from "@dfinity/gix-components";
 
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;
   export let inline = false;
   export let singleLine = false;
   export let title = false;
+  export let copy = false;
   export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
   export let detailed = false;
@@ -17,6 +19,7 @@
   class:singleLine
   class:inheritSize
   class:title
+  class:copy
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
@@ -25,6 +28,10 @@
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
+
+  {#if copy}
+    <Copy value={formatToken({ value: amount.toE8s(), detailed: true })} />
+    {/if}
 </div>
 
 <style lang="scss">
@@ -71,16 +78,30 @@
       }
     }
 
-    &.title {
+    &.title, &.copy {
       display: block;
       word-break: break-word;
 
-      span:first-of-type {
-        @include fonts.h1(true);
-      }
-
       span.label {
         @include fonts.small;
+      }
+    }
+
+    &.title {
+      span.value {
+        @include fonts.h1(true);
+      }
+    }
+
+    &.copy {
+      span.value {
+        @include fonts.standard(true);
+      }
+
+      vertical-align: sub;
+
+      :global(button) {
+        vertical-align: sub;
       }
     }
   }

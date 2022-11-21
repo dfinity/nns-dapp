@@ -20,7 +20,7 @@
 </script>
 
 <Summary>
-  <svelte:fragment slot="details">
+  <div class="details" slot="details">
     {#if balance !== undefined}
       <Tooltip
         id="wallet-total-icp"
@@ -28,8 +28,19 @@
           $amount: totalTokens,
         })}
       >
-        <AmountDisplay inline amount={balance} />
+        <AmountDisplay copy amount={balance} >
+          <span>Total balance is</span>
+        </AmountDisplay>
       </Tooltip>
     {/if}
-  </svelte:fragment>
+  </div>
 </Summary>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/fonts";
+
+  .details {
+    color: var(--description-color);
+    @include fonts.small;
+  }
+</style>

@@ -15,20 +15,7 @@
 </p>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/fonts";
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
-
-  .text {
-    @include fonts.small;
-
-    @include media.min-width(medium) {
-      max-width: 75%;
-    }
-
-    @include media.min-width(large) {
-      max-width: 55%;
-    }
-  }
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .principal {
     display: flex;
@@ -37,6 +24,7 @@
 
     &.inline {
       display: inline-block;
+      margin: 0;
     }
 
     span {
