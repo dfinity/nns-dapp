@@ -239,8 +239,7 @@ mod def {
         pub mode: CanisterInstallMode,
         pub canister_id: CanisterId,
         pub wasm_module_hash: String,
-        #[serde(with = "serde_bytes")]
-        pub arg: Vec<u8>,
+        pub arg: String,
         pub candid_arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
@@ -261,7 +260,7 @@ mod def {
                 mode: payload.mode,
                 canister_id: payload.canister_id,
                 wasm_module_hash,
-                arg: payload.arg,
+                arg: hex::encode(&payload.arg),
                 candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
