@@ -1,4 +1,5 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
@@ -258,10 +259,7 @@ describe("sns-neuron utils", () => {
   describe("canIdentityManageHotkeys", () => {
     const addHotkeysPermission = (key) => ({
       principal: [Principal.fromText(key)] as [Principal],
-      permission_type: Int32Array.from([
-        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-      ]),
+      permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
     });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
@@ -338,10 +336,7 @@ describe("sns-neuron utils", () => {
   describe("getSnsNeuronHotkeys", () => {
     const addVoteProposalPermission = (key) => ({
       principal: [Principal.fromText(key)] as [Principal],
-      permission_type: Int32Array.from([
-        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-      ]),
+      permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
     });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
@@ -392,10 +387,7 @@ describe("sns-neuron utils", () => {
           },
           {
             principal: [Principal.fromText(hotkey)] as [Principal],
-            permission_type: Int32Array.from([
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-            ]),
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
           },
           controllerPermission,
         ],
@@ -413,10 +405,7 @@ describe("sns-neuron utils", () => {
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
-            permission_type: Int32Array.from([
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-            ]),
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
           },
         ],
       };

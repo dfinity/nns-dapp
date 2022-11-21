@@ -10,7 +10,7 @@ import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 
 jest.mock("../../../../../lib/services/sns-neurons.services", () => {
   return {
-    loadSnsTopics: jest.fn(),
+    loadSnsNervousSystemFunctions: jest.fn(),
   };
 });
 

@@ -3,7 +3,7 @@
  */
 
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { loadSnsTopics } from "$lib/services/sns-neurons.services";
+import { loadSnsNervousSystemFunctions } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
@@ -15,7 +15,7 @@ import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.m
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
 jest.mock("../../../../../src/lib/services/sns-neurons.services", () => ({
-  loadSnsTopics: jest.fn(),
+  loadSnsNervousSystemFunctions: jest.fn(),
 }));
 
 describe("SnsNeuronFollowingCard", () => {
@@ -51,7 +51,9 @@ describe("SnsNeuronFollowingCard", () => {
     it("loads sns topics", async () => {
       renderCard(controlledNeuron);
 
-      await waitFor(() => expect(loadSnsTopics).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(loadSnsNervousSystemFunctions).toHaveBeenCalled()
+      );
     });
 
     it("renders button to follow neurons", () => {
@@ -85,7 +87,9 @@ describe("SnsNeuronFollowingCard", () => {
     it("loads sns topics", async () => {
       renderCard(uncontrolledNeuron);
 
-      await waitFor(() => expect(loadSnsTopics).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(loadSnsNervousSystemFunctions).toHaveBeenCalled()
+      );
     });
 
     it("does not render button to follow neurons", () => {

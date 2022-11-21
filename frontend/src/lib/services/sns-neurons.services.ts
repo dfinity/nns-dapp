@@ -13,6 +13,7 @@ import {
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
@@ -30,7 +31,6 @@ import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
-  SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -234,13 +234,9 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     await addNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal: hotkey,
       rootCanisterId,
@@ -266,14 +262,10 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal,
       rootCanisterId,
@@ -431,7 +423,9 @@ export const stakeNeuron = async ({
 };
 
 // This is a public service.
-export const loadSnsTopics = async (rootCanisterId: Principal) => {
+export const loadSnsNervousSystemFunctions = async (
+  rootCanisterId: Principal
+) => {
   const identity = await getIdentity();
   // We load with a query call only. Nervous System Functions are public and not related to the user.
   const functions = await getNervousSystemFunctions({

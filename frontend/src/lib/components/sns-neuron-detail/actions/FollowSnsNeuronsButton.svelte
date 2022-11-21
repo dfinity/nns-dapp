@@ -13,7 +13,7 @@
 </script>
 
 <button
-  class="secondary"
+  class="primary"
   on:click={openModal}
   data-tid="sns-follow-neurons-button"
   >{$i18n.neuron_detail.follow_neurons}</button

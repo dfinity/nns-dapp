@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { loadSnsTopics } from "$lib/services/sns-neurons.services";
+  import { loadSnsNervousSystemFunctions } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -12,13 +12,13 @@
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getContext } from "svelte";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
 
   $: {
     if (rootCanisterId !== undefined) {
       // To render the topics of the followees we need to fetch all the topics.
-      loadSnsTopics(rootCanisterId);
+      loadSnsNervousSystemFunctions(rootCanisterId);
     }
   }
 
@@ -48,11 +48,12 @@
     >
   </KeyValuePairInfo>
 
-  <div class="actions">
-    {#if allowedToManageFollows && nonNullish(neuron) && nonNullish(rootCanisterId)}
+  <!-- TS doesn't understand that neuron is defined if allowedToManageFollows is true -->
+  {#if allowedToManageFollows && nonNullish(neuron) && nonNullish(rootCanisterId)}
+    <div class="actions">
       <FollowSnsNeuronsButton {neuron} {rootCanisterId} />
-    {/if}
-  </div>
+    </div>
+  {/if}
 </CardInfo>
 
 <style lang="scss">

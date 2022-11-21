@@ -4,6 +4,7 @@
 
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
@@ -17,7 +18,6 @@ import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
   neuronSubaccount,
-  SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -36,7 +36,7 @@ const {
   addHotkey,
   removeHotkey,
   stakeNeuron,
-  loadSnsTopics,
+  loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
 } = services;
 
 describe("sns-neurons-services", () => {
@@ -375,10 +375,7 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: hotkey,
         rootCanisterId: mockPrincipal,
-        permissions: [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ],
+        permissions: HOTKEY_PERMISSIONS,
       });
     });
   });
@@ -400,10 +397,7 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
-        permissions: [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ],
+        permissions: HOTKEY_PERMISSIONS,
       });
     });
   });
@@ -553,13 +547,13 @@ describe("sns-neurons-services", () => {
     });
   });
 
-  describe("loadSnsTopics", () => {
+  describe("loadSnsNervousSystemFunctions", () => {
     it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
       const spyGetFunctions = jest
         .spyOn(governanceApi, "getNervousSystemFunctions")
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
-      await loadSnsTopics(mockPrincipal);
+      await loadSnsNervousSystemFunctions(mockPrincipal);
 
       const store = get(snsFunctionsStore);
       expect(store[mockPrincipal.toText()]).toEqual([

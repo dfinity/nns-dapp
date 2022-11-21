@@ -1,3 +1,4 @@
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -119,10 +120,7 @@ export const canIdentityManageHotkeys = ({
   hasPermissions({
     neuron,
     identity,
-    permissions: [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ],
+    permissions: HOTKEY_PERMISSIONS,
   });
 
 export const hasPermissionToDisburse = ({
@@ -214,11 +212,9 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ].find((permission) => !permission_type.includes(permission)) ===
-        undefined
+        HOTKEY_PERMISSIONS.find(
+          (permission) => !permission_type.includes(permission)
+        ) === undefined
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
