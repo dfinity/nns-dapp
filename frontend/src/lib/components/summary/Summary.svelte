@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ProjectLogo from "$lib/components/nav/ProjectLogo.svelte";
+  import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
-  import SelectProjectDropdownHeader from "$lib/components/nav/SelectProjectDropdownHeader.svelte";
+  import SelectProjectDropdownWrapper from "$lib/components/summary/SelectProjectDropdownWrapper.svelte";
   import type { SnsSummary } from "$lib/types/sns";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
@@ -25,7 +25,7 @@
   </div>
 
   {#if sns}
-    <SelectProjectDropdownHeader />
+    <SelectProjectDropdownWrapper />
   {:else}
     <h1 data-tid="accounts-title">{title}</h1>
   {/if}

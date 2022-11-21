@@ -5,7 +5,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import Summary from "$lib/components/nav/Summary.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let balance: TokenAmount | undefined;
 

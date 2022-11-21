@@ -17,7 +17,7 @@
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import PrincipalText from "$lib/components/nav/PrincipalText.svelte";
+  import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
 
   export let referrerPath: AppPath | undefined = undefined;
 

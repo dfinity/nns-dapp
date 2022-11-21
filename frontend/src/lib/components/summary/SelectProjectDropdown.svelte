@@ -7,7 +7,7 @@
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
   import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
-  import ProjectLogo from "$lib/components/nav/ProjectLogo.svelte";
+  import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
 
   let selectedCanisterId: string | undefined;
 
