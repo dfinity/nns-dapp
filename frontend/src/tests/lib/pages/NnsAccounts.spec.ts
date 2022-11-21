@@ -29,7 +29,7 @@ describe("NnsAccounts", () => {
         .mockImplementation(mockAccountsStoreSubscribe());
       const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = getByTestId("accounts-total");
+      const titleRow = getByTestId("accounts-summary");
 
       expect(
         titleRow?.textContent?.includes(
@@ -132,7 +132,7 @@ describe("NnsAccounts", () => {
     it("should render total accounts icp", () => {
       const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = getByTestId("accounts-total");
+      const titleRow = getByTestId("accounts-summary");
 
       expect(
         titleRow?.textContent?.includes(
@@ -144,7 +144,7 @@ describe("NnsAccounts", () => {
     it("should render icp name", () => {
       const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = getByTestId("accounts-total");
+      const titleRow = getByTestId("accounts-summary");
 
       expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
     });

@@ -22,26 +22,25 @@
       : "";
 </script>
 
-<div class="summary">
+<div class="summary" data-tid="accounts-summary">
   <Logo src={logo} alt="" size="big" framed={false} testId="accounts-logo" />
 
-  <div data-tid="accounts-total">
-    <h1 data-tid="accounts-title">{title}</h1>
-    {#if balance !== undefined}
-      <Tooltip
-        id="wallet-total-icp"
-        text={replacePlaceholders($i18n.accounts.current_balance_total, {
-          $amount: totalTokens,
-        })}
-      >
-        <AmountDisplay inline amount={balance} />
-      </Tooltip>
-    {/if}
-  </div>
+  <h1 data-tid="accounts-title">{title}</h1>
+  {#if balance !== undefined}
+    <Tooltip
+      id="wallet-total-icp"
+      text={replacePlaceholders($i18n.accounts.current_balance_total, {
+        $amount: totalTokens,
+      })}
+    >
+      <AmountDisplay inline amount={balance} />
+    </Tooltip>
+  {/if}
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .summary {
     display: grid;
@@ -50,14 +49,21 @@
     margin: var(--padding) 0 var(--padding-3x);
     --amount-color: var(--content-color);
 
-    gap: var(--padding-2x);
-  }
+    column-gap: var(--padding-2x);
 
-  div {
     width: fit-content;
+    max-width: 100%;
+
+    word-break: break-all;
+
+    :global(img) {
+      grid-row-start: 1;
+      grid-row-end: 3;
+    }
   }
 
   h1 {
     display: inline-block;
+    @include text.truncate;
   }
 </style>
