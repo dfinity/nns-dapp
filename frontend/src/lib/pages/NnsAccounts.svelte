@@ -8,7 +8,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
+  import AccountsTitle from "$lib/components/nav/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";

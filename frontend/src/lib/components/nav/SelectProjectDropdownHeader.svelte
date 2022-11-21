@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SelectProjectDropdown from "$lib/components/ic/SelectProjectDropdown.svelte";
+  import SelectProjectDropdown from "$lib/components/nav/SelectProjectDropdown.svelte";
 </script>
 
 <div class="dropdown-wrapper">

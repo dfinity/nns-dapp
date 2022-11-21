@@ -2,7 +2,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
-  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
+  import AccountsTitle from "$lib/components/nav/AccountsTitle.svelte";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,

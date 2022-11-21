@@ -10,7 +10,7 @@
   import {
     ENABLE_SNS,
   } from "$lib/constants/environment.constants";
-  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
+  import SelectProjectDropdownHeader from "$lib/components/nav/SelectProjectDropdownHeader.svelte";
 
   export let balance: TokenAmount | undefined;
   export let logo = IC_LOGO;

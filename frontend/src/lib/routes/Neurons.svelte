@@ -11,7 +11,7 @@
     isNnsProjectStore,
     snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
-  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
+  import SelectProjectDropdownHeader from "$lib/components/nav/SelectProjectDropdownHeader.svelte";
 </script>
 
 <main>
