@@ -8,7 +8,7 @@ import {
 } from "$lib/derived/sorted-sns-neurons.derived";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -25,7 +25,7 @@ import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    loadSnsNeurons: jest.fn().mockReturnValue(undefined),
+    syncSnsNeurons: jest.fn().mockReturnValue(undefined),
   };
 });
 
@@ -72,7 +72,7 @@ describe("SnsNeurons", () => {
       render(SnsNeurons);
       expect(authStoreMock).toHaveBeenCalled();
       await waitFor(() => expect(syncSnsAccounts).toBeCalled());
-      await waitFor(() => expect(loadSnsNeurons).toBeCalled());
+      await waitFor(() => expect(syncSnsNeurons).toBeCalled());
     });
 
     it("should render a principal as text", () => {

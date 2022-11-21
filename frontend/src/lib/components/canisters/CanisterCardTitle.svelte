@@ -4,7 +4,7 @@
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
-  export let titleTag: "h1" | "h3" = "h3";
+  export let titleTag: "h1" | "h4" = "h4";
 
   let canisterId: string;
   let validName: boolean;
@@ -13,29 +13,24 @@
 
 <div class={`title-block ${titleTag}`}>
   <svelte:element this={titleTag} class="title value"
-    >{validName ? canister.name : canisterId}</svelte:element
-  >
-
-  {#if !validName}
-    <Copy value={canisterId} />
-  {/if}
+    ><span>{validName ? canister.name : canisterId}</span>
+    {#if !validName}
+      <Copy value={canisterId} />
+    {/if}
+  </svelte:element>
 </div>
 
 <style lang="scss">
-  .h3 {
-    :global(button) {
-      margin-bottom: var(--padding-0_5x);
-    }
-  }
-
-  .h1 {
-    :global(button) {
-      margin-bottom: var(--padding);
+  .title-block {
+    :global(h4) {
+      display: inline-flex;
+      align-items: center;
     }
   }
 
   .title {
     white-space: pre-wrap;
     display: initial;
+    text-align: left;
   }
 </style>

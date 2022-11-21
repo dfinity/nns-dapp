@@ -21,16 +21,19 @@ export const renderContextWrapper = <T>({
   Component,
   contextKey,
   contextValue,
+  props,
 }: {
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
+  props?: any;
 }): RenderResult =>
   render(ContextWrapperTest, {
     props: {
       contextKey,
       contextValue,
       Component,
+      props,
     },
   });
 
@@ -55,10 +58,12 @@ export const renderSelectedSnsNeuronContext = ({
   Component,
   neuron,
   reload,
+  props,
 }: {
   Component: typeof SvelteComponent;
   neuron: SnsNeuron;
   reload: () => Promise<void>;
+  props?: any;
 }) =>
   renderContextWrapper({
     Component,
@@ -71,6 +76,7 @@ export const renderSelectedSnsNeuronContext = ({
         },
         neuron,
       }),
+      props,
       reload,
     } as SelectedSnsNeuronContext,
   });

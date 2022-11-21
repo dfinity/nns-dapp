@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import {
@@ -11,8 +11,8 @@
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 </script>
 
-<main class="legacy">
-  {#if ENABLE_SNS_2}
+<main>
+  {#if ENABLE_SNS}
     <SelectProjectDropdownHeader />
   {/if}
 
@@ -28,3 +28,9 @@
 {:else}
   <SnsAccountsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

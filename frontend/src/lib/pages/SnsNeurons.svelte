@@ -1,13 +1,11 @@
 <script lang="ts">
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { Value } from "@dfinity/gix-components";
-  import { authStore } from "$lib/stores/auth.store";
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
   } from "$lib/derived/sorted-sns-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
@@ -18,6 +16,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import IntroductionText from "$lib/components/ui/IntroductionText.svelte";
 
   let loading = true;
 
@@ -26,7 +25,7 @@
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
         await Promise.all([
-          loadSnsNeurons(selectedProjectCanisterId),
+          syncSnsNeurons(selectedProjectCanisterId),
           syncSnsAccounts(selectedProjectCanisterId),
         ]);
         loading = false;
@@ -35,9 +34,6 @@
   );
 
   onDestroy(unsubscribe);
-
-  let principalText = "";
-  $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
@@ -50,12 +46,9 @@
   };
 </script>
 
-<section data-tid="sns-neurons-body">
-  <p class="description">
-    {$i18n.neurons.principal_is}
-    <Value>{principalText}</Value>
-  </p>
+<IntroductionText />
 
+<div class="card-grid" data-tid="sns-neurons-body">
   {#if loading}
     <SkeletonCard />
     <SkeletonCard />
@@ -85,13 +78,9 @@
       {/each}
     {/if}
   {/if}
-</section>
+</div>
 
 <style lang="scss">
-  p:last-of-type {
-    margin-bottom: var(--padding-3x);
-  }
-
   .top-margin {
     margin-top: var(--padding-4x);
   }

@@ -46,8 +46,9 @@
     );
 </script>
 
-<section data-tid="sns-accounts-body">
-  <AccountsTitle balance={totalAmountToken} />
+<AccountsTitle balance={totalAmountToken} />
+
+<div class="card-grid" data-tid="sns-accounts-body">
   {#if loading}
     <SkeletonCard />
   {:else}
@@ -55,9 +56,9 @@
       <AccountCard
         role="link"
         on:click={() => goToDetails(account)}
-        showCopy
+        hash
         {account}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}
   {/if}
-</section>
+</div>

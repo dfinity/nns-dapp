@@ -4,7 +4,7 @@
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
@@ -23,7 +23,7 @@
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(async () => {
-    if (!ENABLE_SNS_2) {
+    if (!ENABLE_SNS) {
       await goto(AppPath.Accounts, { replaceState: true });
       return;
     }

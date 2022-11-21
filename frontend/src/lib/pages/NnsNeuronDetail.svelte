@@ -21,6 +21,7 @@
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -46,7 +47,11 @@
 
   const neuronDidUpdate = async ({ neuron }: NeuronFromStore) => {
     // handle unknown neuronId from URL
-    if (neuron === undefined && $neuronsStore.neurons !== undefined) {
+    if (
+      neuron === undefined &&
+      $neuronsStore.neurons !== undefined &&
+      $pageStore.path === AppPath.Neuron
+    ) {
       toastsError({
         labelKey: $i18n.error.neuron_not_found,
       });

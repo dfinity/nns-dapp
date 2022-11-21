@@ -57,21 +57,23 @@
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
   <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
-    <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
+    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronId} />
     {#if isHotkey}
       <span>{$i18n.neurons.hotkey_control}</span>
     {/if}
   </div>
 
-  <div slot="end" class="currency">
-    {#if neuronStake !== undefined}
-      <AmountDisplay amount={neuronStake} />
-    {:else}
-      <Spinner inline size="small" />
-    {/if}
-  </div>
+  <div class="content">
+    <div>
+      {#if neuronStake !== undefined}
+        <AmountDisplay amount={neuronStake} title />
+      {:else}
+        <Spinner inline size="small" />
+      {/if}
+    </div>
 
-  <NeuronStateInfo state={neuronState} />
+    <NeuronStateInfo state={neuronState} />
+  </div>
 
   <NeuronStateRemainingTime
     state={getSnsNeuronState(neuron)}
@@ -92,15 +94,11 @@
     }
   }
 
-  .currency {
+  .content {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    justify-content: space-between;
+    align-items: center;
 
-    margin-bottom: var(--padding);
-
-    @include media.min-width(medium) {
-      margin-bottom: 0;
-    }
+    width: 100%;
   }
 </style>
