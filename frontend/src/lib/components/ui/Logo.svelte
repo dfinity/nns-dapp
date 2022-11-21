@@ -3,6 +3,7 @@
   export let alt: string;
   export let size: "big" | "small" = "small";
   export let framed = true;
+  export let testId: string | undefined = undefined;
 </script>
 
 <img
@@ -10,6 +11,7 @@
   {alt}
   role="presentation"
   loading="lazy"
+  data-tid={testId}
   class:big={size === "big"}
   class:framed
 />

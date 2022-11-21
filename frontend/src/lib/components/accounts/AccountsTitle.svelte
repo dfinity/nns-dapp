@@ -23,7 +23,7 @@
 </script>
 
 <div class="summary">
-  <Logo src={logo} alt="" size="big" framed={false} />
+  <Logo src={logo} alt="" size="big" framed={false} testId="accounts-logo" />
 
   <div data-tid="accounts-total">
     <h1 data-tid="accounts-title">{title}</h1>

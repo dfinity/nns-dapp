@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { INTERNET_COMPUTER } from "$lib/constants/icp.constants";
+import { IC_LOGO, INTERNET_COMPUTER } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -147,6 +147,14 @@ describe("NnsAccounts", () => {
       const titleRow = getByTestId("accounts-total");
 
       expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
+    });
+
+    it("should render icp project logo", async () => {
+      const { getByTestId } = render(NnsAccounts);
+
+      const img = getByTestId("accounts-logo");
+
+      expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
     });
 
     it("should contain a tooltip", () => {

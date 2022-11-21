@@ -106,6 +106,14 @@ describe("SnsAccounts", () => {
         titleRow?.textContent?.includes(mockSummary.metadata.name)
       ).toBeTruthy();
     });
+
+    it("should render sns project logo", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const img = getByTestId("accounts-logo");
+
+      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
+    });
   });
 
   describe("when no accounts", () => {
