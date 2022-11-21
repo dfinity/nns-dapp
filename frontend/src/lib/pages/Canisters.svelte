@@ -69,7 +69,7 @@
 </script>
 
 <main>
-  <Summary projectDropdown={false} >
+  <Summary projectDropdown={false}>
     <PrincipalText slot="details" inline />
   </Summary>
 

@@ -18,7 +18,11 @@
   $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
 </script>
 
-<div class="summary" data-tid="accounts-summary" class:dropdown={projectDropdown}>
+<div
+  class="summary"
+  data-tid="accounts-summary"
+  class:dropdown={projectDropdown}
+>
   <div class="logo" class:dropdown={projectDropdown}>
     <ProjectLogo size="big" />
   </div>
