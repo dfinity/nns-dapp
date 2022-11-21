@@ -426,7 +426,7 @@ export const stakeNeuron = async ({
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
 ) => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   // We load with a query call only. Nervous System Functions are public and not related to the user.
   const functions = await getNervousSystemFunctions({
     rootCanisterId,
