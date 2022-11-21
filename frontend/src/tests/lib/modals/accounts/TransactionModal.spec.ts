@@ -6,6 +6,7 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
@@ -17,7 +18,10 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
@@ -49,6 +53,12 @@ describe("TransactionModal", () => {
         validateAmount,
       },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest

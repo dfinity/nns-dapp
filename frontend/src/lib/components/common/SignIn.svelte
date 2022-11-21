@@ -4,31 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
-  import { browser, prerendering } from "$app/environment";
-  import { onMount } from "svelte";
-  import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
   import { layoutAuthReady } from "$lib/stores/layout.store";
-
-  const syncAuthStore = async () => {
-    try {
-      await authStore.sync();
-    } catch (err) {
-      toastsError({ labelKey: "error.auth_sync", err });
-    }
-  };
-
-  onMount(async () => {
-    if (prerendering || !browser) {
-      return;
-    }
-
-    // TODO(GIX-1071): handle multiple sign-in buttons in one page. Only only one should initialize the auth.
-    await syncAuthStore();
-
-    displayAndCleanLogoutMsg();
-
-    layoutAuthReady.set(true);
-  });
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {

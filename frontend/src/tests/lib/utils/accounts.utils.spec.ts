@@ -12,6 +12,7 @@ import {
   isAccountHardwareWallet,
   mainAccount,
 } from "$lib/utils/accounts.utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { encodeSnsAccount } from "@dfinity/sns";
@@ -72,7 +73,7 @@ describe("accounts-utils", () => {
       const subaccount = new Uint8Array(32).fill(0);
       subaccount[31] = 1;
       const account = {
-        owner: Principal.fromText("2vxsx-fae"),
+        owner: new AnonymousIdentity().getPrincipal(),
         subaccount: subaccount,
       };
       const subaccountString = encodeSnsAccount(account);

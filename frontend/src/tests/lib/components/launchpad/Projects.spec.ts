@@ -12,9 +12,14 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
+  };
+});
+
+jest.mock("$lib/services/sns.services", () => {
+  return {
     loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });

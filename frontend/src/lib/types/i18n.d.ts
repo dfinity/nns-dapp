@@ -444,6 +444,7 @@ interface I18nProposal_detail {
   remaining: string;
   next: string;
   previous: string;
+  sign_in: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -605,6 +606,7 @@ interface I18nSns_project_detail {
   sale_end: string;
   max_left: string;
   max_user_commitment_reached: string;
+  sign_in: string;
 }
 
 interface I18nSns_neuron_detail {

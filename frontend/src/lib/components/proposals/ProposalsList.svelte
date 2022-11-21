@@ -7,7 +7,6 @@
   import { Spinner } from "@dfinity/gix-components";
   import { filteredProposals } from "$lib/derived/proposals.derived";
 
-  export let neuronsLoaded: boolean;
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -17,29 +16,27 @@
 
 <ProposalsFilters />
 
-{#if neuronsLoaded}
-  <InfiniteScroll
-    on:nnsIntersect
-    layout="grid"
-    disabled={disableInfiniteScroll || loading}
-  >
-    {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-      <ProposalCard {hidden} {proposalInfo} />
-    {/each}
-  </InfiniteScroll>
+<InfiniteScroll
+  on:nnsIntersect
+  layout="grid"
+  disabled={disableInfiniteScroll || loading}
+>
+  {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+    <ProposalCard {hidden} {proposalInfo} />
+  {/each}
+</InfiniteScroll>
 
-  {#if loadingAnimation === "spinner"}
-    <div class="spinner" data-tid="proposals-spinner">
-      <Spinner inline />
-    </div>
-  {/if}
-
-  {#if nothingFound}
-    <p class="description">{$i18n.voting.nothing_found}</p>
-  {/if}
+{#if loadingAnimation === "spinner"}
+  <div class="spinner" data-tid="proposals-spinner">
+    <Spinner inline />
+  </div>
 {/if}
 
-{#if loadingAnimation === "skeleton" || !neuronsLoaded}
+{#if nothingFound}
+  <p class="description">{$i18n.voting.nothing_found}</p>
+{/if}
+
+{#if loadingAnimation === "skeleton"}
   <div class="card-grid" data-tid="proposals-loading">
     <SkeletonCard />
     <SkeletonCard />
