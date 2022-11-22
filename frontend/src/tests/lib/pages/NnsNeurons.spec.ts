@@ -59,16 +59,6 @@ describe("NnsNeurons", () => {
         );
     });
 
-    it("should render content", () => {
-      const { getByText } = render(NnsNeurons);
-
-      expect(
-        getByText("Earn rewards by staking your ICP in neurons.", {
-          exact: false,
-        })
-      ).toBeInTheDocument();
-    });
-
     it("should render spawning neurons as disabled", () => {
       const { queryAllByTestId } = render(NnsNeurons);
 
@@ -84,18 +74,10 @@ describe("NnsNeurons", () => {
       expect(authStoreMock).toHaveBeenCalled();
     });
 
-    it("should render a principal as text", () => {
-      const { getByText } = render(NnsNeurons);
-
-      expect(
-        getByText(mockPrincipal.toText(), { exact: false })
-      ).toBeInTheDocument();
-    });
-
     it("should render a NeuronCard", async () => {
       const { container } = render(NnsNeurons);
 
-      waitFor(() =>
+      await waitFor(() =>
         expect(container.querySelector('article[role="link"]')).not.toBeNull()
       );
     });
