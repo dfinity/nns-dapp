@@ -107,41 +107,22 @@
   <section data-tid="neuron-detail">
     {#if neuron && !inVotingProcess}
       <NeuronMetaInfoCard {neuron} />
-      <hr />
-
       <NnsNeuronInfoStake {neuron} />
-      <hr />
-
       <NeuronMaturityCard {neuron} />
-      <hr />
-
       <NeuronJoinFundCard {neuron} />
-      <hr />
-
       <NeuronFollowingCard {neuron} />
-      <hr />
 
       {#if IS_TESTNET}
         <NeuronProposalsCard {neuron} />
-        <hr />
       {/if}
 
       <NeuronHotkeysCard {neuron} />
-      <hr />
-
       <NeuronVotingHistoryCard {neuron} />
     {:else}
-      <SkeletonCard size="large" cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
+      <SkeletonCard size="large" cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
     {/if}
   </section>
 </main>
-
-<style lang="scss">
-  hr {
-    color: var(--line);
-    margin: var(--padding-4x) 0;
-  }
-</style>

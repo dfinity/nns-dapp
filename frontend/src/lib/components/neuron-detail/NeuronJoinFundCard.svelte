@@ -6,6 +6,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -32,6 +33,8 @@
       <JoinCommunityFundCheckbox {neuron} />
     </div>
   </CardInfo>
+
+  <Separator />
 {/if}
 
 <style lang="scss">

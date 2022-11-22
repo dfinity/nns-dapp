@@ -15,6 +15,7 @@
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -63,6 +64,8 @@
     {/if}
   {/if}
 </div>
+
+<Separator />
 
 <style lang="scss">
   .buttons {

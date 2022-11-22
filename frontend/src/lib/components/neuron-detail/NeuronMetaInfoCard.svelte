@@ -21,6 +21,7 @@
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
   import NnsNeuronRemainingTime from "$lib/components/neurons/NnsNeuronRemainingTime.svelte";
   import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -83,6 +84,8 @@
     <SplitNeuronButton {neuron} />
   {/if}
 </div>
+
+<Separator />
 
 <style lang="scss">
   .buttons {

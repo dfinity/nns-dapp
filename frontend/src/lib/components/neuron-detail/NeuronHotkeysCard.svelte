@@ -14,6 +14,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -78,6 +79,8 @@
     </div>
   {/if}
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
