@@ -35,5 +35,6 @@
 
   .lock {
     @include card.stacked-title;
+    word-break: break-word;
   }
 </style>
