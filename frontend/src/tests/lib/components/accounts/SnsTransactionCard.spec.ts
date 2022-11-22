@@ -3,6 +3,7 @@
  */
 
 import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
+import { projectsStore } from "$lib/stores/projects.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -12,15 +13,24 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../../../mocks/sns-accounts.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../../../mocks/sns-projects.mock";
 import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
 describe("SnsTransactionCard", () => {
-  const renderTransactionCard = (account, transactionWithId) =>
+  const renderTransactionCard = (
+    account,
+    transactionWithId,
+    rootCanisterId = mockSnsFullProject.rootCanisterId
+  ) =>
     render(SnsTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
+        rootCanisterId,
       },
     });
 
@@ -33,6 +43,12 @@ describe("SnsTransactionCard", () => {
     subaccount: [] as [],
   };
   const transactionFromMainToSubaccount = createSnstransactionWithId(to, from);
+
+  beforeEach(() => {
+    jest
+      .spyOn(projectsStore, "subscribe")
+      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  });
 
   it("renders received headline", () => {
     const { getByText } = renderTransactionCard(
@@ -53,6 +69,24 @@ describe("SnsTransactionCard", () => {
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.send, {
+      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
+  });
+
+  it("renders stake neuron headline", () => {
+    const toGov = {
+      owner: mockSnsFullProject.summary.governanceCanisterId,
+      subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+    };
+    const stakeNeuronTransactoin = createSnstransactionWithId(toGov, from);
+    const { getByText } = renderTransactionCard(
+      mockSnsMainAccount,
+      stakeNeuronTransactoin,
+      mockSnsFullProject.rootCanisterId
+    );
+
+    const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {
       $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();

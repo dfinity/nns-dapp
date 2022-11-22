@@ -5,12 +5,14 @@ import {
   isTransactionsCompleted,
   mapSnsTransaction,
 } from "$lib/utils/sns-transactions.utils";
+import { AccountTransactionType } from "$lib/utils/transactions.utils";
+import { Principal } from "@dfinity/principal";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../..//mocks/sns-accounts.mock";
-import { createSnstransactionWithId } from "../..//mocks/sns-transactions.mock";
+import { createSnstransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("sns-transaction utils", () => {
   const to = {
@@ -179,6 +181,27 @@ describe("sns-transaction utils", () => {
       });
       expect(data.isSend).toBe(true);
       expect(data.isReceive).toBe(false);
+    });
+
+    it("maps stake neuron transaction", () => {
+      const governanceCanisterId = Principal.fromText("aaaaa-aa");
+      const toGovernance = {
+        owner: governanceCanisterId,
+        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+      };
+      const stakeNeuronTransaction = createSnstransactionWithId(
+        toGovernance,
+        from
+      );
+      const data = mapSnsTransaction({
+        transaction: stakeNeuronTransaction,
+        account: mockSnsMainAccount,
+        toSelfTransaction: false,
+        governanceCanisterId,
+      });
+      expect(data.isSend).toBe(true);
+      expect(data.isReceive).toBe(false);
+      expect(data.type).toBe(AccountTransactionType.StakeNeuron);
     });
 
     it("maps received transaction", () => {

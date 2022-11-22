@@ -374,9 +374,9 @@
     "send": "Sent $tokenSymbol",
     "mint": "Received $tokenSymbol",
     "burn": "Sent $tokenSymbol",
-    "stakeNeuron": "Stake Neuron",
-    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
-    "topUpNeuron": "Top-up Neuron",
+    "stakeNeuron": "Stake $tokenSymbol Neuron",
+    "stakeNeuronNotification": "Stake $tokenSymbol Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up $tokenSymbol Neuron",
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
     "participateSwap": "Decentralized Sale"
