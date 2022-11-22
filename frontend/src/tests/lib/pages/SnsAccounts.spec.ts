@@ -18,7 +18,9 @@ import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
 } from "../../mocks/sns-accounts.mock";
-import { mockSnsFullProject, mockSummary } from "../../mocks/sns-projects.mock";
+import {mockProjectSubscribe, mockSnsFullProject, mockSummary} from "../../mocks/sns-projects.mock";
+import {committedProjectsStore} from "$lib/stores/projects.store";
+import {mockSnsCanisterIdText} from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -37,13 +39,11 @@ describe("SnsAccounts", () => {
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
+      jest
+          .spyOn(committedProjectsStore, "subscribe")
+          .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
       page.mock({ data: { universe: mockPrincipal.toText() } });
-    });
-
-    it("should render accounts title", () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      expect(getByTestId("accounts-title")).toBeInTheDocument();
     });
 
     it("should load accounts and transaction fee", () => {
@@ -96,24 +96,6 @@ describe("SnsAccounts", () => {
         ).toBeTruthy()
       );
     });
-
-    it("should render sns project name", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const titleRow = getByTestId("accounts-summary");
-
-      expect(
-        titleRow?.textContent?.includes(mockSummary.metadata.name)
-      ).toBeTruthy();
-    });
-
-    it("should render sns project logo", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const img = getByTestId("logo");
-
-      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
-    });
   });
 
   describe("when no accounts", () => {
@@ -134,4 +116,36 @@ describe("SnsAccounts", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe("meta project", () => {
+
+    beforeAll(() => page.mock({ data: { universe: mockSnsFullProject.rootCanisterId.toText() } }))
+
+    it("should render project title", async () => {
+
+
+      const { getByText } = render(SnsAccounts);
+
+      await waitFor(() => expect(getByText(mockSnsFullProject.summary.metadata.name)).toBeInTheDocument());
+    });
+
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      expect(
+          titleRow?.textContent?.includes(mockSummary.metadata.name)
+      ).toBeTruthy();
+    });
+
+    it("should render sns project logo", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const logo = getByTestId("summary-logo");
+      const img = logo.querySelector('[data-tid="logo"]');
+
+      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
+    });
+  })
 });

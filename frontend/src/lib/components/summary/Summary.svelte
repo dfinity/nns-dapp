@@ -19,7 +19,7 @@
   {#if selectProjects}
     <SelectProjectDropdownWrapper />
   {:else}
-    <h1 data-tid="accounts-title">{$i18n.core.ic}</h1>
+    <h1>{$i18n.core.ic}</h1>
   {/if}
 
   <slot name="details" />

@@ -7,8 +7,8 @@
 </div>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/fonts";
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .dropdown-wrapper {
     padding: 0 0 var(--padding-0_5x);
