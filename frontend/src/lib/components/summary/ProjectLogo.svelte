@@ -16,11 +16,14 @@
   $: logo = summary?.metadata.logo ?? IC_LOGO;
 
   let title: string;
-  $: title = summary?.metadata.name ?? $i18n.core.ic;
+  $: title =
+    summary?.metadata.name !== undefined
+      ? `${summary?.metadata.name} ${$i18n.sns_launchpad.project_logo}`
+      : $i18n.auth.ic_logo;
 </script>
 
 <div class={`${size}`}>
-  <Logo src={logo} alt="" {size} framed={false} testId="logo" />
+  <Logo src={logo} alt={title} {size} framed={false} testId="logo" />
 </div>
 
 <style lang="scss">
