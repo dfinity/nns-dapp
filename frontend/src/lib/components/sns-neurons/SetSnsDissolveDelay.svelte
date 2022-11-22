@@ -80,7 +80,12 @@
 <div class="wrapper">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={getSnsNeuronIdAsHexString(neuron)} />
+    <Hash
+      id="neuron-id"
+      tagName="p"
+      testId="neuron-id"
+      text={getSnsNeuronIdAsHexString(neuron)}
+    />
   </div>
 
   <div>
@@ -97,13 +102,15 @@
     </p>
   </div>
 
-  {#if neuronState === NeuronState.Locked && dissolveDelaySeconds !== undefined}
+  {#if dissolveDelaySeconds !== undefined}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
       <p class="duration">
         <Html
           text={`${valueSpan(secondsToDuration(dissolveDelaySeconds))} - ${
-            $i18n.neurons.staked
+            neuronState === NeuronState.Locked
+              ? $i18n.neurons.staked
+              : $i18n.neurons.dissolving
           }`}
         />
       </p>

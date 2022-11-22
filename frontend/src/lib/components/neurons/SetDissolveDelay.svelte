@@ -63,14 +63,18 @@
     </p>
   </div>
 
-  {#if neuron.state === NeuronState.Locked && neuron.dissolveDelaySeconds}
+  {#if neuron.dissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
       <p class="duration">
         <Html
           text={`${valueSpan(
             secondsToDuration(neuron.dissolveDelaySeconds)
-          )} - ${$i18n.neurons.staked}`}
+          )} - ${
+            neuron.state === NeuronState.Locked
+              ? $i18n.neurons.staked
+              : $i18n.neurons.dissolving
+          }`}
         />
       </p>
     </div>

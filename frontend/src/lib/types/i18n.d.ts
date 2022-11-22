@@ -239,6 +239,7 @@ interface I18nNeurons {
   stake: string;
   icp_stake: string;
   staked: string;
+  dissolving: string;
   remaining: string;
   aria_label_neuron_card: string;
   neuron_id: string;

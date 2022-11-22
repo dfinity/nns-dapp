@@ -229,6 +229,7 @@
     "stake": "Stake",
     "icp_stake": "$amount ICP Stake",
     "staked": "Staked",
+    "dissolving": "Dissolving",
     "remaining": "$duration remaining",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
