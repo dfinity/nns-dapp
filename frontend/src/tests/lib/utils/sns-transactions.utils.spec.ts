@@ -6,12 +6,12 @@ import {
   mapSnsTransaction,
 } from "$lib/utils/sns-transactions.utils";
 import { AccountTransactionType } from "$lib/utils/transactions.utils";
-import { principal } from "src/tests/mocks/sns-projects.mock";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../..//mocks/sns-accounts.mock";
+import { principal } from "../../mocks/sns-projects.mock";
 import { createSnstransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("sns-transaction utils", () => {
