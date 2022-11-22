@@ -126,7 +126,7 @@ describe("ledger-services", () => {
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
       jest
-        .spyOn(authServices, "getIdentity")
+        .spyOn(authServices, "getAuthenticatedIdentity")
         .mockImplementation(() => Promise.resolve(mockGetIdentity()));
     });
 

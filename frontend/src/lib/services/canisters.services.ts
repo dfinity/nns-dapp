@@ -26,7 +26,7 @@ import {
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({
@@ -191,7 +191,7 @@ export const updateSettings = async ({
   canisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await updateSettingsApi({
       identity,
       canisterId,
@@ -210,7 +210,7 @@ export const attachCanister = async (
   canisterId: Principal
 ): Promise<{ success: boolean }> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await attachCanisterApi({
       identity,
       canisterId,
@@ -233,7 +233,7 @@ export const detachCanister = async (
 ): Promise<{ success: boolean }> => {
   let success = false;
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await detachCanisterApi({
       identity,
       canisterId,
@@ -263,7 +263,7 @@ export const detachCanister = async (
 export const getCanisterDetails = async (
   canisterId: Principal
 ): Promise<CanisterDetails> => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   return queryCanisterDetailsApi({
     canisterId,
     identity,
@@ -274,7 +274,7 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
   bigint | undefined
 > => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     return await getIcpToCyclesExchangeRateApi(identity);
   } catch (err) {
     toastsError({

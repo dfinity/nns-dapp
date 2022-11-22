@@ -6,6 +6,7 @@ import {
   addNeuronPermissions,
   claimNeuron,
   disburse,
+  getNervousSystemFunctions,
   getNeuronBalance,
   increaseDissolveDelay,
   refreshNeuron,
@@ -20,10 +21,14 @@ import {
 import type { HttpAgent } from "@dfinity/agent";
 import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  type SnsListNervousSystemFunctionsResponse,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -54,6 +59,13 @@ describe("sns-api", () => {
   const getNeuronBalanceSpy = jest.fn().mockResolvedValue(undefined);
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
+  const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
+    reserved_ids: new BigUint64Array(),
+    functions: [nervousSystemFunctionMock],
+  };
+  const getFunctionsSpy = jest
+    .fn()
+    .mockResolvedValue(nervousSystemFunctionsMock);
 
   beforeEach(() => {
     jest
@@ -86,6 +98,7 @@ describe("sns-api", () => {
         getNeuronBalance: getNeuronBalanceSpy,
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
+        listNervousSystemFunctions: getFunctionsSpy,
       })
     );
   });
@@ -191,5 +204,16 @@ describe("sns-api", () => {
     });
 
     expect(claimNeuronSpy).toBeCalled();
+  });
+
+  it("should get nervous system functions", async () => {
+    const res = await getNervousSystemFunctions({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(getFunctionsSpy).toBeCalled();
+    expect(res).toEqual([nervousSystemFunctionMock]);
   });
 });

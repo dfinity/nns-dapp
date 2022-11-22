@@ -2,8 +2,6 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Value } from "@dfinity/gix-components";
-  import { authStore } from "$lib/stores/auth.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
@@ -118,10 +116,6 @@
 </Footer>
 
 <style lang="scss">
-  .last-info {
-    margin-bottom: var(--padding-3x);
-  }
-
   main {
     padding-bottom: var(--footer-height);
   }

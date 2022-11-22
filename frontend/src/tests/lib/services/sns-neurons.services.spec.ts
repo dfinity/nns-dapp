@@ -4,6 +4,7 @@
 
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
@@ -11,12 +12,12 @@ import {
   stopDissolving,
   updateDelay,
 } from "$lib/services/sns-neurons.services";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
   neuronSubaccount,
-  SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -26,10 +27,17 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
-const { syncSnsNeurons, getSnsNeuron, addHotkey, removeHotkey, stakeNeuron } =
-  services;
+const {
+  syncSnsNeurons,
+  getSnsNeuron,
+  addHotkey,
+  removeHotkey,
+  stakeNeuron,
+  loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
+} = services;
 
 describe("sns-neurons-services", () => {
   describe("syncSnsNeurons", () => {
@@ -367,10 +375,7 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: hotkey,
         rootCanisterId: mockPrincipal,
-        permissions: [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ],
+        permissions: HOTKEY_PERMISSIONS,
       });
     });
   });
@@ -392,10 +397,7 @@ describe("sns-neurons-services", () => {
         identity: mockIdentity,
         principal: Principal.fromText(hotkey),
         rootCanisterId: mockPrincipal,
-        permissions: [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ],
+        permissions: HOTKEY_PERMISSIONS,
       });
     });
   });
@@ -542,6 +544,22 @@ describe("sns-neurons-services", () => {
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("loadSnsNervousSystemFunctions", () => {
+    it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
+      const spyGetFunctions = jest
+        .spyOn(governanceApi, "getNervousSystemFunctions")
+        .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
+
+      await loadSnsNervousSystemFunctions(mockPrincipal);
+
+      const store = get(snsFunctionsStore);
+      expect(store[mockPrincipal.toText()]).toEqual([
+        nervousSystemFunctionMock,
+      ]);
+      expect(spyGetFunctions).toBeCalled();
     });
   });
 });

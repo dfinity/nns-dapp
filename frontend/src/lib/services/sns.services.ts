@@ -24,7 +24,7 @@ import type { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsSwapCommitments = (): Promise<void> => {
@@ -149,7 +149,7 @@ export const loadSnsSwapCommitment = async ({
  */
 const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     const swapData = await querySnsSwapState({
       rootCanisterId: rootCanisterId.toText(),
       identity,
@@ -168,7 +168,7 @@ const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
 export const getSwapAccount = async (
   swapCanisterId: Principal
 ): Promise<AccountIdentifier> => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   return getSwapCanisterAccount({
     controller: identity.getPrincipal(),
     swapCanisterId,

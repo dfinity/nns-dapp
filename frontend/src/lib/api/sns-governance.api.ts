@@ -2,7 +2,11 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { SnsNeuronId, SnsNeuronPermissionType } from "@dfinity/sns";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuronId,
+  SnsNeuronPermissionType,
+} from "@dfinity/sns";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -238,4 +242,27 @@ export const claimNeuron = async ({
 
   logWithTimestamp(`Claiming neuron call complete.`);
   return neuronId;
+};
+
+export const getNervousSystemFunctions = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsNervousSystemFunction[]> => {
+  logWithTimestamp(`Getting nervous system functions call...`);
+
+  const { listNervousSystemFunctions } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const { functions } = await listNervousSystemFunctions({});
+
+  logWithTimestamp(`Getting nervous system functions call complete.`);
+  return functions;
 };
