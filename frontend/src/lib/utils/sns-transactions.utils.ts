@@ -98,16 +98,25 @@ export const getOldestTxIdFromStore = ({
   )[0].id;
 };
 
-const getSnsTransactionType = (
-  transaction: SnsTransaction
-): AccountTransactionType => {
+const getSnsTransactionType = ({
+  transaction,
+  governanceCanisterId,
+}: {
+  transaction: SnsTransaction;
+  governanceCanisterId?: Principal;
+}): AccountTransactionType => {
   if (fromNullable(transaction.burn) !== undefined) {
     return AccountTransactionType.Burn;
   }
   if (fromNullable(transaction.mint) !== undefined) {
     return AccountTransactionType.Mint;
   }
-  if (fromNullable(transaction.transfer) !== undefined) {
+  const transfer = fromNullable(transaction.transfer);
+  if (transfer !== undefined) {
+    // A transaction to an account owned by the governance canister stakes a neuron.
+    if (transfer.to.owner.toText() === governanceCanisterId?.toText()) {
+      return AccountTransactionType.StakeNeuron;
+    }
     return AccountTransactionType.Send;
   }
   // Just for type safety. This should never happen.
@@ -162,13 +171,18 @@ export const mapSnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
+  governanceCanisterId,
 }: {
   transaction: SnsTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
+  governanceCanisterId?: Principal;
 }): Transaction | undefined => {
   try {
-    const type = getSnsTransactionType(transaction.transaction);
+    const type = getSnsTransactionType({
+      transaction: transaction.transaction,
+      governanceCanisterId,
+    });
     const txInfo = getTransactionInformation(transaction.transaction);
     if (txInfo === undefined) {
       throw new Error(
