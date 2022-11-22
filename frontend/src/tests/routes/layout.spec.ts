@@ -6,13 +6,13 @@ import { initAppDataProxy } from "$lib/proxy/app.services.proxy";
 import { initWorker } from "$lib/services/worker.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
+import { toastsStore } from "@dfinity/gix-components";
 import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
-import {toastsStore} from "@dfinity/gix-components";
 
 jest.mock("$lib/services/worker.services", () => ({
   initWorker: jest.fn(() =>
@@ -64,7 +64,7 @@ describe("Layout", () => {
     expect(initWorker).toHaveBeenCalled();
   });
 
-  it("should reset toasts on sign in",  () => {
+  it("should reset toasts on sign in", () => {
     const spy = jest.spyOn(toastsStore, "reset");
 
     render(App);

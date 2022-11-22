@@ -4,7 +4,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initWorker } from "$lib/services/worker.services";
   import { initAppDataProxy } from "$lib/proxy/app.services.proxy";
-  import {toastsReset} from "$lib/stores/toasts.store";
+  import { toastsReset } from "$lib/stores/toasts.store";
 
   let ready = false;
 
