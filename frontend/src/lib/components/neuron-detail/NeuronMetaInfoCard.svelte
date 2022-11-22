@@ -4,13 +4,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
-  import { authStore } from "$lib/stores/auth.store";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
-    isHotKeyControllable,
-    isNeuronControllable,
     isNeuronControllableByUser,
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
@@ -37,7 +34,7 @@
   // TODO: placeholders cannot contain ath the moment other placeholders keys - e.g. $stakedMaturity contains $stake would lead to replace errors therefore a distinctive selector $st4kedMaturity
 </script>
 
-<section>
+<div class="content-cell-details">
   <KeyValuePair>
     <h3 class="label" slot="key"><NnsNeuronCardTitle {neuron} /></h3>
     <div slot="value">
@@ -45,22 +42,22 @@
     </div>
   </KeyValuePair>
 
-  <NnsNeuronRemainingTime {neuron} inline={false} />
+<NnsNeuronAge {neuron} />
 
-  <NnsNeuronAge {neuron} />
+<NnsNeuronRemainingTime {neuron} inline={false} />
 
-  {#if neuron.votingPower}
-    <KeyValuePairInfo testId="voting-power">
-      <svelte:fragment slot="key"
-      >{$i18n.neurons.voting_power}</svelte:fragment
-      >
-      <span class="value" slot="value"
-      >{formatVotingPower(neuron.votingPower)}</span
-      >
-      <svelte:fragment slot="info">
-        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-          <Html
-                  text={replacePlaceholders(
+{#if neuron.votingPower}
+  <KeyValuePairInfo testId="voting-power">
+    <svelte:fragment slot="key"
+    >{$i18n.neurons.voting_power}</svelte:fragment
+    >
+    <span class="value" slot="value"
+    >{formatVotingPower(neuron.votingPower)}</span
+    >
+    <svelte:fragment slot="info">
+      {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+        <Html
+                text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip_with_stake,
                 {
                   $stake: formatToken({
@@ -76,33 +73,21 @@
                   ).toFixed(2),
                 }
               )}
-          />
-        {/if}
-      </svelte:fragment>
-    </KeyValuePairInfo>
-  {/if}
+        />
+      {/if}
+    </svelte:fragment>
+  </KeyValuePairInfo>
+{/if}
+</div>
 
-  <div class="buttons">
-    {#if isControlledByUser}
-      <SplitNeuronButton {neuron} />
-    {/if}
-  </div>
-</section>
+<div class="buttons">
+  {#if isControlledByUser}
+    <SplitNeuronButton {neuron} />
+  {/if}
+</div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  section {
-    padding: var(--padding) 0 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
   .buttons {
-    display: flex;
-    gap: var(--padding);
-    align-items: center;
-    justify-content: flex-start;
+    margin: var(--padding-2x) 0 0;
   }
 </style>

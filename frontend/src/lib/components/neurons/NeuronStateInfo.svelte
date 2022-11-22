@@ -28,7 +28,6 @@
     align-items: center;
 
     border-radius: var(--border-radius-0_5x);
-    padding: var(--padding) var(--padding-2x) var(--padding) var(--padding);
 
     @include fonts.small;
 

@@ -66,5 +66,7 @@
     gap: var(--padding);
     align-items: center;
     justify-content: flex-start;
+
+    margin: var(--padding-2x) 0 0;
   }
 </style>
