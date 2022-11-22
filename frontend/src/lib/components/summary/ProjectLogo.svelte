@@ -3,7 +3,7 @@
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import type { SnsSummary } from "$lib/types/sns";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import {ENABLE_SNS} from "$lib/constants/environment.constants";
+  import { ENABLE_SNS } from "$lib/constants/environment.constants";
 
   export let size: "big" | "small" = "small";
   export let selectProjects = ENABLE_SNS;
