@@ -11,19 +11,12 @@
   import {
     isHotKeyControllable,
     isNeuronControllable,
-    isNeuronControllableByUser,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
-
-  let isControlledByUser: boolean;
-  $: isControlledByUser = isNeuronControllableByUser({
-    neuron,
-    mainAccount: $accountsStore.main,
-  });
 
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({

@@ -7,7 +7,7 @@
   import { getContext } from "svelte";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { NeuronState } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";

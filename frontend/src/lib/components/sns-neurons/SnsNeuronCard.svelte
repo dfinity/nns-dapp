@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { CardType } from "$lib/types/card";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
