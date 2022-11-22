@@ -1,0 +1,45 @@
+/**
+ * @jest-environment jsdom
+ */
+import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import FollowTopicsSectionTest from "./FollowTopicSectionTest.svelte";
+
+describe("FollowTopicsSection", () => {
+  const title = "title";
+  const subtitle = "subtitle";
+  it("renders data", () => {
+    const { getByText } = render(FollowTopicsSection, {
+      props: {
+        title,
+        subtitle,
+        id: "3",
+        count: 4,
+      },
+    });
+    expect(getByText(title)).toBeInTheDocument();
+    expect(getByText(subtitle)).toBeInTheDocument();
+  });
+
+  it("renders children", () => {
+    const { queryByTestId } = render(FollowTopicsSectionTest);
+    expect(queryByTestId("followee-children")).toBeInTheDocument();
+  });
+
+  it("triggers open event", async () => {
+    const { queryByTestId, component } = render(FollowTopicsSection, {
+      props: {
+        title,
+        subtitle,
+        id: "3",
+        count: 4,
+      },
+    });
+    const openSpy = jest.fn();
+    component.$on("nnsOpen", openSpy);
+    const button = queryByTestId("open-new-followee-modal");
+    button && fireEvent.click(button);
+
+    await waitFor(() => expect(openSpy).toBeCalled());
+  });
+});

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import type { Topic } from "@dfinity/nns";
-  import FollowTopicSection from "./FollowTopicSection.svelte";
+  import FollowNnsTopicSection from "./FollowNnsTopicSection.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
   import { listKnownNeurons } from "$lib/services/knownNeurons.services";
@@ -9,7 +9,7 @@
 
   export let neuron: NeuronInfo;
 
-  // Load KnownNeurons which are used in the FollowTopicSections
+  // Load KnownNeurons which are used in the FollowNnsTopicSections
   onMount(() => listKnownNeurons());
 
   const topics: Topic[] = topicsToFollow(neuron);
@@ -19,7 +19,7 @@
   <p class="description">{$i18n.follow_neurons.description}</p>
   <div>
     {#each topics as topic}
-      <FollowTopicSection {neuron} {topic} />
+      <FollowNnsTopicSection {neuron} {topic} />
     {/each}
   </div>
 </div>
