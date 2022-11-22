@@ -1,9 +1,10 @@
 <script lang="ts">
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
+  import { IC_LOGO } from "$lib/constants/icp.constants";
   import type { SnsSummary } from "$lib/types/sns";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { i18n } from "$lib/stores/i18n";
 
   export let size: "big" | "small" = "small";
   export let selectProjects = ENABLE_SNS;
@@ -15,11 +16,11 @@
   $: logo = summary?.metadata.logo ?? IC_LOGO;
 
   let title: string;
-  $: title = summary?.metadata.name ?? INTERNET_COMPUTER;
+  $: title = summary?.metadata.name ?? $i18n.core.ic;
 </script>
 
 <div class={`${size}`}>
-  <Logo src={logo} alt="" {size} framed={false} testId="accounts-logo" />
+  <Logo src={logo} alt="" {size} framed={false} testId="logo" />
 </div>
 
 <style lang="scss">

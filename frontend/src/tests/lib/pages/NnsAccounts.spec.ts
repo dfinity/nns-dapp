@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { IC_LOGO, INTERNET_COMPUTER } from "$lib/constants/icp.constants";
+import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -38,7 +38,7 @@ describe("NnsAccounts", () => {
           })} ICP`
         )
       ).toBeTruthy();
-      expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
+      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
     });
 
     it("should render a main card", () => {
@@ -141,18 +141,19 @@ describe("NnsAccounts", () => {
       ).toBeTruthy();
     });
 
-    it("should render icp name", () => {
+    it("should render nns name", () => {
       const { getByTestId } = render(NnsAccounts);
 
       const titleRow = getByTestId("accounts-summary");
 
-      expect(titleRow?.textContent?.includes(INTERNET_COMPUTER)).toBeTruthy();
+      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
     });
 
-    it("should render icp project logo", async () => {
+    it("should render icp project logo", () => {
       const { getByTestId } = render(NnsAccounts);
 
-      const img = getByTestId("accounts-logo");
+      const logo = getByTestId("summary-logo");
+      const img = logo.querySelector('[data-tid="logo"]');
 
       expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
     });

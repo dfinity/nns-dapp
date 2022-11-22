@@ -110,7 +110,7 @@ describe("SnsAccounts", () => {
     it("should render sns project logo", async () => {
       const { getByTestId } = render(SnsAccounts);
 
-      const img = getByTestId("accounts-logo");
+      const img = getByTestId("logo");
 
       expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
     });

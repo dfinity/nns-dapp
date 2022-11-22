@@ -1,4 +1,3 @@
-export const INTERNET_COMPUTER = "Internet Computer";
 export const IC_LOGO = "/assets/ic-logo-rounded.svg";
 
 export const E8S_PER_ICP = 100_000_000;

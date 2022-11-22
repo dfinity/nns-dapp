@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import {

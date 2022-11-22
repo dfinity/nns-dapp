@@ -1,8 +1,8 @@
 <script lang="ts">
   import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
-  import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   export let selectProjects = ENABLE_SNS;
 </script>
@@ -12,14 +12,14 @@
   data-tid="accounts-summary"
   class:dropdown={selectProjects}
 >
-  <div class="logo" class:dropdown={selectProjects}>
+  <div class="logo" class:dropdown={selectProjects} data-tid="summary-logo">
     <ProjectLogo size="big" {selectProjects} />
   </div>
 
   {#if selectProjects}
     <SelectProjectDropdownWrapper />
   {:else}
-    <h1 data-tid="accounts-title">{INTERNET_COMPUTER}</h1>
+    <h1 data-tid="accounts-title">{$i18n.core.ic}</h1>
   {/if}
 
   <slot name="details" />

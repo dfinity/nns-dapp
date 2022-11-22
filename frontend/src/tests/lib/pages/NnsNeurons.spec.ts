@@ -7,10 +7,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,

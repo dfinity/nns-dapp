@@ -13,10 +13,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,

@@ -14,7 +14,6 @@ import {
 } from "../../mocks/auth.store.mock";
 import { mockCanistersStoreSubscribe } from "../../mocks/canisters.mock";
 import en from "../../mocks/i18n.mock";
-import {INTERNET_COMPUTER} from "$lib/constants/icp.constants";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
@@ -39,7 +38,7 @@ describe("Canisters", () => {
   it("should render ic", () => {
     const { getByText } = render(Canisters);
 
-    expect(getByText(INTERNET_COMPUTER)).toBeInTheDocument();
+    expect(getByText(en.core.ic)).toBeInTheDocument();
   });
 
   it("should subscribe to store", () =>

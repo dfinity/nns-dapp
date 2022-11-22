@@ -12,7 +12,10 @@ import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import {mockAuthStoreSubscribe, mockPrincipal} from "../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -114,7 +117,7 @@ describe("Neurons", () => {
     const { getByText } = render(Neurons);
 
     expect(
-        getByText(mockPrincipal.toText(), { exact: false })
+      getByText(mockPrincipal.toText(), { exact: false })
     ).toBeInTheDocument();
   });
 });
