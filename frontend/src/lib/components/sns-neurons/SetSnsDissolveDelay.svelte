@@ -6,7 +6,7 @@
     SECONDS_IN_HALF_YEAR,
   } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import {nowInSeconds, secondsToDuration} from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -58,6 +58,7 @@
   let votingPower: number | undefined;
   $: if (neuron !== undefined && $snsProjectParametersStore !== undefined) {
     votingPower = snsVotingPower({
+      nowSeconds: nowInSeconds(),
       stake: Number(neuronStake),
       dissolveDelayInSeconds: delayInSeconds,
       neuron,

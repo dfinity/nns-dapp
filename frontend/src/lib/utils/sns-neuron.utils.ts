@@ -282,20 +282,23 @@ export const needsRefresh = ({
 
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L158
 export const snsVotingPower = ({
+  nowSeconds,
   stake,
   dissolveDelayInSeconds,
   neuron,
   snsParameters,
 }: {
+  nowSeconds: number;
   stake: number; // e8s
   dissolveDelayInSeconds: number;
   neuron: SnsNeuron;
   snsParameters: NervousSystemParameters;
 }) => {
-  console.log('')
-  console.log('stake', stake)
-  console.log('dissolveDelayInSeconds', dissolveDelayInSeconds)
-  const now_seconds = nowInSeconds();
+  // let stake = self.stake_e8s() as u128;
+  // pub fn stake_e8s(&self) -> u64 {
+  //   self.cached_neuron_stake_e8s
+  //     .saturating_sub(self.neuron_fees_e8s)
+
   // neuron
   const { aging_since_timestamp_seconds, voting_power_percentage_multiplier } =
     neuron;
@@ -303,8 +306,8 @@ export const snsVotingPower = ({
   const votingPowerPercentageMultiplier = Number(
     voting_power_percentage_multiplier
   );
-  console.log('votingPowerPercentageMultiplier', votingPowerPercentageMultiplier)
-  console.log('agingSinceTimestampSeconds', agingSinceTimestampSeconds)
+  // console.log('votingPowerPercentageMultiplier', votingPowerPercentageMultiplier)
+  // console.log('agingSinceTimestampSeconds', agingSinceTimestampSeconds)
   // params
   const {
     max_dissolve_delay_seconds,
@@ -332,37 +335,43 @@ export const snsVotingPower = ({
     maxDissolveDelaySeconds
   );
 
-  console.log('dissolveDelay', dissolveDelay)
+  console.log("dissolveDelay", dissolveDelay);
   // let d = std::cmp::min(
   //   self.dissolve_delay_seconds(now_seconds),
   //   max_dissolve_delay_seconds,
   // ) as u128;
 
-  // 'd_stake' is the stake with bonus for dissolve delay.
-  const stakeWithDissolveDelayBonus =
-    stake + maxDissolveDelaySeconds > 0
+  const dissolveDelayBonus =
+    maxDissolveDelaySeconds > 0
       ? (stake * dissolveDelay * maxDissolveDelayBonusPercentage) /
         (100 * maxDissolveDelaySeconds)
       : 0;
+  // 'd_stake' is the stake with bonus for dissolve delay.
+  const stakeWithDissolveDelayBonus = stake + dissolveDelayBonus;
 
-  console.log('stakeWithDissolveDelayBonus', stakeWithDissolveDelayBonus)
+  console.log("stakeWithDissolveDelayBonus", stakeWithDissolveDelayBonus);
   // Sanity check.
   // assert!(d_stake <= stake + (stake * (max_dissolve_delay_bonus_percentage as u128) / 100));
 
   // The voting power is also a function of the age of the
   // neuron, giving a bonus of up to max_age_bonus_percentage at max_neuron_age_for_age_bonus.
-  // TODO: review because `aging_since_timestamp_seconds` is updated after the increaseDissolveDelay call
-  const ageSeconds = Math.max(now_seconds - agingSinceTimestampSeconds, 0);
 
-  console.log('ageSeconds', ageSeconds)
+  // pub fn age_seconds(&self, now_seconds: u64) -> u64 {
+  //   now_seconds.saturating_sub(self.aging_since_timestamp_seconds)
+  // }
+  const ageSeconds = Math.max(nowSeconds - agingSinceTimestampSeconds, 0);
+  // TODO: review because `aging_since_timestamp_seconds` is updated after the increaseDissolveDelay call
+
   const age = Math.min(ageSeconds, maxNeuronAgeForAgeBonus);
-  console.log('age', age)
-  const stakeWithDissolveDelayAndAgeBonus =
-    stakeWithDissolveDelayBonus + maxNeuronAgeForAgeBonus > 0
+  const stakeWithAgeBonus =
+    maxNeuronAgeForAgeBonus > 0
       ? (stakeWithDissolveDelayBonus * age * maxAgeBonusPercentage) /
         (100 * maxNeuronAgeForAgeBonus)
       : 0;
-  console.log('stakeWithDissolveDelayAndAgeBonus', stakeWithDissolveDelayAndAgeBonus)
+
+  console.log("stakeWithAgeBonus", stakeWithAgeBonus);
+  const stakeWithAllBonuses = stakeWithDissolveDelayBonus + stakeWithAgeBonus;
+  console.log("stakeWithAllBonuses", stakeWithAllBonuses);
   // Final stake 'ad_stake' has is not more than max_age_bonus_percentage above 'd_stake'.
   // assert!(ad_stake <= d_stake + (d_stake * (max_age_bonus_percentage) / 100));
 
@@ -377,10 +386,11 @@ export const snsVotingPower = ({
   //   .expect("Overflow detected when calculating voting power")
   //   .checked_div(100)
   //   .expect("Underflow detected when calculating voting power");
-  console.log('res',  (stakeWithDissolveDelayAndAgeBonus * votingPowerPercentageMultiplier) / 100)
-  return (
-    (stakeWithDissolveDelayAndAgeBonus * votingPowerPercentageMultiplier) / 100
+  console.log(
+    "res",
+    (stakeWithAllBonuses * votingPowerPercentageMultiplier) / 100
   );
+  return (stakeWithAllBonuses * votingPowerPercentageMultiplier) / 100;
 
   // The final voting power is the stake adjusted by both age,
   // dissolve delay, and voting power multiplier. If the stake is greater than
