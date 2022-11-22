@@ -7,6 +7,7 @@
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { fromNullable } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;
@@ -27,7 +28,12 @@
       <Spinner />
     {:else}
       {#each functions as { name, id, description }}
-        <FollowTopicSection count={0} title={name} subtitle={description} {id}>
+        <FollowTopicSection
+          count={0}
+          title={name}
+          subtitle={fromNullable(description)}
+          id={id.toString()}
+        >
           <!-- TODO: Render Followees https://dfinity.atlassian.net/browse/GIX-1114 -->
           <div>{`TODO: render followees ${neuron.followees.length}`}</div>
         </FollowTopicSection>

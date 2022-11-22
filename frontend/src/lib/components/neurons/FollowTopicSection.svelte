@@ -4,7 +4,7 @@
   import { createEventDispatcher } from "svelte";
 
   export let title: string;
-  export let subtitle: string;
+  export let subtitle: string | undefined;
   export let id: string;
   export let count: number;
 
@@ -19,7 +19,9 @@
     <div class="wrapper" slot="header">
       <div>
         <h3>{title}</h3>
-        <p class="subtitle description">{subtitle}</p>
+        {#if subtitle !== undefined}
+          <p class="subtitle description">{subtitle}</p>
+        {/if}
       </div>
       <div class="toolbar">
         <h3 class="badge" data-tid={`topic-${id}-followees-badge`}>
