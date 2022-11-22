@@ -95,7 +95,7 @@
   $: loading = $selectedSnsNeuronStore.neuron === null;
 </script>
 
-<main>
+<main class="legacy">
   <section data-tid="sns-neuron-detail-page">
     {#if loading}
       <SkeletonCard size="large" cardType="info" separator />
