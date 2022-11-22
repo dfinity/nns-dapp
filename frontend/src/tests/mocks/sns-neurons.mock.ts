@@ -4,6 +4,8 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 
+export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6 ;
+
 export const createMockSnsNeuron = ({
   stake = BigInt(1_000_000_000),
   id,
@@ -19,7 +21,7 @@ export const createMockSnsNeuron = ({
   maturity_e8s_equivalent: BigInt(0),
   cached_neuron_stake_e8s: stake,
   created_timestamp_seconds: BigInt(
-    Math.floor(Date.now() / 1000 - 3600 * 24 * 6)
+    Math.floor(Date.now() / 1000 - mockSnsNeuronTimestampSeconds)
   ),
   staked_maturity_e8s_equivalent: [],
   auto_stake_maturity: [],

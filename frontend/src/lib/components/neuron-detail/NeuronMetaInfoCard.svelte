@@ -88,5 +88,6 @@
 <style lang="scss">
   .buttons {
     margin: var(--padding-2x) 0 0;
+    width: fit-content;
   }
 </style>

@@ -13,7 +13,7 @@
 </script>
 
 {#if stateInfo !== undefined}
-  <div class="status">
+  <div class="status" data-tid="neuron-state-info">
     <svelte:component this={stateInfo.Icon} />
     {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
   </div>

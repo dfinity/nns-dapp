@@ -13,7 +13,7 @@
 {#if age > 0}
   <KeyValuePair>
     <span class="label" slot="key">{$i18n.neurons.age}</span>
-    <span class="value" slot="value">
+    <span class="value" slot="value" data-tid="sns-neuron-age">
       {secondsToDuration(age)}
     </span>
   </KeyValuePair>
