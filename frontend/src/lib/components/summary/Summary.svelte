@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
+  import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -13,7 +13,7 @@
   class:dropdown={selectProjects}
 >
   <div class="logo" class:dropdown={selectProjects} data-tid="summary-logo">
-    <ProjectLogo size="big" {selectProjects} />
+    <SummaryProjectLogo size="big" {selectProjects} />
   </div>
 
   {#if selectProjects}

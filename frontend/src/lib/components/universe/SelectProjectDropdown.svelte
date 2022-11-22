@@ -7,7 +7,7 @@
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
   import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
-  import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
+  import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
 
   let selectedCanisterId: string | undefined;
 
@@ -74,7 +74,7 @@
     bind:selectedValue={selectedCanisterId}
     testId="select-project-dropdown"
   >
-    <ProjectLogo slot="start" />
+    <SummaryProjectLogo slot="start" />
 
     {#each selectableProjects as { canisterId, name } (canisterId)}
       <DropdownItem value={canisterId}>{name}</DropdownItem>
