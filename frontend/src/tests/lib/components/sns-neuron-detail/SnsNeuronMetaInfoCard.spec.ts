@@ -5,16 +5,17 @@
 import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
+import { secondsToDuration } from "$lib/utils/date.utils";
+import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
+import en from "../../../mocks/i18n.mock";
 import {
-  mockSnsNeuron, mockSnsNeuronTimestampSeconds,
+  mockSnsNeuron,
+  mockSnsNeuronTimestampSeconds,
 } from "../../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../../mocks/sns-projects.mock";
-import {shortenWithMiddleEllipsis} from "$lib/utils/format.utils";
-import en from "../../../mocks/i18n.mock";
-import {getSnsNeuronIdAsHexString} from "$lib/utils/sns-neuron.utils";
-import {secondsToDuration} from "$lib/utils/date.utils";
 
 describe("SnsNeuronMetaInfoCard", () => {
   beforeEach(() => {
@@ -34,7 +35,9 @@ describe("SnsNeuronMetaInfoCard", () => {
       reload: jest.fn(),
     });
 
-    const hash = shortenWithMiddleEllipsis(`${getSnsNeuronIdAsHexString(mockSnsNeuron) ?? ""}`);
+    const hash = shortenWithMiddleEllipsis(
+      `${getSnsNeuronIdAsHexString(mockSnsNeuron) ?? ""}`
+    );
     expect(getByTestId("neuron-id")?.textContent.trim()).toEqual(hash);
   });
 
@@ -45,7 +48,9 @@ describe("SnsNeuronMetaInfoCard", () => {
       reload: jest.fn(),
     });
 
-    expect(getByTestId("neuron-state-info")?.textContent.trim()).toEqual(en.neuron_state.Dissolved);
+    expect(getByTestId("neuron-state-info")?.textContent.trim()).toEqual(
+      en.neuron_state.Dissolved
+    );
   });
 
   it("should render neuron age", () => {
@@ -55,6 +60,8 @@ describe("SnsNeuronMetaInfoCard", () => {
       reload: jest.fn(),
     });
 
-    expect(getByTestId("sns-neuron-age")?.textContent.trim()).toEqual(secondsToDuration(BigInt(mockSnsNeuronTimestampSeconds)));
+    expect(getByTestId("sns-neuron-age")?.textContent.trim()).toEqual(
+      secondsToDuration(BigInt(mockSnsNeuronTimestampSeconds))
+    );
   });
 });
