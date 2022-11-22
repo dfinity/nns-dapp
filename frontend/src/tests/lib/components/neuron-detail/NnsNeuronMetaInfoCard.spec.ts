@@ -82,17 +82,12 @@ describe("NnsNeuronMetaInfoCard", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders actions", () => {
+  it("renders split actions", () => {
     // Each action button is tested separately
     const { queryByText } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 
-    expect(
-      queryByText(en.neuron_detail.increase_dissolve_delay)
-    ).toBeInTheDocument();
-    expect(queryByText(en.neuron_detail.start_dissolving)).toBeInTheDocument();
-    expect(queryByText(en.neuron_detail.increase_stake)).toBeInTheDocument();
     expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
   });
 
