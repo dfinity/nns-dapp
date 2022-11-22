@@ -35,10 +35,10 @@ describe("Canisters", () => {
       .mockImplementation(mockCanistersStoreSubscribe);
   });
 
-  it("should render content", () => {
+  it("should render ic", () => {
     const { getByText } = render(Canisters);
 
-    expect(getByText(en.canisters.text)).toBeInTheDocument();
+    expect(getByText(en.core.ic)).toBeInTheDocument();
   });
 
   it("should subscribe to store", () =>

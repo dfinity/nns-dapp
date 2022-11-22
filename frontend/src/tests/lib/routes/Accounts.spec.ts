@@ -91,7 +91,7 @@ describe("Accounts", () => {
 
     expect(queryByTestId("accounts-body")).toBeInTheDocument();
 
-    const selectElement = queryByTestId(
+    let selectElement = queryByTestId(
       "select-project-dropdown"
     ) as HTMLSelectElement | null;
 
@@ -104,6 +104,10 @@ describe("Accounts", () => {
     await waitFor(() =>
       expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
     );
+
+    selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
 
     selectElement &&
       fireEvent.change(selectElement, {

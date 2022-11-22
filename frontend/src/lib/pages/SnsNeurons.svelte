@@ -16,7 +16,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import IntroductionText from "$lib/components/ui/IntroductionText.svelte";
 
   let loading = true;
 
@@ -45,8 +44,6 @@
     );
   };
 </script>
-
-<IntroductionText />
 
 <div class="card-grid" data-tid="sns-neurons-body">
   {#if loading}

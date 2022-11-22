@@ -24,6 +24,7 @@
     "copy": "Copy \"$value\" to clipboard",
     "badgeNew": "New",
     "nns": "Network Nervous System",
+    "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
     "principal_is": "Your principal id is"
@@ -135,7 +136,7 @@
     "ic_logo": "Internet Computer logo"
   },
   "accounts": {
-    "total": "Total",
+    "total": "Total balance is",
     "main": "Main",
     "balance": "Balance",
     "new_transaction": "New Transaction",
