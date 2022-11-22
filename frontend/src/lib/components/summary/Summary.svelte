@@ -2,7 +2,7 @@
   import ProjectLogo from "$lib/components/summary/ProjectLogo.svelte";
   import { INTERNET_COMPUTER, IC_LOGO } from "$lib/constants/icp.constants";
   import { ENABLE_SNS } from "$lib/constants/environment.constants";
-  import SelectProjectDropdownWrapper from "$lib/components/summary/SelectProjectDropdownWrapper.svelte";
+  import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
 
   export let selectProjects = ENABLE_SNS;
 </script>

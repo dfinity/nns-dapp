@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SelectProjectDropdown from "$lib/components/summary/SelectProjectDropdown.svelte";
+  import SelectProjectDropdown from "$lib/components/universe/SelectProjectDropdown.svelte";
 </script>
 
 <div class="dropdown-wrapper">
@@ -7,8 +7,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/fonts";
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/fonts";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
 
   .dropdown-wrapper {
     padding: 0 0 var(--padding-0_5x);
