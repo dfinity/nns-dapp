@@ -111,7 +111,7 @@ describe("NeuronCard", () => {
       },
     });
 
-    expect(getByText(en.neurons.community_fund)).toBeInTheDocument();
+    expect(getByText(en.neurons.community_fund_title)).toBeInTheDocument();
   });
 
   it("renders the hotkey_control label when neuron is not controlled by current user but by hotkey", async () => {

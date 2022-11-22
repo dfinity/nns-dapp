@@ -484,7 +484,6 @@ interface I18nNeuron_detail {
   voting_history: string;
   vote: string;
   join_community_fund: string;
-  community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
   stop_dissolving: string;
