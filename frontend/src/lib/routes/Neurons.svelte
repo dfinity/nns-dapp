@@ -3,7 +3,7 @@
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
-  import SnsNeuronsFooter from "$lib/components/neurons/SnsNeuronsFooter.svelte";
+  import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
   import {
     isNnsProjectStore,
     snsProjectIdSelectedStore,

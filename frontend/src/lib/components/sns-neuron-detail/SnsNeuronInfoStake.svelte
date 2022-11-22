@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
-  import SnsNeuronAmount from "$lib/components/neurons/SnsNeuronAmount.svelte";
+  import SnsNeuronAmount from "$lib/components/sns-neurons/SnsNeuronAmount.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import {

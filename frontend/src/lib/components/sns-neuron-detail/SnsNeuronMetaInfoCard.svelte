@@ -9,11 +9,11 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import SnsNeuronCardTitle from "$lib/components/neurons/SnsNeuronCardTitle.svelte";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
-  import SnsNeuronAge from "$lib/components/neurons/SnsNeuronAge.svelte";
+  import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import SnsNeuronStateRemainingTime from "$lib/components/neurons/SnsNeuronStateRemainingTime.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

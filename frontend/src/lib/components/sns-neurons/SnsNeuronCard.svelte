@@ -5,9 +5,9 @@
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import NeuronCardContainer from "$lib/components/neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
-  import SnsNeuronCardTitle from "$lib/components/neurons/SnsNeuronCardTitle.svelte";
-  import SnsNeuronAmount from "$lib/components/neurons/SnsNeuronAmount.svelte";
-  import SnsNeuronStateRemainingTime from "$lib/components/neurons/SnsNeuronStateRemainingTime.svelte";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
+  import SnsNeuronAmount from "$lib/components/sns-neurons/SnsNeuronAmount.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
