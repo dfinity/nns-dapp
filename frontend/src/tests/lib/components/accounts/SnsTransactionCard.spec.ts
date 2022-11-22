@@ -79,10 +79,10 @@ describe("SnsTransactionCard", () => {
       owner: mockSnsFullProject.summary.governanceCanisterId,
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
-    const stakeNeuronTransactoin = createSnstransactionWithId(toGov, from);
+    const stakeNeuronTransaction = createSnstransactionWithId(toGov, from);
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
-      stakeNeuronTransactoin,
+      stakeNeuronTransaction,
       mockSnsFullProject.rootCanisterId
     );
 

@@ -6,7 +6,7 @@ import {
   mapSnsTransaction,
 } from "$lib/utils/sns-transactions.utils";
 import { AccountTransactionType } from "$lib/utils/transactions.utils";
-import { Principal } from "@dfinity/principal";
+import { principal } from "src/tests/mocks/sns-projects.mock";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
@@ -184,7 +184,7 @@ describe("sns-transaction utils", () => {
     });
 
     it("maps stake neuron transaction", () => {
-      const governanceCanisterId = Principal.fromText("aaaaa-aa");
+      const governanceCanisterId = principal(2);
       const toGovernance = {
         owner: governanceCanisterId,
         subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
