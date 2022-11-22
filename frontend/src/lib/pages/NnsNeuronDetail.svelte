@@ -107,27 +107,27 @@
   <section data-tid="neuron-detail">
     {#if neuron && !inVotingProcess}
       <NeuronMetaInfoCard {neuron} />
-      <hr/>
+      <hr />
 
       <NnsNeuronInfoStake {neuron} />
-      <hr/>
+      <hr />
 
       <NeuronMaturityCard {neuron} />
-      <hr/>
+      <hr />
 
       <NeuronJoinFundCard {neuron} />
-      <hr/>
+      <hr />
 
       <NeuronFollowingCard {neuron} />
-      <hr/>
+      <hr />
 
       {#if IS_TESTNET}
         <NeuronProposalsCard {neuron} />
-        <hr/>
+        <hr />
       {/if}
 
       <NeuronHotkeysCard {neuron} />
-      <hr/>
+      <hr />
 
       <NeuronVotingHistoryCard {neuron} />
     {:else}

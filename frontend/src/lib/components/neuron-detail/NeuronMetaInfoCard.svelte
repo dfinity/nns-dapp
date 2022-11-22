@@ -42,42 +42,40 @@
     </div>
   </KeyValuePair>
 
-<NnsNeuronAge {neuron} />
+  <NnsNeuronAge {neuron} />
 
-<NnsNeuronRemainingTime {neuron} inline={false} />
+  <NnsNeuronRemainingTime {neuron} inline={false} />
 
-{#if neuron.votingPower}
-  <KeyValuePairInfo testId="voting-power">
-    <svelte:fragment slot="key"
-    >{$i18n.neurons.voting_power}</svelte:fragment
-    >
-    <span class="value" slot="value"
-    >{formatVotingPower(neuron.votingPower)}</span
-    >
-    <svelte:fragment slot="info">
-      {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-        <Html
-                text={replacePlaceholders(
-                $i18n.neuron_detail.voting_power_tooltip_with_stake,
-                {
-                  $stake: formatToken({
-                    value: neuron.fullNeuron.cachedNeuronStake,
-                    detailed: true,
-                  }),
-                  $st4kedMaturity: formattedStakedMaturity(neuron),
-                  $delayMultiplier: dissolveDelayMultiplier(
-                    Number(neuron.dissolveDelaySeconds)
-                  ).toFixed(2),
-                  $ageMultiplier: ageMultiplier(
-                    Number(neuron.ageSeconds)
-                  ).toFixed(2),
-                }
-              )}
-        />
-      {/if}
-    </svelte:fragment>
-  </KeyValuePairInfo>
-{/if}
+  {#if neuron.votingPower}
+    <KeyValuePairInfo testId="voting-power">
+      <svelte:fragment slot="key">{$i18n.neurons.voting_power}</svelte:fragment>
+      <span class="value" slot="value"
+        >{formatVotingPower(neuron.votingPower)}</span
+      >
+      <svelte:fragment slot="info">
+        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+          <Html
+            text={replacePlaceholders(
+              $i18n.neuron_detail.voting_power_tooltip_with_stake,
+              {
+                $stake: formatToken({
+                  value: neuron.fullNeuron.cachedNeuronStake,
+                  detailed: true,
+                }),
+                $st4kedMaturity: formattedStakedMaturity(neuron),
+                $delayMultiplier: dissolveDelayMultiplier(
+                  Number(neuron.dissolveDelaySeconds)
+                ).toFixed(2),
+                $ageMultiplier: ageMultiplier(
+                  Number(neuron.ageSeconds)
+                ).toFixed(2),
+              }
+            )}
+          />
+        {/if}
+      </svelte:fragment>
+    </KeyValuePairInfo>
+  {/if}
 </div>
 
 <div class="buttons">

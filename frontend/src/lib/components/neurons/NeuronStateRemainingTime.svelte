@@ -13,30 +13,37 @@
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     {#if inline}
-    <p class="duration description">
-      <Html
-              text={replacePlaceholders($i18n.neurons.inline_remaining, {
-          $duration: secondsToDuration(timeInSeconds),
-        })}
-      />
-    </p>
-      {:else}
+      <p class="duration description">
+        <Html
+          text={replacePlaceholders($i18n.neurons.inline_remaining, {
+            $duration: secondsToDuration(timeInSeconds),
+          })}
+        />
+      </p>
+    {:else}
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.neurons.remaining}</span>
-        <span slot="value" class="value">{secondsToDuration(timeInSeconds)}</span>
+        <span slot="value" class="value"
+          >{secondsToDuration(timeInSeconds)}</span
+        >
       </KeyValuePair>
-      {/if}
+    {/if}
   {:else if state === NeuronState.Locked}
     {#if inline}
-    <p class="duration description">
-      {secondsToDuration(timeInSeconds)} – {$i18n.neurons.dissolve_delay_title}
-    </p>
-      {:else}
+      <p class="duration description">
+        {secondsToDuration(timeInSeconds)} – {$i18n.neurons
+          .dissolve_delay_title}
+      </p>
+    {:else}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neurons.dissolve_delay_title}</span>
-        <span slot="value" class="value">{secondsToDuration(timeInSeconds)}</span>
+        <span slot="key" class="label"
+          >{$i18n.neurons.dissolve_delay_title}</span
+        >
+        <span slot="value" class="value"
+          >{secondsToDuration(timeInSeconds)}</span
+        >
       </KeyValuePair>
-      {/if}
+    {/if}
   {/if}
 {/if}
 

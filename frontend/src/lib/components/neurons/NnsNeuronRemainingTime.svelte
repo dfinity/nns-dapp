@@ -16,7 +16,8 @@
   $: spawningTime = getSpawningTimeInSeconds(neuron);
 </script>
 
-<NeuronStateRemainingTime {inline}
+<NeuronStateRemainingTime
+  {inline}
   state={neuron.state}
   timeInSeconds={dissolvingTime ?? spawningTime ?? neuron.dissolveDelaySeconds}
 />
