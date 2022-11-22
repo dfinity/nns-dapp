@@ -2,8 +2,8 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   getAnonymousIdentity,
+  getAuthenticatedIdentity,
   getCurrentIdentity,
-  getIdentity,
 } from "./auth.services";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
@@ -58,7 +58,7 @@ export const queryAndUpdate = async <R, E>({
       ? getAnonymousIdentity()
       : identityType === "current"
       ? getCurrentIdentity()
-      : await getIdentity();
+      : await getAuthenticatedIdentity();
 
   const queryOrUpdate = (certified: boolean) =>
     request({ certified, identity })

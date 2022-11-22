@@ -712,6 +712,12 @@ interface I18nError__sns {
   commitment_exceeds_current_allowed: string;
   cannot_participate: string;
   invalid_root_canister_id: string;
+  ledger_temporarily_unavailable: string;
+  ledger_duplicate: string;
+  ledger_bad_fee: string;
+  ledger_created_future: string;
+  ledger_too_old: string;
+  ledger_unsufficient_funds: string;
   sns_add_hotkey: string;
 }
 

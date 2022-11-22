@@ -117,10 +117,6 @@
 </Footer>
 
 <style lang="scss">
-  .last-info {
-    margin-bottom: var(--padding-3x);
-  }
-
   main {
     padding-bottom: var(--footer-height);
   }
