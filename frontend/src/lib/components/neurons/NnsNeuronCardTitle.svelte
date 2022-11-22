@@ -8,6 +8,7 @@
   import { authStore } from "$lib/stores/auth.store";
 
   export let neuron: NeuronInfo;
+  export let tagName: "p" | "h3" = "p";
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
@@ -20,7 +21,9 @@
 </script>
 
 <div class="lock" data-tid="neuron-card-title">
-  <p data-tid="neuron-id">{neuron.neuronId}</p>
+  <svelte:element this={tagName} data-tid="neuron-id"
+    >{neuron.neuronId}</svelte:element
+  >
 
   {#if isCommunityFund}
     <small class="label">{$i18n.neurons.community_fund}</small>

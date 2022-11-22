@@ -37,10 +37,8 @@
 
 <div class="content-cell-details">
   <KeyValuePair>
-    <h3 class="label" slot="key"><NnsNeuronCardTitle {neuron} /></h3>
-    <div slot="value">
-      <NeuronStateInfo state={neuron.state} />
-    </div>
+    <NnsNeuronCardTitle tagName="h3" {neuron} slot="key" />
+    <NeuronStateInfo state={neuron.state} slot="value" />
   </KeyValuePair>
 
   <NnsNeuronAge {neuron} />

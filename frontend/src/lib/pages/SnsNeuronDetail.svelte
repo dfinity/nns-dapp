@@ -97,8 +97,10 @@
 <main>
   <section data-tid="sns-neuron-detail-page">
     {#if loading}
-      <SkeletonCard size="large" cardType="info" />
-      <SkeletonCard cardType="info" />
+      <SkeletonCard size="large" cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
     {:else}
       <SnsNeuronMetaInfoCard />
       <SnsNeuronMaturityCard />

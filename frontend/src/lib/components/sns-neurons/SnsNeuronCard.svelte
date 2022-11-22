@@ -1,38 +1,25 @@
 <script lang="ts">
   import { NeuronState, TokenAmount } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
   import type { CardType } from "$lib/types/card";
   import {
     getSnsDissolvingTimeInSeconds,
     getSnsLockedTimeInSeconds,
-    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
-    isUserHotkey,
   } from "$lib/utils/sns-neuron.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
-  import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
-  import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Hash from "$lib/components/ui/Hash.svelte";
+  import NeuronCardContainer from "$lib/components/neurons/NeuronCardContainer.svelte";
+  import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { Spinner } from "@dfinity/gix-components";
+  import SnsNeuronCardTitle from "$lib/components/neurons/SnsNeuronCardTitle.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
-
-  let isHotkey: boolean;
-  $: isHotkey = isUserHotkey({
-    neuron,
-    identity: $authStore.identity,
-  });
-
-  let neuronId: string;
-  $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
   let neuronStake: TokenAmount | undefined;
   $: neuronStake =
@@ -56,12 +43,7 @@
 </script>
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
-    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronId} />
-    {#if isHotkey}
-      <span>{$i18n.neurons.hotkey_control}</span>
-    {/if}
-  </div>
+  <SnsNeuronCardTitle slot="start" {neuron} />
 
   <div class="content">
     <div>
@@ -84,16 +66,6 @@
 </NeuronCardContainer>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/card";
-
-  .identifier {
-    @include card.stacked-title;
-    :global(h3) {
-      margin: 0;
-    }
-  }
-
   .content {
     display: flex;
     justify-content: space-between;
