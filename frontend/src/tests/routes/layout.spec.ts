@@ -12,6 +12,7 @@ import {
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
+import {toastsStore} from "@dfinity/gix-components";
 
 jest.mock("$lib/services/worker.services", () => ({
   initWorker: jest.fn(() =>
@@ -61,5 +62,17 @@ describe("Layout", () => {
     });
 
     expect(initWorker).toHaveBeenCalled();
+  });
+
+  it("should reset toasts on sign in",  () => {
+    const spy = jest.spyOn(toastsStore, "reset");
+
+    render(App);
+
+    authStoreMock.next({
+      identity: mockIdentity,
+    });
+
+    expect(spy).toBeCalled();
   });
 });
