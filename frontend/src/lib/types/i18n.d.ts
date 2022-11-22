@@ -238,9 +238,12 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   stake: string;
-  icp_stake: string;
+  amount_icp_stake: string;
+  ic_stake: string;
   staked: string;
+  inline_remaining: string;
   remaining: string;
+  age: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
