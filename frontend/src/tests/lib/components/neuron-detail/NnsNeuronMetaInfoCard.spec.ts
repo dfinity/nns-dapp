@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
@@ -16,7 +16,7 @@ import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-describe("NeuronMetaInfoCard", () => {
+describe("NnsNeuronMetaInfoCard", () => {
   const props = {
     neuron: {
       ...mockNeuron,
@@ -40,7 +40,7 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("renders neuron id", () => {
-    const { queryByText } = render(NeuronMetaInfoCard, {
+    const { queryByText } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 
@@ -49,7 +49,7 @@ describe("NeuronMetaInfoCard", () => {
 
   it("renders a NeuronCard", () => {
     // We can skip many edge cases tested in the NeuronCard
-    const { queryByTestId } = render(NeuronMetaInfoCard, {
+    const { queryByTestId } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 
@@ -57,7 +57,7 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("renders voting power", () => {
-    const { queryByText } = render(NeuronMetaInfoCard, {
+    const { queryByText } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 
@@ -70,7 +70,7 @@ describe("NeuronMetaInfoCard", () => {
   });
 
   it("doest not render voting power if none", () => {
-    const { queryByText } = render(NeuronMetaInfoCard, {
+    const { queryByText } = render(NnsNeuronMetaInfoCard, {
       neuron: {
         ...mockNeuron,
         votingPower: undefined,
@@ -84,7 +84,7 @@ describe("NeuronMetaInfoCard", () => {
 
   it("renders actions", () => {
     // Each action button is tested separately
-    const { queryByText } = render(NeuronMetaInfoCard, {
+    const { queryByText } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 
@@ -107,7 +107,7 @@ describe("NeuronMetaInfoCard", () => {
       },
     };
 
-    const { queryByText } = render(NeuronMetaInfoCard, {
+    const { queryByText } = render(NnsNeuronMetaInfoCard, {
       props,
     });
 

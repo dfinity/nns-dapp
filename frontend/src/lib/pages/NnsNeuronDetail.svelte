@@ -3,7 +3,7 @@
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
-  import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+  import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
@@ -106,7 +106,7 @@
 <main class="legacy">
   <section data-tid="neuron-detail">
     {#if neuron && !inVotingProcess}
-      <NeuronMetaInfoCard {neuron} />
+      <NnsNeuronMetaInfoCard {neuron} />
       <NnsNeuronInfoStake {neuron} />
       <NeuronMaturityCard {neuron} />
       <NeuronJoinFundCard {neuron} />
