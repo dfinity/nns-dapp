@@ -1,12 +1,9 @@
 <script lang="ts">
   import { NeuronState, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import {
-    SECONDS_IN_EIGHT_YEARS,
-    SECONDS_IN_HALF_YEAR,
-  } from "$lib/constants/constants";
+  import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
-  import {nowInSeconds, secondsToDuration} from "$lib/utils/date.utils";
+  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -22,6 +19,9 @@
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
   import type { SnsParameters } from "$lib/stores/sns-parameters.store";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import Hash from "$lib/components/ui/Hash.svelte";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -52,17 +52,23 @@
   let dissolveDelaySeconds: bigint;
   $: dissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
 
-  let snsParameters: SnsParameters | undefined;
-  $: snsParameters = $snsProjectParametersStore;
+  let snsParameters: NervousSystemParameters | undefined;
+  $: snsParameters = $snsProjectParametersStore?.parameters;
+
+  let maxDissolveDelaySeconds: number | undefined;
+  $: maxDissolveDelaySeconds =
+    snsParameters === undefined
+      ? undefined
+      : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
 
   let votingPower: number | undefined;
-  $: if (neuron !== undefined && $snsProjectParametersStore !== undefined) {
+  $: if (neuron !== undefined && snsParameters !== undefined) {
     votingPower = snsVotingPower({
       nowSeconds: nowInSeconds(),
       stake: Number(neuronStake),
       dissolveDelayInSeconds: delayInSeconds,
       neuron,
-      snsParameters: $snsProjectParametersStore.parameters,
+      snsParameters,
     });
   }
 
@@ -74,7 +80,7 @@
 <div class="wrapper">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <p class="value">{getSnsNeuronIdAsHexString(neuron)}</p>
+    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={getSnsNeuronIdAsHexString(neuron)} />
   </div>
 
   <div>
@@ -109,17 +115,19 @@
     <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
 
     <div class="select-delay-container">
-      <InputRange
-        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-        min={0}
-        max={SECONDS_IN_EIGHT_YEARS}
-        bind:value={delayInSeconds}
-        handleInput={checkMinimum}
-      />
+      {#if maxDissolveDelaySeconds !== undefined}
+        <InputRange
+          ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
+          min={0}
+          max={maxDissolveDelaySeconds}
+          bind:value={delayInSeconds}
+          handleInput={checkMinimum}
+        />
+      {/if}
       <div class="details">
         <div>
           <p class="label">
-            {#if votingPower}
+            {#if votingPower !== undefined}
               {formatVotingPower(votingPower)}
             {/if}
           </p>

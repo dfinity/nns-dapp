@@ -1,18 +1,22 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
+    snsVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/nns";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
+  import Hash from "$lib/components/ui/Hash.svelte";
 
   export let delayInSeconds: number;
   export let neuron: SnsNeuron;
@@ -25,6 +29,20 @@
 
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
+
+  let snsParameters: NervousSystemParameters | undefined;
+  $: snsParameters = $snsProjectParametersStore?.parameters;
+
+  let votingPower: number | undefined;
+  $: if (neuron !== undefined && snsParameters !== undefined) {
+    votingPower = snsVotingPower({
+      nowSeconds: nowInSeconds(),
+      stake: Number(neuronStake),
+      dissolveDelayInSeconds: delayInSeconds,
+      neuron,
+      snsParameters,
+    });
+  }
 </script>
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
@@ -33,7 +51,7 @@
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <p class="value">{neuronId}</p>
+    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronId} />
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
@@ -51,12 +69,9 @@
   <div class="voting-power">
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
-      {formatVotingPower(
-        votingPower({
-          stake: neuronStake,
-          dissolveDelayInSeconds: delayInSeconds,
-        })
-      )}
+      {#if votingPower !== undefined}
+        {formatVotingPower(votingPower)}
+      {/if}
     </p>
   </div>
   <div class="toolbar">

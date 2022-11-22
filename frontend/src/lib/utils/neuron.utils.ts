@@ -144,7 +144,7 @@ export const ageMultiplier = (ageSeconds: number): number =>
   1 +
   0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);
 
-export const formatVotingPower = (value: bigint): string =>
+export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
