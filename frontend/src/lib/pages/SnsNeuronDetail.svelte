@@ -20,6 +20,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
+  import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -103,6 +104,7 @@
       <SkeletonCard cardType="info" separator />
     {:else}
       <SnsNeuronMetaInfoCard />
+      <SnsNeuronInfoStake />
       <SnsNeuronMaturityCard />
       {#if ENABLE_SNS_2}
         <SnsNeuronFollowingCard />

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import {nowInSeconds, secondsToDuration} from "$lib/utils/date.utils";
-  import type {SnsNeuron} from "@dfinity/sns";
+  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+  import type { SnsNeuron } from "@dfinity/sns";
 
   export let neuron: SnsNeuron;
 
