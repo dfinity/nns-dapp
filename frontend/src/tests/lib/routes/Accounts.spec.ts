@@ -106,7 +106,7 @@ describe("Accounts", () => {
     );
 
     selectElement = queryByTestId(
-        "select-project-dropdown"
+      "select-project-dropdown"
     ) as HTMLSelectElement | null;
 
     selectElement &&
