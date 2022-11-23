@@ -5,6 +5,7 @@ import {
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -26,7 +27,7 @@ import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
-import { isDefined, keyOf, keyOfOptional } from "./utils";
+import { isDefined, keyOf, keyOfOptional, nonNullish } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
@@ -82,17 +83,25 @@ export const getNnsFunctionKey = (
   return NnsFunction[nnsFunctionId];
 };
 
+/**
+ * Hide proposal that don't match filters
+ *
+ * And check whether we hide it because the user has already voted on it and doesn't want to see them.
+ */
 export const hideProposal = ({
   proposalInfo,
   filters,
   neurons,
+  identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
+  identity: Identity | undefined | null;
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
-  isExcludedVotedProposal({ proposalInfo, filters, neurons });
+  (nonNullish(identity) &&
+    isExcludedVotedProposal({ proposalInfo, filters, neurons }));
 
 /**
  * Does the proposal returned by the backend really matches the filter selected by the user?
@@ -158,10 +167,12 @@ export const hasMatchingProposals = ({
   proposals,
   filters,
   neurons,
+  identity,
 }: {
   proposals: ProposalInfo[];
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
+  identity: Identity | undefined | null;
 }): boolean => {
   if (proposals.length === 0) {
     return false;
@@ -170,7 +181,7 @@ export const hasMatchingProposals = ({
   return (
     proposals.find(
       (proposalInfo: ProposalInfo) =>
-        !hideProposal({ proposalInfo, filters, neurons })
+        !hideProposal({ proposalInfo, filters, neurons, identity })
     ) !== undefined
   );
 };

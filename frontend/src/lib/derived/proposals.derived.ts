@@ -1,3 +1,4 @@
+import { authStore } from "$lib/stores/auth.store";
 import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import type {
   ProposalsFiltersStore,
@@ -12,6 +13,7 @@ import {
   type VoteRegistration,
 } from "$lib/stores/vote-registration.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
+import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
 
@@ -49,16 +51,19 @@ const hide = ({
   filters,
   neurons,
   registrations,
+  identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
   registrations: VoteRegistration[];
+  identity: Identity | undefined | null;
 }): boolean =>
   hideProposal({
     filters,
     proposalInfo,
     neurons,
+    identity,
   }) ||
   // hide proposals that are currently in the voting state
   registrations.find(({ proposalInfo: { id } }) => proposalInfo.id === id) !==
@@ -75,11 +80,24 @@ export const uiProposals: Readable<UIProposalsStore> = derived(
     proposalsFiltersStore,
     definedNeuronsStore,
     voteRegistrationStore,
+    authStore,
   ],
-  ([{ proposals, certified }, filters, neurons, { registrations }]) => ({
+  ([
+    { proposals, certified },
+    filters,
+    neurons,
+    { registrations },
+    $authStore,
+  ]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
-      hidden: hide({ proposalInfo, filters, neurons, registrations }),
+      hidden: hide({
+        proposalInfo,
+        filters,
+        neurons,
+        registrations,
+        identity: $authStore.identity,
+      }),
     })),
     certified,
   })

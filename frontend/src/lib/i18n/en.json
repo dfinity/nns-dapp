@@ -267,7 +267,7 @@
   },
   "new_followee": {
     "title": "Enter New Followee",
-    "address_placeholder": "Followee Address",
+    "address_placeholder": "Followee Id",
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
     "follow": "Follow",
