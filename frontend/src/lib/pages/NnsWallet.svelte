@@ -27,6 +27,7 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -103,9 +104,10 @@
   <section>
     {#if $selectedAccountStore.account !== undefined}
       <WalletSummary />
-      <div class="actions">
-        <WalletActions />
-      </div>
+      <WalletActions />
+
+      <Separator />
+
       <TransactionList {transactions} />
     {:else}
       <Spinner />
@@ -128,11 +130,3 @@
     selectedAccount={$selectedAccountStore.account}
   />
 {/if}
-
-<style lang="scss">
-  .actions {
-    margin-bottom: var(--padding-3x);
-    display: flex;
-    justify-content: end;
-  }
-</style>

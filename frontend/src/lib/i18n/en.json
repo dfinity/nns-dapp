@@ -386,8 +386,8 @@
   },
   "wallet": {
     "title": "Account",
-    "address": "Address:",
-    "principal": "Principal:",
+    "address": "Address",
+    "principal": "Principal",
     "direction_from": "Source:",
     "direction_to": "To:",
     "no_transactions": "No transactions"

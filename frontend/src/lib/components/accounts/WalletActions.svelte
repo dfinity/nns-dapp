@@ -15,26 +15,28 @@
 
   let type: AccountType | undefined;
   $: type = $store.account?.type;
+
+  let displayActions = false;
+  $: displayActions = ["subAccount", "hardwareWallet"].includes(type);
 </script>
 
-<div role="menubar">
-  {#if type === "subAccount"}
-    <RenameSubAccountButton />
-  {/if}
+{#if displayActions}
+  <div role="menubar">
+    {#if type === "subAccount"}
+      <RenameSubAccountButton />
+    {/if}
 
-  {#if type === "hardwareWallet"}
-    <HardwareWalletListNeuronsButton />
-    <HardwareWalletShowActionButton />
-  {/if}
-</div>
+    {#if type === "hardwareWallet"}
+      <HardwareWalletListNeuronsButton />
+      <HardwareWalletShowActionButton />
+    {/if}
+  </div>
+{/if}
 
 <style lang="scss">
-  div {
-    display: flex;
-    justify-content: flex-end;
+  @use "../../themes/mixins/section";
 
-    > :global(*:not(:last-of-type)) {
-      margin-right: var(--padding);
-    }
+  div {
+    @include section.actions;
   }
 </style>
