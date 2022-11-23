@@ -101,6 +101,7 @@ export const hideProposal = ({
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
   (nonNullish(identity) &&
+    !identity.getPrincipal().isAnonymous() &&
     isExcludedVotedProposal({ proposalInfo, filters, neurons }));
 
 /**
