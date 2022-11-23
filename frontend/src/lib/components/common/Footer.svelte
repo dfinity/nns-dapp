@@ -12,6 +12,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   footer {
     height: var(--footer-height);
@@ -30,7 +31,7 @@
       display: grid;
       --footer-main-inner-width: calc(100% - (2 * var(--padding-0_5x)));
       grid-template-columns: repeat(
-        auto-fit,
+        var(--footer-columns),
         calc(var(--footer-main-inner-width) / var(--footer-columns))
       );
 
@@ -53,6 +54,15 @@
 
       :global(div.tooltip-wrapper) {
         width: 100%;
+      }
+
+      :global(button) {
+        @include text.truncate;
+
+        @media (min-width: 300px) {
+          overflow: inherit;
+          white-space: initial;
+        }
       }
     }
   }
