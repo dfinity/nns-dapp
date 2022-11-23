@@ -280,7 +280,7 @@ export const needsRefresh = ({
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
 
-// https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L158
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
 export const snsVotingPower = ({
   nowSeconds,
   dissolveDelayInSeconds,
@@ -293,14 +293,31 @@ export const snsVotingPower = ({
   snsParameters: NervousSystemParameters;
 }) => {
   const {
-    aging_since_timestamp_seconds,
     voting_power_percentage_multiplier,
     neuron_fees_e8s,
+    dissolve_state,
   } = neuron;
-  const agingSinceTimestampSeconds = Number(aging_since_timestamp_seconds);
   const votingPowerPercentageMultiplier = Number(
     voting_power_percentage_multiplier
   );
+
+  // We don't use value of `aging_since_timestamp_seconds` because the increase dissolve delay backend function updates it.
+  // To get the voting power after increase dissolve delay call we update calculate the `aging_since_timestamp_seconds` according the backend logic.
+  // https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L302
+  let agingSinceTimestampSeconds: number;
+  const dissolveState = fromDefinedNullable(dissolve_state);
+  if ("DissolveDelaySeconds" in dissolveState) {
+    if (dissolveState.DissolveDelaySeconds === 0n) {
+      // We transition from `Dissolved` to `NotDissolving`: reset age.
+      agingSinceTimestampSeconds = nowSeconds;
+    }
+  } else if ("WhenDissolvedTimestampSeconds" in dissolveState) {
+    const whenDissolved = Number(dissolveState.WhenDissolvedTimestampSeconds);
+    agingSinceTimestampSeconds = whenDissolved > nowSeconds ? Number.MAX_SAFE_INTEGER : whenDissolved;
+  } else {
+    agingSinceTimestampSeconds = nowSeconds;
+  }
+
   const {
     max_dissolve_delay_seconds,
     max_neuron_age_for_age_bonus,
@@ -333,7 +350,6 @@ export const snsVotingPower = ({
         (100 * maxDissolveDelaySeconds)
       : 0;
   const stakeWithDissolveDelayBonus = stake + dissolveDelayBonus;
-  // TODO: review because `aging_since_timestamp_seconds` is updated after the increaseDissolveDelay call
   const ageSeconds = Math.max(nowSeconds - agingSinceTimestampSeconds, 0);
   const age = Math.min(ageSeconds, maxNeuronAgeForAgeBonus);
   const stakeWithAgeBonus =
