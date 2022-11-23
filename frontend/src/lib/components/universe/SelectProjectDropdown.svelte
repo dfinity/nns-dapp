@@ -4,10 +4,10 @@
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { committedProjectsStore } from "$lib/stores/projects.store";
-  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
   import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
+  import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
 
   let selectedCanisterId: string | undefined;
 
@@ -74,6 +74,8 @@
     bind:selectedValue={selectedCanisterId}
     testId="select-project-dropdown"
   >
+    <SummaryProjectLogo slot="start" />
+
     {#each selectableProjects as { canisterId, name } (canisterId)}
       <DropdownItem value={canisterId}>{name}</DropdownItem>
     {/each}

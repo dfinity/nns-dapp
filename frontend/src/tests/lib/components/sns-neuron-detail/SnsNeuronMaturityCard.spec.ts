@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsNeuronMaturityCard from "$lib/components/neuron-detail/SnsNeuronMaturityCard.svelte";
+import SnsNeuronMaturityCard from "$lib/components/sns-neuron-detail/SnsNeuronMaturityCard.svelte";
 import {
   SELECTED_SNS_NEURON_CONTEXT_KEY,
   type SelectedSnsNeuronContext,

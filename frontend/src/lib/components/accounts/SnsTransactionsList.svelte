@@ -67,6 +67,7 @@
           transactionWithId={transaction}
           {toSelfTransaction}
           {account}
+          {rootCanisterId}
         />
       {/each}
     </InfiniteScroll>

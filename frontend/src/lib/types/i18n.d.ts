@@ -27,6 +27,7 @@ interface I18nCore {
   copy: string;
   badgeNew: string;
   nns: string;
+  ic: string;
   previous: string;
   next: string;
   principal_is: string;
@@ -237,10 +238,12 @@ interface I18nNeurons {
   community_fund: string;
   hotkey_control: string;
   stake: string;
-  icp_stake: string;
+  amount_icp_stake: string;
+  ic_stake: string;
   staked: string;
-  dissolving: string;
+  inline_remaining: string;
   remaining: string;
+  age: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
@@ -481,7 +484,6 @@ interface I18nNeuron_detail {
   voting_history: string;
   vote: string;
   join_community_fund: string;
-  community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
   stop_dissolving: string;
@@ -714,6 +716,12 @@ interface I18nError__sns {
   commitment_exceeds_current_allowed: string;
   cannot_participate: string;
   invalid_root_canister_id: string;
+  ledger_temporarily_unavailable: string;
+  ledger_duplicate: string;
+  ledger_bad_fee: string;
+  ledger_created_future: string;
+  ledger_too_old: string;
+  ledger_unsufficient_funds: string;
   sns_add_hotkey: string;
 }
 

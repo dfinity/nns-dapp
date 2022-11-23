@@ -4,6 +4,7 @@ import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
@@ -95,7 +96,10 @@ export const snsTransferTokens = async ({
     return { success: true };
   } catch (err) {
     toastsError(
-      toToastError({ fallbackErrorLabelKey: "error.transaction_error", err })
+      ledgerErrorToToastError({
+        fallbackErrorLabelKey: "error.transaction_error",
+        err,
+      })
     );
     return { success: false };
   }

@@ -4,17 +4,14 @@
 
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import {
-  SnsNeuronPermissionType,
-  SnsSwapLifecycle,
-  type SnsNeuron,
-} from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
@@ -178,10 +175,7 @@ describe("SnsNeuronCard", () => {
       permissions: [
         {
           principal: [mockIdentity.getPrincipal()],
-          permission_type: Int32Array.from([
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-          ]),
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
         },
       ],
     };

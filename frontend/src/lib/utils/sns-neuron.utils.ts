@@ -1,6 +1,11 @@
+import {
+  HOTKEY_PERMISSIONS,
+  UNSPECIFIED_FUNCTION_ID,
+} from "$lib/constants/sns-neurons.constants";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
@@ -123,7 +128,7 @@ export const canIdentityManageHotkeys = ({
   hasPermissions({
     neuron,
     identity,
-    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    permissions: HOTKEY_PERMISSIONS,
   });
 
 export const hasPermissionToDisburse = ({
@@ -152,6 +157,19 @@ export const hasPermissionToDissolve = ({
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
     ],
+  });
+
+export const hasPermissionToVote = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
   });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {
@@ -202,11 +220,9 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ].find((permission) => !permission_type.includes(permission)) ===
-        undefined
+        HOTKEY_PERMISSIONS.find(
+          (permission) => !permission_type.includes(permission)
+        ) === undefined
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
@@ -282,7 +298,16 @@ export const needsRefresh = ({
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
 
-// https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
+
+/**
+ * Returns the neuron voting power after increase of dissolve delay.
+ * Repeats the backend logic - https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
+ *
+ * @param {number} nowSeconds
+ * @param {number} dissolveDelayInSeconds
+ * @param {SnsNeuron} neuron
+ * @param {NervousSystemParameters} snsParameters
+ */
 export const snsVotingPower = ({
   nowSeconds,
   dissolveDelayInSeconds,
@@ -293,7 +318,7 @@ export const snsVotingPower = ({
   dissolveDelayInSeconds: number;
   neuron: SnsNeuron;
   snsParameters: NervousSystemParameters;
-}) => {
+}): number => {
   const {
     voting_power_percentage_multiplier,
     neuron_fees_e8s,
@@ -361,3 +386,15 @@ export const snsVotingPower = ({
   const stakeWithAllBonuses = stakeWithDissolveDelayBonus + stakeWithAgeBonus;
   return (stakeWithAllBonuses * votingPowerPercentageMultiplier) / 100;
 };
+
+/**
+ * Returns the functions that are available to follow.
+ *
+ * For now it filters out only the UNSPECIFIED function.
+ * https://github.com/dfinity/ic/blob/5248f11c18ca564881bbb82a4eb6915efb7ca62f/rs/sns/governance/proto/ic_sns_governance/pb/v1/governance.proto#L582
+ *
+ */
+export const functionsToFollow = (
+  functions: SnsNervousSystemFunction[] | undefined
+): SnsNervousSystemFunction[] | undefined =>
+  functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);

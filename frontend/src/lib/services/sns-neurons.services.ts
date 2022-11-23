@@ -1,6 +1,7 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
+  getNervousSystemFunctions,
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
@@ -12,6 +13,8 @@ import {
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -19,6 +22,7 @@ import {
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
@@ -28,7 +32,6 @@ import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
-  SnsNeuronPermissionType,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -232,13 +235,9 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     await addNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal: hotkey,
       rootCanisterId,
@@ -264,14 +263,10 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal,
       rootCanisterId,
@@ -422,8 +417,29 @@ export const stakeNeuron = async ({
     return { success: true };
   } catch (err) {
     toastsError(
-      toToastError({ err, fallbackErrorLabelKey: "error__sns.sns_stake" })
+      ledgerErrorToToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.sns_stake",
+      })
     );
     return { success: false };
   }
+};
+
+// This is a public service.
+export const loadSnsNervousSystemFunctions = async (
+  rootCanisterId: Principal
+) => {
+  const identity = await getAuthenticatedIdentity();
+  // We load with a query call only. Nervous System Functions are public and not related to the user.
+  const functions = await getNervousSystemFunctions({
+    rootCanisterId,
+    identity,
+    certified: true,
+  });
+
+  snsFunctionsStore.setFunctions({
+    rootCanisterId,
+    functions,
+  });
 };

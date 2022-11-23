@@ -5,11 +5,12 @@
   import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let balance: TokenAmount | undefined;
 
   let totalTokens: string;
-  totalTokens =
+  $: totalTokens =
     balance !== undefined
       ? formatToken({
           value: balance.toE8s(),
@@ -18,31 +19,28 @@
       : "";
 </script>
 
-<div data-tid="accounts-total">
-  {#if balance !== undefined}
-    <Tooltip
-      id="wallet-total-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_total, {
-        $amount: totalTokens,
-      })}
-    >
-      <AmountDisplay title amount={balance}>
-        <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
-      </AmountDisplay>
-    </Tooltip>
-  {/if}
-</div>
+<Summary>
+  <div class="details" slot="details">
+    {#if balance !== undefined}
+      <Tooltip
+        id="wallet-total-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+          $amount: totalTokens,
+        })}
+      >
+        <AmountDisplay copy amount={balance}>
+          <span>{$i18n.accounts.total}</span>
+        </AmountDisplay>
+      </Tooltip>
+    {/if}
+  </div>
+</Summary>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
-  div {
-    margin-bottom: var(--padding-2x);
-    --amount-color: var(--content-color);
-    width: fit-content;
-  }
-
-  h1 {
-    display: inline-block;
+  .details {
+    color: var(--description-color);
+    @include fonts.small;
   }
 </style>

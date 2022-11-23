@@ -2,8 +2,6 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Value } from "@dfinity/gix-components";
-  import { authStore } from "$lib/stores/auth.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
@@ -19,7 +17,8 @@
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import IntroductionText from "$lib/components/ui/IntroductionText.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
+  import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
 
   export let referrerPath: AppPath | undefined = undefined;
 
@@ -70,9 +69,9 @@
 </script>
 
 <main>
-  <IntroductionText>
-    <svelte:fragment slot="text">{$i18n.canisters.text}</svelte:fragment>
-  </IntroductionText>
+  <Summary selectProjects={false}>
+    <PrincipalText slot="details" inline />
+  </Summary>
 
   <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister}
@@ -84,15 +83,15 @@
       />
     {/each}
 
-    {#if noCanisters}
-      <p>{$i18n.canisters.empty}</p>
-    {/if}
-
     {#if loading}
       <SkeletonCard />
       <SkeletonCard />
     {/if}
   </div>
+
+  {#if noCanisters}
+    <p class="description empty">{$i18n.canisters.text}</p>
+  {/if}
 </main>
 
 {#if modal === "CreateCanister"}
@@ -118,11 +117,15 @@
 </Footer>
 
 <style lang="scss">
-  .last-info {
-    margin-bottom: var(--padding-3x);
-  }
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   main {
     padding-bottom: var(--footer-height);
+  }
+
+  .empty {
+    @include media.min-width(medium) {
+      max-width: 75%;
+    }
   }
 </style>

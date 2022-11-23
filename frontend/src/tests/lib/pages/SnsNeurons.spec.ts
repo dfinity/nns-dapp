@@ -13,10 +13,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,
@@ -70,17 +67,9 @@ describe("SnsNeurons", () => {
 
     it("should subscribe to store and call services to set up data", async () => {
       render(SnsNeurons);
-      expect(authStoreMock).toHaveBeenCalled();
+      await waitFor(() => expect(authStoreMock).toHaveBeenCalled());
       await waitFor(() => expect(syncSnsAccounts).toBeCalled());
       await waitFor(() => expect(syncSnsNeurons).toBeCalled());
-    });
-
-    it("should render a principal as text", () => {
-      const { getByText } = render(SnsNeurons);
-
-      expect(
-        getByText(mockPrincipal.toText(), { exact: false })
-      ).toBeInTheDocument();
     });
 
     it("should render SnsNeuronCards for each neuron", async () => {

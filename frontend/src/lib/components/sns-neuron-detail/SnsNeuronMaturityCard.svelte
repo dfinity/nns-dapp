@@ -9,6 +9,7 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -23,6 +24,8 @@
     <h3 slot="value">{formattedSnsMaturity(neuron)}</h3>
   </KeyValuePair>
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   h3 {
