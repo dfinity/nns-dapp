@@ -47,7 +47,7 @@
   }
 
   .disabled {
-    --amount-color: rgba(var(--disable-contrast-rgb), 0.2);
+    --amount-color: rgba(var(--disable-contrast-rgb), 0.8);
   }
 
   .content {
