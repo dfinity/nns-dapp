@@ -169,6 +169,8 @@ const initProposalsFiltersStore = () => {
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
+
+    refresh: () => update((state) => ({ ...state })),
   };
 };
 

@@ -90,14 +90,11 @@
       return;
     }
 
+    await findProposals();
+
     initDebounceFindProposals();
 
     initialized = true;
-  });
-
-  // Fetch the proposals when the user logges in or out
-  const unsubscribeAuth = authStore.subscribe(async () => {
-    await findProposals();
   });
 
   const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
@@ -125,10 +122,9 @@
     }
   );
 
-  onDestroy(() => {
-    unsubscribe();
-    unsubscribeAuth();
-  });
+  $: $authStore.identity, (() => proposalsFiltersStore.refresh())();
+
+  onDestroy(unsubscribe);
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
