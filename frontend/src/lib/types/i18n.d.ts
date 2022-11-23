@@ -722,6 +722,7 @@ interface I18nError__sns {
   ledger_created_future: string;
   ledger_too_old: string;
   ledger_unsufficient_funds: string;
+  sns_add_followee: string;
   sns_add_hotkey: string;
 }
 

@@ -5,6 +5,7 @@ import {
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
+  setFollowees,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
@@ -24,8 +25,11 @@ import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
+  followeesByFunction,
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
+  getSnsNeuronIdAsHexString,
+  subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -442,4 +446,55 @@ export const loadSnsNervousSystemFunctions = async (
     rootCanisterId,
     functions,
   });
+};
+
+export const addFollowee = async ({
+  neuron,
+  functionId,
+  followee,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  followee: SnsNeuronId;
+  rootCanisterId: Principal;
+}): Promise<void> => {
+  // Do not allow a neuron to follow itself
+  if (
+    subaccountToHexString(followee.id) === getSnsNeuronIdAsHexString(neuron)
+  ) {
+    toastsError({
+      labelKey: "new_followee.same_neuron",
+    });
+    return;
+  }
+
+  const identity = await getNeuronIdentity();
+
+  const topicFollowees = followeesByFunction({ neuron, functionId });
+  // Do not allow to add a neuron id who is already followed
+  if (topicFollowees !== undefined && topicFollowees.includes(followee)) {
+    toastsError({
+      labelKey: "new_followee.already_followed",
+    });
+    return;
+  }
+  try {
+    const newFollowees: SnsNeuronId[] =
+      topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
+
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      functionId,
+      followees: newFollowees,
+    });
+  } catch (error) {
+    toastsError({
+      labelKey: "error__sns.sns_add_followee",
+      err: error,
+    });
+  }
 };

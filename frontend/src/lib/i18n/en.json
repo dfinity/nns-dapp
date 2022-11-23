@@ -688,6 +688,7 @@
     "ledger_created_future": "Sorry, the transaction can't be created in the future. Please try again.",
     "ledger_too_old": "Sorry, the transaction is too old. Please try again.",
     "ledger_unsufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
+    "sns_add_followee": "There was an error while adding a followee.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   },
   "auth_accounts": {
