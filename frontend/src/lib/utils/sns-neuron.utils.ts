@@ -304,4 +304,4 @@ export const needsRefresh = ({
 export const functionsToFollow = (
   functions: SnsNervousSystemFunction[] | undefined
 ): SnsNervousSystemFunction[] | undefined =>
-  functions?.filter((f) => f.id !== UNSPECIFIED_FUNCTION_ID);
+  functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
