@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXXXX
+* UI redistribution in Neuron details.
+* New cards for neurons and accounts.
+* Proposals list and proposal details are now public.
+* UI improvements on automatic logout.
+
 ## Proposal 90917
 * New routing.
 * New login.
