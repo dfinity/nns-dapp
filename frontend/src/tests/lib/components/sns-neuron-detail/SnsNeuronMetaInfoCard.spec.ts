@@ -10,9 +10,7 @@ import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
-import {
-  mockSnsNeuron,
-} from "../../../mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 
 describe("SnsNeuronMetaInfoCard", () => {
