@@ -87,7 +87,7 @@ export const uiProposals: Readable<UIProposalsStore> = derived(
     filters,
     neurons,
     { registrations },
-    $authStore,
+    { identity },
   ]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
@@ -96,7 +96,7 @@ export const uiProposals: Readable<UIProposalsStore> = derived(
         filters,
         neurons,
         registrations,
-        identity: $authStore.identity,
+        identity,
       }),
     })),
     certified,
