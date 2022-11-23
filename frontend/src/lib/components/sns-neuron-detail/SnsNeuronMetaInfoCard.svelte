@@ -39,3 +39,9 @@
 
   <Separator />
 {/if}
+
+<style lang="scss">
+  .content-cell-details {
+    gap: var(--padding-1_5x);
+  }
+</style>
