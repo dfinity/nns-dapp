@@ -59,11 +59,11 @@
 
 <FollowTopicSection
   on:nnsOpen={openNewFolloweeModal}
-  {title}
-  {subtitle}
   id={String(topic)}
   count={followees.length}
 >
+  <h3 slot="title">{title}</h3>
+  <p slot="subtitle" class="subtitle description">{subtitle}</p>
   <ul>
     {#each followees as followee (followee.neuronId)}
       <li data-tid="current-followee-item">
@@ -86,5 +86,14 @@
   ul {
     list-style-type: none;
     padding: 0;
+  }
+
+  h3 {
+    // Titles longer than one line had too much space with the default line-height for h3
+    line-height: normal;
+  }
+
+  .subtitle {
+    margin: 0 0 var(--padding) 0;
   }
 </style>

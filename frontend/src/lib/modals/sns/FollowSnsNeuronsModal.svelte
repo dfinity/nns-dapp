@@ -22,18 +22,17 @@
   <svelte:fragment slot="title"
     >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
   >
-  <p class="description">{$i18n.follow_neurons.description}</p>
   <div>
+    <p class="description">{$i18n.follow_neurons.description}</p>
     {#if functions === undefined}
       <Spinner />
     {:else}
       {#each functions as { name, id, description }}
-        <FollowTopicSection
-          count={0}
-          title={name}
-          subtitle={fromNullable(description)}
-          id={id.toString()}
-        >
+        <FollowTopicSection count={0} id={id.toString()}>
+          <h3 slot="title">{name}</h3>
+          <p slot="subtitle" class="subtitle description">
+            {fromNullable(description)}
+          </p>
           <!-- TODO: Render Followees https://dfinity.atlassian.net/browse/GIX-1114 -->
           <div>{`TODO: render followees ${neuron.followees.length}`}</div>
         </FollowTopicSection>
@@ -47,5 +46,14 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-1_5x);
+  }
+
+  h3 {
+    // Titles longer than one line had too much space with the default line-height for h3
+    line-height: normal;
+  }
+
+  .subtitle {
+    margin: 0 0 var(--padding) 0;
   }
 </style>

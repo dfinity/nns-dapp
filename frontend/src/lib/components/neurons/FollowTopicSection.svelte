@@ -3,8 +3,6 @@
   import { Collapsible } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
-  export let title: string;
-  export let subtitle: string | undefined;
   export let id: string;
   export let count: number;
 
@@ -18,10 +16,8 @@
   <Collapsible {id} iconSize="medium">
     <div class="wrapper" slot="header">
       <div>
-        <h3>{title}</h3>
-        {#if subtitle !== undefined}
-          <p class="subtitle description">{subtitle}</p>
-        {/if}
+        <slot name="title" />
+        <slot name="subtitle" />
       </div>
       <div class="toolbar">
         <h3 class="badge" data-tid={`topic-${id}-followees-badge`}>
@@ -49,11 +45,6 @@
   @use "@dfinity/gix-components/styles/mixins/interaction";
 
   article {
-    h3 {
-      // Titles longer than one line had too much space with the default line-height for h3
-      line-height: normal;
-    }
-
     :global(.collapsible-expand-icon) {
       align-items: start;
       padding-top: var(--padding-3x);
@@ -66,10 +57,6 @@
     justify-content: space-between;
     gap: var(--padding-2x);
     width: 100%;
-  }
-
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
   }
 
   .toolbar {
