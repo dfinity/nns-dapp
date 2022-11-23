@@ -4,6 +4,7 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
   formattedSnsMaturity,
+  functionsToFollow,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -27,10 +28,15 @@ import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  type SnsNervousSystemFunction,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
+import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -832,6 +838,26 @@ describe("sns-neuron utils", () => {
           balanceE8s: BigInt(2),
         })
       ).toBeFalsy();
+    });
+  });
+
+  describe("functionsToFollow", () => {
+    it("filters out function with id 0", () => {
+      const function0: SnsNervousSystemFunction = {
+        ...nervousSystemFunctionMock,
+        id: BigInt(0),
+      };
+      const function1: SnsNervousSystemFunction = {
+        ...nervousSystemFunctionMock,
+        id: BigInt(1),
+      };
+      const function2: SnsNervousSystemFunction = {
+        ...nervousSystemFunctionMock,
+        id: BigInt(2),
+      };
+      expect(functionsToFollow([function0, function1, function2]).length).toBe(
+        2
+      );
     });
   });
 });

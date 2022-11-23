@@ -1,7 +1,11 @@
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  UNSPECIFIED_FUNCTION_ID,
+} from "$lib/constants/sns-neurons.constants";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
@@ -289,3 +293,15 @@ export const needsRefresh = ({
   neuron: SnsNeuron;
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
+
+/**
+ * Returns the functions that are available to follow.
+ *
+ * For now it filters out only the UNSPECIFIED function.
+ * https://github.com/dfinity/ic/blob/5248f11c18ca564881bbb82a4eb6915efb7ca62f/rs/sns/governance/proto/ic_sns_governance/pb/v1/governance.proto#L582
+ *
+ */
+export const functionsToFollow = (
+  functions: SnsNervousSystemFunction[] | undefined
+): SnsNervousSystemFunction[] | undefined =>
+  functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
