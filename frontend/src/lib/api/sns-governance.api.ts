@@ -2,12 +2,12 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import type {
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronPermissionType,
 } from "@dfinity/sns";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -246,10 +246,10 @@ export const claimNeuron = async ({
 };
 
 export const getNervousSystemFunctions = async ({
-                                                  rootCanisterId,
-                                                  identity,
-                                                  certified,
-                                                }: {
+  rootCanisterId,
+  identity,
+  certified,
+}: {
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
@@ -267,7 +267,6 @@ export const getNervousSystemFunctions = async ({
   logWithTimestamp(`Getting nervous system functions call complete.`);
   return functions;
 };
-
 
 export const nervousSystemParameters = async ({
   rootCanisterId,

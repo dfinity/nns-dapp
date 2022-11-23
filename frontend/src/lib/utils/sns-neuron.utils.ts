@@ -298,7 +298,6 @@ export const needsRefresh = ({
   balanceE8s: bigint;
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
 
-
 /**
  * Returns the neuron voting power after increase of dissolve delay.
  * Repeats the backend logic - https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158

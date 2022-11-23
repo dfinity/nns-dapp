@@ -16,7 +16,7 @@
     {#if inline}
       <p class="duration description" class:default-gaps={defaultGaps}>
         <Html
-                text={replacePlaceholders($i18n.neurons.inline_remaining, {
+          text={replacePlaceholders($i18n.neurons.inline_remaining, {
             $duration: secondsToDuration(timeInSeconds),
           })}
         />
@@ -25,7 +25,7 @@
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.neurons.remaining}</span>
         <span slot="value" class="value"
-        >{secondsToDuration(timeInSeconds)}</span
+          >{secondsToDuration(timeInSeconds)}</span
         >
       </KeyValuePair>
     {/if}
@@ -33,15 +33,15 @@
     {#if inline}
       <p class="duration description" class:default-gaps={defaultGaps}>
         {secondsToDuration(timeInSeconds)} – {$i18n.neurons
-              .dissolve_delay_title}
+          .dissolve_delay_title}
       </p>
     {:else}
       <KeyValuePair>
         <span slot="key" class="label"
-        >{$i18n.neurons.dissolve_delay_title}</span
+          >{$i18n.neurons.dissolve_delay_title}</span
         >
         <span slot="value" class="value"
-        >{secondsToDuration(timeInSeconds)}</span
+          >{secondsToDuration(timeInSeconds)}</span
         >
       </KeyValuePair>
     {/if}
