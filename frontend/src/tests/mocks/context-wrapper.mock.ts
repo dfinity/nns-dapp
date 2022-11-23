@@ -26,7 +26,7 @@ export const renderContextWrapper = <T>({
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-  props?: any;
+  props?: never;
 }): RenderResult =>
   render(ContextWrapperTest, {
     props: {
@@ -63,7 +63,7 @@ export const renderSelectedSnsNeuronContext = ({
   Component: typeof SvelteComponent;
   neuron: SnsNeuron;
   reload: () => Promise<void>;
-  props?: any;
+  props?: never;
 }) =>
   renderContextWrapper({
     Component,

@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { SnsNeuron } from "@dfinity/sns";
 
+  // TODO: remove svelte ignore for svelte-check once implemented
+  // svelte-ignore unused-export-let
   export let neuron: SnsNeuron;
 
   // TODO: implement Sns neuron Age
