@@ -18,8 +18,6 @@
   $: title = $i18n.follow_neurons[`topic_${topic}_title`];
   let subtitle: string;
   $: subtitle = $i18n.follow_neurons[`topic_${topic}_subtitle`];
-  let id: string;
-  $: id = Topic[topic];
 
   let showNewFolloweeModal = false;
   type FolloweeData = {
@@ -67,7 +65,7 @@
   count={followees.length}
 >
   <ul>
-    {#each followees as followee}
+    {#each followees as followee (followee.neuronId)}
       <li data-tid="current-followee-item">
         <KeyValuePair>
           <p slot="key" class="value">{followee.name ?? followee.neuronId}</p>

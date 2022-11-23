@@ -1,4 +1,7 @@
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  UNSPECIFIED_FUNCTION_ID,
+} from "$lib/constants/sns-neurons.constants";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -298,7 +301,6 @@ export const needsRefresh = ({
  * https://github.com/dfinity/ic/blob/5248f11c18ca564881bbb82a4eb6915efb7ca62f/rs/sns/governance/proto/ic_sns_governance/pb/v1/governance.proto#L582
  *
  */
-const UNSPECIFIED_FUNCTION_ID = BigInt(0);
 export const functionsToFollow = (
   functions: SnsNervousSystemFunction[] | undefined
 ): SnsNervousSystemFunction[] | undefined =>
