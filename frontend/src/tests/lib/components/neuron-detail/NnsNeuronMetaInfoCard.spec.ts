@@ -5,7 +5,8 @@
 import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { formatVotingPower } from "$lib/utils/neuron.utils";
+import { secondsToDuration } from "$lib/utils/date.utils";
+import { formatVotingPower, neuronAge } from "$lib/utils/neuron.utils";
 import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
@@ -116,5 +117,15 @@ describe("NnsNeuronMetaInfoCard", () => {
       queryByText(en.neuron_detail.increase_stake)
     ).not.toBeInTheDocument();
     expect(queryByText(en.neuron_detail.split_neuron)).not.toBeInTheDocument();
+  });
+
+  it("should render neuron age", () => {
+    const { getByTestId } = render(NnsNeuronMetaInfoCard, {
+      props,
+    });
+
+    expect(getByTestId("nns-neuron-age")?.textContent.trim()).toEqual(
+      secondsToDuration(neuronAge(mockNeuron))
+    );
   });
 });
