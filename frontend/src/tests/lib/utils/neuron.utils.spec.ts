@@ -50,6 +50,7 @@ import {
   mapNeuronIds,
   minMaturityMerge,
   minNeuronSplittable,
+  neuronAge,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
@@ -1864,6 +1865,20 @@ describe("neuron-utils", () => {
           amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
         })
       ).toBe(false);
+    });
+  });
+
+  describe("neuronAge", () => {
+    it("should return ageSeconds property", () => {
+      expect(neuronAge(mockNeuron)).toEqual(mockNeuron.ageSeconds);
+    });
+
+    it("should return max age value", () => {
+      const neuron = {
+        ...mockNeuron,
+        ageSeconds: mockNeuron.ageSeconds + BigInt(SECONDS_IN_FOUR_YEARS),
+      };
+      expect(neuronAge(neuron)).toEqual(BigInt(SECONDS_IN_FOUR_YEARS));
     });
   });
 });
