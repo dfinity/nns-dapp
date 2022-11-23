@@ -170,7 +170,8 @@ const initProposalsFiltersStore = () => {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
 
-    refresh: () => update((state) => ({ ...state })),
+    reload: () =>
+      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 

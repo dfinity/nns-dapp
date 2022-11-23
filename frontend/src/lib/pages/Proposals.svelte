@@ -122,7 +122,7 @@
     }
   );
 
-  $: $authStore.identity, (() => proposalsFiltersStore.refresh())();
+  $: $authStore.identity, (() => proposalsFiltersStore.reload())();
 
   onDestroy(unsubscribe);
 
