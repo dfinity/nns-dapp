@@ -3,7 +3,7 @@
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { onDestroy, onMount } from "svelte";
-  import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import { BusyScreen } from "@dfinity/gix-components";
   import {
     initAppPublicData,
     initAppAuth,
@@ -21,5 +21,4 @@
 
 <slot />
 
-<Toasts />
 <BusyScreen />

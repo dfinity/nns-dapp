@@ -5,6 +5,7 @@
   import { initWorker } from "$lib/services/worker.services";
   import { initAppDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsReset } from "$lib/stores/toasts.store";
+  import { Toasts } from "@dfinity/gix-components";
 
   let ready = false;
 
@@ -46,6 +47,8 @@
 </script>
 
 <slot />
+
+<Toasts />
 
 <style lang="scss" global>
   @import "@dfinity/gix-components/styles/global.scss";

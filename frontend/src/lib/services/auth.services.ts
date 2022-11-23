@@ -21,6 +21,14 @@ export const logout = async ({
 
   await authStore.signOut();
 
+  // TODO(GIX-1152): improve the user experience
+  // Automatic sign-out might happen while user device is idle and therefore the network might be off.
+  // That's why, to prevent the app to try to fetch public data, we redirect the user to the login page.
+  if (!navigator.onLine) {
+    const { origin }: URL = new URL(window.location.href);
+    replaceHistory(new URL(origin));
+  }
+
   if (msg) {
     appendMsgToUrl(msg);
   }
