@@ -278,7 +278,8 @@ interface I18nNeurons {
 
 interface I18nNew_followee {
   title: string;
-  address_placeholder: string;
+  placeholder: string;
+  label: string;
   follow_neuron: string;
   options_title: string;
   follow: string;

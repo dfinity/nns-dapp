@@ -23,6 +23,7 @@
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let referrerPath: AppPath | undefined = undefined;
 
@@ -121,6 +122,8 @@
     }
   );
 
+  $: $authStore.identity, (() => proposalsFiltersStore.reload())();
+
   onDestroy(unsubscribe);
 
   const updateNothingFound = () => {
@@ -137,6 +140,7 @@
         proposals: $filteredProposals.proposals,
         filters: $proposalsFiltersStore,
         neurons: $definedNeuronsStore,
+        identity: $authStore.identity,
       });
   };
 

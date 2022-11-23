@@ -93,13 +93,11 @@
     <Input
       inputType="text"
       autocomplete="off"
-      placeholderLabelKey="new_followee.address_placeholder"
+      placeholderLabelKey="new_followee.placeholder"
       name="new-followee-address"
       bind:value={followeeAddress}
     >
-      <svelte:fragment slot="label"
-        >{$i18n.new_followee.address_placeholder}</svelte:fragment
-      >
+      <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </Input>
     <button
       class="primary"
