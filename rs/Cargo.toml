@@ -47,7 +47,8 @@ ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcd
 ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 ledger-canister = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
+# Registry canister deploy as of 2022-11-23, ahead of Blessed Replica Version
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "0a729806f2fbc717f2183b07efac19f24f32e717" }
 
 [dev-dependencies]
 maplit = "1.0.2"
