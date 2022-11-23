@@ -17,6 +17,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds = 0;
@@ -66,17 +67,10 @@
   {#if neuron.dissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
-      <p class="duration">
-        <Html
-          text={`${valueSpan(
-            secondsToDuration(neuron.dissolveDelaySeconds)
-          )} - ${
-            neuron.state === NeuronState.Locked
-              ? $i18n.neurons.staked
-              : $i18n.neurons.dissolving
-          }`}
-        />
-      </p>
+      <NeuronStateRemainingTime
+        state={neuron.state}
+        timeInSeconds={neuron.dissolveDelaySeconds}
+      />
     </div>
   {/if}
 

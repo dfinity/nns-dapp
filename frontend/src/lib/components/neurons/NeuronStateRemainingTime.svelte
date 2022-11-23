@@ -7,11 +7,12 @@
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
+  export let noBottomGap = false;
 </script>
 
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
-    <p class="duration description">
+    <p class="duration description" class:no-bottom-gap={noBottomGap}>
       <Html
         text={replacePlaceholders($i18n.neurons.remaining, {
           $duration: secondsToDuration(timeInSeconds),
@@ -19,14 +20,14 @@
       />
     </p>
   {:else if state === NeuronState.Locked}
-    <p class="duration description">
+    <p class="duration description" class:no-bottom-gap={noBottomGap}>
       {secondsToDuration(timeInSeconds)} – {$i18n.neurons.dissolve_delay_title}
     </p>
   {/if}
 {/if}
 
 <style lang="scss">
-  p {
+  .no-bottom-gap {
     margin: var(--padding) 0 0;
   }
 </style>

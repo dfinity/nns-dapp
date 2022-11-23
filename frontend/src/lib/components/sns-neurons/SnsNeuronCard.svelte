@@ -78,6 +78,7 @@
   <NeuronStateRemainingTime
     state={getSnsNeuronState(neuron)}
     timeInSeconds={dissolvingTime ?? lockedTime}
+    noBottomGap
   />
 
   <slot />

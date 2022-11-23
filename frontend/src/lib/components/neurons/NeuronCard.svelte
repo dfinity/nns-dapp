@@ -89,6 +89,7 @@
     timeInSeconds={dissolvingTime ??
       spawningTime ??
       neuron.dissolveDelaySeconds}
+    noBottomGap
   />
 
   <slot />

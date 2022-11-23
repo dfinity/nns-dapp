@@ -7,7 +7,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { InputRange, Html } from "@dfinity/gix-components";
+  import { Html, InputRange } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
@@ -18,10 +18,10 @@
     snsVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
-  import type { SnsParameters } from "$lib/stores/sns-parameters.store";
   import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
   import { fromDefinedNullable } from "@dfinity/utils";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
   export let token: Token;
@@ -44,7 +44,7 @@
   };
 
   let neuronState: NeuronState;
-  $: neuronState = getSnsNeuronState(neuron);
+  // $: neuronState = getSnsNeuronState(neuron);
 
   let neuronStake: bigint;
   $: neuronStake = getSnsNeuronStake(neuron);
@@ -102,18 +102,13 @@
     </p>
   </div>
 
-  {#if dissolveDelaySeconds !== undefined}
+  {#if dissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
-      <p class="duration">
-        <Html
-          text={`${valueSpan(secondsToDuration(dissolveDelaySeconds))} - ${
-            neuronState === NeuronState.Locked
-              ? $i18n.neurons.staked
-              : $i18n.neurons.dissolving
-          }`}
-        />
-      </p>
+      <NeuronStateRemainingTime
+        state={neuronState}
+        timeInSeconds={dissolveDelaySeconds}
+      />
     </div>
   {/if}
 
@@ -122,6 +117,7 @@
     <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
 
     <div class="select-delay-container">
+      <!-- TODO: replace with disabled state-->
       {#if maxDissolveDelaySeconds !== undefined}
         <InputRange
           ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
