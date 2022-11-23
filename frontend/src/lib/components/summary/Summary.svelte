@@ -22,7 +22,9 @@
     <h1>{$i18n.core.ic}</h1>
   {/if}
 
-  <slot name="details" />
+  <div class:details={selectProjects}>
+    <slot name="details" />
+  </div>
 </div>
 
 <style lang="scss">
@@ -73,6 +75,14 @@
       @include media.min-width(small) {
         --logo-display: block;
       }
+    }
+  }
+
+  .details {
+    padding: 0 0 0 var(--padding-1_5x);
+
+    @include media.min-width(small) {
+      padding: 0 0 0 var(--padding-2x);
     }
   }
 </style>

@@ -83,15 +83,15 @@
       />
     {/each}
 
-    {#if noCanisters}
-      <p>{$i18n.canisters.empty}</p>
-    {/if}
-
     {#if loading}
       <SkeletonCard />
       <SkeletonCard />
     {/if}
   </div>
+
+  {#if noCanisters}
+    <p class="description empty">{$i18n.canisters.text}</p>
+  {/if}
 </main>
 
 {#if modal === "CreateCanister"}
@@ -117,7 +117,15 @@
 </Footer>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   main {
     padding-bottom: var(--footer-height);
+  }
+
+  .empty {
+    @include media.min-width(medium) {
+      max-width: 75%;
+    }
   }
 </style>

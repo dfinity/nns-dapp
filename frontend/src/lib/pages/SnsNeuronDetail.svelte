@@ -15,11 +15,12 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import SnsNeuronMaturityCard from "$lib/components/neuron-detail/SnsNeuronMaturityCard.svelte";
+  import SnsNeuronMaturityCard from "$lib/components/sns-neuron-detail/SnsNeuronMaturityCard.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
+  import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -94,13 +95,16 @@
   $: loading = $selectedSnsNeuronStore.neuron === null;
 </script>
 
-<main>
+<main class="legacy">
   <section data-tid="sns-neuron-detail-page">
     {#if loading}
-      <SkeletonCard size="large" cardType="info" />
-      <SkeletonCard cardType="info" />
+      <SkeletonCard size="large" cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
     {:else}
       <SnsNeuronMetaInfoCard />
+      <SnsNeuronInfoStake />
       <SnsNeuronMaturityCard />
       {#if ENABLE_SNS_2}
         <SnsNeuronFollowingCard />

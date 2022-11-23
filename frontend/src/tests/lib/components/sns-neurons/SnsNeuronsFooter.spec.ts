@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsNeuronsFooter from "$lib/components/neurons/SnsNeuronsFooter.svelte";
+import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
 import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";

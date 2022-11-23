@@ -17,7 +17,7 @@
 
     @include media.min-width(small) {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
 
       --logo-display: none;

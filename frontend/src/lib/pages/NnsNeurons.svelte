@@ -52,3 +52,17 @@
     {/each}
   {/if}
 </div>
+
+{#if !isLoading && $sortedNeuronStore.length === 0}
+  <p class="description empty">{$i18n.neurons.text}</p>
+{/if}
+
+<style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
+  .empty {
+    @include media.min-width(medium) {
+      max-width: 75%;
+    }
+  }
+</style>

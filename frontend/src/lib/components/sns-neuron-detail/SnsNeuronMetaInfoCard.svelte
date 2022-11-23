@@ -1,100 +1,41 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { secondsToDate } from "$lib/utils/date.utils";
-  import { Value } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
-  import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import {
-    getSnsNeuronState,
-    hasPermissionToDisburse,
-    hasPermissionToDissolve,
-  } from "$lib/utils/sns-neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
+  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { NeuronState, type Token } from "@dfinity/nns";
-  import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
-  import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
-  import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import type { NeuronState } from "@dfinity/nns";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
+  import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
+  import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
-  const { store, reload: reloadContext }: SelectedSnsNeuronContext =
+  const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
-  let token: Token;
-  $: token = $snsTokenSymbolSelectedStore as Token;
-
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
-
-  let allowedToDisburse: boolean;
-  $: allowedToDisburse = isNullish(neuron)
-    ? false
-    : hasPermissionToDisburse({
-        neuron,
-        identity: $authStore.identity,
-      });
-
-  let allowedToDissolve: boolean;
-  $: allowedToDissolve = isNullish(neuron)
-    ? false
-    : hasPermissionToDissolve({
-        neuron,
-        identity: $authStore.identity,
-      });
-
-  let canDissolve = false;
-  $: canDissolve =
-    nonNullish(neuronState) &&
-    [NeuronState.Dissolving, NeuronState.Locked].includes(neuronState) &&
-    allowedToDissolve;
 </script>
 
 {#if nonNullish(neuron) && nonNullish(neuronState)}
-  <SnsNeuronCard {neuron} cardType="info">
-    <section>
-      <p>
-        <Value>{secondsToDate(Number(neuron.created_timestamp_seconds))}</Value>
-        - {$i18n.neurons.staked}
-      </p>
+  <div class="content-cell-details">
+    <KeyValuePair>
+      <SnsNeuronCardTitle tagName="h3" {neuron} slot="key" />
+      <NeuronStateInfo state={neuronState} slot="value" />
+    </KeyValuePair>
 
-      <div class="buttons">
-        {#if allowedToDissolve}
-          <IncreaseSnsDissolveDelayButton
-            {neuron}
-            {token}
-            reloadNeuron={reloadContext}
-          />
-        {/if}
-        {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseSnsButton {neuron} {reloadContext} />
-        {:else if canDissolve}
-          <DissolveSnsNeuronButton
-            neuronId={fromDefinedNullable(neuron.id)}
-            {neuronState}
-            {reloadContext}
-          />
-        {/if}
-      </div>
-    </section>
-  </SnsNeuronCard>
+    <SnsNeuronAge {neuron} />
+
+    <SnsNeuronStateRemainingTime {neuron} inline={false} />
+  </div>
+
+  <Separator />
 {/if}
-
-<style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  section {
-    padding: var(--padding) 0 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-</style>

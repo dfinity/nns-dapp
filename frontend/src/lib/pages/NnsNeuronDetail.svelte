@@ -3,7 +3,8 @@
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
   import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
-  import NeuronMetaInfoCard from "$lib/components/neuron-detail/NeuronMetaInfoCard.svelte";
+  import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
+  import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -105,20 +106,23 @@
 <main class="legacy">
   <section data-tid="neuron-detail">
     {#if neuron && !inVotingProcess}
-      <NeuronMetaInfoCard {neuron} />
+      <NnsNeuronMetaInfoCard {neuron} />
+      <NnsNeuronInfoStake {neuron} />
       <NeuronMaturityCard {neuron} />
       <NeuronJoinFundCard {neuron} />
       <NeuronFollowingCard {neuron} />
+
       {#if IS_TESTNET}
         <NeuronProposalsCard {neuron} />
       {/if}
+
       <NeuronHotkeysCard {neuron} />
       <NeuronVotingHistoryCard {neuron} />
     {:else}
-      <SkeletonCard size="large" cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
-      <SkeletonCard cardType="info" />
+      <SkeletonCard size="large" cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
+      <SkeletonCard cardType="info" separator />
     {/if}
   </section>
 </main>

@@ -14,6 +14,7 @@
   import { getContext } from "svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   $: {
     if (rootCanisterId !== undefined) {
@@ -55,6 +56,8 @@
     </div>
   {/if}
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   h3 {

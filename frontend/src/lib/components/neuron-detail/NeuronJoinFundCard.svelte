@@ -6,6 +6,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -19,7 +20,7 @@
 {#if isControlledByUser}
   <CardInfo>
     <KeyValuePairInfo testId="join-community-fund">
-      <h3 slot="key">{$i18n.neuron_detail.community_fund}</h3>
+      <h3 slot="key">{$i18n.neurons.community_fund_title}</h3>
 
       <svelte:fragment slot="info"
         ><div class="info">
@@ -32,6 +33,8 @@
       <JoinCommunityFundCheckbox {neuron} />
     </div>
   </CardInfo>
+
+  <Separator />
 {/if}
 
 <style lang="scss">
