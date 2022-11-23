@@ -750,5 +750,6 @@ export const validTopUpAmount = ({
   return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
 };
 
-export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
-  BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
+// TODO: uncomment to activate display of neuron "Age"
+// export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
+//   BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
