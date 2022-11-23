@@ -72,7 +72,9 @@ export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const delay =
-    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron) ?? 0n;
+    getSnsDissolvingTimeInSeconds(neuron) ??
+    getSnsLockedTimeInSeconds(neuron) ??
+    0n;
   return delay > 0n ? delay : 0n;
 };
 
@@ -304,7 +306,7 @@ export const snsVotingPower = ({
   // We don't use value of `aging_since_timestamp_seconds` because the increase dissolve delay backend function updates it.
   // To get the voting power after increase dissolve delay call we update calculate the `aging_since_timestamp_seconds` according the backend logic.
   // https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L302
-  let agingSinceTimestampSeconds: number;
+  let agingSinceTimestampSeconds = nowSeconds;
   const dissolveState = fromDefinedNullable(dissolve_state);
   if ("DissolveDelaySeconds" in dissolveState) {
     if (dissolveState.DissolveDelaySeconds === 0n) {
@@ -313,9 +315,8 @@ export const snsVotingPower = ({
     }
   } else if ("WhenDissolvedTimestampSeconds" in dissolveState) {
     const whenDissolved = Number(dissolveState.WhenDissolvedTimestampSeconds);
-    agingSinceTimestampSeconds = whenDissolved > nowSeconds ? Number.MAX_SAFE_INTEGER : whenDissolved;
-  } else {
-    agingSinceTimestampSeconds = nowSeconds;
+    agingSinceTimestampSeconds =
+      whenDissolved > nowSeconds ? Number.MAX_SAFE_INTEGER : whenDissolved;
   }
 
   const {

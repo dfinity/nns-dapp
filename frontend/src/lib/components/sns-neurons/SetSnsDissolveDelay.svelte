@@ -12,7 +12,8 @@
   import {
     getSnsLockedTimeInSeconds,
     getSnsNeuronIdAsHexString,
-    getSnsNeuronStake, getSnsNeuronState,
+    getSnsNeuronStake,
+    getSnsNeuronState,
     snsVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
