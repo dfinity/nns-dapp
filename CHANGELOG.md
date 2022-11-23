@@ -1,10 +1,17 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 93366
 * UI redistribution in Neuron details.
 * New cards for neurons and accounts.
 * Proposals list and proposal details are now public.
 * UI improvements on automatic logout.
+
+## Proposal 92180
+* New design colors, spacing and layout
+* Link to sub-pages on main login screen
+* UI/UX fixes
+* Stake SNS neuron functionality
+* Improve Participate Button
 
 ## Proposal 90917
 * New routing.
