@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { NeuronState, type Token } from "@dfinity/nns";
+  import type { NeuronState, Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
@@ -13,8 +12,7 @@
   import {
     getSnsLockedTimeInSeconds,
     getSnsNeuronIdAsHexString,
-    getSnsNeuronStake,
-    getSnsNeuronState,
+    getSnsNeuronStake, getSnsNeuronState,
     snsVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
@@ -34,17 +32,8 @@
     }
   };
 
-  let disableUpdate: boolean;
-  $: disableUpdate =
-    delayInSeconds < SECONDS_IN_HALF_YEAR ||
-    delayInSeconds <= minDelayInSeconds;
-  const dispatcher = createEventDispatcher();
-  const cancel = (): void => {
-    dispatcher("nnsCancel");
-  };
-
   let neuronState: NeuronState;
-  // $: neuronState = getSnsNeuronState(neuron);
+  $: neuronState = getSnsNeuronState(neuron);
 
   let neuronStake: bigint;
   $: neuronStake = getSnsNeuronStake(neuron);
@@ -61,16 +50,34 @@
       ? undefined
       : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
 
+  let minDissolveDelaySeconds: number | undefined;
+  $: minDissolveDelaySeconds =
+    snsParameters === undefined
+      ? undefined
+      : Number(
+          fromDefinedNullable(
+            snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
+          )
+        );
+
   let votingPower: number | undefined;
   $: if (neuron !== undefined && snsParameters !== undefined) {
     votingPower = snsVotingPower({
       nowSeconds: nowInSeconds(),
-      stake: Number(neuronStake),
       dissolveDelayInSeconds: delayInSeconds,
       neuron,
       snsParameters,
     });
   }
+
+  let disableUpdate: boolean;
+  $: disableUpdate =
+    delayInSeconds < (minDissolveDelaySeconds ?? 0) ||
+    delayInSeconds <= minDelayInSeconds;
+  const dispatcher = createEventDispatcher();
+  const cancel = (): void => {
+    dispatcher("nnsCancel");
+  };
 
   const goToConfirmation = async () => {
     dispatcher("nnsConfirmDelay");

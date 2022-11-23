@@ -804,7 +804,6 @@ describe("sns-neuron utils", () => {
       const votingPower = snsVotingPower({
         nowSeconds,
         neuron,
-        stake: 100,
         dissolveDelayInSeconds: 100,
         snsParameters: {
           max_dissolve_delay_seconds: [100n],
@@ -827,6 +826,7 @@ describe("sns-neuron utils", () => {
       const nowSeconds = 100;
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
+        cached_neuron_stake_e8s: 100n,
         dissolve_state: [{ DissolveDelaySeconds: 100n }],
         aging_since_timestamp_seconds: 0n,
         voting_power_percentage_multiplier: 100n,
@@ -834,7 +834,6 @@ describe("sns-neuron utils", () => {
       const votingPower = snsVotingPower({
         nowSeconds,
         neuron,
-        stake: 100,
         dissolveDelayInSeconds: 100,
         snsParameters: {
           max_dissolve_delay_seconds: [0n],

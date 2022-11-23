@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import {

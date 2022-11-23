@@ -37,7 +37,6 @@
   $: if (neuron !== undefined && snsParameters !== undefined) {
     votingPower = snsVotingPower({
       nowSeconds: nowInSeconds(),
-      stake: Number(neuronStake),
       dissolveDelayInSeconds: delayInSeconds,
       neuron,
       snsParameters,

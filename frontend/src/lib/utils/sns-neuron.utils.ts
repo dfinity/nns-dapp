@@ -67,12 +67,12 @@ export const getSnsLockedTimeInSeconds = (
 };
 
 // Delay from now. Source depends on the neuron state.
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L428
 export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const delay =
-    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
-  // TODO: review, is it a right place (https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L428)
+    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron) ?? 0n;
   return delay > 0n ? delay : 0n;
 };
 
@@ -283,19 +283,20 @@ export const needsRefresh = ({
 // https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L158
 export const snsVotingPower = ({
   nowSeconds,
-  stake,
   dissolveDelayInSeconds,
   neuron,
   snsParameters,
 }: {
   nowSeconds: number;
-  stake: number; // e8s
   dissolveDelayInSeconds: number;
   neuron: SnsNeuron;
   snsParameters: NervousSystemParameters;
 }) => {
-  const { aging_since_timestamp_seconds, voting_power_percentage_multiplier } =
-    neuron;
+  const {
+    aging_since_timestamp_seconds,
+    voting_power_percentage_multiplier,
+    neuron_fees_e8s,
+  } = neuron;
   const agingSinceTimestampSeconds = Number(aging_since_timestamp_seconds);
   const votingPowerPercentageMultiplier = Number(
     voting_power_percentage_multiplier
@@ -321,6 +322,10 @@ export const snsVotingPower = ({
   const dissolveDelay = Math.min(
     dissolveDelayInSeconds,
     maxDissolveDelaySeconds
+  );
+  const stake = Math.max(
+    Number(getSnsNeuronStake(neuron) - neuron_fees_e8s),
+    0
   );
   const dissolveDelayBonus =
     maxDissolveDelaySeconds > 0
