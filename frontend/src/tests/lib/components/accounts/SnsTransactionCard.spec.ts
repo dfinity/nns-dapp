@@ -124,9 +124,7 @@ describe("SnsTransactionCard", () => {
       transactionFromMainToSubaccount
     );
 
-    expect(container.querySelector("p")?.textContent).toContain(
-      "Jan 1, 1970"
-    );
+    expect(container.querySelector("p")?.textContent).toContain("Jan 1, 1970");
     expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
   });
 
