@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 93416
+* Fix bug on proposals public page.
+* Improvements in wording.
+* Improve error message on canister detail page.
+* UI improvements in neuron detail page.
+
 ## Proposal 93366
 * UI redistribution in Neuron details.
 * New cards for neurons and accounts.
