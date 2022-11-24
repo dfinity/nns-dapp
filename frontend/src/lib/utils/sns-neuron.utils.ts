@@ -306,41 +306,50 @@ export const needsRefresh = ({
  * @param {number} dissolveDelayInSeconds
  * @param {SnsNeuron} neuron
  * @param {NervousSystemParameters} snsParameters
+ * @param {boolean} test
  */
 export const snsVotingPower = ({
   nowSeconds,
   dissolveDelayInSeconds,
   neuron,
   snsParameters,
+  test = false,
 }: {
   nowSeconds: number;
   dissolveDelayInSeconds: number;
   neuron: SnsNeuron;
   snsParameters: NervousSystemParameters;
+  // don't calculate the `aging_since_timestamp_seconds` value for the backend test mock
+  test?: boolean;
 }): number => {
   const {
     voting_power_percentage_multiplier,
     neuron_fees_e8s,
     dissolve_state,
+    aging_since_timestamp_seconds,
   } = neuron;
   const votingPowerPercentageMultiplier = Number(
     voting_power_percentage_multiplier
   );
 
+  let agingSinceTimestampSeconds = Number(aging_since_timestamp_seconds);
+  const dissolveState = fromDefinedNullable(dissolve_state);
   // We don't use value of `aging_since_timestamp_seconds` because the increase dissolve delay backend function updates it.
   // To get the voting power after increase dissolve delay call we update calculate the `aging_since_timestamp_seconds` according the backend logic.
   // https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L302
-  let agingSinceTimestampSeconds = nowSeconds;
-  const dissolveState = fromDefinedNullable(dissolve_state);
-  if ("DissolveDelaySeconds" in dissolveState) {
-    if (dissolveState.DissolveDelaySeconds === 0n) {
-      // We transition from `Dissolved` to `NotDissolving`: reset age.
+  if (test === false) {
+    if ("DissolveDelaySeconds" in dissolveState) {
+      if (dissolveState.DissolveDelaySeconds === 0n) {
+        // We transition from `Dissolved` to `NotDissolving`: reset age.
+        agingSinceTimestampSeconds = nowSeconds;
+      }
+    } else if ("WhenDissolvedTimestampSeconds" in dissolveState) {
+      const whenDissolved = Number(dissolveState.WhenDissolvedTimestampSeconds);
+      agingSinceTimestampSeconds =
+        whenDissolved > nowSeconds ? Number.MAX_SAFE_INTEGER : whenDissolved;
+    } else {
       agingSinceTimestampSeconds = nowSeconds;
     }
-  } else if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    const whenDissolved = Number(dissolveState.WhenDissolvedTimestampSeconds);
-    agingSinceTimestampSeconds =
-      whenDissolved > nowSeconds ? Number.MAX_SAFE_INTEGER : whenDissolved;
   }
 
   const {
