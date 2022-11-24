@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
@@ -10,6 +10,7 @@
     type Transaction,
     transactionName,
   } from "$lib/utils/transactions.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -45,30 +46,54 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<CardInfo testId="transaction-card">
-  <div slot="start" class="title">
-    <h3>{headline}</h3>
-  </div>
+<article data-tid="transaction-card">
+  <KeyValuePair>
+    <h3 slot="key" class="value title">{headline}</h3>
 
-  <AmountDisplay
-    slot="end"
-    amount={displayAmount}
-    sign={isReceive || toSelfTransaction ? "+" : "-"}
-    detailed
-  />
+    <AmountDisplay slot="value"
+                   amount={displayAmount}
+                   sign={isReceive || toSelfTransaction ? "+" : "-"}
+                   detailed
+                   inline
+    />
+  </KeyValuePair>
 
-  <DateSeconds {seconds} />
+  <ColumnRow>
+    <svelte:fragment slot="start">
+      {#if identifier !== undefined}
+        <Identifier size="medium" {label} {identifier} />
+      {/if}
+    </svelte:fragment>
 
-  {#if identifier !== undefined}
-    <Identifier size="medium" {label} {identifier} />
-  {/if}
-</CardInfo>
+    <div slot="end" class="date label"><DateSeconds {seconds} /></div>
+  </ColumnRow>
+</article>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/media";
+
+  article {
+    padding-bottom: var(--padding-2x);
+
+    @include media.min-width(small) {
+      padding-bottom: var(--padding);
+    }
+  }
 
   .title {
-    @include card.stacked-title;
     @include card.title;
+    word-break: break-word;
+    --text-white-space: wrap;
+  }
+
+  .date {
+    @include media.min-width(small) {
+      margin-top: var(--padding);
+    }
+
+    :global(p) {
+      color: inherit;
+    }
   }
 </style>
