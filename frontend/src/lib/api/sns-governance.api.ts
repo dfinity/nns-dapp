@@ -287,8 +287,8 @@ export const nervousSystemParameters = async ({
     }
   );
 
-  const props = await nervousSystemParametersApi({});
+  const parameters = await nervousSystemParametersApi({});
 
   logWithTimestamp(`Querying nervous system parameters complete.`);
-  return props;
+  return parameters;
 };

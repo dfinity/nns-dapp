@@ -9,6 +9,7 @@ import {
   getNervousSystemFunctions,
   getNeuronBalance,
   increaseDissolveDelay,
+  nervousSystemParameters,
   refreshNeuron,
   removeNeuronPermissions,
   startDissolving,
@@ -29,6 +30,7 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
+import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -66,6 +68,9 @@ describe("sns-api", () => {
   const getFunctionsSpy = jest
     .fn()
     .mockResolvedValue(nervousSystemFunctionsMock);
+  const nervousSystemParametersSpy = jest
+    .fn()
+    .mockResolvedValue(snsNervousSystemParametersMock);
 
   beforeEach(() => {
     jest
@@ -99,6 +104,7 @@ describe("sns-api", () => {
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
+        nervousSystemParameters: nervousSystemParametersSpy,
       })
     );
   });
@@ -215,5 +221,16 @@ describe("sns-api", () => {
 
     expect(getFunctionsSpy).toBeCalled();
     expect(res).toEqual([nervousSystemFunctionMock]);
+  });
+
+  it("should get nervous system parameters", async () => {
+    const res = await nervousSystemParameters({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(nervousSystemParametersSpy).toBeCalled();
+    expect(res).toEqual(snsNervousSystemParametersMock);
   });
 });
