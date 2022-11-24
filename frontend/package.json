@@ -61,7 +61,7 @@
     "@dfinity/authentication": "^0.14.0",
     "@dfinity/candid": "^0.14.0",
     "@dfinity/cmc": "next",
-    "@dfinity/gix-components": "next",
+    "@dfinity/gix-components": "file:../../gix-components/package",
     "@dfinity/identity": "^0.14.0",
     "@dfinity/nns": "next",
     "@dfinity/principal": "^0.14.0",
