@@ -96,7 +96,11 @@ describe("neuron-utils", () => {
     }) as TokenAmount;
     it("should return zero for delays less than six months", () => {
       expect(
-        votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
+        votingPower({
+          stake: BigInt(2),
+          dissolveDelayInSeconds: 100,
+          ageSeconds: 0,
+        })
       ).toBe(BigInt(0));
     });
 
@@ -105,6 +109,7 @@ describe("neuron-utils", () => {
         votingPower({
           stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+          ageSeconds: 0,
         })
       ).toBeGreaterThan(tokenStake.toE8s());
     });
@@ -114,6 +119,7 @@ describe("neuron-utils", () => {
         votingPower({
           stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
+          ageSeconds: 0,
         })
       ).toBe(tokenStake.toE8s() * BigInt(2));
     });
@@ -127,6 +133,7 @@ describe("neuron-utils", () => {
       const powerWithoutAge = votingPower({
         stake: tokenStake.toE8s(),
         dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+        ageSeconds: 0,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
     });

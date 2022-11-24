@@ -55,6 +55,7 @@
         votingPower({
           stake: neuronStake,
           dissolveDelayInSeconds: delayInSeconds,
+          ageSeconds: Number(neuron.aging_since_timestamp_seconds),
         })
       )}
     </p>
