@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 93416
 * Fix bug on proposals public page.
 * Improvements in wording.
 * Improve error message on canister detail page.
