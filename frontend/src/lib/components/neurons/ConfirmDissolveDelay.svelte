@@ -66,6 +66,7 @@
         votingPower({
           stake: neuronICP,
           dissolveDelayInSeconds: delayInSeconds,
+          ageSeconds: 0,
         })
       )}
     </p>
