@@ -21,7 +21,9 @@
       align-items: center;
 
       --logo-display: none;
-      --select-offset-start: var(--padding-2x);
+
+      --select-padding-top-bottom: var(--padding);
+      --select-padding-start: var(--padding-2x);
     }
   }
 </style>
