@@ -56,11 +56,11 @@
       <h3 slot="key" class="value title">{headline}</h3>
 
       <AmountDisplay
-              slot="value"
-              amount={displayAmount}
-              sign={isReceive || toSelfTransaction ? "+" : "-"}
-              detailed
-              inline
+        slot="value"
+        amount={displayAmount}
+        sign={isReceive || toSelfTransaction ? "+" : "-"}
+        detailed
+        inline
       />
     </KeyValuePair>
 

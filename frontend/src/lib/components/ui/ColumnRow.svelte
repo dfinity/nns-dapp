@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let testId: string | undefined;
+  export let testId: string | undefined = undefined;
 </script>
 
 <div data-tid={testId}>
