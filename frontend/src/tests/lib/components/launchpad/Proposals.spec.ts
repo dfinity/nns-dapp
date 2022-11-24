@@ -85,7 +85,7 @@ describe("Proposals", () => {
     const { queryByText } = render(Proposals);
 
     await waitFor(() =>
-      expect(queryByText(en.voting.nothing_found)).toBeInTheDocument()
+      expect(queryByText(en.sns_launchpad.no_proposals)).toBeInTheDocument()
     );
   });
 });

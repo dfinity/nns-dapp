@@ -545,12 +545,12 @@
   "sns_launchpad": {
     "header": "Launch Pad",
     "committed_projects": "Launched",
-    "no_committed_projects": "No launched projects at the moment",
+    "no_committed_projects": "No launched projects so far.",
     "open_projects": "Current Launches",
-    "no_open_projects": "Looks like there's no SNSs launching right now. <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">More about creating SNSs</a>.",
+    "no_open_projects": "Looks like there are no SNS decentralisation sales running right now. Hopefully one is coming soon! <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">Read more about how SNSs are created</a>.",
     "proposals": "Proposals",
     "project_logo": "project logo",
-    "no_proposals": "No current proposals at the moment"
+    "no_proposals": "There are no decentralisation sale proposals open at the moment."
   },
   "sns_project": {
     "project": "Project"
