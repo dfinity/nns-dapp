@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { IconFiberNew } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 </script>
 
@@ -27,8 +26,10 @@
       #29103c 100%
     );
     color: #9d5ac4;
+  }
 
-    @include media.light-theme {
+  @include media.light-theme {
+    span {
       background: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
       color: #967dda;
     }
