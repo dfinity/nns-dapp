@@ -90,4 +90,8 @@
     margin: var(--padding-2x) 0 0;
     width: fit-content;
   }
+
+  .content-cell-details {
+    gap: var(--padding-1_5x);
+  }
 </style>

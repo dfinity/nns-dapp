@@ -38,6 +38,7 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import {
@@ -98,6 +99,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -109,6 +111,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -120,6 +123,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -131,6 +135,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -150,6 +155,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -169,6 +175,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -180,6 +187,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -191,6 +199,22 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+            vote: Vote.Yes,
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+          identity: undefined,
         })
       ).toBeFalsy();
     });
@@ -207,6 +231,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -221,6 +246,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -237,6 +263,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -251,6 +278,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -265,6 +293,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -281,6 +310,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -295,6 +325,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -309,6 +340,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -325,6 +357,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -344,6 +377,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
     });
@@ -369,6 +403,7 @@ describe("proposals-utils", () => {
               neuronId: BigInt(666),
             } as NeuronInfo,
           ],
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -390,6 +425,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -409,6 +445,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -431,6 +468,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -453,6 +491,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -475,6 +514,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -497,6 +537,29 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.Yes,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+          identity: null,
         })
       ).toBeTruthy();
     });
@@ -510,6 +573,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -531,6 +595,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -552,6 +617,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
     });

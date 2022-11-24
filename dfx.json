@@ -190,6 +190,20 @@
       ],
       "type": "persistent"
     },
+    "large02": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large02.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:78ff:fe1b:9a48]:8080"
+      ],
+      "type": "persistent"
+    },
     "small09": {
       "config": {
         "FETCH_ROOT_KEY": true,

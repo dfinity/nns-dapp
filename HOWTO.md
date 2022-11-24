@@ -115,7 +115,7 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
 
 ### How To Update Payload Definition
 
-- In `Cargo.toml` update the rev using the latest `Bless Replica Version`
+- In `Cargo.toml` update the rev using the latest [Elect Replica Version](https://dashboard.internetcomputer.org/releases)
 - In case of new payload type
   - If needed add the dependency (e.g. "ic-sns-swap") in the Cargo.toml (because the new proposal type is executed by
     new canister)

@@ -13,7 +13,7 @@
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     {#if inline}
-      <p class="duration description">
+      <p class="duration label">
         <Html
           text={replacePlaceholders($i18n.neurons.inline_remaining, {
             $duration: secondsToDuration(timeInSeconds),
@@ -30,7 +30,7 @@
     {/if}
   {:else if state === NeuronState.Locked}
     {#if inline}
-      <p class="duration description">
+      <p class="duration label">
         {secondsToDuration(timeInSeconds)} – {$i18n.neurons
           .dissolve_delay_title}
       </p>
