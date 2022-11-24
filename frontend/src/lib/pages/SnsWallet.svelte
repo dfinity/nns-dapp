@@ -20,6 +20,7 @@
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { goto } from "$app/navigation";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(async () => {
@@ -73,6 +74,9 @@
   <section>
     {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
       <WalletSummary />
+
+      <Separator />
+
       <SnsTransactionsList
         rootCanisterId={$snsOnlyProjectStore}
         account={$selectedAccountStore.account}

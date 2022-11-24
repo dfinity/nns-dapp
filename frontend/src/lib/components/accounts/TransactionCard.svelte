@@ -91,6 +91,10 @@
     grid-template-columns: repeat(2, auto);
     align-items: flex-start;
     column-gap: var(--padding-2x);
+
+    &:first-of-type {
+      margin-top: var(--padding-6x);
+    }
   }
 
   .title {
