@@ -22,6 +22,7 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -65,7 +66,8 @@
   </KeyValuePair>
 
   <div class="buttons">
-    {#if allowedToDissolve}
+    {#if allowedToDissolve && ENABLE_SNS_2}
+      <!-- TODO: Enable when voting power calculation is accurate -->
       <IncreaseSnsDissolveDelayButton
         {neuron}
         {token}
