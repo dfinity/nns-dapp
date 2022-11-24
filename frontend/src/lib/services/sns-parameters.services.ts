@@ -15,14 +15,6 @@ export const syncSnsParameters = async ({
   const $snsParametersStore = get(snsParametersStore);
   const projectStoreParameters = $snsParametersStore[rootCanisterId.toText()];
 
-  // do not re-fetch when certified data is available in the store
-  if (
-    projectStoreParameters !== undefined &&
-    projectStoreParameters.certified
-  ) {
-    return Promise.resolve();
-  }
-
   await queryAndUpdate<NervousSystemParameters, unknown>({
     request: ({ certified, identity }) =>
       nervousSystemParameters({
