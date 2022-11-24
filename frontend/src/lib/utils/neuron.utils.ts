@@ -95,7 +95,7 @@ export const votingPower = ({
 }: {
   stake: bigint;
   dissolveDelayInSeconds: number;
-  ageSeconds?: number;
+  ageSeconds: number;
 }): bigint =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
     ? BigInt(

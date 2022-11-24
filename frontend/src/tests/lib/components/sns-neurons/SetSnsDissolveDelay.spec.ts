@@ -75,6 +75,7 @@ describe("ConfirmSnsDissolveDelay", () => {
       votingPower({
         stake: getSnsNeuronStake(mockSnsNeuron),
         dissolveDelayInSeconds: delayInSeconds,
+        ageSeconds: Number(mockSnsNeuron.aging_since_timestamp_seconds),
       })
     );
 
