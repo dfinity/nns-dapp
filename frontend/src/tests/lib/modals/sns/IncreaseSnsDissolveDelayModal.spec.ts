@@ -12,7 +12,9 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import {mockSnsNeuron, snsNervousSystemParametersMock} from "../../../mocks/sns-neurons.mock";
+import {snsParametersStore} from "$lib/stores/sns-parameters.store";
+import {syncSnsParameters} from "$lib/services/sns-parameters.services";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -20,7 +22,22 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
+jest.mock("$lib/services/sns-parameters.services", () => {
+  return {
+    syncSnsParameters: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+
 describe("IncreaseSnsDissolveDelayModal", () => {
+  const neuron: SnsNeuron = {
+    ...mockSnsNeuron,
+    dissolve_state: [
+      {
+        DissolveDelaySeconds: 0n,
+      },
+    ],
+  };
   const reloadNeuron = jest.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
@@ -33,18 +50,28 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
   beforeAll(() => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
+
+    snsParametersStore.setParameters({
+      certified: true,
+      rootCanisterId: mockPrincipal,
+      parameters: snsNervousSystemParametersMock,
+    });
   });
 
   beforeEach(reloadNeuron.mockClear);
 
+  afterAll(() => {
+    snsParametersStore.reset();
+  });
+
   it("should display modal", async () => {
-    const { container } = await renderIncreaseDelayModal(mockSnsNeuron);
+    const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should have the update delay button disabled by default", async () => {
-    const { container } = await renderIncreaseDelayModal(mockSnsNeuron);
+    const { container } = await renderIncreaseDelayModal(neuron);
 
     const updateDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
@@ -53,7 +80,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   });
 
   it("should be able to change dissolve delay in the confirmation screen", async () => {
-    const { container } = await renderIncreaseDelayModal(mockSnsNeuron);
+    const { container } = await renderIncreaseDelayModal(neuron);
 
     await waitFor(() =>
       expect(container.querySelector('input[type="range"]')).not.toBeNull()
@@ -93,5 +120,11 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() => expect(updateDelay).toBeCalled());
+  });
+
+  it("should trigger `syncSnsParameters`", async () => {
+    await renderIncreaseDelayModal(neuron);
+
+    expect(syncSnsParameters).toBeCalled();
   });
 });
