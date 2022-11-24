@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXXXX
+* Enable Launchpad and SNS Sale pages.
+* Fix bug in voting power calculation.
+* UI improvements.
+
 ## Proposal 93416
 * Fix bug on proposals public page.
 * Improvements in wording.
