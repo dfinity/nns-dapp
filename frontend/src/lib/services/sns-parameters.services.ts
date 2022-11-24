@@ -4,7 +4,6 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
-import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
 export const syncSnsParameters = async ({
@@ -12,9 +11,6 @@ export const syncSnsParameters = async ({
 }: {
   rootCanisterId: Principal;
 }): Promise<void> => {
-  const $snsParametersStore = get(snsParametersStore);
-  const projectStoreParameters = $snsParametersStore[rootCanisterId.toText()];
-
   await queryAndUpdate<NervousSystemParameters, unknown>({
     request: ({ certified, identity }) =>
       nervousSystemParameters({

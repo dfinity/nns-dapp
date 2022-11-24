@@ -5,6 +5,8 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/IncreaseSnsDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/sns-neurons.services";
+import { syncSnsParameters } from "$lib/services/sns-parameters.services";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -12,9 +14,10 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import {mockSnsNeuron, snsNervousSystemParametersMock} from "../../../mocks/sns-neurons.mock";
-import {snsParametersStore} from "$lib/stores/sns-parameters.store";
-import {syncSnsParameters} from "$lib/services/sns-parameters.services";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../../mocks/sns-neurons.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -27,7 +30,6 @@ jest.mock("$lib/services/sns-parameters.services", () => {
     syncSnsParameters: jest.fn().mockResolvedValue(undefined),
   };
 });
-
 
 describe("IncreaseSnsDissolveDelayModal", () => {
   const neuron: SnsNeuron = {
