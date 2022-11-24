@@ -183,7 +183,7 @@ describe("proposals-store", () => {
       const filters = get(proposalsFiltersStore);
       expect(filters).toEqual({
         ...DEFAULT_PROPOSALS_FILTERS,
-        topics: filter
+        topics: filter,
       });
       expect(filters.lastAppliedFilter).toBeUndefined();
     });
