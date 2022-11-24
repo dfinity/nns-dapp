@@ -111,7 +111,7 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },
@@ -125,7 +125,7 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },
@@ -187,6 +187,20 @@
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
+      "type": "persistent"
+    },
+    "large02": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large02.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:78ff:fe1b:9a48]:8080"
       ],
       "type": "persistent"
     },

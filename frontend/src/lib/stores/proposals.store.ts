@@ -169,6 +169,9 @@ const initProposalsFiltersStore = () => {
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
+
+    reload: () =>
+      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 
