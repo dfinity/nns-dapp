@@ -28,7 +28,7 @@
     <SkeletonProposalCard />
   </div>
 {:else if $openSnsProposalsStore.length === 0}
-  <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+  <p class="no-proposals">{$i18n.sns_launchpad.no_proposals}</p>
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
