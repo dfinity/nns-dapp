@@ -13,7 +13,7 @@ import { principal } from "../../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    addFollowee: jest.fn().mockResolvedValue(undefined),
+    addFollowee: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 

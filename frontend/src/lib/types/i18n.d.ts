@@ -285,6 +285,7 @@ interface I18nNew_followee {
   follow: string;
   unfollow: string;
   same_neuron: string;
+  followee_does_not_exist: string;
   already_followed: string;
 }
 

@@ -26,16 +26,21 @@
       initiator: "add-sns-followee",
     });
 
-    await addFollowee({
+    const { success } = await addFollowee({
       rootCanisterId,
       neuron: neuron,
       followeeHex,
       functionId,
     });
-    await reload();
+    if (success) {
+      await reload();
+    }
 
     stopBusy("add-sns-followee");
-    dispatcher("nnsClose");
+
+    if (success) {
+      dispatcher("nnsClose");
+    }
   };
 </script>
 

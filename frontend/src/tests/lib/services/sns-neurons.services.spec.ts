@@ -105,7 +105,7 @@ describe("sns-neurons-services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       const spyNeuronQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -143,7 +143,7 @@ describe("sns-neurons-services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       const spyNeuronQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -209,7 +209,7 @@ describe("sns-neurons-services", () => {
         )
         .mockImplementation(() => Promise.resolve(BigInt(0)));
       const spyQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
       const onLoad = async ({
         neuron: neuronToLoad,
@@ -254,7 +254,7 @@ describe("sns-neurons-services", () => {
         .mockImplementationOnce(() => Promise.resolve(stake))
         .mockImplementation(() => Promise.resolve(BigInt(0)));
       const spyQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         // First is the query call and returns old neuron
         .mockImplementationOnce(() => Promise.resolve(neuron))
         // Second is the update call and returns old neuron. It will be checked.
@@ -290,7 +290,7 @@ describe("sns-neurons-services", () => {
 
     it("should return neuron if it's in the store", (done) => {
       const spyQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron));
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
@@ -321,7 +321,7 @@ describe("sns-neurons-services", () => {
 
     it("should call api even if it's in the store when forceFetch", (done) => {
       const spyQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve({ ...mockSnsNeuron }));
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
@@ -353,7 +353,7 @@ describe("sns-neurons-services", () => {
 
     it("should call onError callback when call failes", (done) => {
       const spyQuery = jest
-        .spyOn(api, "querySnsNeuron")
+        .spyOn(api, "getSnsNeuron")
         .mockImplementation(() => Promise.reject());
       const onLoad = jest.fn();
       const onError = ({ certified }: { certified: boolean }) => {
@@ -597,6 +597,9 @@ describe("sns-neurons-services", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call sns api setFollowees with new followee when topic already has followees", async () => {
+      const queryNeuronSpy = jest
+        .spyOn(api, "querySnsNeuron")
+        .mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1] }]],
@@ -615,9 +618,11 @@ describe("sns-neurons-services", () => {
         followees: [followee1, followee2],
         functionId,
       });
+      expect(queryNeuronSpy).toBeCalled();
     });
 
     it("should call sns api setFollowees with new followee when topic has no followees", async () => {
+      jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[BigInt(4), { followees: [followee1] }]],
@@ -639,6 +644,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when new followee is in the list", async () => {
+      jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -655,6 +661,21 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when new followee is the same neuron", async () => {
+      jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
+      await addFollowee({
+        rootCanisterId,
+        neuron: mockSnsNeuron,
+        functionId,
+        followeeHex: neuronIdHext,
+      });
+
+      expect(setFolloweesSpy).not.toBeCalled();
+      expect(toastsError).toBeCalled();
+    });
+
+    it("should not call sns api setFollowees when new followee does not exist", async () => {
+      jest.spyOn(api, "querySnsNeuron").mockResolvedValue(undefined);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
         rootCanisterId,

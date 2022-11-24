@@ -10,6 +10,7 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
 import {
+  getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
@@ -191,7 +192,7 @@ export const getSnsNeuron = async ({
   const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
   return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
-      querySnsNeuron({
+      getSnsNeuronApi({
         rootCanisterId,
         identity,
         certified,
@@ -207,7 +208,7 @@ export const getSnsNeuron = async ({
           const identity = await getNeuronIdentity();
           if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
             await refreshNeuron({ rootCanisterId, identity, neuronId });
-            const updatedNeuron = await querySnsNeuron({
+            const updatedNeuron = await getSnsNeuronApi({
               identity,
               rootCanisterId,
               neuronId,
@@ -475,20 +476,19 @@ export const addFollowee = async ({
   functionId: bigint;
   followeeHex: string;
   rootCanisterId: Principal;
-}): Promise<void> => {
+}): Promise<{ success: boolean }> => {
   // Do not allow a neuron to follow itself
   if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
     toastsError({
       labelKey: "new_followee.same_neuron",
     });
-    return;
+    return { success: false };
   }
 
+  const identity = await getNeuronIdentity();
   const followee: SnsNeuronId = {
     id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
   };
-
-  const identity = await getNeuronIdentity();
 
   const topicFollowees = followeesByFunction({ neuron, functionId });
   // Do not allow to add a neuron id who is already followed
@@ -501,9 +501,25 @@ export const addFollowee = async ({
     toastsError({
       labelKey: "new_followee.already_followed",
     });
-    return;
+    return { success: false };
   }
   try {
+    const followeeNeuron = await querySnsNeuron({
+      identity,
+      rootCanisterId,
+      neuronId: followee,
+      certified: false,
+    });
+    if (followeeNeuron === undefined) {
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+      return { success: false };
+    }
+
     const newFollowees: SnsNeuronId[] =
       topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
 
@@ -515,10 +531,14 @@ export const addFollowee = async ({
       functionId,
       followees: newFollowees,
     });
+
+    return { success: true };
   } catch (error) {
+    console.log(error);
     toastsError({
       labelKey: "error__sns.sns_add_followee",
       err: error,
     });
+    return { success: false };
   }
 };

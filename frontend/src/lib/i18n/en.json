@@ -274,6 +274,7 @@
     "follow": "Follow",
     "unfollow": "Unfollow",
     "same_neuron": "You can't add the same neuron as followee.",
+    "followee_does_not_exist": "Neuron with id $neuronId does not exist.",
     "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {

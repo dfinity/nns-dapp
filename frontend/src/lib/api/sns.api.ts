@@ -315,7 +315,7 @@ export const querySnsNeurons = async ({
   return neurons;
 };
 
-export const querySnsNeuron = async ({
+export const getSnsNeuron = async ({
   identity,
   rootCanisterId,
   certified,
@@ -333,6 +333,31 @@ export const querySnsNeuron = async ({
     certified,
   });
   const neuron = await getNeuron({
+    neuronId,
+  });
+
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
+};
+
+export const querySnsNeuron = async ({
+  identity,
+  rootCanisterId,
+  certified,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+  neuronId: SnsNeuronId;
+}): Promise<SnsNeuron | undefined> => {
+  logWithTimestamp("Querying sns neuron: call...");
+  const { queryNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neuron = await queryNeuron({
     neuronId,
   });
 
