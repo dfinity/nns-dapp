@@ -5,7 +5,6 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
   import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
   import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";
 
@@ -15,21 +14,12 @@
 
   let type: AccountType | undefined;
   $: type = $store.account?.type;
-
-  let displayActions = false;
-  $: displayActions = ["subAccount", "hardwareWallet"].includes(type);
 </script>
 
-{#if displayActions}
+{#if type === "hardwareWallet"}
   <div role="menubar">
-    {#if type === "subAccount"}
-      <RenameSubAccountButton />
-    {/if}
-
-    {#if type === "hardwareWallet"}
-      <HardwareWalletListNeuronsButton />
-      <HardwareWalletShowActionButton />
-    {/if}
+    <HardwareWalletListNeuronsButton />
+    <HardwareWalletShowActionButton />
   </div>
 {/if}
 

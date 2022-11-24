@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import WalletActions from "$lib/components/accounts/WalletActions.svelte";
+import WalletActions from "$lib/components/accounts/HardwareWalletActions.svelte";
 import {
   SELECTED_ACCOUNT_CONTEXT_KEY,
   type SelectedAccountContext,
