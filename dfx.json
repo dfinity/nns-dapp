@@ -111,7 +111,7 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },
@@ -125,7 +125,7 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },

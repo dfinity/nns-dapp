@@ -17,7 +17,12 @@ import {
 } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import {
+  authStoreMock,
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 import en from "../../mocks/i18n.mock";
 import {
@@ -55,6 +60,8 @@ describe("Proposals", () => {
         .spyOn(neuronsStore, "subscribe")
         .mockImplementation(mockNeuronsStoreSubscribe);
     });
+
+    afterAll(() => jest.clearAllMocks());
 
     describe("Matching results", () => {
       const mockGovernanceCanister: MockGovernanceCanister =
@@ -182,6 +189,8 @@ describe("Proposals", () => {
         });
     });
 
+    afterAll(() => jest.clearAllMocks());
+
     describe("Matching results", () => {
       const mockGovernanceCanister: MockGovernanceCanister =
         new MockGovernanceCanister(mockProposals);
@@ -228,6 +237,50 @@ describe("Proposals", () => {
 
         proposalsFiltersStore.toggleExcludeVotedProposals();
       });
+    });
+  });
+
+  describe("log in and out", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mutableMockAuthStoreSubscribe);
+
+      jest
+        .spyOn(proposalsStore, "subscribe")
+        .mockImplementation(mockProposalsStoreSubscribe);
+    });
+
+    beforeEach(() => jest.clearAllMocks());
+
+    const spyReload = jest.spyOn(proposalsFiltersStore, "reload");
+
+    it("should reload filters on sign-in", () => {
+      authStoreMock.next({
+        identity: undefined,
+      });
+
+      render(Proposals);
+
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+
+      expect(spyReload).toHaveBeenCalledTimes(1);
+    });
+
+    it("should reload filters after sign-out", () => {
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+
+      render(Proposals);
+
+      authStoreMock.next({
+        identity: undefined,
+      });
+
+      expect(spyReload).toHaveBeenCalledTimes(1);
     });
   });
 });
