@@ -173,6 +173,20 @@ describe("proposals-store", () => {
         excludeVotedProposals: false,
       });
     });
+
+    it("should reload filters", () => {
+      const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
+      proposalsFiltersStore.filterTopics(filter);
+
+      proposalsFiltersStore.reload();
+
+      const filters = get(proposalsFiltersStore);
+      expect(filters).toEqual({
+        ...DEFAULT_PROPOSALS_FILTERS,
+        topics: filter
+      });
+      expect(filters.lastAppliedFilter).toBeUndefined();
+    });
   });
 
   describe("votingNeuronSelectStore", () => {
