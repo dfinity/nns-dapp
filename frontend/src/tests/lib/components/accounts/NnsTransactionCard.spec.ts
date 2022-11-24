@@ -83,12 +83,12 @@ describe("NnsTransactionCard", () => {
     );
 
     expect(container.querySelector("p")?.textContent).toContain(
-      "January 1, 1970"
+      "Jan 1, 1970"
     );
     expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
   });
 
-  it("displays identifier for reseived", () => {
+  it("displays identifier for received", () => {
     const { getByTestId } = renderTransactionCard(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction

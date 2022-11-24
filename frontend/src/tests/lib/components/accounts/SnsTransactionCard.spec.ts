@@ -125,7 +125,7 @@ describe("SnsTransactionCard", () => {
     );
 
     expect(container.querySelector("p")?.textContent).toContain(
-      "January 1, 1970"
+      "Jan 1, 1970"
     );
     expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
   });
