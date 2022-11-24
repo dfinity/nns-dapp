@@ -99,7 +99,8 @@
   let showNewTransactionModal = false;
 
   let footerColumns: 1 | 2 = 1;
-  $: footerColumns = $selectedAccountStore.account?.type === "subAccount" ? 2 : 1;
+  $: footerColumns =
+    $selectedAccountStore.account?.type === "subAccount" ? 2 : 1;
 
   // TODO(L2-581): Create WalletInfo component
 </script>

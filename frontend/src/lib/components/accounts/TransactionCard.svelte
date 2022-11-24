@@ -10,7 +10,7 @@
     type Transaction,
     transactionName,
   } from "$lib/utils/transactions.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair, IconNorthEast } from "@dfinity/gix-components";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -50,11 +50,12 @@
   <KeyValuePair>
     <h3 slot="key" class="value title">{headline}</h3>
 
-    <AmountDisplay slot="value"
-                   amount={displayAmount}
-                   sign={isReceive || toSelfTransaction ? "+" : "-"}
-                   detailed
-                   inline
+    <AmountDisplay
+      slot="value"
+      amount={displayAmount}
+      sign={isReceive || toSelfTransaction ? "+" : "-"}
+      detailed
+      inline
     />
   </KeyValuePair>
 

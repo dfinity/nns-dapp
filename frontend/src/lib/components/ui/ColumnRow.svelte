@@ -1,10 +1,10 @@
 <script lang="ts">
-    export let testId: string | undefined;
+  export let testId: string | undefined;
 </script>
 
 <div data-tid={testId}>
-    <slot name="start" />
-    <slot name="end" />
+  <slot name="start" />
+  <slot name="end" />
 </div>
 
 <style lang="scss">

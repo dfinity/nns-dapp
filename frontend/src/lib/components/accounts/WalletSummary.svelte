@@ -12,9 +12,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import {
-    KeyValuePair,
-  } from "@dfinity/gix-components";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
@@ -42,11 +40,12 @@
 <div class="content-cell-details">
   <KeyValuePair>
     <h3 slot="key" data-tid="wallet-summary">{accountName}</h3>
-    <Tooltip slot="value"
-            id="wallet-detailed-icp"
-            text={replacePlaceholders($i18n.accounts.current_balance_detail, {
-      $amount: detailedICP,
-    })}
+    <Tooltip
+      slot="value"
+      id="wallet-detailed-icp"
+      text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+        $amount: detailedICP,
+      })}
     >
       <AmountDisplay amount={accountBalance} inline />
     </Tooltip>
@@ -63,7 +62,9 @@
     <KeyValuePair>
       <p slot="key" class="label">{$i18n.wallet.principal}</p>
       <p slot="value" class="value">
-        <IdentifierHash identifier={$store.account?.principal?.toString() ?? ""} />
+        <IdentifierHash
+          identifier={$store.account?.principal?.toString() ?? ""}
+        />
       </p>
     </KeyValuePair>
   {/if}
