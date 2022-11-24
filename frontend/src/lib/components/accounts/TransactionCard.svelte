@@ -47,27 +47,33 @@
 </script>
 
 <article data-tid="transaction-card">
-  <KeyValuePair>
-    <h3 slot="key" class="value title">{headline}</h3>
+  <div class="icon" class:send={!isReceive}>
+    <IconNorthEast size="24px" />
+  </div>
 
-    <AmountDisplay
-      slot="value"
-      amount={displayAmount}
-      sign={isReceive || toSelfTransaction ? "+" : "-"}
-      detailed
-      inline
-    />
-  </KeyValuePair>
+  <div class="transaction">
+    <KeyValuePair>
+      <h3 slot="key" class="value title">{headline}</h3>
 
-  <ColumnRow>
-    <svelte:fragment slot="start">
-      {#if identifier !== undefined}
-        <Identifier size="medium" {label} {identifier} />
-      {/if}
-    </svelte:fragment>
+      <AmountDisplay
+              slot="value"
+              amount={displayAmount}
+              sign={isReceive || toSelfTransaction ? "+" : "-"}
+              detailed
+              inline
+      />
+    </KeyValuePair>
 
-    <div slot="end" class="date label"><DateSeconds {seconds} /></div>
-  </ColumnRow>
+    <ColumnRow>
+      <div slot="start" class="identifier">
+        {#if identifier !== undefined}
+          <Identifier size="medium" {label} {identifier} />
+        {/if}
+      </div>
+
+      <div slot="end" class="date label"><DateSeconds {seconds} /></div>
+    </ColumnRow>
+  </div>
 </article>
 
 <style lang="scss">
@@ -80,6 +86,11 @@
     @include media.min-width(small) {
       padding-bottom: var(--padding);
     }
+
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    align-items: flex-start;
+    column-gap: var(--padding-2x);
   }
 
   .title {
@@ -88,13 +99,44 @@
     --text-white-space: wrap;
   }
 
+  .identifier {
+    @include media.min-width(small) {
+      max-width: 60%;
+    }
+  }
+
   .date {
+    min-width: fit-content;
+    text-align: right;
+
     @include media.min-width(small) {
       margin-top: var(--padding);
     }
 
     :global(p) {
       color: inherit;
+    }
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--positive-emphasis-light);
+    color: var(--positive-emphasis);
+
+    border-radius: var(--border-radius);
+
+    width: var(--padding-6x);
+    aspect-ratio: 1 / 1;
+
+    margin: var(--padding-0_5x) 0;
+
+    &.send {
+      transform: rotate(180deg);
+      background: var(--background);
+      color: var(--disable-contrast);
     }
   }
 </style>
