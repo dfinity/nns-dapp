@@ -54,6 +54,6 @@
   }
 
   .default-gaps {
-    margin-bottom: inherit;
+    margin-bottom: var(--padding);
   }
 </style>

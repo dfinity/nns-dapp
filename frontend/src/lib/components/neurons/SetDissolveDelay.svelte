@@ -69,6 +69,7 @@
       <NeuronStateRemainingTime
         state={neuron.state}
         timeInSeconds={neuron.dissolveDelaySeconds}
+        defaultGaps
       />
     </div>
   {/if}
