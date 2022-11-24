@@ -126,7 +126,6 @@
     <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
 
     <div class="select-delay-container">
-      <!-- TODO: replace with disabled state-->
       {#if maxDissolveDelaySeconds !== undefined}
         <InputRange
           ariaLabel={$i18n.neuron_detail.dissolve_delay_range}

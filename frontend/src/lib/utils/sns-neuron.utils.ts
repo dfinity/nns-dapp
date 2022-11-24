@@ -72,7 +72,7 @@ export const getSnsLockedTimeInSeconds = (
 };
 
 // Delay from now. Source depends on the neuron state.
-// https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L428
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/f6c4a37e2fd23ed83e6f7126ab0112a3a48cf54f/rs/sns/governance/src/neuron.rs#L428
 export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
