@@ -6,11 +6,9 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { hexStringToBytes } from "$lib/utils/utils";
   import { busy, Modal, startBusy, stopBusy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+  import type { SnsNeuron } from "@dfinity/sns";
   import { createEventDispatcher, getContext } from "svelte";
 
   export let rootCanisterId: Principal;
@@ -21,21 +19,17 @@
   const { reload }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let followeeAddress = "";
+  let followeeHex = "";
   const dispatcher = createEventDispatcher();
   const add = async () => {
     startBusy({
       initiator: "add-sns-followee",
     });
 
-    const followee: SnsNeuronId = {
-      id: arrayOfNumberToUint8Array(hexStringToBytes(followeeAddress)),
-    };
-
     await addFollowee({
       rootCanisterId,
       neuron: neuron,
-      followee,
+      followeeHex,
       functionId,
     });
     await reload();
@@ -54,7 +48,7 @@
       autocomplete="off"
       placeholderLabelKey="new_followee.address_placeholder"
       name="new-followee-id"
-      bind:value={followeeAddress}
+      bind:value={followeeHex}
     >
       <svelte:fragment slot="label"
         >{$i18n.new_followee.address_placeholder}</svelte:fragment
@@ -63,7 +57,8 @@
     <button
       class="primary"
       type="submit"
-      disabled={followeeAddress.length === 0 || $busy}
+      data-tid="add-followee-button"
+      disabled={followeeHex.length === 0 || $busy}
     >
       {$i18n.new_followee.follow_neuron}
     </button>

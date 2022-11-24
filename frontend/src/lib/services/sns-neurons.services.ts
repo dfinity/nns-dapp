@@ -448,32 +448,56 @@ export const loadSnsNervousSystemFunctions = async (
   });
 };
 
+/**
+ * Makes a call to add a followee to the neuron.
+ *
+ * The new set of followees needs to be calculated before the call.
+ *
+ * Shows toasts error if:
+ * - The new followee is already in the neuron.
+ * - The new followee is the same neuron.
+ * - The call throws an error.
+ *
+ * @param {Object}
+ * @param {Principal} rootCanisterId
+ * @param {SnsNeuron} neuron
+ * @param {SnsNeuronId} followee
+ * @param {bigint} functionId
+ * @returns
+ */
 export const addFollowee = async ({
   neuron,
   functionId,
-  followee,
+  followeeHex,
   rootCanisterId,
 }: {
   neuron: SnsNeuron;
   functionId: bigint;
-  followee: SnsNeuronId;
+  followeeHex: string;
   rootCanisterId: Principal;
 }): Promise<void> => {
   // Do not allow a neuron to follow itself
-  if (
-    subaccountToHexString(followee.id) === getSnsNeuronIdAsHexString(neuron)
-  ) {
+  if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
     toastsError({
       labelKey: "new_followee.same_neuron",
     });
     return;
   }
 
+  const followee: SnsNeuronId = {
+    id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
+  };
+
   const identity = await getNeuronIdentity();
 
   const topicFollowees = followeesByFunction({ neuron, functionId });
   // Do not allow to add a neuron id who is already followed
-  if (topicFollowees !== undefined && topicFollowees.includes(followee)) {
+  if (
+    topicFollowees !== undefined &&
+    topicFollowees.find(
+      ({ id }) => subaccountToHexString(id) === followeeHex
+    ) !== undefined
+  ) {
     toastsError({
       labelKey: "new_followee.already_followed",
     });
