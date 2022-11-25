@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -50,13 +51,31 @@ describe("NeuronDetail", () => {
     expect(querySkeleton(container)).not.toBeNull();
   });
 
-  it("should render a title with neuron ID", () => {
-    render(NnsNeuronDetail, props);
+  const testTitle = async ({
+    intersecting,
+    text,
+  }: {
+    intersecting: boolean;
+    text: string;
+  }) => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
+
+    const element = getByTestId("neuron-id") as HTMLElement;
+    dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
+    await waitFor(() => expect(title).toEqual(text));
+  };
 
-    expect(title).toEqual(`${en.core.icp} – ${neuronId}`);
-  });
+  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+    testTitle({ intersecting: false, text: `${en.core.icp} – ${neuronId}` }));
+
+  it.only("should render a static title if title is intersecting viewport", async () =>
+    testTitle({ intersecting: true, text: en.neuron_detail.title }));
 
   it("should hide skeletons after neuron data are available", async () => {
     const { container } = render(NnsNeuronDetail, props);

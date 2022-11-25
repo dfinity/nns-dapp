@@ -1,31 +1,44 @@
+// Exposed for test purpose only
+export const dispatchIntersecting = ({
+  element,
+  intersecting,
+}: {
+  element: HTMLElement;
+  intersecting: boolean;
+}) => {
+  const $event = new CustomEvent("nnsIntersecting", {
+    detail: { intersecting },
+    bubbles: false,
+  });
+  element.dispatchEvent($event);
+};
+
 export const onIntersection = (element: HTMLElement) => {
-    // IntersectionObserverInit is not recognized by the linter
-    // eslint-disable-next-line no-undef
-    const options: IntersectionObserverInit = {
-        threshold: 0.5,
-    };
+  // IntersectionObserverInit is not recognized by the linter
+  // eslint-disable-next-line no-undef
+  const options: IntersectionObserverInit = {
+    threshold: 0.5,
+  };
 
-    const intersectionCallback = (
-        entries: IntersectionObserverEntry[]
-    ) => {
-        const intersecting: boolean = entries.find(
-            ({ isIntersecting }: IntersectionObserverEntry) => isIntersecting
-        ) !== undefined;
+  const intersectionCallback = (entries: IntersectionObserverEntry[]) => {
+    const intersecting: boolean =
+      entries.find(
+        ({ isIntersecting }: IntersectionObserverEntry) => isIntersecting
+      ) !== undefined;
 
-        const $event = new CustomEvent("nnsIntersecting", {detail: {intersecting}, bubbles: false});
-        element.dispatchEvent($event);
-    }
+    dispatchIntersecting({ element, intersecting });
+  };
 
-    const observer: IntersectionObserver = new IntersectionObserver(
-        intersectionCallback,
-        options
-    );
+  const observer: IntersectionObserver = new IntersectionObserver(
+    intersectionCallback,
+    options
+  );
 
-    observer.observe(element);
+  observer.observe(element);
 
-    return {
-        destroy() {
-            observer.disconnect();
-        }
-    }
-}
+  return {
+    destroy() {
+      observer.disconnect();
+    },
+  };
+};

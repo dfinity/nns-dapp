@@ -22,8 +22,11 @@
 </script>
 
 <div class="lock" data-tid="neuron-card-title">
-  <svelte:element this={tagName} data-tid="neuron-id" use:onIntersection on:nnsIntersecting
-    >{neuron.neuronId}</svelte:element
+  <svelte:element
+    this={tagName}
+    data-tid="neuron-id"
+    use:onIntersection
+    on:nnsIntersecting>{neuron.neuronId}</svelte:element
   >
 
   {#if isCommunityFund}
