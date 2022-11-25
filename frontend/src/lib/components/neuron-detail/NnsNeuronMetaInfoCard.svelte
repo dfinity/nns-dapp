@@ -22,6 +22,7 @@
   import NnsNeuronRemainingTime from "$lib/components/neurons/NnsNeuronRemainingTime.svelte";
   import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import {layoutTitleStore} from "$lib/stores/layout.store";
 
   export let neuron: NeuronInfo;
 
@@ -31,13 +32,15 @@
     mainAccount: $accountsStore.main,
   });
 
+  const updateLayoutTitle = ({detail: {intersecting}}) => layoutTitleStore.set(intersecting ? $i18n.neuron_detail.title : `${$i18n.core.icp} – ${neuron.neuronId}`)
+
   // Note about replacePlaceholders and $st4kedMaturity
   // TODO: placeholders cannot contain ath the moment other placeholders keys - e.g. $stakedMaturity contains $stake would lead to replace errors therefore a distinctive selector $st4kedMaturity
 </script>
 
 <div class="content-cell-details">
   <KeyValuePair>
-    <NnsNeuronCardTitle tagName="h3" {neuron} slot="key" />
+    <NnsNeuronCardTitle tagName="h3" {neuron} slot="key" on:nnsIntersecting={updateLayoutTitle} />
     <NeuronStateInfo state={neuron.state} slot="value" />
   </KeyValuePair>
 

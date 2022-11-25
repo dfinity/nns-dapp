@@ -6,6 +6,7 @@
     isHotKeyControllable,
   } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { onIntersection } from "$lib/directives/intersection.directives";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -21,7 +22,7 @@
 </script>
 
 <div class="lock" data-tid="neuron-card-title">
-  <svelte:element this={tagName} data-tid="neuron-id"
+  <svelte:element this={tagName} data-tid="neuron-id" use:onIntersection on:nnsIntersecting
     >{neuron.neuronId}</svelte:element
   >
 
