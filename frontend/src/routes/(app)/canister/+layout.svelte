@@ -6,6 +6,6 @@
   const back = (): Promise<void> => goto(AppPath.Canisters);
 </script>
 
-<Layout {back}>
+<Layout contrast {back}>
   <slot />
 </Layout>

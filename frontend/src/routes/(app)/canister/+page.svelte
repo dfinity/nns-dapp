@@ -4,7 +4,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { Island } from "@dfinity/gix-components";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -17,9 +16,7 @@
 </script>
 
 {#if signedIn}
-  <Island>
-    <RouteModule path={AppPath.Canister} params={{ canisterId }} />
-  </Island>
+  <RouteModule path={AppPath.Canister} params={{ canisterId }} />
 {:else}
   <SignInCanisters />
 {/if}
