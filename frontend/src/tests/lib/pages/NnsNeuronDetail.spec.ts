@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import NeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import { dispatchIntersecting } from "$lib/directives/intersection.directives";
+import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -45,21 +46,39 @@ describe("NeuronDetail", () => {
   };
 
   it("should display skeletons", () => {
-    const { container } = render(NeuronDetail, props);
+    const { container } = render(NnsNeuronDetail, props);
 
     expect(querySkeleton(container)).not.toBeNull();
   });
 
-  it("should render a title with neuron ID", () => {
-    render(NeuronDetail, props);
+  const testTitle = async ({
+    intersecting,
+    text,
+  }: {
+    intersecting: boolean;
+    text: string;
+  }) => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
+
+    const element = getByTestId("neuron-id") as HTMLElement;
+    dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
+    await waitFor(() => expect(title).toEqual(text));
+  };
 
-    expect(title).toEqual(`${en.core.icp} – ${neuronId}`);
-  });
+  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+    testTitle({ intersecting: false, text: `${en.core.icp} – ${neuronId}` }));
+
+  it.only("should render a static title if title is intersecting viewport", async () =>
+    testTitle({ intersecting: true, text: en.neuron_detail.title }));
 
   it("should hide skeletons after neuron data are available", async () => {
-    const { container } = render(NeuronDetail, props);
+    const { container } = render(NnsNeuronDetail, props);
 
     fillNeuronStore();
 
@@ -67,7 +86,7 @@ describe("NeuronDetail", () => {
   });
 
   it("should show skeletons when neuron is in voting process", async () => {
-    const { container } = render(NeuronDetail, props);
+    const { container } = render(NnsNeuronDetail, props);
 
     fillNeuronStore();
 

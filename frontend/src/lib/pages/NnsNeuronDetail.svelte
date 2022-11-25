@@ -16,7 +16,6 @@
     isSpawning,
     neuronVoting,
   } from "$lib/utils/neuron.utils";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
   import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -84,10 +83,6 @@
       neuronId: neuron.neuronId,
       store: $voteRegistrationStore,
     });
-
-  $: layoutTitleStore.set(
-    neuronId !== undefined ? `${$i18n.core.icp} – ${neuronId}` : ""
-  );
 
   const redirectIfSpawning = async (neuron: NeuronInfo | undefined) => {
     // Spawning neuron can't access the details
