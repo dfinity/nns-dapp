@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+    import {setContext, SvelteComponent} from "svelte";
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
   } from "$lib/types/hardware-wallet-neurons.context";
   import { mockHardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
-  import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     SelectedAccountContext,
@@ -14,6 +13,7 @@
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
 
+  export let testComponent: typeof SvelteComponent;
   export let account: Account | undefined;
 
   setContext<HardwareWalletNeuronsContext>(
@@ -32,4 +32,4 @@
   });
 </script>
 
-<WalletActions />
+<svelte:component this={testComponent} />
