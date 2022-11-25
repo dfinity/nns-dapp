@@ -7,6 +7,7 @@ import { render } from "@testing-library/svelte";
 import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
+  mockIntersectionObserverIsIntersecting,
 } from "../../mocks/infinitescroll.mock";
 import IntersectionTest from "./IntersectionTest.svelte";
 
@@ -40,6 +41,8 @@ describe("IntersectionDirectives", () => {
   });
 
   it("should not trigger an intersect event", () => {
+    mockIntersectionObserverIsIntersecting(false);
+
     render(IntersectionTest);
 
     expect(spy).toHaveBeenCalled();
