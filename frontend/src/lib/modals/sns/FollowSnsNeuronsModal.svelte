@@ -1,13 +1,12 @@
 <script lang="ts">
-  import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import { functionsToFollow } from "$lib/utils/sns-neuron.utils";
+  import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import { fromNullable } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;
@@ -27,15 +26,8 @@
     {#if functions === undefined}
       <Spinner />
     {:else}
-      {#each functions as { name, id, description }}
-        <FollowTopicSection count={0} id={id.toString()}>
-          <h3 slot="title">{name}</h3>
-          <p slot="subtitle" class="subtitle description">
-            {fromNullable(description)}
-          </p>
-          <!-- TODO: Render Followees https://dfinity.atlassian.net/browse/GIX-1114 -->
-          <div>{`TODO: render followees ${neuron.followees.length}`}</div>
-        </FollowTopicSection>
+      {#each functions as nsFunction (nsFunction.id.toString())}
+        <FollowSnsTopicSection {nsFunction} {rootCanisterId} {neuron} />
       {/each}
     {/if}
   </div>
@@ -46,14 +38,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-1_5x);
-  }
-
-  h3 {
-    // Titles longer than one line had too much space with the default line-height for h3
-    line-height: normal;
-  }
-
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
   }
 </style>

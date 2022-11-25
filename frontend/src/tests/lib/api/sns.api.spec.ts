@@ -3,6 +3,7 @@
  */
 
 import {
+  getSnsNeuron,
   participateInSnsSwap,
   queryAllSnsMetadata,
   querySnsMetadata,
@@ -69,6 +70,7 @@ describe("sns-api", () => {
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
+  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
 
@@ -98,8 +100,9 @@ describe("sns-api", () => {
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
-        getNeuron: queryNeuronSpy,
+        getNeuron: getNeuronSpy,
         stakeNeuron: stakeNeuronSpy,
+        queryNeuron: queryNeuronSpy,
       })
     );
   });
@@ -222,7 +225,19 @@ describe("sns-api", () => {
     expect(queryNeuronsSpy).toBeCalled();
   });
 
-  it("should query one sns neurons", async () => {
+  it("should get one sns neuron", async () => {
+    const neuron = await getSnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(getNeuronSpy).toBeCalled();
+  });
+
+  it("should query one sns neuron", async () => {
     const neuron = await querySnsNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
