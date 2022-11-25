@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Checkbox } from "@dfinity/gix-components";
-  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 

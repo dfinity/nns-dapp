@@ -1,3 +1,5 @@
+import {INTERSECTION_THRESHOLD} from "$lib/constants/layout.constants";
+
 // Exposed for test purpose only
 export const dispatchIntersecting = ({
   element,
@@ -17,7 +19,7 @@ export const onIntersection = (element: HTMLElement) => {
   // IntersectionObserverInit is not recognized by the linter
   // eslint-disable-next-line no-undef
   const options: IntersectionObserverInit = {
-    threshold: 0.5,
+    threshold: INTERSECTION_THRESHOLD,
   };
 
   const intersectionCallback = (entries: IntersectionObserverEntry[]) => {
