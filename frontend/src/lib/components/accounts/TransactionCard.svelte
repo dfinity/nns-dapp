@@ -127,6 +127,8 @@
     justify-content: center;
     align-items: center;
 
+    transform: rotate(90deg);
+
     background: var(--positive-emphasis-light);
     color: var(--positive-emphasis);
 
@@ -138,7 +140,7 @@
     margin: var(--padding-0_5x) 0;
 
     &.send {
-      transform: rotate(180deg);
+      transform: rotate(270deg);
       background: var(--background);
       color: var(--disable-contrast);
     }
