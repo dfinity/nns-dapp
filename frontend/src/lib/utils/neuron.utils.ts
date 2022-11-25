@@ -166,12 +166,12 @@ const votingPower = ({
     ? BigInt(
         Math.round(
           Number(stakeE8s) *
-            getMultiplier({
+            bonusMultiplier({
               amount: dissolveDelay,
               multiplier: dissolveBonusMultiplier,
               max: maxDissolveDelaySeconds,
             }) *
-            getMultiplier({
+            bonusMultiplier({
               amount: ageSeconds,
               multiplier: ageBonusMultiplier,
               max: maxAgeSeconds,
@@ -181,20 +181,20 @@ const votingPower = ({
     : BigInt(0);
 
 export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
-  getMultiplier({
+  bonusMultiplier({
     amount: delayInSeconds,
     multiplier: DISSOLVE_DELAY_MULTIPLIER,
     max: SECONDS_IN_EIGHT_YEARS,
   });
 
 export const ageMultiplier = (ageSeconds: bigint): number =>
-  getMultiplier({
+  bonusMultiplier({
     amount: ageSeconds,
     multiplier: AGE_MULTPIPLIER,
     max: SECONDS_IN_FOUR_YEARS,
   });
 
-const getMultiplier = ({
+const bonusMultiplier = ({
   amount,
   multiplier,
   max,
