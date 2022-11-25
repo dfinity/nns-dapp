@@ -8,7 +8,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
