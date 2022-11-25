@@ -51,13 +51,7 @@
   <div class="voting-power">
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
-      {formatVotingPower(
-        votingPower({
-          stake: neuronStake,
-          dissolveDelayInSeconds: delayInSeconds,
-          ageSeconds: Number(neuron.aging_since_timestamp_seconds),
-        })
-      )}
+      <!-- TODO: SNS Voting power -->
     </p>
   </div>
   <div class="toolbar">

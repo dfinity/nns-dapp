@@ -102,13 +102,7 @@
       <div class="details">
         <div>
           <p class="label">
-            {formatVotingPower(
-              votingPower({
-                stake: neuronStake,
-                dissolveDelayInSeconds: delayInSeconds,
-                ageSeconds: Number(neuron.aging_since_timestamp_seconds),
-              })
-            )}
+            <!-- TODO: SNS Voting power -->
           </p>
           <p>{$i18n.neurons.voting_power}</p>
         </div>
