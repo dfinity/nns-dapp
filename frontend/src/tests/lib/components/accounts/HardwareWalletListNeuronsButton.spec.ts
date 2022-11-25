@@ -4,16 +4,14 @@
 
 import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
 import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { walletModal } from "$lib/stores/modal.store";
 import { fireEvent } from "@testing-library/dom";
-import {render, waitFor} from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import WalletActionsTest from "./WalletActionsTest.svelte";
-import WalletActions from "$lib/components/accounts/WalletActions.svelte";
-import {get} from "svelte/store";
-import {walletModal} from "$lib/stores/modal.store";
 
 jest.mock("$lib/proxy/ledger.services.proxy");
 
@@ -33,12 +31,13 @@ describe("HardwareWalletListNeuronsButton", () => {
     );
   });
 
-  const renderTestCmp = () => render(WalletActionsTest, {
-    props: {
-      account: mockMainAccount,
-      testComponent: HardwareWalletListNeurons
-    },
-  });
+  const renderTestCmp = () =>
+    render(WalletActionsTest, {
+      props: {
+        account: mockMainAccount,
+        testComponent: HardwareWalletListNeurons,
+      },
+    });
 
   it("should contain a closed modal per default", () => {
     const { getByText } = renderTestCmp();

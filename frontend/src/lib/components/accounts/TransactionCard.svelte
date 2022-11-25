@@ -71,7 +71,9 @@
         {/if}
       </div>
 
-      <div slot="end" class="date label" data-tid="transaction-date"><DateSeconds {seconds} /></div>
+      <div slot="end" class="date label" data-tid="transaction-date">
+        <DateSeconds {seconds} />
+      </div>
     </ColumnRow>
   </div>
 </article>

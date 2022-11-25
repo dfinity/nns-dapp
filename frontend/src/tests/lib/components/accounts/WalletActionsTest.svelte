@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {setContext, SvelteComponent} from "svelte";
+  import { setContext, SvelteComponent } from "svelte";
   import {
     HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
     type HardwareWalletNeuronsContext,
