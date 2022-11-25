@@ -1,4 +1,4 @@
-import {INTERSECTION_THRESHOLD} from "$lib/constants/layout.constants";
+import { INTERSECTION_THRESHOLD } from "$lib/constants/layout.constants";
 
 // Exposed for test purpose only
 export const dispatchIntersecting = ({
