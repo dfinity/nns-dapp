@@ -8,7 +8,7 @@ export const dispatchIntersecting = ({
   element: HTMLElement;
   intersecting: boolean;
 }) => {
-  const $event = new CustomEvent("nnsIntersecting", {
+  const $event = new CustomEvent<IntersectingDetail>("nnsIntersecting", {
     detail: { intersecting },
     bubbles: false,
   });

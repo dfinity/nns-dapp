@@ -32,12 +32,19 @@
     mainAccount: $accountsStore.main,
   });
 
-  const updateLayoutTitle = ({ detail: { intersecting } }) =>
+  const updateLayoutTitle = ($event: Event) => {
+    // svelte-check ignores https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
+    // even though we have set the types in app.d.ts as displayed by the documentation
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
     layoutTitleStore.set(
       intersecting
         ? $i18n.neuron_detail.title
         : `${$i18n.core.icp} – ${neuron.neuronId}`
     );
+  };
 
   // Note about replacePlaceholders and $st4kedMaturity
   // TODO: placeholders cannot contain ath the moment other placeholders keys - e.g. $stakedMaturity contains $stake would lead to replace errors therefore a distinctive selector $st4kedMaturity
