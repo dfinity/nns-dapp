@@ -493,8 +493,7 @@ export const addFollowee = async ({
   const topicFollowees = followeesByFunction({ neuron, functionId });
   // Do not allow to add a neuron id who is already followed
   if (
-    topicFollowees !== undefined &&
-    topicFollowees.find(
+    topicFollowees?.find(
       ({ id }) => subaccountToHexString(id) === followeeHex
     ) !== undefined
   ) {

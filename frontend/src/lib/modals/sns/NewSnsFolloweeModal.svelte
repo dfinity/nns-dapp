@@ -21,6 +21,7 @@
 
   let followeeHex = "";
   const dispatcher = createEventDispatcher();
+  const close = () => dispatcher("nnsClose");
   const add = async () => {
     startBusy({
       initiator: "add-sns-followee",
@@ -39,7 +40,7 @@
     stopBusy("add-sns-followee");
 
     if (success) {
-      dispatcher("nnsClose");
+      close();
     }
   };
 </script>
@@ -57,13 +58,18 @@
     >
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </Input>
-    <button
-      class="primary"
-      type="submit"
-      data-tid="add-followee-button"
-      disabled={followeeHex.length === 0 || $busy}
-    >
-      {$i18n.new_followee.follow_neuron}
-    </button>
+    <div class="toolbar">
+      <button class="secondary" type="button" on:click={close}>
+        {$i18n.core.cancel}
+      </button>
+      <button
+        class="primary"
+        type="submit"
+        data-tid="add-followee-button"
+        disabled={followeeHex.length === 0 || $busy}
+      >
+        {$i18n.new_followee.follow_neuron}
+      </button>
+    </div>
   </form>
 </Modal>

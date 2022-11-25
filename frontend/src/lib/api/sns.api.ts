@@ -315,6 +315,9 @@ export const querySnsNeurons = async ({
   return neurons;
 };
 
+/**
+ * Returns the neuron or raises an error if not found.
+ */
 export const getSnsNeuron = async ({
   identity,
   rootCanisterId,
@@ -340,6 +343,9 @@ export const getSnsNeuron = async ({
   return neuron;
 };
 
+/**
+ * Returns the neuron or undefined.
+ */
 export const querySnsNeuron = async ({
   identity,
   rootCanisterId,
