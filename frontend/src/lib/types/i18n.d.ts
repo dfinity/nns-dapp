@@ -285,6 +285,7 @@ interface I18nNew_followee {
   follow: string;
   unfollow: string;
   same_neuron: string;
+  followee_does_not_exist: string;
   already_followed: string;
 }
 
@@ -722,6 +723,7 @@ interface I18nError__sns {
   ledger_created_future: string;
   ledger_too_old: string;
   ledger_unsufficient_funds: string;
+  sns_add_followee: string;
   sns_add_hotkey: string;
 }
 

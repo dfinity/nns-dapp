@@ -88,11 +88,6 @@
     padding: 0;
   }
 
-  h3 {
-    // Titles longer than one line had too much space with the default line-height for h3
-    line-height: normal;
-  }
-
   .subtitle {
     margin: 0 0 var(--padding) 0;
   }

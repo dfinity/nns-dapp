@@ -5,10 +5,12 @@ import {
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
+  setFollowees,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
 import {
+  getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
@@ -24,8 +26,11 @@ import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
+  followeesByFunction,
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
+  getSnsNeuronIdAsHexString,
+  subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -187,7 +192,7 @@ export const getSnsNeuron = async ({
   const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
   return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
-      querySnsNeuron({
+      getSnsNeuronApi({
         rootCanisterId,
         identity,
         certified,
@@ -203,7 +208,7 @@ export const getSnsNeuron = async ({
           const identity = await getNeuronIdentity();
           if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
             await refreshNeuron({ rootCanisterId, identity, neuronId });
-            const updatedNeuron = await querySnsNeuron({
+            const updatedNeuron = await getSnsNeuronApi({
               identity,
               rootCanisterId,
               neuronId,
@@ -442,4 +447,97 @@ export const loadSnsNervousSystemFunctions = async (
     rootCanisterId,
     functions,
   });
+};
+
+/**
+ * Makes a call to add a followee to the neuron.
+ *
+ * The new set of followees needs to be calculated before the call.
+ *
+ * Shows toasts error if:
+ * - The new followee is already in the neuron.
+ * - The new followee is the same neuron.
+ * - The call throws an error.
+ *
+ * @param {Object}
+ * @param {Principal} rootCanisterId
+ * @param {SnsNeuron} neuron
+ * @param {SnsNeuronId} followee
+ * @param {bigint} functionId
+ * @returns
+ */
+export const addFollowee = async ({
+  neuron,
+  functionId,
+  followeeHex,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  followeeHex: string;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  // Do not allow a neuron to follow itself
+  if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
+    toastsError({
+      labelKey: "new_followee.same_neuron",
+    });
+    return { success: false };
+  }
+
+  const identity = await getNeuronIdentity();
+  const followee: SnsNeuronId = {
+    id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
+  };
+
+  const topicFollowees = followeesByFunction({ neuron, functionId });
+  // Do not allow to add a neuron id who is already followed
+  if (
+    topicFollowees?.find(
+      ({ id }) => subaccountToHexString(id) === followeeHex
+    ) !== undefined
+  ) {
+    toastsError({
+      labelKey: "new_followee.already_followed",
+    });
+    return { success: false };
+  }
+  try {
+    const followeeNeuron = await querySnsNeuron({
+      identity,
+      rootCanisterId,
+      neuronId: followee,
+      certified: false,
+    });
+    if (followeeNeuron === undefined) {
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+      return { success: false };
+    }
+
+    const newFollowees: SnsNeuronId[] =
+      topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
+
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      functionId,
+      followees: newFollowees,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    toastsError({
+      labelKey: "error__sns.sns_add_followee",
+      err: error,
+    });
+    return { success: false };
+  }
 };

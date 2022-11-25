@@ -20,6 +20,7 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
+import { SnsGovernanceError } from "@dfinity/sns";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {
@@ -28,6 +29,8 @@ export const errorToString = (err?: unknown): string | undefined => {
       ? (err as string)
       : err instanceof GovernanceError
       ? (err as GovernanceError)?.detail?.error_message
+      : err instanceof SnsGovernanceError
+      ? (err as SnsGovernanceError).message
       : err instanceof Error
       ? (err as Error).message
       : undefined;
