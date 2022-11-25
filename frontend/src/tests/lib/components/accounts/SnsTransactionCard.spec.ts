@@ -119,13 +119,15 @@ describe("SnsTransactionCard", () => {
   });
 
   it("displays transaction date and time", () => {
-    const { container } = renderTransactionCard(
+    const { getByTestId } = renderTransactionCard(
       mockSnsMainAccount,
       transactionFromMainToSubaccount
     );
 
-    expect(container.querySelector("p")?.textContent).toContain("Jan 1, 1970");
-    expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
+    const div = getByTestId("transaction-date");
+
+    expect(div?.textContent).toContain("Jan 1, 1970");
+    expect(div?.textContent).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {
