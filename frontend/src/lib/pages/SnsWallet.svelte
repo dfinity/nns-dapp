@@ -21,6 +21,7 @@
   import { goto } from "$app/navigation";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { Island } from "@dfinity/gix-components";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(async () => {
@@ -70,31 +71,34 @@
   }
 </script>
 
-<main class="legacy" data-tid="sns-wallet">
-  <section>
-    {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
-      <WalletSummary />
+<Island>
+  <main class="legacy" data-tid="sns-wallet">
+    <section>
+      {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
+        <WalletSummary />
 
-      <Separator />
+        <Separator />
 
-      <SnsTransactionsList
-        rootCanisterId={$snsOnlyProjectStore}
-        account={$selectedAccountStore.account}
-      />
-    {:else}
-      <Spinner />
-    {/if}
-  </section>
-</main>
+        <SnsTransactionsList
+          rootCanisterId={$snsOnlyProjectStore}
+          account={$selectedAccountStore.account}
+        />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
 
-<Footer columns={1}>
-  <button
-    class="primary"
-    on:click={() => (showNewTransactionModal = true)}
-    disabled={$selectedAccountStore.account === undefined || $busy}
-    data-tid="open-new-sns-transaction">{$i18n.accounts.new_transaction}</button
-  >
-</Footer>
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="open-new-sns-transaction"
+      >{$i18n.accounts.new_transaction}</button
+    >
+  </Footer>
+</Island>
 
 {#if showNewTransactionModal}
   <SnsTransactionModal

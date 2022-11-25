@@ -8,7 +8,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
-  import HardwareWalletActions from "$lib/components/accounts/WalletActions.svelte";
+  import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
@@ -17,7 +17,10 @@
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
-  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
+  import {
+    debugHardwareWalletNeuronsStore,
+    debugSelectedAccountStore,
+  } from "$lib/stores/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -28,6 +31,13 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { Island } from "@dfinity/gix-components";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import {
+    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
+    type HardwareWalletNeuronsContext,
+    type HardwareWalletNeuronsStore,
+  } from "$lib/types/hardware-wallet-neurons.context";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -95,34 +105,57 @@
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
 
+  /**
+   * A store that contains the neurons of the hardware wallet filled once the user approved listing neurons.
+   * We notably need a store because the user can add hotkeys to the neurons that are not yet controlled by NNS-dapp and need to update dynamically the UI accordingly.
+   *
+   * The context has to be decleare in this component because it is use in both modals and content.
+   *
+   */
+  const hardwareWalletNeuronsStore = writable<HardwareWalletNeuronsStore>({
+    neurons: [],
+  });
+  debugHardwareWalletNeuronsStore(hardwareWalletNeuronsStore);
+
+  setContext<HardwareWalletNeuronsContext>(
+    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
+    {
+      store: hardwareWalletNeuronsStore,
+    }
+  );
+
   let showNewTransactionModal = false;
 
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<main class="legacy" data-tid="nns-wallet">
-  <section>
-    {#if $selectedAccountStore.account !== undefined}
-      <WalletSummary />
-      <HardwareWalletActions />
+<Island>
+  <main class="legacy" data-tid="nns-wallet">
+    <section>
+      {#if $selectedAccountStore.account !== undefined}
+        <WalletSummary />
+        <WalletActions />
 
-      <Separator />
+        <Separator />
 
-      <TransactionList {transactions} />
-    {:else}
-      <Spinner />
-    {/if}
-  </section>
-</main>
+        <TransactionList {transactions} />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
 
-<Footer columns={1}>
-  <button
-    class="primary"
-    on:click={() => (showNewTransactionModal = true)}
-    disabled={$selectedAccountStore.account === undefined || $busy}
-    data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
-  >
-</Footer>
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+    >
+  </Footer>
+</Island>
+
+<WalletModals />
 
 {#if showNewTransactionModal}
   <IcpTransactionModal
