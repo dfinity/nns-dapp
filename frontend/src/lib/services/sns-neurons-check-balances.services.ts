@@ -3,7 +3,7 @@ import {
   getNeuronBalance,
   refreshNeuron,
 } from "$lib/api/sns-governance.api";
-import { querySnsNeuron } from "$lib/api/sns.api";
+import { getSnsNeuron } from "$lib/api/sns.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -32,7 +32,7 @@ const loadNeuron = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<void> => {
-  const neuron = await querySnsNeuron({
+  const neuron = await getSnsNeuron({
     identity,
     rootCanisterId,
     neuronId,

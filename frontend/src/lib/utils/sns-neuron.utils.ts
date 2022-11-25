@@ -5,7 +5,7 @@ import {
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
@@ -305,3 +305,18 @@ export const functionsToFollow = (
   functions: SnsNervousSystemFunction[] | undefined
 ): SnsNervousSystemFunction[] | undefined =>
   functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
+
+export const followeesByFunction = ({
+  neuron,
+  functionId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+}): SnsNeuronId[] =>
+  neuron.followees.reduce<SnsNeuronId[]>(
+    (functionFollowees, [currentFunctionId, followeesData]) =>
+      currentFunctionId === functionId
+        ? followeesData.followees
+        : functionFollowees,
+    []
+  );

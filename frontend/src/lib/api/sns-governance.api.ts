@@ -266,3 +266,33 @@ export const getNervousSystemFunctions = async ({
   logWithTimestamp(`Getting nervous system functions call complete.`);
   return functions;
 };
+
+export const setFollowees = async ({
+  rootCanisterId,
+  identity,
+  neuronId,
+  functionId,
+  followees,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  neuronId: SnsNeuronId;
+  functionId: bigint;
+  followees: SnsNeuronId[];
+}): Promise<void> => {
+  logWithTimestamp(`Setting sns neuron followee call...`);
+
+  const { setTopicFollowees } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await setTopicFollowees({
+    neuronId,
+    functionId,
+    followees,
+  });
+
+  logWithTimestamp(`Setting sns neuron followee call complete.`);
+};
