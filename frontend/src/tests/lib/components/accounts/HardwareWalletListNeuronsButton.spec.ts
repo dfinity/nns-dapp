@@ -11,7 +11,7 @@ import { get } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
-import WalletActionsTest from "./WalletActionsTest.svelte";
+import WalletContextTest from "./WalletContextTest.svelte";
 
 jest.mock("$lib/proxy/ledger.services.proxy");
 
@@ -32,7 +32,7 @@ describe("HardwareWalletListNeuronsButton", () => {
   });
 
   const renderTestCmp = () =>
-    render(WalletActionsTest, {
+    render(WalletContextTest, {
       props: {
         account: mockMainAccount,
         testComponent: HardwareWalletListNeurons,

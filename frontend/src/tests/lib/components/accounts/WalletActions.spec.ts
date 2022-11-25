@@ -8,11 +8,11 @@ import {
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
-import WalletActionsTest from "./WalletActionsTest.svelte";
+import WalletContextTest from "./WalletContextTest.svelte";
 
 describe("WalletActions", () => {
   const renderWalletActions = (account) =>
-    render(WalletActionsTest, {
+    render(WalletContextTest, {
       props: {
         account,
         testComponent: WalletActions,
