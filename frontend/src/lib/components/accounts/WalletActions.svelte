@@ -29,12 +29,9 @@
 </div>
 
 <style lang="scss">
-  div {
-    display: flex;
-    justify-content: flex-end;
+  @use "../../themes/mixins/section";
 
-    > :global(*:not(:last-of-type)) {
-      margin-right: var(--padding);
-    }
+  div {
+    @include section.actions;
   }
 </style>
