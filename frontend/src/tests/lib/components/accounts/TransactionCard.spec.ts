@@ -80,7 +80,7 @@ describe("TransactionCard", () => {
     const div = getByTestId("transaction-date");
 
     expect(div?.textContent).toContain(
-      "March 14, 2021 12:00 AM"
+      "Mar 14, 2021 12:00 AM"
     );
     expect(div?.textContent).toContain("12:00 AM");
   });
