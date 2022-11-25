@@ -8,7 +8,7 @@
 </script>
 
 <button
-  class="primary"
+  class="secondary"
   type="button"
   on:click={showInfo}
   data-tid="ledger-show-button"

@@ -77,18 +77,18 @@ describe("NnsTransactionCard", () => {
   });
 
   it("displays transaction date and time", () => {
-    const { container } = renderTransactionCard(
+    const { getByTestId } = renderTransactionCard(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
 
-    expect(container.querySelector("p")?.textContent).toContain(
-      "January 1, 1970"
-    );
-    expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
+    const div = getByTestId("transaction-date");
+
+    expect(div?.textContent).toContain("Jan 1, 1970");
+    expect(div?.textContent).toContain("12:00 AM");
   });
 
-  it("displays identifier for reseived", () => {
+  it("displays identifier for received", () => {
     const { getByTestId } = renderTransactionCard(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction

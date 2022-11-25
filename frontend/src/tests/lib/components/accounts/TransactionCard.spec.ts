@@ -73,14 +73,14 @@ describe("TransactionCard", () => {
   });
 
   it("displays transaction date and time", () => {
-    const { container } = renderTransactionCard(
+    const { getByTestId } = renderTransactionCard(
       mockTransactionSendDataFromMain
     );
 
-    expect(container.querySelector("p")?.textContent).toContain(
-      "March 14, 2021 12:00 AM"
-    );
-    expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
+    const div = getByTestId("transaction-date");
+
+    expect(div?.textContent).toContain("Mar 14, 2021 12:00 AM");
+    expect(div?.textContent).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {

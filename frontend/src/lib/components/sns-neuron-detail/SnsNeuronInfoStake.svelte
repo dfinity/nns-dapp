@@ -89,12 +89,9 @@
 {/if}
 
 <style lang="scss">
+  @use "../../themes/mixins/section";
+
   .buttons {
-    display: flex;
-    gap: var(--padding);
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    margin: var(--padding-2x) 0 0;
+    @include section.actions;
   }
 </style>
