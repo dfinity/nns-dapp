@@ -33,7 +33,7 @@
   });
 
   const updateLayoutTitle = ($event: Event) => {
-    // svelte-check ignores https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
+    // TODO: svelte-check ignores https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
     // even though we have set the types in app.d.ts as displayed by the documentation
     const {
       detail: { intersecting },
