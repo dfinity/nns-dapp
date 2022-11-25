@@ -8,8 +8,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
-  import HardwareWalletActions from "$lib/components/accounts/HardwareWalletActions.svelte";
-  import WalletSubaccountActions from "$lib/components/accounts/WalletSubaccountActions.svelte";
+  import HardwareWalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
@@ -98,10 +97,6 @@
 
   let showNewTransactionModal = false;
 
-  let footerColumns: 1 | 2 = 1;
-  $: footerColumns =
-    $selectedAccountStore.account?.type === "subAccount" ? 2 : 1;
-
   // TODO(L2-581): Create WalletInfo component
 </script>
 
@@ -120,15 +115,13 @@
   </section>
 </main>
 
-<Footer columns={footerColumns}>
+<Footer columns={1}>
   <button
     class="primary"
     on:click={() => (showNewTransactionModal = true)}
     disabled={$selectedAccountStore.account === undefined || $busy}
     data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
   >
-
-  <WalletSubaccountActions />
 </Footer>
 
 {#if showNewTransactionModal}

@@ -5,6 +5,7 @@
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
+  import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
   import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
   import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";
 
@@ -16,12 +17,16 @@
   $: type = $store.account?.type;
 </script>
 
-{#if type === "hardwareWallet"}
-  <div role="menubar">
+<div role="menubar">
+  {#if type === "subAccount"}
+    <RenameSubAccountButton />
+  {/if}
+
+  {#if type === "hardwareWallet"}
     <HardwareWalletListNeuronsButton />
     <HardwareWalletShowActionButton />
-  </div>
-{/if}
+  {/if}
+</div>
 
 <style lang="scss">
   @use "../../themes/mixins/section";
