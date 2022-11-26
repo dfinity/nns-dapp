@@ -53,6 +53,7 @@ export const proposalActionFields = (
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
+      case "undefined":
       case "string":
       case "bigint":
       case "boolean":

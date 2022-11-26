@@ -6,6 +6,7 @@
   import type { Proposal } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let proposal: Proposal | undefined;
 
@@ -13,12 +14,18 @@
   let actionFields: [string, unknown][] = [];
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
+  // TODO: Remove hack https://dfinity.atlassian.net/browse/GIX-1155
+  let title: string;
+  $: title =
+    actionKey === "OpenSnsTokenSwap"
+      ? $i18n.actions.OpenSnsTokenSwap
+      : actionKey ?? "";
   $: actionFields =
     proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>
 
 <h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">
-  {actionKey ?? ""}
+  {title}
 </h2>
 
 <div class="content-cell-details">
@@ -28,6 +35,8 @@
       <span class="value" slot="value">
         {#if typeof value === "object"}
           <Json json={value} />
+        {:else if typeof value === "undefined"}
+          {$i18n.core.null}
         {:else}
           {value}
         {/if}

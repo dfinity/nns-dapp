@@ -27,6 +27,7 @@
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
+    "null": "NULL",
     "principal_is": "Your principal is"
   },
   "error": {
