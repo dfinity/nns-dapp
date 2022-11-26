@@ -47,6 +47,8 @@
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
+    modal: undefined,
+    neurons: [],
   });
 
   // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
@@ -64,9 +66,11 @@
         ({ identifier }) => identifier === accountIdentifier
       );
 
-      selectedAccountStore.update(() => ({
+      selectedAccountStore.set({
         account: selectedAccount,
-      }));
+        modal: undefined,
+        neurons: [],
+      });
     }
   }
 </script>

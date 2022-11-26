@@ -26,7 +26,8 @@
   // We do not fetch again all the neurons on the ledger and solely update the UI to replicate the UI/UX that was developed in Flutter and is already in production.
   // i.e. the neuron that has just been added to the hotkey control will be displayed as "Added to NNS dapp"
   const updateContextStoreNeuron = () =>
-    store.update(({ neurons }) => ({
+    store.update(({ neurons, ...rest }) => ({
+      ...rest,
       neurons: neurons.map((neuron: HardwareWalletNeuronInfo) =>
         neuron.neuronId !== neuronId
           ? neuron
