@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXXXX
+* Fix Open Decentralized Sale title.
+* Design changes in the Wallet page.
+* UI improvements in neuron details page.
+
 ## Proposal 93596
 * Remove redirection in Launchpad page.
 
