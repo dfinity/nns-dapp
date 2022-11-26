@@ -1,5 +1,4 @@
 import { addHotkey } from "$lib/api/governance.api";
-import { generateDebugLogProxy } from "$lib/proxy/debug.services.proxy";
 import { initDebugStore } from "$lib/stores/debug.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
@@ -19,8 +18,8 @@ import { saveToJSONFile } from "$lib/utils/save.utils";
 import { mapPromises, stringifyJson } from "$lib/utils/utils";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { claimSeedNeurons } from "./seed-neurons.services";
+import { getAuthenticatedIdentity } from "../services/auth.services";
+import { claimSeedNeurons } from "../services/seed-neurons.services";
 
 /**
  * c - pseudo-anonymised stringified -> console
@@ -76,7 +75,7 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
-        generateDebugLogProxy(logType);
+        generateDebugLog(logType);
       }
     } else {
       startTime = now;
@@ -189,7 +188,7 @@ const anonymiseStoreState = async () => {
  * 2. log it in the dev console
  * 3. generates a json file with logged context
  */
-export const generateDebugLog = async (logType: LogType) => {
+const generateDebugLog = async (logType: LogType) => {
   const debugStore = initDebugStore();
   const anonymise = [LogType.Console, LogType.File].includes(logType);
   const saveToFile = [LogType.File, LogType.FileOriginal].includes(logType);
