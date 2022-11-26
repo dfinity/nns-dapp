@@ -14,6 +14,7 @@
   let actionFields: [string, unknown][] = [];
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
+  // TODO: Remove hack https://dfinity.atlassian.net/browse/GIX-1155
   let title: string;
   $: title =
     actionKey === "OpenSnsTokenSwap"
