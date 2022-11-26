@@ -1,9 +1,9 @@
 import type { Account } from "$lib/types/account";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
+  WALLET_CONTEXT_KEY,
+  type WalletContext,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
@@ -18,12 +18,12 @@ export const renderWalletActions = ({
 }) =>
   render(ContextWrapperTest, {
     props: {
-      contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+      contextKey: WALLET_CONTEXT_KEY,
       contextValue: {
-        store: writable<SelectedAccountStore>({
+        store: writable<WalletStore>({
           account,
         }),
-      } as SelectedAccountContext,
+      } as WalletContext,
       Component: component,
     },
   });

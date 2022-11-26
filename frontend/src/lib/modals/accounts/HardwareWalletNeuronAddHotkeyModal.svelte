@@ -7,32 +7,19 @@
   import { addHotkeyForHardwareWalletNeuron } from "$lib/services/neurons.services";
   import type { Account } from "$lib/types/account";
   import { createEventDispatcher, getContext } from "svelte";
-  import {
-    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
-    type HardwareWalletNeuronInfo,
-    type HardwareWalletNeuronsContext,
-  } from "$lib/types/hardware-wallet-neurons.context";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type HardwareWalletNeuronInfo,
+  } from "$lib/types/wallet.context";
 
   export let neuronId: NeuronId;
 
   // Get the selected account from the account context - "Wallet" detail page context
-  const { store: storeAccount } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
-  $: selectedAccount = $storeAccount.account;
-
-  // Get the store for the neurons of the hardware wallet from the dedicated context
-  const context: HardwareWalletNeuronsContext =
-    getContext<HardwareWalletNeuronsContext>(
-      HARDWARE_WALLET_NEURONS_CONTEXT_KEY
-    );
-  const { store }: HardwareWalletNeuronsContext = context;
+  $: selectedAccount = $store.account;
 
   const dispatch = createEventDispatcher();
 

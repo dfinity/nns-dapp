@@ -4,19 +4,15 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { busy } from "@dfinity/gix-components";
   import { getContext } from "svelte";
-  import type { HardwareWalletNeuronsContext } from "$lib/types/hardware-wallet-neurons.context";
-  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "$lib/types/hardware-wallet-neurons.context";
+  import type { WalletContext } from "$lib/types/wallet.context";
+  import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
   import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { walletModal } from "$lib/stores/modal.store";
 
   // Get the store for the neurons of the hardware wallet from the dedicated context
-  const context: HardwareWalletNeuronsContext =
-    getContext<HardwareWalletNeuronsContext>(
-      HARDWARE_WALLET_NEURONS_CONTEXT_KEY
-    );
-  const { store }: HardwareWalletNeuronsContext = context;
+  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
+  const { store }: WalletContext = context;
 
   const listNeurons = async () => {
     startBusy({
@@ -39,7 +35,10 @@
       return;
     }
 
-    walletModal.set("hw-list-neurons");
+    store.update((data) => ({
+      ...data,
+      modal: "hw-list-neurons",
+    }));
   };
 </script>
 

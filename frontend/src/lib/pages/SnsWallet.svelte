@@ -11,10 +11,10 @@
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-    type SelectedAccountStore,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type WalletStore,
+  } from "$lib/types/wallet.context";
   import Footer from "$lib/components/common/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
@@ -45,14 +45,14 @@
 
   onDestroy(unsubscribe);
 
-  const selectedAccountStore = writable<SelectedAccountStore>({
+  const selectedAccountStore = writable<WalletStore>({
     account: undefined,
   });
 
   // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
+  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
 
