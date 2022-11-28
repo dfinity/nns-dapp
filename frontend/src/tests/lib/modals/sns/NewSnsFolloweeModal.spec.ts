@@ -7,6 +7,7 @@ import { addFollowee } from "$lib/services/sns-neurons.services";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 import { principal } from "../../../mocks/sns-projects.mock";
@@ -21,7 +22,7 @@ describe("NewSnsFolloweeModal", () => {
   const reload = jest.fn();
   const functionId = BigInt(4);
 
-  const renderNewSnsFolloweeModal = (): RenderResult =>
+  const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({
       Component: NewSnsFolloweeModal,
       reload,

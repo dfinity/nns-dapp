@@ -14,6 +14,7 @@ import {
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
@@ -59,7 +60,7 @@ describe("ParticipateSwapModal", () => {
 
   const renderEnter10ICPAndNext = async (
     swapCommitment: SnsSwapCommitment | undefined = undefined
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderSwapModal(swapCommitment);
 
     const { queryByText, getByTestId, container } = result;

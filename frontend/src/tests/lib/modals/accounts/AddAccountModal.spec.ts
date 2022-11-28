@@ -6,6 +6,7 @@ import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "$lib/services/accounts.services";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
@@ -48,7 +49,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateSubaccountStep = async ({
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
@@ -66,7 +67,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateHardwareWalletStep = async ({
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.attach_hardware_title);
     expect(accountCard).not.toBeNull();
 
@@ -181,7 +182,7 @@ describe("AddAccountModal", () => {
   const shouldNavigateHardwareWalletConnect = async ({
     container,
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const input = container.querySelector("input") as HTMLInputElement;
     await fireEvent.input(input, { target: { value: "test" } });
 
@@ -221,7 +222,7 @@ describe("AddAccountModal", () => {
   const shouldAttachWallet = async ({
     getByTestId,
     component,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const connect = getByTestId("ledger-connect-button") as HTMLButtonElement;
 
     fireEvent.click(connect);
