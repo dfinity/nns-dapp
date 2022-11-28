@@ -8,6 +8,8 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
+  AGE_MULTIPLIER,
+  DISSOLVE_DELAY_MULTIPLIER,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
@@ -88,25 +90,121 @@ export const stateTextMapper: StateMapper = {
 export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
   stateTextMapper[neuronState];
 
-export const votingPower = ({
-  stake,
-  dissolveDelayInSeconds,
-  ageSeconds = 0,
+/**
+ * Calculation of the voting power of a neuron.
+ *
+ * If neuron's dissolve delay is less than 6 months, the voting power is 0.
+ *
+ * Else:
+ * votingPower = (stake + staked maturity) * dissolve_delay_bonus * age_bonus
+ * dissolve_delay_bonus = 1 + (dissolve_delay_multiplier * neuron dissolve delay / 8 years)
+ * age_bonus = 1 + (age_multiplier * ageSeconds / 4 years)
+ *
+ * dissolve_delay_multiplier is 1 in NNS
+ * age_multiplier is 0.25 in NNS
+ *
+ * ageSeconds is capped at 4 years
+ * neuron dissolve delay is capped at 8 years
+ *
+ * Reference: https://internetcomputer.org/docs/current/tokenomics/sns/rewards#recap-on-nns-voting-rewards
+ *
+ * @param {Object}
+ * @param {NeuronInfo} neuron
+ * @param {number} newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
+ * @returns {bigint}
+ */
+export const neuronVotingPower = ({
+  neuron,
+  newDissolveDelayInSeconds,
 }: {
-  stake: bigint;
-  dissolveDelayInSeconds: number;
-  ageSeconds?: number;
-}): bigint =>
-  dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
-    ? BigInt(
-        Math.round(
-          (Number(stake) / E8S_PER_ICP) *
-            dissolveDelayMultiplier(dissolveDelayInSeconds) *
-            ageMultiplier(ageSeconds) *
-            E8S_PER_ICP
-        )
-      )
-    : BigInt(0);
+  neuron: NeuronInfo;
+  newDissolveDelayInSeconds?: bigint;
+}): bigint => {
+  const dissolveDelay =
+    newDissolveDelayInSeconds ?? neuron.dissolveDelaySeconds;
+  const stakeE8s =
+    (neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0)) +
+    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0));
+  return votingPower({
+    stakeE8s,
+    dissolveDelay,
+    ageSeconds: neuron.ageSeconds,
+  });
+};
+
+interface VotingPowerParams {
+  // Neuron data
+  dissolveDelay: bigint;
+  stakeE8s: bigint;
+  ageSeconds: bigint;
+  // Params
+  ageBonusMultiplier?: number;
+  dissolveBonusMultiplier?: number;
+  maxAgeSeconds?: number;
+  maxDissolveDelaySeconds?: number;
+  minDissolveDelaySeconds?: number;
+}
+/**
+ * For now used only internally in this file.
+ *
+ * It might be useful to use it for SNS neurons.
+ *
+ * @param {VotingPowerParams}
+ * @returns {bigint}
+ */
+const votingPower = ({
+  stakeE8s,
+  dissolveDelay,
+  ageSeconds,
+  ageBonusMultiplier = AGE_MULTIPLIER,
+  dissolveBonusMultiplier = DISSOLVE_DELAY_MULTIPLIER,
+  maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
+  maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
+  minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
+}: VotingPowerParams): bigint => {
+  if (dissolveDelay < minDissolveDelaySeconds) {
+    return BigInt(0);
+  }
+  const dissolveDelayMultiplier = bonusMultiplier({
+    amount: dissolveDelay,
+    multiplier: dissolveBonusMultiplier,
+    max: maxDissolveDelaySeconds,
+  });
+  const ageMultiplier = bonusMultiplier({
+    amount: ageSeconds,
+    multiplier: ageBonusMultiplier,
+    max: maxAgeSeconds,
+  });
+  // We don't use dissolveDelayMultiplier and ageMultiplier directly because those are specific to NNS.
+  // This function is generic and could be used for SNS.
+  return BigInt(
+    Math.round(Number(stakeE8s) * dissolveDelayMultiplier * ageMultiplier)
+  );
+};
+
+export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
+  bonusMultiplier({
+    amount: delayInSeconds,
+    multiplier: DISSOLVE_DELAY_MULTIPLIER,
+    max: SECONDS_IN_EIGHT_YEARS,
+  });
+
+export const ageMultiplier = (ageSeconds: bigint): number =>
+  bonusMultiplier({
+    amount: ageSeconds,
+    multiplier: AGE_MULTIPLIER,
+    max: SECONDS_IN_FOUR_YEARS,
+  });
+
+const bonusMultiplier = ({
+  amount,
+  multiplier,
+  max,
+}: {
+  amount: bigint;
+  multiplier: number;
+  max: number;
+}): number => 1 + multiplier * (Math.min(Number(amount), max) / max);
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
@@ -117,11 +215,6 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
         neuron.fullNeuron.maturityE8sEquivalent >
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
-
-export const dissolveDelayMultiplier = (delayInSeconds: number): number =>
-  1 +
-  1 *
-    (Math.min(delayInSeconds, SECONDS_IN_EIGHT_YEARS) / SECONDS_IN_EIGHT_YEARS);
 
 export const getDissolvingTimeInSeconds = (
   neuron: NeuronInfo
@@ -139,10 +232,6 @@ export const getSpawningTimeInSeconds = (
   isSpawning(neuron) && neuron.fullNeuron?.spawnAtTimesSeconds !== undefined
     ? neuron.fullNeuron.spawnAtTimesSeconds - BigInt(nowInSeconds())
     : undefined;
-
-export const ageMultiplier = (ageSeconds: number): number =>
-  1 +
-  0.25 * (Math.min(ageSeconds, SECONDS_IN_FOUR_YEARS) / SECONDS_IN_FOUR_YEARS);
 
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);

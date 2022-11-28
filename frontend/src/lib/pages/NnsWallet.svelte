@@ -12,10 +12,10 @@
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-    type SelectedAccountStore,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type WalletStore,
+  } from "$lib/types/wallet.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
@@ -27,6 +27,9 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { Island } from "@dfinity/gix-components";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -47,20 +50,22 @@
       },
     });
 
-  const selectedAccountStore = writable<SelectedAccountStore>({
+  const selectedAccountStore = writable<WalletStore>({
     account: undefined,
+    modal: undefined,
+    neurons: [],
   });
 
   // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
+  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
+  const accountDidUpdate = async ({ account }: WalletStore) => {
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
       return;
@@ -90,6 +95,8 @@
       identifier: accountIdentifier,
       accounts: $nnsAccountsListStore,
     }),
+    modal: undefined,
+    neurons: [],
   });
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
@@ -99,28 +106,33 @@
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<main class="legacy" data-tid="nns-wallet">
-  <section>
-    {#if $selectedAccountStore.account !== undefined}
-      <WalletSummary />
-      <div class="actions">
+<Island>
+  <main class="legacy" data-tid="nns-wallet">
+    <section>
+      {#if $selectedAccountStore.account !== undefined}
+        <WalletSummary />
         <WalletActions />
-      </div>
-      <TransactionList {transactions} />
-    {:else}
-      <Spinner />
-    {/if}
-  </section>
-</main>
 
-<Footer columns={1}>
-  <button
-    class="primary"
-    on:click={() => (showNewTransactionModal = true)}
-    disabled={$selectedAccountStore.account === undefined || $busy}
-    data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
-  >
-</Footer>
+        <Separator />
+
+        <TransactionList {transactions} />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
+
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
+    >
+  </Footer>
+</Island>
+
+<WalletModals />
 
 {#if showNewTransactionModal}
   <IcpTransactionModal
@@ -128,11 +140,3 @@
     selectedAccount={$selectedAccountStore.account}
   />
 {/if}
-
-<style lang="scss">
-  .actions {
-    margin-bottom: var(--padding-3x);
-    display: flex;
-    justify-content: end;
-  }
-</style>

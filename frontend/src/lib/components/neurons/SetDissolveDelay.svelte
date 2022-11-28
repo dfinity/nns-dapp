@@ -11,7 +11,7 @@
   import {
     formatVotingPower,
     neuronStake,
-    votingPower,
+    neuronVotingPower,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
@@ -90,9 +90,9 @@
         <div>
           <p class="label">
             {formatVotingPower(
-              votingPower({
-                stake: neuronICP,
-                dissolveDelayInSeconds: delayInSeconds,
+              neuronVotingPower({
+                neuron,
+                newDissolveDelayInSeconds: BigInt(delayInSeconds),
               })
             )}
           </p>

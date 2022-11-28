@@ -30,6 +30,7 @@ interface I18nCore {
   ic: string;
   previous: string;
   next: string;
+  null: string;
   principal_is: string;
 }
 
@@ -234,7 +235,7 @@ interface I18nNeurons {
   current_balance: string;
   may_take_while: string;
   create: string;
-  edit_source: string;
+  change_source: string;
   community_fund: string;
   hotkey_control: string;
   stake: string;
@@ -285,6 +286,7 @@ interface I18nNew_followee {
   follow: string;
   unfollow: string;
   same_neuron: string;
+  followee_does_not_exist: string;
   already_followed: string;
 }
 
@@ -358,7 +360,7 @@ interface I18nCanisters {
   minimum_cycles_text_2: string;
   transaction_fee: string;
   review_cycles_purchase: string;
-  edit_source: string;
+  change_source: string;
   edit_cycles: string;
   converted_to: string;
 }
@@ -723,6 +725,7 @@ interface I18nError__sns {
   ledger_created_future: string;
   ledger_too_old: string;
   ledger_unsufficient_funds: string;
+  sns_add_followee: string;
   sns_add_hotkey: string;
 }
 

@@ -11,15 +11,17 @@
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-    type SelectedAccountStore,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type WalletStore,
+  } from "$lib/types/wallet.context";
   import Footer from "$lib/components/common/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import { goto } from "$app/navigation";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { Island } from "@dfinity/gix-components";
 
   // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
   onMount(async () => {
@@ -43,14 +45,16 @@
 
   onDestroy(unsubscribe);
 
-  const selectedAccountStore = writable<SelectedAccountStore>({
+  const selectedAccountStore = writable<WalletStore>({
     account: undefined,
+    modal: undefined,
+    neurons: [],
   });
 
   // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
+  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
 
@@ -62,35 +66,43 @@
         ({ identifier }) => identifier === accountIdentifier
       );
 
-      selectedAccountStore.update(() => ({
+      selectedAccountStore.set({
         account: selectedAccount,
-      }));
+        modal: undefined,
+        neurons: [],
+      });
     }
   }
 </script>
 
-<main class="legacy" data-tid="sns-wallet">
-  <section>
-    {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
-      <WalletSummary />
-      <SnsTransactionsList
-        rootCanisterId={$snsOnlyProjectStore}
-        account={$selectedAccountStore.account}
-      />
-    {:else}
-      <Spinner />
-    {/if}
-  </section>
-</main>
+<Island>
+  <main class="legacy" data-tid="sns-wallet">
+    <section>
+      {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
+        <WalletSummary />
 
-<Footer columns={1}>
-  <button
-    class="primary"
-    on:click={() => (showNewTransactionModal = true)}
-    disabled={$selectedAccountStore.account === undefined || $busy}
-    data-tid="open-new-sns-transaction">{$i18n.accounts.new_transaction}</button
-  >
-</Footer>
+        <Separator />
+
+        <SnsTransactionsList
+          rootCanisterId={$snsOnlyProjectStore}
+          account={$selectedAccountStore.account}
+        />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
+
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={$selectedAccountStore.account === undefined || $busy}
+      data-tid="open-new-sns-transaction"
+      >{$i18n.accounts.new_transaction}</button
+    >
+  </Footer>
+</Island>
 
 {#if showNewTransactionModal}
   <SnsTransactionModal

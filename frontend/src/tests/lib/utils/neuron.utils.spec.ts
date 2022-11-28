@@ -53,12 +53,12 @@ import {
   neuronAge,
   neuronCanBeSplit,
   neuronStake,
+  neuronVotingPower,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
-  votingPower,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -94,41 +94,98 @@ describe("neuron-utils", () => {
       amount: "2.2",
       token: ICPToken,
     }) as TokenAmount;
+    const neuron = {
+      ...mockNeuron,
+      ageSeconds: BigInt(0),
+      dissolveDelaySeconds: BigInt(0),
+      fullNeuron: {
+        ...mockFullNeuron,
+        cachedNeuronStake: tokenStake.toE8s(),
+      },
+    };
     it("should return zero for delays less than six months", () => {
       expect(
-        votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
+        neuronVotingPower({
+          neuron: mockNeuron,
+          newDissolveDelayInSeconds: BigInt(100),
+        })
       ).toBe(BigInt(0));
     });
 
     it("should return more than stake when delay more than six months", () => {
       expect(
-        votingPower({
-          stake: tokenStake.toE8s(),
-          dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+        neuronVotingPower({
+          neuron,
+          newDissolveDelayInSeconds: BigInt(
+            SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR
+          ),
         })
       ).toBeGreaterThan(tokenStake.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
+      const agedNeuron = {
+        ...neuron,
+        dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+      };
       expect(
-        votingPower({
-          stake: tokenStake.toE8s(),
-          dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
+        neuronVotingPower({
+          neuron: agedNeuron,
         })
       ).toBe(tokenStake.toE8s() * BigInt(2));
     });
 
-    it("should add age multiplier", () => {
-      const powerWithAge = votingPower({
-        stake: tokenStake.toE8s(),
-        dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
-        ageSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+    it("should take into account age bonus", () => {
+      const agedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+
+      const notSoAgedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(2),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+      const powerWithAge = neuronVotingPower({
+        neuron: agedNeuron,
       });
-      const powerWithoutAge = votingPower({
-        stake: tokenStake.toE8s(),
-        dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+      const powerWithoutAge = neuronVotingPower({
+        neuron: notSoAgedNeuron,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
+    });
+
+    it("should use the dissolve", () => {
+      const agedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+      const powerWithNewDissolve = neuronVotingPower({
+        neuron: agedNeuron,
+        newDissolveDelayInSeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+      });
+      const powerWithoutAge = neuronVotingPower({
+        neuron: agedNeuron,
+      });
+      expect(powerWithNewDissolve).toBeGreaterThan(powerWithoutAge);
+    });
+
+    it("should match the calculation", () => {
+      const neuron = {
+        ...mockNeuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 1.5),
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(200_000_000),
+        },
+      };
+      const power = neuronVotingPower({
+        neuron,
+      });
+      expect(power).toEqual(252_343_750n);
     });
   });
 
@@ -142,49 +199,55 @@ describe("neuron-utils", () => {
 
   describe("dissolveDelayMultiplier", () => {
     it("be 1 when dissolve is 0", () => {
-      expect(dissolveDelayMultiplier(0)).toBe(1);
+      expect(dissolveDelayMultiplier(BigInt(0))).toBe(1);
     });
 
     it("be 2 when dissolve is eight years", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS)).toBe(2);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS))).toBe(2);
     });
 
     it("is a maximum of 2", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS * 2)).toBe(2);
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS * 4)).toBe(2);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 2))).toBe(
+        2
+      );
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 4))).toBe(
+        2
+      );
     });
 
     it("returns more than 1 with positive delay", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_HALF_YEAR)).toBeGreaterThan(1);
-      expect(dissolveDelayMultiplier(1000)).toBeGreaterThan(1);
+      expect(
+        dissolveDelayMultiplier(BigInt(SECONDS_IN_HALF_YEAR))
+      ).toBeGreaterThan(1);
+      expect(dissolveDelayMultiplier(BigInt(1000))).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_YEAR)).toBe(1.125);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.125);
     });
   });
 
   describe("ageMultiplier", () => {
     it("be 1 when age is 0", () => {
-      expect(ageMultiplier(0)).toBe(1);
+      expect(ageMultiplier(BigInt(0))).toBe(1);
     });
 
     it("be 1.25 when age is four years", () => {
-      expect(ageMultiplier(SECONDS_IN_FOUR_YEARS)).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_FOUR_YEARS))).toBe(1.25);
     });
 
     it("is a maximum of 1.25", () => {
-      expect(ageMultiplier(SECONDS_IN_EIGHT_YEARS * 2)).toBe(1.25);
-      expect(ageMultiplier(SECONDS_IN_EIGHT_YEARS * 4)).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 2))).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 4))).toBe(1.25);
     });
 
     it("returns more than 1 with positive age", () => {
-      expect(ageMultiplier(SECONDS_IN_HALF_YEAR)).toBeGreaterThan(1);
-      expect(ageMultiplier(1000)).toBeGreaterThan(1);
+      expect(ageMultiplier(BigInt(SECONDS_IN_HALF_YEAR))).toBeGreaterThan(1);
+      expect(ageMultiplier(BigInt(1000))).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
-      expect(ageMultiplier(SECONDS_IN_YEAR)).toBe(1.0625);
+      expect(ageMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.0625);
     });
   });
 

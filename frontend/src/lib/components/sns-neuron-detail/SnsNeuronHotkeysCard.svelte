@@ -2,7 +2,7 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import {
     IconClose,
     IconInfo,

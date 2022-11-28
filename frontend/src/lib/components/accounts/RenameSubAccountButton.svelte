@@ -1,19 +1,20 @@
 <script lang="ts">
-  import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import {
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
+  import { getContext } from "svelte";
 
-  let modalOpen = false;
+  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
+  const { store }: WalletContext = context;
 </script>
 
 <button
-  class="primary"
+  class="secondary"
   type="button"
-  on:click={() => (modalOpen = true)}
+  on:click={() => store.update((data) => ({ ...data, modal: "rename" }))}
   data-tid="open-rename-subaccount-button"
 >
   {$i18n.accounts.rename}
 </button>
-
-{#if modalOpen}
-  <RenameSubAccountModal on:nnsClose={() => (modalOpen = false)} />
-{/if}

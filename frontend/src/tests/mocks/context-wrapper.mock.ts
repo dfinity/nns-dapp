@@ -1,13 +1,13 @@
 import type { Account } from "$lib/types/account";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
-import {
   SELECTED_SNS_NEURON_CONTEXT_KEY,
   type SelectedSnsNeuronContext,
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
+import {
+  WALLET_CONTEXT_KEY,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
@@ -26,8 +26,9 @@ export const renderContextWrapper = <T>({
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-  props?: never;
-}): RenderResult =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: any;
+}): RenderResult<SvelteComponent> =>
   render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -43,12 +44,14 @@ export const renderSelectedAccountContext = ({
 }: {
   Component: typeof SvelteComponent;
   account: Account | undefined;
-}): RenderResult =>
+}): RenderResult<SvelteComponent> =>
   renderContextWrapper({
-    contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+    contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedAccountStore>({
+      store: writable<WalletStore>({
         account,
+        modal: undefined,
+        neurons: [],
       }),
     },
     Component,
@@ -63,7 +66,8 @@ export const renderSelectedSnsNeuronContext = ({
   Component: typeof SvelteComponent;
   neuron: SnsNeuron;
   reload: () => Promise<void>;
-  props?: never;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: any;
 }) =>
   renderContextWrapper({
     Component,
@@ -76,7 +80,7 @@ export const renderSelectedSnsNeuronContext = ({
         },
         neuron,
       }),
-      props,
       reload,
     } as SelectedSnsNeuronContext,
+    props,
   });

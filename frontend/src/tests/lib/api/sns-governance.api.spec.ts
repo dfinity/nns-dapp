@@ -12,6 +12,7 @@ import {
   nervousSystemParameters,
   refreshNeuron,
   removeNeuronPermissions,
+  setFollowees,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -25,12 +26,16 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsListNervousSystemFunctionsResponse,
+  type SnsNeuronId,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
-import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../mocks/sns-neurons.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -61,6 +66,7 @@ describe("sns-api", () => {
   const getNeuronBalanceSpy = jest.fn().mockResolvedValue(undefined);
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
+  const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -104,7 +110,7 @@ describe("sns-api", () => {
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
-        nervousSystemParameters: nervousSystemParametersSpy,
+        setTopicFollowees: setTopicFolloweesSpy,
       })
     );
   });
@@ -210,6 +216,20 @@ describe("sns-api", () => {
     });
 
     expect(claimNeuronSpy).toBeCalled();
+  });
+
+  it("should setFollowees for a topic", async () => {
+    const followee1: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
+    const followee2: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 4]) };
+    await setFollowees({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: mockSnsNeuron.id[0],
+      functionId: BigInt(3),
+      followees: [followee1, followee2],
+    });
+
+    expect(setTopicFolloweesSpy).toBeCalled();
   });
 
   it("should get nervous system functions", async () => {

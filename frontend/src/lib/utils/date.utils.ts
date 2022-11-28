@@ -53,7 +53,7 @@ export const secondsToDateTime = (seconds: bigint): string =>
 
 export const secondsToDate = (seconds: number): string => {
   const options: Intl.DateTimeFormatOptions = {
-    month: "long",
+    month: "short",
     day: "numeric",
     year: "numeric",
   };

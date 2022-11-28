@@ -8,6 +8,17 @@ declare namespace App {
   // interface Platform {}
 }
 
+interface IntersectingDetail {
+  intersecting: boolean;
+}
+
+// eslint window checks for custom events
+declare namespace svelte.JSX {
+  interface HTMLAttributes<T> {
+    onnnsIntersecting?: (event: CustomEvent<IntersectingDetail>) => void;
+  }
+}
+
 // Solves following lint warning:
 //
 // Hint: Could not find a declaration file for module '@dfinity/.../dist/esm/...'. '...js' implicitly has an 'any' type.

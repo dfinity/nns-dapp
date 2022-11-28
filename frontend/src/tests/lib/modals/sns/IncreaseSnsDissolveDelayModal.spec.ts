@@ -12,6 +12,7 @@ import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import {
@@ -43,7 +44,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   const reloadNeuron = jest.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseSnsDissolveDelayModal,
       props: { neuron, token: ICPToken, reloadNeuron },
