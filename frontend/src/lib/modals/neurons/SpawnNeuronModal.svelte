@@ -46,9 +46,11 @@
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: WizardSteps = controlledByHardwareWallet
-    ? hardwareWalletSteps
-    : nnsDappAccountSteps;
+
+  let steps: WizardSteps;
+  $: steps = controlledByHardwareWallet
+          ? hardwareWalletSteps
+          : nnsDappAccountSteps;
 
   let currentStep: WizardStep;
 

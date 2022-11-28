@@ -3,9 +3,9 @@
  */
 
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-import {ICPToken, TokenAmount} from "@dfinity/nns";
-import {render, waitFor} from "@testing-library/svelte";
-import {mockNeuron} from "../../../mocks/neurons.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
@@ -30,7 +30,7 @@ describe("ConfirmDisburseNeuron", () => {
     const { getByTestId, getByText } = render(ConfirmDisburseNeuronTest, {
       props: {
         neuron: mockNeuron,
-        props
+        props,
       },
     });
 
@@ -42,7 +42,7 @@ describe("ConfirmDisburseNeuron", () => {
     const { getByText } = render(ConfirmDisburseNeuronTest, {
       props: {
         neuron: mockNeuron,
-        props
+        props,
       },
     });
 
@@ -64,6 +64,8 @@ describe("ConfirmDisburseNeuron", () => {
       },
     });
 
-    expect(getByTestId("disburse-neuron-button").getAttribute("disabled")).not.toBeNull();
+    expect(
+      getByTestId("disburse-neuron-button").getAttribute("disabled")
+    ).not.toBeNull();
   });
 });
