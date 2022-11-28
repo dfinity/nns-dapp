@@ -49,8 +49,8 @@
 
   let steps: WizardSteps;
   $: steps = controlledByHardwareWallet
-          ? hardwareWalletSteps
-          : nnsDappAccountSteps;
+    ? hardwareWalletSteps
+    : nnsDappAccountSteps;
 
   let currentStep: WizardStep;
 
