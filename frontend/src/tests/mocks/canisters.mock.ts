@@ -56,4 +56,6 @@ export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
   info: mockCanister,
   details: mockCanisterDetails,
   controller: true,
+  modal: undefined,
+  selectedController: undefined
 });
