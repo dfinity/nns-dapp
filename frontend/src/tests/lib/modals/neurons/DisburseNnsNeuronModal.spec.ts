@@ -9,6 +9,7 @@ import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
@@ -28,7 +29,7 @@ jest.mock("$lib/services/neurons.services", () => {
 describe("DisburseNnsNeuronModal", () => {
   const renderDisburseModal = async (
     neuron: NeuronInfo
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseNnsNeuronModal,
       props: { neuron },

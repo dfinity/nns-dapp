@@ -6,18 +6,16 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getContext } from "svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let accountName: string;
   $: accountName = getAccountName({

@@ -1,9 +1,8 @@
 import type { AddAccountStore } from "$lib/types/add-account.context";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
-import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neurons.context";
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
-import type { SelectedAccountStore } from "$lib/types/selected-account.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
+import type { WalletStore } from "$lib/types/wallet.context";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import { derived, readable, type Readable, type Writable } from "svelte/store";
 import { accountsStore } from "./accounts.store";
@@ -25,19 +24,15 @@ let addAccountStore: Readable<AddAccountStore>;
 export const debugAddAccountStore = (store: Writable<AddAccountStore>) =>
   (addAccountStore = createDerivedStore(store));
 
-let hardwareWalletNeuronsStore: Readable<HardwareWalletNeuronsStore>;
-export const debugHardwareWalletNeuronsStore = (
-  store: Writable<HardwareWalletNeuronsStore>
-) => (hardwareWalletNeuronsStore = createDerivedStore(store));
-
 // Context stores might not be initialized when debugger is called.
 // Therefore, we need to initialize them here.
-let selectedAccountStore: Readable<SelectedAccountStore> = readable({
+let walletStore: Readable<WalletStore> = readable({
   account: undefined,
+  modal: undefined,
+  neurons: [],
 });
-export const debugSelectedAccountStore = (
-  store: Writable<SelectedAccountStore>
-) => (selectedAccountStore = createDerivedStore(store));
+export const debugSelectedAccountStore = (store: Writable<WalletStore>) =>
+  (walletStore = createDerivedStore(store));
 let selectedProposalStore: Readable<SelectedProposalStore> = readable({
   proposalId: undefined,
   proposal: undefined,
@@ -79,8 +74,7 @@ export const initDebugStore = () =>
       proposalPayloadsStore,
       toastsStore,
       addAccountStore,
-      hardwareWalletNeuronsStore,
-      selectedAccountStore,
+      walletStore,
       selectedCanisterStore,
       selectedProposalStore,
       voteRegistrationStore,
@@ -98,7 +92,6 @@ export const initDebugStore = () =>
       $proposalPayloadsStore,
       $toastsStore,
       $addAccountStore,
-      $hardwareWalletNeuronsStore,
       $selectedAccountStore,
       $selectedCanisterStore,
       $selectedProposalStore,
@@ -116,7 +109,6 @@ export const initDebugStore = () =>
       proposalPayloads: $proposalPayloadsStore,
       toasts: $toastsStore,
       addAccount: $addAccountStore,
-      hardwareWalletNeurons: $hardwareWalletNeuronsStore,
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
       selectedProposal: $selectedProposalStore,
