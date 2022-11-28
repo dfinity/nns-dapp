@@ -28,7 +28,7 @@ export const renderContextWrapper = <T>({
   contextValue: T;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;
-}): RenderResult =>
+}): RenderResult<SvelteComponent> =>
   render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -44,7 +44,7 @@ export const renderSelectedAccountContext = ({
 }: {
   Component: typeof SvelteComponent;
   account: Account | undefined;
-}): RenderResult =>
+}): RenderResult<SvelteComponent> =>
   renderContextWrapper({
     contextKey: WALLET_CONTEXT_KEY,
     contextValue: {

@@ -6,6 +6,7 @@ import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -24,7 +25,9 @@ describe("StakeMaturityModal", () => {
       maturityE8sEquivalent: BigInt(1_000_000),
     },
   };
-  const renderStakeMaturityModal = async (): Promise<RenderResult> => {
+  const renderStakeMaturityModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > => {
     return renderModal({
       component: StakeMaturityModal,
       props: {
@@ -45,7 +48,9 @@ describe("StakeMaturityModal", () => {
     expect(queryByText(formattedMaturity(neuron))).toBeInTheDocument();
   });
 
-  const selectPercentage = async (renderResult: RenderResult) => {
+  const selectPercentage = async (
+    renderResult: RenderResult<SvelteComponent>
+  ) => {
     const { queryByTestId } = renderResult;
     const rangeElement = queryByTestId("input-range");
     expect(rangeElement).toBeInTheDocument();
@@ -60,7 +65,8 @@ describe("StakeMaturityModal", () => {
   };
 
   it("should call stakeMaturity service on confirm click", async () => {
-    const renderResult: RenderResult = await renderStakeMaturityModal();
+    const renderResult: RenderResult<SvelteComponent> =
+      await renderStakeMaturityModal();
 
     await selectPercentage(renderResult);
 
@@ -78,7 +84,8 @@ describe("StakeMaturityModal", () => {
   });
 
   it("should go back in modal on cancel click", async () => {
-    const renderResult: RenderResult = await renderStakeMaturityModal();
+    const renderResult: RenderResult<SvelteComponent> =
+      await renderStakeMaturityModal();
 
     await selectPercentage(renderResult);
 
