@@ -1,10 +1,18 @@
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { loadSnsSwapCommitmentsProxy } from "$lib/proxy/sns.services.proxy";
+import { syncTime } from "$lib/services/agent.services";
 import { loadMainTransactionFee } from "$lib/services/transaction-fees.services";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 
-export const initAppPrivateData = (): Promise<
+export const initAppPrivate = async () => {
+  // See initAppPublic for comments
+  await syncTime();
+
+  await initAppPrivateData();
+};
+
+const initAppPrivateData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [

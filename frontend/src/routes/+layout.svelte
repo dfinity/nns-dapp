@@ -3,7 +3,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initWorker } from "$lib/services/worker.services";
-  import { initAppDataProxy } from "$lib/proxy/app.services.proxy";
+  import { initAppPrivateProxy } from "$lib/proxy/app.services.proxy";
   import { toastsReset } from "$lib/stores/toasts.store";
 
   let ready = false;
@@ -32,7 +32,7 @@
     toastsReset();
 
     // Load app global stores data
-    await initAppDataProxy();
+    await initAppPrivateProxy();
   };
 
   onMount(async () => {
