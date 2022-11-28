@@ -1,7 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import RemoveCanisterControllerButton from "$lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
@@ -11,21 +10,17 @@
     mockToggleCanisterModal,
   } from "../../../mocks/canisters.mock";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
-
-  export let reloadDetails: (canisterId: Principal) => Promise<void>;
-  export let controller: string;
-  export let spy: ((value: string | undefined) => void) | undefined = undefined;
+  import DetachActionButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: mockCanisterDetailsStore,
-    reloadDetails,
+    reloadDetails: async () => {
+      // Do nnothing
+    },
     toggleModal: mockToggleCanisterModal,
   });
-
-  $: $mockCanisterDetailsStore,
-    (() => spy?.($mockCanisterDetailsStore.selectedController))();
 </script>
 
-<RemoveCanisterControllerButton {controller} />
+<DetachActionButton />
 
 <CanisterDetailModals />
