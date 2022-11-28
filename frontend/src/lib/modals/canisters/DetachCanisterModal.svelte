@@ -5,7 +5,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { createEventDispatcher } from "svelte";
 

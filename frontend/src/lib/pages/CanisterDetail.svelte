@@ -68,6 +68,7 @@
     details: undefined,
     controller: undefined,
     modal: undefined,
+    selectedController: undefined
   });
 
   debugSelectedCanisterStore(selectedCanisterStore);
@@ -155,6 +156,7 @@
           details: sameCanister ? details : undefined,
           controller: sameCanister ? controller : undefined,
           modal: undefined,
+          selectedController: undefined
         }));
 
         if (selectedCanister !== undefined) {
