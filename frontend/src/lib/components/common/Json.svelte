@@ -170,16 +170,22 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
   }
   .key {
     display: inline-block;
     position: relative;
 
     color: var(--label-color);
+
+    margin-right: var(--padding-0_5x);
   }
-  .key-value {
-    // word-wrap long values in it's column
-    display: inline-flex;
+  .value {
+    // Values can be strings of JSON and long. We want to break the value, so that the keys stay on the same line.
+    word-break: break-all;
   }
   .arrow {
     @include interaction.tappable;
@@ -209,9 +215,11 @@
       position: absolute;
       left: 0;
       top: 0;
+      // Move left to compensate for the padding of the ul
+      // Move down to componsate for the gap between li
       transform: translate(
         calc(-1 * var(--padding-1_5x)),
-        calc(0.3 * var(--padding))
+        calc(0.8 * var(--padding))
       );
       font-size: var(--padding);
     }
@@ -243,7 +251,6 @@
     color: var(--json-principal-color);
   }
   .value.hash {
-    word-break: break-all;
     color: var(--json-hash-color);
   }
   .value.bigint {

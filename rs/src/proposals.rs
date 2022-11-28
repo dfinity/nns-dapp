@@ -20,7 +20,7 @@ use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
 use idl2json::candid_types::internal_candid_type_to_idl_type;
-use idl2json::idl2json_with_weak_names;
+use idl2json::{BytesFormat, idl2json_with_weak_names, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
@@ -75,10 +75,13 @@ struct InternetIdentityInit {
     pub canister_creation_cycles_cost: Option<u64>,
 }
 
-fn decode_arg(arg: &[u8], canister_id: CanisterId) -> String {
+fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
+    if arg.is_empty() {
+        return "[]".to_owned();
+    }
     // If canister id is II
     // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
-    let idl_type = if canister_id == IDENTITY_CANISTER_ID {
+    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
         let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
         IDLType::OptT(Box::new(idl_type))
     } else {
@@ -87,7 +90,8 @@ fn decode_arg(arg: &[u8], canister_id: CanisterId) -> String {
     };
 
     let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
-    let json_value = idl2json_with_weak_names(&idl_value, &idl_type);
+    let options = Idl2JsonOptions{ bytes_as: Some(BytesFormat::Hex), long_bytes_as: None };
+    let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
     serde_json::to_string(&json_value).expect("Failed to serialize JSON")
 }
 
@@ -199,7 +203,7 @@ mod def {
     pub struct AddNnsCanisterProposalTrimmed {
         pub name: String,
         pub wasm_module_hash: String,
-        pub arg: Vec<u8>,
+        pub arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -213,11 +217,12 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
+            let candid_arg = decode_arg(&payload.arg, None);
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
                 wasm_module_hash,
-                arg: payload.arg,
+                arg: candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
@@ -237,8 +242,7 @@ mod def {
         pub mode: CanisterInstallMode,
         pub canister_id: CanisterId,
         pub wasm_module_hash: String,
-        pub arg: String,
-        pub candid_arg: Json,
+        pub arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -251,15 +255,14 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, payload.canister_id);
+            let candid_arg = decode_arg(&payload.arg, Some(payload.canister_id));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
                 mode: payload.mode,
                 canister_id: payload.canister_id,
                 wasm_module_hash,
-                arg: hex::encode(&payload.arg),
-                candid_arg,
+                arg: candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
