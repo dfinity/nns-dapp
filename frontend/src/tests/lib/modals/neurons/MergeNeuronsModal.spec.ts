@@ -10,6 +10,7 @@ import type { Account } from "$lib/types/account";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -54,7 +55,7 @@ describe("MergeNeuronsModal", () => {
   const renderMergeModal = async (
     neurons: NeuronInfo[],
     hardwareWalletAccounts: Account[] = []
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     accountsStore.set({
       main: mockMainAccount,
       hardwareWallets: hardwareWalletAccounts,

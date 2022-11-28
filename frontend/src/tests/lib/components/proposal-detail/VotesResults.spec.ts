@@ -7,10 +7,11 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatNumber } from "$lib/utils/format.utils";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("VotesResults", () => {
-  let renderResult: RenderResult;
+  let renderResult: RenderResult<SvelteComponent>;
   let yes: number, no: number;
   beforeEach(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });

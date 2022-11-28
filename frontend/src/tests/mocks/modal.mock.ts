@@ -32,7 +32,7 @@ export const renderModal = async ({
   component: typeof SvelteComponent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: Record<string, any>;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
   });
@@ -51,7 +51,7 @@ export const renderModalContextWrapper = async <T>({
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -72,7 +72,7 @@ export const renderModalSelectedAccountContextWrapper = ({
 }: {
   Component: typeof SvelteComponent;
   account: Account | undefined;
-}): Promise<RenderResult> =>
+}): Promise<RenderResult<SvelteComponent>> =>
   renderModalContextWrapper({
     contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
     contextValue: {

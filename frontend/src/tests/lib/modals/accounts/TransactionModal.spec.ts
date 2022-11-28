@@ -13,6 +13,7 @@ import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -80,7 +81,7 @@ describe("TransactionModal", () => {
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
-  }): Promise<RenderResult> => {
+  }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,

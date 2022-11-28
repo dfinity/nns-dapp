@@ -5,6 +5,7 @@
 import AddSnsHotkeyModal from "$lib/modals/sns/AddSnsHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/sns-neurons.services";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
@@ -18,7 +19,9 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 describe("AddSnsHotkeyModal", () => {
   const reload = jest.fn();
 
-  const renderAddSnsHotkeyModal = async (): Promise<RenderResult> =>
+  const renderAddSnsHotkeyModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > =>
     renderSelectedSnsNeuronContext({
       Component: AddSnsHotkeyModal,
       reload,
