@@ -22,6 +22,15 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
+  import { Island } from "@dfinity/gix-components";
+  import { writable } from "svelte/store";
+  import type {
+    NnsNeuronContext,
+    NnsNeuronStore,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
+  import { setContext } from "svelte";
+  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -96,28 +105,49 @@
   };
 
   $: (async () => await redirectIfSpawning(neuron))();
+
+  // Context
+  const selectedNeuronStore = writable<NnsNeuronStore>({
+    modal: undefined,
+    neuron,
+  });
+
+  $: neuron,
+    (() =>
+      selectedNeuronStore.update((data) => ({
+        ...data,
+        neuron,
+      })))();
+
+  setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {
+    store: selectedNeuronStore,
+  });
 </script>
 
-<main class="legacy">
-  <section data-tid="neuron-detail">
-    {#if neuron && !inVotingProcess}
-      <NnsNeuronMetaInfoCard {neuron} />
-      <NnsNeuronInfoStake {neuron} />
-      <NeuronMaturityCard {neuron} />
-      <NeuronJoinFundCard {neuron} />
-      <NeuronFollowingCard {neuron} />
+<Island>
+  <main class="legacy">
+    <section data-tid="neuron-detail">
+      {#if neuron && !inVotingProcess}
+        <NnsNeuronMetaInfoCard {neuron} />
+        <NnsNeuronInfoStake {neuron} />
+        <NeuronMaturityCard {neuron} />
+        <NeuronJoinFundCard {neuron} />
+        <NeuronFollowingCard {neuron} />
 
-      {#if IS_TESTNET}
-        <NeuronProposalsCard {neuron} />
+        {#if IS_TESTNET}
+          <NeuronProposalsCard {neuron} />
+        {/if}
+
+        <NeuronHotkeysCard {neuron} />
+        <NeuronVotingHistoryCard {neuron} />
+      {:else}
+        <SkeletonCard size="large" cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
       {/if}
+    </section>
+  </main>
+</Island>
 
-      <NeuronHotkeysCard {neuron} />
-      <NeuronVotingHistoryCard {neuron} />
-    {:else}
-      <SkeletonCard size="large" cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-    {/if}
-  </section>
-</main>
+<NnsNeuronModals />

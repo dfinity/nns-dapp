@@ -1,19 +1,20 @@
 <script lang="ts">
-  import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
 
-  export let neuron: NeuronInfo;
-
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const context: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+  const { store }: NnsNeuronContext = context;
 </script>
 
-<button class="primary" on:click={openModal}
+<button
+  class="primary"
+  on:click={() =>
+    store.update((data) => ({ ...data, modal: "increase-dissolve-delay" }))}
   >{$i18n.neuron_detail.increase_dissolve_delay}</button
 >
-
-{#if showModal}
-  <IncreaseDissolveDelayModal {neuron} on:nnsClose={closeModal} />
-{/if}

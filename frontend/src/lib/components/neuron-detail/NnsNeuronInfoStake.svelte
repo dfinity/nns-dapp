@@ -39,7 +39,7 @@
 
 <div class="buttons">
   {#if isControllable}
-    <IncreaseDissolveDelayButton {neuron} />
+    <IncreaseDissolveDelayButton />
   {/if}
 
   {#if isControllable || hotkeyControlled}
