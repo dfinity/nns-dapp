@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AddSnsHotkeyModal from "$lib/modals/sns/AddSnsHotkeyModal.svelte";
+  import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
 
   import { i18n } from "$lib/stores/i18n";
 

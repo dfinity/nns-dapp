@@ -2,7 +2,7 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import StakeSnsNeuronModal from "$lib/modals/sns/StakeSnsNeuronModal.svelte";
+  import StakeSnsNeuronModal from "$lib/modals/sns/neurons/StakeSnsNeuronModal.svelte";
   import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
