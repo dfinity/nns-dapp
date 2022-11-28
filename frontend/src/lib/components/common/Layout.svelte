@@ -4,7 +4,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { Layout, HeaderTitle, Content } from "@dfinity/gix-components";
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import { triggerDebugReport } from "$lib/services/debug.services";
+  import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   export let back: (() => Promise<void>) | undefined = undefined;
 
