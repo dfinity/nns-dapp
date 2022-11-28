@@ -6,7 +6,6 @@
   import type { Proposal } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
 
   export let proposal: Proposal | undefined;
 
@@ -29,8 +28,6 @@
       <span class="value" slot="value">
         {#if typeof value === "object"}
           <Json json={value} />
-        {:else if typeof value === "undefined"}
-          {$i18n.core.null}
         {:else}
           {value}
         {/if}

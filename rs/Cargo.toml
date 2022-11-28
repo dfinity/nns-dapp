@@ -15,7 +15,7 @@ serde = "1.0.136"
 serde_bytes = "0.11.5"
 serde_cbor = "0.11.2"
 serde_json = "1.0.81"
-sha2 = "0.9.1"
+sha2 = "0.10.6"
 lzma-rs = "0.2.0"
 tar = "0.4.37"
 hex = "0.4.3"
@@ -49,6 +49,7 @@ ledger-canister = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a0
 on_wire = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 # Registry canister deploy as of 2022-11-23, ahead of Blessed Replica Version
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "0a729806f2fbc717f2183b07efac19f24f32e717" }
+idl2json = { git = "https://github.com/dfinity/idl2json", rev="c983dea6fc5666912218e7babf2b6b2f8b5648a4" }
 
 [dev-dependencies]
 maplit = "1.0.2"
