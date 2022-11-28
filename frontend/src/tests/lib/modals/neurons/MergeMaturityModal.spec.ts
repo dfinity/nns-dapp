@@ -6,6 +6,7 @@ import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
 import { mergeMaturity } from "$lib/services/neurons.services";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -24,7 +25,9 @@ describe("MergeMaturityModal", () => {
       maturityE8sEquivalent: BigInt(1_000_000),
     },
   };
-  const renderMergeMaturityModal = async (): Promise<RenderResult> => {
+  const renderMergeMaturityModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > => {
     return renderModal({
       component: MergeMaturityModal,
       props: {
