@@ -6,6 +6,9 @@ import SplitNeuronButton from "$lib/components/neuron-detail/actions/SplitNeuron
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextTest from "../NeuronContextTest.svelte";
+import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
+import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("SplitNeuronButton", () => {
   afterEach(() => {
@@ -13,9 +16,10 @@ describe("SplitNeuronButton", () => {
   });
 
   it("renders split neuron message", () => {
-    const { getByText } = render(SplitNeuronButton, {
+    const { getByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: SplitNeuronButton,
       },
     });
 
@@ -23,7 +27,7 @@ describe("SplitNeuronButton", () => {
   });
 
   it("renders disabled when stake is not enough", () => {
-    const { container } = render(SplitNeuronButton, {
+    const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -32,6 +36,7 @@ describe("SplitNeuronButton", () => {
             cachedNeuronStake: BigInt(10),
           },
         },
+        testComponent: SplitNeuronButton,
       },
     });
 
@@ -42,7 +47,7 @@ describe("SplitNeuronButton", () => {
   });
 
   it("opens Split Neuron Modal", async () => {
-    const { container, queryByTestId } = render(SplitNeuronButton, {
+    const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -51,6 +56,7 @@ describe("SplitNeuronButton", () => {
             cachedNeuronStake: BigInt(1_000_000_000),
           },
         },
+        testComponent: SplitNeuronButton,
       },
     });
 
