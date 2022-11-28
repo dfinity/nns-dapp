@@ -8,7 +8,7 @@ import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import {mockNeuron} from "../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
