@@ -1,5 +1,6 @@
 <script lang="ts">
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
+  import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
@@ -20,6 +21,12 @@
   const close = () => store.update((data) => ({ ...data, modal: undefined }));
 </script>
 
-{#if modal === "increase-dissolve-delay" && neuron !== undefined}
-  <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
+{#if neuron !== undefined}
+  {#if modal === "increase-dissolve-delay"}
+    <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "split-neuron"}
+    <SplitNeuronModal {neuron} on:nnsClose={close} />
+  {/if}
 {/if}
