@@ -17,7 +17,8 @@
   import { writable } from "svelte/store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
-    type CanisterDetailsContext, type CanisterDetailsModal,
+    type CanisterDetailsContext,
+    type CanisterDetailsModal,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
@@ -66,7 +67,7 @@
     info: undefined,
     details: undefined,
     controller: undefined,
-    modal: undefined
+    modal: undefined,
   });
 
   debugSelectedCanisterStore(selectedCanisterStore);
@@ -111,12 +112,12 @@
   };
 
   const toggleModal = (modal: CanisterDetailsModal | undefined) =>
-          selectedCanisterStore.update((data) => ({ ...data, modal }));
+    selectedCanisterStore.update((data) => ({ ...data, modal }));
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: selectedCanisterStore,
     reloadDetails,
-    toggleModal
+    toggleModal,
   });
 
   export let canisterId: string | undefined | null;
@@ -153,7 +154,7 @@
           info: selectedCanister,
           details: sameCanister ? details : undefined,
           controller: sameCanister ? controller : undefined,
-          modal: undefined
+          modal: undefined,
         }));
 
         if (selectedCanister !== undefined) {
@@ -190,7 +191,7 @@
         <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
         <CanisterCardSubTitle canister={canisterInfo} />
         <div class="actions">
-          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+          <DetachCanisterButton />
         </div>
       {:else}
         <div class="loader-title">
