@@ -4,7 +4,6 @@
 
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockCanister } from "../../../mocks/canisters.mock";
 import DetachActionButtonTest from "./DetachActionButtonTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {

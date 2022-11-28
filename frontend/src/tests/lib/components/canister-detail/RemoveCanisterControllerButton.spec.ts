@@ -7,6 +7,7 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
+import {mockCanisterDetailsStore} from "../../../mocks/canisters.mock";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
@@ -86,5 +87,35 @@ describe("RemoveCanisterControllerButton", () => {
     );
     expect(removeController).toBeCalled();
     expect(reloadDetailsMock).toBeCalled();
+  });
+
+
+
+  it("clear selected controller after remove",  async () => {
+    let selectedController = "value";
+    const spy = (c) => selectedController = c;
+
+    const { queryByTestId } = render(RemoveCanisterControllerButton, {
+      props: {
+        ...props,
+        spy
+      },
+    });
+
+    await clickByTestId(queryByTestId, "remove-canister-controller-button");
+
+    expect(
+        queryByTestId("remove-canister-controller-confirmation-modal")
+    ).toBeInTheDocument();
+
+    await clickByTestId(queryByTestId, "confirm-yes");
+
+    await waitFor(() =>
+        expect(
+            queryByTestId("remove-canister-controller-confirmation-modal")
+        ).not.toBeInTheDocument()
+    );
+
+    expect(selectedController).toBeUndefined();
   });
 });

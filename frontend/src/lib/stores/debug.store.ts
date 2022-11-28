@@ -45,7 +45,7 @@ let selectedCanisterStore: Readable<SelectCanisterDetailsStore> = readable({
   details: undefined,
   controller: undefined,
   modal: undefined,
-  selectedController: undefined
+  selectedController: undefined,
 });
 export const debugSelectedCanisterStore = (
   store: Writable<SelectCanisterDetailsStore>
