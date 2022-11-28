@@ -8,6 +8,7 @@
   import { getContext } from "svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import DetachCanisterModal from "$lib/modals/canisters/DetachCanisterModal.svelte";
+  import AddControllerModal from "$lib/modals/canisters/AddControllerModal.svelte";
 
   const context: CanisterDetailsContext = getContext<CanisterDetailsContext>(
     CANISTER_DETAILS_CONTEXT_KEY
@@ -30,5 +31,9 @@
 
   {#if modal === "detach"}
     <DetachCanisterModal {canisterId} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "add-controller"}
+    <AddControllerModal on:nnsClose={close} />
   {/if}
 {/if}
