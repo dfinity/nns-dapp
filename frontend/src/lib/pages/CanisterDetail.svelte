@@ -211,8 +211,8 @@
           <p class="error-message">{translate({ labelKey: errorKey })}</p>
         </CardInfo>
       {:else}
-        <SkeletonCard />
-        <SkeletonCard />
+        <SkeletonCard cardType="info" />
+        <SkeletonCard cardType="info" />
       {/if}
     </section>
   </main>
