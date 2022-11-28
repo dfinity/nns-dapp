@@ -7,17 +7,16 @@
   import { SkeletonText } from "@dfinity/gix-components";
   import type { Proposal } from "@dfinity/nns";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
-  import { expandObject } from "$lib/utils/utils";
+  import { expandObject, isNullish } from "$lib/utils/utils";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
   let payload: object | undefined | null;
   let expandedPayload: object | undefined | null;
-  $: expandedPayload =
-    payload === undefined || payload === null
-      ? payload
-      : expandObject(payload as Record<string, unknown>);
+  $: expandedPayload = isNullish(payload)
+    ? payload
+    : expandObject(payload as Record<string, unknown>);
 
   $: $proposalPayloadsStore,
     (payload =
