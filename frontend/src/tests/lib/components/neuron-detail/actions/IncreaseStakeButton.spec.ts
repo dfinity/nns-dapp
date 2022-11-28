@@ -26,7 +26,7 @@ describe("IncreaseStakeButton", () => {
   });
 
   it("opens Increase Neuron Stake Modal", async () => {
-    const { container, getByTestId } = render(NeuronContextTest, {
+    const { container } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
         testComponent: IncreaseStakeButton,
