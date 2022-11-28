@@ -9,7 +9,7 @@
   import {
     formatVotingPower,
     neuronStake,
-    votingPower,
+    neuronVotingPower,
   } from "$lib/utils/neuron.utils";
   import { stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
@@ -63,10 +63,9 @@
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
       {formatVotingPower(
-        votingPower({
-          stake: neuronICP,
-          dissolveDelayInSeconds: delayInSeconds,
-          ageSeconds: 0,
+        neuronVotingPower({
+          neuron,
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
         })
       )}
     </p>
