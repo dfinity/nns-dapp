@@ -323,6 +323,34 @@ export const snsVotingPower = ({
   test?: boolean;
 }): number => {
   const {
+    max_dissolve_delay_seconds,
+    max_neuron_age_for_age_bonus,
+    max_dissolve_delay_bonus_percentage,
+    max_age_bonus_percentage,
+    neuron_minimum_dissolve_delay_to_vote_seconds,
+  } = snsParameters;
+  const maxDissolveDelaySeconds = Number(
+    fromDefinedNullable(max_dissolve_delay_seconds)
+  );
+  const maxNeuronAgeForAgeBonus = Number(
+    fromDefinedNullable(max_neuron_age_for_age_bonus)
+  );
+  const maxDissolveDelayBonusPercentage = Number(
+    fromDefinedNullable(max_dissolve_delay_bonus_percentage)
+  );
+  const maxAgeBonusPercentage = Number(
+    fromDefinedNullable(max_age_bonus_percentage)
+  );
+  const neuronMinimumDissolveDelayToVoteSeconds = Number(
+    fromDefinedNullable(neuron_minimum_dissolve_delay_to_vote_seconds)
+  );
+
+  // no voting power when less than minimum
+  if (dissolveDelayInSeconds < neuronMinimumDissolveDelayToVoteSeconds) {
+    return 0;
+  }
+
+  const {
     voting_power_percentage_multiplier,
     neuron_fees_e8s,
     dissolve_state,
@@ -352,24 +380,6 @@ export const snsVotingPower = ({
     }
   }
 
-  const {
-    max_dissolve_delay_seconds,
-    max_neuron_age_for_age_bonus,
-    max_dissolve_delay_bonus_percentage,
-    max_age_bonus_percentage,
-  } = snsParameters;
-  const maxDissolveDelaySeconds = Number(
-    fromDefinedNullable(max_dissolve_delay_seconds)
-  );
-  const maxNeuronAgeForAgeBonus = Number(
-    fromDefinedNullable(max_neuron_age_for_age_bonus)
-  );
-  const maxDissolveDelayBonusPercentage = Number(
-    fromDefinedNullable(max_dissolve_delay_bonus_percentage)
-  );
-  const maxAgeBonusPercentage = Number(
-    fromDefinedNullable(max_age_bonus_percentage)
-  );
   const dissolveDelay = Math.min(
     dissolveDelayInSeconds,
     maxDissolveDelaySeconds
