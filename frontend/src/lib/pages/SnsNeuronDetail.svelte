@@ -33,7 +33,7 @@
     modal: undefined,
   });
 
-  const toggleModal = (modal: SnsNeuronModal) =>
+  const toggleModal = (modal: SnsNeuronModal | undefined) =>
     selectedSnsNeuronStore.update((data) => ({ ...data, modal }));
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {

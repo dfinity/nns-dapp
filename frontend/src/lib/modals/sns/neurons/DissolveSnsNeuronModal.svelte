@@ -10,21 +10,12 @@
   } from "$lib/services/sns-neurons.services";
   import type { Principal } from "@dfinity/principal";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import { isNullish, keyOf } from "$lib/utils/utils";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import { keyOf } from "$lib/utils/utils";
   import { createEventDispatcher } from "svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
+  export let neuronId: SnsNeuronId;
+  export let neuronState: NeuronState;
   export let reloadNeuron: () => Promise<void>;
-
-  let neuronId: SnsNeuronId | undefined;
-  $: neuronId =
-    neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
-
-  let neuronState: NeuronState | undefined;
-  $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
   let isDissolving: boolean;
   let descriptionKey: string;

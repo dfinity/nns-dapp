@@ -18,7 +18,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import { NeuronState } from "@dfinity/nns";
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";

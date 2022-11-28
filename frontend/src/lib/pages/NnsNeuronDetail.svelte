@@ -122,7 +122,7 @@
         neuron,
       })))();
 
-  const toggleModal = (modal: NnsNeuronModal) =>
+  const toggleModal = (modal: NnsNeuronModal | undefined) =>
     selectedNeuronStore.update((data) => ({ ...data, modal }));
 
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {

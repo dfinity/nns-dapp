@@ -24,7 +24,7 @@
   );
   const { store }: NnsNeuronContext = context;
 
-  let modal: NnsNeuronModal;
+  let modal: NnsNeuronModal | undefined;
   let neuron: NeuronInfo | undefined;
   $: ({ neuron, modal } = $store);
 

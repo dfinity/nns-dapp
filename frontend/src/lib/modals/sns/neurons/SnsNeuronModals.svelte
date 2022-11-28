@@ -7,7 +7,7 @@
     type SnsNeuronModal,
   } from "$lib/types/sns-neuron-detail.context";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
@@ -15,17 +15,28 @@
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
   import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import type { Principal } from "@dfinity/principal";
+  import type { SnsNeuronId } from "@dfinity/sns";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import type { NeuronState } from "@dfinity/nns";
+  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
   const { store, reload: reloadNeuron }: SelectedSnsNeuronContext = context;
 
-  let modal: SnsNeuronModal;
+  let modal: SnsNeuronModal | undefined;
   let neuron: SnsNeuron | undefined | null;
   $: ({ neuron, modal } = $store);
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = $store.selected?.rootCanisterId;
+
+  let neuronId: SnsNeuronId | undefined;
+  $: neuronId =
+    neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
+
+  let neuronState: NeuronState | undefined;
+  $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
   const close = () => store.update((data) => ({ ...data, modal: undefined }));
 
@@ -47,8 +58,13 @@
     <DisburseSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
   {/if}
 
-  {#if modal === "dissolve"}
-    <DissolveSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
+  {#if modal === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}
+    <DissolveSnsNeuronModal
+      {neuronId}
+      {neuronState}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
   {/if}
 
   {#if modal === "follow" && nonNullish(rootCanisterId)}
