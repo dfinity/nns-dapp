@@ -2,9 +2,13 @@
   import type { Topic } from "@dfinity/nns";
   import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
-  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import { Tag } from "@dfinity/gix-components";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
 
   export let followee: FolloweesNeuron;
 
@@ -12,16 +16,24 @@
   const topicTitle = (topic: Topic) =>
     $i18n.follow_neurons[`topic_${topic}_title`];
 
-  let modalOpen = false;
   let id: string;
   $: id = `followee-${followee.neuronId}`;
   let name: string;
   $: name =
     $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
     followee.neuronId.toString();
+
+  const { toggleModal, store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+
+  const openVotingHistory = () => {
+    store.update((data) => ({ ...data, selectedFollowee: followee }));
+    toggleModal("voting-history");
+  };
 </script>
 
-<button {id} class="text" on:click|stopPropagation={() => (modalOpen = true)}>
+<button {id} class="text" on:click|stopPropagation={openVotingHistory}>
   {name}
 </button>
 
@@ -30,13 +42,6 @@
     <Tag tagName="li">{topicTitle(topic)}</Tag>
   {/each}
 </ul>
-
-{#if modalOpen}
-  <VotingHistoryModal
-    neuronId={followee.neuronId}
-    on:nnsClose={() => (modalOpen = false)}
-  />
-{/if}
 
 <style lang="scss">
   button {

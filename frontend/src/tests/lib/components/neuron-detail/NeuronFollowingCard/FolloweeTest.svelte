@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, SvelteComponent } from "svelte";
+  import { setContext } from "svelte";
   import { writable } from "svelte/store";
   import type {
     NnsNeuronContext,
@@ -9,16 +9,17 @@
     NNS_NEURON_CONTEXT_KEY,
     NnsNeuronModal,
   } from "$lib/types/nns-neuron-detail.context";
-  import type { NeuronInfo } from "@dfinity/nns";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import { mockNeuron } from "../../../../mocks/neurons.mock";
 
-  export let testComponent: typeof SvelteComponent;
-  export let neuron: NeuronInfo | undefined;
+  export let followee: FolloweesNeuron;
 
   export const neuronStore = writable<NnsNeuronStore>({
     modal: undefined,
-    neuron,
-    selectedFollowee: undefined,
+    neuron: mockNeuron,
+    selectedFollowee: followee,
   });
 
   const toggleModal = (modal: NnsNeuronModal) =>
@@ -30,6 +31,6 @@
   });
 </script>
 
-<svelte:component this={testComponent} {neuron} />
+<Followee {followee} />
 
 <NnsNeuronModals />

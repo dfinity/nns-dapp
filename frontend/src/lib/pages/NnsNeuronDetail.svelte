@@ -113,6 +113,7 @@
   const selectedNeuronStore = writable<NnsNeuronStore>({
     modal: undefined,
     neuron,
+    selectedFollowee: undefined,
   });
 
   $: neuron,
