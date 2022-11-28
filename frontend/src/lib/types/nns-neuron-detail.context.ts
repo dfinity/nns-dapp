@@ -17,7 +17,7 @@ export type NnsNeuronModal =
   | undefined;
 
 export interface NnsNeuronStore {
-  neuron: NeuronInfo;
+  neuron: NeuronInfo | undefined;
   modal: NnsNeuronModal;
 }
 
