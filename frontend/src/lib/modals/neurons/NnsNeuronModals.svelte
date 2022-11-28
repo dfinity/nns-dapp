@@ -15,6 +15,7 @@
   import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
   import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
+  import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -63,5 +64,9 @@
 
   {#if modal === "auto-stake-maturity"}
     <AutoStakeMaturityModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "join-community-fund"}
+    <JoinCommunityFundModal on:nnsClose={close} {neuron} />
   {/if}
 {/if}
