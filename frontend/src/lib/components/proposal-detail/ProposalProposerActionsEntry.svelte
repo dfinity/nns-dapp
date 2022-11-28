@@ -14,18 +14,12 @@
   let actionFields: [string, unknown][] = [];
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
-  // TODO: Remove hack https://dfinity.atlassian.net/browse/GIX-1155
-  let title: string;
-  $: title =
-    actionKey === "OpenSnsTokenSwap"
-      ? $i18n.actions.OpenSnsTokenSwap
-      : actionKey ?? "";
   $: actionFields =
     proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>
 
 <h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">
-  {title}
+  {actionKey ?? ""}
 </h2>
 
 <div class="content-cell-details">

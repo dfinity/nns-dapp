@@ -1,35 +1,29 @@
 <script lang="ts">
   import { setContext, SvelteComponent } from "svelte";
   import {
-    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
-    type HardwareWalletNeuronsContext,
-  } from "$lib/types/hardware-wallet-neurons.context";
-  import { mockHardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
-  import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    SelectedAccountContext,
-    SelectedAccountStore,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    WalletContext,
+    WalletStore,
+  } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
 
   export let testComponent: typeof SvelteComponent;
   export let account: Account | undefined;
 
-  setContext<HardwareWalletNeuronsContext>(
-    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
-    {
-      store: mockHardwareWalletNeuronsStore,
-    }
-  );
-
-  export const selectedAccountStore = writable<SelectedAccountStore>({
+  export const walletStore = writable<WalletStore>({
     account,
+    modal: undefined,
+    neurons: [],
   });
 
-  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
-    store: selectedAccountStore,
+  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
+    store: walletStore,
   });
 </script>
 
 <svelte:component this={testComponent} />
+
+{#if $walletStore.modal !== undefined}
+  <div data-tid="test-modal">{$walletStore.modal}</div>
+{/if}
