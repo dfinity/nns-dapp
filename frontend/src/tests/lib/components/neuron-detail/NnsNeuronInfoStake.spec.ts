@@ -14,7 +14,7 @@ import {
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
-import NeuronContextTest from "./NeuronContextTest.svelte";
+import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronInfoStake", () => {
   const neuron = {
@@ -39,7 +39,7 @@ describe("NnsNeuronInfoStake", () => {
 
   it("renders actions", () => {
     // Each action button is tested separately
-    const { queryByText } = render(NeuronContextTest, {
+    const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
         testComponent: NnsNeuronInfoStake,
