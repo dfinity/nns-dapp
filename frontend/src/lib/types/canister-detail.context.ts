@@ -17,6 +17,7 @@ export interface SelectCanisterDetailsStore {
   details: CanisterDetails | undefined;
   controller: boolean | undefined;
   modal: CanisterDetailsModal | undefined;
+  // TODO: find a better pattern than including the selected controller within the canister context and thus just to open the related modal
   selectedController: string | undefined;
 }
 
