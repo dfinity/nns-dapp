@@ -12,14 +12,23 @@
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "$lib/services/neurons.services";
   import { toastsShow } from "$lib/stores/toasts.store";
-  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import {
+    isEnoughMaturityToSpawn,
+    isNeuronControlledByHardwareWallet,
+  } from "$lib/utils/neuron.utils";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   export let neuron: NeuronInfo;
-  export let controlledByHardwareWallet: boolean;
+
+  let controlledByHardwareWallet: boolean;
+  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $accountsStore,
+  });
 
   const hardwareWalletSteps: WizardSteps = [
     {

@@ -11,6 +11,10 @@
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
   import DissolveActionButtonModal from "$lib/modals/neurons/DissolveActionButtonModal.svelte";
+  import AutoStakeMaturityModal from "$lib/modals/neurons/AutoStakeMaturityModal.svelte";
+  import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
+  import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
+  import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -43,5 +47,21 @@
 
   {#if modal === "dissolve"}
     <DissolveActionButtonModal {neuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "stake-maturity"}
+    <StakeMaturityModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "merge-maturity"}
+    <MergeMaturityModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "spawn"}
+    <SpawnNeuronModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "auto-stake-maturity"}
+    <AutoStakeMaturityModal on:nnsClose={close} {neuron} />
   {/if}
 {/if}

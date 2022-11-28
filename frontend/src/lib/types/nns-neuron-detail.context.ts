@@ -7,6 +7,10 @@ export type NnsNeuronModal =
   | "increase-stake"
   | "disburse"
   | "dissolve"
+  | "auto-stake-maturity"
+  | "stake-maturity"
+  | "merge-maturity"
+  | "spawn"
   | undefined;
 
 export interface NnsNeuronStore {

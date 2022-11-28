@@ -4,6 +4,7 @@
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
+
   import { getContext } from "svelte";
 
   const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
