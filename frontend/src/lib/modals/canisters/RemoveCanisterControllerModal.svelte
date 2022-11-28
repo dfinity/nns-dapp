@@ -93,8 +93,4 @@
   p {
     @include confirmation-modal.text;
   }
-
-  button {
-    display: flex;
-  }
 </style>
