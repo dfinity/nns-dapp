@@ -22,7 +22,6 @@ import {
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
-import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 
 describe("NeuronMaturityCard", () => {
   const maturity = BigInt(E8S_PER_ICP * 2);
@@ -34,7 +33,7 @@ describe("NeuronMaturityCard", () => {
       maturityE8sEquivalent: maturity,
       controller: mockIdentity.getPrincipal().toText(),
     },
-  }
+  };
 
   beforeAll(() =>
     jest
@@ -142,7 +141,7 @@ describe("NeuronMaturityCard", () => {
         ...mockFullNeuron,
         controller: "not-controller",
       },
-    }
+    };
 
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
@@ -214,7 +213,7 @@ describe("NeuronMaturityCard", () => {
         ...neuron.fullNeuron,
         controller: mockHardwareWalletAccount?.principal?.toText(),
       },
-    }
+    };
 
     it("should render merge maturity action for hardware wallet", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
