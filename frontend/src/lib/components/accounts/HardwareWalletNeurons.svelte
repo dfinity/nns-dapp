@@ -5,15 +5,12 @@
   import { getContext } from "svelte";
   import type {
     HardwareWalletNeuronInfo,
-    HardwareWalletNeuronsContext,
-  } from "$lib/types/hardware-wallet-neurons.context";
-  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "$lib/types/hardware-wallet-neurons.context";
+    WalletContext,
+  } from "$lib/types/wallet.context";
+  import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
 
-  const context: HardwareWalletNeuronsContext =
-    getContext<HardwareWalletNeuronsContext>(
-      HARDWARE_WALLET_NEURONS_CONTEXT_KEY
-    );
-  const { store }: HardwareWalletNeuronsContext = context;
+  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
+  const { store }: WalletContext = context;
 
   let neurons: HardwareWalletNeuronInfo[] = [];
 

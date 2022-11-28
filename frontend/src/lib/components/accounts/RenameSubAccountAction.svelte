@@ -7,13 +7,11 @@
   import { busy } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
   $: selectedAccount = $store.account;
 
