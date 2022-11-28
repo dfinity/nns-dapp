@@ -58,8 +58,8 @@
   {#if transactions.length === 0 && !loading}
     {$i18n.wallet.no_transactions}
   {:else if transactions.length === 0 && loading}
-    <SkeletonCard />
-    <SkeletonCard />
+    <SkeletonCard cardType="info" />
+    <SkeletonCard cardType="info" />
   {:else}
     <InfiniteScroll on:nnsIntersect={loadMore} disabled={loading || completed}>
       {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
