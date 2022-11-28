@@ -20,7 +20,7 @@ use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
 use idl2json::candid_types::internal_candid_type_to_idl_type;
-use idl2json::{BytesFormat, idl2json_with_weak_names, Idl2JsonOptions};
+use idl2json::{idl2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
@@ -90,7 +90,10 @@ fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
     };
 
     let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
-    let options = Idl2JsonOptions{ bytes_as: Some(BytesFormat::Hex), long_bytes_as: None };
+    let options = Idl2JsonOptions {
+        bytes_as: Some(BytesFormat::Hex),
+        long_bytes_as: None,
+    };
     let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
     serde_json::to_string(&json_value).expect("Failed to serialize JSON")
 }
