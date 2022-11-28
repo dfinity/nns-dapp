@@ -13,6 +13,7 @@
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
+  import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import type { Principal } from "@dfinity/principal";
 
   const context: SelectedSnsNeuronContext =
@@ -52,5 +53,9 @@
 
   {#if modal === "follow" && nonNullish(rootCanisterId)}
     <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
+  {/if}
+
+  {#if modal === "add-hotkey"}
+    <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 {/if}

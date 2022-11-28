@@ -6,6 +6,7 @@ export type NeuronModal =
   | "disburse"
   | "dissolve"
   | "follow"
+  | "add-hotkey"
   | undefined;
 
 export type NnsNeuronModal = NeuronModal &
@@ -17,7 +18,6 @@ export type NnsNeuronModal = NeuronModal &
     | "merge-maturity"
     | "spawn"
     | "join-community-fund"
-    | "add-hotkey"
   );
 
 export interface NnsNeuronStore {
