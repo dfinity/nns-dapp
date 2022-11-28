@@ -10,9 +10,10 @@
 
   export let neuronState: NeuronState;
 
+  let isDissolving: boolean;
   let buttonKey: string;
   $: {
-    const isDissolving = neuronState === NeuronState.Dissolving;
+    isDissolving = neuronState === NeuronState.Dissolving;
     buttonKey = isDissolving ? "stop_dissolving" : "start_dissolving";
   }
 
@@ -24,4 +25,3 @@
 <button on:click={() => toggleModal("dissolve")} class="secondary"
   >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button
 >
-
