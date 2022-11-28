@@ -15,6 +15,7 @@ import {
 } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -52,41 +53,60 @@ describe("NeuronHotkeysCard", () => {
   );
 
   it("renders hotkeys title", () => {
-    const { queryByText } = render(NeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: controlledNeuron,
+        testComponent: NeuronHotkeysCard,
+      },
     });
 
     expect(queryByText(en.neuron_detail.hotkeys_title)).toBeInTheDocument();
   });
 
   it("renders actions", () => {
-    const { queryByTestId } = render(NeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: controlledNeuron,
+        testComponent: NeuronHotkeysCard,
+      },
     });
 
     expect(queryByTestId("add-hotkey-button")).toBeInTheDocument();
   });
 
   it("renders no actions if user not controller", () => {
-    const { queryByTestId, queryAllByTestId } = render(NeuronHotkeysCard, {
-      props: { neuron: unControlledNeuron },
-    });
+    const { queryByTestId, queryAllByTestId } = render(
+      NeuronContextActionsTest,
+      {
+        props: {
+          neuron: controlledNeuron,
+          testComponent: NeuronHotkeysCard,
+        },
+      }
+    );
 
     expect(queryByTestId("add-hotkey-button")).toBeNull();
     expect(queryAllByTestId("remove-hotkey-button")).toHaveLength(0);
   });
 
   it("renders hotkeys", () => {
-    const { queryByText } = render(NeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: controlledNeuron,
+        testComponent: NeuronHotkeysCard,
+      },
     });
+
     expect(queryByText(hotKeys[0])).toBeInTheDocument();
     expect(queryByText(hotKeys[1])).toBeInTheDocument();
   });
 
   it("user can remove a hotkey", async () => {
-    const { queryAllByTestId } = render(NeuronHotkeysCard, {
-      props: { neuron: controlledNeuron },
+    const { queryAllByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: controlledNeuron,
+        testComponent: NeuronHotkeysCard,
+      },
     });
 
     const removeButtons = queryAllByTestId("remove-hotkey-button");
@@ -106,8 +126,12 @@ describe("NeuronHotkeysCard", () => {
         hotKeys: [mockIdentity.getPrincipal().toText()],
       },
     };
-    const { queryAllByTestId } = render(NeuronHotkeysCard, {
-      props: { neuron },
+
+    const { queryAllByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NeuronHotkeysCard,
+      },
     });
 
     const removeButtons = queryAllByTestId("remove-hotkey-button");
