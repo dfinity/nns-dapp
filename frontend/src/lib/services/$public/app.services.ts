@@ -1,16 +1,24 @@
 import { browser, prerendering } from "$app/environment";
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
+import { syncTime } from "$lib/services/$public/agent.services";
 import { loadSnsSummaries } from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
 
+export const initAppPublic = async () => {
+  // Agent-js syncTime can be called during initialization or mid-lifecycle so we do it as soon as possible.
+  await syncTime();
+
+  await initAppPublicData();
+};
+
 /**
  * Load the application public data that are available globally ("global stores").
  * These data can be read by any users without being signed-in.
  */
-export const initAppPublicData = (): Promise<
+const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];
