@@ -125,6 +125,9 @@
         on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
       >
+        <svelte:fragment slot="select-amount"
+          >{$i18n.canisters.review_cycles_purchase}</svelte:fragment
+        >
         <p class="description">
           <Html
             text={replacePlaceholders($i18n.canisters.transaction_fee, {

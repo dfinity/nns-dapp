@@ -112,6 +112,9 @@
         on:nnsSelectAmount={selectAmount}
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
+        <svelte:fragment slot="select-amount"
+          >{$i18n.canisters.review_create_canister}</svelte:fragment
+        >
         <div>
           <p class="description">{$i18n.canisters.minimum_cycles_text_1}</p>
           <p class="description">
