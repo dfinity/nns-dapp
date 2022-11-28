@@ -2,11 +2,17 @@
  * @jest-environment jsdom
  */
 
-import {startDissolving, stopDissolving,} from "$lib/services/sns-neurons.services";
-import {NeuronState} from "@dfinity/nns";
-import {fireEvent, render, waitFor} from "@testing-library/svelte";
+import {
+  startDissolving,
+  stopDissolving,
+} from "$lib/services/sns-neurons.services";
+import { NeuronState } from "@dfinity/nns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
-import {createMockSnsNeuron, mockSnsNeuron} from "../../../../mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "../../../../mocks/sns-neurons.mock";
 import DissolveSnsNeuronButtonTest from "./DissolveSnsNeuronButtonTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
@@ -74,7 +80,7 @@ describe("DissolveSnsNeuronButton", () => {
         neuron: createMockSnsNeuron({
           stake: BigInt(10_000_000_000),
           id: [1, 2, 2, 9, 9, 3, 2],
-          state: NeuronState.Dissolving
+          state: NeuronState.Dissolving,
         }),
         neuronState: NeuronState.Dissolving,
       },
