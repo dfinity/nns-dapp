@@ -1,6 +1,6 @@
 <script lang="ts">
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
-  import NewSnsFolloweeModal from "$lib/modals/sns/NewSnsFolloweeModal.svelte";
+  import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron, SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";

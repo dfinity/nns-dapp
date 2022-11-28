@@ -71,7 +71,7 @@
         <MergeMaturityButton {neuron} />
       {/if}
 
-      <SpawnNeuronButton {neuron} {controlledByHardwareWallet} />
+      <SpawnNeuronButton {neuron} />
     </div>
 
     {#if stakeMaturityEnabled}

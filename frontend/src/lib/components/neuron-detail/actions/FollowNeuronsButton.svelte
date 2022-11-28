@@ -1,19 +1,16 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
 
-  export let neuron: NeuronInfo;
-
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
-<button class="primary" on:click={openModal}
+<button class="primary" on:click={() => toggleModal("follow")}
   >{$i18n.neuron_detail.follow_neurons}</button
 >
-
-{#if showModal}
-  <FollowNeuronsModal on:nnsClose={closeModal} {neuron} />
-{/if}

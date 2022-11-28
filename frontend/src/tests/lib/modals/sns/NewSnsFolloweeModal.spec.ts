@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NewSnsFolloweeModal from "$lib/modals/sns/NewSnsFolloweeModal.svelte";
+import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
 import { addFollowee } from "$lib/services/sns-neurons.services";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";

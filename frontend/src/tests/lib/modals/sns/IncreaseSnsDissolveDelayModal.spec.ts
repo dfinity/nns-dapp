@@ -3,7 +3,7 @@
  */
 
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/IncreaseSnsDissolveDelayModal.svelte";
+import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/sns-neurons.services";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";

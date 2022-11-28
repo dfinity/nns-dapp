@@ -3,7 +3,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionModal from "../accounts/NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";

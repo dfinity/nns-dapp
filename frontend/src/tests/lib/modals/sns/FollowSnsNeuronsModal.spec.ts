@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import FollowSnsNeuronsModal from "$lib/modals/sns/FollowSnsNeuronsModal.svelte";
+import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";

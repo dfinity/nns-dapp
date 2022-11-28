@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Modal } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { stopBusy } from "$lib/stores/busy.store";
   import { addHotkey } from "$lib/services/neurons.services";
@@ -10,7 +10,10 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
 
-  export let neuronId: NeuronId;
+  export let neuron: NeuronInfo;
+
+  let neuronId: NeuronId;
+  $: ({ neuronId } = neuron);
 
   let principal: Principal | undefined = undefined;
   const dispatcher = createEventDispatcher();

@@ -6,6 +6,7 @@ import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMatu
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("StakeMaturityButton", () => {
   afterEach(() => {
@@ -13,9 +14,10 @@ describe("StakeMaturityButton", () => {
   });
 
   it("renders stake maturity message", () => {
-    const { getByText } = render(StakeMaturityButton, {
+    const { getByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: StakeMaturityButton,
       },
     });
 
@@ -23,9 +25,10 @@ describe("StakeMaturityButton", () => {
   });
 
   it("should open stake maturity modal", async () => {
-    const { getByText, getByTestId } = render(StakeMaturityButton, {
+    const { getByText, getByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: StakeMaturityButton,
       },
     });
 
@@ -39,7 +42,7 @@ describe("StakeMaturityButton", () => {
   });
 
   it("should be disabled if no maturity to stake", async () => {
-    const { getByTestId } = render(StakeMaturityButton, {
+    const { getByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -48,6 +51,7 @@ describe("StakeMaturityButton", () => {
             maturityE8sEquivalent: BigInt(0),
           },
         },
+        testComponent: StakeMaturityButton,
       },
     });
 

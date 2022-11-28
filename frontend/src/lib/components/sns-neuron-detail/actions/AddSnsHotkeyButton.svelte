@@ -1,17 +1,18 @@
 <script lang="ts">
-  import AddSnsHotkeyModal from "$lib/modals/sns/AddSnsHotkeyModal.svelte";
-
   import { i18n } from "$lib/stores/i18n";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "$lib/types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
 
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const { toggleModal }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 </script>
 
-<button data-tid="add-hotkey-button" class="primary" on:click={openModal}
+<button
+  data-tid="add-hotkey-button"
+  class="primary"
+  on:click={() => toggleModal("add-hotkey")}
   >{$i18n.neuron_detail.add_hotkey}</button
 >
-
-{#if showModal}
-  <AddSnsHotkeyModal on:nnsClose={closeModal} />
-{/if}

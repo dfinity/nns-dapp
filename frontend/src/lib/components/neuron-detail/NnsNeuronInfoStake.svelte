@@ -39,21 +39,18 @@
 
 <div class="buttons">
   {#if isControllable}
-    <IncreaseDissolveDelayButton {neuron} />
+    <IncreaseDissolveDelayButton />
   {/if}
 
   {#if isControllable || hotkeyControlled}
-    <IncreaseStakeButton {neuron} />
+    <IncreaseStakeButton />
   {/if}
 
   {#if isControllable}
     {#if neuron.state === NeuronState.Dissolved}
-      <DisburseButton {neuron} />
+      <DisburseButton />
     {:else if neuron.state === NeuronState.Dissolving || neuron.state === NeuronState.Locked}
-      <DissolveActionButton
-        neuronState={neuron.state}
-        neuronId={neuron.neuronId}
-      />
+      <DissolveActionButton neuronState={neuron.state} />
     {/if}
   {/if}
 </div>

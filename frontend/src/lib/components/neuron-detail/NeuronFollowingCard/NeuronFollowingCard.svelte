@@ -55,7 +55,7 @@
 
   <div class="actions">
     {#if isControllable}
-      <FollowNeuronsButton {neuron} />
+      <FollowNeuronsButton />
     {/if}
   </div>
 </CardInfo>
