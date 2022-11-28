@@ -3,7 +3,11 @@ import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nn
 import type { Principal } from "@dfinity/principal";
 import type { Writable } from "svelte/store";
 
-export type CanisterDetailsModal = "add-cycles" | "detach" | "add-controller";
+export type CanisterDetailsModal =
+  | "add-cycles"
+  | "detach"
+  | "add-controller"
+  | "remove-controller";
 
 /**
  * A store that contains canister info and detail.
