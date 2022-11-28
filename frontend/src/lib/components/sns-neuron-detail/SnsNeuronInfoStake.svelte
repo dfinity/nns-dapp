@@ -67,7 +67,7 @@
       <IncreaseSnsDissolveDelayButton />
     {/if}
     {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-      <DisburseSnsButton {neuron} {reloadContext} />
+      <DisburseSnsButton />
     {:else if canDissolve}
       <DissolveSnsNeuronButton
         neuronId={fromDefinedNullable(neuron.id)}

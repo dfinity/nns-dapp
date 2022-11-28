@@ -29,7 +29,7 @@
   import { goto } from "$app/navigation";
 
   export let neuron: SnsNeuron;
-  export let reloadContext: () => Promise<void>;
+  export let reloadNeuron: () => Promise<void>;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
@@ -92,7 +92,7 @@
       neuronId: fromDefinedNullable(neuron.id),
     });
 
-    await Promise.all([syncAccounts(), reloadContext()]);
+    await Promise.all([syncAccounts(), reloadNeuron()]);
 
     loading = false;
 
