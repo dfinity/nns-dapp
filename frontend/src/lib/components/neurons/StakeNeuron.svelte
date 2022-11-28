@@ -79,7 +79,7 @@
       type="button"
       on:click={() => dispatcher("nnsBack")}
     >
-      {$i18n.neurons.edit_source}
+      {$i18n.neurons.change_source}
     </button>
     <button
       class="primary"
