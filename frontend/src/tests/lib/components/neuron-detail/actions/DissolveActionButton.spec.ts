@@ -9,7 +9,7 @@ import {
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
-import {mockNeuron} from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
 import DissolveActionButtonTest from "./DissolveActionButtonTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
@@ -31,8 +31,8 @@ describe("DissolveActionButton", () => {
         neuron: {
           ...mockNeuron,
           neuronId: BigInt(10),
-          state:NeuronState.Locked,
-        }
+          state: NeuronState.Locked,
+        },
       },
     });
 
@@ -45,7 +45,7 @@ describe("DissolveActionButton", () => {
         neuron: {
           ...mockNeuron,
           neuronId: BigInt(10),
-          state:NeuronState.Dissolving,
+          state: NeuronState.Dissolving,
         },
       },
     });
@@ -59,7 +59,7 @@ describe("DissolveActionButton", () => {
         neuron: {
           ...mockNeuron,
           neuronId: BigInt(10),
-          state:NeuronState.Locked,
+          state: NeuronState.Locked,
         },
       },
     });
@@ -87,7 +87,7 @@ describe("DissolveActionButton", () => {
         neuron: {
           ...mockNeuron,
           neuronId: BigInt(10),
-          state:NeuronState.Dissolving,
+          state: NeuronState.Dissolving,
         },
       },
     });
