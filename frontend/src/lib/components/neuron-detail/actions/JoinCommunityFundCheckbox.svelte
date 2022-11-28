@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox, Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -48,9 +48,13 @@
     <div data-tid="join-community-fund-modal">
       <h4>{$i18n.core.confirm}</h4>
       {#if isCommunityFund}
-        <p>{@html $i18n.neuron_detail.leave_community_fund_description}</p>
+        <p>
+          <Html text={$i18n.neuron_detail.leave_community_fund_description} />
+        </p>
       {:else}
-        <p>{@html $i18n.neuron_detail.join_community_fund_description}</p>
+        <p>
+          <Html text={$i18n.neuron_detail.join_community_fund_description} />
+        </p>
       {/if}
     </div>
   </ConfirmationModal>

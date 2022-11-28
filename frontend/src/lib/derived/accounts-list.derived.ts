@@ -3,9 +3,10 @@
  */
 
 import { accountsStore } from "$lib/stores/accounts.store";
-import { derived } from "svelte/store";
+import type { Account } from "$lib/types/account";
+import { derived, type Readable } from "svelte/store";
 
-export const accountsListStore = derived(
+export const nnsAccountsListStore: Readable<Account[]> = derived(
   accountsStore,
   ({ main, subAccounts, hardwareWallets }) =>
     main === undefined

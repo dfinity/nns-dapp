@@ -5,6 +5,7 @@
 import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
 import { participateInSwap } from "$lib/services/sns.services";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
@@ -18,6 +19,7 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 
@@ -33,6 +35,12 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 describe("ParticipateSwapModal", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   const reload = jest.fn();
   const renderSwapModal = (
     swapCommitment: SnsSwapCommitment | undefined = undefined

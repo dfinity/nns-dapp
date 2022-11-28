@@ -3,6 +3,12 @@
  */
 
 import MenuItems from "$lib/components/common/MenuItems.svelte";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
+import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
@@ -36,5 +42,20 @@ describe("MenuItems", () => {
     const { getByTestId } = renderResult;
 
     expect(() => getByTestId("get-icp-button")).toThrow();
+  });
+
+  it("should point Tokens and Neurons to NNS from the project page", () => {
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    const { getByTestId } = render(MenuItems);
+
+    const accountsLink = getByTestId("menuitem-accounts");
+    expect(accountsLink.getAttribute("href")).toEqual(
+      `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID.toText()}`
+    );
+
+    const neuronsLink = getByTestId("menuitem-neurons");
+    expect(neuronsLink.getAttribute("href")).toEqual(
+      `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID.toText()}`
+    );
   });
 });

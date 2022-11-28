@@ -3,13 +3,76 @@
 import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { dirname, join } from "path";
+import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
-const buildCsp = () => {
-  const updatedIndexHTML = updateCSP();
-  writeFileSync("./public/index.html", updatedIndexHTML);
+const buildCsp = (htmlFile) => {
+  // 1. We extract the start script parsed by SvelteKit into the html file
+  const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
+  // 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
+  const indexHTMLWithScriptLoader = injectScriptLoader(
+    indexHTMLWithoutStartScript
+  );
+  // 3. remove the content-security-policy tag injected by SvelteKit
+  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithScriptLoader);
+  // 4. We calculate the sha256 values for these scripts and update the CSP
+  const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
+
+  writeFileSync(htmlFile, indexHTMLWithCSP);
+};
+
+const removeDefaultCspTag = (indexHtml) => {
+  return indexHtml.replace(
+    '<meta http-equiv="content-security-policy" content="">',
+    ""
+  );
+};
+
+/**
+ * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
+ */
+const injectScriptLoader = (indexHtml) => {
+  return indexHtml.replace(
+    "<!-- SCRIPT_LOADER -->",
+    `<script>
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "main.js";
+      document.head.appendChild(loader);
+    </script>`
+  );
+};
+
+/**
+ * Using a CSP with 'strict-dynamic' with SvelteKit breaks in Firefox.
+ * Issue: https://github.com/sveltejs/kit/issues/3558
+ *
+ * As workaround:
+ * 1. we extract the start script that is injected by SvelteKit in index.html into a separate main.js
+ * 2. we remove the script content from index.html but, let the script tag as anchor
+ * 3. we use our custom script loader to load the main.js script
+ */
+const extractStartScript = (htmlFile) => {
+  const indexHtml = readFileSync(htmlFile, "utf-8");
+
+  const svelteKitStartScript =
+    /(<script type=\"module\" data-sveltekit-hydrate[\s\S]*?>)([\s\S]*?)(<\/script>)/gm;
+
+  // 1. extract SvelteKit start script to a separate main.js file
+  const [_script, _scriptStartTag, content, _scriptEndTag] =
+    svelteKitStartScript.exec(indexHtml);
+  const inlineScript = content.replace(/^\s*/gm, "");
+
+  // Each file needs its own main.js because the script that calls the SvelteKit start function contains information dedicated to the route
+  // i.e. the routeId and a particular id for the querySelector use to attach the content
+  const folderPath = dirname(htmlFile);
+
+  writeFileSync(join(folderPath, "main.js"), inlineScript, "utf-8");
+
+  // 2. replace SvelteKit script tag content with empty
+  return indexHtml.replace(svelteKitStartScript, "$1$3");
 };
 
 /**
@@ -30,18 +93,14 @@ const buildCsp = () => {
  *
  * - script-src and 'strict-dynamic':
  * Chrome 40+ / Firefox 31+ / Safari 15.4+ / Edge 15+ supports 'strict-dynamic'.
- * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' and https: to the rules for backwards compatibility.
+ * Safari 15.4 has been released recently - March 15, 2022 - that's why we add 'unsafe-inline' to the rules for backwards compatibility.
  * Browsers that supports the 'strict-dynamic' rule will ignore these backwards directives (CSP 3).
  *
  * - style-src 'unsafe-inline' is required because:
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
-const updateCSP = () => {
-  const indexHtml = readFileSync(
-    join(process.cwd(), "public", "index.html"),
-    "utf-8"
-  );
+const updateCSP = (indexHtml) => {
   const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
   const indexHashes = [];
@@ -62,7 +121,7 @@ const updateCSP = () => {
         img-src 'self' data: https://nns.ic0.app/;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' https: 'strict-dynamic' ${indexHashes.join(
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
           " "
         )};
         base-uri 'self';
@@ -90,4 +149,5 @@ const cspConnectSrc = () => {
     .trim();
 };
 
-buildCsp();
+const htmlFiles = findHtmlFiles();
+htmlFiles.forEach((htmlFile) => buildCsp(htmlFile));

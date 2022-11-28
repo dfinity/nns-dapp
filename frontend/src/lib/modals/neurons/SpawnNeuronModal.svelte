@@ -2,8 +2,12 @@
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
+  import {
+    WizardModal,
+    Html,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { spawnNeuron } from "$lib/services/neurons.services";
@@ -11,36 +15,33 @@
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "$lib/stores/route.store";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
   export let controlledByHardwareWallet: boolean;
 
-  const hardwareWalletSteps: Steps = [
+  const hardwareWalletSteps: WizardSteps = [
     {
       name: "ConfirmSpawn",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const nnsDappAccountSteps: Steps = [
+  const nnsDappAccountSteps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_neuron_modal_title,
     },
     {
       name: "ConfirmSpawn",
-      showBackButton: true,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: Steps = controlledByHardwareWallet
+  const steps: WizardSteps = controlledByHardwareWallet
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   let percentageToSpawn = 0;
 
@@ -71,7 +72,8 @@
         },
       });
       close();
-      routeStore.navigate({ path: AppPath.LegacyNeurons });
+
+      await goto(AppPath.Neurons);
     }
 
     stopBusy("spawn-neuron");
@@ -96,10 +98,10 @@
       >
       <svelte:fragment slot="description">
         <p class="description">
-          {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
         </p>
         <p class="description">
-          {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
         </p>
       </svelte:fragment>
     </NeuronSelectPercentage>

@@ -1,22 +1,15 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Toolbar } from "@dfinity/gix-components";
   import Footer from "$lib/components/common/Footer.svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import {
-    getAccountTransactions,
-    routePathAccountIdentifier,
-  } from "$lib/services/accounts.services";
+  import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Spinner, busy } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
   import WalletActions from "$lib/components/accounts/WalletActions.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { busy } from "$lib/stores/busy.store";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
@@ -24,28 +17,36 @@
     type SelectedAccountStore,
   } from "$lib/types/selected-account.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
-  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
-  import { layoutBackStore } from "$lib/stores/layout.store";
+  import {
+    debugHardwareWalletNeuronsStore,
+    debugSelectedAccountStore,
+  } from "$lib/stores/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import { accountsPathStore } from "$lib/derived/paths.derived";
   import type {
     AccountIdentifierString,
     Transaction,
   } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import { Island } from "@dfinity/gix-components";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import {
+    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
+    type HardwareWalletNeuronsContext,
+    type HardwareWalletNeuronsStore,
+  } from "$lib/types/hardware-wallet-neurons.context";
 
-  const goBack = () =>
-    routeStore.navigate({
-      path: $accountsPathStore,
-    });
-
-  layoutBackStore.set(goBack);
+  const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   let transactions: Transaction[] | undefined;
 
-  const reloadTransactions = async (
+  const reloadTransactions = (
     accountIdentifier: AccountIdentifierString
-  ) =>
-    await getAccountTransactions({
+  ): Promise<void> =>
+    getAccountTransactions({
       accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
@@ -68,89 +69,93 @@
     store: selectedAccountStore,
   });
 
-  let routeAccountIdentifier:
-    | { accountIdentifier: string | undefined }
-    | undefined;
-  $: routeAccountIdentifier = routePathAccountIdentifier($routeStore.path);
+  export let accountIdentifier: string | undefined | null = undefined;
 
-  let selectedAccount: Account | undefined;
-  $: selectedAccount = getAccountFromStore({
-    identifier: routeAccountIdentifier?.accountIdentifier,
-    accountsStore: $accountsStore,
+  const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
+    if (account !== undefined) {
+      await reloadTransactions(account.identifier);
+      return;
+    }
+
+    // handle unknown accountIdentifier from URL
+    if (
+      account === undefined &&
+      $accountsStore.main !== undefined &&
+      $pageStore.path === AppPath.Wallet
+    ) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_found, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+      });
+
+      await goBack();
+    }
+  };
+
+  // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
+  // First call: identifier is set, accounts store is empty, selectedAccount is undefined
+  // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
+  $: selectedAccountStore.set({
+    account: getAccountFromStore({
+      identifier: accountIdentifier,
+      accounts: $nnsAccountsListStore,
+    }),
   });
 
-  $: routeAccountIdentifier,
-    selectedAccount,
-    (() => {
-      // Not /wallet route
-      if (routeAccountIdentifier === undefined) {
-        return;
-      }
+  $: (async () => await accountDidUpdate($selectedAccountStore))();
 
-      const storeAccount = $selectedAccountStore.account;
+  /**
+   * A store that contains the neurons of the hardware wallet filled once the user approved listing neurons.
+   * We notably need a store because the user can add hotkeys to the neurons that are not yet controlled by NNS-dapp and need to update dynamically the UI accordingly.
+   *
+   * The context has to be decleare in this component because it is use in both modals and content.
+   *
+   */
+  const hardwareWalletNeuronsStore = writable<HardwareWalletNeuronsStore>({
+    neurons: [],
+  });
+  debugHardwareWalletNeuronsStore(hardwareWalletNeuronsStore);
 
-      if (storeAccount !== selectedAccount) {
-        // If we select another account, then the transactions are set separately to update the UI with the account and
-        // display the loader - skeleton - while we load the transactions.
-        //
-        // On the contrary, if we reload the transactions of the same account, we keep the current list to avoid a flickering of the screen.
-        // This can happen when user transfer ICP to another account - i.e. a new transaction will be added to the list at the top so we don't want the list to flicker while updating.
-        const sameAccount: boolean =
-          selectedAccount !== undefined &&
-          storeAccount?.identifier === selectedAccount.identifier;
-
-        selectedAccountStore.update(() => ({
-          account: selectedAccount,
-        }));
-
-        transactions = sameAccount ? transactions : undefined;
-
-        if (selectedAccount !== undefined) {
-          reloadTransactions(selectedAccount.identifier);
-        }
-      }
-
-      // handle unknown accountIdentifier from URL
-      if (selectedAccount === undefined && $accountsStore.main !== undefined) {
-        toastsError({
-          labelKey: replacePlaceholders($i18n.error.account_not_found, {
-            $account_identifier:
-              routeAccountIdentifier?.accountIdentifier ?? "",
-          }),
-        });
-        goBack();
-      }
-    })();
+  setContext<HardwareWalletNeuronsContext>(
+    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
+    {
+      store: hardwareWalletNeuronsStore,
+    }
+  );
 
   let showNewTransactionModal = false;
 
   // TODO(L2-581): Create WalletInfo component
 </script>
 
-<main class="legacy" data-tid="nns-wallet">
-  <section>
-    {#if $selectedAccountStore.account !== undefined}
-      <WalletSummary />
-      <div class="actions">
+<Island>
+  <main class="legacy" data-tid="nns-wallet">
+    <section>
+      {#if $selectedAccountStore.account !== undefined}
+        <WalletSummary />
         <WalletActions />
-      </div>
-      <TransactionList {transactions} />
-    {:else}
-      <Spinner />
-    {/if}
-  </section>
-</main>
 
-<Footer>
-  <Toolbar>
+        <Separator />
+
+        <TransactionList {transactions} />
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
+
+  <Footer columns={1}>
     <button
       class="primary"
       on:click={() => (showNewTransactionModal = true)}
       disabled={$selectedAccountStore.account === undefined || $busy}
       data-tid="new-transaction">{$i18n.accounts.new_transaction}</button
     >
-  </Toolbar>
-</Footer>
+  </Footer>
+</Island>
+
+<WalletModals />
 
 {#if showNewTransactionModal}
   <IcpTransactionModal
@@ -158,11 +163,3 @@
     selectedAccount={$selectedAccountStore.account}
   />
 {/if}
-
-<style lang="scss">
-  .actions {
-    margin-bottom: var(--padding-3x);
-    display: flex;
-    justify-content: end;
-  }
-</style>

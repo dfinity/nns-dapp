@@ -1,24 +1,29 @@
 <script lang="ts">
-  import { accountsListStore } from "$lib/derived/accounts-list.derived";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Account } from "$lib/types/account";
   import {
-    getAccountFromStore,
+    getAccountByRootCanister,
+    getAccountsByRootCanister,
     invalidAddress,
   } from "$lib/utils/accounts.utils";
-  import Toggle from "$lib/components/ui/Toggle.svelte";
+  import { Toggle } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
 
+  export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
   export let showManualAddress = true;
 
   // If the component is already initialized with a selectedDestinationAddress
-  let selectedAccount: Account | undefined = getAccountFromStore({
+  let selectedAccount: Account | undefined = getAccountByRootCanister({
     identifier: selectedDestinationAddress,
-    accountsStore: $accountsStore,
+    rootCanisterId,
+    nnsAccounts: $nnsAccountsListStore,
+    snsAccounts: $snsAccountsStore,
   });
   let address: string;
   $: {
@@ -33,7 +38,12 @@
 
   // Show the toggle if there are more than one account to select from.
   let showToggle = true;
-  $: showToggle = $accountsListStore.filter(filterAccounts).length > 0;
+  $: showToggle =
+    (getAccountsByRootCanister({
+      rootCanisterId,
+      nnsAccounts: $nnsAccountsListStore,
+      snsAccounts: $snsAccountsStore,
+    })?.filter(filterAccounts).length ?? 0) > 0;
 
   const onToggleManualInput = () => {
     showManualAddress = !showManualAddress;
@@ -60,7 +70,11 @@
   {#if showManualAddress}
     <AddressInput bind:address={selectedDestinationAddress} />
   {:else}
-    <SelectAccountDropdown {filterAccounts} bind:selectedAccount />
+    <SelectAccountDropdown
+      {rootCanisterId}
+      {filterAccounts}
+      bind:selectedAccount
+    />
   {/if}
 </div>
 

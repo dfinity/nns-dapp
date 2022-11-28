@@ -1,6 +1,4 @@
-import DOMPurify from "dompurify";
 import type { marked as markedTypes, Renderer } from "marked";
-import { isNode } from "./dev.utils";
 
 type Marked = typeof markedTypes;
 
@@ -57,31 +55,10 @@ export const renderer = (marked: Marked): Renderer => {
  * Uses markedjs
  * @see {@link https://github.com/markedjs/marked}
  */
-export const markdownToHTML = async (): Promise<(text: string) => string> => {
+export const markdownToHTML = async (text: string): Promise<string> => {
   const url = "/assets/libs/marked.min.js";
   const { marked }: { marked: Marked } = await import(url);
-  return (text: string) =>
-    marked(text, {
-      renderer: renderer(marked),
-    });
-};
-
-/**
- * Sanitize Markdown text and convert it to HTML
- */
-export const markdownToSanitizedHTML = async (
-  text: string
-): Promise<string> => {
-  const convertMarkdownToHTML = await markdownToHTML();
-  return convertMarkdownToHTML(sanitize(text ?? ""));
-};
-
-/**
- * Sanitize a text with DOMPurify.
- *
- * Note: this library needs a workaround to work in the NodeJS context - i.e. for our jest test suite.
- * See the jest-setup.ts for details.
- */
-export const sanitize = (text: string): string => {
-  return !isNode() ? DOMPurify.sanitize(text) : global.DOMPurify.sanitize(text);
+  return marked(text, {
+    renderer: renderer(marked),
+  });
 };

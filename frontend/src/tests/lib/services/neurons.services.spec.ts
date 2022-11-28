@@ -3,13 +3,18 @@ import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
-import { getAccountIdentityByPrincipal } from "$lib/services/accounts.services";
+import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
+import {
+  getAccountIdentityByPrincipal,
+  transferICP,
+} from "$lib/services/accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
+import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -33,7 +38,6 @@ const {
   addHotkey,
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
-  routePathNeuronId,
   getIdentityOfControllerByNeuronId,
   toggleCommunityFund,
   listNeurons,
@@ -46,6 +50,7 @@ const {
   updateDelay,
   mergeNeurons,
   reloadNeuron,
+  topUpNeuron,
 } = services;
 
 jest.mock("$lib/stores/toasts.store", () => {
@@ -64,6 +69,7 @@ const setAccountIdentity = (newIdentity: Identity) =>
 jest.mock("$lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    transferICP: jest.fn().mockResolvedValue({ success: true }),
     getAccountIdentityByPrincipal: jest
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
@@ -91,6 +97,7 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("neurons-services", () => {
+  jest.spyOn(console, "error").mockImplementation(jest.fn);
   const notControlledNeuron = {
     ...mockNeuron,
     neuronId: BigInt(123),
@@ -1012,10 +1019,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: TokenAmount.fromE8s({
-          amount: BigInt(Math.round(amountWithFee * E8S_PER_ICP)),
-          token: ICPToken,
-        }),
+        amount: numberToE8s(amountWithFee),
       });
     });
 
@@ -1326,26 +1330,6 @@ describe("neurons-services", () => {
     });
   });
 
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-    it("should get neuronId from valid path", async () => {
-      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
-      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
-    });
-
-    it("should not get neuronId from invalid path", async () => {
-      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
-      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
-      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
-    });
-  });
-
   describe("load neuron", () => {
     afterEach(() => jest.clearAllMocks());
     it("should get neuron from neurons store if presented and not call queryNeuron", async () => {
@@ -1481,6 +1465,59 @@ describe("neurons-services", () => {
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
       expect(call).rejects.toThrow(NotAuthorizedNeuronError);
       resetAccountIdentity();
+    });
+  });
+
+  describe("topUpNeuron", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+    it("should transfer ICPs, claim neuron and get the neuron info", async () => {
+      const { success } = await topUpNeuron({
+        neuron: mockNeuron,
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(true);
+      expect(transferICP).toBeCalled();
+      expect(spyClaimOrRefresh).toBeCalled();
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should fail if neuron has no account identifier", async () => {
+      const { success } = await topUpNeuron({
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: undefined,
+        },
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(transferICP).not.toBeCalled();
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
+    });
+
+    it("should fail if amount and neuron stake are not enough", async () => {
+      const { success } = await topUpNeuron({
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+          },
+        },
+        amount: 0.01,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(transferICP).not.toBeCalled();
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
     });
   });
 });

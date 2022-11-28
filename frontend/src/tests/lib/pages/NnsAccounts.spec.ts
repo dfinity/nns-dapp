@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
+import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import {
@@ -26,17 +27,18 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = container.querySelector("section > div");
+      const titleRow = getByTestId("accounts-summary");
 
       expect(
-        titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatToken({
+        titleRow?.textContent?.includes(
+          `${formatToken({
             value: mockMainAccount.balance.toE8s(),
           })} ICP`
         )
       ).toBeTruthy();
+      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
     });
 
     it("should render a main card", () => {
@@ -56,10 +58,10 @@ describe("NnsAccounts", () => {
       const { container } = render(NnsAccounts);
 
       const cardTitleRow = container.querySelector(
-        "article > div div:last-of-type"
+        'article > div[data-tid="token-value-label"]'
       );
 
-      expect(cardTitleRow?.textContent).toEqual(
+      expect(cardTitleRow?.textContent.trim()).toEqual(
         `${formatToken({ value: mockMainAccount.balance.toE8s() })} ICP`
       );
     });
@@ -128,15 +130,32 @@ describe("NnsAccounts", () => {
     afterAll(jest.clearAllMocks);
 
     it("should render total accounts icp", () => {
-      const { container } = render(NnsAccounts);
+      const { getByTestId } = render(NnsAccounts);
 
-      const titleRow = container.querySelector("section > div");
+      const titleRow = getByTestId("accounts-summary");
 
       expect(
-        titleRow?.textContent?.startsWith(
-          `${en.accounts.total} ${formatToken({ value: totalBalance })} ICP`
+        titleRow?.textContent?.includes(
+          `${formatToken({ value: totalBalance })} ICP`
         )
       ).toBeTruthy();
+    });
+
+    it("should render nns name", () => {
+      const { getByTestId } = render(NnsAccounts);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
+    });
+
+    it("should render icp project logo", () => {
+      const { getByTestId } = render(NnsAccounts);
+
+      const logo = getByTestId("summary-logo");
+      const img = logo.querySelector('[data-tid="logo"]');
+
+      expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
     });
 
     it("should contain a tooltip", () => {

@@ -4,10 +4,11 @@
   import { i18n } from "$lib/stores/i18n";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
-  import Tag from "$lib/components/ui/Tag.svelte";
+  import { Tag } from "@dfinity/gix-components";
 
   export let followee: FolloweesNeuron;
 
+  // TODO: Align with `en.governance.json` "topics.[topic]"
   const topicTitle = (topic: Topic) =>
     $i18n.follow_neurons[`topic_${topic}_title`];
 

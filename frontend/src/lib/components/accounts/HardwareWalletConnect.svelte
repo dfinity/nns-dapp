@@ -10,8 +10,8 @@
   } from "$lib/types/add-account.context";
   import { createEventDispatcher, getContext } from "svelte";
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -50,13 +50,13 @@
   $: disabled = connectionState !== LedgerConnectionState.CONNECTED || $busy;
 </script>
 
-<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+<form on:submit|preventDefault={onSubmit}>
   <div>
     <HardwareWalletConnectAction bind:connectionState bind:ledgerIdentity />
   </div>
 
   {#if !disabled}
-    <FooterModal>
+    <div class="toolbar">
       <button class="secondary" type="button" on:click={back}>
         {$i18n.accounts.edit_name}
       </button>
@@ -68,14 +68,6 @@
       >
         {$i18n.accounts.attach_wallet}
       </button>
-    </FooterModal>
+    </div>
   {/if}
 </form>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
-  }
-</style>

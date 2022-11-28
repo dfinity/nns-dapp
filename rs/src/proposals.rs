@@ -5,9 +5,10 @@ use crate::proposals::def::{
     ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload,
     CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
-    RemoveNodesPayload, RerouteCanisterRangesPayload, SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload,
-    StopOrStartNnsCanisterProposal, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
-    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateSubnetPayload,
+    RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest, UpdateSubnetPayload,
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
@@ -129,6 +130,9 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         31 => identity::<ChangeSubnetMembershipPayload>(payload_bytes),
         32 => identity::<UpdateSubnetTypeArgs>(payload_bytes),
         33 => identity::<ChangeSubnetTypeAssignmentArgs>(payload_bytes),
+        34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
+        35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
+        36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -148,11 +152,11 @@ mod def {
     use std::fmt::Write;
 
     // NNS function 1 - CreateSubnet
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
     pub type CreateSubnetPayload = registry_canister::mutations::do_create_subnet::CreateSubnetPayload;
 
     // NNS function 2 - AddNodeToSubnet
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_add_nodes_to_subnet.rs#L51
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_add_nodes_to_subnet.rs#L51
     pub type AddNodesToSubnetPayload = registry_canister::mutations::do_add_nodes_to_subnet::AddNodesToSubnetPayload;
 
     // NNS function 3 - AddNNSCanister
@@ -232,20 +236,20 @@ mod def {
     }
 
     // NNS function 5 - BlessReplicaVersion
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_bless_replica_version.rs#L83
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_bless_replica_version.rs#L83
     pub type BlessReplicaVersionPayload =
         registry_canister::mutations::do_bless_replica_version::BlessReplicaVersionPayload;
 
     // NNS function 6 - RecoverSubnet
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_recover_subnet.rs#L249
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_recover_subnet.rs#L249
     pub type RecoverSubnetPayload = registry_canister::mutations::do_recover_subnet::RecoverSubnetPayload;
 
     // NNS function 7 - UpdateSubnetConfig
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_update_subnet.rs#L159
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet.rs#L159
     pub type UpdateSubnetPayload = registry_canister::mutations::do_update_subnet::UpdateSubnetPayload;
 
     // NNS function 8 - AddNodeOperator
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_add_node_operator.rs#L40
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_add_node_operator.rs#L40
     pub type AddNodeOperatorPayload = registry_canister::mutations::do_add_node_operator::AddNodeOperatorPayload;
 
     // NNS function 9 - UpgradeRootCanister
@@ -289,12 +293,12 @@ mod def {
     }
 
     // NNS function 11 - UpdateSubnetReplicaVersion
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58
     pub type UpdateSubnetReplicaVersionPayload =
         registry_canister::mutations::do_update_subnet_replica::UpdateSubnetReplicaVersionPayload;
 
     // NNS function 13 - RemoveNodesFromSubnet
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
     pub type RemoveNodesFromSubnetPayload =
         registry_canister::mutations::do_remove_nodes_from_subnet::RemoveNodesFromSubnetPayload;
 
@@ -303,11 +307,11 @@ mod def {
     pub type SetAuthorizedSubnetworkListArgs = cycles_minting_canister::SetAuthorizedSubnetworkListArgs;
 
     // NNS function 15 - SetFirewallConfig
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
     pub type SetFirewallConfigPayload = registry_canister::mutations::do_set_firewall_config::SetFirewallConfigPayload;
 
     // NNS function 16 - UpdateNodeOperatorConfig
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106
     pub type UpdateNodeOperatorConfigPayload =
         registry_canister::mutations::do_update_node_operator_config::UpdateNodeOperatorConfigPayload;
 
@@ -316,7 +320,7 @@ mod def {
     pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::StopOrStartCanisterProposal;
 
     // NNS function 18 - RemoveNodes
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
     pub type RemoveNodesPayload = registry_canister::mutations::node_management::do_remove_nodes::RemoveNodesPayload;
 
     // NNS function 20 - UpdateNodeRewardsTable
@@ -330,7 +334,7 @@ mod def {
         ic_protobuf::registry::dc::v1::AddOrRemoveDataCentersProposalPayload;
 
     // NNS function 22 - UpdateUnassignedNodes
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L62
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L62
     pub type UpdateUnassignedNodesConfigPayload =
         registry_canister::mutations::do_update_unassigned_nodes_config::UpdateUnassignedNodesConfigPayload;
 
@@ -361,15 +365,15 @@ mod def {
         registry_canister::mutations::reroute_canister_ranges::RerouteCanisterRangesPayload;
 
     // NNS function 25 - AddFirewallRules
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L218
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218
     pub type AddFirewallRulesPayload = registry_canister::mutations::firewall::AddFirewallRulesPayload;
 
     // NNS function 26 - RemoveFirewallRules
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L233
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233
     pub type RemoveFirewallRulesPayload = registry_canister::mutations::firewall::RemoveFirewallRulesPayload;
 
     // NNS function 27 - UpdateFirewallRules
-    // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/registry/canister/src/mutations/firewall.rs#L246
+    // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246
     pub type UpdateFirewallRulesPayload = registry_canister::mutations::firewall::UpdateFirewallRulesPayload;
 
     // NNS function 28 - PrepareCanisterMigration
@@ -459,6 +463,19 @@ mod def {
         wasm_sha.write(bytes);
         wasm_sha.finish()
     }
+
+    // NNS function 34 - UpdateSnsSubnetListRequest
+    // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
+    pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
+
+    // NNS function 35 - UpdateAllowedPrincipals
+    // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
+    pub type UpdateAllowedPrincipalsRequest = ic_sns_wasm::pb::v1::UpdateAllowedPrincipalsRequest;
+
+    // NNS function 36 - RetireReplicaVersion
+    // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
+    pub type RetireReplicaVersionPayload =
+        registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
 }
 
 #[cfg(test)]

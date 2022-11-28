@@ -3,12 +3,13 @@
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { disburse } from "$lib/services/sns-neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -17,7 +18,12 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "../../../mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 
@@ -27,7 +33,14 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
+jest.mock("../../../../lib/services/sns-accounts.services", () => {
+  return {
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("DisburseSnsNeuronModal", () => {
+  const principalString = `${mockSnsMainAccount.principal}`;
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadContext: () => Promise<void> = () => Promise.resolve()
@@ -46,11 +59,6 @@ describe("DisburseSnsNeuronModal", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
 
-    accountsStore.set({
-      ...get(accountsStore),
-      main: mockMainAccount,
-    });
-
     jest
       .spyOn(accountsApi, "loadAccounts")
       .mockImplementation(() =>
@@ -66,6 +74,21 @@ describe("DisburseSnsNeuronModal", () => {
     jest.clearAllMocks();
   });
 
+  beforeEach(() => {
+    accountsStore.set({
+      ...get(accountsStore),
+      main: mockMainAccount,
+    });
+
+    snsAccountsStore.setAccounts({
+      rootCanisterId: mockPrincipal,
+      accounts: [mockSnsMainAccount, mockSnsSubAccount],
+      certified: true,
+    });
+
+    (syncSnsAccounts as jest.Mock).mockClear();
+  });
+
   it("should display modal", async () => {
     const { container } = await renderDisburseModal(mockSnsNeuron);
 
@@ -73,17 +96,17 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should render a confirmation screen", async () => {
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
+
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
 
-    const confirmScreen = queryByTestId("confirm-disburse-screen");
-    expect(confirmScreen).not.toBeNull();
+    await waitFor(() =>
+      expect(queryByTestId("confirm-disburse-screen")).not.toBeNull()
+    );
   });
 
   it("should call disburse service", async () => {
-    const principalString = "aaaaa-aa";
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
-    });
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
 
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
 
@@ -97,10 +120,8 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should call reloadContext", async () => {
-    const principalString = "aaaaa-aa";
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${principalString}/neuron/12344`,
-    });
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
+
     const reloadContext = jest.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
       mockSnsNeuron,
@@ -115,5 +136,34 @@ describe("DisburseSnsNeuronModal", () => {
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() => expect(reloadContext).toBeCalled());
+  });
+
+  it("should trigger the project account load", async () => {
+    snsAccountsStore.reset();
+
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
+
+    const reloadContext = jest.fn().mockResolvedValue(null);
+    await renderDisburseModal(mockSnsNeuron, reloadContext);
+
+    await waitFor(() => expect(syncSnsAccounts).toBeCalled());
+  });
+
+  it("should not trigger the project account load if already available", async () => {
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
+
+    const reloadContext = jest.fn().mockResolvedValue(null);
+    const { queryByTestId } = await renderDisburseModal(
+      mockSnsNeuron,
+      reloadContext
+    );
+
+    await waitFor(() =>
+      expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
+    );
+
+    await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
+
+    await waitFor(() => expect(syncSnsAccounts).not.toBeCalled());
   });
 });

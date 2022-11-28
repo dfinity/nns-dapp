@@ -21,16 +21,20 @@ export const renderContextWrapper = <T>({
   Component,
   contextKey,
   contextValue,
+  props,
 }: {
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: any;
 }): RenderResult =>
   render(ContextWrapperTest, {
     props: {
       contextKey,
       contextValue,
       Component,
+      props,
     },
   });
 
@@ -55,10 +59,13 @@ export const renderSelectedSnsNeuronContext = ({
   Component,
   neuron,
   reload,
+  props,
 }: {
   Component: typeof SvelteComponent;
   neuron: SnsNeuron;
   reload: () => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props?: any;
 }) =>
   renderContextWrapper({
     Component,
@@ -73,4 +80,5 @@ export const renderSelectedSnsNeuronContext = ({
       }),
       reload,
     } as SelectedSnsNeuronContext,
+    props,
   });

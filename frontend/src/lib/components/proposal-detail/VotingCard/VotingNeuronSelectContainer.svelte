@@ -30,7 +30,7 @@
       position: absolute;
       top: 0;
       right: 50%;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--tertiary);
       width: calc(100% - (4 * var(--padding)));
       transform: translate(50%, 0);
     }

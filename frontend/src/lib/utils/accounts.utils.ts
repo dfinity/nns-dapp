@@ -1,8 +1,11 @@
 import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { decodeSnsAccount } from "@dfinity/sns";
+import { isNnsProject } from "./projects.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -36,7 +39,17 @@ export const invalidAddress = (address: string | undefined): boolean => {
     checkAccountId(address);
     return false;
   } catch (_) {
-    return true;
+    try {
+      // TODO: Find a better solution to check if the address is valid for SNS as well.
+      // It might also be an SNS address
+      decodeSnsAccount(address);
+      return false;
+    } catch {
+      _;
+    }
+    {
+      return true;
+    }
   }
 };
 
@@ -67,30 +80,60 @@ export const isAccountHardwareWallet = (
 
 export const getAccountFromStore = ({
   identifier,
-  accountsStore: { main, subAccounts, hardwareWallets },
+  accounts,
+}: {
+  identifier: string | undefined | null;
+  accounts: Account[];
+}): Account | undefined => {
+  if (identifier === undefined || identifier === null) {
+    return undefined;
+  }
+
+  return accounts.find(({ identifier: id }) => id === identifier);
+};
+
+export const getAccountByRootCanister = ({
+  identifier,
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
 }: {
   identifier: string | undefined;
-  accountsStore: AccountsStore;
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
 }): Account | undefined => {
   if (identifier === undefined) {
     return undefined;
   }
 
-  if (main?.identifier === identifier) {
-    return main;
+  if (isNnsProject(rootCanisterId)) {
+    return getAccountFromStore({
+      identifier,
+      accounts: nnsAccounts,
+    });
   }
 
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return getAccountFromStore({
+    identifier,
+    accounts: snsAccounts[rootCanisterId.toText()]?.accounts ?? [],
+  });
+};
 
-  if (subAccount !== undefined) {
-    return subAccount;
+export const getAccountsByRootCanister = ({
+  nnsAccounts,
+  snsAccounts,
+  rootCanisterId,
+}: {
+  nnsAccounts: Account[];
+  snsAccounts: SnsAccountsStore;
+  rootCanisterId: Principal;
+}): Account[] | undefined => {
+  if (isNnsProject(rootCanisterId)) {
+    return nnsAccounts;
   }
 
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return snsAccounts[rootCanisterId.toText()]?.accounts;
 };
 
 /**
@@ -108,3 +151,20 @@ export const assertEnoughAccountFunds = ({
     throw new InsufficientAmountError("error.insufficient_funds");
   }
 };
+
+/**
+ * Returns `undefined` if the "main" account was not find.
+ * @param accounts
+ */
+export const mainAccount = (accounts: Account[]): Account | undefined => {
+  return accounts.find((account) => account.type === "main");
+};
+
+export const accountName = ({
+  account,
+  mainName,
+}: {
+  account: Account | undefined;
+  mainName: string;
+}): string =>
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");

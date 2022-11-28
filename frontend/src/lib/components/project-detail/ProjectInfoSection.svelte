@@ -5,7 +5,7 @@
     SnsTokenMetadata,
   } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { getContext } from "svelte";
@@ -76,11 +76,5 @@
     display: flex;
     gap: var(--padding-1_5x);
     align-items: center;
-  }
-
-  a {
-    font-size: inherit;
-
-    color: var(--primary);
   }
 </style>

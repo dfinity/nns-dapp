@@ -1,5 +1,67 @@
 # Changelog
 
+## Proposal 93596
+* Remove redirection in Launchpad page.
+
+## Proposal 93588
+* Enable Launchpad and SNS Sale pages.
+* Fix bug in voting power calculation.
+* UI improvements.
+
+## Proposal 93416
+* Fix bug on proposals public page.
+* Improvements in wording.
+* Improve error message on canister detail page.
+* UI improvements in neuron detail page.
+
+## Proposal 93366
+* UI redistribution in Neuron details.
+* New cards for neurons and accounts.
+* Proposals list and proposal details are now public.
+* UI improvements on automatic logout.
+
+## Proposal 92180
+* New design colors, spacing and layout
+* Link to sub-pages on main login screen
+* UI/UX fixes
+* Stake SNS neuron functionality
+* Improve Participate Button
+
+## Proposal 90917
+* New routing.
+* New login.
+* New public page for each tab.
+* UI improvements.
+* Fonts and font size update.
+* Fix bug in topics filter.
+
+## Proposal 89325
+* Text improvements in Maturity card.
+* Two new NNS Proposal topics.
+* Two new nnsFunctions.
+* Fix backwards compatibility of the CSP policy for older Android devices.
+
+## Proposal 87079
+* Support for new payload type.
+* Support for new proposal topic.
+* UI Improvements in Stake Maturity.
+* Reduce bundle by removing imported test script.
+
+## Proposal 86114
+* Enable Stake Maturity for II neurons.
+* Fix CSP 'strict-dynamic' issue on Firefox.
+
+## Proposal 86090
+* UI fixes for Modal in small devices.
+* Fix Buffer polyfill race condition.
+
+## Proposal 86037
+* SvelteKit implementation (without routing changes).
+* New Modal UI.
+* Bump agent-js to v0.14.0
+* New flow to top up neurons.
+* Fix overflow in proposal details.
+
 ## Proposal 84936
 * New login page.
 * Minor UI improvements.

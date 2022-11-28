@@ -5,16 +5,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,
     votingPower,
   } from "$lib/utils/neuron.utils";
-  import { busy, stopBusy } from "$lib/stores/busy.store";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { valueSpan } from "$lib/utils/utils";
+  import { Html, busy } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -41,7 +41,7 @@
   };
 </script>
 
-<div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
+<div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
     <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
   </div>
@@ -52,9 +52,11 @@
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p>
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-      })}
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        })}
+      />
     </p>
   </div>
   <div class="voting-power">
@@ -64,11 +66,12 @@
         votingPower({
           stake: neuronICP,
           dissolveDelayInSeconds: delayInSeconds,
+          ageSeconds: 0,
         })
       )}
     </p>
   </div>
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       disabled={$busy}
@@ -84,10 +87,16 @@
     >
       {confirmButtonText}
     </button>
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
   .main-info {
     display: flex;
     justify-content: center;

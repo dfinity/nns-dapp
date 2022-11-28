@@ -2,7 +2,7 @@
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { BottomSheet, KeyValuePair } from "@dfinity/gix-components";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
@@ -35,8 +35,6 @@
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
-  let loadingSwapState: boolean;
-  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
 
   let lifecycle: number;
   $: ({
@@ -50,7 +48,6 @@
   let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
-    !loadingSwapState &&
     [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
 </script>
 
@@ -80,7 +77,11 @@
         </div>
       {/if}
 
-      <ParticipateButton />
+      <BottomSheet>
+        <div role="toolbar">
+          <ParticipateButton />
+        </div>
+      </BottomSheet>
     </div>
   </div>
 {/if}
@@ -101,6 +102,24 @@
 
     @include media.min-width(medium) {
       align-items: flex-start;
+    }
+  }
+  [role="toolbar"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding: var(--padding-2x);
+
+    @include media.min-width(medium) {
+      align-items: center;
+      justify-content: center;
+    }
+
+    @include media.min-width(large) {
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 0;
     }
   }
 </style>

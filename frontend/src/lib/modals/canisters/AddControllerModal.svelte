@@ -3,30 +3,31 @@
   import NewControllerReview from "$lib/components/canister-detail/NewControllerReview.svelte";
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step, Steps } from "$lib/stores/steps.state";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "EnterController",
       title: $i18n.canister_detail.add_controller,
-      showBackButton: false,
     },
     {
       name: "ConfirmController",
       title: $i18n.canister_detail.confirm_new_controller,
-      showBackButton: true,
     },
   ];
 
-  let currentStep: Step | undefined;
-  let modal: LegacyWizardModal;
+  let currentStep: WizardStep | undefined;
+  let modal: WizardModal;
   let principal: Principal | undefined = undefined;
 
   const next = () => modal.next();
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="add-controller-canister-modal-title"
       >{currentStep?.title ?? $i18n.canister_detail.add_controller}</span
@@ -47,4 +48,4 @@
       />
     {/if}
   </svelte:fragment>
-</LegacyWizardModal>
+</WizardModal>

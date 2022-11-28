@@ -6,7 +6,6 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   anonymizeAccount,
   anonymizeCanister,
-  anonymizeICP,
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
@@ -20,7 +19,7 @@ import { saveToJSONFile } from "$lib/utils/save.utils";
 import { mapPromises, stringifyJson } from "$lib/utils/utils";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { claimSeedNeurons } from "./seed-neurons.services";
 
 /**
@@ -41,7 +40,7 @@ export enum LogType {
 }
 
 /**
- * Action function to bind debug logger tigger to the node (6 clicks in 2 seconds)
+ * Action function to bind debug logger trigger to the node (6 clicks in 2 seconds)
  */
 export function triggerDebugReport(node: HTMLElement) {
   const TWO_SECONDS = 2 * 1000;
@@ -102,7 +101,7 @@ const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
       throw new Error("You need to provide a neuron id.");
     }
     const neuronId = BigInt(neuronIdString) as NeuronId;
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await addHotkey({ neuronId, principal: identity.getPrincipal(), identity });
     toastsSuccess({
       labelKey: "neurons.add_hotkey_prompt_success",
@@ -129,7 +128,6 @@ const anonymiseStoreState = async () => {
     toasts,
     addAccount,
     hardwareWalletNeurons,
-    transaction,
     selectedAccount,
     selectedProposal,
     selectedProject,
@@ -174,13 +172,6 @@ const anonymiseStoreState = async () => {
       hardwareWalletName: addAccount?.hardwareWalletName,
     },
     hardwareWalletNeurons,
-    transaction: {
-      selectedAccount: await anonymizeAccount(transaction?.selectedAccount),
-      destinationAddress: await cutAndAnonymize(
-        transaction?.destinationAddress
-      ),
-      amount: await anonymizeICP(transaction?.amount),
-    },
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
     },

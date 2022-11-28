@@ -39,7 +39,7 @@
 
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
-    const spaceLeft = targetCenter;
+    const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
     const spaceRight = innerWidth - scrollbarWidth - targetCenter;
 
     const overflowLeft = tooltipWidth / 2 - spaceLeft;
@@ -62,6 +62,7 @@
 </script>
 
 <svelte:window bind:innerWidth />
+
 <div class="tooltip-wrapper">
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
@@ -87,14 +88,18 @@
   }
 
   .tooltip {
-    z-index: var(--z-index);
+    z-index: calc(var(--overlay-z-index) + 1);
 
     position: absolute;
     display: inline-block;
 
     left: 50%;
     bottom: var(--padding-0_5x);
-    transform: translate(var(--tooltip-transform-x, -50%), 100%);
+    --tooltip-transform-x-default: calc(-50% + var(--padding-4x));
+    transform: translate(
+      var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+      100%
+    );
 
     opacity: 0;
     visibility: hidden;
@@ -103,7 +108,7 @@
     padding: 4px 6px;
     border-radius: 4px;
 
-    font-size: var(--font-size-ultra-small);
+    font-size: var(--font-size-small);
 
     background: var(--card-background-contrast);
     color: var(--card-background);
@@ -121,7 +126,10 @@
     &.top {
       bottom: unset;
       top: calc(-1 * var(--padding));
-      transform: translate(var(--tooltip-transform-x, -50%), -100%);
+      transform: translate(
+        var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+        -100%
+      );
     }
 
     pointer-events: none;

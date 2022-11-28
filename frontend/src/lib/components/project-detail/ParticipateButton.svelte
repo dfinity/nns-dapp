@@ -13,6 +13,7 @@
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -44,25 +45,30 @@
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
-  {#if userCanParticipateToSwap}
-    <button
-      on:click={openModal}
-      class="primary"
-      data-tid="sns-project-participate-button"
-      >{userHasParticipatedToSwap
-        ? $i18n.sns_project_detail.increase_participation
-        : $i18n.sns_project_detail.participate}</button
-    >
-  {:else}
-    <Tooltip
-      id="sns-project-participate-button-tooltip"
-      text={$i18n.sns_project_detail.max_user_commitment_reached}
-    >
-      <button class="primary" data-tid="sns-project-participate-button" disabled
-        >{$i18n.sns_project_detail.participate}</button
+  <SignInGuard>
+    {#if userCanParticipateToSwap}
+      <button
+        on:click={openModal}
+        class="primary"
+        data-tid="sns-project-participate-button"
+        >{userHasParticipatedToSwap
+          ? $i18n.sns_project_detail.increase_participation
+          : $i18n.sns_project_detail.participate}</button
       >
-    </Tooltip>
-  {/if}
+    {:else}
+      <Tooltip
+        id="sns-project-participate-button-tooltip"
+        text={$i18n.sns_project_detail.max_user_commitment_reached}
+      >
+        <button
+          class="primary"
+          data-tid="sns-project-participate-button"
+          disabled>{$i18n.sns_project_detail.participate}</button
+        >
+      </Tooltip>
+    {/if}
+    <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
+  </SignInGuard>
 {/if}
 
 {#if showModal}

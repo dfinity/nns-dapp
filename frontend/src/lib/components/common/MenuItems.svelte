@@ -1,31 +1,34 @@
 <script lang="ts">
   import {
-    MenuItem,
-    IconWallet,
-    IconHowToVote,
+    IconExplore,
+    IconUsers,
+    IconPassword,
     IconRocketLaunch,
-    IconEngineering,
-    IconPsychology,
+    IconWallet,
+    MenuItem,
   } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { baseHref } from "$lib/utils/route.utils";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { routeStore } from "$lib/stores/route.store";
   import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
+    canistersPathStore,
     neuronsPathStore,
+    proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
-  const baseUrl = baseHref();
-
-  const isSelectedPath = (paths: AppPath[]): boolean =>
-    isRoutePath({ paths, routePath: $routeStore.path });
+  const isSelectedPath = ({
+    paths,
+    currentPath,
+  }: {
+    currentPath: AppPath | null;
+    paths: (AppPath | null)[];
+  }): boolean => currentPath !== null && paths.includes(currentPath);
 
   let routes: {
     context: string;
@@ -39,51 +42,53 @@
     {
       context: "accounts",
       href: $accountsPathStore,
-      selected: isSelectedPath([
-        AppPath.Accounts,
-        AppPath.LegacyAccounts,
-        AppPath.Wallet,
-        AppPath.LegacyWallet,
-      ]),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Accounts, AppPath.Wallet],
+      }),
       label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
       href: $neuronsPathStore,
-      selected: isSelectedPath([
-        AppPath.LegacyNeurons,
-        AppPath.LegacyNeuronDetail,
-        AppPath.NeuronDetail,
-        AppPath.Neurons,
-      ]),
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Neurons, AppPath.Neuron],
+      }),
       label: "neurons",
-      icon: IconPsychology,
+      icon: IconPassword,
     },
     {
       context: "proposals",
-      href: `${baseUrl}#/proposals`,
-      selected: isSelectedPath([AppPath.Proposals, AppPath.ProposalDetail]),
+      href: $proposalsPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Proposals, AppPath.Proposal],
+      }),
       label: "voting",
-      icon: IconHowToVote,
+      icon: IconUsers,
     },
     {
       context: "canisters",
-      href: `${baseUrl}#/canisters`,
-      selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
+      href: $canistersPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
       label: "canisters",
-      icon: IconEngineering,
+      icon: IconExplore,
     },
     // Launchpad should not be visible on mainnet
     ...(ENABLE_SNS
       ? [
           {
             context: "launchpad",
-            href: `${baseUrl}#/launchpad`,
-            selected: isSelectedPath([
-              AppPath.Launchpad,
-              AppPath.ProjectDetail,
-            ]),
+            href: `${AppPath.Launchpad}`,
+            selected: isSelectedPath({
+              currentPath: $pageStore.path,
+              paths: [AppPath.Launchpad, AppPath.Project],
+            }),
             label: "launchpad",
             icon: IconRocketLaunch,
             statusIcon: BadgeNew,

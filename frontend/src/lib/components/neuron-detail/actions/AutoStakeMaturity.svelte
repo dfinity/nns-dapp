@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox, Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -52,9 +52,11 @@
     <div data-tid="auto-stake-confirm-modal" class="wrapper">
       <h4>{$i18n.core.confirm}</h4>
       <p>
-        {@html hasAutoStakeOn
-          ? $i18n.neuron_detail.auto_stake_maturity_off
-          : $i18n.neuron_detail.auto_stake_maturity_on}
+        <Html
+          text={hasAutoStakeOn
+            ? $i18n.neuron_detail.auto_stake_maturity_off
+            : $i18n.neuron_detail.auto_stake_maturity_on}
+        />
       </p>
     </div>
   </ConfirmationModal>
@@ -66,8 +68,8 @@
   .auto-stake {
     padding: var(--padding-2x) 0 0;
 
-    --select-label-order: 1;
-    --select-padding: var(--padding) 0;
+    --checkbox-label-order: 1;
+    --checkbox-padding: var(--padding) 0;
   }
 
   .wrapper {

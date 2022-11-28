@@ -2,13 +2,18 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
-  import { IconClose, IconInfo, IconWarning } from "@dfinity/gix-components";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
+  import {
+    IconClose,
+    IconInfo,
+    IconWarning,
+    Value,
+  } from "@dfinity/gix-components";
   import { removeHotkey } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -19,7 +24,6 @@
   } from "$lib/utils/sns-neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
 
   const { reload, store }: SelectedSnsNeuronContext =
@@ -57,10 +61,10 @@
     const { success } = await removeHotkey({
       neuronId,
       hotkey,
-      rootCanisterId: $snsProjectSelectedStore,
+      rootCanisterId: $snsProjectIdSelectedStore,
     });
     if (success) {
-      await reload({ forceFetch: true });
+      await reload();
     }
     stopBusy("remove-sns-hotkey-neuron");
   };

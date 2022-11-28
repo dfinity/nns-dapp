@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
+  import { Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -18,10 +19,7 @@
 
   let disabled: boolean;
   $: disabled = !isEnoughToStakeNeuron({
-    stake: TokenAmount.fromE8s({
-      amount: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
-      token: ICPToken,
-    }),
+    stakeE8s: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
   });
 
   const dispatcher = createEventDispatcher();
@@ -39,21 +37,25 @@
       </p>
       <p class="label">{$i18n.neuron_detail.current_stake}</p>
       <p data-tid="neuron-stake">
-        {@html replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-        })}
+        <Html
+          text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+            $amount: valueSpan(
+              formatToken({ value: neuronICP, detailed: true })
+            ),
+          })}
+        />
       </p>
     </div>
     <div>
       <p>
-        {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
+        <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
       </p>
       <p>
-        {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
+        <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
       </p>
     </div>
     <p>
-      {@html $i18n.neuron_detail.spawn_neuron_note_hw}
+      <Html text={$i18n.neuron_detail.spawn_neuron_note_hw} />
     </p>
   </div>
   <button

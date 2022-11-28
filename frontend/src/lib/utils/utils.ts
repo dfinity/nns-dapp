@@ -1,3 +1,4 @@
+import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
 import { errorToString } from "./error.utils";
 
@@ -266,8 +267,9 @@ export const valueSpan = (text: string): string =>
 /**
  * Removes entries from an object given a list of keys.
  *
- * @param obj object to remove entries from
- * @param keysToRemove keys to remove
+ * @param {Object} params
+ * @param {Object} params.obj object to remove entries from
+ * @param {string[]} params.keysToRemove keys to remove
  * @returns new object with entries removed
  */
 export const removeKeys = <T extends Record<string, unknown>>({
@@ -299,3 +301,14 @@ export const keyOfOptional = <T>({
   obj: T | undefined;
   key: string | keyof T;
 }): T[keyof T] | undefined => obj?.[key as keyof T];
+
+/**
+ * Returns whether an asset is PNG or not.
+ *
+ * @param {string} src
+ * @returns boolean
+ */
+export const isPngAsset = (
+  asset: string | undefined | PngDataUrl
+): asset is PngDataUrl =>
+  nonNullish(asset) && asset.startsWith("data:image/png;base64,");

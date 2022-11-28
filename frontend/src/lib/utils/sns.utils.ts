@@ -1,3 +1,5 @@
+import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import type { PngDataUrl } from "$lib/types/assets";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -21,6 +23,7 @@ import {
   type SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import { isPngAsset } from "./utils";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
   params?: SnsParams;
@@ -32,6 +35,7 @@ type OptionalSummary = QuerySns & {
   swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
+  governanceCanisterId?: Principal;
 };
 
 type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
@@ -80,9 +84,12 @@ const mapOptionalMetadata = ({
     return undefined;
   }
 
+  // We have to check if the logo is a png asset for security reasons.
+  // Default logo can be svg.
   return {
-    // TODO: Use default logo if logo is nullish https://dfinity.atlassian.net/browse/GIX-1048
-    logo: nullishLogo ?? "",
+    logo: isPngAsset(nullishLogo)
+      ? nullishLogo
+      : (DEFAULT_SNS_LOGO as PngDataUrl),
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
@@ -169,6 +176,7 @@ export const mapAndSortSnsQueryToSummaries = ({
         metadata: mapOptionalMetadata(metadata),
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
+        governanceCanisterId: swapState?.governanceCanisterId,
         swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
       };
@@ -181,6 +189,7 @@ export const mapAndSortSnsQueryToSummaries = ({
       entry.swap !== undefined &&
       entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
+      entry.governanceCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
       entry.token !== undefined

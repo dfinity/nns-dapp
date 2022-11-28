@@ -1,14 +1,21 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
+  accountName,
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
+  getAccountByRootCanister,
   getAccountFromStore,
+  getAccountsByRootCanister,
   getPrincipalFromString,
   invalidAddress,
   isAccountHardwareWallet,
+  mainAccount,
 } from "$lib/utils/accounts.utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { encodeSnsAccount } from "@dfinity/sns";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
@@ -16,6 +23,11 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "../../mocks/sns-accounts.mock";
 
 describe("accounts-utils", () => {
   describe("getAccountByPrincipal", () => {
@@ -55,6 +67,17 @@ describe("accounts-utils", () => {
 
     it("should be a valid address", () => {
       expect(invalidAddress(mockAddressInputValid)).toBeFalsy();
+    });
+
+    it("should return false for sns accounts", () => {
+      const subaccount = new Uint8Array(32).fill(0);
+      subaccount[31] = 1;
+      const account = {
+        owner: new AnonymousIdentity().getPrincipal(),
+        subaccount: subaccount,
+      };
+      const subaccountString = encodeSnsAccount(account);
+      expect(invalidAddress(subaccountString)).toBeFalsy();
     });
   });
 
@@ -101,20 +124,17 @@ describe("accounts-utils", () => {
   });
 
   describe("getAccountFromStore", () => {
-    const accountsStore = {
-      main: mockMainAccount,
-      subAccounts: [mockSubAccount],
-    };
+    const accounts = [mockMainAccount, mockSubAccount];
 
     it("should not return an account if no identifier is provided", () => {
       expect(
-        getAccountFromStore({ identifier: undefined, accountsStore })
+        getAccountFromStore({ identifier: undefined, accounts })
       ).toBeUndefined();
     });
 
     it("should find no account if not matches", () => {
       expect(
-        getAccountFromStore({ identifier: "aaa", accountsStore })
+        getAccountFromStore({ identifier: "aaa", accounts })
       ).toBeUndefined();
     });
 
@@ -122,15 +142,109 @@ describe("accounts-utils", () => {
       expect(
         getAccountFromStore({
           identifier: mockMainAccount.identifier,
-          accountsStore,
+          accounts,
         })
       ).toEqual(mockMainAccount);
       expect(
         getAccountFromStore({
           identifier: mockSubAccount.identifier,
-          accountsStore,
+          accounts,
         })
       ).toEqual(mockSubAccount);
+    });
+  });
+
+  describe("getAccountByRootCanister", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should not return an account if no identifier is provided", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: undefined,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: "aaa",
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding nns account", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: mockMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(mockMainAccount);
+    });
+
+    it("should return corresponding sns account", () => {
+      expect(
+        getAccountByRootCanister({
+          identifier: mockSnsMainAccount.identifier,
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("getAccountsByRootCanister", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+    const snsAccounts = {
+      [mockPrincipal.toText()]: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
+    };
+
+    it("should return undefined if no accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: Principal.fromText("aaaaa-aa"),
+        })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding nns accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: OWN_CANISTER_ID,
+        })
+      ).toEqual(accounts);
+    });
+
+    it("should return corresponding sns accounts", () => {
+      expect(
+        getAccountsByRootCanister({
+          nnsAccounts: accounts,
+          snsAccounts,
+          rootCanisterId: mockPrincipal,
+        })
+      ).toEqual(snsAccounts[mockPrincipal.toText()].accounts);
     });
   });
 
@@ -165,6 +279,51 @@ describe("accounts-utils", () => {
           amountE8s: amountE8s - BigInt(10_000),
         });
       }).not.toThrow();
+    });
+  });
+
+  describe("mainAccount", () => {
+    it("should return `main` nns account", () => {
+      const accounts = [mockSubAccount, mockMainAccount, mockSubAccount];
+      expect(mainAccount(accounts)).toEqual(mockMainAccount);
+    });
+
+    it("should return `main` sns account", () => {
+      const accounts = [
+        mockSnsSubAccount,
+        mockSnsMainAccount,
+        mockSnsSubAccount,
+      ];
+      expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("accountName", () => {
+    it("returns subAccount name", () => {
+      expect(
+        accountName({
+          account: mockSubAccount,
+          mainName: "main",
+        })
+      ).toBe(mockSubAccount.name);
+    });
+
+    it("returns main account name", () => {
+      expect(
+        accountName({
+          account: mockMainAccount,
+          mainName: "main",
+        })
+      ).toBe("main");
+    });
+
+    it('returns "" if no account', () => {
+      expect(
+        accountName({
+          account: undefined,
+          mainName: "main",
+        })
+      ).toBe("");
     });
   });
 });

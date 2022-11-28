@@ -1,12 +1,12 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { attachCanister } from "$lib/services/canisters.services";
   import { createEventDispatcher } from "svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   let principal: Principal | undefined;
 
@@ -36,16 +36,17 @@
 </script>
 
 <form on:submit|preventDefault={attach} data-tid="attach-canister-modal">
-  <div class="input-wrapper">
-    <h5>{$i18n.canisters.enter_canister_id}</h5>
-    <PrincipalInput
-      bind:principal
-      placeholderLabelKey="canisters.canister_id"
-      name="canister-principal"
-    />
-  </div>
+  <PrincipalInput
+    bind:principal
+    placeholderLabelKey="canisters.canister_id"
+    name="canister-principal"
+  >
+    <svelte:fragment slot="label"
+      >{$i18n.canisters.enter_canister_id}</svelte:fragment
+    >
+  </PrincipalInput>
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       type="button"
@@ -61,27 +62,5 @@
     >
       {$i18n.core.confirm}
     </button>
-  </FooterModal>
+  </div>
 </form>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  h5 {
-    text-align: center;
-  }
-
-  form {
-    @include modal.section;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
-  .input-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-</style>

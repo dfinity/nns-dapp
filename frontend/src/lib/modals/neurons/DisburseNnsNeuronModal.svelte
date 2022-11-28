@@ -1,37 +1,38 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/neurons.services";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
 
   const dispatcher = createEventDispatcher();
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectDestination",
-      showBackButton: false,
       title: $i18n.neuron_detail.disburse_neuron_title,
     },
     {
       name: "ConfirmDisburse",
-      showBackButton: true,
       title: $i18n.accounts.review_transaction,
     },
   ];
 
-  let currentStep: Step;
-  let modal: LegacyWizardModal;
+  let currentStep: WizardStep;
+  let modal: WizardModal;
   let loading = false;
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
@@ -70,16 +71,14 @@
         labelKey: "neuron_detail.disburse_success",
       });
 
-      routeStore.replace({
-        path: $neuronsPathStore,
-      });
+      await goto($neuronsPathStore, { replaceState: true });
     }
 
     dispatcher("nnsClose");
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
@@ -95,6 +94,7 @@
       source={neuron.neuronId.toString()}
       {loading}
       {destinationAddress}
+      on:nnsBack={modal.back}
     />
   {/if}
-</LegacyWizardModal>
+</WizardModal>

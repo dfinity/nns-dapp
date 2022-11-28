@@ -13,8 +13,8 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import type { Step } from "$lib/stores/steps.state";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -28,11 +28,13 @@ import {
   followeesNeurons,
   formattedMaturity,
   formattedStakedMaturity,
+  formattedTotalMaturity,
   formatVotingPower,
   getDissolvingTimeInSeconds,
   getNeuronById,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToMerge,
+  hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
   isEnoughMaturityToSpawn,
@@ -48,15 +50,18 @@ import {
   mapNeuronIds,
   minMaturityMerge,
   minNeuronSplittable,
+  neuronAge,
   neuronCanBeSplit,
   neuronStake,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
+  validTopUpAmount,
   votedNeuronDetails,
   votingPower,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
+import type { WizardStep } from "@dfinity/gix-components";
 import {
   ICPToken,
   NeuronState,
@@ -91,7 +96,11 @@ describe("neuron-utils", () => {
     }) as TokenAmount;
     it("should return zero for delays less than six months", () => {
       expect(
-        votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
+        votingPower({
+          stake: BigInt(2),
+          dissolveDelayInSeconds: 100,
+          ageSeconds: 0,
+        })
       ).toBe(BigInt(0));
     });
 
@@ -100,6 +109,7 @@ describe("neuron-utils", () => {
         votingPower({
           stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+          ageSeconds: 0,
         })
       ).toBeGreaterThan(tokenStake.toE8s());
     });
@@ -109,6 +119,7 @@ describe("neuron-utils", () => {
         votingPower({
           stake: tokenStake.toE8s(),
           dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
+          ageSeconds: 0,
         })
       ).toBe(tokenStake.toE8s() * BigInt(2));
     });
@@ -122,6 +133,7 @@ describe("neuron-utils", () => {
       const powerWithoutAge = votingPower({
         stake: tokenStake.toE8s(),
         dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+        ageSeconds: 0,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
     });
@@ -356,6 +368,65 @@ describe("neuron-utils", () => {
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
+    });
+  });
+
+  describe("formattedTotalMaturity", () => {
+    it("returns 0 when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("0");
+    });
+
+    it("returns total maturity with two decimals", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("3.00");
+    });
+
+    it("returns maturity when staked maturity is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "2",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: stake.toE8s(),
+          stakedMaturityE8sEquivalent: BigInt(0),
+        },
+      };
+
+      expect(formattedTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns staked maturity when staked is 0", () => {
+      const stake = TokenAmount.fromString({
+        amount: "1",
+        token: ICPToken,
+      }) as TokenAmount;
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+          stakedMaturityE8sEquivalent: stake.toE8s(),
+        },
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("1.00");
     });
   });
 
@@ -798,18 +869,26 @@ describe("neuron-utils", () => {
 
   describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
-      const stake = TokenAmount.fromString({
-        amount: "3",
-        token: ICPToken,
-      }) as TokenAmount;
-      expect(isEnoughToStakeNeuron({ stake })).toBe(true);
+      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(300_000_000) })).toBe(
+        true
+      );
     });
     it("returns false if not enough ICP to create a neuron", () => {
-      const stake = TokenAmount.fromString({
-        amount: "0.000001",
-        token: ICPToken,
-      }) as TokenAmount;
-      expect(isEnoughToStakeNeuron({ stake })).toBe(false);
+      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(10_000) })).toBe(false);
+    });
+
+    it("takes into account fee", () => {
+      expect(
+        isEnoughToStakeNeuron({
+          stakeE8s: BigInt(100_000_000),
+          feeE8s: BigInt(10_000),
+        })
+      ).toBe(false);
+      expect(
+        isEnoughToStakeNeuron({
+          stakeE8s: BigInt(100_000_000),
+        })
+      ).toBe(true);
     });
   });
 
@@ -837,10 +916,9 @@ describe("neuron-utils", () => {
         onInvalid: spyOnInvalid,
       },
     ];
-    const currentStep: Step = {
+    const currentStep: WizardStep = {
       name: stepName,
       title: "some title",
-      showBackButton: false,
     };
     it("does nothing if state is valid", () => {
       checkInvalidState({
@@ -1478,17 +1556,28 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should return topics without ManageNeuron", () => {
+    it("should not return deprecated topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        enumValues(Topic).filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
+      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => !DEPRECATED_TOPICS.includes(topic))
       );
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        enumValues(Topic).filter((topic) => !DEPRECATED_TOPICS.includes(topic))
+      );
     });
   });
 
@@ -1604,6 +1693,49 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("hasEnoughMaturityToStake", () => {
+    it("returns false when no full neuron", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns false if neuron maturity is 0", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(0),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+
+    it("returns true if maturity larger than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(1000),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(true);
+    });
+
+    it("returns false if maturity smaller than needed", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: BigInt(-100),
+        },
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+    });
+  });
+
   describe("hasEnoughMaturityToMerge", () => {
     it("returns false when no full neuron", () => {
       const neuron = {
@@ -1695,6 +1827,65 @@ describe("neuron-utils", () => {
       const store = get(neuronsStore);
       const received = getNeuronById({ neuronsStore: store, neuronId });
       expect(received).toBeUndefined();
+    });
+  });
+
+  describe("validTopUpAmount", () => {
+    it("should return true if neuron has enough stake", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE * 2),
+        },
+      };
+      expect(validTopUpAmount({ neuron, amount: 0.001 })).toBe(true);
+    });
+
+    it("should return true if amount to top is large enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: (MIN_NEURON_STAKE * 2) / E8S_PER_ICP,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if amount and stake are not big enough", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("neuronAge", () => {
+    it("should return ageSeconds property", () => {
+      expect(neuronAge(mockNeuron)).toEqual(mockNeuron.ageSeconds);
+    });
+
+    it("should return max age value", () => {
+      const neuron = {
+        ...mockNeuron,
+        ageSeconds: mockNeuron.ageSeconds + BigInt(SECONDS_IN_FOUR_YEARS),
+      };
+      expect(neuronAge(neuron)).toEqual(BigInt(SECONDS_IN_FOUR_YEARS));
     });
   });
 });

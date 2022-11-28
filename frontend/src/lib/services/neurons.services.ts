@@ -22,9 +22,7 @@ import {
 } from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -34,7 +32,7 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { InsufficientAmountError } from "$lib/types/common.errors";
 import {
@@ -46,7 +44,6 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
-import { getLastPathDetailId, isRoutePath } from "$lib/utils/app-path.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -61,30 +58,27 @@ import {
   isHotKeyControllable,
   isIdentityController,
   userAuthorizedNeuron,
+  validTopUpAmount,
 } from "$lib/utils/neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import {
-  ICPToken,
-  TokenAmount,
-  Topic,
-  type NeuronId,
-  type NeuronInfo,
-} from "@dfinity/nns";
+import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   syncAccounts,
+  transferICP,
 } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { assertLedgerVersion } from "./ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
 ): Promise<{ identity: Identity; neuron: NeuronInfo }> => {
-  const currentIdentity = await getIdentity();
+  const currentIdentity = await getAuthenticatedIdentity();
   const neuron = await getNeuron({ neuronId, identity: currentIdentity });
 
   if (neuron === undefined) {
@@ -206,16 +200,13 @@ export const stakeNeuron = async ({
   loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
-    const stake = TokenAmount.fromNumber({
-      amount,
-      token: ICPToken,
-    });
+    const stake = numberToE8s(amount);
     assertEnoughAccountFunds({
       account,
-      amountE8s: stake.toE8s(),
+      amountE8s: stake,
     });
 
-    if (!isEnoughToStakeNeuron({ stake })) {
+    if (!isEnoughToStakeNeuron({ stakeE8s: stake })) {
       toastsError({
         labelKey: "error.amount_not_enough_stake_neuron",
       });
@@ -291,7 +282,7 @@ export const listNeurons = async ({
 
 // We always want to call this with the user identity
 const getAndLoadNeuron = async (neuronId: NeuronId) => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -445,7 +436,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
       labelKey: "busy_screen.pending_approval_hw",
     });
 
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
     await addHotkeyApi({
@@ -534,7 +525,7 @@ export const removeHotkey = async ({
     if (removed && err instanceof NotAuthorizedNeuronError) {
       // There is no need to get the identity unless removing the hotkey succeeded
       // and it was `getAndLoadNeuron` that threw the error.
-      const currentIdentityPrincipal = (await getIdentity())
+      const currentIdentityPrincipal = (await getAuthenticatedIdentity())
         .getPrincipal()
         .toText();
       // This happens when a user removes itself from the hotkeys.
@@ -562,18 +553,14 @@ export const splitNeuron = async ({
       neuronId
     );
 
-    const fee = get(mainTransactionFeeStore);
-    const transactionFeeAmount = fee / E8S_PER_ICP;
-    const stake = TokenAmount.fromNumber({
-      amount: amount + transactionFeeAmount,
-      token: ICPToken,
-    });
+    const feeE8s = get(mainTransactionFeeE8sStore);
+    const amountE8s = numberToE8s(amount) + feeE8s;
 
-    if (!isEnoughToStakeNeuron({ stake, fee })) {
+    if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
       throw new InsufficientAmountError();
     }
 
-    await splitNeuronApi({ neuronId, identity, amount: stake });
+    await splitNeuronApi({ neuronId, identity, amount: amountE8s });
 
     await listNeurons();
 
@@ -745,7 +732,7 @@ const setFolloweesHelper = async ({
       );
     }
     // We try to control by hotkey by default
-    let identity: Identity = await getIdentity();
+    let identity: Identity = await getAuthenticatedIdentity();
     if (!isHotKeyControllable({ neuron, identity })) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
@@ -897,7 +884,7 @@ export const loadNeuron = ({
 // Not resolve until the neuron has been loaded
 export const reloadNeuron = (neuronId: NeuronId) =>
   new Promise<void>((resolve) => {
-    getIdentity()
+    getAuthenticatedIdentity()
       // To update the neuron stake with the subaccount balance
       .then((identity) => claimOrRefreshNeuron({ identity, neuronId }))
       .then(() => {
@@ -915,6 +902,44 @@ export const reloadNeuron = (neuronId: NeuronId) =>
         });
       });
   });
+
+export const topUpNeuron = async ({
+  amount,
+  neuron,
+  sourceAccount,
+}: {
+  amount: number;
+  neuron: NeuronInfo;
+  sourceAccount: Account;
+}): Promise<{ success: boolean }> => {
+  if (neuron.fullNeuron?.accountIdentifier === undefined) {
+    toastsError({
+      labelKey: "errors.neuron_account_not_found",
+    });
+    return { success: false };
+  }
+
+  // TODO: Check the amount when the user enters amount in the input field.
+  // https://dfinity.atlassian.net/browse/GIX-798
+  if (!validTopUpAmount({ neuron, amount })) {
+    toastsError({
+      labelKey: "error.amount_not_enough_top_up_neuron",
+    });
+    return { success: false };
+  }
+
+  const { success } = await transferICP({
+    sourceAccount,
+    destinationAddress: neuron.fullNeuron?.accountIdentifier,
+    amount,
+  });
+
+  if (success) {
+    await reloadNeuron(neuron.neuronId);
+  }
+
+  return { success };
+};
 
 export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
   // Only available in testnet
@@ -946,16 +971,4 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     console.error(error);
     toastsShow(mapNeuronErrorToToastMessage(error));
   }
-};
-
-export const routePathNeuronId = (path: string): NeuronId | undefined => {
-  if (
-    !isRoutePath({
-      paths: [AppPath.LegacyNeuronDetail, AppPath.NeuronDetail],
-      routePath: path,
-    })
-  ) {
-    return undefined;
-  }
-  return getLastPathDetailId(path);
 };

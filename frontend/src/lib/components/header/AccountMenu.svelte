@@ -1,38 +1,48 @@
 <script lang="ts">
-  import Popover from "$lib/components/ui/Popover.svelte";
-  import { IconAccount } from "@dfinity/gix-components";
+  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
+  import LoginIconOnly from "./LoginIconOnly.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import ThemeToggle from "./ThemeToggle.svelte";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
+
+  const toggle = () => (visible = !visible);
 </script>
 
-<button
-  data-tid="account-menu"
-  class="icon-only toggle"
-  bind:this={button}
-  on:click={() => (visible = !visible)}
-  aria-label={$i18n.header.account_menu}
->
-  <IconAccount />
-</button>
+{#if signedIn}
+  <button
+    data-tid="account-menu"
+    class="icon-only toggle"
+    bind:this={button}
+    on:click={toggle}
+    aria-label={$i18n.header.account_menu}
+  >
+    <IconUser />
+  </button>
 
-<Popover bind:visible anchor={button} direction="rtl">
-  <div class="info">
-    <ThemeToggle />
-    <Logout />
-  </div>
-</Popover>
+  <Popover bind:visible anchor={button} direction="rtl">
+    <div class="info">
+      <ThemeToggle />
+
+      <Logout on:nnsLogoutTriggered={toggle} />
+    </div>
+  </Popover>
+{:else}
+  <LoginIconOnly />
+{/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/overlay";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/header";
 
   .info {
-    @include overlay.content;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
@@ -42,6 +52,6 @@
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--brand-sea-buckthorn);
+    @include header.button(--primary-tint);
   }
 </style>

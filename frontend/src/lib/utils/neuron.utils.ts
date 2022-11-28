@@ -12,12 +12,13 @@ import {
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
 } from "$lib/constants/neurons.constants";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
-import type { Step } from "$lib/stores/steps.state";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
+import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
   IconLockClock,
@@ -25,7 +26,6 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
-  TokenAmount,
   Topic,
   Vote,
   votedNeurons,
@@ -45,15 +45,14 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
-import { formatToken } from "./icp.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { formatToken } from "./token.utils";
 import { isDefined, isNullish, nonNullish } from "./utils";
 
 export type StateInfo = {
   textKey: string;
   Icon?: typeof SvelteComponent;
   status: "ok" | "warn" | "spawning";
-  color?: "var(--warning-emphasis)" | "var(--primary)";
 };
 
 type StateMapper = {
@@ -78,13 +77,11 @@ export const stateTextMapper: StateMapper = {
     textKey: "dissolving",
     Icon: IconHistoryToggleOff,
     status: "warn",
-    color: "var(--warning-emphasis)",
   },
   [NeuronState.Spawning]: {
     textKey: "spawning",
     Icon: IconHistoryToggleOff,
     status: "spawning",
-    color: "var(--primary)",
   },
 };
 
@@ -98,7 +95,7 @@ export const votingPower = ({
 }: {
   stake: bigint;
   dissolveDelayInSeconds: number;
-  ageSeconds?: number;
+  ageSeconds: number;
 }): bigint =>
   dissolveDelayInSeconds > SECONDS_IN_HALF_YEAR
     ? BigInt(
@@ -166,6 +163,16 @@ export const hasAutoStakeMaturityOn = ({ fullNeuron }: NeuronInfo): boolean =>
  */
 export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.maturityE8sEquivalent);
+
+/**
+ * Format the sum of the maturity and staked maturity in a value (token "currency") way.
+ * @param {NeuronInfo} neuron The neuron that contains the `maturityE8sEquivalent` and `stakedMaturityE8sEquivalent` which will be summed and formatted if a `fullNeuron` is available
+ */
+export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
+  formatMaturity(
+    (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) +
+      (fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0))
+  );
 
 /**
  * Format the staked maturity in a value (token "currency") way.
@@ -313,12 +320,12 @@ export const isValidInputAmount = ({
 }): boolean => amount !== undefined && amount > 0 && amount <= max;
 
 export const isEnoughToStakeNeuron = ({
-  stake,
-  fee = 0,
+  stakeE8s,
+  feeE8s = BigInt(0),
 }: {
-  stake: TokenAmount;
-  fee?: number;
-}): boolean => stake.toE8s() >= MIN_NEURON_STAKE + fee;
+  stakeE8s: bigint;
+  feeE8s?: bigint;
+}): boolean => stakeE8s >= BigInt(MIN_NEURON_STAKE) + feeE8s;
 
 export const isEnoughMaturityToSpawn = ({
   neuron: { fullNeuron },
@@ -531,6 +538,7 @@ export type InvalidState<T> = {
   isInvalid: (arg?: T) => boolean;
   onInvalid: () => void;
 };
+
 // Checks if there is an invalid state in a Wizard Step
 export const checkInvalidState = <T>({
   invalidStates,
@@ -538,7 +546,7 @@ export const checkInvalidState = <T>({
   args,
 }: {
   invalidStates: InvalidState<T>[];
-  currentStep?: Step;
+  currentStep?: WizardStep;
   args: T | undefined;
 }): void => {
   invalidStates
@@ -577,11 +585,14 @@ export const followeesByTopic = ({
  * NeuronManagement proposals are not public so we hide this topic
  * (unless the neuron already has followees on this topic)
  * https://github.com/dfinity/nns-dapp/pull/511
+ *
+ * Filter out deprecated topics.
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
-  followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
+  (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
     ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
-    : enumValues(Topic);
+    : enumValues(Topic)
+  ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
 // NeuronInfo is public info.
 // fullNeuron is only for users with access.
@@ -641,6 +652,9 @@ export const votedNeuronDetails = ({
  * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
  */
 export const minMaturityMerge = (fee: number): number => fee;
+
+export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
+  (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
 
 /**
  * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
@@ -721,3 +735,20 @@ export const neuronVoting = ({
       neuronIds.includes(neuronId) &&
       !successfullyVotedNeuronIds.includes(neuronId)
   ) !== undefined;
+
+// Check whether the amount to top up is valid.
+// Otherwise the claiming neuron doesn't work because the amount is too small.
+export const validTopUpAmount = ({
+  amount,
+  neuron,
+}: {
+  neuron: NeuronInfo;
+  amount: number;
+}): boolean => {
+  const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
+  const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+};
+
+export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
+  BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));

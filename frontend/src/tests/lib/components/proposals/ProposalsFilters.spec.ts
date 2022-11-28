@@ -3,10 +3,21 @@
  */
 
 import ProposalsFilters from "$lib/components/proposals/ProposalsFilters.svelte";
-import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import {
+  DEFAULT_PROPOSALS_FILTERS,
+  DEPRECATED_TOPICS,
+} from "$lib/constants/proposals.constants";
+import { authStore } from "$lib/stores/auth.store";
+import { proposalsFiltersStore } from "$lib/stores/proposals.store";
+import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import {
+  authStoreMock,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 describe("ProposalsFilters", () => {
@@ -30,55 +41,108 @@ describe("ProposalsFilters", () => {
     expect(buttons?.length).toEqual(1);
   };
 
-  it("should render topics filters", () => {
-    const { container } = render(ProposalsFilters);
+  describe("default filters", () => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    shouldRenderFilter({
-      container,
-      activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
-      totalFilters: enumSize(Topic) - 1,
-      text: en.voting.topics,
+    it("should render topics filters", () => {
+      const { container } = render(ProposalsFilters);
+
+      const nonShownTopicsLength = [
+        PROPOSAL_FILTER_UNSPECIFIED_VALUE,
+        ...DEPRECATED_TOPICS,
+      ].length;
+
+      shouldRenderFilter({
+        container,
+        activeFilters: DEFAULT_PROPOSALS_FILTERS.topics.length,
+        totalFilters: enumSize(Topic) - nonShownTopicsLength,
+        text: en.voting.topics,
+      });
+    });
+
+    it("should render rewards filters", () => {
+      const { container } = render(ProposalsFilters);
+
+      shouldRenderFilter({
+        container,
+        activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
+        totalFilters: enumSize(ProposalRewardStatus) - 1,
+        text: en.voting.rewards,
+      });
+    });
+
+    it("should render proposals filters", () => {
+      const { container } = render(ProposalsFilters);
+
+      shouldRenderFilter({
+        container,
+        activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
+        totalFilters: enumSize(ProposalStatus) - 1,
+        text: en.voting.status,
+      });
+    });
+
+    describe("signed in", () => {
+      beforeAll(() => {
+        authStoreMock.next({
+          identity: mockIdentity,
+        });
+      });
+
+      it("should render a checkbox", () => {
+        const { container } = render(ProposalsFilters);
+
+        const input: HTMLInputElement | null = container.querySelector("input");
+
+        expect(input?.getAttribute("type")).toEqual("checkbox");
+        expect(input?.getAttribute("id")).toEqual("hide-unavailable-proposals");
+      });
+    });
+
+    describe("not signed in", () => {
+      beforeAll(() => {
+        authStoreMock.next({
+          identity: undefined,
+        });
+      });
+
+      it("should not render a checkbox", () => {
+        const { getByTestId } = render(ProposalsFilters);
+
+        expect(() => getByTestId("hide-unavailable-proposals")).toThrow();
+      });
     });
   });
 
-  it("should render rewards filters", () => {
-    const { container } = render(ProposalsFilters);
-
-    shouldRenderFilter({
-      container,
-      activeFilters: DEFAULT_PROPOSALS_FILTERS.rewards.length,
-      totalFilters: enumSize(ProposalRewardStatus) - 1,
-      text: en.voting.rewards,
+  describe("custom filter selection", () => {
+    afterEach(() => {
+      proposalsFiltersStore.reset();
     });
-  });
 
-  it("should render proposals filters", () => {
-    const { container } = render(ProposalsFilters);
+    it("should not count deprecated selected filters in the count", () => {
+      const activeFilters = [
+        Topic.SnsDecentralizationSale,
+        Topic.SnsAndCommunityFund,
+        Topic.ExchangeRate,
+      ];
+      proposalsFiltersStore.filterTopics(activeFilters);
 
-    shouldRenderFilter({
-      container,
-      activeFilters: DEFAULT_PROPOSALS_FILTERS.status.length,
-      totalFilters: enumSize(ProposalStatus) - 1,
-      text: en.voting.status,
+      const { container } = render(ProposalsFilters);
+
+      const nonShownTopicsLength = [
+        PROPOSAL_FILTER_UNSPECIFIED_VALUE,
+        ...DEPRECATED_TOPICS,
+      ].length;
+
+      shouldRenderFilter({
+        container,
+        // Should NOT count deprecated SnsDecentralizationSale topic
+        activeFilters: activeFilters.length - 1,
+        totalFilters: enumSize(Topic) - nonShownTopicsLength,
+        text: en.voting.topics,
+      });
     });
-  });
-
-  it("should render a checkbox", () => {
-    const { container } = render(ProposalsFilters);
-
-    const input: HTMLInputElement | null = container.querySelector("input");
-
-    expect(input?.getAttribute("type")).toEqual("checkbox");
-    expect(input?.getAttribute("id")).toEqual("hide-unavailable-proposals");
-  });
-
-  it("should set a ref to the checkbox", () => {
-    const { container } = render(ProposalsFilters);
-
-    const div: HTMLDivElement | null = container.querySelector(
-      "div.checkbox.hide-unavailable-proposals"
-    );
-
-    expect(div).not.toBeNull();
   });
 });

@@ -2,45 +2,90 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
-import { formattedTransactionFeeICP } from "$lib/utils/icp.utils";
-import { TokenAmount } from "@dfinity/nns";
+import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
+import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("TransactionModal", () => {
-  const renderTransactionModal = (props?: {
+  const renderTransactionModal = ({
+    destinationAddress,
+    sourceAccount,
+    transactionFee = TokenAmount.fromE8s({
+      amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+      token: ICPToken,
+    }),
+    rootCanisterId,
+    validateAmount,
+  }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
+    rootCanisterId?: Principal;
+    validateAmount?: (amount: number | undefined) => string | undefined;
   }) =>
     renderModal({
       component: TransactionModal,
-      props: props ?? {},
+      props: {
+        destinationAddress,
+        sourceAccount,
+        transactionFee,
+        rootCanisterId,
+        validateAmount,
+      },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+
+    jest
+      .spyOn(snsAccountsStore, "subscribe")
+      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
   });
 
-  const renderEnter10ICPAndNext = async (
-    destination?: string,
-    transactionFee?: TokenAmount
-  ): Promise<RenderResult> => {
+  const renderEnter10ICPAndNext = async ({
+    destinationAddress,
+    transactionFee,
+    rootCanisterId,
+    sourceAccount,
+  }: {
+    destinationAddress?: string;
+    sourceAccount?: Account;
+    transactionFee?: TokenAmount;
+    rootCanisterId?: Principal;
+  }): Promise<RenderResult> => {
     const result = await renderTransactionModal({
-      destinationAddress: destination,
+      destinationAddress,
+      sourceAccount,
       transactionFee,
+      rootCanisterId,
     });
 
     const { queryAllByText, getByTestId, container } = result;
@@ -71,13 +116,17 @@ describe("TransactionModal", () => {
 
   describe("when destination is not provided", () => {
     it("should display modal", async () => {
-      const { container } = await renderTransactionModal();
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       expect(container.querySelector("div.modal")).not.toBeNull();
     });
 
     it("should display dropdown to select account, input to add amount and select destination account", async () => {
-      const { queryByTestId, container } = await renderTransactionModal();
+      const { queryByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       expect(queryByTestId("select-account-dropdown")).toBeInTheDocument();
       expect(
@@ -86,7 +135,9 @@ describe("TransactionModal", () => {
     });
 
     it("should trigger close on cancel", async () => {
-      const { getByTestId, component } = await renderTransactionModal();
+      const { getByTestId, component } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       const onClose = jest.fn();
       component.$on("nnsClose", onClose);
@@ -97,14 +148,18 @@ describe("TransactionModal", () => {
     });
 
     it("should have disabled button by default", async () => {
-      const { getByTestId } = await renderTransactionModal();
+      const { getByTestId } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       const participateButton = getByTestId("transaction-button-next");
       expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
     });
 
     it("should enable button when input value and select a destination changes", async () => {
-      const { getByTestId, container } = await renderTransactionModal();
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       const participateButton = getByTestId("transaction-button-next");
       expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
@@ -122,8 +177,32 @@ describe("TransactionModal", () => {
       );
     });
 
+    it("should not enable button when input value is not validated with the prop `validateAmount`", async () => {
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        validateAmount: () => "error__sns.not_enough_amount",
+      });
+
+      const participateButton = getByTestId("transaction-button-next");
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: "10" } });
+
+      // Choose select account
+      // It will choose the fist subaccount as default
+      const toggle = container.querySelector("input[id='toggle']");
+      toggle && fireEvent.click(toggle);
+
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeTruthy()
+      );
+    });
+
     it("should move to the last step and render review info", async () => {
-      const { getByText, getByTestId } = await renderEnter10ICPAndNext();
+      const { getByText, getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       expect(
         (
@@ -143,10 +222,10 @@ describe("TransactionModal", () => {
           name: "Test token",
         },
       });
-      const { getByText, getByTestId } = await renderEnter10ICPAndNext(
-        undefined,
-        fee
-      );
+      const { getByText, getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+      });
 
       expect(
         (
@@ -159,7 +238,9 @@ describe("TransactionModal", () => {
     });
 
     it("should move to the last step and trigger nnsSubmit event", async () => {
-      const { getByTestId, component } = await renderEnter10ICPAndNext();
+      const { getByTestId, component } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       const onSubmit = jest.fn();
       component.$on("nnsSubmit", onSubmit);
@@ -172,7 +253,9 @@ describe("TransactionModal", () => {
     });
 
     it("should move to the last step and go back", async () => {
-      const { getByTestId, container } = await renderTransactionModal();
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
 
       const participateButton = getByTestId("transaction-button-next");
 
@@ -208,6 +291,7 @@ describe("TransactionModal", () => {
     it("should not show the select destination component", async () => {
       const { queryByTestId, container } = await renderTransactionModal({
         destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
       });
 
       expect(queryByTestId("select-account-dropdown")).toBeInTheDocument();
@@ -222,12 +306,56 @@ describe("TransactionModal", () => {
     it("should not show the select account component", async () => {
       const { queryByTestId, container } = await renderTransactionModal({
         sourceAccount: mockMainAccount,
+        rootCanisterId: OWN_CANISTER_ID,
       });
 
       expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
       expect(
         container.querySelector("input[name='amount']")
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("with sns project id", () => {
+    it("should move to the last step and trigger nnsSubmit event", async () => {
+      const { queryByText, getByTestId, container, component } =
+        await renderTransactionModal({
+          rootCanisterId: mockPrincipal,
+        });
+
+      const participateButton = getByTestId("transaction-button-next");
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const icpAmount = "10";
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: icpAmount } });
+
+      // Enter valid destination address
+      const addressInput = container.querySelector(
+        "input[name='accounts-address']"
+      );
+      addressInput &&
+        fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
+
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+
+      fireEvent.click(participateButton);
+
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-2")).toBeTruthy()
+      );
+      expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+      const onSubmit = jest.fn();
+      component.$on("nnsSubmit", onSubmit);
+
+      const confirmButton = getByTestId("transaction-button-execute");
+
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => expect(onSubmit).toBeCalled());
     });
   });
 });

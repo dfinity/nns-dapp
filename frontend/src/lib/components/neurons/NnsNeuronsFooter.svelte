@@ -1,7 +1,6 @@
 <script lang="ts">
   import Footer from "$lib/components/common/Footer.svelte";
-  import { Toolbar } from "@dfinity/gix-components";
-  import CreateNeuronModal from "$lib/modals/neurons/CreateNeuronModal.svelte";
+  import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
@@ -21,41 +20,35 @@
 </script>
 
 <Footer>
-  <Toolbar>
+  <button
+    data-tid="stake-neuron-button"
+    class="primary full-width"
+    on:click={() => openModal("stake-neuron")}
+    >{$i18n.neurons.stake_neurons}</button
+  >
+  {#if enoughNeuronsToMerge}
     <button
-      data-tid="stake-neuron-button"
-      class="primary full-width"
-      on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
+      disabled={votingInProgress}
+      data-tid="merge-neurons-button"
+      class="secondary full-width"
+      on:click={() => openModal("merge-neurons")}
+      >{$i18n.neurons.merge_neurons}</button
     >
-    {#if enoughNeuronsToMerge}
+  {:else}
+    <Tooltip id="merge-neurons-info" top text={$i18n.neurons.need_two_to_merge}>
       <button
-        disabled={votingInProgress}
+        disabled
         data-tid="merge-neurons-button"
-        class="primary full-width"
+        class="secondary full-width tooltip-button"
         on:click={() => openModal("merge-neurons")}
         >{$i18n.neurons.merge_neurons}</button
       >
-    {:else}
-      <Tooltip
-        id="merge-neurons-info"
-        top
-        text={$i18n.neurons.need_two_to_merge}
-      >
-        <button
-          disabled
-          data-tid="merge-neurons-button"
-          class="primary full-width tooltip-button"
-          on:click={() => openModal("merge-neurons")}
-          >{$i18n.neurons.merge_neurons}</button
-        >
-      </Tooltip>
-    {/if}
-  </Toolbar>
+    </Tooltip>
+  {/if}
 </Footer>
 
 {#if showModal === "stake-neuron"}
-  <CreateNeuronModal on:nnsClose={closeModal} />
+  <StakeNeuronModal on:nnsClose={closeModal} />
 {/if}
 {#if showModal === "merge-neurons"}
   <MergeNeuronsModal on:nnsClose={closeModal} />

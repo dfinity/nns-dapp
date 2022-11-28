@@ -25,12 +25,12 @@ const defaultTransactionFees: TransactionFeesStore = {
  * - setMain: replace the current fee in `main`.
  */
 const initTransactionFeesStore = () => {
-  const { subscribe, update } = writable<TransactionFeesStore>(
-    defaultTransactionFees
-  );
+  const store = writable<TransactionFeesStore>(defaultTransactionFees);
+
+  const { update } = store;
 
   return {
-    subscribe,
+    ...store,
 
     setMain(fee: bigint) {
       update((data) => ({
@@ -59,12 +59,25 @@ const initTransactionFeesStore = () => {
         },
       }));
     },
+
+    // Used for testing
+    reset() {
+      update(() => defaultTransactionFees);
+    },
   };
 };
 
 export const transactionsFeesStore = initTransactionFeesStore();
 
+/**
+ * @deprecated prefer mainTransactionFeeE8sStore to use e8s for amount of tokens instead of Number.
+ */
 export const mainTransactionFeeStore = derived(
   transactionsFeesStore,
   ($store) => Number($store.main)
+);
+
+export const mainTransactionFeeE8sStore = derived(
+  transactionsFeesStore,
+  ($store) => $store.main
 );

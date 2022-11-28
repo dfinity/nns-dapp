@@ -3,10 +3,11 @@
  */
 
 import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
@@ -23,11 +24,9 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsNeuronHotkeysCard", () => {
-  const addVotePermission = (key) => ({
+  const addHotkeyPermissions = (key) => ({
     principal: [Principal.fromText(key)] as [Principal],
-    permission_type: Int32Array.from([
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-    ]),
+    permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
   });
   const hotkeys = [
     "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
@@ -36,13 +35,13 @@ describe("SnsNeuronHotkeysCard", () => {
   const controlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
     permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-      addVotePermission
+      addHotkeyPermissions
     ),
   };
 
   const unControlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
-    permissions: hotkeys.map(addVotePermission),
+    permissions: hotkeys.map(addHotkeyPermissions),
   };
 
   const reload = jest.fn();
@@ -93,6 +92,6 @@ describe("SnsNeuronHotkeysCard", () => {
     fireEvent.click(removeButtons[0]);
 
     expect(removeHotkey).toBeCalled();
-    await waitFor(() => expect(reload).toBeCalledWith({ forceFetch: true }));
+    await waitFor(() => expect(reload).toBeCalledWith());
   });
 });

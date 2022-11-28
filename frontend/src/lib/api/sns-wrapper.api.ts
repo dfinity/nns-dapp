@@ -4,7 +4,6 @@ import {
   importSnsWasmCanister,
   type SnsWasmCanisterCreate,
 } from "$lib/proxy/api.import.proxy";
-import { snsesCountStore } from "$lib/stores/sns.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { createAgent } from "$lib/utils/agent.utils";
@@ -14,10 +13,11 @@ import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
 
-let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
-let snsUpdateWrappers:
-  | Promise<Map<QueryRootCanisterId, SnsWrapper>>
-  | undefined;
+interface IdentityWrapper {
+  [principal: string]: Promise<Map<QueryRootCanisterId, SnsWrapper>>;
+}
+const identitiesCertifiedWrappers: IdentityWrapper = {};
+const identitiesNotCertifiedWrappers: IdentityWrapper = {};
 
 /**
  * List all deployed Snses - i.e list all Sns projects
@@ -100,8 +100,6 @@ const loadSnsWrappers = async ({
 
   const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
 
-  snsesCountStore.set(rootCanisterIds.length);
-
   const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
     rootCanisterIds.map((rootCanisterId: Principal) =>
       initSns({ agent, rootCanisterId, certified })
@@ -147,17 +145,25 @@ export const wrappers = async ({
   certified: boolean;
   identity: Identity;
 }): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
-  switch (certified) {
-    case false:
-      if (!snsQueryWrappers) {
-        snsQueryWrappers = initWrappers({ identity, certified: false });
-      }
-      return snsQueryWrappers;
-    default:
-      if (!snsUpdateWrappers) {
-        snsUpdateWrappers = initWrappers({ identity, certified: true });
-      }
-      return snsUpdateWrappers;
+  const principalText = identity.getPrincipal().toText();
+  if (certified) {
+    if (identitiesCertifiedWrappers[principalText] === undefined) {
+      // the initialization of the wrappers can be called mutliple times at the same time when the app loads.
+      // We cache the promise so that if multiple calls are made then all will resolve when the first init resolve.
+      identitiesCertifiedWrappers[principalText] = initWrappers({
+        identity,
+        certified,
+      });
+    }
+    return identitiesCertifiedWrappers[principalText];
+  } else {
+    if (identitiesNotCertifiedWrappers[principalText] === undefined) {
+      identitiesNotCertifiedWrappers[principalText] = initWrappers({
+        identity,
+        certified,
+      });
+    }
+    return identitiesNotCertifiedWrappers[principalText];
   }
 };
 

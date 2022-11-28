@@ -3,13 +3,13 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
   import { renameSubAccount } from "$lib/services/accounts.services";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import {
     SELECTED_ACCOUNT_CONTEXT_KEY,
     type SelectedAccountContext,
   } from "$lib/types/selected-account.context";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
 
   const { store } = getContext<SelectedAccountContext>(
     SELECTED_ACCOUNT_CONTEXT_KEY
@@ -35,9 +35,9 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount} class="wizard-wrapper">
+<form on:submit|preventDefault={createNewSubAccount}>
   <div>
-    <h4 class="balance">{$i18n.accounts.rename_account_enter_new_name}</h4>
+    <p class="label">{$i18n.accounts.rename_account_enter_new_name}</p>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.rename_new_name_placeholder"
@@ -46,7 +46,8 @@
       disabled={$busy}
     />
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button
       class="secondary"
       type="button"
@@ -64,13 +65,11 @@
     >
       {$i18n.accounts.rename}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
   }
 </style>

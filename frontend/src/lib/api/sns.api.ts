@@ -1,4 +1,5 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
@@ -11,9 +12,9 @@ import type { Identity } from "@dfinity/agent";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsAccount,
   SnsNeuron,
   SnsNeuronId,
-  SnsNeuronPermissionType,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -139,14 +140,14 @@ export const querySnsSwapState = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<QuerySnsSwapState | undefined> => {
+}): Promise<QuerySnsSwapState> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
   const {
     swapState,
-    canisterIds: { swapCanisterId },
+    canisterIds: { swapCanisterId, governanceCanisterId },
   }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
@@ -162,6 +163,7 @@ export const querySnsSwapState = async ({
   return {
     rootCanisterId,
     swapCanisterId,
+    governanceCanisterId,
     swap,
     derived,
     certified,
@@ -313,7 +315,10 @@ export const querySnsNeurons = async ({
   return neurons;
 };
 
-export const querySnsNeuron = async ({
+/**
+ * Returns the neuron or raises an error if not found.
+ */
+export const getSnsNeuron = async ({
   identity,
   rootCanisterId,
   certified,
@@ -338,82 +343,65 @@ export const querySnsNeuron = async ({
   return neuron;
 };
 
-export const addNeuronPermissions = async ({
+/**
+ * Returns the neuron or undefined.
+ */
+export const querySnsNeuron = async ({
   identity,
   rootCanisterId,
-  permissions,
-  principal,
+  certified,
   neuronId,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
+  certified: boolean;
   neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Adding neuron permissions: call...");
-  const { addNeuronPermissions } = await wrapper({
+}): Promise<SnsNeuron | undefined> => {
+  logWithTimestamp("Querying sns neuron: call...");
+  const { queryNeuron } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
-    certified: true,
+    certified,
   });
-  await addNeuronPermissions({
-    permissions,
-    principal,
+  const neuron = await queryNeuron({
     neuronId,
   });
 
-  logWithTimestamp("Adding neuron permissions: done");
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
 };
 
-export const removeNeuronPermissions = async ({
-  identity,
+export const stakeNeuron = async ({
+  controller,
+  stakeE8s,
   rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Removing neuron permissions: call...");
-  const { removeNeuronPermissions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-  await removeNeuronPermissions({
-    permissions,
-    principal,
-    neuronId,
-  });
-
-  logWithTimestamp("Removing neuron permissions: done");
-};
-
-export const disburse = async ({
   identity,
-  rootCanisterId,
-  neuronId,
+  source,
 }: {
-  identity: Identity;
+  controller: Principal;
+  stakeE8s: bigint;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp(`Disburse sns neuron call...`);
+  identity: Identity;
+  source: SnsAccount;
+}): Promise<SnsNeuronId> => {
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
 
-  const { disburse } = await wrapper({
+  const { stakeNeuron: stakeNeuronApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
 
-  await disburse({
-    neuronId,
+  const newNeuronId = await stakeNeuronApi({
+    stakeE8s,
+    source,
+    controller,
   });
 
-  logWithTimestamp(`Disburse sns neuron complete.`);
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+  return newNeuronId;
 };

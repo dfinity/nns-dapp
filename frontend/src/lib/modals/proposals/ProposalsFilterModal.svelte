@@ -5,7 +5,7 @@
     ProposalsFilterModalProps,
     ProposalsFilters,
   } from "$lib/types/proposals";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { enumValues } from "$lib/utils/enum.utils";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -16,6 +16,7 @@
   } from "@dfinity/nns";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -29,9 +30,11 @@
   $: category = props?.category ?? "uncategorized";
   $: filters = props?.filters;
   $: filtersValues = filters
-    ? enumValues(filters).filter(
-        (value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE
-      )
+    ? enumValues(filters)
+        .filter((value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE)
+        .filter((value) =>
+          category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
+        )
     : [];
   $: selectedFilters = props?.selectedFilters || [];
 
@@ -115,6 +118,6 @@
 
 <style lang="scss">
   .filters {
-    --select-padding: var(--padding-2x) var(--padding) var(--padding-2x);
+    --checkbox-padding: var(--padding-2x) var(--padding) var(--padding-2x);
   }
 </style>

@@ -3,10 +3,11 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { detachCanister } from "$lib/services/canisters.services";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { goto } from "$app/navigation";
 
   export let canisterId: Principal;
 
@@ -25,7 +26,8 @@
       toastsSuccess({
         labelKey: "canister_detail.detach_success",
       });
-      routeStore.replace({ path: AppPath.Canisters });
+
+      await goto(AppPath.Canisters, { replaceState: true });
     }
   };
 </script>

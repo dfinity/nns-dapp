@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { listSnsProposals } from "$lib/services/sns.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
@@ -9,6 +8,7 @@
   import { isNullish } from "$lib/utils/utils";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import ProposalCard from "../proposals/ProposalCard.svelte";
+  import { listSnsProposals } from "$lib/services/$public/sns.services";
 
   let loading = false;
   $: loading = isNullish($snsProposalsStore);
@@ -28,7 +28,7 @@
     <SkeletonProposalCard />
   </div>
 {:else if $openSnsProposalsStore.length === 0}
-  <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+  <p class="no-proposals">{$i18n.sns_launchpad.no_proposals}</p>
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}

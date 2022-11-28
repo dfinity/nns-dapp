@@ -14,7 +14,8 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
+  import { KeyValuePairInfo } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;
@@ -58,6 +59,8 @@
     {/if}
   </div>
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   h3 {

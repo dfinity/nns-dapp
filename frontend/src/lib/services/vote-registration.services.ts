@@ -30,9 +30,9 @@ import {
 } from "@dfinity/nns";
 import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { loadProposal } from "./$public/proposals.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
-import { loadProposal } from "./proposals.services";
 
 /**
  * Create Makes multiple registerVote calls (1 per neuronId).
@@ -270,7 +270,7 @@ const registerNeuronsVote = async ({
   updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
-  const identity: Identity = await getIdentity();
+  const identity: Identity = await getAuthenticatedIdentity();
   const { id, topic } = proposalInfo;
   const proposalId = id as ProposalId;
 

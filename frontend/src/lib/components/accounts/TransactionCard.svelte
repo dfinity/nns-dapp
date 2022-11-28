@@ -1,58 +1,36 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
-  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { TokenAmount } from "@dfinity/nns";
-  import type {
-    AccountIdentifierString,
-    Transaction,
-  } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import {
     AccountTransactionType,
-    mapTransaction,
+    type Transaction,
     transactionName,
   } from "$lib/utils/transactions.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { KeyValuePair, IconNorthEast } from "@dfinity/gix-components";
 
-  export let account: Account;
   export let transaction: Transaction;
   export let toSelfTransaction = false;
+  export let token: Token;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
   let isSend: boolean;
-  let from: AccountIdentifierString | undefined;
-  let to: AccountIdentifierString | undefined;
+  let from: string | undefined;
+  let to: string | undefined;
   let displayAmount: TokenAmount;
   let date: Date;
-
-  $: account,
-    transaction,
-    (() => {
-      try {
-        ({ type, isReceive, isSend, from, to, displayAmount, date } =
-          mapTransaction({
-            transaction,
-            toSelfTransaction,
-            account,
-          }));
-      } catch (err: unknown) {
-        toastsError(
-          err instanceof Error
-            ? { labelKey: err.message }
-            : { labelKey: "error.unknown", err }
-        );
-      }
-    })();
+  $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
 
   let headline: string;
   $: headline = transactionName({
     type,
     isReceive: isReceive || toSelfTransaction,
     labels: $i18n.transaction_names,
+    tokenSymbol: token.symbol,
   });
 
   let label: string | undefined;
@@ -68,32 +46,105 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<hr />
-
-<CardInfo testId="transaction-card">
-  <div slot="start" class="title">
-    <h3>{headline}</h3>
+<article data-tid="transaction-card">
+  <div class="icon" class:send={!isReceive}>
+    <IconNorthEast size="24px" />
   </div>
 
-  <AmountDisplay
-    slot="end"
-    amount={displayAmount}
-    sign={isReceive || toSelfTransaction ? "+" : "-"}
-    detailed
-  />
+  <div class="transaction">
+    <KeyValuePair>
+      <h3 slot="key" class="value title">{headline}</h3>
 
-  <DateSeconds {seconds} />
+      <AmountDisplay
+        slot="value"
+        amount={displayAmount}
+        sign={isReceive || toSelfTransaction ? "+" : "-"}
+        detailed
+        inline
+      />
+    </KeyValuePair>
 
-  {#if identifier !== undefined}
-    <Identifier size="medium" {label} {identifier} />
-  {/if}
-</CardInfo>
+    <ColumnRow>
+      <div slot="start" class="identifier">
+        {#if identifier !== undefined}
+          <Identifier size="medium" {label} {identifier} />
+        {/if}
+      </div>
+
+      <div slot="end" class="date label" data-tid="transaction-date">
+        <DateSeconds {seconds} />
+      </div>
+    </ColumnRow>
+  </div>
+</article>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/media";
+
+  article {
+    padding-bottom: var(--padding-2x);
+
+    @include media.min-width(small) {
+      padding-bottom: var(--padding);
+    }
+
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    align-items: flex-start;
+    column-gap: var(--padding-2x);
+
+    &:first-of-type {
+      margin-top: var(--padding-6x);
+    }
+  }
 
   .title {
-    @include card.stacked-title;
     @include card.title;
+    word-break: break-word;
+    --text-white-space: wrap;
+  }
+
+  .identifier {
+    @include media.min-width(small) {
+      max-width: 60%;
+    }
+  }
+
+  .date {
+    min-width: fit-content;
+    text-align: right;
+
+    @include media.min-width(small) {
+      margin-top: var(--padding);
+    }
+
+    :global(p) {
+      color: inherit;
+    }
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: rotate(90deg);
+
+    background: var(--positive-emphasis-light);
+    color: var(--positive-emphasis);
+
+    border-radius: var(--border-radius);
+
+    width: var(--padding-6x);
+    aspect-ratio: 1 / 1;
+
+    margin: var(--padding-0_5x) 0;
+
+    &.send {
+      transform: rotate(270deg);
+      background: var(--background);
+      color: var(--disable-contrast);
+    }
   }
 </style>

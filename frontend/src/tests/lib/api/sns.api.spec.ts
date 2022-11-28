@@ -3,7 +3,7 @@
  */
 
 import {
-  addNeuronPermissions,
+  getSnsNeuron,
   participateInSnsSwap,
   queryAllSnsMetadata,
   querySnsMetadata,
@@ -12,7 +12,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
-  removeNeuronPermissions,
+  stakeNeuron,
 } from "$lib/api/sns.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { NotAuthorizedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
@@ -20,7 +20,6 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import { snsesCountStore } from "$lib/stores/sns.store";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   ICPToken,
@@ -29,11 +28,9 @@ import {
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
-import { get } from "svelte/store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
@@ -73,9 +70,9 @@ describe("sns-api", () => {
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
+  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
-  const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
+  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
 
   beforeEach(() => {
     jest
@@ -103,9 +100,9 @@ describe("sns-api", () => {
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
-        getNeuron: queryNeuronSpy,
-        addNeuronPermissions: addNeuronPermissionsSpy,
-        removeNeuronPermissions: removeNeuronPermissionsSpy,
+        getNeuron: getNeuronSpy,
+        stakeNeuron: stakeNeuronSpy,
+        queryNeuron: queryNeuronSpy,
       })
     );
   });
@@ -135,17 +132,6 @@ describe("sns-api", () => {
     expect(metadata).not.toBeNull();
     expect(metadata.length).toEqual(1);
     expect(metadata).toEqual([mockQueryMetadata]);
-  });
-
-  it("should update snsesCountStore", async () => {
-    await queryAllSnsMetadata({
-      identity: mockIdentity,
-      certified: true,
-    });
-
-    const $snsesCountStore = get(snsesCountStore);
-
-    expect($snsesCountStore).toEqual(deployedSnsMock.length);
   });
 
   it("should query swap state", async () => {
@@ -239,7 +225,19 @@ describe("sns-api", () => {
     expect(queryNeuronsSpy).toBeCalled();
   });
 
-  it("should query one sns neurons", async () => {
+  it("should get one sns neuron", async () => {
+    const neuron = await getSnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(getNeuronSpy).toBeCalled();
+  });
+
+  it("should query one sns neuron", async () => {
     const neuron = await querySnsNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
@@ -251,27 +249,18 @@ describe("sns-api", () => {
     expect(queryNeuronSpy).toBeCalled();
   });
 
-  it("should add neuron permissions", async () => {
-    await addNeuronPermissions({
+  it("should stake neuron", async () => {
+    const neuronId = await stakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      stakeE8s: BigInt(200_000_000),
+      source: {
+        owner: mockPrincipal,
+      },
+      controller: mockPrincipal,
     });
 
-    expect(addNeuronPermissionsSpy).toBeCalled();
-  });
-
-  it("should remove neuron permissions", async () => {
-    await removeNeuronPermissions({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
-    });
-
-    expect(removeNeuronPermissionsSpy).toBeCalled();
+    expect(neuronId).toEqual(mockSnsNeuron.id);
+    expect(stakeNeuronSpy).toBeCalled();
   });
 });

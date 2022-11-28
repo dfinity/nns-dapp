@@ -11,7 +11,7 @@
   $: showTitle = $$slots.title !== undefined;
 </script>
 
-<div class="markdown value">
+<div class="markdown">
   {#if showTitle}
     <div class="title"><slot name="title" /></div>
   {/if}
@@ -31,8 +31,6 @@
 
     :global(a) {
       font-size: inherit;
-      color: var(--primary-tint);
-      text-decoration: none;
     }
 
     :global(pre) {
@@ -48,6 +46,7 @@
     :global(h6) {
       line-height: var(--line-height-standard);
       font-weight: normal;
+      color: inherit;
     }
 
     :global(h1) {
@@ -63,6 +62,11 @@
     :global(h5),
     :global(h6) {
       zoom: 0.8;
+    }
+
+    :global(table) {
+      display: block;
+      overflow: auto;
     }
   }
 </style>

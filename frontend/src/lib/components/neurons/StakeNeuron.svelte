@@ -4,20 +4,19 @@
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
-  } from "$lib/utils/icp.utils";
+  } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     mainTransactionFeeStore,
     transactionsFeesStore,
   } from "$lib/stores/transaction-fees.store";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
+  import { Value, busy } from "@dfinity/gix-components";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let account: Account;
   let amount: number;
@@ -59,26 +58,22 @@
   const stakeMaximum = () => (amount = max);
 </script>
 
-<form on:submit|preventDefault={createNeuron} class="wizard-wrapper">
-  <div class="head">
-    <CurrentBalance balance={account.balance} />
-
-    <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
+<form on:submit|preventDefault={createNeuron}>
+  <div class="source">
+    <TransactionSource {account} />
   </div>
+
+  <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
 
   <div>
-    <p class="label">{$i18n.neurons.source}</p>
-    <small class="identifier value">{account.identifier}</small>
-  </div>
-  <div class="transaction-fee">
     <p class="label">{$i18n.neurons.transaction_fee}</p>
-    <small>
+    <p>
       <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
       <span>ICP</span>
-    </small>
+    </p>
   </div>
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       type="button"
@@ -94,22 +89,13 @@
     >
       {$i18n.neurons.create}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  .head {
-    @include modal.header;
-  }
-
-  small {
-    word-break: break-all;
-    text-align: center;
-  }
-
-  .transaction-fee {
-    flex-grow: 1;
+  .source {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 </style>

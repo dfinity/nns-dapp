@@ -2,14 +2,15 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/icp.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let balance: TokenAmount | undefined;
 
   let totalTokens: string;
-  totalTokens =
+  $: totalTokens =
     balance !== undefined
       ? formatToken({
           value: balance.toE8s(),
@@ -18,41 +19,28 @@
       : "";
 </script>
 
-<div class="title">
-  <h1 data-tid="accounts-title">{$i18n.accounts.total}</h1>
-
-  {#if balance !== undefined}
-    <Tooltip
-      id="wallet-total-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_total, {
-        $amount: totalTokens,
-      })}
-    >
-      <AmountDisplay amount={balance} />
-    </Tooltip>
-  {/if}
-</div>
+<Summary>
+  <div class="details" slot="details">
+    {#if balance !== undefined}
+      <Tooltip
+        id="wallet-total-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+          $amount: totalTokens,
+        })}
+      >
+        <AmountDisplay copy amount={balance}>
+          <span>{$i18n.accounts.total}</span>
+        </AmountDisplay>
+      </Tooltip>
+    {/if}
+  </div>
+</Summary>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
-  .title {
-    display: block;
-    width: 100%;
-
-    margin-bottom: var(--padding-2x);
-
-    --token-font-size: var(--font-size-h1);
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--token-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
+  .details {
+    color: var(--description-color);
+    @include fonts.small;
   }
 </style>

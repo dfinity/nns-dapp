@@ -20,9 +20,8 @@ RUN git config --global url."https://github.com/".insteadOf git://github.com/
 
 # Modify the code to make testing easier:
 # - Provide maturity more rapidly.
-# TODO: Fix canister patch
-# COPY nns-canister.patch /tmp/
-# RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
+COPY nns-canister.patch /tmp/
+RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
 
 RUN export CARGO_TARGET_DIR=/ic/rs/target && \
     cd ic/rs/ && \
@@ -46,11 +45,16 @@ RUN binary=sns-swap-canister && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
 
+RUN binary=sns-wasm-canister && \
+    cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
-COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.did
+COPY --from=builder /ic/rs/rosetta-api/icp_ledger/ledger.did /ledger.did
 COPY --from=builder /ic/rs/rosetta-api/icrc1/ledger/icrc1.did /ic-icrc1-ledger.did
+COPY --from=builder /ic/rs/rosetta-api/icrc1/index/index.did /ic-icrc1-ledger-index.did
 COPY --from=builder /ic/rs/nns/gtc/canister/gtc.did /genesis_token.did
 COPY --from=builder /ic/rs/nns/cmc/cmc.did /cmc.did
 COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns_wasm.did

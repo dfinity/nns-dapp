@@ -1,25 +1,36 @@
 <script lang="ts">
-  import { accountsStore } from "$lib/stores/accounts.store";
-  import { accountsListStore } from "$lib/derived/accounts-list.derived";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { getAccountFromStore } from "$lib/utils/accounts.utils";
-  import Dropdown from "$lib/components/ui/Dropdown.svelte";
-  import DropdownItem from "$lib/components/ui/DropdownItem.svelte";
+  import {
+    getAccountByRootCanister,
+    getAccountsByRootCanister,
+  } from "$lib/utils/accounts.utils";
+  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+  import type { Principal } from "@dfinity/principal";
 
   export let selectedAccount: Account | undefined = undefined;
+  export let rootCanisterId: Principal;
   export let filterAccounts: (account: Account) => boolean = () => true;
 
   // In case the component is already initialized with a selectedAccount
   // To avoid cyclical dependencies, we don't update this if `selectedAccount` changes
   let selectedAccountIdentifier: string | undefined =
     selectedAccount?.identifier;
-  $: selectedAccount = getAccountFromStore({
+  $: selectedAccount = getAccountByRootCanister({
     identifier: selectedAccountIdentifier,
-    accountsStore: $accountsStore,
+    rootCanisterId,
+    nnsAccounts: $nnsAccountsListStore,
+    snsAccounts: $snsAccountsStore,
   });
 
-  $: selectableAccounts = $accountsListStore.filter(filterAccounts);
+  $: selectableAccounts =
+    getAccountsByRootCanister({
+      rootCanisterId,
+      nnsAccounts: $nnsAccountsListStore,
+      snsAccounts: $snsAccountsStore,
+    })?.filter(filterAccounts) ?? [];
 </script>
 
 {#if selectableAccounts.length === 0}

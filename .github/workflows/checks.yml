@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install shfmt
         run: sudo snap install --classic shfmt
@@ -54,7 +54,7 @@ jobs:
         run: cat <<<$(jq . dfx.json) > dfx.json
 
       - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         if: ${{ github.event_name == 'pull_request' }}
         with:
           add: .
@@ -82,9 +82,9 @@ jobs:
         os: [ubuntu-20.04]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
@@ -103,6 +103,7 @@ jobs:
         run : |
           touch assets.tar.xz
 
+      # Does not support Node 16 yet
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -121,22 +122,26 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
+      - name: Provide a config
+        run: ./config.sh
+
       - name: Install dependencies
         run: npm ci
+        working-directory: ./frontend
 
       - name: Compile typescript
         run: npm run build
+        working-directory: ./frontend
 
       # Temporarily disabled:
       #- name: Run linter
@@ -144,6 +149,7 @@ jobs:
 
       - name: Test
         run: npm run test
+        working-directory: ./frontend
 
   svelte-lint:
     needs: formatting
@@ -151,25 +157,30 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
+      - name: Provide a config
+        run: ./config.sh
+
       - name: Install dependencies
         run: npm ci
+        working-directory: ./frontend
 
       - name: Compile typescript
         run: npm run build
+        working-directory: ./frontend
 
       - name: Run linter
         run: npm run check
+        working-directory: ./frontend
 
   e2e-lint:
     needs: formatting
@@ -182,7 +193,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -205,7 +216,7 @@ jobs:
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Run ShellCheck
       uses: ludeeus/action-shellcheck@master
       env:

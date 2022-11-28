@@ -1,98 +1,43 @@
 <script lang="ts">
-  import { type Token, NeuronState, TokenAmount } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { authStore } from "$lib/stores/auth.store";
-  import { i18n } from "$lib/stores/i18n";
   import type { CardType } from "$lib/types/card";
-  import {
-    getSnsDissolvingTimeInSeconds,
-    getSnsLockedTimeInSeconds,
-    getSnsNeuronIdAsHexString,
-    getSnsNeuronStake,
-    getSnsNeuronState,
-    isUserHotkey,
-  } from "$lib/utils/sns-neuron.utils";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
-  import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
-  import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Hash from "$lib/components/ui/Hash.svelte";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import NeuronCardContainer from "$lib/components/neurons/NeuronCardContainer.svelte";
+  import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
+  import SnsNeuronAmount from "$lib/components/sns-neurons/SnsNeuronAmount.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
 
-  let isHotkey: boolean;
-  $: isHotkey = isUserHotkey({
-    neuron,
-    identity: $authStore.identity,
-  });
-
-  let neuronId: string;
-  $: neuronId = getSnsNeuronIdAsHexString(neuron);
-
-  let neuronStake: TokenAmount;
-  $: neuronStake = TokenAmount.fromE8s({
-    amount: getSnsNeuronStake(neuron),
-    // If we got here is because the token symbol is present.
-    // The projects without token are discarded filtered out.
-    token: $snsTokenSymbolSelectedStore as Token,
-  });
-
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
-
-  let dissolvingTime: bigint | undefined;
-  $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
-
-  let lockedTime: bigint | undefined;
-  $: lockedTime = getSnsLockedTimeInSeconds(neuron);
 </script>
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
-    <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
-    {#if isHotkey}
-      <span>{$i18n.neurons.hotkey_control}</span>
-    {/if}
+  <SnsNeuronCardTitle slot="start" {neuron} />
+
+  <div class="content">
+    <SnsNeuronAmount {neuron} />
+
+    <NeuronStateInfo state={neuronState} />
   </div>
 
-  <div slot="end" class="currency">
-    <AmountDisplay amount={neuronStake} detailed />
-  </div>
-
-  <NeuronStateInfo state={neuronState} />
-
-  <NeuronStateRemainingTime
-    state={getSnsNeuronState(neuron)}
-    timeInSeconds={dissolvingTime ?? lockedTime}
-  />
+  <SnsNeuronStateRemainingTime {neuron} />
 
   <slot />
 </NeuronCardContainer>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/card";
-
-  .identifier {
-    @include card.stacked-title;
-    :global(h3) {
-      margin: 0;
-    }
-  }
-
-  .currency {
+  .content {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    justify-content: space-between;
+    align-items: center;
 
-    margin-bottom: var(--padding);
-
-    @include media.min-width(medium) {
-      margin-bottom: 0;
-    }
+    width: 100%;
   }
 </style>

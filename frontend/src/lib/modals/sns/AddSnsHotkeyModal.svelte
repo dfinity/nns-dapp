@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { i18n } from "$lib/stores/i18n";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -7,7 +7,7 @@
   import { createEventDispatcher, getContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -36,10 +36,10 @@
     const { success } = await addHotkey({
       neuronId,
       hotkey: principal,
-      rootCanisterId: $snsProjectSelectedStore,
+      rootCanisterId: $snsProjectIdSelectedStore,
     });
     if (success) {
-      await reload({ forceFetch: true });
+      await reload();
     }
     stopBusy("add-sns-hotkey-neuron");
     if (success) {
@@ -48,21 +48,13 @@
   };
 </script>
 
-<LegacyModal on:nnsClose size="big">
-  <span slot="title" data-tid="add-hotkey-neuron-modal"
-    >{$i18n.neuron_detail.add_hotkey_modal_title}</span
+<Modal on:nnsClose testId="add-hotkey-neuron-modal">
+  <svelte:fragment slot="title"
+    >{$i18n.neuron_detail.add_hotkey_modal_title}</svelte:fragment
   >
-  <section>
-    <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
-      <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
-      <span slot="button">{$i18n.core.confirm}</span>
-    </AddPrincipal>
-  </section>
-</LegacyModal>
 
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-  section {
-    @include modal.section;
-  }
-</style>
+  <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
+    <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>
+    <span slot="button">{$i18n.core.confirm}</span>
+  </AddPrincipal>
+</Modal>

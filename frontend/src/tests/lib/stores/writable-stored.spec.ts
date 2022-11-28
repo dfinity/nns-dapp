@@ -5,6 +5,13 @@ import { storeLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
 
+jest.mock("../../../../__mocks__/$app/environment", () => {
+  return {
+    browser: true,
+    prerender: false,
+  };
+});
+
 describe("writableStored", () => {
   afterEach(() => {
     jest.clearAllMocks();
