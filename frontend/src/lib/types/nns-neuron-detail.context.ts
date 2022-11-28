@@ -13,6 +13,7 @@ export type NnsNeuronModal =
   | "spawn"
   | "join-community-fund"
   | "follow"
+  | "add-hotkey"
   | undefined;
 
 export interface NnsNeuronStore {

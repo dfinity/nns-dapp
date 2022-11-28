@@ -17,6 +17,7 @@
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
   import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
+  import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -36,19 +37,19 @@
   {/if}
 
   {#if modal === "split-neuron"}
-    <SplitNeuronModal {neuron} on:nnsClose={close} />
+    <SplitNeuronModal on:nnsClose={close} {neuron} />
   {/if}
 
   {#if modal === "increase-stake"}
-    <IncreaseNeuronStakeModal {neuron} on:nnsClose={close} />
+    <IncreaseNeuronStakeModal on:nnsClose={close} {neuron} />
   {/if}
 
   {#if modal === "disburse"}
-    <DisburseNnsNeuronModal {neuron} on:nnsClose={close} />
+    <DisburseNnsNeuronModal on:nnsClose={close} {neuron} />
   {/if}
 
   {#if modal === "dissolve"}
-    <DissolveActionButtonModal {neuron} on:nnsClose={close} />
+    <DissolveActionButtonModal on:nnsClose={close} {neuron} />
   {/if}
 
   {#if modal === "stake-maturity"}
@@ -73,5 +74,9 @@
 
   {#if modal === "follow"}
     <FollowNeuronsModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "add-hotkey"}
+    <AddHotkeyModal on:nnsClose={close} {neuron} />
   {/if}
 {/if}
