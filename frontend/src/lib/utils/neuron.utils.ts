@@ -8,7 +8,7 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  AGE_MULTPIPLIER,
+  AGE_MULTIPLIER,
   DISSOLVE_DELAY_MULTIPLIER,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
@@ -156,29 +156,31 @@ const votingPower = ({
   stakeE8s,
   dissolveDelay,
   ageSeconds,
-  ageBonusMultiplier = AGE_MULTPIPLIER,
+  ageBonusMultiplier = AGE_MULTIPLIER,
   dissolveBonusMultiplier = DISSOLVE_DELAY_MULTIPLIER,
   maxDissolveDelaySeconds = SECONDS_IN_EIGHT_YEARS,
   maxAgeSeconds = SECONDS_IN_FOUR_YEARS,
   minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
-}: VotingPowerParams): bigint =>
-  dissolveDelay > minDissolveDelaySeconds
-    ? BigInt(
-        Math.round(
-          Number(stakeE8s) *
-            bonusMultiplier({
-              amount: dissolveDelay,
-              multiplier: dissolveBonusMultiplier,
-              max: maxDissolveDelaySeconds,
-            }) *
-            bonusMultiplier({
-              amount: ageSeconds,
-              multiplier: ageBonusMultiplier,
-              max: maxAgeSeconds,
-            })
-        )
-      )
-    : BigInt(0);
+}: VotingPowerParams): bigint => {
+  if (dissolveDelay < minDissolveDelaySeconds) {
+    return BigInt(0);
+  }
+  const dissolveDelayMultiplier = bonusMultiplier({
+    amount: dissolveDelay,
+    multiplier: dissolveBonusMultiplier,
+    max: maxDissolveDelaySeconds,
+  });
+  const ageMultiplier = bonusMultiplier({
+    amount: ageSeconds,
+    multiplier: ageBonusMultiplier,
+    max: maxAgeSeconds,
+  });
+  // We don't use dissolveDelayMultiplier and ageMultiplier directly because those are specific to NNS.
+  // This function is generic and could be used for SNS.
+  return BigInt(
+    Math.round(Number(stakeE8s) * dissolveDelayMultiplier * ageMultiplier)
+  );
+};
 
 export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
   bonusMultiplier({
@@ -190,7 +192,7 @@ export const dissolveDelayMultiplier = (delayInSeconds: bigint): number =>
 export const ageMultiplier = (ageSeconds: bigint): number =>
   bonusMultiplier({
     amount: ageSeconds,
-    multiplier: AGE_MULTPIPLIER,
+    multiplier: AGE_MULTIPLIER,
     max: SECONDS_IN_FOUR_YEARS,
   });
 
