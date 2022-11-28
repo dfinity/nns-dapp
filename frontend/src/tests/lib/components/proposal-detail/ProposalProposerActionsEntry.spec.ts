@@ -80,14 +80,14 @@ describe("ProposalProposerActionsEntry", () => {
     expect(motionActions.queryAllByTestId("json").length).toBe(0);
   });
 
-  it("should render undefined fields as 'null'", () => {
+  it("should render undefined fields as 'undefined'", () => {
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithActionWithUndefined,
       },
     });
 
-    expect(getByText("null")).toBeInTheDocument();
+    expect(getByText("undefined")).toBeInTheDocument();
   });
 
   it("should render nnsFunction id", () => {

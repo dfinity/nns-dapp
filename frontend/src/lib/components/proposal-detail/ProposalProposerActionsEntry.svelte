@@ -28,8 +28,6 @@
       <span class="value" slot="value">
         {#if typeof value === "object"}
           <Json json={value} />
-        {:else if typeof value === "undefined"}
-          <Json json={null} />
         {:else}
           {value}
         {/if}
