@@ -4,6 +4,9 @@ import type { Writable } from "svelte/store";
 export type NnsNeuronModal =
   | "increase-dissolve-delay"
   | "split-neuron"
+  | "increase-stake"
+  | "disburse"
+  | "dissolve"
   | undefined;
 
 export interface NnsNeuronStore {

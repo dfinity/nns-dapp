@@ -8,6 +8,9 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
   import type { NeuronInfo } from "@dfinity/nns";
+  import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
+  import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
+  import DissolveActionButtonModal from "$lib/modals/neurons/DissolveActionButtonModal.svelte";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -28,5 +31,17 @@
 
   {#if modal === "split-neuron"}
     <SplitNeuronModal {neuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "increase-stake"}
+    <IncreaseNeuronStakeModal {neuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "disburse"}
+    <DisburseNnsNeuronModal {neuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "dissolve"}
+    <DissolveActionButtonModal {neuron} on:nnsClose={close} />
   {/if}
 {/if}
