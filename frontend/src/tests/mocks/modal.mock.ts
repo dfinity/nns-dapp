@@ -1,8 +1,8 @@
 import type { Account } from "$lib/types/account";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
+  WALLET_CONTEXT_KEY,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -74,10 +74,12 @@ export const renderModalSelectedAccountContextWrapper = ({
   account: Account | undefined;
 }): Promise<RenderResult<SvelteComponent>> =>
   renderModalContextWrapper({
-    contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+    contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedAccountStore>({
+      store: writable<WalletStore>({
         account,
+        modal: undefined,
+        neurons: [],
       }),
     },
     Component,

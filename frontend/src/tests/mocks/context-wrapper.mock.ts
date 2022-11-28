@@ -1,13 +1,13 @@
 import type { Account } from "$lib/types/account";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
-import {
   SELECTED_SNS_NEURON_CONTEXT_KEY,
   type SelectedSnsNeuronContext,
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
+import {
+  WALLET_CONTEXT_KEY,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
@@ -46,10 +46,12 @@ export const renderSelectedAccountContext = ({
   account: Account | undefined;
 }): RenderResult<SvelteComponent> =>
   renderContextWrapper({
-    contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+    contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedAccountStore>({
+      store: writable<WalletStore>({
         account,
+        modal: undefined,
+        neurons: [],
       }),
     },
     Component,

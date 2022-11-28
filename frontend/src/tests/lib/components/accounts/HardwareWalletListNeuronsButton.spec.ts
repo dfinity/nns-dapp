@@ -4,10 +4,8 @@
 
 import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
 import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
-import { walletModal } from "$lib/stores/modal.store";
 import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
+import { render, waitFor } from "@testing-library/svelte";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
@@ -57,8 +55,8 @@ describe("HardwareWalletListNeuronsButton", () => {
       getByTestId("ledger-list-button") as HTMLButtonElement
     );
 
-    const modal = get(walletModal);
-    expect(modal).toEqual("hw-list-neurons");
+    await waitFor(() => expect(getByTestId("test-modal")).not.toBeNull());
+    expect(getByTestId("test-modal")?.textContent).toEqual("hw-list-neurons");
 
     expect(spy).toHaveBeenCalled();
   });
