@@ -22,7 +22,8 @@
     toggleModal: mockToggleCanisterModal,
   });
 
-  $: $mockCanisterDetailsStore, (() => spy?.($mockCanisterDetailsStore.selectedController))()
+  $: $mockCanisterDetailsStore,
+    (() => spy?.($mockCanisterDetailsStore.selectedController))();
 </script>
 
 <RemoveCanisterControllerButton {controller} />
