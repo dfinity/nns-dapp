@@ -105,8 +105,10 @@
       class="primary"
       on:click={selectAmount}
       data-tid="select-cycles-button"
-      disabled={!enoughCycles}>{$i18n.canisters.review_cycles_purchase}</button
+      disabled={!enoughCycles}
     >
+      <slot name="select-amount" />
+    </button>
   </div>
 </form>
 
