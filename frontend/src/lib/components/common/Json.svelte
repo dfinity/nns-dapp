@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { bytesToHexString, isHash } from "$lib/utils/utils";
+  import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
@@ -27,38 +27,6 @@
     if (Array.isArray(json) && isHash(json)) return "hash";
     return typeof value;
   };
-  const stringify = (value: unknown): string | object => {
-    switch (typeof value) {
-      case "object": {
-        if (value === null) {
-          return "null";
-        }
-        // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-        if (isPrincipal(value)) {
-          const asText = value.toString();
-          if (asText !== "[object Object]") {
-            // To not stringify NOT-Principal object that contains _isPrincipal field
-            return `"${asText}"`;
-          }
-        }
-        // optimistic hash stringifying
-        if (Array.isArray(value) && isHash(value)) {
-          return bytesToHexString(value);
-        }
-        return value;
-      }
-      case "string":
-        return `"${value}"`;
-      case "bigint":
-        return value.toString();
-      case "function":
-        return "f () { ... }";
-      case "symbol":
-        return value.toString();
-      default:
-        return `${value}`;
-    }
-  };
 
   let valueType: ValueType;
   let value: unknown;
@@ -74,7 +42,7 @@
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
-    value = isExpandable ? json : stringify(json);
+    value = isExpandable ? json : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;

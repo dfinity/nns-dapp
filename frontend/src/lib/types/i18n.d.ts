@@ -30,7 +30,6 @@ interface I18nCore {
   ic: string;
   previous: string;
   next: string;
-  null: string;
   principal_is: string;
 }
 

@@ -6,7 +6,6 @@ import ProposalProposerActionsEntry from "$lib/components/proposal-detail/Propos
 import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import type { Action, Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 import {
   mockProposalInfo,
   proposalActionMotion,
@@ -81,14 +80,14 @@ describe("ProposalProposerActionsEntry", () => {
     expect(motionActions.queryAllByTestId("json").length).toBe(0);
   });
 
-  it("should render undefined fields as NULL", () => {
+  it("should render undefined fields as 'null'", () => {
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
         proposal: proposalWithActionWithUndefined,
       },
     });
 
-    expect(getByText(en.core.null)).toBeInTheDocument();
+    expect(getByText("null")).toBeInTheDocument();
   });
 
   it("should render nnsFunction id", () => {
