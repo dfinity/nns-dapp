@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import * as agentServices from "$lib/services/$public/agent.services";
 import { initAppPublic } from "$lib/services/$public/app.services";
 import { loadSnsSummaries } from "$lib/services/$public/sns.services";
+import * as agentServices from "$lib/services/agent.services";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

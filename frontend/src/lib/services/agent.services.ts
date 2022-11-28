@@ -10,6 +10,7 @@ import { createAgent } from "$lib/utils/agent.utils";
  * > Invalid certificate: time 1669616522397 is too tar in the nast (current time: 1669617063816)
  * > BODY DOES NOT PASS VERIFICATION
  *
+ * Agent-js syncTime can be called during initialization or mid-lifecycle so we do it as soon as possible.
  * See http-agent.syncTime for more information.
  */
 export const syncTime = async () => {
@@ -17,6 +18,12 @@ export const syncTime = async () => {
     identity: getAnonymousIdentity(),
     host: HOST,
   });
-  // agent-js syncTime uses per default LEDGER_CANISTER_ID as well but not providing a canister id lead to a console.log
-  return agent.syncTime(LEDGER_CANISTER_ID);
+
+  try {
+    // agent-js syncTime uses per default LEDGER_CANISTER_ID as well but not providing a canister id lead to a console.log
+    await agent.syncTime(LEDGER_CANISTER_ID);
+  } catch (error: unknown) {
+    // While we are not absolutely sure the dapp would work without the timestamp in sync, we ignore potential errors as this call is not crucial features wise.
+    console.error(error);
+  }
 };
