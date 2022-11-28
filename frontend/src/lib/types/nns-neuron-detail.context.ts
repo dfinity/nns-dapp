@@ -2,13 +2,13 @@ import type { NeuronInfo } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
 
 export type NeuronModal = "increase-dissolve-delay"
-    | "disburse" | undefined;
+    | "disburse"
+    | "dissolve" | undefined;
 
 export type NnsNeuronModal = NeuronModal &
   (
     | "split-neuron"
     | "increase-stake"
-    | "dissolve"
     | "auto-stake-maturity"
     | "stake-maturity"
     | "merge-maturity"

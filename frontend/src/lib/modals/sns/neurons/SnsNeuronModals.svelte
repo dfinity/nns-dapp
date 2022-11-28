@@ -11,6 +11,7 @@
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+  import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -38,5 +39,9 @@
 
   {#if modal === "disburse"}
   <DisburseSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
+    {/if}
+
+  {#if modal === "dissolve"}
+  <DissolveSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
     {/if}
 {/if}

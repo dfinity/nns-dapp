@@ -23,7 +23,7 @@
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 
-  const { store, reload: reloadContext }: SelectedSnsNeuronContext =
+  const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
@@ -70,9 +70,7 @@
       <DisburseSnsButton />
     {:else if canDissolve}
       <DissolveSnsNeuronButton
-        neuronId={fromDefinedNullable(neuron.id)}
         {neuronState}
-        {reloadContext}
       />
     {/if}
   </div>
