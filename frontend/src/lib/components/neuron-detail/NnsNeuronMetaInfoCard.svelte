@@ -83,11 +83,9 @@
                 }),
                 $st4kedMaturity: formattedStakedMaturity(neuron),
                 $delayMultiplier: dissolveDelayMultiplier(
-                  Number(neuron.dissolveDelaySeconds)
+                  neuron.dissolveDelaySeconds
                 ).toFixed(2),
-                $ageMultiplier: ageMultiplier(
-                  Number(neuron.ageSeconds)
-                ).toFixed(2),
+                $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
               }
             )}
           />

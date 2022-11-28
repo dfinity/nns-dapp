@@ -4,10 +4,10 @@
 
 import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
+  WALLET_CONTEXT_KEY,
+  type WalletContext,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -20,12 +20,14 @@ describe("WalletSummary", () => {
   const renderWalletSummary = () =>
     render(ContextWrapperTest, {
       props: {
-        contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+        contextKey: WALLET_CONTEXT_KEY,
         contextValue: {
-          store: writable<SelectedAccountStore>({
+          store: writable<WalletStore>({
             account: mockMainAccount,
+            modal: undefined,
+            neurons: [],
           }),
-        } as SelectedAccountContext,
+        } as WalletContext,
         Component: WalletSummary,
       },
     });

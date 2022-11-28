@@ -6,16 +6,14 @@
   import NnsTransactionCard from "./NnsTransactionCard.svelte";
   import { getContext } from "svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
   import { mapToSelfTransaction } from "$lib/utils/transactions.utils";
 
   export let transactions: NnsTransaction[] | undefined;
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let account: Account | undefined;
   $: ({ account } = $store);
