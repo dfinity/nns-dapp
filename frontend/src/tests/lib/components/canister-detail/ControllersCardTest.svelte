@@ -5,13 +5,18 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
+  import {
+    mockCanisterDetailsStore,
+    mockToggleCanisterModal,
+  } from "../../../mocks/canisters.mock";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
 
   export let controllers: string[];
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: mockCanisterDetailsStore,
     reloadDetails: () => Promise.resolve(undefined),
+    toggleModal: mockToggleCanisterModal,
   });
 
   onMount(() => {
@@ -29,3 +34,5 @@
 </script>
 
 <ControllersCard on:nnsClose />
+
+<CanisterDetailModals />

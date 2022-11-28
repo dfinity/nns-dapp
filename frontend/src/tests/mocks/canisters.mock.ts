@@ -4,7 +4,10 @@ import {
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { CanistersStore } from "$lib/stores/canisters.store";
-import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
+import type {
+  CanisterDetailsModal,
+  SelectCanisterDetailsStore,
+} from "$lib/types/canister-detail.context";
 import { Principal } from "@dfinity/principal";
 import { writable, type Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
@@ -56,4 +59,10 @@ export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
   info: mockCanister,
   details: mockCanisterDetails,
   controller: true,
+  modal: undefined,
+  selectedController: undefined,
 });
+
+export const mockToggleCanisterModal = (
+  modal: CanisterDetailsModal | undefined
+) => mockCanisterDetailsStore.update((data) => ({ ...data, modal }));

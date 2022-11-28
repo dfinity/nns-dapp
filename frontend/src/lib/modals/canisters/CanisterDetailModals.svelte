@@ -1,0 +1,51 @@
+<script lang="ts">
+  import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
+  import type {
+    CanisterDetailsContext,
+    CanisterDetailsModal,
+  } from "$lib/types/canister-detail.context";
+  import { CANISTER_DETAILS_CONTEXT_KEY } from "$lib/types/canister-detail.context";
+  import { getContext } from "svelte";
+  import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import DetachCanisterModal from "$lib/modals/canisters/DetachCanisterModal.svelte";
+  import AddCanisterControllerModal from "$lib/modals/canisters/AddCanisterControllerModal.svelte";
+  import RemoveCanisterControllerModal from "$lib/modals/canisters/RemoveCanisterControllerModal.svelte";
+
+  const context: CanisterDetailsContext = getContext<CanisterDetailsContext>(
+    CANISTER_DETAILS_CONTEXT_KEY
+  );
+  const { store }: CanisterDetailsContext = context;
+
+  let modal: CanisterDetailsModal | undefined;
+  let selectedController: string | undefined;
+  $: ({ modal, selectedController } = $store);
+
+  let canisterId: CanisterId | undefined;
+  $: canisterId = $store.info?.canister_id;
+
+  // We also reset the selected controller here to avoid visual glitch - e.g. the controller being refreshed in the UI before the remove controller modal being closed
+  const close = () =>
+    store.update((data) => ({
+      ...data,
+      modal: undefined,
+      selectedController: undefined,
+    }));
+</script>
+
+{#if canisterId !== undefined}
+  {#if modal === "add-cycles"}
+    <AddCyclesModal on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "detach"}
+    <DetachCanisterModal {canisterId} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "add-controller"}
+    <AddCanisterControllerModal on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "remove-controller" && selectedController !== undefined}
+    <RemoveCanisterControllerModal on:nnsClose={close} />
+  {/if}
+{/if}

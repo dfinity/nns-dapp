@@ -87,4 +87,32 @@ describe("RemoveCanisterControllerButton", () => {
     expect(removeController).toBeCalled();
     expect(reloadDetailsMock).toBeCalled();
   });
+
+  it("clear selected controller after remove", async () => {
+    let selectedController = "value";
+    const spy = (c) => (selectedController = c);
+
+    const { queryByTestId } = render(RemoveCanisterControllerButton, {
+      props: {
+        ...props,
+        spy,
+      },
+    });
+
+    await clickByTestId(queryByTestId, "remove-canister-controller-button");
+
+    expect(
+      queryByTestId("remove-canister-controller-confirmation-modal")
+    ).toBeInTheDocument();
+
+    await clickByTestId(queryByTestId, "confirm-yes");
+
+    await waitFor(() =>
+      expect(
+        queryByTestId("remove-canister-controller-confirmation-modal")
+      ).not.toBeInTheDocument()
+    );
+
+    expect(selectedController).toBeUndefined();
+  });
 });
