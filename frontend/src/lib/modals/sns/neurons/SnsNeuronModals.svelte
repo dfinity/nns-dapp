@@ -12,6 +12,8 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
+  import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
+  import type { Principal } from "@dfinity/principal";
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -20,6 +22,9 @@
   let modal: SnsNeuronModal;
   let neuron: SnsNeuron | undefined | null;
   $: ({ neuron, modal } = $store);
+
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $store.selected?.rootCanisterId;
 
   const close = () => store.update((data) => ({ ...data, modal: undefined }));
 
@@ -38,10 +43,14 @@
   {/if}
 
   {#if modal === "disburse"}
-  <DisburseSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
-    {/if}
+    <DisburseSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
+  {/if}
 
   {#if modal === "dissolve"}
-  <DissolveSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
-    {/if}
+    <DissolveSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
+  {/if}
+
+  {#if modal === "follow" && nonNullish(rootCanisterId)}
+    <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
+  {/if}
 {/if}

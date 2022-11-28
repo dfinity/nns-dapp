@@ -69,9 +69,7 @@
     {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
       <DisburseSnsButton />
     {:else if canDissolve}
-      <DissolveSnsNeuronButton
-        {neuronState}
-      />
+      <DissolveSnsNeuronButton {neuronState} />
     {/if}
   </div>
 
