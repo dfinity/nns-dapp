@@ -18,6 +18,8 @@
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
   import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
+  import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -26,9 +28,16 @@
 
   let modal: NnsNeuronModal | undefined;
   let neuron: NeuronInfo | undefined;
-  $: ({ neuron, modal } = $store);
+  let selectedFollowee: FolloweesNeuron | undefined;
+  $: ({ neuron, modal, selectedFollowee } = $store);
 
-  const close = () => store.update((data) => ({ ...data, modal: undefined }));
+  // We reset the selected followee here for convenience reason. See nns-neuron-detail.context.ts.
+  const close = () =>
+    store.update((data) => ({
+      ...data,
+      modal: undefined,
+      selectedFollowee: undefined,
+    }));
 </script>
 
 {#if neuron !== undefined}
@@ -78,5 +87,12 @@
 
   {#if modal === "add-hotkey"}
     <AddHotkeyModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "voting-history" && selectedFollowee !== undefined}
+    <VotingHistoryModal
+      neuronId={selectedFollowee.neuronId}
+      on:nnsClose={close}
+    />
   {/if}
 {/if}

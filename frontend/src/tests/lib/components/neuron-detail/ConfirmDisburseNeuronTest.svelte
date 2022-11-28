@@ -19,6 +19,7 @@
   export const neuronStore = writable<NnsNeuronStore>({
     modal: undefined,
     neuron,
+    selectedFollowee: undefined,
   });
 
   const toggleModal = (modal: NnsNeuronModal) =>
