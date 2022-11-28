@@ -127,7 +127,6 @@ const anonymiseStoreState = async () => {
     votingNeuronSelect,
     toasts,
     addAccount,
-    hardwareWalletNeurons,
     selectedAccount,
     selectedProposal,
     selectedProject,
@@ -171,7 +170,6 @@ const anonymiseStoreState = async () => {
       type: addAccount?.type,
       hardwareWalletName: addAccount?.hardwareWalletName,
     },
-    hardwareWalletNeurons,
     selectedAccount: {
       account: await anonymizeAccount(selectedAccount?.account),
     },
