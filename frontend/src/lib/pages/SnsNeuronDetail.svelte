@@ -8,6 +8,7 @@
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SnsNeuronModal,
   } from "$lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { onMount, setContext } from "svelte";
@@ -21,17 +22,24 @@
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
+  import { Island } from "@dfinity/gix-components";
+  import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
 
   export let neuronId: string | null | undefined;
 
   const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
     selected: undefined,
     neuron: undefined,
+    modal: undefined,
   });
+
+  const toggleModal = (modal: SnsNeuronModal | undefined) =>
+    selectedSnsNeuronStore.update((data) => ({ ...data, modal }));
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
     store: selectedSnsNeuronStore,
     reload: () => loadNeuron({ forceFetch: true }),
+    toggleModal,
   });
 
   // BEGIN: loading and navigation
@@ -80,6 +88,7 @@
           rootCanisterId: Principal.fromText($pageStore.universe),
         },
         neuron: null,
+        modal: undefined,
       });
 
       await loadNeuron();
@@ -95,21 +104,25 @@
   $: loading = $selectedSnsNeuronStore.neuron === null;
 </script>
 
-<main class="legacy">
-  <section data-tid="sns-neuron-detail-page">
-    {#if loading}
-      <SkeletonCard size="large" cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-      <SkeletonCard cardType="info" separator />
-    {:else}
-      <SnsNeuronMetaInfoCard />
-      <SnsNeuronInfoStake />
-      <SnsNeuronMaturityCard />
-      {#if ENABLE_SNS_2}
-        <SnsNeuronFollowingCard />
+<Island>
+  <main class="legacy">
+    <section data-tid="sns-neuron-detail-page">
+      {#if loading}
+        <SkeletonCard size="large" cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
+        <SkeletonCard cardType="info" separator />
+      {:else}
+        <SnsNeuronMetaInfoCard />
+        <SnsNeuronInfoStake />
+        <SnsNeuronMaturityCard />
+        {#if ENABLE_SNS_2}
+          <SnsNeuronFollowingCard />
+        {/if}
+        <SnsNeuronHotkeysCard />
       {/if}
-      <SnsNeuronHotkeysCard />
-    {/if}
-  </section>
-</main>
+    </section>
+  </main>
+</Island>
+
+<SnsNeuronModals />

@@ -14,15 +14,14 @@ import {
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronInfoStake", () => {
-  const props = {
-    neuron: {
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockFullNeuron,
-        controller: mockMainAccount.principal?.toText() as string,
-      },
+  const neuron = {
+    ...mockNeuron,
+    fullNeuron: {
+      ...mockFullNeuron,
+      controller: mockMainAccount.principal?.toText() as string,
     },
   };
 
@@ -40,8 +39,11 @@ describe("NnsNeuronInfoStake", () => {
 
   it("renders actions", () => {
     // Each action button is tested separately
-    const { queryByText } = render(NnsNeuronInfoStake, {
-      props,
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronInfoStake,
+      },
     });
 
     expect(

@@ -4,7 +4,6 @@
   import { i18n } from "$lib/stores/i18n";
   import TransactionInfo from "$lib/components/accounts/TransactionInfo.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { Spinner } from "@dfinity/gix-components";
 
   export let amount: TokenAmount;
   export let fee: TokenAmount | undefined = undefined;
@@ -32,12 +31,13 @@
       class="secondary"
       on:click={() => dispatcher("nnsBack")}>{secondaryButtonText}</button
     >
-    <button class="primary" type="submit" data-tid="disburse-neuron-button">
-      {#if loading}
-        <Spinner />
-      {:else}
-        {$i18n.accounts.confirm_and_send}
-      {/if}
+    <button
+      class="primary"
+      type="submit"
+      data-tid="disburse-neuron-button"
+      disabled={loading}
+    >
+      {$i18n.accounts.confirm_and_send}
     </button>
   </div>
 </form>

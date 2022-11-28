@@ -5,11 +5,11 @@
   import { onDestroy, onMount } from "svelte";
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
   import {
-    initAppPublicData,
     initAppAuth,
+    initAppPublic,
   } from "$lib/services/$public/app.services";
 
-  onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
+  onMount(async () => await Promise.all([initAppAuth(), initAppPublic()]));
 
   const unsubscribeVoteInProgress = voteRegistrationStore.subscribe(
     ({ registrations }) =>

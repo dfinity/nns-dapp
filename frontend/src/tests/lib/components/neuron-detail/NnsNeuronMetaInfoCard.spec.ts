@@ -16,15 +16,14 @@ import {
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronMetaInfoCard", () => {
-  const props = {
-    neuron: {
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockFullNeuron,
-        controller: mockMainAccount.principal?.toText() as string,
-      },
+  const neuron = {
+    ...mockNeuron,
+    fullNeuron: {
+      ...mockFullNeuron,
+      controller: mockMainAccount.principal?.toText() as string,
     },
   };
 
@@ -41,8 +40,11 @@ describe("NnsNeuronMetaInfoCard", () => {
   });
 
   it("renders neuron id", () => {
-    const { queryByText } = render(NnsNeuronMetaInfoCard, {
-      props,
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronMetaInfoCard,
+      },
     });
 
     expect(queryByText(mockNeuron.neuronId.toString())).toBeInTheDocument();
@@ -50,16 +52,22 @@ describe("NnsNeuronMetaInfoCard", () => {
 
   it("renders a NeuronCard", () => {
     // We can skip many edge cases tested in the NeuronCard
-    const { queryByTestId } = render(NnsNeuronMetaInfoCard, {
-      props,
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronMetaInfoCard,
+      },
     });
 
     expect(queryByTestId("neuron-card-title")).toBeInTheDocument();
   });
 
   it("renders voting power", () => {
-    const { queryByText } = render(NnsNeuronMetaInfoCard, {
-      props,
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronMetaInfoCard,
+      },
     });
 
     expect(
@@ -71,10 +79,13 @@ describe("NnsNeuronMetaInfoCard", () => {
   });
 
   it("doest not render voting power if none", () => {
-    const { queryByText } = render(NnsNeuronMetaInfoCard, {
-      neuron: {
-        ...mockNeuron,
-        votingPower: undefined,
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          votingPower: undefined,
+        },
+        testComponent: NnsNeuronMetaInfoCard,
       },
     });
 
@@ -85,26 +96,28 @@ describe("NnsNeuronMetaInfoCard", () => {
 
   it("renders split actions", () => {
     // Each action button is tested separately
-    const { queryByText } = render(NnsNeuronMetaInfoCard, {
-      props,
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronMetaInfoCard,
+      },
     });
 
     expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
   });
 
   it("renders no actions if user is not controller", () => {
-    const props = {
-      neuron: {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: "not-controller",
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            controller: "not-controller",
+          },
         },
+        testComponent: NnsNeuronMetaInfoCard,
       },
-    };
-
-    const { queryByText } = render(NnsNeuronMetaInfoCard, {
-      props,
     });
 
     expect(
@@ -120,8 +133,11 @@ describe("NnsNeuronMetaInfoCard", () => {
   });
 
   it("should render neuron age", () => {
-    const { getByTestId } = render(NnsNeuronMetaInfoCard, {
-      props,
+    const { getByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsNeuronMetaInfoCard,
+      },
     });
 
     expect(getByTestId("nns-neuron-age")?.textContent.trim()).toEqual(

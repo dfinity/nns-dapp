@@ -52,7 +52,7 @@
   <!-- TS doesn't understand that neuron is defined if allowedToManageFollows is true -->
   {#if allowedToManageFollows && nonNullish(neuron) && nonNullish(rootCanisterId)}
     <div class="actions">
-      <FollowSnsNeuronsButton {neuron} {rootCanisterId} />
+      <FollowSnsNeuronsButton />
     </div>
   {/if}
 </CardInfo>

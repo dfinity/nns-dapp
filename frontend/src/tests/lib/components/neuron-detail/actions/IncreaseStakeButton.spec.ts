@@ -7,6 +7,7 @@ import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("IncreaseStakeButton", () => {
   afterEach(() => {
@@ -14,9 +15,10 @@ describe("IncreaseStakeButton", () => {
   });
 
   it("renders increase stake message", () => {
-    const { getByText } = render(IncreaseStakeButton, {
+    const { getByText } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: IncreaseStakeButton,
       },
     });
 
@@ -24,9 +26,10 @@ describe("IncreaseStakeButton", () => {
   });
 
   it("opens Increase Neuron Stake Modal", async () => {
-    const { container } = render(IncreaseStakeButton, {
+    const { container } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: IncreaseStakeButton,
       },
     });
 

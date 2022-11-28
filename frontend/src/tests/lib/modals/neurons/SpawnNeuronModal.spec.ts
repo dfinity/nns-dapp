@@ -4,8 +4,13 @@
 
 import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent } from "@testing-library/svelte";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
@@ -25,6 +30,13 @@ describe("SpawnNeuronModal", () => {
     },
   };
 
+  beforeAll(() =>
+    accountsStore.set({
+      main: mockMainAccount,
+      hardwareWallets: [mockHardwareWalletAccount],
+    })
+  );
+
   afterAll(() => jest.clearAllMocks());
 
   it("should display modal", async () => {
@@ -32,7 +44,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHardwareWallet: false,
       },
     });
 
@@ -44,7 +55,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHardwareWallet: false,
       },
     });
 
@@ -62,7 +72,6 @@ describe("SpawnNeuronModal", () => {
             maturityE8sEquivalent: BigInt(1_000_000),
           },
         },
-        controlledByHardwareWallet: false,
       },
     });
 
@@ -83,7 +92,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHardwareWallet: false,
       },
     });
 
@@ -102,11 +110,18 @@ describe("SpawnNeuronModal", () => {
   });
 
   it("should show only confirm screen for hardware wallet controlled neurons", async () => {
+    const neuronHW = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: mockHardwareWalletAccount.principal?.toText() as string,
+      },
+    };
+
     const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {
-        neuron,
-        controlledByHardwareWallet: true,
+        neuron: neuronHW,
       },
     });
 

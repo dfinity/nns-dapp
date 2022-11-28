@@ -6,6 +6,6 @@
   const back = (): Promise<void> => goto($neuronsPathStore);
 </script>
 
-<Layout contrast {back}>
+<Layout {back}>
   <slot />
 </Layout>

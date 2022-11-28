@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
   import {
     minNeuronSplittable,
     neuronCanBeSplit,
@@ -10,19 +9,25 @@
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
-
-  let isOpen = false;
-
-  const openModal = () => (isOpen = true);
-  const closeModal = () => (isOpen = false);
 
   let splittable: boolean;
   $: splittable = neuronCanBeSplit({
     neuron,
     fee: $mainTransactionFeeStore,
   });
+
+  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+
+  const openModal = () => toggleModal("split-neuron");
 </script>
 
 {#if splittable}
@@ -46,8 +51,4 @@
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>
-{/if}
-
-{#if isOpen}
-  <SplitNeuronModal {neuron} on:nnsClose={closeModal} />
 {/if}
