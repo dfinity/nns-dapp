@@ -79,7 +79,7 @@ describe("NeuronHotkeysCard", () => {
       NeuronContextActionsTest,
       {
         props: {
-          neuron: controlledNeuron,
+          neuron: unControlledNeuron,
           testComponent: NeuronHotkeysCard,
         },
       }
