@@ -7,6 +7,10 @@ import { fireEvent, render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
+import NeuronContextTest from "../../neuron-detail/NeuronContextTest.svelte";
+import {mockNeuron} from "../../../../mocks/neurons.mock";
+import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
+import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 jest.mock("../../../../../lib/services/sns-neurons.services", () => {
   return {
@@ -20,10 +24,11 @@ describe("FollowSnsNeuronsButton", () => {
   });
 
   it("renders Follow Neurons message", () => {
-    const { getByText } = render(FollowSnsNeuronsButton, {
+    const { getByText } = render(SnsNeuronContextTest, {
       props: {
         neuron: mockSnsNeuron,
         rootCanisterId: mockPrincipal,
+        testComponent: FollowSnsNeuronsButton,
       },
     });
 
@@ -31,10 +36,11 @@ describe("FollowSnsNeuronsButton", () => {
   });
 
   it("opens Add Hotkey Neuron Modal", async () => {
-    const { container, queryByTestId } = render(FollowSnsNeuronsButton, {
+    const { container, queryByTestId } = render(SnsNeuronContextTest, {
       props: {
         neuron: mockSnsNeuron,
         rootCanisterId: mockPrincipal,
+        testComponent: FollowSnsNeuronsButton,
       },
     });
 
