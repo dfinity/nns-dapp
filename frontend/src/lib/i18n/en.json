@@ -27,6 +27,7 @@
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
+    "null": "NULL",
     "principal_is": "Your principal is"
   },
   "error": {
@@ -224,7 +225,7 @@
     "current_balance": "Current Balance",
     "may_take_while": "This may take up to one minute",
     "create": "Create",
-    "edit_source": "Edit Source Account",
+    "change_source": "Change Source Account",
     "community_fund": "Community fund",
     "hotkey_control": "Hotkey control",
     "stake": "Stake",
@@ -345,7 +346,7 @@
     "minimum_cycles_text_2": "Transaction fee of $amount is charged to the source account.",
     "transaction_fee": "The Transaction fee of $amount is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",
-    "edit_source": "Edit Source Account",
+    "change_source": "Change Source Account",
     "edit_cycles": "Edit Cycles",
     "converted_to": "converted to"
   },

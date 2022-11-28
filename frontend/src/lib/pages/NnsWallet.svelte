@@ -12,15 +12,12 @@
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-    type SelectedAccountStore,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type WalletStore,
+  } from "$lib/types/wallet.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
-  import {
-    debugHardwareWalletNeuronsStore,
-    debugSelectedAccountStore,
-  } from "$lib/stores/debug.store";
+  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -33,11 +30,6 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import {
-    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
-    type HardwareWalletNeuronsContext,
-    type HardwareWalletNeuronsStore,
-  } from "$lib/types/hardware-wallet-neurons.context";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -58,20 +50,22 @@
       },
     });
 
-  const selectedAccountStore = writable<SelectedAccountStore>({
+  const selectedAccountStore = writable<WalletStore>({
     account: undefined,
+    modal: undefined,
+    neurons: [],
   });
 
   // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<SelectedAccountContext>(SELECTED_ACCOUNT_CONTEXT_KEY, {
+  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  const accountDidUpdate = async ({ account }: SelectedAccountStore) => {
+  const accountDidUpdate = async ({ account }: WalletStore) => {
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
       return;
@@ -101,28 +95,11 @@
       identifier: accountIdentifier,
       accounts: $nnsAccountsListStore,
     }),
+    modal: undefined,
+    neurons: [],
   });
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
-
-  /**
-   * A store that contains the neurons of the hardware wallet filled once the user approved listing neurons.
-   * We notably need a store because the user can add hotkeys to the neurons that are not yet controlled by NNS-dapp and need to update dynamically the UI accordingly.
-   *
-   * The context has to be decleare in this component because it is use in both modals and content.
-   *
-   */
-  const hardwareWalletNeuronsStore = writable<HardwareWalletNeuronsStore>({
-    neurons: [],
-  });
-  debugHardwareWalletNeuronsStore(hardwareWalletNeuronsStore);
-
-  setContext<HardwareWalletNeuronsContext>(
-    HARDWARE_WALLET_NEURONS_CONTEXT_KEY,
-    {
-      store: hardwareWalletNeuronsStore,
-    }
-  );
 
   let showNewTransactionModal = false;
 

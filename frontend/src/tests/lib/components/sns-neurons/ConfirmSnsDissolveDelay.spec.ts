@@ -5,7 +5,6 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { secondsToDuration } from "$lib/utils/date.utils";
-import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
 import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
@@ -61,25 +60,6 @@ describe("ConfirmSnsDissolveDelay", () => {
         formatToken({ value: getSnsNeuronStake(mockSnsNeuron), detailed: true })
       )
     ).toBeInTheDocument();
-  });
-
-  it("renders a voting power", () => {
-    const { getByText } = render(ConfirmSnsDissolveDelay, {
-      props: {
-        delayInSeconds,
-        neuron: mockSnsNeuron,
-        token: ICPToken,
-      },
-    });
-    const value = formatVotingPower(
-      votingPower({
-        stake: getSnsNeuronStake(mockSnsNeuron),
-        dissolveDelayInSeconds: delayInSeconds,
-        ageSeconds: Number(mockSnsNeuron.aging_since_timestamp_seconds),
-      })
-    );
-
-    expect(getByText(value)).toBeInTheDocument();
   });
 
   it("renders cancel button", () => {

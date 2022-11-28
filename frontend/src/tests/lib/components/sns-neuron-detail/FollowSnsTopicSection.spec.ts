@@ -3,6 +3,7 @@
  */
 import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
@@ -11,7 +12,7 @@ import { principal } from "../../../mocks/sns-projects.mock";
 describe("FollowSnsTopicSection", () => {
   const reload = jest.fn();
 
-  const renderComponent = (): RenderResult =>
+  const renderComponent = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({
       Component: FollowSnsTopicSection,
       reload,

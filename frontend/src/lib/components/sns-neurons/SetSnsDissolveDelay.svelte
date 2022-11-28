@@ -8,7 +8,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower, votingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
@@ -102,13 +101,7 @@
       <div class="details">
         <div>
           <p class="label">
-            {formatVotingPower(
-              votingPower({
-                stake: neuronStake,
-                dissolveDelayInSeconds: delayInSeconds,
-                ageSeconds: Number(neuron.aging_since_timestamp_seconds),
-              })
-            )}
+            <!-- TODO: SNS Voting power -->
           </p>
           <p>{$i18n.neurons.voting_power}</p>
         </div>

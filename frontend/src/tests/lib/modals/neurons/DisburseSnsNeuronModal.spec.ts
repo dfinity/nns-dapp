@@ -12,6 +12,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
@@ -44,7 +45,7 @@ describe("DisburseSnsNeuronModal", () => {
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadContext: () => Promise<void> = () => Promise.resolve()
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {

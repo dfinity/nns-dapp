@@ -24,6 +24,7 @@ import {
   selectedNeuronsVotingPower,
 } from "$lib/utils/proposals.utils";
 import type {
+  Action,
   Ballot,
   ExecuteNnsFunction,
   NeuronInfo,
@@ -57,6 +58,25 @@ const proposalWithNnsFunctionAction = {
 const proposalWithRewardNodeProviderAction = {
   ...mockProposalInfo.proposal,
   action: proposalActionRewardNodeProvider,
+} as Proposal;
+
+const actionWithEmpty = {
+  RewardNodeProvider: {
+    nodeProvider: {
+      id: "aaaaa-aa",
+    },
+    amountE8s: undefined,
+    rewardMode: {
+      RewardToNeuron: {
+        dissolveDelaySeconds: BigInt(1000),
+      },
+    },
+  },
+} as Action;
+
+const proposalWithActionWithUndefined = {
+  ...mockProposalInfo.proposal,
+  action: actionWithEmpty,
 } as Proposal;
 
 describe("proposals-utils", () => {
@@ -626,6 +646,14 @@ describe("proposals-utils", () => {
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
       const fields = proposalActionFields(proposalWithRewardNodeProviderAction);
+
+      expect(fields.map(([key]) => key).join()).toEqual(
+        "nodeProvider,amountE8s,rewardMode"
+      );
+    });
+
+    it("should include undefined action fields", () => {
+      const fields = proposalActionFields(proposalWithActionWithUndefined);
 
       expect(fields.map(([key]) => key).join()).toEqual(
         "nodeProvider,amountE8s,rewardMode"
