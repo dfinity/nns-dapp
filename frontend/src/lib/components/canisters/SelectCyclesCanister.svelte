@@ -98,7 +98,7 @@
       class="secondary"
       data-tid="select-cycles-button-back"
       on:click={() => dispatcher("nnsBack")}
-      >{$i18n.canisters.edit_source}</button
+      >{$i18n.canisters.change_source}</button
     >
     <button
       type="submit"
