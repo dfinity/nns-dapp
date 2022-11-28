@@ -17,6 +17,7 @@ export interface SelectCanisterDetailsStore {
   details: CanisterDetails | undefined;
   controller: boolean | undefined;
   modal: CanisterDetailsModal | undefined;
+  selectedController: string | undefined;
 }
 
 export interface CanisterDetailsContext {

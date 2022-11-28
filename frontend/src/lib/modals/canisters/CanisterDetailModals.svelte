@@ -17,12 +17,19 @@
   const { store }: CanisterDetailsContext = context;
 
   let modal: CanisterDetailsModal | undefined;
-  $: ({ modal } = $store);
+  let selectedController: string | undefined;
+  $: ({ modal, selectedController } = $store);
 
   let canisterId: CanisterId | undefined;
   $: canisterId = $store.info?.canister_id;
 
-  const close = () => store.update((data) => ({ ...data, modal: undefined }));
+  // We also reset the selected controller here to avoid visual glitch - e.g. the controller being refreshed in the UI before the remove controller modal being closed
+  const close = () =>
+    store.update((data) => ({
+      ...data,
+      modal: undefined,
+      selectedController: undefined,
+    }));
 </script>
 
 {#if canisterId !== undefined}
@@ -38,7 +45,7 @@
     <AddCanisterControllerModal on:nnsClose={close} />
   {/if}
 
-  {#if modal === "remove-controller"}
+  {#if modal === "remove-controller" && selectedController !== undefined}
     <RemoveCanisterControllerModal on:nnsClose={close} />
   {/if}
 {/if}

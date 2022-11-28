@@ -13,16 +13,20 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
 
-  export let controller: string;
-
   const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
+  let controller: string | undefined;
+  $: controller = $store.selectedController;
+
   let userController: boolean;
-  $: userController = isUserController({
-    controller,
-    authStore: $authStore,
-  });
+  $: userController =
+    controller !== undefined
+      ? isUserController({
+          controller,
+          authStore: $authStore,
+        })
+      : false;
   let lastController: boolean;
   $: lastController = $store.details?.settings.controllers.length === 1;
 
@@ -30,7 +34,7 @@
 
   const remove = async () => {
     const canisterDetails: CanisterDetails | undefined = $store.details;
-    if (canisterDetails === undefined) {
+    if (canisterDetails === undefined || controller === undefined) {
       // Edge case
       toastsError({
         labelKey: "error.unknown",
@@ -65,7 +69,7 @@
       <p class="description">
         {$i18n.canister_detail.confirm_remove_controller_description}
       </p>
-      <p class="value">{controller}</p>
+      <p class="value">{controller ?? ""}</p>
     {/if}
     {#if lastController}
       <p class="description">
