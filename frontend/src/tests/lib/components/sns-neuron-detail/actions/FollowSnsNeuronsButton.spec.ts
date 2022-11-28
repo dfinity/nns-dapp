@@ -7,9 +7,6 @@ import { fireEvent, render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
-import NeuronContextTest from "../../neuron-detail/NeuronContextTest.svelte";
-import {mockNeuron} from "../../../../mocks/neurons.mock";
-import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 jest.mock("../../../../../lib/services/sns-neurons.services", () => {
