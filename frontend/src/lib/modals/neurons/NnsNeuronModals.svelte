@@ -16,6 +16,7 @@
   import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
+  import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 
   const context: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -68,5 +69,9 @@
 
   {#if modal === "join-community-fund"}
     <JoinCommunityFundModal on:nnsClose={close} {neuron} />
+  {/if}
+
+  {#if modal === "follow"}
+    <FollowNeuronsModal on:nnsClose={close} {neuron} />
   {/if}
 {/if}

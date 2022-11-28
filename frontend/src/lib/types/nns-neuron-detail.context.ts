@@ -12,6 +12,7 @@ export type NnsNeuronModal =
   | "merge-maturity"
   | "spawn"
   | "join-community-fund"
+  | "follow"
   | undefined;
 
 export interface NnsNeuronStore {
