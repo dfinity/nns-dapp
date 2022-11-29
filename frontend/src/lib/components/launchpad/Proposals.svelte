@@ -28,7 +28,7 @@
     <SkeletonProposalCard />
   </div>
 {:else if $openSnsProposalsStore.length === 0}
-  <p class="no-proposals">{$i18n.sns_launchpad.no_proposals}</p>
+  <p class="no-proposals description">{$i18n.sns_launchpad.no_proposals}</p>
 {:else}
   <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
@@ -39,8 +39,7 @@
 
 <style lang="scss">
   .no-proposals {
-    text-align: center;
-    margin: var(--padding-2x) 0;
+    margin: 0 0 var(--padding-2x);
   }
 
   ul {
