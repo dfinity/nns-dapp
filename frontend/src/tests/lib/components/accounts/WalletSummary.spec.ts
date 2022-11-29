@@ -98,7 +98,7 @@ describe("WalletSummary", () => {
     await waitFor(() => expect(title).toEqual(text));
   };
 
-  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+  it("should render account name and balance if title not intersecting viewport", async () =>
     await testTitle({
       intersecting: false,
       text: `${en.accounts.main} – ${formatToken({
