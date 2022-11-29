@@ -38,29 +38,31 @@
 </script>
 
 {#if nnsFunctionKey !== undefined && proposalId !== undefined}
-  <h2
-    class="content-cell-title"
-    data-tid="proposal-proposer-payload-entry-title"
-  >
-    {$i18n.proposal_detail.payload}
-  </h2>
+  <div class="beach">
+    <h2
+            class="content-cell-title"
+            data-tid="proposal-proposer-payload-entry-title"
+    >
+      {$i18n.proposal_detail.payload}
+    </h2>
 
-  <div class="content-cell-details">
-    {#if expandedPayload !== undefined}
-      <div class="json" data-tid="json-wrapper">
-        <Json json={expandedPayload} />
-      </div>
-    {:else}
-      <SkeletonText />
-      <SkeletonText />
-      <SkeletonText />
-    {/if}
+    <div class="content-cell-details">
+      {#if expandedPayload !== undefined}
+        <div class="json" data-tid="json-wrapper">
+          <Json json={expandedPayload} />
+        </div>
+      {:else}
+        <SkeletonText />
+        <SkeletonText />
+        <SkeletonText />
+      {/if}
+    </div>
   </div>
 {/if}
 
 <style lang="scss">
-  .content-cell-title {
-    margin-top: var(--padding-8x);
+  .beach {
+    margin-top: var(--row-gap);
   }
 
   .json {
