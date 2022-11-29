@@ -98,14 +98,14 @@ describe("WalletSummary", () => {
     await waitFor(() => expect(title).toEqual(text));
   };
 
-  it("should render a title with neuron ID if title is not intersecting viewport", () =>
-    testTitle({
+  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+    await testTitle({
       intersecting: false,
       text: `${en.accounts.main} – ${formatToken({
         value: mockMainAccount.balance.toE8s(),
       })} ${mockMainAccount.balance.token.symbol}`,
     }));
 
-  it("should render a static title if title is intersecting viewport", () =>
-    testTitle({ intersecting: true, text: en.wallet.title }));
+  it("should render a static title if title is intersecting viewport", async () =>
+    await testTitle({ intersecting: true, text: en.wallet.title }));
 });
