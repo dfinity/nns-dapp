@@ -14,6 +14,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
@@ -33,11 +35,32 @@
     value: accountBalance.toE8s(),
     detailed: true,
   });
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    layoutTitleStore.set(
+      intersecting
+        ? $i18n.wallet.title
+        : `${accountName} – ${formatToken({ value: accountBalance.toE8s() })} ${
+            accountBalance.token.symbol
+          }`
+    );
+  };
 </script>
 
 <div class="content-cell-details">
   <KeyValuePair>
-    <h3 slot="key" data-tid="wallet-summary">{accountName}</h3>
+    <h3
+      slot="key"
+      data-tid="wallet-summary"
+      use:onIntersection
+      on:nnsIntersecting={updateLayoutTitle}
+    >
+      {accountName}
+    </h3>
     <Tooltip
       slot="value"
       id="wallet-detailed-icp"
