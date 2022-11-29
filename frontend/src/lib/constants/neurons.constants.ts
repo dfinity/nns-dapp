@@ -21,12 +21,10 @@ const LAST_TOPICS = [Topic.ExchangeRate];
 // This list should include ALL topics ordered as we want.
 // Filtering out topics is done in the utils.
 export const TOPICS_TO_FOLLOW_NNS = [
-  Topic.Unspecified,
-  Topic.Governance,
-  Topic.SnsAndCommunityFund,
+  ...FIRST_TOPICS,
   // We add all the topics that are not in the first or last topics
-  ...enumValues(Topic)
-    .filter((topic) => !FIRST_TOPICS.includes(topic))
-    .filter((topic) => !LAST_TOPICS.includes(topic)),
-  Topic.ExchangeRate,
+  ...enumValues(Topic).filter(
+    (topic) => ![...FIRST_TOPICS, ...LAST_TOPICS].includes(topic)
+  ),
+  ...LAST_TOPICS,
 ];
