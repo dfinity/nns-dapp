@@ -22,12 +22,12 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
+  .title {
+    margin-bottom: var(--padding-4x);
+  }
+
   .markdown {
     overflow-wrap: break-word;
-
-    :global(> *:nth-child(2)) {
-      margin-bottom: var(--padding-4x);
-    }
 
     :global(a) {
       font-size: inherit;
