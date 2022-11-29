@@ -13,6 +13,7 @@ import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   SPAWN_VARIANCE_PERCENTAGE,
+  TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
@@ -45,7 +46,6 @@ import {
   isAccountHardwareWallet,
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
-import { enumValues } from "./enum.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatToken } from "./token.utils";
@@ -679,8 +679,8 @@ export const followeesByTopic = ({
  */
 export const topicsToFollow = (neuron: NeuronInfo): Topic[] =>
   (followeesByTopic({ neuron, topic: Topic.ManageNeuron }) === undefined
-    ? enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
-    : enumValues(Topic)
+    ? TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.ManageNeuron)
+    : TOPICS_TO_FOLLOW_NNS
   ).filter((topic) => !DEPRECATED_TOPICS.includes(topic));
 
 // NeuronInfo is public info.
