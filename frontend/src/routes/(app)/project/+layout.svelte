@@ -6,6 +6,6 @@
   const back = (): Promise<void> => goto(AppPath.Launchpad);
 </script>
 
-<Layout contrast {back}>
+<Layout {back}>
   <slot />
 </Layout>
