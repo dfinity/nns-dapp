@@ -7,6 +7,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import { onIntersection } from "$lib/directives/intersection.directives";
 
   export let neuron: SnsNeuron;
   export let tagName: "h3" | "p" = "h3";
@@ -22,7 +23,9 @@
 </script>
 
 <div class="identifier" data-tid="sns-neuron-card-title">
-  <Hash id="neuron-id" {tagName} testId="neuron-id" text={neuronId} />
+  <div use:onIntersection on:nnsIntersecting>
+    <Hash id="neuron-id" {tagName} testId="neuron-id" text={neuronId} />
+  </div>
   {#if isHotkey}
     <span>{$i18n.neurons.hotkey_control}</span>
   {/if}
