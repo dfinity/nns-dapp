@@ -14,7 +14,11 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, type Token } from "@dfinity/nns";
+  import {
+    InsufficientAmountError,
+    TokenAmount,
+    type Token,
+  } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
 
   // Tested in the TransactionModal
@@ -73,10 +77,15 @@
       });
       errorMessage = validateAmount(amount);
     } catch (error: unknown) {
+      if (error instanceof InsufficientAmountError) {
+        errorMessage = $i18n.error.insufficient_funds;
+      }
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
       }
-      errorMessage = $i18n.error.insufficient_funds;
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
     }
   })();
   const dispatcher = createEventDispatcher();

@@ -119,19 +119,24 @@
       swapCommitment !== null &&
       amount !== undefined
     ) {
-      const { valid, labelKey, substitutions } = validParticipation({
-        project: {
-          rootCanisterId: summary.rootCanisterId,
-          summary,
-          swapCommitment,
-        },
-        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
-      });
-      // `validParticipation` does not return `valid` as `false` without a labelKey.
-      // But we need to check because of type safety.
-      return valid || labelKey === undefined
-        ? undefined
-        : replacePlaceholders(translate({ labelKey }), substitutions ?? {});
+      try {
+        const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+        const { valid, labelKey, substitutions } = validParticipation({
+          project: {
+            rootCanisterId: summary.rootCanisterId,
+            summary,
+            swapCommitment,
+          },
+          amount: tokenAmount,
+        });
+        // `validParticipation` does not return `valid` as `false` without a labelKey.
+        // But we need to check because of type safety.
+        return valid || labelKey === undefined
+          ? undefined
+          : replacePlaceholders(translate({ labelKey }), substitutions ?? {});
+      } catch (error) {
+        return $i18n.error.amount_not_valid;
+      }
     }
     // We allow the user to try to participate even though the swap commitment is not yet available.
     return undefined;
