@@ -5,7 +5,10 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    getSnsNeuronState,
+  } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import type { NeuronState } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
@@ -14,6 +17,9 @@
   import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -23,12 +29,33 @@
 
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    const neuronId = nonNullish(neuron)
+      ? getSnsNeuronIdAsHexString(neuron)
+      : undefined;
+
+    layoutTitleStore.set(
+      intersecting || isNullish(neuronId)
+        ? $i18n.neuron_detail.title
+        : shortenWithMiddleEllipsis(neuronId)
+    );
+  };
 </script>
 
 {#if nonNullish(neuron) && nonNullish(neuronState)}
   <div class="content-cell-details">
     <KeyValuePair>
-      <SnsNeuronCardTitle tagName="h3" {neuron} slot="key" />
+      <SnsNeuronCardTitle
+        tagName="h3"
+        {neuron}
+        slot="key"
+        on:nnsIntersecting={updateLayoutTitle}
+      />
       <NeuronStateInfo state={neuronState} slot="value" />
     </KeyValuePair>
 
