@@ -34,22 +34,22 @@
   <div data-tid="sns-project-detail-info" class="content-cell-details beach">
     <KeyValuePair>
       <svelte:fragment slot="key"
-      >{$i18n.sns_project_detail.token_name}</svelte:fragment
+        >{$i18n.sns_project_detail.token_name}</svelte:fragment
       >
       <span
-              class="value"
-              slot="value"
-              data-tid="sns-project-detail-info-token-name">{token.name}</span
+        class="value"
+        slot="value"
+        data-tid="sns-project-detail-info-token-name">{token.name}</span
       >
     </KeyValuePair>
     <KeyValuePair>
       <svelte:fragment slot="key"
-      >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
+        >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
       >
       <span
-              class="value"
-              slot="value"
-              data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
+        class="value"
+        slot="value"
+        data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
       >
     </KeyValuePair>
 

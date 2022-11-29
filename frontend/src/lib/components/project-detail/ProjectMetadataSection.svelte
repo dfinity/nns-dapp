@@ -37,13 +37,13 @@
     </div>
   </div>
 {:else}
-  <div data-tid="sns-project-detail-info" class="container">
+  <div data-tid="sns-project-detail-metadata" class="container">
     <div class="title">
       <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
       <h1 class="content-cell-title">{metadata.name}</h1>
     </div>
     <a href={metadata.url} target="_blank" rel="noopener noreferrer"
-    >{metadata.url}</a
+      >{metadata.url}</a
     >
     <p class="description content-cell-details">
       {metadata.description}

@@ -7,6 +7,6 @@
 </script>
 
 <div class="beach">
-    <VotesResults {proposalInfo} />
-    <VotingCard {proposalInfo} />
+  <VotesResults {proposalInfo} />
+  <VotingCard {proposalInfo} />
 </div>

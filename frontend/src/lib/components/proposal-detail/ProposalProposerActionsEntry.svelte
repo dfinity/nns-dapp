@@ -18,7 +18,10 @@
 </script>
 
 <div class="beach">
-  <h2 class="content-cell-title" data-tid="proposal-proposer-actions-entry-title">
+  <h2
+    class="content-cell-title"
+    data-tid="proposal-proposer-actions-entry-title"
+  >
     {actionKey ?? ""}
   </h2>
 
@@ -27,12 +30,12 @@
       <KeyValuePair>
         <span slot="key">{key}</span>
         <span class="value" slot="value">
-        {#if typeof value === "object"}
-          <Json json={value} />
-        {:else}
-          {value}
-        {/if}
-      </span>
+          {#if typeof value === "object"}
+            <Json json={value} />
+          {:else}
+            {value}
+          {/if}
+        </span>
       </KeyValuePair>
     {/each}
   </div>

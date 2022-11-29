@@ -40,8 +40,8 @@
 {#if nnsFunctionKey !== undefined && proposalId !== undefined}
   <div class="beach">
     <h2
-            class="content-cell-title"
-            data-tid="proposal-proposer-payload-entry-title"
+      class="content-cell-title"
+      data-tid="proposal-proposer-payload-entry-title"
     >
       {$i18n.proposal_detail.payload}
     </h2>
