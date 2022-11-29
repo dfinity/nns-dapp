@@ -3,10 +3,10 @@ set -euxo pipefail
 
 export DFX_NETWORK=small14
 TESTNET=small14
-IC_COMMIT=2de9321857b3a713144932d8fd08f791f37e228f
+IC_COMMIT=997ab2e9cc49189302fe54c1e60709abfbeb1d42
 IC_DOWNLOAD=$IC_COMMIT
 IC_DIR="$HOME/dfn/ic-github/"
-ND_COMMIT=8c496b47c4b0b2fbbbd9359019b331e015339863 # Head of main + small09 + patch
+ND_COMMIT=f32509a6a44694c45f65c2587e85456be8b32e17
 ND_DIR="$HOME/dfn/nns-dapp/branches/testnet-environments"
 
 
