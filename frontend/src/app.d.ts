@@ -16,6 +16,7 @@ interface IntersectingDetail {
 declare namespace svelte.JSX {
   interface HTMLAttributes<T> {
     onnnsIntersecting?: (event: CustomEvent<IntersectingDetail>) => void;
+    nnsCanisterDetailModal?: (event: CustomEvent<any>) => void;
   }
 }
 

@@ -18,7 +18,6 @@
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-    type CanisterDetailsModal,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
@@ -34,6 +33,8 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CanisterDetailsModal } from "$lib/types/canister-detail.modal";
 
   // BEGIN: loading and navigation
 
@@ -67,8 +68,6 @@
     info: undefined,
     details: undefined,
     controller: undefined,
-    modal: undefined,
-    selectedController: undefined,
   });
 
   debugSelectedCanisterStore(selectedCanisterStore);
@@ -112,13 +111,9 @@
     }
   };
 
-  const toggleModal = (modal: CanisterDetailsModal | undefined) =>
-    selectedCanisterStore.update((data) => ({ ...data, modal }));
-
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: selectedCanisterStore,
     reloadDetails,
-    toggleModal,
   });
 
   export let canisterId: string | undefined | null;
@@ -155,8 +150,6 @@
           info: selectedCanister,
           details: sameCanister ? details : undefined,
           controller: sameCanister ? controller : undefined,
-          modal: undefined,
-          selectedController: undefined,
         }));
 
         if (selectedCanister !== undefined) {
@@ -184,6 +177,12 @@
     $selectedCanisterStore);
 
   // END: loading and navigation
+
+  const openModal = () =>
+    emit<CanisterDetailsModal>({
+      message: "nnsCanisterDetailModal",
+      detail: { type: "add-cycles" },
+    });
 </script>
 
 <Island>
@@ -193,7 +192,7 @@
         <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
         <CanisterCardSubTitle canister={canisterInfo} />
         <div class="actions">
-          <DetachCanisterButton />
+          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
         </div>
       {:else}
         <div class="loader-title">
@@ -221,7 +220,7 @@
 <Footer columns={1}>
   <button
     class="primary"
-    on:click={() => toggleModal("add-cycles")}
+    on:click={openModal}
     disabled={canisterInfo === undefined || $busy}
     >{$i18n.canister_detail.add_cycles}</button
   >

@@ -1,23 +1,23 @@
 <script lang="ts">
-  import type { Principal } from "@dfinity/principal";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    CANISTER_DETAILS_CONTEXT_KEY,
-    type CanisterDetailsContext,
-  } from "$lib/types/canister-detail.context";
-  import { getContext } from "svelte";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CanisterDetailsModalDetach } from "$lib/types/canister-detail.modal";
+  import type { Principal } from "@dfinity/principal";
 
-  const context: CanisterDetailsContext = getContext<CanisterDetailsContext>(
-    CANISTER_DETAILS_CONTEXT_KEY
-  );
-  const { toggleModal }: CanisterDetailsContext = context;
+  export let canisterId: Principal;
+
+  const openModal = () =>
+    emit<CanisterDetailsModalDetach>({
+      message: "nnsCanisterDetailModal",
+      detail: { type: "detach", detail: { canisterId } },
+    });
 </script>
 
 <button
   class="primary"
   type="button"
-  on:click={() => toggleModal("detach")}
+  on:click={openModal}
   disabled={$busy}
   data-tid="detach-canister-button"
 >
