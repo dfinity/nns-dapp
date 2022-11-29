@@ -30,39 +30,32 @@
   $: token = summary?.token;
 </script>
 
-{#if !isNullish(metadata) && !isNullish(token)}
-  <div
-    data-tid="sns-project-detail-info"
-    class="content-cell-details content-cell-island"
-  >
-    <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_name}</svelte:fragment
-      >
-      <span
-        class="value"
-        slot="value"
-        data-tid="sns-project-detail-info-token-name">{token.name}</span
-      >
-    </KeyValuePair>
-    <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
-      >
-      <span
-        class="value"
-        slot="value"
-        data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
-      >
-    </KeyValuePair>
-
-    <ProjectSwapDetails />
+{#if isNullish(metadata) || isNullish(token)}
+  <SkeletonDetails />
+{:else}
+  <div data-tid="sns-project-detail-metadata">
+    <div class="title">
+      <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
+      <h1 class="content-cell-title">{metadata.name}</h1>
+    </div>
+    <a href={metadata.url} target="_blank" rel="noopener noreferrer"
+      >{metadata.url}</a
+    >
+    <p class="description content-cell-details">
+      {metadata.description}
+    </p>
   </div>
 {/if}
 
 <style lang="scss">
-  .content-cell-details {
-    margin-top: 0;
-    gap: var(--padding-2x);
+  .title {
+    display: flex;
+    gap: var(--padding-1_5x);
+    align-items: center;
+    margin-bottom: var(--padding-2x);
+  }
+
+  p {
+    margin-top: var(--padding);
   }
 </style>

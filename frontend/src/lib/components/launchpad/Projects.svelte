@@ -43,7 +43,7 @@
     {/each}
   </div>
   {#if projects.length === 0}
-    <p data-tid="no-projects-message" class="no-projects">
+    <p data-tid="no-projects-message" class="no-projects description">
       <Html text={noProjectsMessageLabel} />
     </p>
   {/if}
@@ -56,7 +56,6 @@
   }
 
   .no-projects {
-    text-align: center;
-    margin: var(--padding-2x) 0;
+    margin: 0 0 var(--padding-2x);
   }
 </style>

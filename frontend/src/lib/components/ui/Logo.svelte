@@ -25,8 +25,9 @@
   }
 
   .framed {
-    border-radius: var(--border-radius);
-    border: 2px solid var(--background-contrast);
+    border-radius: 50%;
+    background: var(--background);
+    padding: var(--padding);
   }
 
   .big {

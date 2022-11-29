@@ -1,6 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
+  import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -136,9 +137,13 @@
   <div class="stretch-mobile">
     <div class="content-grid">
       <div class="content-a">
+        <ProjectMetadataSection />
+      </div>
+
+      <div class="content-c">
         <ProjectInfoSection />
       </div>
-      <div class="content-b">
+      <div class="content-d">
         <ProjectStatusSection />
       </div>
     </div>
