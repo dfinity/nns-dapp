@@ -7,11 +7,16 @@
   import { SkeletonText } from "@dfinity/gix-components";
   import type { Proposal } from "@dfinity/nns";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
+  import { expandObject, isNullish } from "$lib/utils/utils";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
   let payload: object | undefined | null;
+  let expandedPayload: object | undefined | null;
+  $: expandedPayload = isNullish(payload)
+    ? payload
+    : expandObject(payload as Record<string, unknown>);
 
   $: $proposalPayloadsStore,
     (payload =
@@ -41,9 +46,9 @@
   </h2>
 
   <div class="content-cell-details">
-    {#if payload !== undefined}
-      <div class="json">
-        <Json json={payload} />
+    {#if expandedPayload !== undefined}
+      <div class="json" data-tid="json-wrapper">
+        <Json json={expandedPayload} />
       </div>
     {:else}
       <SkeletonText />

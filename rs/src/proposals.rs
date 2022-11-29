@@ -12,10 +12,15 @@ use crate::proposals::def::{
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
     UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
-use candid::CandidType;
+use candid::parser::types::{IDLType, PrimType};
+use candid::parser::value::IDLValue;
+use candid::{CandidType, Decode, Deserialize};
 use ic_base_types::CanisterId;
+use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
+use idl2json::candid_types::internal_candid_type_to_idl_type;
+use idl2json::{idl2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
@@ -59,6 +64,38 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
     }
 
     cache.insert(proposal_id, payload_json);
+}
+
+// Types used to decode arg's payload of nns_function type 4 for II upgrades
+pub type UserNumber = u64;
+#[derive(CandidType, Serialize, Deserialize)]
+struct InternetIdentityInit {
+    pub assigned_user_number_range: Option<(UserNumber, UserNumber)>,
+    pub archive_module_hash: Option<[u8; 32]>,
+    pub canister_creation_cycles_cost: Option<u64>,
+}
+
+fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
+    if arg.is_empty() {
+        return "[]".to_owned();
+    }
+    // If canister id is II
+    // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
+    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
+        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
+        IDLType::OptT(Box::new(idl_type))
+    } else {
+        // This will be ignored, so we won't have any type information.
+        IDLType::PrimT(PrimType::Null)
+    };
+
+    let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
+    let options = Idl2JsonOptions {
+        bytes_as: Some(BytesFormat::Hex),
+        long_bytes_as: None,
+    };
+    let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
+    serde_json::to_string(&json_value).expect("Failed to serialize JSON")
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
@@ -142,6 +179,7 @@ fn debug<T: Debug>(value: T) -> String {
 }
 
 mod def {
+    use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha::Sha256;
@@ -168,7 +206,7 @@ mod def {
     pub struct AddNnsCanisterProposalTrimmed {
         pub name: String,
         pub wasm_module_hash: String,
-        pub arg: Vec<u8>,
+        pub arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -182,11 +220,12 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
+            let candid_arg = decode_arg(&payload.arg, None);
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
                 wasm_module_hash,
-                arg: payload.arg,
+                arg: candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
@@ -206,8 +245,7 @@ mod def {
         pub mode: CanisterInstallMode,
         pub canister_id: CanisterId,
         pub wasm_module_hash: String,
-        #[serde(with = "serde_bytes")]
-        pub arg: Vec<u8>,
+        pub arg: Json,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -220,13 +258,14 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
+            let candid_arg = decode_arg(&payload.arg, Some(payload.canister_id));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
                 mode: payload.mode,
                 canister_id: payload.canister_id,
                 wasm_module_hash,
-                arg: payload.arg,
+                arg: candid_arg,
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
