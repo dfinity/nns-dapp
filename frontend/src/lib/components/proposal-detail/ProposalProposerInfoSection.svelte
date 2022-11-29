@@ -14,7 +14,7 @@
   $: ({ title, proposal, url } = mapProposalInfo(proposalInfo));
 </script>
 
-<div class="beach">
+<div class="content-cell-island">
   <h2 class="content-cell-title" data-tid="proposal-proposer-info-title">
     {$i18n.proposal_detail.summary}
   </h2>

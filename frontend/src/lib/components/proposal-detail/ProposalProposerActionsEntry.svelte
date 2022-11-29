@@ -17,7 +17,7 @@
     proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>
 
-<div class="beach">
+<div class="content-cell-island">
   <h2
     class="content-cell-title"
     data-tid="proposal-proposer-actions-entry-title"
@@ -42,7 +42,7 @@
 </div>
 
 <style lang="scss">
-  .beach {
+  .content-cell-island {
     margin-top: var(--row-gap);
   }
 </style>

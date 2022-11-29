@@ -6,7 +6,7 @@
   export let proposalInfo: ProposalInfo;
 </script>
 
-<div class="beach">
+<div class="content-cell-island">
   <VotesResults {proposalInfo} />
   <VotingCard {proposalInfo} />
 </div>

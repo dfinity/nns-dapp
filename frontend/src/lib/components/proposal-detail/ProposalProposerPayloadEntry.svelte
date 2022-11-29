@@ -38,7 +38,7 @@
 </script>
 
 {#if nnsFunctionKey !== undefined && proposalId !== undefined}
-  <div class="beach">
+  <div class="content-cell-island">
     <h2
       class="content-cell-title"
       data-tid="proposal-proposer-payload-entry-title"
@@ -61,7 +61,7 @@
 {/if}
 
 <style lang="scss">
-  .beach {
+  .content-cell-island {
     margin-top: var(--row-gap);
   }
 

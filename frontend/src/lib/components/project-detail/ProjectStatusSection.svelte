@@ -54,7 +54,7 @@
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
 {#if displayStatusSection}
-  <div data-tid="sns-project-detail-status" class="beach">
+  <div data-tid="sns-project-detail-status" class="content-cell-island">
     <ProjectStatus />
 
     <div class="content content-cell-details">
