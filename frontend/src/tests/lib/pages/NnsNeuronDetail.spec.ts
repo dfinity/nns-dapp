@@ -71,10 +71,10 @@ describe("NeuronDetail", () => {
     await waitFor(() => expect(title).toEqual(text));
   };
 
-  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+  it("should render a title with neuron ID if title is not intersecting viewport", () =>
     testTitle({ intersecting: false, text: `${en.core.icp} – ${neuronId}` }));
 
-  it.only("should render a static title if title is intersecting viewport", async () =>
+  it("should render a static title if title is intersecting viewport", () =>
     testTitle({ intersecting: true, text: en.neuron_detail.title }));
 
   it("should hide skeletons after neuron data are available", async () => {
