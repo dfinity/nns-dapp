@@ -31,7 +31,10 @@
 </script>
 
 {#if !isNullish(metadata) && !isNullish(token)}
-  <div data-tid="sns-project-detail-info" class="content-cell-details content-cell-island">
+  <div
+    data-tid="sns-project-detail-info"
+    class="content-cell-details content-cell-island"
+  >
     <KeyValuePair>
       <svelte:fragment slot="key"
         >{$i18n.sns_project_detail.token_name}</svelte:fragment
