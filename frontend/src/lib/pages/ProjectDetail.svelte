@@ -134,14 +134,16 @@
 </script>
 
 <main>
-  <ProjectMetadataSection />
-
   <div class="stretch-mobile">
     <div class="content-grid">
       <div class="content-a">
+        <ProjectMetadataSection />
+      </div>
+
+      <div class="content-c">
         <ProjectInfoSection />
       </div>
-      <div class="content-b">
+      <div class="content-d">
         <ProjectStatusSection />
       </div>
     </div>

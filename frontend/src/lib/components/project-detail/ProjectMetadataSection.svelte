@@ -31,13 +31,9 @@
 </script>
 
 {#if isNullish(metadata) || isNullish(token)}
-  <div class="content-grid">
-    <div class="content-a">
-      <SkeletonDetails />
-    </div>
-  </div>
+  <SkeletonDetails />
 {:else}
-  <div data-tid="sns-project-detail-metadata" class="container">
+  <div data-tid="sns-project-detail-metadata">
     <div class="title">
       <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
       <h1 class="content-cell-title">{metadata.name}</h1>
@@ -52,10 +48,6 @@
 {/if}
 
 <style lang="scss">
-  .container {
-    margin-bottom: var(--padding-3x);
-  }
-
   .title {
     display: flex;
     gap: var(--padding-1_5x);
