@@ -435,18 +435,25 @@ export const stakeNeuron = async ({
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
 ) => {
-  const identity = await getAuthenticatedIdentity();
-  // We load with a query call only. Nervous System Functions are public and not related to the user.
-  const functions = await getNervousSystemFunctions({
-    rootCanisterId,
-    identity,
-    certified: true,
-  });
+  try {
+    const identity = await getAuthenticatedIdentity();
+    // We load with a query call only. Nervous System Functions are public and not related to the user.
+    const functions = await getNervousSystemFunctions({
+      rootCanisterId,
+      identity,
+      certified: true,
+    });
 
-  snsFunctionsStore.setFunctions({
-    rootCanisterId,
-    functions,
-  });
+    snsFunctionsStore.setFunctions({
+      rootCanisterId,
+      functions,
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_load_functions",
+      err,
+    });
+  }
 };
 
 /**

@@ -7,6 +7,7 @@ import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
@@ -320,3 +321,52 @@ export const followeesByFunction = ({
         : functionFollowees,
     []
   );
+
+export interface SnsFolloweesByNeuron {
+  neuronIdHex: string;
+  nsFunctions: NervousSystemFunction[];
+}
+
+export const followeesByNeuronId = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: NervousSystemFunction[];
+}): SnsFolloweesByNeuron[] => {
+  const followeesDictionary = neuron.followees.reduce<{
+    [key: string]: NervousSystemFunction[];
+  }>((acc, [functionId, followeesData]) => {
+    const nsFunction = nsFunctions.find(({ id }) => id === functionId);
+    // Edge case, all ns functions in followees should also be in the nervous system.
+    if (nsFunction !== undefined) {
+      for (const followee of followeesData.followees) {
+        const followeeHex = subaccountToHexString(followee.id);
+        if (acc[followeeHex]) {
+          acc[followeeHex].push(nsFunction);
+        } else {
+          acc[followeeHex] = [nsFunction];
+        }
+      }
+    }
+    return acc;
+  }, {});
+
+  return Object.keys(followeesDictionary).map((neuronIdHex) => ({
+    neuronIdHex,
+    nsFunctions: followeesDictionary[neuronIdHex],
+  }));
+};
+
+export const followeesByNsFunction = ({
+  neuron,
+  nsFunction,
+}: {
+  neuron: SnsNeuron;
+  nsFunction: NervousSystemFunction;
+}): SnsNeuronId[] => {
+  const followees = neuron.followees.find(
+    ([functionId]) => functionId === nsFunction.id
+  );
+  return followees?.[1].followees ?? [];
+};
