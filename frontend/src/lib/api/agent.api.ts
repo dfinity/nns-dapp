@@ -1,6 +1,6 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
-import { isNullish } from "$lib/utils/utils";
+import { nonNullish } from "$lib/utils/utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil } from "@dfinity/utils";
 
@@ -25,16 +25,10 @@ export const createAgent = async ({
 
     await syncTime(agent);
 
-    if (isNullish(agents)) {
-      agents = {
-        [principalAsText]: agent
-      };
-    } else {
-      agents = {
-        ...agents,
-        [principalAsText]: agent,
-      };
-    }
+    agents = {
+      ...(nonNullish(agents) && agents),
+      [principalAsText]: agent,
+    };
   }
 
   return agents[principalAsText];
