@@ -11,7 +11,6 @@
 
   export let reloadDetails: (canisterId: Principal) => Promise<void>;
   export let controller: string;
-  export let spy: ((value: string | undefined) => void) | undefined = undefined;
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: mockCanisterDetailsStore,
