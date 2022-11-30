@@ -16,7 +16,7 @@
     tagName="span"
   />
 
-  {#each followee.nsFunctions as nsFunction}
+  {#each followee.nsFunctions as nsFunction (nsFunction.id)}
     <Tag tagName="li">{nsFunction.name}</Tag>
   {/each}
 </TagsList>

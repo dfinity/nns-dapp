@@ -10,8 +10,9 @@
   } from "@dfinity/sns";
   import { fromNullable } from "@dfinity/utils";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { IconClose, Value } from "@dfinity/gix-components";
   import Hash from "../ui/Hash.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;
@@ -43,14 +44,14 @@
     {#each followees as followee (subaccountToHexString(followee.id))}
       {@const followeeIdHex = subaccountToHexString(followee.id)}
       <li data-tid="current-followee-item">
-        <KeyValuePair>
-          <p slot="key" class="value">
-            <Hash text={followeeIdHex} id={followeeIdHex} tagName="span" />
-          </p>
-          <button slot="value" on:click={() => removeCurrentFollowee(followee)}
-            >x</button
-          >
-        </KeyValuePair>
+        <Value>
+          <Hash text={followeeIdHex} id={followeeIdHex} tagName="span" />
+        </Value>
+        <button
+          class="text"
+          aria-label={$i18n.core.remove}
+          on:click={() => removeCurrentFollowee(followee)}><IconClose /></button
+        >
       </li>
     {/each}
   </ul>
@@ -66,12 +67,20 @@
 {/if}
 
 <style lang="scss">
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
-  }
+  @use "@dfinity/gix-components/styles/mixins/card";
 
   ul {
-    list-style-type: none;
-    padding: 0;
+    @include card.list;
+  }
+
+  li {
+    @include card.list-item;
+
+    button {
+      display: flex;
+    }
+  }
+  .subtitle {
+    margin: 0 0 var(--padding) 0;
   }
 </style>

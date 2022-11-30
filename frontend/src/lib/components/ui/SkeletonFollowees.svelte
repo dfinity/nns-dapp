@@ -34,6 +34,6 @@
   }
 
   .tag {
-    width: calc(8 * var(--padding));
+    width: calc(var(--padding-8x));
   }
 </style>

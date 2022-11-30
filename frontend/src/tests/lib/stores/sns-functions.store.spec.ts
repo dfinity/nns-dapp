@@ -14,7 +14,8 @@ describe("sns functions store", () => {
   it("should set functions for one project", () => {
     snsFunctionsStore.setFunctions({
       rootCanisterId: mockPrincipal,
-      functions: [nervousSystemFunctionMock],
+      nsFunctions: [nervousSystemFunctionMock],
+      certified: true,
     });
     const store = get(snsFunctionsStore);
     expect(store[mockPrincipal.toText()]).toEqual([nervousSystemFunctionMock]);
@@ -23,7 +24,8 @@ describe("sns functions store", () => {
   it("should set functions for more than one project", () => {
     snsFunctionsStore.setFunctions({
       rootCanisterId: mockPrincipal,
-      functions: [nervousSystemFunctionMock],
+      nsFunctions: [nervousSystemFunctionMock],
+      certified: true,
     });
     const store = get(snsFunctionsStore);
     expect(store[mockPrincipal.toText()]).toEqual([nervousSystemFunctionMock]);
@@ -31,7 +33,8 @@ describe("sns functions store", () => {
     const rootCanister2 = Principal.from("aaaaa-aa");
     snsFunctionsStore.setFunctions({
       rootCanisterId: rootCanister2,
-      functions: [nervousSystemFunctionMock],
+      nsFunctions: [nervousSystemFunctionMock],
+      certified: true,
     });
     const store2 = get(snsFunctionsStore);
     expect(store2[rootCanister2.toText()]).toEqual([nervousSystemFunctionMock]);
@@ -40,14 +43,16 @@ describe("sns functions store", () => {
   it("should reset functions for more than one project", () => {
     snsFunctionsStore.setFunctions({
       rootCanisterId: mockPrincipal,
-      functions: [nervousSystemFunctionMock],
+      nsFunctions: [nervousSystemFunctionMock],
+      certified: true,
     });
     const store = get(snsFunctionsStore);
     expect(store[mockPrincipal.toText()]).toEqual([nervousSystemFunctionMock]);
 
     snsFunctionsStore.setFunctions({
       rootCanisterId: mockPrincipal,
-      functions: [],
+      nsFunctions: [],
+      certified: true,
     });
     const store2 = get(snsFunctionsStore);
     expect(store2[mockPrincipal.toText()]).toEqual([]);

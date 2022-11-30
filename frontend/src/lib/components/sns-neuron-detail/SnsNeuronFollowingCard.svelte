@@ -49,7 +49,7 @@
 
   let nsFunctions: SnsNervousSystemFunction[];
   $: nsFunctions = nonNullish(rootCanisterId)
-    ? $snsFunctionsStore[rootCanisterId.toText()] ?? []
+    ? $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions ?? []
     : [];
 
   let followees: SnsFolloweesByNeuron[] = [];

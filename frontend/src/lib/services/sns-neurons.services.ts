@@ -37,6 +37,7 @@ import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
+  type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -434,27 +435,31 @@ export const stakeNeuron = async ({
 // This is a public service.
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
-) => {
-  try {
-    const identity = await getAuthenticatedIdentity();
-    // We load with a query call only. Nervous System Functions are public and not related to the user.
-    const functions = await getNervousSystemFunctions({
-      rootCanisterId,
-      identity,
-      certified: false,
-    });
-
-    snsFunctionsStore.setFunctions({
-      rootCanisterId,
-      functions,
-    });
-  } catch (err) {
-    toastsError({
-      labelKey: "error__sns.sns_load_functions",
-      err,
-    });
-  }
-};
+) =>
+  queryAndUpdate<SnsNervousSystemFunction[], Error>({
+    request: ({ certified, identity }) =>
+      getNervousSystemFunctions({
+        rootCanisterId,
+        identity,
+        certified,
+      }),
+    onLoad: async ({ response: nsFunctions, certified }) => {
+      snsFunctionsStore.setFunctions({
+        rootCanisterId,
+        nsFunctions,
+        certified,
+      });
+    },
+    onError: ({ certified, error }) => {
+      if (certified) {
+        toastsError({
+          labelKey: "error__sns.sns_load_functions",
+          err: error,
+        });
+      }
+    },
+    logMessage: `Getting SNS ${rootCanisterId.toText()} nervous system functions`,
+  });
 
 /**
  * Makes a call to add a followee to the neuron.

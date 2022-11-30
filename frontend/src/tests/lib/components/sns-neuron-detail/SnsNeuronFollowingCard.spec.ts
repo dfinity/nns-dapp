@@ -105,7 +105,8 @@ describe("SnsNeuronFollowingCard", () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
       snsFunctionsStore.setFunctions({
         rootCanisterId: rootCanisterIdMock,
-        functions: [function0, function1, function2],
+        nsFunctions: [function0, function1, function2],
+        certified: true,
       });
       const { getAllByText } = renderCard(neuronWithFollowees);
 
