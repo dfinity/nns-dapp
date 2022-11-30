@@ -6,7 +6,7 @@ import type { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { queryAndUpdate } from "./utils.services";
 
-export const syncSnsParameters = async ({
+export const loadSnsParameters = async ({
   rootCanisterId,
 }: {
   rootCanisterId: Principal;

@@ -5,7 +5,7 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/IncreaseSnsDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/sns-neurons.services";
-import { syncSnsParameters } from "$lib/services/sns-parameters.services";
+import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
@@ -128,6 +128,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   it("should trigger `syncSnsParameters`", async () => {
     await renderIncreaseDelayModal(neuron);
 
-    expect(syncSnsParameters).toBeCalled();
+    expect(loadSnsParameters).toBeCalled();
   });
 });
