@@ -577,6 +577,16 @@ describe("sns-neurons-services", () => {
       ]);
       expect(spyGetFunctions).toBeCalled();
     });
+
+    it("should show a toast if api throws an error", async () => {
+      jest
+        .spyOn(governanceApi, "getNervousSystemFunctions")
+        .mockImplementation(() => Promise.reject("error"));
+
+      await loadSnsNervousSystemFunctions(mockPrincipal);
+
+      expect(toastsError).toBeCalled();
+    });
   });
 
   describe("addFollowee ", () => {

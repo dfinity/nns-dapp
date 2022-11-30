@@ -12,7 +12,7 @@
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { KeyValuePairInfo, Spinner } from "@dfinity/gix-components";
+  import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
   import { getContext } from "svelte";
@@ -21,7 +21,6 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import SnsFollowee from "./SnsFollowee.svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
 
   $: {
@@ -90,7 +89,7 @@
   {#if showLoading}
     <div class="frame">
       <hr />
-      <SkeletonFollowees cardType="info" />
+      <SkeletonFollowees />
     </div>
   {/if}
 

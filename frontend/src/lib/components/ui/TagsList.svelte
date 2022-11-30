@@ -9,7 +9,7 @@
   };
 </script>
 
-<button {id} class="text" on:click={onClick}>
+<button {id} class="text" on:click={onClick} data-tid="tag-list-title">
   <slot name="title" />
 </button>
 

@@ -307,6 +307,14 @@ export const functionsToFollow = (
 ): SnsNervousSystemFunction[] | undefined =>
   functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
 
+/**
+ * Returns the followees of a neuron in a specific ns function.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {bigint} params.functionId
+ * @returns {SnsNeuronId[]}
+ */
 export const followeesByFunction = ({
   neuron,
   functionId,
@@ -327,6 +335,16 @@ export interface SnsFolloweesByNeuron {
   nsFunctions: NervousSystemFunction[];
 }
 
+/**
+ * Returns a list of followees of a neuron.
+ *
+ * Each followee has then the list of ns functions that are followed.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {NervousSystemFunction[]} params.nsFunctions
+ * @returns {SnsFolloweesByNeuron[]}
+ */
 export const followeesByNeuronId = ({
   neuron,
   nsFunctions,
@@ -356,17 +374,4 @@ export const followeesByNeuronId = ({
     neuronIdHex,
     nsFunctions: followeesDictionary[neuronIdHex],
   }));
-};
-
-export const followeesByNsFunction = ({
-  neuron,
-  nsFunction,
-}: {
-  neuron: SnsNeuron;
-  nsFunction: NervousSystemFunction;
-}): SnsNeuronId[] => {
-  const followees = neuron.followees.find(
-    ([functionId]) => functionId === nsFunction.id
-  );
-  return followees?.[1].followees ?? [];
 };

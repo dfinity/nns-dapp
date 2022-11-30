@@ -2,7 +2,7 @@
   import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
-<div>
+<div data-tid="skeleton-followees">
   <div class="neuron-id">
     <SkeletonText />
   </div>
