@@ -2,7 +2,7 @@ import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import { createAgent } from "$lib/utils/agent.utils";
+import { createAgent } from "$lib/api/agent.api";
 import type { ManagementCanisterRecord } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";

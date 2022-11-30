@@ -16,7 +16,7 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
-import { createAgent } from "$lib/utils/agent.utils";
+import { createAgent } from "$lib/api/agent.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, PollingLimitExceededError } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";

@@ -19,7 +19,7 @@ import type {
   CreateSubAccountResponse,
   GetAccountResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { createAgent } from "$lib/utils/agent.utils";
+import { createAgent } from "$lib/api/agent.api";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";

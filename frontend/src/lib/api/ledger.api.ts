@@ -2,7 +2,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { createAgent } from "$lib/utils/agent.utils";
+import { createAgent } from "$lib/api/agent.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { BlockHeight, TokenAmount } from "@dfinity/nns";

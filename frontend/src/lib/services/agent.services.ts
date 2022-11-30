@@ -1,7 +1,7 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
-import { createAgent } from "$lib/utils/agent.utils";
+import { createAgent } from "$lib/api/agent.api";
 
 /**
  * Sync time to fix random runtime issue:
