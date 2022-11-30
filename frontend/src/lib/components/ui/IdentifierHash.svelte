@@ -4,4 +4,10 @@
   export let identifier: string;
 </script>
 
-<Hash id="identifier" tagName="p" testId="identifier" text={identifier} />
+<Hash
+  id="identifier"
+  tagName="p"
+  testId="identifier"
+  text={identifier}
+  showCopy
+/>

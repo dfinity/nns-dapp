@@ -56,7 +56,8 @@ describe("FollowSnsNeuronsModal", () => {
     };
     snsFunctionsStore.setFunctions({
       rootCanisterId,
-      functions: [function0, function1, function2],
+      nsFunctions: [function0, function1, function2],
+      certified: true,
     });
     const { queryByTestId } = render(FollowSnsNeuronsModal, {
       props: {

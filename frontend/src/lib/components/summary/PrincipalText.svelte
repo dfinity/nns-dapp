@@ -11,7 +11,7 @@
 
 <p class="value principal" class:inline>
   <span>{$i18n.core.principal_is}</span>
-  <Hash id="neuron-id" text={principalText} tagName="p" />
+  <Hash id="neuron-id" text={principalText} tagName="p" showCopy />
 </p>
 
 <style lang="scss">
