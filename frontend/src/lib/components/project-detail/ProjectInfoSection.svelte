@@ -7,14 +7,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
-  import Logo from "$lib/components/ui/Logo.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import { isNullish } from "$lib/utils/utils";
-  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
