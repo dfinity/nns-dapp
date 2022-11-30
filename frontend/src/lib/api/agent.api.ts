@@ -1,25 +1,28 @@
 import {FETCH_ROOT_KEY, HOST} from "$lib/constants/environment.constants";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil } from "@dfinity/utils";
-import {getAnonymousIdentity} from "$lib/services/auth.services";
 import {LEDGER_CANISTER_ID} from "$lib/constants/canister-ids.constants";
 
-let agent: HttpAgent | undefined;
+type PrincipalAsText = string;
+let agents: Record<PrincipalAsText, HttpAgent> = {};
 
-export const createAgent = async (params: {
+export const createAgent = async ({identity, host}: {
   identity: Identity;
   host?: string;
 }): Promise<HttpAgent> => {
-    if (agent === undefined) {
-        agent = await createAgentUtil({
-            ...params,
+    const principalAsText: string = identity.getPrincipal().toText();
+
+    if (agents[principalAsText] === undefined) {
+        agents[principalAsText] = await createAgentUtil({
+            identity,
+            ...(host !== undefined && {host}),
             fetchRootKey: FETCH_ROOT_KEY,
         });
 
-        await syncTime();
+        await syncTime(agents[principalAsText]);
     }
 
-    return agent;
+    return agents[principalAsText];
 }
 
 
@@ -33,13 +36,8 @@ export const createAgent = async (params: {
  * Agent-js syncTime can be called during initialization or mid-lifecycle so we do it as soon as possible.
  * See http-agent.syncTime for more information.
  */
-const syncTime = async () => {
-    const agent = await createAgent({
-        identity: getAnonymousIdentity(),
-        host: HOST,
-    });
-
-    try {
+const syncTime = async (agent: HttpAgent) => {
+   try {
         // agent-js syncTime uses per default LEDGER_CANISTER_ID as well but not providing a canister id lead to a console.log
         await agent.syncTime(LEDGER_CANISTER_ID);
     } catch (error: unknown) {
@@ -49,4 +47,4 @@ const syncTime = async () => {
 };
 
 
-export const resetAgent = () => agent = undefined;
+export const resetAgent = () => agents = {};
