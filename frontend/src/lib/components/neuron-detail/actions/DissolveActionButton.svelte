@@ -7,7 +7,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
-  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuronState: NeuronState;
 
@@ -23,6 +23,8 @@
   );
 </script>
 
-<button on:click={() => openNnsNeuronModal({type: "dissolve", data: {neuron: $store.neuron}})}
+<button
+  on:click={() =>
+    openNnsNeuronModal({ type: "dissolve", data: { neuron: $store.neuron } })}
   >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button
 >

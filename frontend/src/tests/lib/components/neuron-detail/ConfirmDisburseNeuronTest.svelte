@@ -5,9 +5,7 @@
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-  } from "$lib/types/nns-neuron-detail.context";
+  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import type { NeuronInfo } from "@dfinity/nns";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";

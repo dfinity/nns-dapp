@@ -5,7 +5,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
-  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -14,6 +14,9 @@
 
 <button
   class="primary"
-  on:click={() => openNnsNeuronModal({type: "increase-dissolve-delay", data: {neuron: $store.neuron}})}
-  >{$i18n.neuron_detail.increase_dissolve_delay}</button
+  on:click={() =>
+    openNnsNeuronModal({
+      type: "increase-dissolve-delay",
+      data: { neuron: $store.neuron },
+    })}>{$i18n.neuron_detail.increase_dissolve_delay}</button
 >

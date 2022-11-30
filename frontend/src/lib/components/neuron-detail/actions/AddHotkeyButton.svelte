@@ -5,7 +5,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
-  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -15,6 +15,7 @@
 <button
   data-tid="add-hotkey-button"
   class="primary"
-  on:click={() => openNnsNeuronModal({type: "add-hotkey", data: {neuron: $store.neuron}})}
+  on:click={() =>
+    openNnsNeuronModal({ type: "add-hotkey", data: { neuron: $store.neuron } })}
   >{$i18n.neuron_detail.add_hotkey}</button
 >

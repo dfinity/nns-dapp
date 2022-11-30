@@ -18,7 +18,7 @@
     NnsNeuronModal,
     NnsNeuronModalData,
     NnsNeuronModalType,
-    NnsNeuronModalVotingHistory
+    NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
@@ -31,7 +31,8 @@
   $: neuron = modal?.data?.neuron;
 
   let followee: FolloweesNeuron | undefined;
-  $: followee = (modal as NnsNeuronModalVotingHistory | undefined)?.data?.followee;
+  $: followee = (modal as NnsNeuronModalVotingHistory | undefined)?.data
+    ?.followee;
 </script>
 
 <svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
@@ -86,9 +87,6 @@
   {/if}
 
   {#if type === "voting-history" && followee !== undefined}
-    <VotingHistoryModal
-      neuronId={followee.neuronId}
-      on:nnsClose={close}
-    />
+    <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
   {/if}
 {/if}

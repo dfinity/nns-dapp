@@ -8,7 +8,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
-  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
@@ -24,7 +24,11 @@
   preventDefault
   inputId="join-community-fund-checkbox"
   checked={isCommunityFund}
-  on:nnsChange={() => openNnsNeuronModal({type: "join-community-fund", data: {neuron: $store.neuron}})}
+  on:nnsChange={() =>
+    openNnsNeuronModal({
+      type: "join-community-fund",
+      data: { neuron: $store.neuron },
+    })}
 >
   <span>{$i18n.neuron_detail.participate_community_fund}</span>
 </Checkbox>

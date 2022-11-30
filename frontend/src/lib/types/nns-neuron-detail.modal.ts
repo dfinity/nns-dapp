@@ -1,5 +1,5 @@
 import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
-import type {NeuronInfo} from "@dfinity/nns";
+import type { NeuronInfo } from "@dfinity/nns";
 
 export type NnsNeuronModalType =
   | "increase-dissolve-delay"
@@ -29,4 +29,5 @@ export interface NnsNeuronModalVotingHistoryData extends NnsNeuronModalData {
   followee: FolloweesNeuron | undefined;
 }
 
-export type NnsNeuronModalVotingHistory = NnsNeuronModal<NnsNeuronModalVotingHistoryData>;
+export type NnsNeuronModalVotingHistory =
+  NnsNeuronModal<NnsNeuronModalVotingHistoryData>;
