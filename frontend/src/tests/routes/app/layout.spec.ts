@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { initAppAuth, initAppPublicData } from "$lib/services/$public/app.services";
+import {
+  initAppAuth,
+  initAppPublicData,
+} from "$lib/services/$public/app.services";
 import App from "$routes/(app)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 
