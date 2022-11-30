@@ -7,6 +7,7 @@ import { listNeurons } from "./neurons.services";
 export const initAppPrivate = async () => {
   // See initAppPublic for comments
   // Commentint until we better understand the implications of this call
+  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
   // await syncTime();
 
   await initAppPrivateData();
