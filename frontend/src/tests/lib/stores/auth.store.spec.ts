@@ -42,7 +42,7 @@ describe("auth-store", () => {
   });
 
   it("should call reset agent on sign-out", async () => {
-    const spy = jest.spyOn(utils, "resetAgent");
+    const spy = jest.spyOn(utils, "resetAgents");
 
     await authStore.signOut();
 

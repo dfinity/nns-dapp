@@ -1,4 +1,4 @@
-import { resetAgent } from "$lib/api/agent.api";
+import { resetAgents } from "$lib/api/agent.api";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
@@ -72,7 +72,7 @@ const initAuthStore = () => {
 
       await client.logout();
 
-      resetAgent();
+      resetAgents();
 
       // We currently do not have issue because the all screen is reloaded after sign-out.
       // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.

@@ -54,4 +54,4 @@ const syncTime = async (agent: HttpAgent) => {
   }
 };
 
-export const resetAgent = () => (agents = null);
+export const resetAgents = () => (agents = null);
