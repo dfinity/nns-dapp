@@ -4,25 +4,25 @@
   import AddCanisterControllerModal from "$lib/modals/canisters/AddCanisterControllerModal.svelte";
   import RemoveCanisterControllerModal from "$lib/modals/canisters/RemoveCanisterControllerModal.svelte";
   import type {
-    CanisterDetailsModal,
-    CanisterDetailsModalDetach,
-    CanisterDetailsModalRemoveController,
-    CanisterDetailsModalType,
+    CanisterDetailModal,
+    CanisterDetailModalDetach,
+    CanisterDetailModalRemoveController,
+    CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
   import type { Principal } from "@dfinity/principal";
 
-  let modal: CanisterDetailsModal | undefined = undefined;
+  let modal: CanisterDetailModal | undefined = undefined;
   const close = () => (modal = undefined);
 
-  let type: CanisterDetailsModalType | undefined;
+  let type: CanisterDetailModalType | undefined;
   $: type = modal?.type;
 
   let controller: string | undefined;
-  $: controller = (modal as CanisterDetailsModalRemoveController | undefined)
+  $: controller = (modal as CanisterDetailModalRemoveController | undefined)
     ?.data?.controller;
 
   let canisterId: Principal | undefined;
-  $: canisterId = (modal as CanisterDetailsModalDetach | undefined)?.data
+  $: canisterId = (modal as CanisterDetailModalDetach | undefined)?.data
     ?.canisterId;
 </script>
 

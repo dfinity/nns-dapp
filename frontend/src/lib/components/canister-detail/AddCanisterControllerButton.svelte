@@ -1,10 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailsModal } from "$lib/types/canister-detail.modal";
+  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
   const openModal = () =>
-    emit<CanisterDetailsModal>({
+    emit<CanisterDetailModal>({
       message: "nnsCanisterDetailModal",
       detail: { type: "add-controller" },
     });

@@ -2,12 +2,12 @@
   import { IconClose } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailsModalRemoveController } from "$lib/types/canister-detail.modal";
+  import type { CanisterDetailModalRemoveController } from "$lib/types/canister-detail.modal";
 
   export let controller: string;
 
   const openModal = () =>
-    emit<CanisterDetailsModalRemoveController>({
+    emit<CanisterDetailModalRemoveController>({
       message: "nnsCanisterDetailModal",
       detail: { type: "remove-controller", data: { controller } },
     });

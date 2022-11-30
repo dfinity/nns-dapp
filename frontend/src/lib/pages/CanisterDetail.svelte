@@ -34,7 +34,7 @@
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailsModal } from "$lib/types/canister-detail.modal";
+  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
   // BEGIN: loading and navigation
 
@@ -179,7 +179,7 @@
   // END: loading and navigation
 
   const openModal = () =>
-    emit<CanisterDetailsModal>({
+    emit<CanisterDetailModal>({
       message: "nnsCanisterDetailModal",
       detail: { type: "add-cycles" },
     });

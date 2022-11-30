@@ -2,13 +2,13 @@
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailsModalDetach } from "$lib/types/canister-detail.modal";
+  import type { CanisterDetailModalDetach } from "$lib/types/canister-detail.modal";
   import type { Principal } from "@dfinity/principal";
 
   export let canisterId: Principal;
 
   const openModal = () =>
-    emit<CanisterDetailsModalDetach>({
+    emit<CanisterDetailModalDetach>({
       message: "nnsCanisterDetailModal",
       detail: { type: "detach", data: { canisterId } },
     });

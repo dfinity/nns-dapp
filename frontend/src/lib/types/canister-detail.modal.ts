@@ -1,22 +1,22 @@
 import type { Principal } from "@dfinity/principal";
 
-export type CanisterDetailsModalType =
+export type CanisterDetailModalType =
   | "add-cycles"
   | "detach"
   | "add-controller"
   | "remove-controller";
 
-export interface CanisterDetailsModal<D = void> {
-  type: CanisterDetailsModalType;
+export interface CanisterDetailModal<D = void> {
+  type: CanisterDetailModalType;
   data?: D;
 }
 
-export type CanisterDetailsModalRemoveController = Required<
-  Pick<CanisterDetailsModal<{ controller: string }>, "data">
+export type CanisterDetailModalRemoveController = Required<
+  Pick<CanisterDetailModal<{ controller: string }>, "data">
 > &
-  Pick<CanisterDetailsModal, "type">;
+  Pick<CanisterDetailModal, "type">;
 
-export type CanisterDetailsModalDetach = Required<
-  Pick<CanisterDetailsModal<{ canisterId: Principal }>, "data">
+export type CanisterDetailModalDetach = Required<
+  Pick<CanisterDetailModal<{ canisterId: Principal }>, "data">
 > &
-  Pick<CanisterDetailsModal, "type">;
+  Pick<CanisterDetailModal, "type">;
