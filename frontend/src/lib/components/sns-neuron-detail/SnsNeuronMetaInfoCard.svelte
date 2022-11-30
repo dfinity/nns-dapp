@@ -20,6 +20,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

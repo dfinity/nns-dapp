@@ -1,4 +1,5 @@
 import { INTERSECTION_THRESHOLD } from "$lib/constants/layout.constants";
+import type { IntersectingDetail } from "$lib/types/intersection.types";
 
 // Exposed for test purpose only
 export const dispatchIntersecting = ({
