@@ -1,13 +1,14 @@
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { loadSnsSwapCommitmentsProxy } from "$lib/proxy/sns.services.proxy";
-import { syncTime } from "$lib/services/agent.services";
 import { loadMainTransactionFee } from "$lib/services/transaction-fees.services";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 
 export const initAppPrivate = async () => {
   // See initAppPublic for comments
-  await syncTime();
+  // Commentint until we better understand the implications of this call
+  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
+  // await syncTime();
 
   await initAppPrivateData();
 };

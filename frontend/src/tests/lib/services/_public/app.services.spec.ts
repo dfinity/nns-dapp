@@ -22,7 +22,8 @@ describe("$public/app-services", () => {
     await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
   });
 
-  it("should sync time", async () => {
+  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
+  xit("should sync time", async () => {
     const spy = jest.spyOn(agentServices, "syncTime");
 
     await initAppPublic();
