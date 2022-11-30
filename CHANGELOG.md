@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 94588
 * UI Improvements in Wallet page.
 * UI Improvements in Neuron detail page.
 * UI Improvements in Canister detail page.
