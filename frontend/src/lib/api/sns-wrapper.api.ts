@@ -1,3 +1,4 @@
+import { createAgent } from "$lib/api/agent.api";
 import { HOST, WASM_CANISTER_ID } from "$lib/constants/environment.constants";
 import {
   importInitSnsWrapper,
@@ -6,7 +7,6 @@ import {
 } from "$lib/proxy/api.import.proxy";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
-import { createAgent } from "$lib/api/agent.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";

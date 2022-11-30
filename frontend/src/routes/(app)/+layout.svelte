@@ -5,8 +5,8 @@
   import { onDestroy, onMount } from "svelte";
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
   import {
-      initAppAuth,
-      initAppPublicData,
+    initAppAuth,
+    initAppPublicData,
   } from "$lib/services/$public/app.services";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));

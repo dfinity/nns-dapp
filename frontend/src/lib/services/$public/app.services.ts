@@ -6,7 +6,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
 
-
 /**
  * Load the application public data that are available globally ("global stores").
  * These data can be read by any users without being signed-in.

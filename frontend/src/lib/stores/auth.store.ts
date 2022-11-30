@@ -1,3 +1,4 @@
+import { resetAgent } from "$lib/api/agent.api";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
@@ -6,7 +7,6 @@ import { createAuthClient } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
 import { writable } from "svelte/store";
-import {resetAgent} from "$lib/api/agent.api";
 
 export interface AuthStore {
   identity: Identity | undefined | null;

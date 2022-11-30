@@ -1,7 +1,7 @@
+import * as utils from "$lib/api/agent.api";
 import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
-import * as utils from '$lib/api/agent.api';
 
 describe("auth-store", () => {
   const mockAuthClient = mock<AuthClient>();

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { initAppAuth, initAppPublic } from "$lib/services/$public/app.services";
+import { initAppAuth, initAppPublicData } from "$lib/services/$public/app.services";
 import App from "$routes/(app)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 
@@ -26,6 +26,6 @@ describe("Layout", () => {
   it("should init the public data and sync time on mount", async () => {
     render(App);
 
-    await waitFor(() => expect(initAppPublic).toHaveBeenCalled());
+    await waitFor(() => expect(initAppPublicData).toHaveBeenCalled());
   });
 });

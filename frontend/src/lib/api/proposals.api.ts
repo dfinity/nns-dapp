@@ -1,7 +1,7 @@
+import { createAgent } from "$lib/api/agent.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
-import { createAgent } from "$lib/api/agent.api";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumsExclude } from "$lib/utils/enum.utils";
 import type { Identity } from "@dfinity/agent";
