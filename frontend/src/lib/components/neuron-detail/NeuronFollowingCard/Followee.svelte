@@ -4,11 +4,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import { Tag } from "@dfinity/gix-components";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-  } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
+  import { emit } from "$lib/utils/events.utils";
+  import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
+  import type {NnsNeuronContext} from "$lib/types/nns-neuron-detail.context";
+  import {NNS_NEURON_CONTEXT_KEY} from "$lib/types/nns-neuron-detail.context";
+  import {getContext} from "svelte";
 
   export let followee: FolloweesNeuron;
 
@@ -23,14 +23,15 @@
     $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
     followee.neuronId.toString();
 
-  const { toggleModal, store }: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+          NNS_NEURON_CONTEXT_KEY
   );
 
-  const openVotingHistory = () => {
-    store.update((data) => ({ ...data, selectedFollowee: followee }));
-    toggleModal("voting-history");
-  };
+  const openVotingHistory = () =>
+    emit<NnsNeuronModalVotingHistory>({
+      message: "nnsNeuronDetailModal",
+      detail: { type: "voting-history", data: { followee, neuron: $store.neuron } },
+    });
 </script>
 
 <button {id} class="text" on:click|stopPropagation={openVotingHistory}>

@@ -1,12 +1,6 @@
 <script lang="ts">
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-    type NnsNeuronModal,
-  } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
@@ -20,25 +14,26 @@
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import type {
+    NnsNeuronModal,
+    NnsNeuronModalData,
+    NnsNeuronModalType,
+    NnsNeuronModalVotingHistory
+  } from "$lib/types/nns-neuron-detail.modal";
 
-  const context: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
-  );
-  const { store }: NnsNeuronContext = context;
+  let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
 
-  let modal: NnsNeuronModal | undefined;
+  let type: NnsNeuronModalType | undefined;
+  $: type = modal?.type;
+
   let neuron: NeuronInfo | undefined;
-  let selectedFollowee: FolloweesNeuron | undefined;
-  $: ({ neuron, modal, selectedFollowee } = $store);
+  $: neuron = modal?.data?.neuron;
 
-  // We reset the selected followee here for convenience reason. See nns-neuron-detail.context.ts.
-  const close = () =>
-    store.update((data) => ({
-      ...data,
-      modal: undefined,
-      selectedFollowee: undefined,
-    }));
+  let followee: FolloweesNeuron | undefined;
+  $: followee = (modal as NnsNeuronModalVotingHistory | undefined)?.data?.followee;
 </script>
+
+<svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
 
 {#if neuron !== undefined}
   {#if modal === "increase-dissolve-delay"}
@@ -89,9 +84,9 @@
     <AddHotkeyModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "voting-history" && selectedFollowee !== undefined}
+  {#if modal === "voting-history" && followee !== undefined}
     <VotingHistoryModal
-      neuronId={selectedFollowee.neuronId}
+      neuronId={followee.neuronId}
       on:nnsClose={close}
     />
   {/if}

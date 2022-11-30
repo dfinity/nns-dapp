@@ -4,16 +4,16 @@
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
-
   import { getContext } from "svelte";
+  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 </script>
 
 <button
   class="secondary"
-  on:click={() => toggleModal("disburse")}
+  on:click={() => openNnsNeuronModal({type: "disburse", data: {neuron: $store.neuron}})}
   data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >

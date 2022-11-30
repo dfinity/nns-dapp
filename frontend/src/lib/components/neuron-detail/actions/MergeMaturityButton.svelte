@@ -14,6 +14,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import {openNnsNeuronModal} from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
@@ -23,11 +24,11 @@
     fee: $mainTransactionFeeStore,
   });
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 
-  const showModal = () => toggleModal("merge-maturity");
+  const showModal = () => openNnsNeuronModal({type: "merge-maturity", data: {neuron: $store.neuron}})
 </script>
 
 {#if enoughMaturity}

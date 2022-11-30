@@ -28,10 +28,7 @@
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronModal,
-  } from "$lib/types/nns-neuron-detail.context";
+  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
 
@@ -111,9 +108,7 @@
 
   // Context
   const selectedNeuronStore = writable<NnsNeuronStore>({
-    modal: undefined,
     neuron,
-    selectedFollowee: undefined,
   });
 
   $: neuron,
@@ -123,12 +118,8 @@
         neuron,
       })))();
 
-  const toggleModal = (modal: NnsNeuronModal | undefined) =>
-    selectedNeuronStore.update((data) => ({ ...data, modal }));
-
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {
     store: selectedNeuronStore,
-    toggleModal,
   });
 </script>
 
