@@ -79,7 +79,7 @@
   {/if}
 
   {#if type === "follow"}
-    <FollowNeuronsModal on:nnsClose={close} {neuron} />
+    <FollowNeuronsModal on:nnsClose={close} neuronId={neuron.neuronId} />
   {/if}
 
   {#if type === "add-hotkey"}

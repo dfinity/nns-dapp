@@ -200,7 +200,7 @@
   {/if}
   {#if currentStep?.name === "EditFollowNeurons"}
     {#if newNeuron !== undefined}
-      <EditFollowNeurons neuron={newNeuron} />
+      <EditFollowNeurons neuronId={newNeuronId} />
     {/if}
   {/if}
 </WizardModal>
