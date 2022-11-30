@@ -361,9 +361,15 @@ export const followeesByNeuronId = ({
       for (const followee of followeesData.followees) {
         const followeeHex = subaccountToHexString(followee.id);
         if (acc[followeeHex]) {
-          acc[followeeHex].push(nsFunction);
+          acc = {
+            ...acc,
+            [followeeHex]: [...acc[followeeHex], nsFunction],
+          };
         } else {
-          acc[followeeHex] = [nsFunction];
+          acc = {
+            ...acc,
+            [followeeHex]: [nsFunction],
+          };
         }
       }
     }
