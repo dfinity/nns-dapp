@@ -6,24 +6,16 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import {
-    mockCanisterDetailsStore,
-    mockToggleCanisterModal,
-  } from "../../../mocks/canisters.mock";
+  import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
 
   export let reloadDetails: (canisterId: Principal) => Promise<void>;
   export let controller: string;
-  export let spy: ((value: string | undefined) => void) | undefined = undefined;
 
   setContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY, {
     store: mockCanisterDetailsStore,
     reloadDetails,
-    toggleModal: mockToggleCanisterModal,
   });
-
-  $: $mockCanisterDetailsStore,
-    (() => spy?.($mockCanisterDetailsStore.selectedController))();
 </script>
 
 <RemoveCanisterControllerButton {controller} />

@@ -23,6 +23,7 @@
   import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
 
   export let neuron: NeuronInfo;
 
@@ -33,8 +34,6 @@
   });
 
   const updateLayoutTitle = ($event: Event) => {
-    // TODO: svelte-check ignores https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
-    // even though we have set the types in app.d.ts as displayed by the documentation
     const {
       detail: { intersecting },
     } = $event as unknown as CustomEvent<IntersectingDetail>;

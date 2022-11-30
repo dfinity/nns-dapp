@@ -13,20 +13,17 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
 
+  export let controller: string;
+
+  let userController: boolean;
+  $: userController = isUserController({
+    controller,
+    authStore: $authStore,
+  });
+
   const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
-  let controller: string | undefined;
-  $: controller = $store.selectedController;
-
-  let userController: boolean;
-  $: userController =
-    controller !== undefined
-      ? isUserController({
-          controller,
-          authStore: $authStore,
-        })
-      : false;
   let lastController: boolean;
   $: lastController = $store.details?.settings.controllers.length === 1;
 

@@ -16,6 +16,7 @@
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 

@@ -1,28 +1,21 @@
 <script lang="ts">
-  import { getContext } from "svelte";
   import { IconClose } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    CANISTER_DETAILS_CONTEXT_KEY,
-    type CanisterDetailsContext,
-  } from "$lib/types/canister-detail.context";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CanisterDetailModalRemoveController } from "$lib/types/canister-detail.modal";
 
   export let controller: string;
 
-  const context: CanisterDetailsContext = getContext<CanisterDetailsContext>(
-    CANISTER_DETAILS_CONTEXT_KEY
-  );
-  const { toggleModal, store }: CanisterDetailsContext = context;
-
-  const removeController = () => {
-    store.update((data) => ({ ...data, selectedController: controller }));
-    toggleModal("remove-controller");
-  };
+  const openModal = () =>
+    emit<CanisterDetailModalRemoveController>({
+      message: "nnsCanisterDetailModal",
+      detail: { type: "remove-controller", data: { controller } },
+    });
 </script>
 
 <button
   aria-label={$i18n.core.remove}
-  on:click={() => removeController()}
+  on:click={openModal}
   data-tid="remove-canister-controller-button"
 >
   <IconClose size="18px" />
