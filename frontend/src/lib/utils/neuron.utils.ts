@@ -152,7 +152,7 @@ interface VotingPowerParams {
  * @param {VotingPowerParams}
  * @returns {bigint}
  */
-const votingPower = ({
+export const votingPower = ({
   stakeE8s,
   dissolveDelay,
   ageSeconds,

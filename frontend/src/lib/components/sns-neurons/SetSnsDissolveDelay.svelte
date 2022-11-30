@@ -2,7 +2,7 @@
   import type { NeuronState, Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -14,7 +14,7 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
-    snsVotingPower,
+    snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
   import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
@@ -63,9 +63,8 @@
 
   let votingPower: number | undefined;
   $: if (neuron !== undefined && snsParameters !== undefined) {
-    votingPower = snsVotingPower({
-      nowSeconds: nowInSeconds(),
-      dissolveDelayInSeconds: delayInSeconds,
+    votingPower = snsNeuronVotingPower({
+      newDissolveDelayInSeconds: BigInt(delayInSeconds),
       neuron,
       snsParameters,
     });
