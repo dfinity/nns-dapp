@@ -1,5 +1,19 @@
 # Changelog
 
+## Proposal XXXXX
+* UI Improvements in Wallet page.
+* UI Improvements in Neuron detail page.
+* UI Improvements in Canister detail page.
+* Show "undefined" properties in proposal payload.
+* Parse bytes from candid payloads and show them as hash.
+* UI improvements when showing the payload as JSON.
+* Change order of NNS topics when adding new followees.
+* Change in some colors.
+* Improved title in wallet and sns neuron detail page.
+* Fix calculation with voting power in dissolbe delay modal.
+* Use absolute path in meta image tag.
+* Fix issue with rounding of the amount in transactions.
+
 ## Proposal 93596
 * Remove redirection in Launchpad page.
 
