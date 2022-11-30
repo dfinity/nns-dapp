@@ -19,7 +19,8 @@
     fee: $mainTransactionFeeStore,
   });
 
-  const openModal = () => openNnsNeuronModal("split-neuron");
+  const openModal = () =>
+    openNnsNeuronModal({ type: "split-neuron", data: { neuron } });
 </script>
 
 {#if splittable}
