@@ -10,7 +10,7 @@
   const openModal = () =>
     emit<CanisterDetailsModalDetach>({
       message: "nnsCanisterDetailModal",
-      detail: { type: "detach", detail: { canisterId } },
+      detail: { type: "detach", data: { canisterId } },
     });
 </script>
 

@@ -9,7 +9,7 @@
   const openModal = () =>
     emit<CanisterDetailsModalRemoveController>({
       message: "nnsCanisterDetailModal",
-      detail: { type: "remove-controller", detail: { controller } },
+      detail: { type: "remove-controller", data: { controller } },
     });
 </script>
 

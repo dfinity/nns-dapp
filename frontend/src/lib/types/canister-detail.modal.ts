@@ -8,15 +8,15 @@ export type CanisterDetailsModalType =
 
 export interface CanisterDetailsModal<D = void> {
   type: CanisterDetailsModalType;
-  detail?: D;
+  data?: D;
 }
 
 export type CanisterDetailsModalRemoveController = Required<
-  Pick<CanisterDetailsModal<{ controller: string }>, "detail">
+  Pick<CanisterDetailsModal<{ controller: string }>, "data">
 > &
   Pick<CanisterDetailsModal, "type">;
 
 export type CanisterDetailsModalDetach = Required<
-  Pick<CanisterDetailsModal<{ canisterId: Principal }>, "detail">
+  Pick<CanisterDetailsModal<{ canisterId: Principal }>, "data">
 > &
   Pick<CanisterDetailsModal, "type">;

@@ -19,10 +19,10 @@
 
   let controller: string | undefined;
   $: controller = (modal as CanisterDetailsModalRemoveController | undefined)
-    ?.detail?.controller;
+    ?.data?.controller;
 
   let canisterId: Principal | undefined;
-  $: canisterId = (modal as CanisterDetailsModalDetach | undefined)?.detail
+  $: canisterId = (modal as CanisterDetailsModalDetach | undefined)?.data
     ?.canisterId;
 </script>
 
