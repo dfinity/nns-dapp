@@ -441,7 +441,7 @@ export const loadSnsNervousSystemFunctions = async (
     const functions = await getNervousSystemFunctions({
       rootCanisterId,
       identity,
-      certified: true,
+      certified: false,
     });
 
     snsFunctionsStore.setFunctions({
