@@ -34,7 +34,9 @@
 
     const { clientWidth, offsetWidth } = main;
     const scrollbarWidth =
-      offsetWidth - clientWidth > 0 ? offsetWidth - clientWidth : SCROLLBAR_FALLBACK_WIDTH;
+      offsetWidth - clientWidth > 0
+        ? offsetWidth - clientWidth
+        : SCROLLBAR_FALLBACK_WIDTH;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
