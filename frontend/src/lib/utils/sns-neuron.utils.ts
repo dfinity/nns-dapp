@@ -7,6 +7,7 @@ import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
@@ -306,6 +307,14 @@ export const functionsToFollow = (
 ): SnsNervousSystemFunction[] | undefined =>
   functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
 
+/**
+ * Returns the followees of a neuron in a specific ns function.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {bigint} params.functionId
+ * @returns {SnsNeuronId[]}
+ */
 export const followeesByFunction = ({
   neuron,
   functionId,
@@ -320,3 +329,55 @@ export const followeesByFunction = ({
         : functionFollowees,
     []
   );
+
+export interface SnsFolloweesByNeuron {
+  neuronIdHex: string;
+  nsFunctions: NervousSystemFunction[];
+}
+
+/**
+ * Returns a list of followees of a neuron.
+ *
+ * Each followee has then the list of ns functions that are followed.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {NervousSystemFunction[]} params.nsFunctions
+ * @returns {SnsFolloweesByNeuron[]}
+ */
+export const followeesByNeuronId = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: NervousSystemFunction[];
+}): SnsFolloweesByNeuron[] => {
+  const followeesDictionary = neuron.followees.reduce<{
+    [key: string]: NervousSystemFunction[];
+  }>((acc, [functionId, followeesData]) => {
+    const nsFunction = nsFunctions.find(({ id }) => id === functionId);
+    // Edge case, all ns functions in followees should also be in the nervous system.
+    if (nsFunction !== undefined) {
+      for (const followee of followeesData.followees) {
+        const followeeHex = subaccountToHexString(followee.id);
+        if (acc[followeeHex]) {
+          acc = {
+            ...acc,
+            [followeeHex]: [...acc[followeeHex], nsFunction],
+          };
+        } else {
+          acc = {
+            ...acc,
+            [followeeHex]: [nsFunction],
+          };
+        }
+      }
+    }
+    return acc;
+  }, {});
+
+  return Object.keys(followeesDictionary).map((neuronIdHex) => ({
+    neuronIdHex,
+    nsFunctions: followeesDictionary[neuronIdHex],
+  }));
+};
