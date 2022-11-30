@@ -26,11 +26,13 @@ export const createAgent = async ({
     await syncTime(agent);
 
     if (isNullish(agents)) {
-      agents = { agent };
+      agents = {
+        [principalAsText]: agent
+      };
     } else {
       agents = {
         ...agents,
-        agent,
+        [principalAsText]: agent,
       };
     }
   }
