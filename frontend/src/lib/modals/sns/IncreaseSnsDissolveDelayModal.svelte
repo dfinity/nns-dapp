@@ -43,7 +43,7 @@
   $: minDelayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
 
   $: if ($snsOnlyProjectStore !== undefined) {
-    loadSnsParameters({ rootCanisterId: $snsOnlyProjectStore });
+    loadSnsParameters($snsOnlyProjectStore);
   }
 
   const dispatcher = createEventDispatcher();

@@ -6,11 +6,7 @@ import type { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsParameters = async ({
-  rootCanisterId,
-}: {
-  rootCanisterId: Principal;
-}): Promise<void> => {
+export const loadSnsParameters = async (rootCanisterId: Principal): Promise<void> => {
   await queryAndUpdate<NervousSystemParameters, unknown>({
     request: ({ certified, identity }) =>
       nervousSystemParameters({

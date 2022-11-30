@@ -18,7 +18,7 @@ describe("sns-parameters-services", () => {
           Promise.resolve(snsNervousSystemParametersMock)
         );
 
-      await services.loadSnsParameters({ rootCanisterId: mockPrincipal });
+      await services.loadSnsParameters(mockPrincipal);
 
       const store = get(snsParametersStore);
       expect(store[mockPrincipal.toText()]?.parameters).toEqual(
