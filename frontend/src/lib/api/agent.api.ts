@@ -1,4 +1,4 @@
-import {FETCH_ROOT_KEY, HOST} from "$lib/constants/environment.constants";
+import {FETCH_ROOT_KEY} from "$lib/constants/environment.constants";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil } from "@dfinity/utils";
 import {LEDGER_CANISTER_ID} from "$lib/constants/canister-ids.constants";
@@ -24,7 +24,6 @@ export const createAgent = async ({identity, host}: {
 
     return agents[principalAsText];
 }
-
 
 /**
  * Sync time to fix random runtime issue:
