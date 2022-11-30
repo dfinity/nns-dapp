@@ -2,9 +2,10 @@ import {FETCH_ROOT_KEY} from "$lib/constants/environment.constants";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil } from "@dfinity/utils";
 import {LEDGER_CANISTER_ID} from "$lib/constants/canister-ids.constants";
+import {isNullish} from "$lib/utils/utils";
 
 type PrincipalAsText = string;
-let agents: Record<PrincipalAsText, HttpAgent> = {};
+let agents: Record<PrincipalAsText, HttpAgent> | undefined | null = undefined;
 
 export const createAgent = async ({identity, host}: {
   identity: Identity;
@@ -12,14 +13,23 @@ export const createAgent = async ({identity, host}: {
 }): Promise<HttpAgent> => {
     const principalAsText: string = identity.getPrincipal().toText();
 
-    if (agents[principalAsText] === undefined) {
-        agents[principalAsText] = await createAgentUtil({
+    if (agents?.[principalAsText] === undefined) {
+        const agent = await createAgentUtil({
             identity,
             ...(host !== undefined && {host}),
             fetchRootKey: FETCH_ROOT_KEY,
         });
 
-        await syncTime(agents[principalAsText]);
+        await syncTime(agent);
+
+        if (isNullish(agents)) {
+            agents = {agent}
+        } else {
+            agents = {
+                ...agents,
+                agent
+            }
+        }
     }
 
     return agents[principalAsText];
@@ -46,4 +56,4 @@ const syncTime = async (agent: HttpAgent) => {
 };
 
 
-export const resetAgent = () => agents = {};
+export const resetAgent = () => agents = null;

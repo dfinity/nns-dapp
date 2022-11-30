@@ -1,6 +1,7 @@
 import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
+import * as utils from '$lib/api/agent.api';
 
 describe("auth-store", () => {
   const mockAuthClient = mock<AuthClient>();
@@ -34,6 +35,14 @@ describe("auth-store", () => {
 
   it("should call auth-client logout on sign-out", async () => {
     const spy = jest.spyOn(mockAuthClient, "logout");
+
+    await authStore.signOut();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it("should call reset agent on sign-out", async () => {
+    const spy = jest.spyOn(utils, "resetAgent");
 
     await authStore.signOut();
 
