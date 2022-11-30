@@ -110,6 +110,7 @@ describe("sns-api", () => {
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
+        nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
       })
     );

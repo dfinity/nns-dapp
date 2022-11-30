@@ -5,13 +5,13 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+import { secondsToDuration } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
-  snsVotingPower,
+  snsNeuronVotingPower,
 } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -26,7 +26,7 @@ import {
 } from "../../../mocks/sns-neurons.mock";
 
 describe("ConfirmSnsDissolveDelay", () => {
-  const delayInSeconds = 12.3 * SECONDS_IN_DAY;
+  const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);
   const neuron: SnsNeuron = {
     ...mockSnsNeuron,
     dissolve_state: [
@@ -108,10 +108,9 @@ describe("ConfirmSnsDissolveDelay", () => {
       },
     });
     const value = formatVotingPower(
-      snsVotingPower({
-        nowSeconds: nowInSeconds(),
+      snsNeuronVotingPower({
         neuron,
-        dissolveDelayInSeconds: delayInSeconds,
+        newDissolveDelayInSeconds: BigInt(delayInSeconds),
         snsParameters: snsNervousSystemParametersMock,
       })
     );

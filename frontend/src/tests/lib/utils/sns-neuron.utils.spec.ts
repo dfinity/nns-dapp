@@ -21,7 +21,7 @@ import {
   isSnsNeuron,
   isUserHotkey,
   needsRefresh,
-  snsVotingPower,
+  snsNeuronVotingPower,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
@@ -843,10 +843,9 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("snsVotingPower", () => {
+  describe("snsNeuronVotingPower", () => {
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/d621f8f05b8c6302ce0b9a007ed4aeec7e7b2f51/rs/sns/governance/src/neuron.rs#L727
-    it("should calculate fully boosted voting power", () => {
-      const nowSeconds = 100;
+    it.only("should calculate fully boosted voting power", () => {
       const baseStake = 100n;
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
@@ -856,17 +855,16 @@ describe("sns-neuron utils", () => {
         aging_since_timestamp_seconds: 0n,
         voting_power_percentage_multiplier: 100n,
       };
-      const votingPower = snsVotingPower({
-        nowSeconds,
+      const votingPower = snsNeuronVotingPower({
         neuron,
-        dissolveDelayInSeconds: 100,
+        newDissolveDelayInSeconds: 100n,
         snsParameters: {
           max_dissolve_delay_seconds: [100n],
           max_neuron_age_for_age_bonus: [100n],
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
         } as unknown as NervousSystemParameters,
-        test: true,
       });
 
       expect(votingPower).toEqual(
@@ -879,7 +877,6 @@ describe("sns-neuron utils", () => {
 
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L747
     it("should calculete voting power with bonus thresholds zero", () => {
-      const nowSeconds = 100;
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         cached_neuron_stake_e8s: 100n,
@@ -887,21 +884,22 @@ describe("sns-neuron utils", () => {
         aging_since_timestamp_seconds: 0n,
         voting_power_percentage_multiplier: 100n,
       };
-      const votingPower = snsVotingPower({
-        nowSeconds,
+      const votingPower = snsNeuronVotingPower({
         neuron,
-        dissolveDelayInSeconds: 100,
+        newDissolveDelayInSeconds: 100n,
         snsParameters: {
           max_dissolve_delay_seconds: [0n],
           max_neuron_age_for_age_bonus: [0n],
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
         } as unknown as NervousSystemParameters,
-        test: true,
       });
 
       expect(votingPower).toEqual(100);
     });
+
+    // TODO: should take the dissolve delay from the neuron
   });
 
   describe("functionsToFollow", () => {
