@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { initAppPrivateProxy } from "$lib/proxy/app.services.proxy";
+import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import { initWorker } from "$lib/services/worker.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
@@ -51,7 +51,7 @@ describe("Layout", () => {
       identity: mockIdentity,
     });
 
-    await waitFor(() => expect(initAppPrivateProxy).toHaveBeenCalled());
+    await waitFor(() => expect(initAppPrivateDataProxy).toHaveBeenCalled());
   });
 
   it("should register auth worker sync after sign in", () => {
