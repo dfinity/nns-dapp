@@ -24,7 +24,13 @@
 
 <div class="identifier" data-tid="sns-neuron-card-title">
   <div use:onIntersection on:nnsIntersecting data-tid="neuron-id-container">
-    <Hash id="neuron-id" {tagName} testId="neuron-id" text={neuronId} />
+    <Hash
+      id="neuron-id"
+      {tagName}
+      testId="neuron-id"
+      text={neuronId}
+      showCopy
+    />
   </div>
   {#if isHotkey}
     <span>{$i18n.neurons.hotkey_control}</span>

@@ -6,15 +6,22 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { hasPermissionToVote } from "$lib/utils/sns-neuron.utils";
+  import {
+    followeesByNeuronId,
+    hasPermissionToVote,
+    type SnsFolloweesByNeuron,
+  } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
   import { getContext } from "svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+  import SnsFollowee from "./SnsFollowee.svelte";
+  import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
 
   $: {
     if (rootCanisterId !== undefined) {
@@ -39,6 +46,26 @@
         neuron,
         identity: $authStore.identity,
       });
+
+  let nsFunctions: SnsNervousSystemFunction[];
+  $: nsFunctions = nonNullish(rootCanisterId)
+    ? $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions ?? []
+    : [];
+
+  let followees: SnsFolloweesByNeuron[] = [];
+  $: followees =
+    isNullish(neuron) || nsFunctions.length === 0
+      ? []
+      : followeesByNeuronId({
+          neuron,
+          nsFunctions,
+        });
+
+  let showLoading: boolean;
+  $: showLoading =
+    nonNullish(neuron) &&
+    neuron.followees.length > 0 &&
+    nsFunctions.length === 0;
 </script>
 
 <CardInfo>
@@ -48,6 +75,23 @@
       >{$i18n.neuron_detail.following_description}</svelte:fragment
     >
   </KeyValuePairInfo>
+
+  {#if followees.length > 0}
+    <div class="frame">
+      <hr />
+
+      {#each followees as followee}
+        <SnsFollowee {followee} />
+      {/each}
+    </div>
+  {/if}
+
+  {#if showLoading}
+    <div class="frame">
+      <hr />
+      <SkeletonFollowees />
+    </div>
+  {/if}
 
   <!-- TS doesn't understand that neuron is defined if allowedToManageFollows is true -->
   {#if allowedToManageFollows && nonNullish(neuron) && nonNullish(rootCanisterId)}
@@ -62,6 +106,10 @@
 <style lang="scss">
   h3 {
     line-height: var(--line-height-standard);
+  }
+
+  .frame {
+    padding-bottom: var(--padding-0_5x);
   }
 
   .actions {

@@ -572,10 +572,22 @@ describe("sns-neurons-services", () => {
       await loadSnsNervousSystemFunctions(mockPrincipal);
 
       const store = get(snsFunctionsStore);
-      expect(store[mockPrincipal.toText()]).toEqual([
-        nervousSystemFunctionMock,
-      ]);
+      await waitFor(() =>
+        expect(store[mockPrincipal.toText()]?.nsFunctions).toEqual([
+          nervousSystemFunctionMock,
+        ])
+      );
       expect(spyGetFunctions).toBeCalled();
+    });
+
+    it("should show a toast if api throws an error", async () => {
+      jest
+        .spyOn(governanceApi, "getNervousSystemFunctions")
+        .mockImplementation(() => Promise.reject("error"));
+
+      await loadSnsNervousSystemFunctions(mockPrincipal);
+
+      expect(toastsError).toBeCalled();
     });
   });
 

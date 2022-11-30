@@ -13,7 +13,7 @@
 
   let functions: SnsNervousSystemFunction[] | undefined;
   $: functions = functionsToFollow(
-    $snsFunctionsStore[rootCanisterId.toString()]
+    $snsFunctionsStore[rootCanisterId.toString()]?.nsFunctions
   );
 </script>
 

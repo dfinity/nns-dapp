@@ -8,7 +8,7 @@
   import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import { followeesByTopic } from "$lib/utils/neuron.utils";
   import FollowTopicSection from "./FollowTopicSection.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import { IconClose, Value } from "@dfinity/gix-components";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
@@ -67,13 +67,12 @@
   <ul>
     {#each followees as followee (followee.neuronId)}
       <li data-tid="current-followee-item">
-        <KeyValuePair>
-          <p slot="key" class="value">{followee.name ?? followee.neuronId}</p>
-          <button
-            slot="value"
-            on:click={() => removeCurrentFollowee(followee.neuronId)}>x</button
-          >
-        </KeyValuePair>
+        <Value>{followee.name ?? followee.neuronId}</Value>
+        <button
+          class="text"
+          on:click={() => removeCurrentFollowee(followee.neuronId)}
+          ><IconClose /></button
+        >
       </li>
     {/each}
   </ul>
@@ -83,9 +82,18 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/card";
+
   ul {
-    list-style-type: none;
-    padding: 0;
+    @include card.list;
+  }
+
+  li {
+    @include card.list-item;
+
+    button {
+      display: flex;
+    }
   }
 
   .subtitle {

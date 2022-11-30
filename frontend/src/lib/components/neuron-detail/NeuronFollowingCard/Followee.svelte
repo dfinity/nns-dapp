@@ -9,6 +9,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import TagsList from "$lib/components/ui/TagsList.svelte";
 
   export let followee: FolloweesNeuron;
 
@@ -33,31 +34,12 @@
   };
 </script>
 
-<button {id} class="text" on:click|stopPropagation={openVotingHistory}>
-  {name}
-</button>
+<TagsList {id} on:nnsTitleClick={openVotingHistory}>
+  <svelte:fragment slot="title">
+    {name}
+  </svelte:fragment>
 
-<ul aria-labelledby={id}>
   {#each followee.topics as topic}
     <Tag tagName="li">{topicTitle(topic)}</Tag>
   {/each}
-</ul>
-
-<style lang="scss">
-  button {
-    margin: 0 0 calc(0.5 * var(--padding));
-    font-size: var(--font-size-h5);
-  }
-
-  ul {
-    display: flex;
-    gap: calc(0.5 * var(--padding));
-    flex-wrap: wrap;
-
-    list-style: none;
-
-    margin-bottom: var(--padding);
-    padding: 0 0 calc(2 * var(--padding));
-    border-bottom: 1px solid currentColor;
-  }
-</style>
+</TagsList>
