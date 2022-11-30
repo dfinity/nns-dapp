@@ -147,4 +147,16 @@
       color: var(--disable-contrast);
     }
   }
+
+  @include media.dark-theme {
+    .icon {
+      background: rgba(var(--positive-emphasis-rgb), 0.3);
+      color: var(--positive-emphasis);
+
+      &.send {
+        background: var(--card-background);
+        color: var(--disable-contrast);
+      }
+    }
+  }
 </style>
