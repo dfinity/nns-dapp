@@ -352,14 +352,16 @@ export const snsNeuronVotingPower = ({
     voting_power_percentage_multiplier,
     neuron_fees_e8s,
     aging_since_timestamp_seconds,
+    maturity_e8s_equivalent,
   } = neuron;
   const dissolveDelay =
     dissolveDelayInSeconds < maxDissolveDelaySeconds
       ? dissolveDelayInSeconds
       : maxDissolveDelaySeconds;
   const stakeE8s = BigInt(
-    Math.max(Number(getSnsNeuronStake(neuron) - neuron_fees_e8s), 0)
+    Math.max(Number(getSnsNeuronStake(neuron) + maturity_e8s_equivalent), 0)
   );
+  console.log('neuron', neuron)
   const ageSeconds = BigInt(
     Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
   );
