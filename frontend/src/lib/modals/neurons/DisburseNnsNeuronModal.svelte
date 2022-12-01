@@ -72,7 +72,7 @@
       });
     }
 
-    dispatcher("nnsClose");
+    // dispatcher("nnsClose");
 
     if (success) {
       await goto($neuronsPathStore, { replaceState: true });
