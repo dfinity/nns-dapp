@@ -20,7 +20,7 @@
     NnsNeuronModalType,
     NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
-  import {nonNullish} from "$lib/utils/utils";
+  import { nonNullish } from "$lib/utils/utils";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
