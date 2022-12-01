@@ -4,7 +4,7 @@ There are parts that usually change in a proposal:
 
 - A new `Action` variant.
 - A new proposal topic.
-- A new `nnsFunction`.
+- A new `nnsFunction` or changes in one.
 
 The change is not always just in one section. Many times you need to fix two sections simulataneously. For example, a new topic comes with a new `nnsFunction`.
 
@@ -92,7 +92,7 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 
 The topic descriptions can be found in [governance.proto](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
 
-## New `nnsFunction`
+## New or changes in `nnsFunction`
 
 The `nnsFunction` is a property of the `Action` variant `ExecuteNnsFunction`. Find it [here](https://github.com/dfinity/ic-js/blob/main/packages/nns/candid/governance.did#L102).
 
@@ -122,6 +122,7 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
   - Add new payload type (e.g. `AddWasmRequest`) in `proposals.rs`
   - If the payload needs to be transformed for display (e.g. if it is too large), define the type into which the payload must be transformed, then implement `From<OriginalPayloadType` for this new type. (see `NNS function 3 - AddNNSCanister`) (use `Trimmed` suffix to define transformed version)
   - Update the `match nns_function` expression to include the new function (use either identity or transform depending on if the payload needs to be transformed).
+- In case the payload uses `transform` instead of `identity` update the related types and `transform` function.
 - Build: `cargo build`
 - Deploy and test on available proposals
 
