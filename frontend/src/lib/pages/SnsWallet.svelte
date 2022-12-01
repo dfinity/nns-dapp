@@ -47,7 +47,6 @@
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
-    modal: undefined,
     neurons: [],
   });
 
@@ -68,7 +67,6 @@
 
       selectedAccountStore.set({
         account: selectedAccount,
-        modal: undefined,
         neurons: [],
       });
     }

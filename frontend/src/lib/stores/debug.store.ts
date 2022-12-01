@@ -28,7 +28,6 @@ export const debugAddAccountStore = (store: Writable<AddAccountStore>) =>
 // Therefore, we need to initialize them here.
 let walletStore: Readable<WalletStore> = readable({
   account: undefined,
-  modal: undefined,
   neurons: [],
 });
 export const debugSelectedAccountStore = (store: Writable<WalletStore>) =>

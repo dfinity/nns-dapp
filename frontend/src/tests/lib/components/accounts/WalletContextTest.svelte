@@ -13,7 +13,6 @@
 
   export const walletStore = writable<WalletStore>({
     account,
-    modal: undefined,
     neurons: [],
   });
 

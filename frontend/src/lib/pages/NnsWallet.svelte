@@ -52,7 +52,6 @@
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
-    modal: undefined,
     neurons: [],
   });
 
@@ -95,7 +94,6 @@
       identifier: accountIdentifier,
       accounts: $nnsAccountsListStore,
     }),
-    modal: undefined,
     neurons: [],
   });
 

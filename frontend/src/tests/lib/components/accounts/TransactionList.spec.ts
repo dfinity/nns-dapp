@@ -23,7 +23,6 @@ describe("TransactionList", () => {
         contextValue: {
           store: writable<WalletStore>({
             account,
-            modal: undefined,
             neurons: [],
           }),
         } as WalletContext,
