@@ -36,6 +36,7 @@ ic-base-types = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01d
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
 ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
+ic-icrc1 = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }
 ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb82486deb7aaa25d768787" }

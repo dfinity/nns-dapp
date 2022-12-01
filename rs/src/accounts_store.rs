@@ -21,7 +21,9 @@ use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
+use std::convert::TryInto;
 use std::ops::RangeTo;
+use std::str::FromStr;
 use std::time::{Duration, SystemTime};
 
 type TransactionIndex = u64;
@@ -243,10 +245,43 @@ pub enum AddPendingTransactionResponse {
     NotAuthorized,
 }
 
-type Refunds = BTreeMap<PrincipalId, Vec<TransactionIndex>>;
+#[derive(CandidType)]
+pub struct RefundData {
+    principal_id: PrincipalId,
+    blocks: Vec<BlockIndex>,
+    swap_account_id: AccountIdentifier,
+}
+
+type Refunds = BTreeMap<PrincipalId, Vec<BlockIndex>>;
+
+pub fn principal_to_subaccount(principal_id: &PrincipalId) -> ic_icrc1::Subaccount {
+    let mut subaccount = [0; std::mem::size_of::<Subaccount>()];
+    let principal_id = principal_id.as_slice();
+    subaccount[0] = principal_id.len().try_into().unwrap();
+    subaccount[1..1 + principal_id.len()].copy_from_slice(principal_id);
+    subaccount
+}
+
+pub fn account_id(pid: &PrincipalId) -> AccountIdentifier {
+    let swap_canister_id = CanisterId::from_str("zcdfx-6iaaa-aaaaq-aaagq-cai").unwrap().get();
+    AccountIdentifier::new(swap_canister_id, Some(principal_to_subaccount(&pid)).map(Subaccount))
+}
 
 impl AccountsStore {
-    pub fn get_transactions_do_not_merge(&self) -> Vec<(PrincipalId, Vec<TransactionIndex>)> {
+    // Loop throw self.accounts `HashMap<Vec<u8>, Account>`
+    // Each account has a
+    // * transactions of main account `default_account_transactions: Vec<TransactionIndex>,
+    // * linked subaccounts struct NamedSubAccount
+    //   * Each subaccount has a list of transactions `transactions: Vec<TransactionIndex>`
+
+    // The transactions data is in self.transactions `VecDeque<Transaction>`.
+    // Transactions have a type: `transaction_type: Option<TransactionType>`
+    // the type of the sale is `TransactionType::ParticipateSwap(CanisterId)`
+
+    // This is a good coding challenge for an interview.
+    // Find all the accounts that participated in the swap.
+    // You have 5 minutes.
+    pub fn get_transactions_do_not_merge(&self) -> Vec<RefundData> {
         let swap_transactions = self
             .transactions
             .iter()
@@ -257,15 +292,15 @@ impl AccountsStore {
                     _ => false,
                 };
             })
-            .map(|transaction| transaction.transaction_index)
-            .collect::<BTreeSet<TransactionIndex>>();
+            .map(|transaction| (transaction.transaction_index, transaction.block_height))
+            .collect::<BTreeMap<TransactionIndex, BlockIndex>>();
 
         let mut refunds = Refunds::new();
 
         for account in self.accounts.values() {
             let principal = match account.principal {
                 None => {
-                    println!("Missing Principal.");
+                    dfn_core::api::print("Missing Principal.");
                     continue;
                 }
                 Some(p) => p,
@@ -283,33 +318,26 @@ impl AccountsStore {
                 .collect::<BTreeSet<&TransactionIndex>>();
 
             for transaction_index in all_txs {
-                if swap_transactions.contains(&transaction_index) {
+                if let Some(block_index) = swap_transactions.get(&transaction_index) {
                     refunds
                         .entry(principal)
-                        .and_modify(|txs| txs.push(*transaction_index))
-                        .or_insert(vec![*transaction_index]);
+                        .and_modify(|txs| txs.push(*block_index))
+                        .or_insert(vec![*block_index]);
                 }
             }
         }
 
         // Print some fun data
+        dfn_core::api::print(format!("Number of unique Principals: {}", refunds.len()));
 
-        println!("Number of unique Principals: {}", refunds.len());
-
-        // Loop throw self.accounts `HashMap<Vec<u8>, Account>`
-        // Each account has a
-        // * transactions of main account `default_account_transactions: Vec<TransactionIndex>,
-        // * linked subaccounts struct NamedSubAccount
-        //   * Each subaccount has a list of transactions `transactions: Vec<TransactionIndex>`
-
-        // The transactions data is in self.transactions `VecDeque<Transaction>`.
-        // Transactions have a type: `transaction_type: Option<TransactionType>`
-        // the type of the sale is `TransactionType::ParticipateSwap(CanisterId)`
-
-        // This is a good coding challenge for an interview.
-        // Find all the accounts that participated in the swap.
-        // You have 5 minutes.
-        refunds.into_iter().collect()
+        refunds
+            .into_iter()
+            .map(|(principal_id, blocks)| RefundData {
+                principal_id,
+                blocks,
+                swap_account_id: account_id(&principal_id),
+            })
+            .collect()
     }
 
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {

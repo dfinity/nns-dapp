@@ -3365,6 +3365,7 @@ dependencies = [
  "ic-certified-map 0.1.0",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
+ "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
  "ic-ledger-core 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=a3608ed7cf64a01dcdb82486deb7aaa25d768787)",
  "ic-nervous-system-root",

@@ -1,7 +1,7 @@
 use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
-    GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
+    GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RefundData, RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
@@ -67,7 +67,7 @@ pub fn get_transactions_do_not_merge() {
     over(candid, |()| get_transactions_do_not_merge_impl());
 }
 
-fn get_transactions_do_not_merge_impl() -> Vec<(PrincipalId, Vec<u64>)> {
+fn get_transactions_do_not_merge_impl() -> Vec<RefundData> {
     STATE.with(|s| s.accounts_store.borrow().get_transactions_do_not_merge())
 }
 
