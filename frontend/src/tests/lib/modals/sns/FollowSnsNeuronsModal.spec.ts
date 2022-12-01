@@ -72,7 +72,7 @@ describe("FollowSnsNeuronsModal", () => {
 
     expect(
       queryByTestId(`follow-topic-${function0.id}-section`)
-    ).not.toBeInTheDocument();
+    ).toBeInTheDocument();
     expect(
       queryByTestId(`follow-topic-${function1.id}-section`)
     ).toBeInTheDocument();

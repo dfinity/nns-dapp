@@ -6,7 +6,6 @@ import {
   followeesByFunction,
   followeesByNeuronId,
   formattedSnsMaturity,
-  functionsToFollow,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -841,26 +840,6 @@ describe("sns-neuron utils", () => {
           balanceE8s: BigInt(2),
         })
       ).toBeFalsy();
-    });
-  });
-
-  describe("functionsToFollow", () => {
-    it("filters out function with id 0", () => {
-      const function0: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(0),
-      };
-      const function1: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(1),
-      };
-      const function2: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(2),
-      };
-      expect(functionsToFollow([function0, function1, function2]).length).toBe(
-        2
-      );
     });
   });
 

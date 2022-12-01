@@ -16,6 +16,7 @@ import {
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
@@ -444,9 +445,21 @@ export const loadSnsNervousSystemFunctions = async (
         certified,
       }),
     onLoad: async ({ response: nsFunctions, certified }) => {
+      // TODO: Ideally, the name from the backend is user-friendly.
+      // https://dfinity.atlassian.net/browse/GIX-1169
+      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
+        if (nsFunction.id === BigInt(0)) {
+          const translationKeys = get(i18n);
+          return {
+            ...nsFunction,
+            name: translationKeys.sns_neuron_detail.all_topics,
+          };
+        }
+        return nsFunction;
+      });
       snsFunctionsStore.setFunctions({
         rootCanisterId,
-        nsFunctions,
+        nsFunctions: snsNervousSystemFunctions,
         certified,
       });
     },
