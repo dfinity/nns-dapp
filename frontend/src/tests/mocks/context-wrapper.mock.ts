@@ -79,7 +79,6 @@ export const renderSelectedSnsNeuronContext = ({
           rootCanisterId: rootCanisterIdMock,
         },
         neuron,
-        modal: undefined,
       }),
       reload,
     } as SelectedSnsNeuronContext,
