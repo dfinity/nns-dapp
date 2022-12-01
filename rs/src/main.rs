@@ -62,11 +62,12 @@ pub fn http_request() {
 }
 
 // Add the endpoint here and manually in the candid file `nns-dapp.did`
+#[export_name = "canister_query get_transactions_do_not_merge"]
 pub fn get_transactions_do_not_merge() {
     over(candid, |()| get_transactions_do_not_merge_impl());
 }
 
-fn get_transactions_do_not_merge_impl() {
+fn get_transactions_do_not_merge_impl() -> Vec<(PrincipalId, Vec<u64>)> {
     STATE.with(|s| s.accounts_store.borrow().get_transactions_do_not_merge())
 }
 

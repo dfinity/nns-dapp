@@ -20,7 +20,7 @@ use ledger_canister::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
@@ -243,8 +243,59 @@ pub enum AddPendingTransactionResponse {
     NotAuthorized,
 }
 
+type Refunds = BTreeMap<PrincipalId, Vec<TransactionIndex>>;
+
 impl AccountsStore {
-    pub fn get_transactions_do_not_merge(&self) -> VecDeque<Account> {
+    pub fn get_transactions_do_not_merge(&self) -> Vec<(PrincipalId, Vec<TransactionIndex>)> {
+        let swap_transactions = self
+            .transactions
+            .iter()
+            .filter(|transaction| transaction.transaction_type.is_some())
+            .filter(|transaction| {
+                return match transaction.transaction_type.unwrap() {
+                    TransactionType::ParticipateSwap(_) => true,
+                    _ => false,
+                };
+            })
+            .map(|transaction| transaction.transaction_index)
+            .collect::<BTreeSet<TransactionIndex>>();
+
+        let mut refunds = Refunds::new();
+
+        for account in self.accounts.values() {
+            let principal = match account.principal {
+                None => {
+                    println!("Missing Principal.");
+                    continue;
+                }
+                Some(p) => p,
+            };
+
+            let all_txs = account
+                .default_account_transactions
+                .iter()
+                .chain(
+                    account
+                        .sub_accounts
+                        .values()
+                        .flat_map(|named_sub_account| &named_sub_account.transactions),
+                )
+                .collect::<BTreeSet<&TransactionIndex>>();
+
+            for transaction_index in all_txs {
+                if swap_transactions.contains(&transaction_index) {
+                    refunds
+                        .entry(principal)
+                        .and_modify(|txs| txs.push(*transaction_index))
+                        .or_insert(vec![*transaction_index]);
+                }
+            }
+        }
+
+        // Print some fun data
+
+        println!("Number of unique Principals: {}", refunds.len());
+
         // Loop throw self.accounts `HashMap<Vec<u8>, Account>`
         // Each account has a
         // * transactions of main account `default_account_transactions: Vec<TransactionIndex>,
@@ -258,6 +309,7 @@ impl AccountsStore {
         // This is a good coding challenge for an interview.
         // Find all the accounts that participated in the swap.
         // You have 5 minutes.
+        refunds.into_iter().collect()
     }
 
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {

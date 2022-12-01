@@ -255,6 +255,7 @@ service : {
     get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;
     add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingTransactionResponse);
+    get_transactions_do_not_merge: () -> (vec record {principal; vec nat64}) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();

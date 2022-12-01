@@ -43,6 +43,15 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt frontend)
 
 set -x
+
+
+
+echo "${@}"
+echo "$DFX_NETWORK"
+echo "$OWN_CANISTER_ID"
+echo "$image_name"
+echo "$OUTDIR"
+
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
