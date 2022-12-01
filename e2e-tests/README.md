@@ -9,7 +9,7 @@ more info.
 
 ### Requirements
 
-* dfx version same as in dfx.json.
+- dfx version same as in dfx.json.
 
 ### Start replica
 
