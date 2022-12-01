@@ -74,11 +74,11 @@
 
     // We need to dispatch the nnsClose event before we navigate away
     // Otherwise the parent component that needs to close the modal is unmounted before closing the modal
-    // dispatcher("nnsClose");
+    dispatcher("nnsClose");
 
-    // if (success) {
-    //   await goto($neuronsPathStore, { replaceState: true });
-    // }
+    if (success) {
+      await goto($neuronsPathStore, { replaceState: true });
+    }
   };
 </script>
 
