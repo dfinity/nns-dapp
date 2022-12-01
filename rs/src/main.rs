@@ -61,6 +61,15 @@ pub fn http_request() {
     over(candid_one, assets::http_request);
 }
 
+// Add the endpoint here and manually in the candid file `nns-dapp.did`
+pub fn get_transactions_do_not_merge() {
+    over(candid, |()| get_transactions_do_not_merge_impl());
+}
+
+fn get_transactions_do_not_merge_impl() {
+    STATE.with(|s| s.accounts_store.borrow().get_transactions_do_not_merge())
+}
+
 /// Returns the user's account details if they have an account, else AccountNotFound.
 ///
 /// The account details contain each of the AccountIdentifiers linked to the user's account. These

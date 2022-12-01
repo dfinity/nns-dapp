@@ -244,6 +244,22 @@ pub enum AddPendingTransactionResponse {
 }
 
 impl AccountsStore {
+    pub fn get_transactions_do_not_merge(&self) -> VecDeque<Account> {
+        // Loop throw self.accounts `HashMap<Vec<u8>, Account>`
+        // Each account has a
+        // * transactions of main account `default_account_transactions: Vec<TransactionIndex>,
+        // * linked subaccounts struct NamedSubAccount
+        //   * Each subaccount has a list of transactions `transactions: Vec<TransactionIndex>`
+
+        // The transactions data is in self.transactions `VecDeque<Transaction>`.
+        // Transactions have a type: `transaction_type: Option<TransactionType>`
+        // the type of the sale is `TransactionType::ParticipateSwap(CanisterId)`
+
+        // This is a good coding challenge for an interview.
+        // Find all the accounts that participated in the swap.
+        // You have 5 minutes.
+    }
+
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts.get(&account_identifier.to_vec()) {
