@@ -7,6 +7,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuronState: NeuronState;
 
@@ -17,11 +18,14 @@
     buttonKey = isDissolving ? "stop_dissolving" : "start_dissolving";
   }
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 </script>
 
-<button on:click={() => toggleModal("dissolve")} class="secondary"
+<button
+  class="secondary"
+  on:click={() =>
+    openNnsNeuronModal({ type: "dissolve", data: { neuron: $store.neuron } })}
   >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button
 >

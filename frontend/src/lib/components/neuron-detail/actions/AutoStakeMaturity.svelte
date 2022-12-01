@@ -8,13 +8,14 @@
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
   let hasAutoStakeOn: boolean;
   $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 </script>
@@ -24,7 +25,11 @@
     preventDefault
     inputId="auto-stake-maturity-checkbox"
     checked={hasAutoStakeOn}
-    on:nnsChange={() => toggleModal("auto-stake-maturity")}
+    on:nnsChange={() =>
+      openNnsNeuronModal({
+        type: "auto-stake-maturity",
+        data: { neuron: $store.neuron },
+      })}
   >
     <span>{$i18n.neuron_detail.auto_stake_maturity}</span>
   </Checkbox>

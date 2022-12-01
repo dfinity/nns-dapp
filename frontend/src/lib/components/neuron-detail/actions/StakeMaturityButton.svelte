@@ -8,17 +8,22 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToStake(neuron);
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 
-  const showModal = () => toggleModal("stake-maturity");
+  const showModal = () =>
+    openNnsNeuronModal({
+      type: "stake-maturity",
+      data: { neuron: $store.neuron },
+    });
 </script>
 
 {#if enoughMaturity}

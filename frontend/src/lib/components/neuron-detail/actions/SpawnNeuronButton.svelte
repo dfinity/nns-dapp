@@ -15,6 +15,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
@@ -27,11 +28,12 @@
           percentage: 100,
         });
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 
-  const showModal = () => toggleModal("spawn");
+  const showModal = () =>
+    openNnsNeuronModal({ type: "spawn", data: { neuron: $store.neuron } });
 </script>
 
 {#if enoughMaturity}

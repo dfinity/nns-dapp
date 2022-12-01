@@ -10,6 +10,8 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
   import TagsList from "$lib/components/ui/TagsList.svelte";
+  import { emit } from "$lib/utils/events.utils";
+  import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
 
   export let followee: FolloweesNeuron;
 
@@ -24,14 +26,18 @@
     $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
     followee.neuronId.toString();
 
-  const { toggleModal, store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 
-  const openVotingHistory = () => {
-    store.update((data) => ({ ...data, selectedFollowee: followee }));
-    toggleModal("voting-history");
-  };
+  const openVotingHistory = () =>
+    emit<NnsNeuronModalVotingHistory>({
+      message: "nnsNeuronDetailModal",
+      detail: {
+        type: "voting-history",
+        data: { followee, neuron: $store.neuron },
+      },
+    });
 </script>
 
 <TagsList {id} on:nnsTitleClick={openVotingHistory}>

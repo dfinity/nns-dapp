@@ -15,7 +15,7 @@ describe("EditFollowNeurons", () => {
   // Tested in FollowNeuronsModal.spec.ts
   it("is not tested in isolation", () => {
     render(EditFollowNeurons, {
-      props: { neuron: mockNeuron },
+      props: { neuronId: mockNeuron.neuronId },
     });
     expect(true).toBeTruthy();
   });

@@ -16,6 +16,8 @@ declare namespace svelte.JSX {
   interface HTMLAttributes<T> {
     onnnsIntersecting?: (event: CustomEvent<any>) => void;
     onnnsCanisterDetailModal?: (event: CustomEvent<any>) => void;
+    onnnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
+    onsnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
     onnnsWalletModal?: (event: CustomEvent<any>) => void;
   }
 }
