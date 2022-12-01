@@ -44,8 +44,6 @@
   $: token = $snsTokenSymbolSelectedStore as Token;
 </script>
 
-// TODO: check for rootCanisterId !== undef
-
 {#if nonNullish(neuron)}
   {#if modal === "increase-dissolve-delay" && rootCanisterId !== undefined}
     <IncreaseSnsDissolveDelayModal
