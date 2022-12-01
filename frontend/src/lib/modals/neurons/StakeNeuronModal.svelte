@@ -199,7 +199,7 @@
     {/if}
   {/if}
   {#if currentStep?.name === "EditFollowNeurons"}
-    {#if newNeuron !== undefined}
+    {#if newNeuron !== undefined && newNeuronId !== undefined}
       <EditFollowNeurons neuronId={newNeuronId} />
     {/if}
   {/if}
