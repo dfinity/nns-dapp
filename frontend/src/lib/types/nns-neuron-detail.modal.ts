@@ -17,7 +17,7 @@ export type NnsNeuronModalType =
   | "voting-history";
 
 export interface NnsNeuronModalData {
-  neuron: NeuronInfo | undefined;
+  neuron: NeuronInfo | undefined | null;
 }
 
 export interface NnsNeuronModal<D extends NnsNeuronModalData> {

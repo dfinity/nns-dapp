@@ -1,17 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import {
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
-    type SelectedSnsNeuronContext,
-  } from "$lib/types/sns-neuron-detail.context";
-  import { getContext } from "svelte";
-
-  const { toggleModal }: SelectedSnsNeuronContext =
-    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
+  import {openSnsNeuronModal} from "$lib/utils/modals.utils";
 </script>
 
 <button
   class="secondary"
-  on:click={() => toggleModal("disburse")}
+  on:click={() => openSnsNeuronModal({type: "disburse"})}
   data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >
