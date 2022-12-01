@@ -29,7 +29,6 @@
   const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
     selected: undefined,
     neuron: undefined,
-    modal: undefined,
   });
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {

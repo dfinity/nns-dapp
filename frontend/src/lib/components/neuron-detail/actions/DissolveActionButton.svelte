@@ -24,6 +24,7 @@
 </script>
 
 <button
+  class="secondary"
   on:click={() =>
     openNnsNeuronModal({ type: "dissolve", data: { neuron: $store.neuron } })}
   >{keyOf({ obj: $i18n.neuron_detail, key: buttonKey })}</button

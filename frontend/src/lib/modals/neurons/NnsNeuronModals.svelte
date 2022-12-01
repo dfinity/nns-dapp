@@ -20,6 +20,7 @@
     NnsNeuronModalType,
     NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
+  import {nonNullish} from "$lib/utils/utils";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -37,7 +38,7 @@
 
 <svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
 
-{#if neuron !== undefined}
+{#if nonNullish(neuron)}
   {#if type === "increase-dissolve-delay"}
     <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
   {/if}

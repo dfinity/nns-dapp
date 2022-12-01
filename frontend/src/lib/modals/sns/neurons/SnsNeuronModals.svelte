@@ -13,11 +13,14 @@
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
   import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import type { Principal } from "@dfinity/principal";
-  import type {SnsNeuron, SnsNeuronId} from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import type { NeuronState } from "@dfinity/nns";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
-  import type {SnsNeuronModal, SnsNeuronModalType} from "$lib/types/sns-neuron-detail.modal";
+  import type {
+    SnsNeuronModal,
+    SnsNeuronModalType,
+  } from "$lib/types/sns-neuron-detail.modal";
 
   // Modal events
 
@@ -30,7 +33,7 @@
   // Context data
 
   const context: SelectedSnsNeuronContext =
-          getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
   const { store, reload: reloadNeuron }: SelectedSnsNeuronContext = context;
 
   let neuron: SnsNeuron | undefined | null;
