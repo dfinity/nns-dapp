@@ -18,6 +18,7 @@ declare namespace svelte.JSX {
     onnnsCanisterDetailModal?: (event: CustomEvent<any>) => void;
     onnnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
     onsnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
+    onnnsWalletModal?: (event: CustomEvent<any>) => void;
   }
 }
 

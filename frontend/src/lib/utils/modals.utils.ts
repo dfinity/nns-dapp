@@ -3,6 +3,7 @@ import type {
   NnsNeuronModalData,
 } from "$lib/types/nns-neuron-detail.modal";
 import type { SnsNeuronModal } from "$lib/types/sns-neuron-detail.modal";
+import type { WalletModal } from "$lib/types/wallet.modal";
 import { emit } from "$lib/utils/events.utils";
 
 export const openNnsNeuronModal = <D extends NnsNeuronModalData>(
@@ -16,5 +17,11 @@ export const openNnsNeuronModal = <D extends NnsNeuronModalData>(
 export const openSnsNeuronModal = (detail: SnsNeuronModal) =>
   emit<SnsNeuronModal>({
     message: "snsNeuronDetailModal",
+    detail,
+  });
+
+export const openWalletModal = (detail: WalletModal) =>
+  emit<WalletModal>({
+    message: "nnsWalletModal",
     detail,
   });

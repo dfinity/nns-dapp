@@ -50,7 +50,6 @@ export const renderSelectedAccountContext = ({
     contextValue: {
       store: writable<WalletStore>({
         account,
-        modal: undefined,
         neurons: [],
       }),
     },

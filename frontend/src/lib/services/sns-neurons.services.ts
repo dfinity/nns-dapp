@@ -16,6 +16,7 @@ import {
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
@@ -444,9 +445,21 @@ export const loadSnsNervousSystemFunctions = async (
         certified,
       }),
     onLoad: async ({ response: nsFunctions, certified }) => {
+      // TODO: Ideally, the name from the backend is user-friendly.
+      // https://dfinity.atlassian.net/browse/GIX-1169
+      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
+        if (nsFunction.id === BigInt(0)) {
+          const translationKeys = get(i18n);
+          return {
+            ...nsFunction,
+            name: translationKeys.sns_neuron_detail.all_topics,
+          };
+        }
+        return nsFunction;
+      });
       snsFunctionsStore.setFunctions({
         rootCanisterId,
-        nsFunctions,
+        nsFunctions: snsNervousSystemFunctions,
         certified,
       });
     },
@@ -462,7 +475,7 @@ export const loadSnsNervousSystemFunctions = async (
   });
 
 /**
- * Makes a call to add a followee to the neuron.
+ * Makes a call to add a followee to the neuron for a specific topic
  *
  * The new set of followees needs to be calculated before the call.
  *
@@ -545,9 +558,74 @@ export const addFollowee = async ({
 
     return { success: true };
   } catch (error) {
-    console.log(error);
     toastsError({
       labelKey: "error__sns.sns_add_followee",
+      err: error,
+    });
+    return { success: false };
+  }
+};
+
+/**
+ * Makes a call to remove a followee to the neuron for a specific ns function.
+ *
+ * The new set of followees needs to be calculated before the call.
+ *
+ * Shows toasts error if:
+ * - The followee is not in the list of followees.
+ * - The call throws an error.
+ *
+ * @param {Object}
+ * @param {Principal} rootCanisterId
+ * @param {SnsNeuron} neuron
+ * @param {SnsNeuronId} followee
+ * @param {bigint} functionId
+ * @returns
+ */
+export const removeFollowee = async ({
+  neuron,
+  functionId,
+  followee,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  followee: SnsNeuronId;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  const identity = await getNeuronIdentity();
+  const followeeHex = subaccountToHexString(followee.id);
+
+  const topicFollowees = followeesByFunction({ neuron, functionId });
+  // Do not allow to unfollow a neuron who is not a followee
+  if (
+    topicFollowees?.find(
+      ({ id }) => subaccountToHexString(id) === followeeHex
+    ) === undefined
+  ) {
+    toastsError({
+      labelKey: "new_followee.neuron_not_followee",
+    });
+    return { success: false };
+  }
+  try {
+    const newFollowees: SnsNeuronId[] = topicFollowees?.filter(
+      ({ id }) => subaccountToHexString(id) !== followeeHex
+    );
+
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      functionId,
+      followees: newFollowees,
+    });
+
+    return { success: true };
+  } catch (error) {
+    toastsError({
+      labelKey: "error__sns.sns_remove_followee",
       err: error,
     });
     return { success: false };

@@ -78,7 +78,6 @@ export const renderModalSelectedAccountContextWrapper = ({
     contextValue: {
       store: writable<WalletStore>({
         account,
-        modal: undefined,
         neurons: [],
       }),
     },
