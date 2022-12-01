@@ -75,7 +75,7 @@
   {/if}
   {#if isControllable}
     <div class="actions">
-      <AddHotkeyButton neuronId={neuron.neuronId} />
+      <AddHotkeyButton />
     </div>
   {/if}
 </CardInfo>

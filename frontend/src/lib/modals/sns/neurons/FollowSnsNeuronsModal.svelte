@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
-  import { functionsToFollow } from "$lib/utils/sns-neuron.utils";
   import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
@@ -12,9 +11,7 @@
   export let rootCanisterId: Principal;
 
   let functions: SnsNervousSystemFunction[] | undefined;
-  $: functions = functionsToFollow(
-    $snsFunctionsStore[rootCanisterId.toString()]
-  );
+  $: functions = $snsFunctionsStore[rootCanisterId.toString()]?.nsFunctions;
 </script>
 
 <Modal on:nnsClose testId="follow-sns-neurons-modal">

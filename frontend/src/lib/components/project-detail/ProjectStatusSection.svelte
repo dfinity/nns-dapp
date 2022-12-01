@@ -2,7 +2,7 @@
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { BottomSheet, KeyValuePair } from "@dfinity/gix-components";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
@@ -54,7 +54,7 @@
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
 {#if displayStatusSection}
-  <div data-tid="sns-project-detail-status">
+  <div data-tid="sns-project-detail-status" class="content-cell-island">
     <ProjectStatus />
 
     <div class="content content-cell-details">
@@ -77,11 +77,7 @@
         </div>
       {/if}
 
-      <BottomSheet>
-        <div role="toolbar">
-          <ParticipateButton />
-        </div>
-      </BottomSheet>
+      <ParticipateButton />
     </div>
   </div>
 {/if}
@@ -102,24 +98,6 @@
 
     @include media.min-width(medium) {
       align-items: flex-start;
-    }
-  }
-  [role="toolbar"] {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    padding: var(--padding-2x);
-
-    @include media.min-width(medium) {
-      align-items: center;
-      justify-content: center;
-    }
-
-    @include media.min-width(large) {
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: 0;
     }
   }
 </style>

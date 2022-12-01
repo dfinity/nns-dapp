@@ -2,6 +2,7 @@ import {
   bytesToHexString,
   createChunks,
   debounce,
+  expandObject,
   hexStringToBytes,
   isDefined,
   isHash,
@@ -449,6 +450,18 @@ describe("utils", () => {
       expect(isPngAsset(svg1)).toBe(false);
       expect(isPngAsset(jpg1)).toBe(false);
       expect(isPngAsset(pngFake)).toBe(false);
+    });
+  });
+
+  describe("expandObject", () => {
+    it("should not do anything in strings that are not JSON", () => {
+      const obj = { a: "a string" };
+      expect(expandObject(obj)).toEqual(obj);
+    });
+
+    it("should parse JSON strings", () => {
+      const obj = { a: JSON.stringify({ b: "c" }) };
+      expect(expandObject(obj)).toEqual({ a: { b: "c" } });
     });
   });
 });

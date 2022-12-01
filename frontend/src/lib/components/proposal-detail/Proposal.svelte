@@ -20,7 +20,7 @@
 
 {#if $store?.proposal !== undefined}
   <div class="content-grid" data-tid="proposal-details-grid">
-    <div class="content-a">
+    <div class="content-a content-cell-island">
       <ProposalSystemInfoSection proposalInfo={$store.proposal} />
     </div>
     <div class="content-b expand-content-b">

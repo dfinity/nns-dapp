@@ -44,13 +44,13 @@ describe("DisburseSnsNeuronModal", () => {
   const principalString = `${mockSnsMainAccount.principal}`;
   const renderDisburseModal = async (
     neuron: SnsNeuron,
-    reloadContext: () => Promise<void> = () => Promise.resolve()
+    reloadNeuron: () => Promise<void> = () => Promise.resolve()
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {
         neuron,
-        reloadContext,
+        reloadNeuron: reloadNeuron,
       },
     });
   };
@@ -120,13 +120,13 @@ describe("DisburseSnsNeuronModal", () => {
     expect(disburse).toBeCalled();
   });
 
-  it("should call reloadContext", async () => {
+  it("should call reloadNeuron", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadContext = jest.fn().mockResolvedValue(null);
+    const reloadNeuron = jest.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
       mockSnsNeuron,
-      reloadContext
+      reloadNeuron
     );
 
     expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
@@ -136,7 +136,7 @@ describe("DisburseSnsNeuronModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    await waitFor(() => expect(reloadContext).toBeCalled());
+    await waitFor(() => expect(reloadNeuron).toBeCalled());
   });
 
   it("should trigger the project account load", async () => {
@@ -144,8 +144,8 @@ describe("DisburseSnsNeuronModal", () => {
 
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadContext = jest.fn().mockResolvedValue(null);
-    await renderDisburseModal(mockSnsNeuron, reloadContext);
+    const reloadNeuron = jest.fn().mockResolvedValue(null);
+    await renderDisburseModal(mockSnsNeuron, reloadNeuron);
 
     await waitFor(() => expect(syncSnsAccounts).toBeCalled());
   });
@@ -153,10 +153,10 @@ describe("DisburseSnsNeuronModal", () => {
   it("should not trigger the project account load if already available", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadContext = jest.fn().mockResolvedValue(null);
+    const reloadNeuron = jest.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
       mockSnsNeuron,
-      reloadContext
+      reloadNeuron
     );
 
     await waitFor(() =>

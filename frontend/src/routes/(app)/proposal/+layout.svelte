@@ -14,6 +14,6 @@
     );
 </script>
 
-<Layout contrast {back}>
+<Layout {back}>
   <slot />
 </Layout>

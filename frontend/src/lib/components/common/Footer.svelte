@@ -21,6 +21,7 @@
     pointer-events: none;
 
     background: var(--footer-background);
+    --button-secondary-background: var(--focus-background);
 
     :global(.toolbar) {
       align-items: end;

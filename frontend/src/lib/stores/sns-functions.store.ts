@@ -5,7 +5,10 @@ import { writable } from "svelte/store";
 export interface SnsNervousSystemFunctionsStore {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the nervous system functions.
-  [rootCanisterId: string]: SnsNervousSystemFunction[];
+  [rootCanisterId: string]: {
+    nsFunctions: SnsNervousSystemFunction[];
+    certified: boolean;
+  };
 }
 
 /**
@@ -23,14 +26,19 @@ const initSnsFunctionsStore = () => {
 
     setFunctions({
       rootCanisterId,
-      functions,
+      nsFunctions,
+      certified,
     }: {
       rootCanisterId: Principal;
-      functions: SnsNervousSystemFunction[];
+      nsFunctions: SnsNervousSystemFunction[];
+      certified: boolean;
     }) {
       update((currentState: SnsNervousSystemFunctionsStore) => ({
         ...currentState,
-        [rootCanisterId.toText()]: functions,
+        [rootCanisterId.toText()]: {
+          certified,
+          nsFunctions,
+        },
       }));
     },
 

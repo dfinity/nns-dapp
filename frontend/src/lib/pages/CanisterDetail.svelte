@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { SkeletonText, busy } from "@dfinity/gix-components";
+  import { SkeletonText, busy, Island } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
@@ -22,7 +22,7 @@
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-  import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
+
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
@@ -32,6 +32,9 @@
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
   import Footer from "$lib/components/common/Footer.svelte";
   import { goto } from "$app/navigation";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
   // BEGIN: loading and navigation
 
@@ -80,9 +83,6 @@
       : $selectedCanisterStore.controller === undefined && !loadingDetails
       ? "error.canister_details_not_found"
       : undefined;
-
-  let showAddCyclesModal = false;
-  const closeAddCyclesModal = async () => (showAddCyclesModal = false);
 
   const reloadDetails = async (canisterId: Principal) => {
     try {
@@ -177,50 +177,56 @@
     $selectedCanisterStore);
 
   // END: loading and navigation
+
+  const openModal = () =>
+    emit<CanisterDetailModal>({
+      message: "nnsCanisterDetailModal",
+      detail: { type: "add-cycles" },
+    });
 </script>
 
-<main class="legacy">
-  <section>
-    {#if canisterInfo !== undefined}
-      <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-      <CanisterCardSubTitle canister={canisterInfo} />
-      <div class="actions">
-        <DetachCanisterButton canisterId={canisterInfo.canister_id} />
-      </div>
-    {:else}
-      <div class="loader-title">
-        <SkeletonText tagName="h1" />
-      </div>
-      <div class="loader-subtitle">
-        <SkeletonText />
-      </div>
-    {/if}
-    {#if canisterDetails !== undefined}
-      <CyclesCard cycles={canisterDetails.cycles} />
-      <ControllersCard />
-    {:else if errorKey !== undefined}
-      <CardInfo testId="canister-details-error-card">
-        <p class="error-message">{translate({ labelKey: errorKey })}</p>
-      </CardInfo>
-    {:else}
-      <SkeletonCard />
-      <SkeletonCard />
-    {/if}
-  </section>
-</main>
+<Island>
+  <main class="legacy">
+    <section>
+      {#if canisterInfo !== undefined}
+        <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+        <CanisterCardSubTitle canister={canisterInfo} />
+        <div class="actions">
+          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+        </div>
+      {:else}
+        <div class="loader-title">
+          <SkeletonText tagName="h1" />
+        </div>
+        <div class="loader-subtitle">
+          <SkeletonText />
+        </div>
+      {/if}
+      {#if canisterDetails !== undefined}
+        <CyclesCard cycles={canisterDetails.cycles} />
+        <ControllersCard />
+      {:else if errorKey !== undefined}
+        <CardInfo testId="canister-details-error-card">
+          <p class="error-message">{translate({ labelKey: errorKey })}</p>
+        </CardInfo>
+      {:else}
+        <SkeletonCard cardType="info" />
+        <SkeletonCard cardType="info" />
+      {/if}
+    </section>
+  </main>
+</Island>
 
 <Footer columns={1}>
   <button
     class="primary"
-    on:click={() => (showAddCyclesModal = true)}
+    on:click={openModal}
     disabled={canisterInfo === undefined || $busy}
     >{$i18n.canister_detail.add_cycles}</button
   >
 </Footer>
 
-{#if showAddCyclesModal}
-  <AddCyclesModal on:nnsClose={closeAddCyclesModal} />
-{/if}
+<CanisterDetailModals />
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";

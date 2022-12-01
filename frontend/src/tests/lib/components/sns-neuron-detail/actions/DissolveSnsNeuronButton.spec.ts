@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
 import {
   startDissolving,
   stopDissolving,
@@ -10,7 +9,11 @@ import {
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "../../../../mocks/sns-neurons.mock";
+import DissolveSnsNeuronButtonTest from "./DissolveSnsNeuronButtonTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -20,18 +23,15 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("DissolveSnsNeuronButton", () => {
-  const reloadContextSpy = jest.fn().mockResolvedValue(undefined);
-
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   it("renders start dissolve message when neuron is locked", () => {
-    const { getByText } = render(DissolveSnsNeuronButton, {
+    const { getByText } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuronId: mockSnsNeuron.id,
+        neuron: mockSnsNeuron,
         neuronState: NeuronState.Locked,
-        reloadContext: reloadContextSpy,
       },
     });
 
@@ -39,11 +39,10 @@ describe("DissolveSnsNeuronButton", () => {
   });
 
   it("renders stop dissolve message when neuron is dissolving", () => {
-    const { getByText } = render(DissolveSnsNeuronButton, {
+    const { getByText } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuronId: mockSnsNeuron.id,
+        neuron: mockSnsNeuron,
         neuronState: NeuronState.Dissolving,
-        reloadContext: reloadContextSpy,
       },
     });
 
@@ -51,11 +50,10 @@ describe("DissolveSnsNeuronButton", () => {
   });
 
   it("calls startDissolving action on click and LOCKED state", async () => {
-    const { container, queryByTestId } = render(DissolveSnsNeuronButton, {
+    const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuronId: mockSnsNeuron.id,
+        neuron: mockSnsNeuron,
         neuronState: NeuronState.Locked,
-        reloadContext: reloadContextSpy,
       },
     });
 
@@ -77,11 +75,14 @@ describe("DissolveSnsNeuronButton", () => {
   });
 
   it("calls stopDissolving action on click and DISSOLVING state", async () => {
-    const { container, queryByTestId } = render(DissolveSnsNeuronButton, {
+    const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuronId: mockSnsNeuron.id,
+        neuron: createMockSnsNeuron({
+          stake: BigInt(10_000_000_000),
+          id: [1, 2, 2, 9, 9, 3, 2],
+          state: NeuronState.Dissolving,
+        }),
         neuronState: NeuronState.Dissolving,
-        reloadContext: reloadContextSpy,
       },
     });
 
@@ -103,11 +104,13 @@ describe("DissolveSnsNeuronButton", () => {
   });
 
   it("calls update the context store", async () => {
-    const { container, queryByTestId } = render(DissolveSnsNeuronButton, {
+    const spy = jest.fn();
+
+    const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuronId: mockSnsNeuron.id,
+        neuron: mockSnsNeuron,
         neuronState: NeuronState.Dissolving,
-        reloadContext: reloadContextSpy,
+        spy,
       },
     });
 
@@ -125,6 +128,6 @@ describe("DissolveSnsNeuronButton", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    await waitFor(() => expect(reloadContextSpy).toBeCalledTimes(1));
+    await waitFor(() => expect(spy).toBeCalledTimes(1));
   });
 });

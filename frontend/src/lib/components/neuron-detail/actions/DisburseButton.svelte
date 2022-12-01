@@ -1,19 +1,19 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
 
-  export let neuron: NeuronInfo;
+  import { getContext } from "svelte";
 
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
-<button class="secondary" on:click={openModal} data-tid="disburse-button"
-  >{$i18n.neuron_detail.disburse}</button
+<button
+  class="secondary"
+  on:click={() => toggleModal("disburse")}
+  data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >
-
-{#if showModal}
-  <DisburseNnsNeuronModal {neuron} on:nnsClose={closeModal} />
-{/if}

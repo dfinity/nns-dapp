@@ -1,27 +1,17 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
-  import type { Principal } from "@dfinity/principal";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "$lib/types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
 
-  export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
-  export let reloadContext: () => Promise<void>;
-
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const { toggleModal }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 </script>
 
-<button class="secondary" on:click={openModal} data-tid="disburse-button"
-  >{$i18n.neuron_detail.disburse}</button
+<button
+  class="secondary"
+  on:click={() => toggleModal("disburse")}
+  data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >
-
-{#if showModal}
-  <DisburseSnsNeuronModal
-    {rootCanisterId}
-    {neuron}
-    {reloadContext}
-    on:nnsClose={closeModal}
-  />
-{/if}

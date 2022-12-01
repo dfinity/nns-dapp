@@ -1,14 +1,14 @@
-import {
-  HOTKEY_PERMISSIONS,
-  UNSPECIFIED_FUNCTION_ID,
-} from "$lib/constants/sns-neurons.constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { votingPower } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
+import type { SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type {
+  NervousSystemFunction,
+  NervousSystemParameters,
+} from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
@@ -300,6 +300,81 @@ export const needsRefresh = ({
 }): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
 
 /**
+ * Returns the followees of a neuron in a specific ns function.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {bigint} params.functionId
+ * @returns {SnsNeuronId[]}
+ */
+export const followeesByFunction = ({
+  neuron,
+  functionId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+}): SnsNeuronId[] =>
+  neuron.followees.reduce<SnsNeuronId[]>(
+    (functionFollowees, [currentFunctionId, followeesData]) =>
+      currentFunctionId === functionId
+        ? followeesData.followees
+        : functionFollowees,
+    []
+  );
+
+export interface SnsFolloweesByNeuron {
+  neuronIdHex: string;
+  nsFunctions: NervousSystemFunction[];
+}
+
+/**
+ * Returns a list of followees of a neuron.
+ *
+ * Each followee has then the list of ns functions that are followed.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {NervousSystemFunction[]} params.nsFunctions
+ * @returns {SnsFolloweesByNeuron[]}
+ */
+export const followeesByNeuronId = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: NervousSystemFunction[];
+}): SnsFolloweesByNeuron[] => {
+  const followeesDictionary = neuron.followees.reduce<{
+    [key: string]: NervousSystemFunction[];
+  }>((acc, [functionId, followeesData]) => {
+    const nsFunction = nsFunctions.find(({ id }) => id === functionId);
+    // Edge case, all ns functions in followees should also be in the nervous system.
+    if (nsFunction !== undefined) {
+      for (const followee of followeesData.followees) {
+        const followeeHex = subaccountToHexString(followee.id);
+        if (acc[followeeHex]) {
+          acc = {
+            ...acc,
+            [followeeHex]: [...acc[followeeHex], nsFunction],
+          };
+        } else {
+          acc = {
+            ...acc,
+            [followeeHex]: [nsFunction],
+          };
+        }
+      }
+    }
+    return acc;
+  }, {});
+
+  return Object.keys(followeesDictionary).map((neuronIdHex) => ({
+    neuronIdHex,
+    nsFunctions: followeesDictionary[neuronIdHex],
+  }));
+};
+
+/**
  * Returns the sns neuron voting power
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
@@ -350,7 +425,6 @@ export const snsNeuronVotingPower = ({
 
   const {
     voting_power_percentage_multiplier,
-    neuron_fees_e8s,
     aging_since_timestamp_seconds,
     maturity_e8s_equivalent,
   } = neuron;
@@ -380,30 +454,3 @@ export const snsNeuronVotingPower = ({
   // The voting power multiplier is applied against the total voting power of the neuron
   return vp * (Number(voting_power_percentage_multiplier) / 100);
 };
-
-/**
- * Returns the functions that are available to follow.
- *
- * For now it filters out only the UNSPECIFIED function.
- * https://github.com/dfinity/ic/blob/5248f11c18ca564881bbb82a4eb6915efb7ca62f/rs/sns/governance/proto/ic_sns_governance/pb/v1/governance.proto#L582
- *
- */
-export const functionsToFollow = (
-  functions: SnsNervousSystemFunction[] | undefined
-): SnsNervousSystemFunction[] | undefined =>
-  functions?.filter(({ id }) => id !== UNSPECIFIED_FUNCTION_ID);
-
-export const followeesByFunction = ({
-  neuron,
-  functionId,
-}: {
-  neuron: SnsNeuron;
-  functionId: bigint;
-}): SnsNeuronId[] =>
-  neuron.followees.reduce<SnsNeuronId[]>(
-    (functionFollowees, [currentFunctionId, followeesData]) =>
-      currentFunctionId === functionId
-        ? followeesData.followees
-        : functionFollowees,
-    []
-  );

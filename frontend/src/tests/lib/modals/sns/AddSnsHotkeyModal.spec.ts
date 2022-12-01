@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import AddSnsHotkeyModal from "$lib/modals/sns/AddSnsHotkeyModal.svelte";
+import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/sns-neurons.services";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";

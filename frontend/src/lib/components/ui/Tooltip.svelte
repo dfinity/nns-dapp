@@ -30,8 +30,13 @@
 
     const { innerWidth } = window;
 
+    const SCROLLBAR_FALLBACK_WIDTH = 20;
+
     const { clientWidth, offsetWidth } = main;
-    const scrollbarWidth = offsetWidth - clientWidth;
+    const scrollbarWidth =
+      offsetWidth - clientWidth > 0
+        ? offsetWidth - clientWidth
+        : SCROLLBAR_FALLBACK_WIDTH;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
@@ -45,6 +50,12 @@
     const overflowLeft = tooltipWidth / 2 - spaceLeft;
     const overflowRight = tooltipWidth / 2 - spaceRight;
 
+    const { left: mainLeft, right: mainRight } = main.getBoundingClientRect();
+
+    // If we cannot calculate the overflow left we then avoid overflow by setting no transform on the left side
+    const leftToMainCenter =
+      mainLeft + (mainRight - mainLeft) / 2 > targetCenter;
+
     // If tooltip overflow both on left and right, we only set the left anchor.
     // It would need the width to be maximized to window screen too but it seems to be an acceptable edge case.
     tooltipStyle =
@@ -52,6 +63,8 @@
         ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
         : overflowRight > 0
         ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
+        : leftToMainCenter
+        ? `--tooltip-transform-x: 0`
         : undefined;
   });
 
@@ -95,7 +108,7 @@
 
     left: 50%;
     bottom: var(--padding-0_5x);
-    --tooltip-transform-x-default: calc(-50% + var(--padding-4x));
+    --tooltip-transform-x-default: calc(-50% - var(--padding-4x));
     transform: translate(
       var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
       100%

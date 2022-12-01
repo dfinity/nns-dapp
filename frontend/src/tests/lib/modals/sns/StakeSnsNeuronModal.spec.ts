@@ -4,7 +4,7 @@
 
 import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-import StakeSnsNeuronModal from "$lib/modals/sns/StakeSnsNeuronModal.svelte";
+import StakeSnsNeuronModal from "$lib/modals/sns/neurons/StakeSnsNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";

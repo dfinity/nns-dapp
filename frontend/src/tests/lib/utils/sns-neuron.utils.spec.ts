@@ -3,8 +3,9 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
+  followeesByFunction,
+  followeesByNeuronId,
   formattedSnsMaturity,
-  functionsToFollow,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -24,6 +25,7 @@ import {
   snsNeuronVotingPower,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
+  type SnsFolloweesByNeuron,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -843,6 +845,120 @@ describe("sns-neuron utils", () => {
     });
   });
 
+  describe("followeesByNeuronId", () => {
+    const function0: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(0),
+    };
+    const function1: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(1),
+    };
+    const function2: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(2),
+    };
+    const nsFunctions = [function0, function1, function2];
+    const neuron1 = createMockSnsNeuron({
+      id: [1, 2, 3, 4],
+    });
+    const neuron2 = createMockSnsNeuron({
+      id: [5, 6, 7, 8],
+    });
+    it("returns empty array if no followees", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [],
+      };
+      expect(followeesByNeuronId({ neuron, nsFunctions })).toEqual([]);
+    });
+
+    it("returns empty array if no nsFunctions", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[function0.id, { followees: [neuron1.id[0]] }]],
+      };
+      expect(followeesByNeuronId({ neuron, nsFunctions: [] })).toEqual([]);
+    });
+
+    it("returns multiple followees with multiple topics each", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [function0.id, { followees: [neuron1.id[0]] }],
+          [function1.id, { followees: [neuron2.id[0]] }],
+          [function2.id, { followees: [neuron1.id[0], neuron2.id[0]] }],
+        ],
+      };
+      const expectedFollowee1: SnsFolloweesByNeuron = {
+        neuronIdHex: getSnsNeuronIdAsHexString(neuron1),
+        nsFunctions: [function0, function2],
+      };
+      const expectedFollowee2: SnsFolloweesByNeuron = {
+        neuronIdHex: getSnsNeuronIdAsHexString(neuron2),
+        nsFunctions: [function1, function2],
+      };
+      expect(followeesByNeuronId({ neuron, nsFunctions })).toEqual([
+        expectedFollowee1,
+        expectedFollowee2,
+      ]);
+    });
+  });
+
+  describe("followeesByFunction", () => {
+    const function0: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(0),
+    };
+    const function1: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(1),
+    };
+    const function2: SnsNervousSystemFunction = {
+      ...nervousSystemFunctionMock,
+      id: BigInt(2),
+    };
+    const neuron1 = createMockSnsNeuron({
+      id: [1, 2, 3, 4],
+    });
+    const neuron2 = createMockSnsNeuron({
+      id: [5, 6, 7, 8],
+    });
+    it("returns empty if no followees", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [],
+      };
+      expect(followeesByFunction({ neuron, functionId: BigInt(2) })).toEqual(
+        []
+      );
+    });
+
+    it("returns empty if no followees for that function", () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[function1.id, { followees: [neuron1.id[0]] }]],
+      };
+      expect(followeesByFunction({ neuron, functionId: function0.id })).toEqual(
+        []
+      );
+    });
+
+    it("returns followees for the ns function", () => {
+      const followees = [neuron1.id[0], neuron2.id[0]];
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [function1.id, { followees }],
+          [function2.id, { followees: [neuron1.id[0]] }],
+        ],
+      };
+      expect(followeesByFunction({ neuron, functionId: function1.id })).toEqual(
+        followees
+      );
+    });
+  });
+
   describe("snsNeuronVotingPower", () => {
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/d621f8f05b8c6302ce0b9a007ed4aeec7e7b2f51/rs/sns/governance/src/neuron.rs#L727
     it.only("should calculate fully boosted voting power", () => {
@@ -871,7 +987,7 @@ describe("sns-neuron utils", () => {
         (Number(baseStake) *
           2 * // dissolve_delay boost
           5) /
-          4 // voting power boost
+        4 // voting power boost
       );
     });
 
@@ -900,25 +1016,5 @@ describe("sns-neuron utils", () => {
     });
 
     // TODO: should take the dissolve delay from the neuron
-  });
-
-  describe("functionsToFollow", () => {
-    it("filters out function with id 0", () => {
-      const function0: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(0),
-      };
-      const function1: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(1),
-      };
-      const function2: SnsNervousSystemFunction = {
-        ...nervousSystemFunctionMock,
-        id: BigInt(2),
-      };
-      expect(functionsToFollow([function0, function1, function2]).length).toBe(
-        2
-      );
-    });
   });
 });

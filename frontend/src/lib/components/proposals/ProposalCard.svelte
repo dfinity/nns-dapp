@@ -112,7 +112,7 @@
       justify-content: flex-end;
 
       :global(.value) {
-        color: var(--primary);
+        color: var(--tertiary);
       }
     }
   }
