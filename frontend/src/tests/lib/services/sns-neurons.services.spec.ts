@@ -700,4 +700,80 @@ describe("sns-neurons-services", () => {
       expect(toastsError).toBeCalled();
     });
   });
+
+  describe("removeFollowee ", () => {
+    const setFolloweesSpy = jest
+      .spyOn(governanceApi, "setFollowees")
+      .mockImplementation(() => Promise.resolve());
+
+    const followee1: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 3]),
+    };
+    const followee2: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 4]),
+    };
+    const rootCanisterId = mockPrincipal;
+    const functionId = BigInt(3);
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should call sns api setFollowees with followee removed from list", async () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[functionId, { followees: [followee1, followee2] }]],
+      };
+      await services.removeFollowee({
+        rootCanisterId,
+        neuron,
+        functionId,
+        followee: followee1,
+      });
+
+      expect(setFolloweesSpy).toBeCalledWith({
+        neuronId: fromNullable(neuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        followees: [followee2],
+        functionId,
+      });
+    });
+
+    it("should call sns api setFollowees with empty list if followee is the last followee", async () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[functionId, { followees: [followee1] }]],
+      };
+      await services.removeFollowee({
+        rootCanisterId,
+        neuron,
+        functionId,
+        followee: followee1,
+      });
+
+      expect(setFolloweesSpy).toBeCalledWith({
+        neuronId: fromNullable(neuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        followees: [],
+        functionId,
+      });
+    });
+
+    it("should not call sns api setFollowees when followee is not in the list", async () => {
+      jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[functionId, { followees: [followee2] }]],
+      };
+      await services.removeFollowee({
+        rootCanisterId,
+        neuron,
+        functionId,
+        followee: followee1,
+      });
+
+      expect(setFolloweesSpy).not.toBeCalled();
+      expect(toastsError).toBeCalled();
+    });
+  });
 });

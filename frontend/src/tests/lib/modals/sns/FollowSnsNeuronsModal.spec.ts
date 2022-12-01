@@ -5,8 +5,10 @@
 import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
+import { render, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
@@ -16,6 +18,18 @@ describe("FollowSnsNeuronsModal", () => {
     ...mockSnsNeuron,
   };
   const rootCanisterId = mockPrincipal;
+  const reload = jest.fn();
+
+  const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
+    renderSelectedSnsNeuronContext({
+      Component: FollowSnsNeuronsModal,
+      reload,
+      neuron,
+      props: {
+        rootCanisterId,
+        neuron,
+      },
+    });
 
   afterEach(() => {
     snsFunctionsStore.reset();
@@ -32,12 +46,7 @@ describe("FollowSnsNeuronsModal", () => {
   });
 
   it("renders spinner if no functions to follow", () => {
-    const { queryByTestId } = render(FollowSnsNeuronsModal, {
-      props: {
-        neuron,
-        rootCanisterId,
-      },
-    });
+    const { queryByTestId } = renderNewSnsFolloweeModal();
     expect(queryByTestId("spinner")).toBeInTheDocument();
   });
 
@@ -59,16 +68,11 @@ describe("FollowSnsNeuronsModal", () => {
       nsFunctions: [function0, function1, function2],
       certified: true,
     });
-    const { queryByTestId } = render(FollowSnsNeuronsModal, {
-      props: {
-        neuron,
-        rootCanisterId,
-      },
-    });
+    const { queryByTestId } = renderNewSnsFolloweeModal();
 
     expect(
       queryByTestId(`follow-topic-${function0.id}-section`)
-    ).not.toBeInTheDocument();
+    ).toBeInTheDocument();
     expect(
       queryByTestId(`follow-topic-${function1.id}-section`)
     ).toBeInTheDocument();

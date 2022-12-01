@@ -36,6 +36,7 @@ export type BusyStateInitiatorType =
   | "stake-sns-neuron"
   | "dissolve-sns-action"
   | "add-sns-followee"
+  | "remove-sns-followee"
   | "disburse-sns-neuron";
 
 export interface BusyState {
