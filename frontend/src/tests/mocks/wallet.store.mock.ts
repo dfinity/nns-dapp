@@ -4,6 +4,5 @@ import { mockMainAccount } from "./accounts.store.mock";
 
 export const mockWalletStore = writable<WalletStore>({
   account: mockMainAccount,
-  modal: undefined,
   neurons: [],
 });

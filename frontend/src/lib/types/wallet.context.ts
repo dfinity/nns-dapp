@@ -6,8 +6,6 @@ export interface HardwareWalletNeuronInfo extends NeuronInfo {
   controlledByNNSDapp: boolean;
 }
 
-export type WalletModal = "rename" | "hw-list-neurons" | undefined;
-
 /**
  * A store that contains the information for the Wallet context.
  * - selected account and it's transactions
@@ -17,7 +15,6 @@ export type WalletModal = "rename" | "hw-list-neurons" | undefined;
 export interface WalletStore {
   account: Account | undefined;
   neurons: HardwareWalletNeuronInfo[];
-  modal: WalletModal;
 }
 
 export interface WalletContext {

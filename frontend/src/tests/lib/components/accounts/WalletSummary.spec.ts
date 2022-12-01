@@ -26,7 +26,6 @@ describe("WalletSummary", () => {
         contextValue: {
           store: writable<WalletStore>({
             account: mockMainAccount,
-            modal: undefined,
             neurons: [],
           }),
         } as WalletContext,

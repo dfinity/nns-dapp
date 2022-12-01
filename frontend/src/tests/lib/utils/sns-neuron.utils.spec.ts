@@ -987,7 +987,7 @@ describe("sns-neuron utils", () => {
         (Number(baseStake) *
           2 * // dissolve_delay boost
           5) /
-        4 // voting power boost
+          4 // voting power boost
       );
     });
 

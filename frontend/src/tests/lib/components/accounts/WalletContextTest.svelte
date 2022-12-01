@@ -7,13 +7,13 @@
   } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
+  import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
 
   export let testComponent: typeof SvelteComponent;
   export let account: Account | undefined;
 
   export const walletStore = writable<WalletStore>({
     account,
-    modal: undefined,
     neurons: [],
   });
 
@@ -24,6 +24,4 @@
 
 <svelte:component this={testComponent} />
 
-{#if $walletStore.modal !== undefined}
-  <div data-tid="test-modal">{$walletStore.modal}</div>
-{/if}
+<WalletModals />

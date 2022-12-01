@@ -14,7 +14,6 @@ export const mockNeuronStake = {
 
 export const mockHardwareWalletNeuronsStore = writable<WalletStore>({
   account: mockMainAccount,
-  modal: undefined,
   neurons: [
     {
       ...mockNeuron,

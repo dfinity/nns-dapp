@@ -29,12 +29,16 @@ describe("RenameSubAccountButton", () => {
   });
 
   it("should open modal", async () => {
-    const { getByTestId } = renderTestCmp();
+    const { getByTestId, container } = renderTestCmp();
     await fireEvent.click(
       getByTestId("open-rename-subaccount-button") as HTMLButtonElement
     );
 
-    await waitFor(() => expect(getByTestId("test-modal")).not.toBeNull());
-    expect(getByTestId("test-modal")?.textContent).toEqual("rename");
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
+    await waitFor(() =>
+      expect(getByTestId("rename-subaccount-button")).not.toBeNull()
+    );
   });
 });
