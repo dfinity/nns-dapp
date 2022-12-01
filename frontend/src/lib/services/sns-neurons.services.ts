@@ -451,7 +451,7 @@ export const loadSnsNervousSystemFunctions = async (
           const translationKeys = get(i18n);
           return {
             ...nsFunction,
-            name: translationKeys.sns_neuron_detail.all_topic,
+            name: translationKeys.sns_neuron_detail.all_topics,
           };
         }
         return nsFunction;

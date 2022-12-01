@@ -617,7 +617,7 @@ interface I18nSns_project_detail {
 
 interface I18nSns_neuron_detail {
   header: string;
-  all_topic: string;
+  all_topics: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
