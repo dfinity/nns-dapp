@@ -275,6 +275,7 @@
     "unfollow": "Unfollow",
     "same_neuron": "You can't add the same neuron as followee.",
     "followee_does_not_exist": "Neuron with id $neuronId does not exist.",
+    "neuron_not_followee": "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
     "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {
@@ -690,6 +691,7 @@
     "ledger_too_old": "Sorry, the transaction is too old. Please try again.",
     "ledger_unsufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
     "sns_add_followee": "There was an error while adding a followee.",
+    "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
     "sns_add_hotkey": "There was an error adding the hotkey."
   },
