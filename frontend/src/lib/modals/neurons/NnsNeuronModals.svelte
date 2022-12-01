@@ -86,8 +86,8 @@
   {#if type === "add-hotkey"}
     <AddHotkeyModal on:nnsClose={close} {neuron} />
   {/if}
+{/if}
 
-  {#if type === "voting-history" && followee !== undefined}
-    <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
-  {/if}
+{#if type === "voting-history" && followee !== undefined}
+  <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
 {/if}
