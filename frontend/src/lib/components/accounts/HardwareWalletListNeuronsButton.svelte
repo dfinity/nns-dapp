@@ -9,6 +9,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { openWalletModal } from "$lib/utils/modals.utils";
 
   // Get the store for the neurons of the hardware wallet from the dedicated context
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
@@ -35,10 +36,7 @@
       return;
     }
 
-    store.update((data) => ({
-      ...data,
-      modal: "hw-list-neurons",
-    }));
+    openWalletModal({ type: "hw-list-neurons" });
   };
 </script>
 
