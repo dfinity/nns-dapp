@@ -32,7 +32,6 @@ describe("multi-tab-auth", () => {
 
   it("registerTabOne", async () => {
     await register(browser);
-    await waitForImages(browser);
     await browser["screenshot"]("register-tab-one");
   });
 
@@ -64,13 +63,13 @@ describe("multi-tab-auth", () => {
 
     // Wait for the logout to complete
     await browser.pause(2_000);
-    await navigator.getElement(AuthPage.SELECTOR, "Login page");
+    await navigator.getElement(AuthPage.LOGIN_BUTTON_SELECTOR, "Login page");
   });
 
   it("allTabsLogOut", async () => {
     nnsTabs.forEach(async (tabId) => {
       await browser.switchToWindow(tabId);
-      await navigator.getElement(AuthPage.SELECTOR);
+      await navigator.getElement(AuthPage.LOGIN_BUTTON_SELECTOR);
     });
   });
 });

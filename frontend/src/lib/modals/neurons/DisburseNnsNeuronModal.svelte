@@ -70,11 +70,13 @@
       toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
       });
-
-      await goto($neuronsPathStore, { replaceState: true });
     }
 
     dispatcher("nnsClose");
+
+    if (success) {
+      await goto($neuronsPathStore, { replaceState: true });
+    }
   };
 </script>
 
