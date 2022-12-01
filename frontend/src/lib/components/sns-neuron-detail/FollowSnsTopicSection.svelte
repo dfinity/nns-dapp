@@ -13,10 +13,20 @@
   import { IconClose, Value } from "@dfinity/gix-components";
   import Hash from "../ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { removeFollowee } from "$lib/services/sns-neurons.services";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "$lib/types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   export let neuron: SnsNeuron;
   export let rootCanisterId: Principal;
   export let nsFunction: SnsNervousSystemFunction;
+
+  const { reload }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let showModal = false;
   const openModal = () => (showModal = true);
@@ -25,9 +35,22 @@
   let followees: SnsNeuronId[] = [];
   $: followees = followeesByFunction({ neuron, functionId: nsFunction.id });
 
-  const removeCurrentFollowee = (followee: SnsNeuronId) => {
-    // TODO: Remove followee https://dfinity.atlassian.net/browse/GIX-1112
-    console.log("removeCurrentFollowee", followee);
+  const removeCurrentFollowee = async (followee: SnsNeuronId) => {
+    startBusy({
+      initiator: "remove-sns-followee",
+    });
+
+    const { success } = await removeFollowee({
+      rootCanisterId,
+      neuron: neuron,
+      followee,
+      functionId: nsFunction.id,
+    });
+
+    if (success) {
+      await reload();
+    }
+    stopBusy("remove-sns-followee");
   };
 </script>
 

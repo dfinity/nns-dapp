@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
+import { removeFollowee } from "$lib/services/sns-neurons.services";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -14,6 +15,10 @@ import {
   mockSnsNeuron,
 } from "../../../mocks/sns-neurons.mock";
 import { principal } from "../../../mocks/sns-projects.mock";
+
+jest.mock("$lib/services/sns-neurons.services", () => ({
+  removeFollowee: jest.fn().mockReturnValue({ success: true }),
+}));
 
 describe("FollowSnsTopicSection", () => {
   const reload = jest.fn();
@@ -71,5 +76,18 @@ describe("FollowSnsTopicSection", () => {
     await waitFor(() =>
       expect(queryByTestId("add-followee-button")).toBeInTheDocument()
     );
+  });
+
+  it("removes followee", async () => {
+    const { queryAllByTestId } = renderComponent();
+
+    const followeeElements = queryAllByTestId("current-followee-item");
+    expect(followeeElements.length).toBe(followees.length);
+
+    const followeeToRemove = followeeElements[0];
+    const removeButton = followeeToRemove.querySelector("button");
+    fireEvent.click(removeButton);
+
+    await waitFor(() => expect(removeFollowee).toBeCalled());
   });
 });
