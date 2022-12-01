@@ -584,7 +584,7 @@ export const removeFollowee = async ({
   const followeeHex = subaccountToHexString(followee.id);
 
   const topicFollowees = followeesByFunction({ neuron, functionId });
-  // Do not allow to remove a neuron id who is already followed
+  // Do not allow to unfollow a neuron who is not a followee
   if (
     topicFollowees?.find(
       ({ id }) => subaccountToHexString(id) === followeeHex
