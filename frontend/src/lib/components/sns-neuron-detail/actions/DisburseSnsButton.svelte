@@ -2,7 +2,9 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuron } from "@dfinity/sns";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+  import type { Principal } from "@dfinity/principal";
 
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let reloadContext: () => Promise<void>;
 
@@ -16,5 +18,10 @@
 >
 
 {#if showModal}
-  <DisburseSnsNeuronModal {neuron} {reloadContext} on:nnsClose={closeModal} />
+  <DisburseSnsNeuronModal
+    {rootCanisterId}
+    {neuron}
+    {reloadContext}
+    on:nnsClose={closeModal}
+  />
 {/if}

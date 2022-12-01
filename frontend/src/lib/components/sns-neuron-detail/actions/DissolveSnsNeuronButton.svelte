@@ -9,9 +9,9 @@
     stopDissolving,
   } from "$lib/services/sns-neurons.services";
   import type { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { keyOf } from "$lib/utils/utils";
 
+  export let rootCanisterId: Principal;
   export let neuronId: SnsNeuronId;
   export let neuronState: NeuronState;
   export let reloadContext: () => Promise<void>;
@@ -34,8 +34,6 @@
 
   const dissolveAction = async () => {
     const action = isDissolving ? stopDissolving : startDissolving;
-
-    let rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
 
     startBusy({ initiator: "dissolve-action" });
 

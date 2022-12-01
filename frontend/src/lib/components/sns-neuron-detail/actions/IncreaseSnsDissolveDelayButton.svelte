@@ -3,7 +3,9 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/nns";
+  import type { Principal } from "@dfinity/principal";
 
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
   export let reloadNeuron: () => Promise<void>;
@@ -21,6 +23,7 @@
 
 {#if showModal}
   <IncreaseSnsDissolveDelayModal
+    {rootCanisterId}
     {neuron}
     {token}
     {reloadNeuron}

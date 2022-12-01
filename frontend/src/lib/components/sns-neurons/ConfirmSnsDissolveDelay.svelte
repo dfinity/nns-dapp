@@ -15,12 +15,14 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/nns";
   import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
-  import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import type { Principal } from "@dfinity/principal";
 
-  export let delayInSeconds: number;
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
+  export let delayInSeconds: number;
 
   const dispatcher = createEventDispatcher();
 
@@ -31,7 +33,7 @@
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
   let snsParameters: NervousSystemParameters | undefined;
-  $: snsParameters = $snsProjectParametersStore?.parameters;
+  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
   let votingPower: number | undefined;
   $: if (neuron !== undefined && snsParameters !== undefined) {

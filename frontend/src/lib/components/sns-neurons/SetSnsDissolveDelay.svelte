@@ -16,12 +16,14 @@
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { snsProjectParametersStore } from "$lib/derived/sns/sns-project-parameters.derived";
   import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
   import { fromDefinedNullable } from "@dfinity/utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import type { Principal } from "@dfinity/principal";
 
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
   export let delayInSeconds = 0; // bound
@@ -43,7 +45,7 @@
   $: dissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
 
   let snsParameters: NervousSystemParameters | undefined;
-  $: snsParameters = $snsProjectParametersStore?.parameters;
+  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
   let maxDissolveDelaySeconds: number | undefined;
   $: maxDissolveDelaySeconds =

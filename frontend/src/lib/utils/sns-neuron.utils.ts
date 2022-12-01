@@ -361,7 +361,6 @@ export const snsNeuronVotingPower = ({
   const stakeE8s = BigInt(
     Math.max(Number(getSnsNeuronStake(neuron) + maturity_e8s_equivalent), 0)
   );
-  console.log('neuron', neuron)
   const ageSeconds = BigInt(
     Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
   );

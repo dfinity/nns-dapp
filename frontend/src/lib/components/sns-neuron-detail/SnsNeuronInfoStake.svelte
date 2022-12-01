@@ -23,12 +23,17 @@
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+  import type { Principal } from "@dfinity/principal";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
 
   const { store, reload: reloadContext }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
+
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $snsOnlyProjectStore;
 
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
@@ -59,7 +64,7 @@
     allowedToDissolve;
 </script>
 
-{#if nonNullish(neuron) && nonNullish(neuronState)}
+{#if nonNullish(rootCanisterId) && nonNullish(neuron) && nonNullish(neuronState)}
   <KeyValuePair>
     <h3 slot="key">{$i18n.neuron_detail.stake}</h3>
     <SnsNeuronAmount {neuron} slot="value" />
@@ -69,15 +74,17 @@
     {#if allowedToDissolve && ENABLE_SNS_2}
       <!-- TODO: Enable when voting power calculation is accurate -->
       <IncreaseSnsDissolveDelayButton
+        {rootCanisterId}
         {neuron}
         {token}
         reloadNeuron={reloadContext}
       />
     {/if}
     {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-      <DisburseSnsButton {neuron} {reloadContext} />
+      <DisburseSnsButton {rootCanisterId} {neuron} {reloadContext} />
     {:else if canDissolve}
       <DissolveSnsNeuronButton
+        {rootCanisterId}
         neuronId={fromDefinedNullable(neuron.id)}
         {neuronState}
         {reloadContext}
