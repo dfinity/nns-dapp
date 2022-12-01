@@ -27,7 +27,7 @@
   let type: NnsNeuronModalType | undefined;
   $: type = modal?.type;
 
-  let neuron: NeuronInfo | undefined;
+  let neuron: NeuronInfo | undefined | null;
   $: neuron = modal?.data?.neuron;
 
   let followee: FolloweesNeuron | undefined;
