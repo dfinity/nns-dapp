@@ -28,7 +28,7 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 
 jest.mock("$lib/services/sns-parameters.services", () => {
   return {
-    syncSnsParameters: jest.fn().mockResolvedValue(undefined),
+    loadSnsParameters: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -47,7 +47,12 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseSnsDissolveDelayModal,
-      props: { neuron, token: ICPToken, reloadNeuron },
+      props: {
+        rootCanisterId: mockPrincipal,
+        neuron,
+        token: ICPToken,
+        reloadNeuron,
+      },
     });
   };
 
@@ -125,7 +130,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     await waitFor(() => expect(updateDelay).toBeCalled());
   });
 
-  it("should trigger `syncSnsParameters`", async () => {
+  it("should trigger `loadSnsParameters`", async () => {
     await renderIncreaseDelayModal(neuron);
 
     expect(loadSnsParameters).toBeCalled();

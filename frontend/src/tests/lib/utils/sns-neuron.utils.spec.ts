@@ -960,8 +960,37 @@ describe("sns-neuron utils", () => {
   });
 
   describe("snsNeuronVotingPower", () => {
+    it("should use the neuron dissolve delay", () => {
+      const baseStake = 100n;
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: baseStake,
+        neuron_fees_e8s: 0n,
+        dissolve_state: [{ DissolveDelaySeconds: 100n }],
+        aging_since_timestamp_seconds: 0n,
+        voting_power_percentage_multiplier: 100n,
+      };
+      const votingPower = snsNeuronVotingPower({
+        neuron,
+        snsParameters: {
+          max_dissolve_delay_seconds: [100n],
+          max_neuron_age_for_age_bonus: [100n],
+          max_dissolve_delay_bonus_percentage: [100n],
+          max_age_bonus_percentage: [25n],
+          neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
+        } as unknown as NervousSystemParameters,
+      });
+
+      expect(votingPower).toEqual(
+        (Number(baseStake) *
+          2 * // dissolve_delay boost
+          5) /
+          4 // voting power boost
+      );
+    });
+
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/d621f8f05b8c6302ce0b9a007ed4aeec7e7b2f51/rs/sns/governance/src/neuron.rs#L727
-    it.only("should calculate fully boosted voting power", () => {
+    it("should calculate fully boosted voting power", () => {
       const baseStake = 100n;
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
@@ -1014,7 +1043,5 @@ describe("sns-neuron utils", () => {
 
       expect(votingPower).toEqual(100);
     });
-
-    // TODO: should take the dissolve delay from the neuron
   });
 });

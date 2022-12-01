@@ -57,6 +57,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders a delay", () => {
     const { getByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,
@@ -71,6 +72,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders a neuron ID", () => {
     const { getAllByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,
@@ -86,6 +88,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders a neuron stake", () => {
     const { getByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,
@@ -102,6 +105,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders a voting power", () => {
     const { getByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,
@@ -121,6 +125,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders cancel button", () => {
     const { getByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,
@@ -132,6 +137,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   it("renders confirm button", () => {
     const { getByText } = render(ConfirmSnsDissolveDelay, {
       props: {
+        rootCanisterId: mockPrincipal,
         delayInSeconds,
         neuron,
         token: ICPToken,

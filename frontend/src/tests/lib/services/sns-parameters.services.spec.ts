@@ -10,7 +10,7 @@ import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
 
 describe("sns-parameters-services", () => {
-  describe("syncSnsParameters", () => {
+  describe("loadSnsParameters", () => {
     it("should call api.nervousSystemParameters and load neurons in store", async () => {
       const spyQuery = jest
         .spyOn(governanceApi, "nervousSystemParameters")
