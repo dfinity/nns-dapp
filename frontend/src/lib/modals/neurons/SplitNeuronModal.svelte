@@ -1,18 +1,17 @@
 <script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal, Value, busy } from "@dfinity/gix-components";
   import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import Value from "$lib/components/ui/Value.svelte";
 
   export let neuron: NeuronInfo;
 

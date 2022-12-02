@@ -6,33 +6,60 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-import { TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("TransactionModal", () => {
-  const renderTransactionModal = (props?: {
+  const renderTransactionModal = ({
+    destinationAddress,
+    sourceAccount,
+    transactionFee = TokenAmount.fromE8s({
+      amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+      token: ICPToken,
+    }),
+    rootCanisterId,
+    validateAmount,
+  }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
+    validateAmount?: (amount: number | undefined) => string | undefined;
   }) =>
     renderModal({
       component: TransactionModal,
-      props: props ?? {},
+      props: {
+        destinationAddress,
+        sourceAccount,
+        transactionFee,
+        rootCanisterId,
+        validateAmount,
+      },
     });
+
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
 
   beforeEach(() => {
     jest
@@ -54,7 +81,7 @@ describe("TransactionModal", () => {
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
-  }): Promise<RenderResult> => {
+  }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,
@@ -148,6 +175,28 @@ describe("TransactionModal", () => {
 
       await waitFor(() =>
         expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
+    });
+
+    it("should not enable button when input value is not validated with the prop `validateAmount`", async () => {
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        validateAmount: () => "error__sns.not_enough_amount",
+      });
+
+      const participateButton = getByTestId("transaction-button-next");
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: "10" } });
+
+      // Choose select account
+      // It will choose the fist subaccount as default
+      const toggle = container.querySelector("input[id='toggle']");
+      toggle && fireEvent.click(toggle);
+
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeTruthy()
       );
     });
 

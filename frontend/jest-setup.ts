@@ -20,6 +20,7 @@ jest.mock("./src/lib/constants/identity.constants.ts", () => ({
 }));
 
 jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
+  OWN_CANISTER_ID_TEXT: "qhbym-qaaaa-aaaaa-aaafq-cai",
   OWN_CANISTER_ID: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai"),
   LEDGER_CANISTER_ID: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
   GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
@@ -43,8 +44,3 @@ global.localStorage = localStorageMock;
 configure({
   testIdAttribute: "data-tid",
 });
-
-const DOMPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-const { window } = new JSDOM("<!DOCTYPE html>");
-global.DOMPurify = DOMPurify(window);

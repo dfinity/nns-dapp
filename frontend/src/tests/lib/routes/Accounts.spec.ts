@@ -2,20 +2,27 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -24,13 +31,23 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("Accounts", () => {
+  beforeAll(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
+    jest
+      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyAccounts });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -74,7 +91,7 @@ describe("Accounts", () => {
 
     expect(queryByTestId("accounts-body")).toBeInTheDocument();
 
-    const selectElement = queryByTestId(
+    let selectElement = queryByTestId(
       "select-project-dropdown"
     ) as HTMLSelectElement | null;
 
@@ -87,6 +104,10 @@ describe("Accounts", () => {
     await waitFor(() =>
       expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
     );
+
+    selectElement = queryByTestId(
+      "select-project-dropdown"
+    ) as HTMLSelectElement | null;
 
     selectElement &&
       fireEvent.change(selectElement, {
@@ -124,6 +145,11 @@ describe("Accounts", () => {
   });
 
   it("should open sns transaction modal", async () => {
+    transactionsFeesStore.setFee({
+      rootCanisterId: mockSnsFullProject.rootCanisterId,
+      fee: BigInt(10_000),
+      certified: true,
+    });
     const { queryByTestId, getByTestId } = render(Accounts);
 
     expect(queryByTestId("accounts-body")).toBeInTheDocument();

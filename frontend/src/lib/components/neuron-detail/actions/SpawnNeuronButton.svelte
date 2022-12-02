@@ -5,19 +5,19 @@
     MIN_NEURON_STAKE,
     SPAWN_VARIANCE_PERCENTAGE,
   } from "$lib/constants/neurons.constants";
-  import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
-  export let controlledByHardwareWallet: boolean;
-
-  let isOpen = false;
-  const showModal = async () => (isOpen = true);
-  const closeModal = () => (isOpen = false);
 
   let enoughMaturity: boolean;
   $: enoughMaturity =
@@ -27,6 +27,13 @@
           neuron,
           percentage: 100,
         });
+
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+
+  const showModal = () =>
+    openNnsNeuronModal({ type: "spawn", data: { neuron: $store.neuron } });
 </script>
 
 {#if enoughMaturity}
@@ -58,12 +65,4 @@
       {$i18n.neuron_detail.spawn_neuron}
     </button>
   </Tooltip>
-{/if}
-
-{#if isOpen}
-  <SpawnNeuronModal
-    on:nnsClose={closeModal}
-    {neuron}
-    {controlledByHardwareWallet}
-  />
 {/if}

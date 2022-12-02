@@ -12,9 +12,11 @@
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -40,7 +42,14 @@
       "type": "custom",
       "remote": {
         "id": {
-          "local": "qjdve-lqaaa-aaaaa-aaaeq-cai"
+          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small13": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -102,7 +111,7 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },
@@ -116,7 +125,7 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS": false,
+          "ENABLE_SNS": true,
           "ENABLE_SNS_2": false
         }
       },
@@ -181,6 +190,34 @@
       ],
       "type": "persistent"
     },
+    "large02": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large02.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:78ff:fe1b:9a48]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small09": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small09.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"
+      ],
+      "type": "persistent"
+    },
     "small06": {
       "config": {
         "FETCH_ROOT_KEY": true,
@@ -192,6 +229,20 @@
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small14": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small14.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS": true,
+          "ENABLE_SNS_2": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:a4ff:fe4f:a75e]:8080"
       ],
       "type": "persistent"
     },
@@ -222,7 +273,7 @@
       "config": {
         "RUSTC_VERSION": "1.63.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "10c0341032ac00c9728ecefa1e82e919f0f09022"
+        "IC_COMMIT": "3f343ec219808f5be1e9daa878c1da624b4f8d37"
       },
       "packtool": ""
     }

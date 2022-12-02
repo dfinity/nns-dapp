@@ -1,19 +1,12 @@
 import {
   participateInSnsSwap,
-  queryAllSnsMetadata,
   querySnsMetadata,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
   querySnsSwapState,
-  querySnsSwapStates,
 } from "$lib/api/sns.api";
-import { AppPath } from "$lib/constants/routes.constants";
 import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
-import {
-  snsProposalsStore,
-  snsQueryStore,
-  snsSwapCommitmentsStore,
-} from "$lib/stores/sns.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -21,36 +14,33 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "$lib/utils/app-path.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   commitmentExceedsAmountLeft,
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import {
-  Topic,
-  type AccountIdentifier,
-  type ProposalInfo,
-  type TokenAmount,
-} from "@dfinity/nns";
+import type { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
-import { loadProposalsByTopic } from "./proposals.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsSummaries = (): Promise<void> => {
-  snsQueryStore.setLoadingState();
+export const loadSnsSwapCommitments = (): Promise<void> => {
+  snsSwapCommitmentsStore.setLoadingState();
 
-  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
+  return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
-      Promise.all([
-        queryAllSnsMetadata({ certified, identity }),
-        querySnsSwapStates({ certified, identity }),
-      ]),
-    onLoad: ({ response }) => snsQueryStore.setData(response),
+      querySnsSwapCommitments({ certified, identity }),
+    onLoad: ({ response: swapCommitments, certified }) => {
+      for (const swapCommitment of swapCommitments) {
+        snsSwapCommitmentsStore.setSwapCommitment({
+          swapCommitment,
+          certified,
+        });
+      }
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -59,16 +49,16 @@ export const loadSnsSummaries = (): Promise<void> => {
       }
 
       // hide unproven data
-      snsQueryStore.setLoadingState();
+      snsSwapCommitmentsStore.setLoadingState();
 
       toastsError(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error__sns.list_summaries",
+          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
         })
       );
     },
-    logMessage: "Syncing Sns summaries",
+    logMessage: "Syncing Sns swap commitments",
   });
 };
 
@@ -114,41 +104,6 @@ export const loadSnsSummary = async ({
     logMessage: "Syncing Sns summary",
   });
 
-export const loadSnsSwapCommitments = (): Promise<void> => {
-  snsSwapCommitmentsStore.setLoadingState();
-
-  return queryAndUpdate<SnsSwapCommitment[], unknown>({
-    request: ({ certified, identity }) =>
-      querySnsSwapCommitments({ certified, identity }),
-    onLoad: ({ response: swapCommitments, certified }) => {
-      for (const swapCommitment of swapCommitments) {
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment,
-          certified,
-        });
-      }
-    },
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsSwapCommitmentsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_swap_commitments",
-        })
-      );
-    },
-    logMessage: "Syncing Sns swap commitments",
-  });
-};
-
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
@@ -184,42 +139,6 @@ export const loadSnsSwapCommitment = async ({
     logMessage: "Syncing Sns swap commitment",
   });
 
-export const listSnsProposals = async (): Promise<void> => {
-  snsProposalsStore.setLoadingState();
-
-  return queryAndUpdate<ProposalInfo[], unknown>({
-    request: ({ certified, identity }) =>
-      loadProposalsByTopic({
-        certified,
-        identity,
-        topic: Topic.SnsDecentralizationSale,
-      }),
-    onLoad: ({ response: proposals, certified }) =>
-      snsProposalsStore.setProposals({
-        proposals,
-        certified,
-      }),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsProposalsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.proposal_not_found",
-        })
-      );
-    },
-    logMessage: "Syncing Sns proposals",
-  });
-};
-
 /**
  * Requests swap state and loads it in the store.
  * Ignores possible undefined. This is used only to recheck the data with up-to-date information.
@@ -230,7 +149,7 @@ export const listSnsProposals = async (): Promise<void> => {
  */
 const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     const swapData = await querySnsSwapState({
       rootCanisterId: rootCanisterId.toText(),
       identity,
@@ -246,17 +165,10 @@ const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
   }
 };
 
-export const routePathRootCanisterId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.ProjectDetail], routePath: path })) {
-    return undefined;
-  }
-  return getLastPathDetail(path);
-};
-
 export const getSwapAccount = async (
   swapCanisterId: Principal
 ): Promise<AccountIdentifier> => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   return getSwapCanisterAccount({
     controller: identity.getPrincipal(),
     swapCanisterId,

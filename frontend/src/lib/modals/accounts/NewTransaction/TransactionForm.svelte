@@ -12,9 +12,13 @@
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, type Token } from "@dfinity/nns";
+  import {
+    InsufficientAmountError,
+    TokenAmount,
+    type Token,
+  } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
 
   // Tested in the TransactionModal
@@ -30,6 +34,9 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+  export let validateAmount: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -68,12 +75,17 @@
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
-      errorMessage = undefined;
+      errorMessage = validateAmount(amount);
     } catch (error: unknown) {
+      if (error instanceof InsufficientAmountError) {
+        errorMessage = $i18n.error.insufficient_funds;
+      }
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
       }
-      errorMessage = $i18n.error.insufficient_funds;
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
     }
   })();
   const dispatcher = createEventDispatcher();

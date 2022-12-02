@@ -3,106 +3,103 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { mapTransaction } from "$lib/utils/transactions.utils";
+import { ICPToken } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import {
-  mockMainAccount,
-  mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import {
-  mockReceivedFromMainAccountTransaction,
-  mockSentToSubAccountTransaction,
+  mockTransactionReceiveDataFromMain,
+  mockTransactionSendDataFromMain,
 } from "../../../mocks/transaction.mock";
 
-describe("Address", () => {
+describe("TransactionCard", () => {
   const renderTransactionCard = (
-    account = mockMainAccount,
-    transaction = mockReceivedFromMainAccountTransaction
+    transaction = mockTransactionSendDataFromMain
   ) =>
     render(TransactionCard, {
       props: {
-        account,
         transaction,
+        token: ICPToken,
       },
     });
 
   it("renders received headline", () => {
-    const { container } = renderTransactionCard(
-      mockSubAccount,
-      mockReceivedFromMainAccountTransaction
+    const { getByText } = renderTransactionCard(
+      mockTransactionReceiveDataFromMain
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.receive
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.receive, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders sent headline", () => {
-    const { container } = renderTransactionCard(
-      mockMainAccount,
-      mockSentToSubAccountTransaction
+    const { getByText } = renderTransactionCard(
+      mockTransactionSendDataFromMain
     );
 
-    expect(container.querySelector(".title")?.textContent).toBe(
-      en.transaction_names.send
-    );
+    const expectedText = replacePlaceholders(en.transaction_names.send, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
   });
 
   it("renders transaction ICPs with - sign", () => {
-    const account = mockMainAccount;
-    const transaction = mockSentToSubAccountTransaction;
-    const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapTransaction({ account, transaction });
+    const { getByTestId } = renderTransactionCard(
+      mockTransactionSendDataFromMain
+    );
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `-${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
+      `-${formatToken({
+        value: mockTransactionSendDataFromMain.displayAmount.toE8s(),
+        detailed: true,
+      })}`
     );
   });
 
   it("renders transaction ICPs with + sign", () => {
-    const account = mockSubAccount;
-    const transaction = mockReceivedFromMainAccountTransaction;
-    const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapTransaction({ account, transaction });
+    const { getByTestId } = renderTransactionCard(
+      mockTransactionReceiveDataFromMain
+    );
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
+      `+${formatToken({
+        value: mockTransactionReceiveDataFromMain.displayAmount.toE8s(),
+        detailed: true,
+      })}`
     );
   });
 
   it("displays transaction date and time", () => {
-    const { container } = renderTransactionCard(
-      mockMainAccount,
-      mockSentToSubAccountTransaction
+    const { getByTestId } = renderTransactionCard(
+      mockTransactionSendDataFromMain
     );
 
-    expect(container.querySelector("p")?.textContent).toContain(
-      "January 1, 1970"
-    );
-    expect(container.querySelector("p")?.textContent).toContain("12:00 AM");
+    const div = getByTestId("transaction-date");
+
+    expect(div?.textContent).toContain("Mar 14, 2021 12:00 AM");
+    expect(div?.textContent).toContain("12:00 AM");
   });
 
-  it("displays identifier for reseived", () => {
+  it("displays identifier for received", () => {
     const { getByTestId } = renderTransactionCard(
-      mockSubAccount,
-      mockReceivedFromMainAccountTransaction
+      mockTransactionReceiveDataFromMain
     );
     const identifier = getByTestId("identifier")?.textContent;
 
-    expect(identifier).toContain(mockMainAccount.identifier);
+    expect(identifier).toContain(mockTransactionReceiveDataFromMain.from);
     expect(identifier).toContain(en.wallet.direction_from);
   });
 
   it("displays identifier for sent", () => {
     const { getByTestId } = renderTransactionCard(
-      mockMainAccount,
-      mockSentToSubAccountTransaction
+      mockTransactionSendDataFromMain
     );
     const identifier = getByTestId("identifier")?.textContent;
 
-    expect(identifier).toContain(mockSubAccount.identifier);
+    expect(identifier).toContain(mockTransactionSendDataFromMain.to);
     expect(identifier).toContain(en.wallet.direction_to);
   });
 });

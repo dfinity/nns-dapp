@@ -2,7 +2,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
@@ -27,9 +26,10 @@
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { goto } from "$app/navigation";
 
   export let neuron: SnsNeuron;
-  export let reloadContext: () => Promise<void>;
+  export let reloadNeuron: () => Promise<void>;
 
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
@@ -92,7 +92,7 @@
       neuronId: fromDefinedNullable(neuron.id),
     });
 
-    await Promise.all([syncAccounts(), reloadContext()]);
+    await Promise.all([syncAccounts(), reloadNeuron()]);
 
     loading = false;
 
@@ -103,9 +103,7 @@
         labelKey: "neuron_detail.disburse_success",
       });
 
-      routeStore.replace({
-        path: $neuronsPathStore,
-      });
+      await goto($neuronsPathStore, { replaceState: true });
     }
 
     dispatcher("nnsClose");
@@ -120,7 +118,11 @@
   {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
+      on:nnsBack={() => {
+        dispatcher("nnsClose");
+      }}
       on:nnsConfirm={executeTransaction}
+      secondaryButtonText={$i18n.core.cancel}
       {amount}
       {source}
       {loading}

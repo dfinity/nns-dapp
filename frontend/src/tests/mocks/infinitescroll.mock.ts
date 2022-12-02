@@ -8,6 +8,10 @@ IntersectionObserverPassive.mockReturnValue({
   disconnect: () => null,
 });
 
+let isIntersecting = true;
+export const mockIntersectionObserverIsIntersecting = (intersecting: boolean) =>
+  (isIntersecting = intersecting);
+
 export class IntersectionObserverActive implements IntersectionObserver {
   public readonly root: Element | Document | null;
   public readonly rootMargin: string;
@@ -26,7 +30,7 @@ export class IntersectionObserverActive implements IntersectionObserver {
     this.callback(
       [
         {
-          isIntersecting: true,
+          isIntersecting,
           target: element,
         } as unknown as IntersectionObserverEntry,
       ],

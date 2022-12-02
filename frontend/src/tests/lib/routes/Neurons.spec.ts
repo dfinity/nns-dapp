@@ -2,19 +2,26 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { routeStore } from "$lib/stores/route.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 
-jest.mock("$lib/services/sns.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
   };
@@ -22,18 +29,30 @@ jest.mock("$lib/services/sns.services", () => {
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    loadSnsNeurons: jest.fn().mockResolvedValue(undefined),
+    syncSnsNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/sns-accounts.services", () => {
+  return {
+    syncSnsAccounts: jest.fn().mockReturnValue(undefined),
   };
 });
 
 describe("Neurons", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
     // Reset to default value
-    routeStore.update({ path: AppPath.LegacyNeurons });
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
   it("should render NnsNeurons by default", () => {
@@ -92,5 +111,13 @@ describe("Neurons", () => {
     await waitFor(() =>
       expect(queryByTestId("neurons-body")).toBeInTheDocument()
     );
+  });
+
+  it("should render a principal as text", () => {
+    const { getByText } = render(Neurons);
+
+    expect(
+      getByText(mockPrincipal.toText(), { exact: false })
+    ).toBeInTheDocument();
   });
 });

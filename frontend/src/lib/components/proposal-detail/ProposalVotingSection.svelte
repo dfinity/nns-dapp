@@ -6,5 +6,7 @@
   export let proposalInfo: ProposalInfo;
 </script>
 
-<VotesResults {proposalInfo} />
-<VotingCard {proposalInfo} />
+<div class="content-cell-island">
+  <VotesResults {proposalInfo} />
+  <VotingCard {proposalInfo} />
+</div>

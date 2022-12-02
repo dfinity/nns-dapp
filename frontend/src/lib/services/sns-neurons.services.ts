@@ -1,32 +1,71 @@
 import {
   addNeuronPermissions,
   disburse as disburseApi,
+  getNervousSystemFunctions,
+  increaseDissolveDelay as increaseDissolveDelayApi,
+  refreshNeuron,
   removeNeuronPermissions,
+  setFollowees,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
-import { querySnsNeuron, querySnsNeurons } from "$lib/api/sns.api";
+import {
+  getSnsNeuron as getSnsNeuronApi,
+  querySnsNeuron,
+  querySnsNeurons,
+  stakeNeuron as stakeNeuronApi,
+} from "$lib/api/sns.api";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { i18n } from "$lib/stores/i18n";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { getSnsNeuronByHexId } from "$lib/utils/sns-neuron.utils";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import {
+  followeesByFunction,
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronByHexId,
+  getSnsNeuronIdAsHexString,
+  subaccountToHexString,
+} from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import {
-  SnsNeuronPermissionType,
+  decodeSnsAccount,
+  type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  fromDefinedNullable,
+  fromNullable,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
+import {
+  checkSnsNeuronBalances,
+  neuronNeedsRefresh,
+} from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsNeurons = async (
+/**
+ * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
+ *
+ * On update, it will check whether there are neurons that need to be refreshed or claimed.
+ * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake of the neuron.
+ * A neuron needs to be claimed if there is a subaccount with balance and no neuron.
+ *
+ * @param {Principal} rootCanisterId
+ * @returns {void}
+ */
+export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
   return queryAndUpdate<SnsNeuron[], unknown>({
@@ -36,12 +75,19 @@ export const loadSnsNeurons = async (
         identity,
         certified,
       }),
-    onLoad: ({ response: neurons, certified }) => {
+    onLoad: async ({ response: neurons, certified }) => {
       snsNeuronsStore.setNeurons({
         rootCanisterId,
         neurons,
         certified,
       });
+
+      if (certified) {
+        checkSnsNeuronBalances({
+          rootCanisterId,
+          neurons,
+        });
+      }
     },
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -61,6 +107,26 @@ export const loadSnsNeurons = async (
       );
     },
     logMessage: "Syncing Sns Neurons",
+  });
+};
+
+const loadNeurons = async ({
+  rootCanisterId,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<void> => {
+  const identity = await getAuthenticatedIdentity();
+  const neurons = await querySnsNeurons({
+    identity,
+    rootCanisterId,
+    certified,
+  });
+  snsNeuronsStore.setNeurons({
+    rootCanisterId,
+    certified,
+    neurons,
   });
 };
 
@@ -128,14 +194,32 @@ export const getSnsNeuron = async ({
   const neuronId = arrayOfNumberToUint8Array(hexStringToBytes(neuronIdHex));
   return queryAndUpdate<SnsNeuron, Error>({
     request: ({ certified, identity }) =>
-      querySnsNeuron({
+      getSnsNeuronApi({
         rootCanisterId,
         identity,
         certified,
         neuronId: { id: neuronId },
       }),
-    onLoad: ({ response: neuron, certified }) => {
+    onLoad: async ({ response: neuron, certified }) => {
       onLoad({ neuron, certified });
+
+      if (certified) {
+        // Check that the neuron's stake is in sync with the subaccount's balance
+        const neuronId = fromNullable(neuron.id);
+        if (neuronId !== undefined) {
+          const identity = await getNeuronIdentity();
+          if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
+            await refreshNeuron({ rootCanisterId, identity, neuronId });
+            const updatedNeuron = await getSnsNeuronApi({
+              identity,
+              rootCanisterId,
+              neuronId,
+              certified,
+            });
+            onLoad({ neuron: updatedNeuron, certified });
+          }
+        }
+      }
     },
     onError: ({ certified, error }) => {
       onError?.({ certified, error });
@@ -146,7 +230,7 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (): Promise<Identity> => getIdentity();
+const getNeuronIdentity = (): Promise<Identity> => getAuthenticatedIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -158,13 +242,9 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     await addNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal: hotkey,
       rootCanisterId,
@@ -190,14 +270,10 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const permissions = [
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-    ];
     const identity = await getNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
-      permissions,
+      permissions: HOTKEY_PERMISSIONS,
       identity,
       principal,
       rootCanisterId,
@@ -286,6 +362,271 @@ export const stopDissolving = async ({
     toastsError({
       labelKey: "error__sns.sns_stop_dissolving",
       err,
+    });
+    return { success: false };
+  }
+};
+
+export const updateDelay = async ({
+  rootCanisterId,
+  neuron,
+  dissolveDelaySeconds,
+}: {
+  rootCanisterId: Principal;
+  neuron: SnsNeuron;
+  dissolveDelaySeconds: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+    const currentDissolveDelay =
+      getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
+    const additionalDissolveDelaySeconds =
+      dissolveDelaySeconds - Number(currentDissolveDelay);
+
+    await increaseDissolveDelayApi({
+      rootCanisterId,
+      identity,
+      neuronId: fromDefinedNullable(neuron.id),
+      additionalDissolveDelaySeconds,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_dissolve_delay_action",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
+export const stakeNeuron = async ({
+  rootCanisterId,
+  amount,
+  account,
+}: {
+  rootCanisterId: Principal;
+  amount: bigint;
+  account: Account;
+}): Promise<{ success: boolean }> => {
+  try {
+    // TODO: Get identity depending on account to support HW accounts
+    const identity = await getAuthenticatedIdentity();
+    await stakeNeuronApi({
+      controller: identity.getPrincipal(),
+      rootCanisterId,
+      stakeE8s: amount,
+      identity,
+      source: decodeSnsAccount(account.identifier),
+    });
+    await loadNeurons({ rootCanisterId, certified: true });
+    return { success: true };
+  } catch (err) {
+    toastsError(
+      ledgerErrorToToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.sns_stake",
+      })
+    );
+    return { success: false };
+  }
+};
+
+// This is a public service.
+export const loadSnsNervousSystemFunctions = async (
+  rootCanisterId: Principal
+) =>
+  queryAndUpdate<SnsNervousSystemFunction[], Error>({
+    request: ({ certified, identity }) =>
+      getNervousSystemFunctions({
+        rootCanisterId,
+        identity,
+        certified,
+      }),
+    onLoad: async ({ response: nsFunctions, certified }) => {
+      // TODO: Ideally, the name from the backend is user-friendly.
+      // https://dfinity.atlassian.net/browse/GIX-1169
+      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
+        if (nsFunction.id === BigInt(0)) {
+          const translationKeys = get(i18n);
+          return {
+            ...nsFunction,
+            name: translationKeys.sns_neuron_detail.all_topics,
+          };
+        }
+        return nsFunction;
+      });
+      snsFunctionsStore.setFunctions({
+        rootCanisterId,
+        nsFunctions: snsNervousSystemFunctions,
+        certified,
+      });
+    },
+    onError: ({ certified, error }) => {
+      if (certified) {
+        toastsError({
+          labelKey: "error__sns.sns_load_functions",
+          err: error,
+        });
+      }
+    },
+    logMessage: `Getting SNS ${rootCanisterId.toText()} nervous system functions`,
+  });
+
+/**
+ * Makes a call to add a followee to the neuron for a specific topic
+ *
+ * The new set of followees needs to be calculated before the call.
+ *
+ * Shows toasts error if:
+ * - The new followee is already in the neuron.
+ * - The new followee is the same neuron.
+ * - The call throws an error.
+ *
+ * @param {Object}
+ * @param {Principal} rootCanisterId
+ * @param {SnsNeuron} neuron
+ * @param {SnsNeuronId} followee
+ * @param {bigint} functionId
+ * @returns
+ */
+export const addFollowee = async ({
+  neuron,
+  functionId,
+  followeeHex,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  followeeHex: string;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  // Do not allow a neuron to follow itself
+  if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
+    toastsError({
+      labelKey: "new_followee.same_neuron",
+    });
+    return { success: false };
+  }
+
+  const identity = await getNeuronIdentity();
+  const followee: SnsNeuronId = {
+    id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
+  };
+
+  const topicFollowees = followeesByFunction({ neuron, functionId });
+  // Do not allow to add a neuron id who is already followed
+  if (
+    topicFollowees?.find(
+      ({ id }) => subaccountToHexString(id) === followeeHex
+    ) !== undefined
+  ) {
+    toastsError({
+      labelKey: "new_followee.already_followed",
+    });
+    return { success: false };
+  }
+  try {
+    const followeeNeuron = await querySnsNeuron({
+      identity,
+      rootCanisterId,
+      neuronId: followee,
+      certified: false,
+    });
+    if (followeeNeuron === undefined) {
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+      return { success: false };
+    }
+
+    const newFollowees: SnsNeuronId[] =
+      topicFollowees === undefined ? [followee] : [...topicFollowees, followee];
+
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      functionId,
+      followees: newFollowees,
+    });
+
+    return { success: true };
+  } catch (error) {
+    toastsError({
+      labelKey: "error__sns.sns_add_followee",
+      err: error,
+    });
+    return { success: false };
+  }
+};
+
+/**
+ * Makes a call to remove a followee to the neuron for a specific ns function.
+ *
+ * The new set of followees needs to be calculated before the call.
+ *
+ * Shows toasts error if:
+ * - The followee is not in the list of followees.
+ * - The call throws an error.
+ *
+ * @param {Object}
+ * @param {Principal} rootCanisterId
+ * @param {SnsNeuron} neuron
+ * @param {SnsNeuronId} followee
+ * @param {bigint} functionId
+ * @returns
+ */
+export const removeFollowee = async ({
+  neuron,
+  functionId,
+  followee,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  followee: SnsNeuronId;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  const identity = await getNeuronIdentity();
+  const followeeHex = subaccountToHexString(followee.id);
+
+  const topicFollowees = followeesByFunction({ neuron, functionId });
+  // Do not allow to unfollow a neuron who is not a followee
+  if (
+    topicFollowees?.find(
+      ({ id }) => subaccountToHexString(id) === followeeHex
+    ) === undefined
+  ) {
+    toastsError({
+      labelKey: "new_followee.neuron_not_followee",
+    });
+    return { success: false };
+  }
+  try {
+    const newFollowees: SnsNeuronId[] = topicFollowees?.filter(
+      ({ id }) => subaccountToHexString(id) !== followeeHex
+    );
+
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      functionId,
+      followees: newFollowees,
+    });
+
+    return { success: true };
+  } catch (error) {
+    toastsError({
+      labelKey: "error__sns.sns_remove_followee",
+      err: error,
     });
     return { success: false };
   }

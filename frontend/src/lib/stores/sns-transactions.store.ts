@@ -3,12 +3,13 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsTransactionWithId } from "@dfinity/sns";
 import { writable } from "svelte/store";
 
-interface SnsTransactions {
+export interface SnsTransactions {
   // Each SNS Account is an entry in this Store.
   // We use the account string representation as the key to identify the transactions.
   [accountIdentifier: string]: {
     transactions: SnsTransactionWithId[];
     oldestTxId?: bigint;
+    completed: boolean;
   };
 }
 
@@ -25,7 +26,7 @@ export interface SnsTransactionsStore {
  * - reset: reset the store to an empty state.
  * - resetProject: removed the transactions for a specific project.
  */
-const initSnsAccountsStore = () => {
+const initSnsTransactionsStore = () => {
   const { subscribe, update, set } = writable<SnsTransactionsStore>({});
 
   return {
@@ -36,11 +37,13 @@ const initSnsAccountsStore = () => {
       rootCanisterId,
       transactions,
       oldestTxId,
+      completed,
     }: {
       accountIdentifier: string;
       rootCanisterId: Principal;
       transactions: SnsTransactionWithId[];
       oldestTxId?: bigint;
+      completed: boolean;
     }) {
       update((currentState: SnsTransactionsStore) => {
         const projectState = currentState[rootCanisterId.toText()];
@@ -51,13 +54,21 @@ const initSnsAccountsStore = () => {
           ({ id: oldTxId }) =>
             !transactions.some(({ id: newTxId }) => newTxId === oldTxId)
         );
+        // Ids are in increasing order. We want to keep the oldest id.
+        const newOldestTxId =
+          oldestTxId === undefined
+            ? accountState?.oldestTxId
+            : oldestTxId <= (accountState?.oldestTxId ?? oldestTxId)
+            ? oldestTxId
+            : accountState?.oldestTxId;
         return {
           ...currentState,
           [rootCanisterId.toText()]: {
             ...projectState,
             [accountIdentifier]: {
               transactions: [...uniquePreviousTransactions, ...transactions],
-              oldestTxId,
+              oldestTxId: newOldestTxId,
+              completed,
             },
           },
         };
@@ -80,4 +91,4 @@ const initSnsAccountsStore = () => {
   };
 };
 
-export const snsTransactionsStore = initSnsAccountsStore();
+export const snsTransactionsStore = initSnsTransactionsStore();

@@ -3,6 +3,7 @@
   import { makeDummyProposals } from "$lib/services/neurons.services";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -33,6 +34,8 @@
     </button>
   </div>
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   h3 {

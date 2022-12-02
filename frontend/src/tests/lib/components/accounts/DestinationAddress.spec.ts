@@ -14,7 +14,7 @@ import {
 describe("DestinationAddress", () => {
   const mockSubAccount2 = {
     ...mockSubAccount,
-    identifier: `test-identifier`,
+    identifier: `test-subaccount2-identifier`,
   };
 
   jest

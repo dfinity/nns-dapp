@@ -1,13 +1,11 @@
-import { AppPath } from "$lib/constants/routes.constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import type { SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromNullable } from "@dfinity/utils";
-import {
-  getLastPathDetail,
-  getParentPathDetail,
-  isRoutePath,
-} from "./app-path.utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
@@ -70,6 +68,15 @@ export const getSnsLockedTimeInSeconds = (
   }
 };
 
+// Delay from now. Source depends on the neuron state.
+export const getSnsDissolveDelaySeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const delay =
+    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
+  return delay;
+};
+
 export const getSnsNeuronStake = ({
   cached_neuron_stake_e8s,
   neuron_fees_e8s,
@@ -93,23 +100,17 @@ export const getSnsNeuronByHexId = ({
 export const getSnsNeuronIdAsHexString = ({
   id: neuronId,
 }: SnsNeuron): string =>
-  bytesToHexString(Array.from(fromNullable(neuronId)?.id ?? []));
+  subaccountToHexString(fromNullable(neuronId)?.id ?? new Uint8Array());
 
-export const routePathSnsNeuronId = (path: string): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
-    return undefined;
-  }
-  return getLastPathDetail(path);
-};
-
-export const routePathSnsNeuronRootCanisterId = (
-  path: string
-): string | undefined => {
-  if (!isRoutePath({ paths: [AppPath.NeuronDetail], routePath: path })) {
-    return undefined;
-  }
-  return getParentPathDetail(path);
-};
+/**
+ * Convert a subaccount to a hex string.
+ * SnsNeuron id is a subaccount.
+ *
+ * @param {Uint8Array} subaccount
+ * @returns {string} hex string
+ */
+export const subaccountToHexString = (subaccount: Uint8Array): string =>
+  bytesToHexString(Array.from(subaccount));
 
 export const canIdentityManageHotkeys = ({
   neuron,
@@ -121,7 +122,7 @@ export const canIdentityManageHotkeys = ({
   hasPermissions({
     neuron,
     identity,
-    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+    permissions: HOTKEY_PERMISSIONS,
   });
 
 export const hasPermissionToDisburse = ({
@@ -135,6 +136,34 @@ export const hasPermissionToDisburse = ({
     neuron,
     identity,
     permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE],
+  });
+
+export const hasPermissionToDissolve = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+    ],
+  });
+
+export const hasPermissionToVote = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
   });
 
 const hasAllPermissions = (permission_type: Int32Array): boolean => {
@@ -185,11 +214,9 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
     .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        [
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-        ].find((permission) => !permission_type.includes(permission)) ===
-        undefined
+        HOTKEY_PERMISSIONS.find(
+          (permission) => !permission_type.includes(permission)
+        ) === undefined
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
@@ -223,3 +250,119 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+/**
+ * Format the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
+ */
+export const formattedSnsMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
+  formatToken({
+    value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
+  });
+
+/**
+ * Returns true if the neuron comes from a Community Fund investment.
+ *
+ * A CF neuron can be identified using the source_nns_neuron_id
+ * which is the NNS neuron that joined the CF for the investment.
+ *
+ * @param {SnsNeuron} neuron
+ * @returns {boolean}
+ */
+export const isCommunityFund = ({ source_nns_neuron_id }: SnsNeuron): boolean =>
+  nonNullish(fromNullable(source_nns_neuron_id));
+
+/**
+ * Returns true if the neuron needs to be refreshed.
+ * Refresh means to make a call to the backend to get the latest data.
+ * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake.
+ *
+ * @param {Object}
+ * @param {SnsNeuron} param.neuron neuron to check
+ * @param {bigint} param.balanceE8s  subaccount balance
+ * @returns
+ */
+export const needsRefresh = ({
+  neuron,
+  balanceE8s,
+}: {
+  neuron: SnsNeuron;
+  balanceE8s: bigint;
+}): boolean => balanceE8s !== neuron.cached_neuron_stake_e8s;
+
+/**
+ * Returns the followees of a neuron in a specific ns function.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {bigint} params.functionId
+ * @returns {SnsNeuronId[]}
+ */
+export const followeesByFunction = ({
+  neuron,
+  functionId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+}): SnsNeuronId[] =>
+  neuron.followees.reduce<SnsNeuronId[]>(
+    (functionFollowees, [currentFunctionId, followeesData]) =>
+      currentFunctionId === functionId
+        ? followeesData.followees
+        : functionFollowees,
+    []
+  );
+
+export interface SnsFolloweesByNeuron {
+  neuronIdHex: string;
+  nsFunctions: NervousSystemFunction[];
+}
+
+/**
+ * Returns a list of followees of a neuron.
+ *
+ * Each followee has then the list of ns functions that are followed.
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {NervousSystemFunction[]} params.nsFunctions
+ * @returns {SnsFolloweesByNeuron[]}
+ */
+export const followeesByNeuronId = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: NervousSystemFunction[];
+}): SnsFolloweesByNeuron[] => {
+  const followeesDictionary = neuron.followees.reduce<{
+    [key: string]: NervousSystemFunction[];
+  }>((acc, [functionId, followeesData]) => {
+    const nsFunction = nsFunctions.find(({ id }) => id === functionId);
+    // Edge case, all ns functions in followees should also be in the nervous system.
+    if (nsFunction !== undefined) {
+      for (const followee of followeesData.followees) {
+        const followeeHex = subaccountToHexString(followee.id);
+        if (acc[followeeHex]) {
+          acc = {
+            ...acc,
+            [followeeHex]: [...acc[followeeHex], nsFunction],
+          };
+        } else {
+          acc = {
+            ...acc,
+            [followeeHex]: [nsFunction],
+          };
+        }
+      }
+    }
+    return acc;
+  }, {});
+
+  return Object.keys(followeesDictionary).map((neuronIdHex) => ({
+    neuronIdHex,
+    nsFunctions: followeesDictionary[neuronIdHex],
+  }));
+};

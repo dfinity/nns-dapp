@@ -10,6 +10,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
+  import { Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -36,21 +37,25 @@
       </p>
       <p class="label">{$i18n.neuron_detail.current_stake}</p>
       <p data-tid="neuron-stake">
-        {@html replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-        })}
+        <Html
+          text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+            $amount: valueSpan(
+              formatToken({ value: neuronICP, detailed: true })
+            ),
+          })}
+        />
       </p>
     </div>
     <div>
       <p>
-        {@html $i18n.neuron_detail.spawn_neuron_explanation_1}
+        <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
       </p>
       <p>
-        {@html $i18n.neuron_detail.spawn_neuron_explanation_2}
+        <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
       </p>
     </div>
     <p>
-      {@html $i18n.neuron_detail.spawn_neuron_note_hw}
+      <Html text={$i18n.neuron_detail.spawn_neuron_note_hw} />
     </p>
   </div>
   <button

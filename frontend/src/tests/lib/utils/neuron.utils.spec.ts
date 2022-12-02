@@ -12,10 +12,11 @@ import {
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { enumValues } from "$lib/utils/enum.utils";
 import {
   ageMultiplier,
   allHaveSameFollowees,
@@ -49,15 +50,15 @@ import {
   mapNeuronIds,
   minMaturityMerge,
   minNeuronSplittable,
+  neuronAge,
   neuronCanBeSplit,
   neuronStake,
-  routePathNeuronId,
+  neuronVotingPower,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
-  votingPower,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -93,41 +94,98 @@ describe("neuron-utils", () => {
       amount: "2.2",
       token: ICPToken,
     }) as TokenAmount;
+    const neuron = {
+      ...mockNeuron,
+      ageSeconds: BigInt(0),
+      dissolveDelaySeconds: BigInt(0),
+      fullNeuron: {
+        ...mockFullNeuron,
+        cachedNeuronStake: tokenStake.toE8s(),
+      },
+    };
     it("should return zero for delays less than six months", () => {
       expect(
-        votingPower({ stake: BigInt(2), dissolveDelayInSeconds: 100 })
+        neuronVotingPower({
+          neuron: mockNeuron,
+          newDissolveDelayInSeconds: BigInt(100),
+        })
       ).toBe(BigInt(0));
     });
 
     it("should return more than stake when delay more than six months", () => {
       expect(
-        votingPower({
-          stake: tokenStake.toE8s(),
-          dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+        neuronVotingPower({
+          neuron,
+          newDissolveDelayInSeconds: BigInt(
+            SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR
+          ),
         })
       ).toBeGreaterThan(tokenStake.toE8s());
     });
 
     it("should return the double when delay is eight years", () => {
+      const agedNeuron = {
+        ...neuron,
+        dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+      };
       expect(
-        votingPower({
-          stake: tokenStake.toE8s(),
-          dissolveDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
+        neuronVotingPower({
+          neuron: agedNeuron,
         })
       ).toBe(tokenStake.toE8s() * BigInt(2));
     });
 
-    it("should add age multiplier", () => {
-      const powerWithAge = votingPower({
-        stake: tokenStake.toE8s(),
-        dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
-        ageSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+    it("should take into account age bonus", () => {
+      const agedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+
+      const notSoAgedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(2),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+      const powerWithAge = neuronVotingPower({
+        neuron: agedNeuron,
       });
-      const powerWithoutAge = votingPower({
-        stake: tokenStake.toE8s(),
-        dissolveDelayInSeconds: SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR,
+      const powerWithoutAge = neuronVotingPower({
+        neuron: notSoAgedNeuron,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
+    });
+
+    it("should use the dissolve", () => {
+      const agedNeuron = {
+        ...neuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      };
+      const powerWithNewDissolve = neuronVotingPower({
+        neuron: agedNeuron,
+        newDissolveDelayInSeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
+      });
+      const powerWithoutAge = neuronVotingPower({
+        neuron: agedNeuron,
+      });
+      expect(powerWithNewDissolve).toBeGreaterThan(powerWithoutAge);
+    });
+
+    it("should match the calculation", () => {
+      const neuron = {
+        ...mockNeuron,
+        ageSeconds: BigInt(SECONDS_IN_YEAR),
+        dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 1.5),
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: BigInt(200_000_000),
+        },
+      };
+      const power = neuronVotingPower({
+        neuron,
+      });
+      expect(power).toEqual(252_343_750n);
     });
   });
 
@@ -141,49 +199,55 @@ describe("neuron-utils", () => {
 
   describe("dissolveDelayMultiplier", () => {
     it("be 1 when dissolve is 0", () => {
-      expect(dissolveDelayMultiplier(0)).toBe(1);
+      expect(dissolveDelayMultiplier(BigInt(0))).toBe(1);
     });
 
     it("be 2 when dissolve is eight years", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS)).toBe(2);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS))).toBe(2);
     });
 
     it("is a maximum of 2", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS * 2)).toBe(2);
-      expect(dissolveDelayMultiplier(SECONDS_IN_EIGHT_YEARS * 4)).toBe(2);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 2))).toBe(
+        2
+      );
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 4))).toBe(
+        2
+      );
     });
 
     it("returns more than 1 with positive delay", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_HALF_YEAR)).toBeGreaterThan(1);
-      expect(dissolveDelayMultiplier(1000)).toBeGreaterThan(1);
+      expect(
+        dissolveDelayMultiplier(BigInt(SECONDS_IN_HALF_YEAR))
+      ).toBeGreaterThan(1);
+      expect(dissolveDelayMultiplier(BigInt(1000))).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
-      expect(dissolveDelayMultiplier(SECONDS_IN_YEAR)).toBe(1.125);
+      expect(dissolveDelayMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.125);
     });
   });
 
   describe("ageMultiplier", () => {
     it("be 1 when age is 0", () => {
-      expect(ageMultiplier(0)).toBe(1);
+      expect(ageMultiplier(BigInt(0))).toBe(1);
     });
 
     it("be 1.25 when age is four years", () => {
-      expect(ageMultiplier(SECONDS_IN_FOUR_YEARS)).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_FOUR_YEARS))).toBe(1.25);
     });
 
     it("is a maximum of 1.25", () => {
-      expect(ageMultiplier(SECONDS_IN_EIGHT_YEARS * 2)).toBe(1.25);
-      expect(ageMultiplier(SECONDS_IN_EIGHT_YEARS * 4)).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 2))).toBe(1.25);
+      expect(ageMultiplier(BigInt(SECONDS_IN_EIGHT_YEARS * 4))).toBe(1.25);
     });
 
     it("returns more than 1 with positive age", () => {
-      expect(ageMultiplier(SECONDS_IN_HALF_YEAR)).toBeGreaterThan(1);
-      expect(ageMultiplier(1000)).toBeGreaterThan(1);
+      expect(ageMultiplier(BigInt(SECONDS_IN_HALF_YEAR))).toBeGreaterThan(1);
+      expect(ageMultiplier(BigInt(1000))).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
-      expect(ageMultiplier(SECONDS_IN_YEAR)).toBe(1.0625);
+      expect(ageMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.0625);
     });
   });
 
@@ -1548,17 +1612,32 @@ describe("neuron-utils", () => {
       },
     };
 
-    it("should return topics without ManageNeuron", () => {
+    it("should not return deprecated topics", () => {
       expect(topicsToFollow(neuronWithoutManageNeuron)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        TOPICS_TO_FOLLOW_NNS.filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
       );
       expect(topicsToFollow(neuronWithoutFollowees)).toEqual(
-        enumValues(Topic).filter((topic) => topic !== Topic.ManageNeuron)
+        TOPICS_TO_FOLLOW_NNS.filter(
+          (topic) =>
+            topic !== Topic.ManageNeuron && !DEPRECATED_TOPICS.includes(topic)
+        )
+      );
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        TOPICS_TO_FOLLOW_NNS.filter(
+          (topic) => !DEPRECATED_TOPICS.includes(topic)
+        )
       );
     });
 
     it("should return topics with ManageNeuron if neuron follows some neuron on the ManageNeuron topic", () => {
-      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(enumValues(Topic));
+      expect(topicsToFollow(neuronWithManageNeuron)).toEqual(
+        TOPICS_TO_FOLLOW_NNS.filter(
+          (topic) => !DEPRECATED_TOPICS.includes(topic)
+        )
+      );
     });
   });
 
@@ -1856,23 +1935,17 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("routePathNeuronId", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-    it("should get neuronId from valid path", async () => {
-      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
-      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
+  describe("neuronAge", () => {
+    it("should return ageSeconds property", () => {
+      expect(neuronAge(mockNeuron)).toEqual(mockNeuron.ageSeconds);
     });
 
-    it("should not get neuronId from invalid path", async () => {
-      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
-      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
-      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
+    it("should return max age value", () => {
+      const neuron = {
+        ...mockNeuron,
+        ageSeconds: mockNeuron.ageSeconds + BigInt(SECONDS_IN_FOUR_YEARS),
+      };
+      expect(neuronAge(neuron)).toEqual(BigInt(SECONDS_IN_FOUR_YEARS));
     });
   });
 });

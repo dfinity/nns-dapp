@@ -2,7 +2,7 @@
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import Value from "$lib/components/ui/Value.svelte";
+  import { Value } from "@dfinity/gix-components";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import Proposer from "./Proposer.svelte";
 

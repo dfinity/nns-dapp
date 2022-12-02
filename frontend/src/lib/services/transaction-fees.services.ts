@@ -1,13 +1,14 @@
 import { transactionFee as nnsTransactionFee } from "$lib/api/ledger.api";
 import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
+import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Principal } from "@dfinity/principal/lib/cjs";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadMainTransactionFee = async () => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     const fee = await nnsTransactionFee({ identity });
     transactionsFeesStore.setMain(fee);
   } catch (error: unknown) {
@@ -28,17 +29,16 @@ export const loadSnsTransactionFee = async (rootCanisterId: Principal) => {
     onLoad: async ({ response: fee, certified }) => {
       transactionsFeesStore.setFee({ certified, rootCanisterId, fee });
     },
-    onError: ({ error, certified }) => {
+    onError: ({ error: err, certified }) => {
       if (certified !== true) {
         return;
       }
 
       // Explicitly handle only UPDATE errors
-      // TODO: Manage errors gracefully https://dfinity.atlassian.net/browse/GIX-1026
-      console.error(
-        `Error loading sns transaction fee for ${rootCanisterId.toText()}`
-      );
-      console.error(error);
+      toastsError({
+        labelKey: "error.transaction_fee_not_found",
+        err,
+      });
     },
   });
 };

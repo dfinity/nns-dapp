@@ -1,13 +1,13 @@
 <script lang="ts">
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import Copy from "./Copy.svelte";
-
+  import { Copy } from "@dfinity/gix-components";
   import Tooltip from "./Tooltip.svelte";
 
-  export let tagName: "h3" | "p" = "h3";
+  export let tagName: "h3" | "p" | "span" | "h5" = "h3";
   export let testId: string | undefined = undefined;
   export let id: string;
   export let text: string;
+  export let showCopy = false;
 
   let shortenText: string;
   $: shortenText = shortenWithMiddleEllipsis(text);
@@ -15,17 +15,18 @@
 
 <span>
   <Tooltip {id} {text}>
-    <svelte:element this={tagName} data-tid={testId}
-      >{shortenText}</svelte:element
+    <svelte:element this={tagName} data-tid={testId}>
+      {shortenText}</svelte:element
     >
   </Tooltip>
-  <Copy value={text} />
+  {#if showCopy}
+    <Copy value={text} />
+  {/if}
 </span>
 
 <style lang="scss">
   span {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
+    display: inline-flex;
+    gap: var(--padding-0_5x);
   }
 </style>

@@ -1,6 +1,11 @@
-import { derived, writable, type Readable } from "svelte/store";
+import { translate } from "$lib/utils/i18n.utils";
+import {
+  startBusy as startBusyStore,
+  stopBusy as stopBusyStore,
+} from "@dfinity/gix-components";
 
 export type BusyStateInitiatorType =
+  | "logout"
   | "stake-neuron"
   | "update-delay"
   | "attach-canister"
@@ -28,6 +33,10 @@ export type BusyStateInitiatorType =
   | "remove-sns-hotkey-neuron"
   | "disburse-neuron"
   | "top-up-neuron"
+  | "stake-sns-neuron"
+  | "dissolve-sns-action"
+  | "add-sns-followee"
+  | "remove-sns-followee"
   | "disburse-sns-neuron";
 
 export interface BusyState {
@@ -35,50 +44,11 @@ export interface BusyState {
   labelKey?: string;
 }
 
-/**
- * Store that reflects the app busy state.
- * Is used to show the busy-screen that locks the UI.
- */
-const initBusyStore = () => {
-  const { subscribe, update } = writable<Array<BusyState>>([]);
+export const startBusy = ({ initiator, labelKey }: BusyState) =>
+  startBusyStore({
+    initiator,
+    ...(labelKey !== undefined && { text: translate({ labelKey }) }),
+  });
 
-  return {
-    subscribe,
-
-    /**
-     * Show the busy-screen if not visible
-     */
-    startBusy({ initiator: newInitiator, labelKey }: BusyState) {
-      update((state) => [
-        ...state.filter(({ initiator }) => newInitiator !== initiator),
-        { initiator: newInitiator, labelKey },
-      ]);
-    },
-
-    /**
-     * Hide the busy-screen if no other initiators are done
-     */
-    stopBusy(initiatorToRemove: BusyStateInitiatorType) {
-      update((state) =>
-        state.filter(({ initiator }) => initiator !== initiatorToRemove)
-      );
-    },
-  };
-};
-
-export const busyStore = initBusyStore();
-
-export const { startBusy, stopBusy } = busyStore;
-
-export const busy: Readable<boolean> = derived(
-  busyStore,
-  ($busyStore) => $busyStore.length > 0
-);
-
-// Returns the newest message that was added to the store
-export const busyMessageKey: Readable<string | undefined> = derived(
-  busyStore,
-  ($busyStore) =>
-    $busyStore.reverse().find(({ labelKey }) => labelKey !== undefined)
-      ?.labelKey
-);
+export const stopBusy = (initiatorToRemove: BusyStateInitiatorType) =>
+  stopBusyStore(initiatorToRemove);

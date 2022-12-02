@@ -1,18 +1,29 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
   import { hasEnoughMaturityToStake } from "$lib/utils/neuron.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
-  let isOpen = false;
-  const showModal = () => (isOpen = true);
-  const closeModal = () => (isOpen = false);
-
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToStake(neuron);
+
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+
+  const showModal = () =>
+    openNnsNeuronModal({
+      type: "stake-maturity",
+      data: { neuron: $store.neuron },
+    });
 </script>
 
 {#if enoughMaturity}
@@ -32,8 +43,4 @@
       >{$i18n.neuron_detail.stake_maturity}</button
     >
   </Tooltip>
-{/if}
-
-{#if isOpen}
-  <StakeMaturityModal on:nnsClose={closeModal} {neuron} />
 {/if}

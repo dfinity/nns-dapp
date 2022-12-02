@@ -8,7 +8,7 @@
   import { addFollowee } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
-  import { busy, startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/knownNeurons.store";
   import {
@@ -16,7 +16,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { Modal } from "@dfinity/gix-components";
+  import { busy, Modal } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -93,13 +93,11 @@
     <Input
       inputType="text"
       autocomplete="off"
-      placeholderLabelKey="new_followee.address_placeholder"
+      placeholderLabelKey="new_followee.placeholder"
       name="new-followee-address"
       bind:value={followeeAddress}
     >
-      <svelte:fragment slot="label"
-        >{$i18n.new_followee.address_placeholder}</svelte:fragment
-      >
+      <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </Input>
     <button
       class="primary"

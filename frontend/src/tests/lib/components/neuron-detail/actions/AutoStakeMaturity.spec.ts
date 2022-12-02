@@ -6,6 +6,7 @@ import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMa
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -22,9 +23,10 @@ describe("AutoStakeMaturity", () => {
     const neuron = {
       ...mockNeuron,
     };
-    const { queryByTestId } = render(AutoStakeMaturity, {
+    const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: AutoStakeMaturity,
       },
     });
 
@@ -40,9 +42,10 @@ describe("AutoStakeMaturity", () => {
   });
 
   const testCheckBox = (autoStakeMaturity: boolean | undefined) => {
-    const { queryByTestId } = render(AutoStakeMaturity, {
+    const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronProps(autoStakeMaturity),
+        testComponent: AutoStakeMaturity,
       },
     });
 
@@ -69,9 +72,10 @@ describe("AutoStakeMaturity", () => {
   }: {
     neuronAutoStakeMaturity: boolean | undefined;
   }) => {
-    const { container, queryByTestId } = render(AutoStakeMaturity, {
+    const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronProps(neuronAutoStakeMaturity),
+        testComponent: AutoStakeMaturity,
       },
     });
 

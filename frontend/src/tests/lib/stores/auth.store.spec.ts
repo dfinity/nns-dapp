@@ -27,7 +27,9 @@ describe("auth-store", () => {
       onSuccess();
     };
 
-    await authStore.signIn();
+    await authStore.signIn(() => {
+      // do nothing on error here
+    });
   });
 
   it("should call auth-client logout on sign-out", async () => {

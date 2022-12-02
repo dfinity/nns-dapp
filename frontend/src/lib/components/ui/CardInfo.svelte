@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ColumnRow from "./ColumnRow.svelte";
+
   // Same data-tid as <Card /> for backwards compatibility with existing jest test
   export let testId = "card";
 
@@ -8,20 +10,16 @@
 
 <article data-tid={testId}>
   {#if showHeadline}
-    <div>
-      <slot name="start" />
-      <slot name="end" />
-    </div>
+    <ColumnRow>
+      <slot name="start" slot="start" />
+      <slot name="end" slot="end" />
+    </ColumnRow>
   {/if}
 
   <slot />
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/interaction";
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/display";
-
   article {
     text-decoration: none;
 
@@ -31,18 +29,5 @@
     outline: 2px solid transparent;
 
     box-shadow: none;
-  }
-
-  div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    @include media.min-width(small) {
-      @include display.space-between;
-      flex-direction: row;
-
-      margin: 0 0 var(--padding);
-    }
   }
 </style>

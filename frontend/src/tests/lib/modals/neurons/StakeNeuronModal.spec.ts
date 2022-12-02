@@ -36,6 +36,8 @@ const neuronStake = 2.2;
 const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
+  dissolveDelaySeconds: BigInt(0),
+  ageSeconds: BigInt(0),
   fullNeuron: {
     ...mockFullNeuron,
     cachedNeuronStake: neuronStakeE8s,
