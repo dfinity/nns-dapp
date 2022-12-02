@@ -9,13 +9,12 @@
 
 <!-- TODO: Open Voting history modal https://dfinity.atlassian.net/browse/GIX-1156 -->
 <TagsList id={followee.neuronIdHex}>
-  <h5 slot="title">
-    <Hash
-      text={followee.neuronIdHex}
-      id={followee.neuronIdHex}
-      tagName="span"
-    />
-  </h5>
+  <Hash
+    text={followee.neuronIdHex}
+    id={followee.neuronIdHex}
+    tagName="h5"
+    slot="title"
+  />
 
   {#each followee.nsFunctions as nsFunction (nsFunction.id)}
     <Tag tagName="li">{nsFunction.name}</Tag>

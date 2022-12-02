@@ -55,9 +55,3 @@
     <Tag tagName="li">{topicTitle(topic)}</Tag>
   {/each}
 </TagsList>
-
-<style lang="scss">
-  button {
-    font-size: var(--font-size-h5);
-  }
-</style>
