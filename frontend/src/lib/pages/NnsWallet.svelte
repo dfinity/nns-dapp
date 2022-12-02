@@ -17,7 +17,10 @@
     type WalletStore,
   } from "$lib/types/wallet.context";
   import { getAccountFromStore } from "$lib/utils/accounts.utils";
-  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
+  import {
+    debugSelectedAccountStore,
+    debugTransactions,
+  } from "$lib/stores/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -55,8 +58,8 @@
     neurons: [],
   });
 
-  // TODO: Add transactions to debug store https://dfinity.atlassian.net/browse/GIX-1043
   debugSelectedAccountStore(selectedAccountStore);
+  $: debugTransactions(transactions);
 
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,

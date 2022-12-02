@@ -2,6 +2,7 @@ import type {
   CanisterDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { SnsTransactions } from "$lib/stores/sns-transactions.store";
 import type { Account } from "$lib/types/account";
 import type {
   SnsSummary,
@@ -19,12 +20,20 @@ import {
   type NeuronInfo,
   type ProposalInfo,
 } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type {
+  SnsNeuron,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
+  SnsTransaction,
   SnsTransferableAmount,
 } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { digestText } from "./dev.utils";
+import {
+  getSnsNeuronIdAsHexString,
+  subaccountToHexString,
+} from "./sns-neuron.utils";
 import { mapNnsTransaction } from "./transactions.utils";
 import { isNullish, mapPromises, nonNullish } from "./utils";
 
@@ -205,6 +214,131 @@ export const anonymizeFullNeuron = async (
   };
 };
 
+export const anonymizeSnsNeuron = async (
+  snsNeuron: SnsNeuron | undefined | null
+): Promise<{ [key in keyof Required<SnsNeuron>]: unknown } | undefined> => {
+  if (isNullish(snsNeuron)) {
+    return undefined;
+  }
+  const {
+    staked_maturity_e8s_equivalent,
+    permissions,
+    maturity_e8s_equivalent,
+    cached_neuron_stake_e8s,
+    created_timestamp_seconds,
+    source_nns_neuron_id,
+    auto_stake_maturity,
+    aging_since_timestamp_seconds,
+    dissolve_state,
+    voting_power_percentage_multiplier,
+    followees,
+    neuron_fees_e8s,
+  } = snsNeuron;
+
+  return {
+    id: getSnsNeuronIdAsHexString(snsNeuron),
+    staked_maturity_e8s_equivalent,
+    permissions: await mapPromises(
+      permissions,
+      async ({ principal, permission_type }) => ({
+        principal: await anonymize(principal[0]),
+        permission_type,
+      })
+    ),
+    cached_neuron_stake_e8s,
+    maturity_e8s_equivalent,
+    created_timestamp_seconds,
+    source_nns_neuron_id: await cutAndAnonymize(source_nns_neuron_id[0]),
+    auto_stake_maturity,
+    aging_since_timestamp_seconds,
+    dissolve_state,
+    voting_power_percentage_multiplier,
+    followees: followees.map(([functionId, followees]) => [
+      functionId,
+      followees.followees.map(({ id }) => subaccountToHexString(id)),
+    ]),
+    neuron_fees_e8s,
+  };
+};
+
+type SnsAccountRaw = {
+  owner: Principal;
+  subaccount: [] | [Uint8Array];
+};
+const anonymizeSnsAccount = async (
+  account: SnsAccountRaw | undefined
+): Promise<{ [key in keyof SnsAccountRaw]: unknown } | undefined> => {
+  if (isNullish(account)) {
+    return undefined;
+  }
+  const { owner, subaccount } = account;
+  return {
+    owner: await anonymiseAvailability(owner),
+    subaccount: subaccount.map(subaccountToHexString),
+  };
+};
+
+// Type Union of Burn, Mint and Transfer. We don't have individual types for these yet so we use this.
+type Transfer = {
+  to?: SnsAccountRaw;
+  fee?: [] | [bigint];
+  from?: SnsAccountRaw;
+  memo: [] | [Uint8Array];
+  created_at_time: [] | [bigint];
+  amount: bigint;
+};
+type TransferOpt = [] | [Transfer];
+const anonymizeTransfer = async (
+  transfer: TransferOpt
+): Promise<{ [key in keyof Transfer]: unknown } | undefined> => {
+  const data = fromNullable(transfer);
+  if (isNullish(data)) {
+    return undefined;
+  }
+  return {
+    to: await anonymizeSnsAccount(data.to),
+    from: await anonymizeSnsAccount(data.from),
+    fee: data.fee,
+    memo: data.memo,
+    created_at_time: data.created_at_time,
+    amount: await anonymizeAmount(data.amount),
+  };
+};
+
+const anonymizeSnsTransaction = async (
+  tx: SnsTransaction
+): Promise<{ [key in keyof Required<SnsTransaction>]: unknown }> => {
+  return {
+    timestamp: tx.timestamp,
+    kind: tx.kind,
+    burn: await anonymizeTransfer(tx.burn as TransferOpt),
+    mint: await anonymizeTransfer(tx.mint as TransferOpt),
+    transfer: await anonymizeTransfer(tx.transfer as TransferOpt),
+  };
+};
+
+export const anonymizeTransactionStore = async (
+  store: SnsTransactions
+): Promise<
+  undefined | { [key in keyof Required<SnsTransactions>]: unknown }
+> => {
+  const anonymizedStore: SnsTypeStore<unknown> = {};
+  for (const [key, value] of Object.entries(store)) {
+    anonymizedStore[key] = {
+      completed: value.completed,
+      oldestTxId: value.oldestTxId,
+      transactions: await mapPromises(
+        value.transactions,
+        async ({ id, transaction }) => ({
+          id,
+          transaction: await anonymizeSnsTransaction(transaction),
+        })
+      ),
+    };
+  }
+  return anonymizedStore;
+};
+
 export const anonymizeKnownNeuron = async (
   neuron: KnownNeuron | undefined
 ): Promise<undefined | { [key in keyof Required<KnownNeuron>]: unknown }> => {
@@ -379,4 +513,18 @@ export const anonymizeSnsSwapCommitment = async (
       },
     };
   }
+};
+
+interface SnsTypeStore<T> {
+  [key: string]: T;
+}
+export const anonymizeSnsTypeStore = async <T>(
+  store: SnsTypeStore<T>,
+  transformFn: (s: T) => unknown
+) => {
+  const anonymizedStore: SnsTypeStore<unknown> = {};
+  for (const [key, value] of Object.entries(store)) {
+    anonymizedStore[key] = await transformFn(value);
+  }
+  return anonymizedStore;
 };
