@@ -4,9 +4,7 @@
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
-    type SnsNeuronModal,
   } from "$lib/types/sns-neuron-detail.context";
-  import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
@@ -15,18 +13,31 @@
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
   import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import type { NeuronState } from "@dfinity/nns";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import type {
+    SnsNeuronModal,
+    SnsNeuronModalType,
+  } from "$lib/types/sns-neuron-detail.modal";
+
+  // Modal events
+
+  let modal: SnsNeuronModal | undefined;
+  const close = () => (modal = undefined);
+
+  let type: SnsNeuronModalType | undefined;
+  $: type = modal?.type;
+
+  // Context data
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
   const { store, reload: reloadNeuron }: SelectedSnsNeuronContext = context;
 
-  let modal: SnsNeuronModal | undefined;
   let neuron: SnsNeuron | undefined | null;
-  $: ({ neuron, modal } = $store);
+  $: ({ neuron } = $store);
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = $store.selected?.rootCanisterId;
@@ -38,14 +49,14 @@
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
-  const close = () => store.update((data) => ({ ...data, modal: undefined }));
-
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
 </script>
 
+<svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
+
 {#if nonNullish(neuron)}
-  {#if modal === "increase-dissolve-delay" && rootCanisterId !== undefined}
+  {#if type === "increase-dissolve-delay" && rootCanisterId !== undefined}
     <IncreaseSnsDissolveDelayModal
       {rootCanisterId}
       {neuron}
@@ -55,7 +66,7 @@
     />
   {/if}
 
-  {#if modal === "disburse" && rootCanisterId !== undefined}
+  {#if type === "disburse" && rootCanisterId !== undefined}
     <DisburseSnsNeuronModal
       {rootCanisterId}
       {neuron}
@@ -64,7 +75,7 @@
     />
   {/if}
 
-  {#if modal === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}
+  {#if type === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}
     <DissolveSnsNeuronModal
       {neuronId}
       {neuronState}
@@ -73,11 +84,11 @@
     />
   {/if}
 
-  {#if modal === "follow" && nonNullish(rootCanisterId)}
+  {#if type === "follow" && nonNullish(rootCanisterId)}
     <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
   {/if}
 
-  {#if modal === "add-hotkey"}
+  {#if type === "add-hotkey"}
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 {/if}

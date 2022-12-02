@@ -1,12 +1,6 @@
 <script lang="ts">
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-    type NnsNeuronModal,
-  } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
@@ -20,79 +14,80 @@
   import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import type {
+    NnsNeuronModal,
+    NnsNeuronModalData,
+    NnsNeuronModalType,
+    NnsNeuronModalVotingHistory,
+  } from "$lib/types/nns-neuron-detail.modal";
+  import { nonNullish } from "$lib/utils/utils";
 
-  const context: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
-  );
-  const { store }: NnsNeuronContext = context;
+  let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
+  const close = () => (modal = undefined);
 
-  let modal: NnsNeuronModal | undefined;
-  let neuron: NeuronInfo | undefined;
-  let selectedFollowee: FolloweesNeuron | undefined;
-  $: ({ neuron, modal, selectedFollowee } = $store);
+  let type: NnsNeuronModalType | undefined;
+  $: type = modal?.type;
 
-  // We reset the selected followee here for convenience reason. See nns-neuron-detail.context.ts.
-  const close = () =>
-    store.update((data) => ({
-      ...data,
-      modal: undefined,
-      selectedFollowee: undefined,
-    }));
+  let neuron: NeuronInfo | undefined | null;
+  $: neuron = modal?.data?.neuron;
+
+  let followee: FolloweesNeuron | undefined;
+  $: followee = (modal as NnsNeuronModalVotingHistory | undefined)?.data
+    ?.followee;
 </script>
 
-{#if neuron !== undefined}
-  {#if modal === "increase-dissolve-delay"}
+<svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
+
+{#if nonNullish(neuron)}
+  {#if type === "increase-dissolve-delay"}
     <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
   {/if}
 
-  {#if modal === "split-neuron"}
+  {#if type === "split-neuron"}
     <SplitNeuronModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "increase-stake"}
+  {#if type === "increase-stake"}
     <IncreaseNeuronStakeModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "disburse"}
+  {#if type === "disburse"}
     <DisburseNnsNeuronModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "dissolve"}
+  {#if type === "dissolve"}
     <DissolveActionButtonModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "stake-maturity"}
+  {#if type === "stake-maturity"}
     <StakeMaturityModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "merge-maturity"}
+  {#if type === "merge-maturity"}
     <MergeMaturityModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "spawn"}
+  {#if type === "spawn"}
     <SpawnNeuronModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "auto-stake-maturity"}
+  {#if type === "auto-stake-maturity"}
     <AutoStakeMaturityModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "join-community-fund"}
+  {#if type === "join-community-fund"}
     <JoinCommunityFundModal on:nnsClose={close} {neuron} />
   {/if}
 
-  {#if modal === "follow"}
-    <FollowNeuronsModal on:nnsClose={close} {neuron} />
+  {#if type === "follow"}
+    <FollowNeuronsModal on:nnsClose={close} neuronId={neuron.neuronId} />
   {/if}
 
-  {#if modal === "add-hotkey"}
+  {#if type === "add-hotkey"}
     <AddHotkeyModal on:nnsClose={close} {neuron} />
   {/if}
+{/if}
 
-  {#if modal === "voting-history" && selectedFollowee !== undefined}
-    <VotingHistoryModal
-      neuronId={selectedFollowee.neuronId}
-      on:nnsClose={close}
-    />
-  {/if}
+{#if type === "voting-history" && followee !== undefined}
+  <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
 {/if}

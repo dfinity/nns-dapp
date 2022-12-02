@@ -8,7 +8,6 @@
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
-    type SnsNeuronModal,
   } from "$lib/types/sns-neuron-detail.context";
   import { writable } from "svelte/store";
   import { onMount, setContext } from "svelte";
@@ -24,23 +23,21 @@
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
+  import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
 
   export let neuronId: string | null | undefined;
 
   const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
     selected: undefined,
     neuron: undefined,
-    modal: undefined,
   });
-
-  const toggleModal = (modal: SnsNeuronModal | undefined) =>
-    selectedSnsNeuronStore.update((data) => ({ ...data, modal }));
 
   setContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY, {
     store: selectedSnsNeuronStore,
     reload: () => loadNeuron({ forceFetch: true }),
-    toggleModal,
   });
+
+  debugSelectedSnsNeuronStore(selectedSnsNeuronStore);
 
   // BEGIN: loading and navigation
 
@@ -88,7 +85,6 @@
           rootCanisterId: Principal.fromText($pageStore.universe),
         },
         neuron: null,
-        modal: undefined,
       });
 
       await loadNeuron();

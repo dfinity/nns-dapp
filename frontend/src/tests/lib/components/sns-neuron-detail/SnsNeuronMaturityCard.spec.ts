@@ -31,7 +31,6 @@ describe("SnsNeuronMaturityCard", () => {
               rootCanisterId: null,
             },
             neuron,
-            modal: undefined,
           }),
         } as SelectedSnsNeuronContext,
         Component: SnsNeuronMaturityCard,

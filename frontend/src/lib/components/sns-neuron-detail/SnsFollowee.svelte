@@ -10,10 +10,10 @@
 <!-- TODO: Open Voting history modal https://dfinity.atlassian.net/browse/GIX-1156 -->
 <TagsList id={followee.neuronIdHex}>
   <Hash
-    slot="title"
     text={followee.neuronIdHex}
     id={followee.neuronIdHex}
-    tagName="span"
+    tagName="h5"
+    slot="title"
   />
 
   {#each followee.nsFunctions as nsFunction (nsFunction.id)}

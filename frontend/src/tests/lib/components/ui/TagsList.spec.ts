@@ -2,13 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import TagsListTest from "./TagsListTest.svelte";
 
 describe("CardBlock", () => {
-  it("should render a button and a ul", () => {
+  it("should render a ul", () => {
     const { container } = render(TagsListTest);
-    expect(container.querySelector("button")).toBeInTheDocument();
     expect(container.querySelector("ul")).toBeInTheDocument();
   });
 
@@ -16,12 +15,5 @@ describe("CardBlock", () => {
     const { queryAllByTestId, queryByTestId } = render(TagsListTest);
     expect(queryByTestId("title")).toBeInTheDocument();
     expect(queryAllByTestId("item").length).toBe(2);
-  });
-
-  it("should trigger event on button click", (done) => {
-    const { component, queryByTestId } = render(TagsListTest);
-    component.$on("nnsTitleClick", () => done());
-    const button = queryByTestId("tag-list-title");
-    fireEvent.click(button);
   });
 });
