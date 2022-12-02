@@ -158,11 +158,11 @@ export const initDebugStore = () =>
       selectedProject: $selectedProjectStore,
       snsNeurons: $snsNeuronsStore,
       snsAccounts: $snsAccountsStore,
-      snsTransactionsStore: $snsTransactionsStore,
-      selectedSnsNeuronStore: $selectedSnsNeuronStore,
-      transactionsStore: $transactionsStore,
-      projectsStore: $projectsStore,
-      snsFunctionsStore: $snsFunctionsStore,
-      transactionsFeesStore: $transactionsFeesStore,
+      snsTransactions: $snsTransactionsStore,
+      selectedSnsNeuron: $selectedSnsNeuronStore,
+      transactions: $transactionsStore,
+      projects: $projectsStore,
+      snsFunctions: $snsFunctionsStore,
+      transactionsFees: $transactionsFeesStore,
     })
   );
