@@ -27,6 +27,7 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
+use std::str::FromStr;
 
 type Json = String;
 
@@ -73,6 +74,7 @@ struct InternetIdentityInit {
     pub assigned_user_number_range: Option<(UserNumber, UserNumber)>,
     pub archive_module_hash: Option<[u8; 32]>,
     pub canister_creation_cycles_cost: Option<u64>,
+    pub memory_migration_batch_size: Option<u64>,
 }
 
 fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
@@ -81,7 +83,8 @@ fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
     }
     // If canister id is II
     // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
-    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
+    let ii_small11 = CanisterId::from_str("qhbym-qaaaa-aaaaa-aaafq-cai").unwrap();
+    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) || canister_id == Some(ii_small11) {
         let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
         IDLType::OptT(Box::new(idl_type))
     } else {
