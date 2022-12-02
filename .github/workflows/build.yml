@@ -143,6 +143,8 @@ jobs:
             then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
             else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
             fi
+            : If the tag is for a proposal, make it public
+            [[ "$tag" != proposal-* ]] || gh release edit "$tag" --draft=false
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
