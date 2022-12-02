@@ -22,7 +22,10 @@
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import type { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectIdSelectedStore,
+  } from "$lib/derived/selected-project.derived";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

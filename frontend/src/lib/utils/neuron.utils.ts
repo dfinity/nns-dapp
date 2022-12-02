@@ -204,7 +204,12 @@ const bonusMultiplier = ({
   amount: bigint;
   multiplier: number;
   max: number;
-}): number => 1 + multiplier * (Math.min(Number(amount), max) / max);
+}): number =>
+  1 +
+  multiplier *
+    (Math.min(Number(amount), max) /
+      // to avoid NaN
+      (max === 0 ? 1 : max));
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
