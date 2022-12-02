@@ -3,7 +3,7 @@
   import { Copy } from "@dfinity/gix-components";
   import Tooltip from "./Tooltip.svelte";
 
-  export let tagName: "h3" | "p" | "span" = "h3";
+  export let tagName: "h3" | "p" | "span" | "h5" = "h3";
   export let testId: string | undefined = undefined;
   export let id: string;
   export let text: string;

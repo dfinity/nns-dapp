@@ -40,10 +40,16 @@
     });
 </script>
 
-<TagsList {id} on:nnsTitleClick={openVotingHistory}>
-  <svelte:fragment slot="title">
+<TagsList {id}>
+  <button
+    slot="title"
+    name="title"
+    {id}
+    class="text"
+    on:click={openVotingHistory}
+  >
     {name}
-  </svelte:fragment>
+  </button>
 
   {#each followee.topics as topic}
     <Tag tagName="li">{topicTitle(topic)}</Tag>
