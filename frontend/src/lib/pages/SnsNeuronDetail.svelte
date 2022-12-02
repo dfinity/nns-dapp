@@ -23,6 +23,7 @@
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
+  import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
 
   export let neuronId: string | null | undefined;
 
@@ -35,6 +36,8 @@
     store: selectedSnsNeuronStore,
     reload: () => loadNeuron({ forceFetch: true }),
   });
+
+  debugSelectedSnsNeuronStore(selectedSnsNeuronStore);
 
   // BEGIN: loading and navigation
 
