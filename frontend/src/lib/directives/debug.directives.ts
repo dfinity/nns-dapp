@@ -192,14 +192,14 @@ const anonymiseStoreState = async () => {
     snsNeurons: await anonymizeSnsTypeStore(
       snsNeurons,
       async ({ certified, neurons }) => ({
-        certified: certified,
+        certified,
         neurons: await mapPromises(neurons, anonymizeSnsNeuron),
       })
     ),
     snsAccounts: await anonymizeSnsTypeStore(
       snsAccounts,
       async ({ certified, accounts }) => ({
-        certified: certified,
+        certified,
         accounts: await mapPromises(accounts, anonymizeAccount),
       })
     ),
