@@ -49,6 +49,7 @@ describe("DisburseSnsNeuronModal", () => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {
+        rootCanisterId: mockPrincipal,
         neuron,
         reloadNeuron: reloadNeuron,
       },

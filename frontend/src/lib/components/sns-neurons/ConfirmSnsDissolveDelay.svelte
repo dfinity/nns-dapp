@@ -4,18 +4,25 @@
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
+    snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/nns";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import type { Principal } from "@dfinity/principal";
 
-  export let delayInSeconds: number;
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
+  export let delayInSeconds: number;
 
   const dispatcher = createEventDispatcher();
 
@@ -24,6 +31,18 @@
 
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
+
+  let snsParameters: NervousSystemParameters | undefined;
+  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
+
+  let votingPower: number | undefined;
+  $: if (neuron !== undefined && snsParameters !== undefined) {
+    votingPower = snsNeuronVotingPower({
+      newDissolveDelayInSeconds: BigInt(delayInSeconds),
+      neuron,
+      snsParameters,
+    });
+  }
 </script>
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
@@ -32,7 +51,7 @@
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <p class="value">{neuronId}</p>
+    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronId} />
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
@@ -50,7 +69,9 @@
   <div class="voting-power">
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
-      <!-- TODO: SNS Voting power -->
+      {#if votingPower !== undefined}
+        {formatVotingPower(votingPower)}
+      {/if}
     </p>
   </div>
   <div class="toolbar">
