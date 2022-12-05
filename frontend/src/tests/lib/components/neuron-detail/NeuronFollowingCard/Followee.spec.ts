@@ -14,9 +14,6 @@ describe("Followee", () => {
     neuronId: BigInt(111),
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
-  const props = {
-    followee,
-  };
 
   beforeEach(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
 
