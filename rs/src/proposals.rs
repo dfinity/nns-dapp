@@ -66,6 +66,7 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
     cache.insert(proposal_id, payload_json);
 }
 
+// Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
 // Types used to decode arg's payload of nns_function type 4 for II upgrades
 pub type UserNumber = u64;
 #[derive(CandidType, Serialize, Deserialize)]
@@ -81,7 +82,7 @@ fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
         return "[]".to_owned();
     }
     // If canister id is II
-    // use InternetIdentityInit type https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did#L141
+    // use InternetIdentityInit type
     let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
         let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
         IDLType::OptT(Box::new(idl_type))
