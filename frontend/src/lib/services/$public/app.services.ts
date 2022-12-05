@@ -1,4 +1,4 @@
-import { browser, prerendering } from "$app/environment";
+import { browser } from "$app/environment";
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { loadSnsSummaries } from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
@@ -53,7 +53,7 @@ const syncAuthStore = async () => {
  * - finally set an information for layout purpose about the fact that the auth has been initialized
  */
 export const initAppAuth = async () => {
-  if (prerendering || !browser) {
+  if (!browser) {
     return;
   }
 
