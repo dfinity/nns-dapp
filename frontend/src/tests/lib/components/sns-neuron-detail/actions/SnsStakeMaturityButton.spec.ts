@@ -3,12 +3,12 @@
  */
 
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
-import {SnsNeuronPermissionType} from "@dfinity/sns";
 
 describe("SnsStakeMaturityButton", () => {
   afterEach(() => {
@@ -20,7 +20,9 @@ describe("SnsStakeMaturityButton", () => {
       props: {
         neuron: {
           ...mockSnsNeuron,
-          permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY]
+          permissions: [
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+          ],
         },
         rootCanisterId: mockPrincipal,
         testComponent: SnsStakeMaturityButton,

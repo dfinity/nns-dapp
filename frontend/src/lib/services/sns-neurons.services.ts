@@ -6,6 +6,7 @@ import {
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  stakeMaturity as stakeMaturityApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
@@ -13,7 +14,6 @@ import {
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
-  stakeMaturity as stakeMaturityApi,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";

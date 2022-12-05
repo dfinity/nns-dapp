@@ -296,3 +296,30 @@ export const setFollowees = async ({
 
   logWithTimestamp(`Setting sns neuron followee call complete.`);
 };
+
+export const stakeMaturity = async ({
+  percentageToStake,
+  rootCanisterId,
+  identity,
+  neuronId,
+}: {
+  percentageToStake: number;
+  rootCanisterId: Principal;
+  identity: Identity;
+  neuronId: SnsNeuronId;
+}): Promise<void> => {
+  logWithTimestamp(`Stake maturity: call...`);
+
+  const { stakeMaturity: stakeMaturityApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await stakeMaturityApi({
+    neuronId,
+    percentageToStake,
+  });
+
+  logWithTimestamp(`Stake maturity: complete`);
+};
