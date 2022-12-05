@@ -7,7 +7,7 @@ import { skipUnlessBrowserIs } from "../common/test";
 import { NAV_PROPOSALS_SELECTOR } from "../components/nav";
 import { ProposalsTab } from "../components/proposals-tab";
 
-describe("Makes a proposal and verifies that it is shown", () => {
+describe.skip("Makes a proposal and verifies that it is shown", () => {
   let proposalId: number | undefined = undefined;
 
   before(function () {

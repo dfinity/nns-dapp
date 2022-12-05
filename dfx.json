@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.2",
+  "dfx": "0.12.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -31,7 +31,12 @@
       "type": "custom",
       "wasm": "internet_identity.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-25/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-12-01/internet_identity_dev.wasm\" -o internet_identity.wasm",
+      "remote": {
+        "id": {
+          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
+        }
+      }
     },
     "nns-sns-wasm": {
       "build": [
