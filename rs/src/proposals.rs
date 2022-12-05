@@ -73,7 +73,7 @@ struct InternetIdentityInit {
     pub assigned_user_number_range: Option<(UserNumber, UserNumber)>,
     pub archive_module_hash: Option<[u8; 32]>,
     pub canister_creation_cycles_cost: Option<u64>,
-    pub memory_migration_batch_size: Option<u64>,
+    pub memory_migration_batch_size: Option<u32>,
 }
 
 fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
