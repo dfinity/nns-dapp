@@ -638,7 +638,7 @@ describe("sns-neuron utils", () => {
       });
 
       expect(
-          hasPermissionToVote({
+        hasPermissionToVote({
           neuron,
           identity: mockIdentity,
         })
@@ -677,7 +677,7 @@ describe("sns-neuron utils", () => {
       });
 
       expect(
-          hasPermissionToStakeMaturity({
+        hasPermissionToStakeMaturity({
           neuron,
           identity: mockIdentity,
         })

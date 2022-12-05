@@ -11,7 +11,8 @@ import {
   increaseDissolveDelay,
   refreshNeuron,
   removeNeuronPermissions,
-  setFollowees, stakeMaturity,
+  setFollowees,
+  stakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -105,7 +106,7 @@ describe("sns-api", () => {
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
         setTopicFollowees: setTopicFolloweesSpy,
-        stakeMaturity: stakeMaturitySpy
+        stakeMaturity: stakeMaturitySpy,
       })
     );
   });

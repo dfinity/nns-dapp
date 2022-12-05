@@ -8,10 +8,10 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
+  stakeMaturity,
   startDissolving,
   stopDissolving,
   updateDelay,
-    stakeMaturity
 } from "$lib/services/sns-neurons.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -786,13 +786,13 @@ describe("sns-neurons-services", () => {
       const percentageToStake = 60;
 
       const spyOnStakeMaturity = jest
-          .spyOn(governanceApi, "stakeMaturity")
-          .mockImplementation(() => Promise.resolve());
+        .spyOn(governanceApi, "stakeMaturity")
+        .mockImplementation(() => Promise.resolve());
 
       const { success } = await stakeMaturity({
         rootCanisterId,
         neuronId,
-        percentageToStake
+        percentageToStake,
       });
 
       expect(success).toBeTruthy();
