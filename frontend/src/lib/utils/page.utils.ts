@@ -21,6 +21,6 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
 };
 
 export const referrerPathForNav = ({ from }: Navigation): AppPath | undefined =>
-  from?.routeId !== null && from?.routeId !== undefined
-    ? pathForRouteId(from.routeId)
+  from?.route.id !== null && from?.route.id !== undefined
+    ? pathForRouteId(from.route.id)
     : undefined;
