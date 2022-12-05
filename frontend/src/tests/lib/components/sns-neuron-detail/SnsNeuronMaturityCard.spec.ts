@@ -9,7 +9,7 @@ import {
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
 import {
-  formattedSnsTotalMaturity,
+  formattedTotalMaturity,
   getSnsNeuronIdAsHexString,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -47,7 +47,7 @@ describe("SnsNeuronMaturityCard", () => {
     const { queryByText } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
 
-    const formatted = formattedSnsTotalMaturity({ ...mockSnsNeuron });
+    const formatted = formattedTotalMaturity({ ...mockSnsNeuron });
 
     expect(queryByText(formatted)).toBeInTheDocument();
   });

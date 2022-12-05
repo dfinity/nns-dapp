@@ -3,7 +3,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
-    formattedSnsTotalMaturity,
+    formattedTotalMaturity,
     formattedStakedMaturity,
     hasEnoughMaturityToStake,
   } from "$lib/utils/sns-neuron.utils";
@@ -26,7 +26,7 @@
 <CardInfo>
   <KeyValuePair testId="maturity">
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
-    <h3 slot="value">{formattedSnsTotalMaturity(neuron)}</h3>
+    <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePair>
 
   {#if hasEnoughMaturityToStake(neuron)}
