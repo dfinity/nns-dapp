@@ -14,7 +14,6 @@ import {
   snsNeuronVotingPower,
 } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -39,8 +38,6 @@ describe("ConfirmSnsDissolveDelay", () => {
   // freeze time
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(Date.now());
-
-    page.mock({ data: { universe: mockPrincipal.toText() } });
 
     snsParametersStore.setParameters({
       certified: true,
