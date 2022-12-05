@@ -268,7 +268,7 @@ export const formattedSnsTotalMaturity = (
  * Is the staked maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
-export const hasStakedMaturity = (
+export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
 ): boolean =>
     (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)) > BigInt(0);

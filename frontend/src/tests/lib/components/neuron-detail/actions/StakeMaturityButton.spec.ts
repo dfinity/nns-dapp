@@ -5,53 +5,39 @@
 import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
-import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("StakeMaturityButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders stake maturity message", () => {
-    const { getByText } = render(NeuronContextActionsTest, {
+  it("renders stake maturity cta", () => {
+    const { getByText } = render(StakeMaturityButton, {
       props: {
-        neuron: mockNeuron,
-        testComponent: StakeMaturityButton,
+        enoughMaturity: true
       },
     });
 
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("should open stake maturity modal", async () => {
-    const { getByText, getByTestId } = render(NeuronContextActionsTest, {
+  it("should be enabled", async () => {
+    const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        neuron: mockNeuron,
-        testComponent: StakeMaturityButton,
+        enoughMaturity: true
       },
     });
 
-    fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
-
+    const button = getByTestId("stake-maturity-button");
     await waitFor(() =>
-      expect(
-        getByText(en.neuron_detail.stake_maturity_modal_title)
-      ).toBeInTheDocument()
+        expect(button.hasAttribute("disabled")).toBeFalsy()
     );
   });
 
-  it("should be disabled if no maturity to stake", async () => {
-    const { getByTestId } = render(NeuronContextActionsTest, {
+  it("should be disabled", async () => {
+    const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        neuron: {
-          ...mockNeuron,
-          fullNeuron: {
-            ...mockNeuron.fullNeuron,
-            maturityE8sEquivalent: BigInt(0),
-          },
-        },
-        testComponent: StakeMaturityButton,
+        enoughMaturity: false
       },
     });
 

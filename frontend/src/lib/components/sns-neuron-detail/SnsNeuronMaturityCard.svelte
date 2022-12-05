@@ -5,7 +5,7 @@
   import {
     formattedSnsTotalMaturity,
     formattedStakedMaturity,
-    hasStakedMaturity,
+    hasEnoughMaturityToStake,
   } from "$lib/utils/sns-neuron.utils";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -14,6 +14,7 @@
   import { getContext } from "svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -28,7 +29,7 @@
     <h3 slot="value">{formattedSnsTotalMaturity(neuron)}</h3>
   </KeyValuePair>
 
-  {#if hasStakedMaturity(neuron)}
+  {#if hasEnoughMaturityToStake(neuron)}
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
@@ -37,16 +38,16 @@
       >
     </KeyValuePair>
   {/if}
+
+  <div class="actions">
+    <SnsStakeMaturityButton />
+  </div>
 </CardInfo>
 
 <Separator />
 
 <style lang="scss">
-  h3 {
-    line-height: var(--line-height-standard);
-  }
+  @use "../../themes/mixins/neuron";
 
-  .staked-maturity {
-    margin: var(--padding-0_5x) 0 0;
-  }
+  @include neuron.maturity-card-info;
 </style>

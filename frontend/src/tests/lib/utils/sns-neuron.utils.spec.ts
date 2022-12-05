@@ -24,7 +24,7 @@ import {
   needsRefresh,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
-  type SnsFolloweesByNeuron, hasStakedMaturity, formattedStakedMaturity,
+  type SnsFolloweesByNeuron, hasEnoughMaturityToStake, formattedStakedMaturity,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -822,13 +822,13 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("hasStakedMaturity", () => {
+  describe("hasEnoughMaturityToStake", () => {
     it("should return true if staked maturity", () => {
       const neuron = {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
       };
-      expect(hasStakedMaturity(neuron)).toBeTruthy()
+      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy()
     });
 
     it("should return false if no staked maturity", () => {
@@ -836,12 +836,12 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [] as [] | [bigint],
       };
-      expect(hasStakedMaturity(neuron)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(neuron)).toBeFalsy();
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasStakedMaturity(null)).toBeFalsy();
-      expect(hasStakedMaturity(undefined)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(null)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(undefined)).toBeFalsy();
     });
   });
 
