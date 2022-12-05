@@ -8,6 +8,9 @@ const initPageStoreMock = () => {
       universe: OWN_CANISTER_ID_TEXT,
       path: undefined,
     },
+    route: {
+      id: undefined,
+    },
   });
 
   return {
@@ -23,7 +26,7 @@ const initPageStoreMock = () => {
     }) =>
       set({
         data,
-        routeId: `(app)${routeId}`,
+        route: { id: `(app)${routeId}` },
       }),
   };
 };
