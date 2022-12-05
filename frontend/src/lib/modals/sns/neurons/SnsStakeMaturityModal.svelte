@@ -2,7 +2,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
   import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
-  import { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@dfinity/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";

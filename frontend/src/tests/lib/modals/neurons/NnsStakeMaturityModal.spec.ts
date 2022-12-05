@@ -9,6 +9,7 @@ import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import { selectPercentage } from "../../../utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -47,22 +48,6 @@ describe("NnsStakeMaturityModal", () => {
 
     expect(queryByText(formattedMaturity(neuron))).toBeInTheDocument();
   });
-
-  const selectPercentage = async (
-    renderResult: RenderResult<SvelteComponent>
-  ) => {
-    const { queryByTestId } = renderResult;
-    const rangeElement = queryByTestId("input-range");
-    expect(rangeElement).toBeInTheDocument();
-    rangeElement &&
-      (await fireEvent.input(rangeElement, { target: { value: 50 } }));
-
-    const selectMaturityButton = queryByTestId(
-      "select-maturity-percentage-button"
-    );
-    expect(selectMaturityButton).toBeInTheDocument();
-    selectMaturityButton && (await fireEvent.click(selectMaturityButton));
-  };
 
   it("should call stakeMaturity service on confirm click", async () => {
     const renderResult: RenderResult<SvelteComponent> =
