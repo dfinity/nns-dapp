@@ -267,6 +267,16 @@ export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
 
 /**
+ * Has the neuron the auto stake maturity feature turned on?
+ * @param {SnsNeuron} neuron The neuron which potential has the feature on
+ * @returns {boolean}
+ */
+export const hasAutoStakeMaturityOn = (
+  neuron: SnsNeuron | null | undefined
+): boolean =>
+  (fromNullable(neuron?.auto_stake_maturity ?? []) ?? false) === true;
+
+/**
  * Format the maturity in a value (token "currency") way.
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` that will be formatted
  */

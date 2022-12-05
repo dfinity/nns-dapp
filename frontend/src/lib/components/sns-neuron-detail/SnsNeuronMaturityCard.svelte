@@ -6,6 +6,7 @@
     formattedTotalMaturity,
     formattedStakedMaturity,
     hasEnoughMaturityToStake,
+    hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -15,12 +16,23 @@
   import { KeyValuePair } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
+  import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
+  import { isNullish } from "$lib/utils/utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
+
+  let allowedToStakeMaturity: boolean;
+  $: allowedToStakeMaturity = isNullish(neuron)
+    ? false
+    : hasPermissionToStakeMaturity({
+        neuron,
+        identity: $authStore.identity,
+      });
 </script>
 
 <CardInfo>
@@ -39,9 +51,13 @@
     </KeyValuePair>
   {/if}
 
-  <div class="actions">
-    <SnsStakeMaturityButton />
-  </div>
+  {#if allowedToStakeMaturity}
+    <div class="actions" data-tid="stake-maturity-actions">
+      <SnsStakeMaturityButton />
+
+      <SnsAutoStakeMaturity />
+    </div>
+  {/if}
 </CardInfo>
 
 <Separator />

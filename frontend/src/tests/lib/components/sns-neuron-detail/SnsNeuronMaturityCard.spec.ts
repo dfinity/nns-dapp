@@ -13,6 +13,7 @@ import {
   getSnsNeuronIdAsHexString,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
@@ -65,5 +66,25 @@ describe("SnsNeuronMaturityCard", () => {
     const { getByTestId } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
 
     expect(getByTestId("staked-maturity")).not.toBeNull();
+  });
+
+  it("should hide stake maturity actions if no permission to stake the maturity", () => {
+    const { getByTestId } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
+
+    expect(() => getByTestId("stake-maturity-actions")).toThrow();
+  });
+
+  it("should display stake maturity actions if permission to stake the maturity is set", () => {
+    const neuron = {
+      ...mockSnsNeuron,
+      permissions: [
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+      ],
+    };
+    const { getByTestId } = renderSnsNeuronMaturityCard(
+      neuron as unknown as SnsNeuron
+    );
+
+    expect(() => getByTestId("stake-maturity-actions")).toThrow();
   });
 });

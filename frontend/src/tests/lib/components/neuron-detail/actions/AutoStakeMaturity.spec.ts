@@ -6,11 +6,10 @@ import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMa
 import { render } from "@testing-library/svelte";
 
 describe("AutoStakeMaturity", () => {
-
   it("renders checkbox", () => {
     const { queryByTestId } = render(AutoStakeMaturity, {
       props: {
-        hasAutoStakeOn: true
+        hasAutoStakeOn: true,
       },
     });
 
@@ -20,7 +19,7 @@ describe("AutoStakeMaturity", () => {
   const testCheckBox = (hasAutoStakeOn: boolean | undefined) => {
     const { queryByTestId } = render(AutoStakeMaturity, {
       props: {
-        hasAutoStakeOn
+        hasAutoStakeOn,
       },
     });
 

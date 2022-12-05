@@ -3,7 +3,6 @@
  */
 
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
@@ -20,9 +19,6 @@ describe("SnsStakeMaturityButton", () => {
       props: {
         neuron: {
           ...mockSnsNeuron,
-          permissions: [
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
-          ],
         },
         rootCanisterId: mockPrincipal,
         testComponent: SnsStakeMaturityButton,
@@ -56,19 +52,5 @@ describe("SnsStakeMaturityButton", () => {
     const btn = getByTestId("stake-maturity-button") as HTMLButtonElement;
 
     expect(btn.hasAttribute("disabled")).toBeTruthy();
-  });
-
-  it("should be hidden if no permission to stake the maturity", async () => {
-    const { getByTestId } = render(SnsNeuronContextTest, {
-      props: {
-        props: {
-          neuron: mockSnsNeuron,
-          rootCanisterId: mockPrincipal,
-          testComponent: SnsStakeMaturityButton,
-        },
-      },
-    });
-
-    expect(() => getByTestId("stake-maturity-button")).toThrow();
   });
 });
