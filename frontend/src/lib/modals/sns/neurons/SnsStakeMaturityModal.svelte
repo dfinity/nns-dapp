@@ -9,9 +9,11 @@
   import { stakeMaturity } from "$lib/services/sns-neurons.services";
   import { Principal } from "@dfinity/principal";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import { assertNonNullish } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
+  export let reloadNeuron: () => Promise<void>;
 
   let maturity: string;
   $: maturity = formattedMaturity(neuron);
@@ -26,11 +28,15 @@
 
     const rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
 
+    assertNonNullish(rootCanisterId);
+
     const { success } = await stakeMaturity({
       neuronId,
       percentageToStake,
       rootCanisterId,
     });
+
+    await reloadNeuron();
 
     if (success) {
       toastsSuccess({

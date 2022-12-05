@@ -88,6 +88,11 @@
   {/if}
 
   {#if type === "stake-maturity" && nonNullish(neuronId)}
-    <SnsStakeMaturityModal on:nnsClose={close} {neuronId} {neuron} />
+    <SnsStakeMaturityModal
+      {reloadNeuron}
+      on:nnsClose={close}
+      {neuronId}
+      {neuron}
+    />
   {/if}
 {/if}
