@@ -5,6 +5,9 @@
   export let enoughMaturity: boolean;
 </script>
 
+<button class="primary" on:click data-tid="stake-maturity-button"
+  >{$i18n.neuron_detail.stake_maturity}</button
+>
 {#if enoughMaturity}
   <button class="primary" on:click data-tid="stake-maturity-button"
     >{$i18n.neuron_detail.stake_maturity}</button

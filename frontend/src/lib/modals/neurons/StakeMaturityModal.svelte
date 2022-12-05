@@ -31,7 +31,6 @@
   let percentageToStake = 0;
 
   const dispatcher = createEventDispatcher();
-  const close = () => dispatcher("nnsClose");
   const stakeNeuronMaturity = () =>
     dispatcher("nnsStakeMaturity", { percentageToStake });
 

@@ -87,7 +87,7 @@
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if type === "stake-maturity"}
-    <SnsStakeMaturityModal on:nnsClose={close} />
+  {#if type === "stake-maturity" && nonNullish(neuronId)}
+    <SnsStakeMaturityModal on:nnsClose={close} {neuronId} {neuron} />
   {/if}
 {/if}

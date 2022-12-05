@@ -2,34 +2,39 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
   import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
+  import { SnsNeuronId } from "@dfinity/sns";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { createEventDispatcher } from "svelte";
+  import { stakeMaturity } from "$lib/services/sns-neurons.services";
 
   export let neuron: SnsNeuron;
+  export let neuronId: SnsNeuronId;
 
   let maturity: string;
   $: maturity = formattedMaturity(neuron);
 
+  const dispatcher = createEventDispatcher();
+  const close = () => dispatcher("nnsClose");
+
   const stakeNeuronMaturity = async ({
     detail: { percentageToStake },
   }: CustomEvent<{ percentageToStake: number }>) => {
-    /**
-        const { neuronId } = neuron;
+    startBusy({ initiator: "stake-maturity" });
 
-        startBusyNeuron({ initiator: "stake-maturity", neuronId });
+    const { success } = await stakeMaturity({
+      neuronId,
+      percentageToStake,
+    });
 
-        const { success } = await stakeMaturity({
-            neuronId,
-            percentageToStake,
-        });
+    if (success) {
+      toastsSuccess({
+        labelKey: "neuron_detail.stake_maturity_success",
+      });
+      close();
+    }
 
-        if (success) {
-            toastsSuccess({
-                labelKey: "neuron_detail.stake_maturity_success",
-            });
-            close();
-        }
-
-        stopBusy("stake-maturity");
-         */
+    stopBusy("stake-maturity");
   };
 </script>
 

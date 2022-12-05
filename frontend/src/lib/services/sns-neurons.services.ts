@@ -631,3 +631,13 @@ export const removeFollowee = async ({
     return { success: false };
   }
 };
+
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+}: {
+  neuronId: SnsNeuronId;
+  percentageToStake: number;
+}): Promise<{ success: boolean }> => {
+  return { success: true };
+};
