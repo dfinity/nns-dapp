@@ -21,6 +21,7 @@
     SnsNeuronModal,
     SnsNeuronModalType,
   } from "$lib/types/sns-neuron-detail.modal";
+  import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
 
   // Modal events
 
@@ -84,5 +85,9 @@
 
   {#if type === "add-hotkey"}
     <AddSnsHotkeyModal on:nnsClose={close} />
+  {/if}
+
+  {#if type === "stake-maturity"}
+    <SnsStakeMaturityModal on:nnsClose={close} />
   {/if}
 {/if}

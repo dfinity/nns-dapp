@@ -6,7 +6,7 @@
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
   import DissolveActionButtonModal from "$lib/modals/neurons/DissolveActionButtonModal.svelte";
   import AutoStakeMaturityModal from "$lib/modals/neurons/AutoStakeMaturityModal.svelte";
-  import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
+  import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
   import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
@@ -60,7 +60,7 @@
   {/if}
 
   {#if type === "stake-maturity"}
-    <StakeMaturityModal on:nnsClose={close} {neuron} />
+    <NnsStakeMaturityModal on:nnsClose={close} {neuron} />
   {/if}
 
   {#if type === "merge-maturity"}
