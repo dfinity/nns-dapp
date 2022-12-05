@@ -331,11 +331,6 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  # echo Setting the cycles exchange rate...
-  # ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK" --jfdi
-  # TODO: Enable this by fixing ./scripts/propose
-  echo Skipping setting the cycles exchange rate...
-
   # Allow the cmc canister to create canisters anywhere.
   # Note: The proposal is accepted and executed immediately because there are no neurons apart from the test user.
   # Note: Local dfx has no subnets.

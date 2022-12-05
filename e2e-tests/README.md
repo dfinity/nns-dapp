@@ -78,12 +78,6 @@ First e2e is also used to populate the nns dapp:
 ./deploy.sh --populate local
 ```
 
-**PENDING: Setting cycles exchange is not working yet. Therefore, the related tests are skipped.**
-
-This command sets the cycles exchange rate and the list of subnets CMC is authorized to create canisters in.
-
-Both through proposals which are needed for the e2e tests.
-
 Then it executes the e2e test in "user-N01-neuron-created.e2e.ts".
 
 Therefore, if this works your setup is ready.
@@ -96,6 +90,8 @@ All the e2e tests can be run with:
 # In this folder
 npm run test
 ```
+
+**PENDING: Creating proposals is not working yet. Therefore, the related tests are skipped.**
 
 You can specify which test you want to run:
 
