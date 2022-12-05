@@ -13,6 +13,7 @@ import {
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
+  stakeMaturity as stakeMaturityApi,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
@@ -557,7 +558,7 @@ export const addFollowee = async ({
     });
 
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsError({
       labelKey: "error__sns.sns_add_followee",
       err: error,
@@ -623,7 +624,7 @@ export const removeFollowee = async ({
     });
 
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsError({
       labelKey: "error__sns.sns_remove_followee",
       err: error,
@@ -635,9 +636,29 @@ export const removeFollowee = async ({
 export const stakeMaturity = async ({
   neuronId,
   percentageToStake,
+  rootCanisterId,
 }: {
   neuronId: SnsNeuronId;
   percentageToStake: number;
+  rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
-  return { success: true };
+  try {
+    const identity = await getNeuronIdentity();
+
+    await stakeMaturityApi({
+      neuronId,
+      rootCanisterId,
+      percentageToStake,
+      identity,
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
+    return { success: false };
+  }
 };

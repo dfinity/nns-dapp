@@ -52,7 +52,7 @@
         initiator: "dissolve-sns-action",
       });
 
-      let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
+      const rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
 
       assertNonNullish(rootCanisterId);
 

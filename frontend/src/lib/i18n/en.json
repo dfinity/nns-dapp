@@ -694,7 +694,8 @@
     "sns_add_followee": "There was an error while adding a followee.",
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
-    "sns_add_hotkey": "There was an error adding the hotkey."
+    "sns_add_hotkey": "There was an error adding the hotkey.",
+    "sns_stake_maturity": "There was an error while staking the maturity of the neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",

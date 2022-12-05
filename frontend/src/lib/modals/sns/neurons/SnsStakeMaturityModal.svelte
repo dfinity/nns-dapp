@@ -7,6 +7,8 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { stakeMaturity } from "$lib/services/sns-neurons.services";
+  import { Principal } from "@dfinity/principal";
+  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
@@ -22,9 +24,12 @@
   }: CustomEvent<{ percentageToStake: number }>) => {
     startBusy({ initiator: "stake-maturity" });
 
+    const rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
+
     const { success } = await stakeMaturity({
       neuronId,
       percentageToStake,
+      rootCanisterId,
     });
 
     if (success) {
