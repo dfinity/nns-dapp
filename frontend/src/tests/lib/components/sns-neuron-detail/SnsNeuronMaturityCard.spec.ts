@@ -9,7 +9,7 @@ import {
   type SelectedSnsNeuronStore,
 } from "$lib/types/sns-neuron-detail.context";
 import {
-  formattedSnsMaturity,
+  formattedSnsTotalMaturity,
   getSnsNeuronIdAsHexString,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -47,8 +47,20 @@ describe("SnsNeuronMaturityCard", () => {
     const { queryByText } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
 
-    const formatted = formattedSnsMaturity({ ...mockSnsNeuron });
+    const formatted = formattedSnsTotalMaturity({ ...mockSnsNeuron });
 
     expect(queryByText(formatted)).toBeInTheDocument();
+  });
+
+  it("should not render staked formatted maturity if not provided", () => {
+    const { getByTestId } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron, staked_maturity_e8s_equivalent: [] });
+
+    expect(() => getByTestId("staked-maturity")).toThrow();
+  });
+
+  it("should render staked formatted maturity if provided", () => {
+    const { getByTestId } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
+
+    expect(getByTestId("staked-maturity")).not.toBeNull();
   });
 });

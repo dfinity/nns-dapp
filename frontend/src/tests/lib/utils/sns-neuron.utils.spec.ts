@@ -5,7 +5,7 @@ import {
   canIdentityManageHotkeys,
   followeesByFunction,
   followeesByNeuronId,
-  formattedSnsMaturity,
+  formattedSnsTotalMaturity,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -24,7 +24,7 @@ import {
   needsRefresh,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
-  type SnsFolloweesByNeuron,
+  type SnsFolloweesByNeuron, hasStakedMaturity, formattedStakedMaturity,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -784,18 +784,87 @@ describe("sns-neuron utils", () => {
       const neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
       };
-      expect(formattedSnsMaturity(neuron)).toBe("2.00");
+      expect(formattedSnsTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns total if maturity only is provided", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(formattedSnsTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns sum if staked maturity is provided", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+      };
+      expect(formattedSnsTotalMaturity(neuron)).toBe("4.00");
     });
 
     it("returns 0 when maturity is 0", () => {
-      const neuron = { ...mockSnsNeuron, maturity_e8s_equivalent: BigInt(0) };
-      expect(formattedSnsMaturity(neuron)).toBe("0");
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(0),
+        stakedMaturityE8sEquivalent: [],
+      };
+      expect(formattedSnsTotalMaturity(neuron)).toBe("0");
     });
 
     it("returns 0 when no neuron provided", () => {
-      expect(formattedSnsMaturity(null)).toBe("0");
-      expect(formattedSnsMaturity(undefined)).toBe("0");
+      expect(formattedSnsTotalMaturity(null)).toBe("0");
+      expect(formattedSnsTotalMaturity(undefined)).toBe("0");
+    });
+  });
+
+  describe("hasStakedMaturity", () => {
+    it("should return true if staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeTruthy()
+    });
+
+    it("should return false if no staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeFalsy();
+    });
+
+    it("should return false when no neuron provided", () => {
+      expect(hasStakedMaturity(null)).toBeFalsy();
+      expect(hasStakedMaturity(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("formattedStakedMaturity", () => {
+    it("returns staked maturity with two decimals", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(2)] as [] | [bigint],
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns 0 when staked maturity is 0", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        stakedMaturityE8sEquivalent: [BigInt(0)] as [] | [bigint],
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
+    });
+
+    it("returns 0 when no neuron provided", () => {
+      expect(formattedStakedMaturity(null)).toBe("0");
+      expect(formattedStakedMaturity(undefined)).toBe("0");
     });
   });
 

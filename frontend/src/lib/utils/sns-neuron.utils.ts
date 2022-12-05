@@ -252,14 +252,37 @@ export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
 
 /**
- * Format the maturity in a value (token "currency") way.
- * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
+ * Format the sum of the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` and `stakedMaturityE8sEquivalent` which will be summed and formatted
  */
-export const formattedSnsMaturity = (
+export const formattedSnsTotalMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
   formatToken({
-    value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
+    value:
+      (neuron?.maturity_e8s_equivalent ?? BigInt(0)) +
+      (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)),
+  });
+
+/**
+ * Is the staked maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
+ * @param {SnsNeuron} neuron
+ */
+export const hasStakedMaturity = (
+  neuron: SnsNeuron | null | undefined
+): boolean =>
+    (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)) > BigInt(0);
+
+/**
+ * Format the staked maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `staked_maturity_e8s_equivalent` that will be formatted
+ */
+export const formattedStakedMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
+  formatToken({
+    value:
+      fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0),
   });
 
 /**
