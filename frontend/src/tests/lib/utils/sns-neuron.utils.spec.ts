@@ -27,7 +27,7 @@ import {
   needsRefresh,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
-  type SnsFolloweesByNeuron,
+  type SnsFolloweesByNeuron, hasPermissionToStakeMaturity,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -641,6 +641,43 @@ describe("sns-neuron utils", () => {
           neuron,
           identity: mockIdentity,
         })
+      ).toBe(false);
+    });
+  });
+
+  describe("hasPermissionToStakeMaturity", () => {
+    it("returns true when user has stake maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY],
+      });
+
+      expect(
+          hasPermissionToStakeMaturity({
+            neuron,
+            identity: mockIdentity,
+          })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no staking maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
+      });
+
+      expect(
+          hasPermissionToDissolve({
+            neuron,
+            identity: mockIdentity,
+          })
       ).toBe(false);
     });
   });

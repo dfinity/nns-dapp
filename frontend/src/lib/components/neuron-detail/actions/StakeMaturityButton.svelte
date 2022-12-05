@@ -5,11 +5,11 @@
   export let enoughMaturity: boolean;
 </script>
 
-{#if enoughMaturity}
-  <button class="primary" on:click data-tid="stake-maturity-button"
-    >{$i18n.neuron_detail.stake_maturity}</button
-  >
-{:else}
+<button class="primary" on:click data-tid="stake-maturity-button"
+  >{$i18n.neuron_detail.stake_maturity}</button
+>
+
+{#if enoughMaturity}{:else}
   <Tooltip
     id="stake-maturity-tooltip"
     text={$i18n.neuron_detail.stake_maturity_disabled_tooltip}

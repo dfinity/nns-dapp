@@ -166,6 +166,21 @@ export const hasPermissionToVote = ({
     permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
   });
 
+export const hasPermissionToStakeMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+    ],
+  });
+
 const hasAllPermissions = (permission_type: Int32Array): boolean => {
   const permissionsNumbers = Array.from(permission_type);
   const allPermissions = enumValues(SnsNeuronPermissionType);
