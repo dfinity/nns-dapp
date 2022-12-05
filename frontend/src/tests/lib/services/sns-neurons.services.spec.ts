@@ -11,6 +11,7 @@ import {
   startDissolving,
   stopDissolving,
   updateDelay,
+    stakeMaturity
 } from "$lib/services/sns-neurons.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -774,6 +775,33 @@ describe("sns-neurons-services", () => {
 
       expect(setFolloweesSpy).not.toBeCalled();
       expect(toastsError).toBeCalled();
+    });
+  });
+
+  describe("stakeMaturity", () => {
+    it("should call api.stakeMaturity", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const percentageToStake = 60;
+
+      const spyOnStakeMaturity = jest
+          .spyOn(governanceApi, "stakeMaturity")
+          .mockImplementation(() => Promise.resolve());
+
+      const { success } = await stakeMaturity({
+        rootCanisterId,
+        neuronId,
+        percentageToStake
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStakeMaturity).toBeCalledWith({
+        neuronId,
+        identity,
+        percentageToStake,
+      });
     });
   });
 });

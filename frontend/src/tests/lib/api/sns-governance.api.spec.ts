@@ -11,7 +11,7 @@ import {
   increaseDissolveDelay,
   refreshNeuron,
   removeNeuronPermissions,
-  setFollowees,
+  setFollowees, stakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -63,6 +63,7 @@ describe("sns-api", () => {
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
+  const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -104,6 +105,7 @@ describe("sns-api", () => {
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
         setTopicFollowees: setTopicFolloweesSpy,
+        stakeMaturity: stakeMaturitySpy
       })
     );
   });
@@ -176,6 +178,17 @@ describe("sns-api", () => {
     });
 
     expect(increaseDissolveDelaySpy).toBeCalled();
+  });
+
+  it("should stakeMaturity", async () => {
+    await stakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      percentageToStake: 60,
+    });
+
+    expect(stakeMaturitySpy).toBeCalled();
   });
 
   it("should getNeuronBalance", async () => {
