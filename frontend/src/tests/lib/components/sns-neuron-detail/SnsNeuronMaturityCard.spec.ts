@@ -53,7 +53,10 @@ describe("SnsNeuronMaturityCard", () => {
   });
 
   it("should not render staked formatted maturity if not provided", () => {
-    const { getByTestId } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron, staked_maturity_e8s_equivalent: [] });
+    const { getByTestId } = renderSnsNeuronMaturityCard({
+      ...mockSnsNeuron,
+      staked_maturity_e8s_equivalent: [],
+    });
 
     expect(() => getByTestId("staked-maturity")).toThrow();
   });

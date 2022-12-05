@@ -3,7 +3,7 @@
  */
 
 import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 
 describe("StakeMaturityButton", () => {
@@ -14,7 +14,7 @@ describe("StakeMaturityButton", () => {
   it("renders stake maturity cta", () => {
     const { getByText } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: true
+        enoughMaturity: true,
       },
     });
 
@@ -24,20 +24,18 @@ describe("StakeMaturityButton", () => {
   it("should be enabled", async () => {
     const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: true
+        enoughMaturity: true,
       },
     });
 
     const button = getByTestId("stake-maturity-button");
-    await waitFor(() =>
-        expect(button.hasAttribute("disabled")).toBeFalsy()
-    );
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBeFalsy());
   });
 
   it("should be disabled", async () => {
     const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        enoughMaturity: false
+        enoughMaturity: false,
       },
     });
 

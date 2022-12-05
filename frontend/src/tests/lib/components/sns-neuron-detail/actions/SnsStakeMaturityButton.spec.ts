@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import en from "../../../../mocks/i18n.mock";
-import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
-import {mockSnsNeuron} from "../../../../mocks/sns-neurons.mock";
-import {mockPrincipal} from "../../../../mocks/auth.store.mock";
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { mockPrincipal } from "../../../../mocks/auth.store.mock";
+import en from "../../../../mocks/i18n.mock";
+import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
+import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsStakeMaturityButton", () => {
   afterEach(() => {
@@ -39,7 +39,7 @@ describe("SnsStakeMaturityButton", () => {
           neuron: {
             ...mockSnsNeuron,
             maturity_e8s_equivalent: BigInt(0),
-            staked_maturity_e8s_equivalent: []
+            staked_maturity_e8s_equivalent: [],
           },
           rootCanisterId: mockPrincipal,
           testComponent: SnsStakeMaturityButton,

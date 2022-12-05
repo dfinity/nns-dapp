@@ -14,10 +14,7 @@
     id="stake-maturity-tooltip"
     text={$i18n.neuron_detail.stake_maturity_disabled_tooltip}
   >
-    <button
-      disabled
-      class="primary"
-      data-tid="stake-maturity-button"
+    <button disabled class="primary" data-tid="stake-maturity-button"
       >{$i18n.neuron_detail.stake_maturity}</button
     >
   </Tooltip>

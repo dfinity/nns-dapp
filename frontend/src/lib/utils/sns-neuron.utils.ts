@@ -271,7 +271,8 @@ export const formattedSnsTotalMaturity = (
 export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
 ): boolean =>
-    (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)) > BigInt(0);
+  (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)) >
+  BigInt(0);
 
 /**
  * Format the staked maturity in a value (token "currency") way.

@@ -6,6 +6,7 @@ import {
   followeesByFunction,
   followeesByNeuronId,
   formattedSnsTotalMaturity,
+  formattedStakedMaturity,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -13,6 +14,7 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  hasEnoughMaturityToStake,
   hasPermissions,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
@@ -24,7 +26,7 @@ import {
   needsRefresh,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
-  type SnsFolloweesByNeuron, hasEnoughMaturityToStake, formattedStakedMaturity,
+  type SnsFolloweesByNeuron,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -828,7 +830,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
       };
-      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy()
+      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy();
     });
 
     it("should return false if no staked maturity", () => {
