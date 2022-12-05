@@ -2,50 +2,42 @@
  * @jest-environment jsdom
  */
 
-import NnsStakeMaturityModal from "$lib/modals/neurons/NnsNnsStakeMaturityModal.svelte";
-import { stakeMaturity } from "$lib/services/neurons.services";
-import { formattedMaturity } from "$lib/utils/neuron.utils";
+import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
+import { stakeMaturity } from "$lib/services/sns-neurons.services";
+import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
-jest.mock("$lib/services/neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     stakeMaturity: jest.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
   };
 });
 
-describe("NnsStakeMaturityModal", () => {
-  const neuron = {
-    ...mockNeuron,
-    fullNeuron: {
-      ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(1_000_000),
-    },
-  };
-  const renderNnsStakeMaturityModal = async (): Promise<
+describe("SnsStakeMaturityModal", () => {
+  const renderSnsStakeMaturityModal = async (): Promise<
     RenderResult<SvelteComponent>
   > => {
     return renderModal({
-      component: NnsStakeMaturityModal,
+      component: SnsStakeMaturityModal,
       props: {
-        neuron,
+        neuron: mockSnsNeuron,
       },
     });
   };
 
   it("should display modal", async () => {
-    const { container } = await renderNnsStakeMaturityModal();
+    const { container } = await renderSnsStakeMaturityModal();
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should display current maturity", async () => {
-    const { queryByText } = await renderNnsStakeMaturityModal();
+    const { queryByText } = await renderSnsStakeMaturityModal();
 
-    expect(queryByText(formattedMaturity(neuron))).toBeInTheDocument();
+    expect(queryByText(formattedMaturity(mockSnsNeuron))).toBeInTheDocument();
   });
 
   const selectPercentage = async (
@@ -66,7 +58,7 @@ describe("NnsStakeMaturityModal", () => {
 
   it("should call stakeMaturity service on confirm click", async () => {
     const renderResult: RenderResult<SvelteComponent> =
-      await renderNnsStakeMaturityModal();
+      await renderSnsStakeMaturityModal();
 
     await selectPercentage(renderResult);
 
@@ -85,7 +77,7 @@ describe("NnsStakeMaturityModal", () => {
 
   it("should go back in modal on cancel click", async () => {
     const renderResult: RenderResult<SvelteComponent> =
-      await renderNnsStakeMaturityModal();
+      await renderSnsStakeMaturityModal();
 
     await selectPercentage(renderResult);
 
