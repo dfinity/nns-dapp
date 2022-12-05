@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
+import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
@@ -14,7 +14,7 @@ jest.mock("$lib/services/neurons.services", () => {
   };
 });
 
-describe("AutoStakeMaturity", () => {
+describe("NnsAutoStakeMaturity", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -26,7 +26,7 @@ describe("AutoStakeMaturity", () => {
     const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: AutoStakeMaturity,
+        testComponent: NnsAutoStakeMaturity,
       },
     });
 
@@ -45,7 +45,7 @@ describe("AutoStakeMaturity", () => {
     const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronProps(autoStakeMaturity),
-        testComponent: AutoStakeMaturity,
+        testComponent: NnsAutoStakeMaturity,
       },
     });
 
@@ -75,7 +75,7 @@ describe("AutoStakeMaturity", () => {
     const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronProps(neuronAutoStakeMaturity),
-        testComponent: AutoStakeMaturity,
+        testComponent: NnsAutoStakeMaturity,
       },
     });
 

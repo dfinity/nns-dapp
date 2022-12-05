@@ -11,7 +11,7 @@
   import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
-  import AutoStakeMaturity from "./actions/AutoStakeMaturity.svelte";
+  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
   import {
     isNeuronControllable,
     formattedStakedMaturity,
@@ -75,7 +75,7 @@
     </div>
 
     {#if stakeMaturityEnabled}
-      <AutoStakeMaturity {neuron} />
+      <NnsAutoStakeMaturity {neuron} />
     {/if}
   {/if}
 </CardInfo>
