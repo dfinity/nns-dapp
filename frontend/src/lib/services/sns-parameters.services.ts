@@ -15,7 +15,7 @@ export const loadSnsParameters = async (
         rootCanisterId,
         identity,
         certified,
-      }).then(),
+      }),
     onLoad: ({ response: parameters, certified }) =>
       snsParametersStore.setParameters({
         rootCanisterId,
