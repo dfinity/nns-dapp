@@ -3,7 +3,7 @@
  */
 
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
-import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
