@@ -102,6 +102,7 @@
           on:nnsClose={close}
           {neuronId}
           {neuron}
+          {rootCanisterId}
         />
       {/if}
 
@@ -111,6 +112,7 @@
           on:nnsClose={close}
           {neuronId}
           {neuron}
+          {rootCanisterId}
         />
       {/if}
     {/if}
