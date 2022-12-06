@@ -7,6 +7,7 @@ import { stakeMaturity } from "$lib/services/sns-neurons.services";
 import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 import { selectPercentage } from "../../../utils/neurons-modal.test-utils";
@@ -18,6 +19,8 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeMaturityModal", () => {
+  const reload = jest.fn();
+
   const renderSnsStakeMaturityModal = async (): Promise<
     RenderResult<SvelteComponent>
   > => {
@@ -25,6 +28,11 @@ describe("SnsStakeMaturityModal", () => {
       component: SnsStakeMaturityModal,
       props: {
         neuron: mockSnsNeuron,
+        neuronId: mockSnsNeuron.id,
+        rootCanisterId: mockPrincipal,
+        reloadNeuron: async () => {
+          // Do nothing here
+        },
       },
     });
   };
