@@ -310,7 +310,7 @@ export const keyOfOptional = <T>({
 /**
  * Returns whether an asset is PNG or not.
  *
- * @param {string} src
+ * @param {string} asset
  * @returns boolean
  */
 export const isPngAsset = (
