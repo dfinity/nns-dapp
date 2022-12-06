@@ -46,17 +46,17 @@
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
       <span slot="value" class="staked-maturity"
-      >{formattedStakedMaturity(neuron)}</span
+        >{formattedStakedMaturity(neuron)}</span
       >
     </KeyValuePair>
   {/if}
 
   {#if allowedToStakeMaturity}
     <div class="actions" data-tid="stake-maturity-actions">
-      <SnsStakeMaturityButton/>
+      <SnsStakeMaturityButton />
     </div>
 
-    <SnsAutoStakeMaturity/>
+    <SnsAutoStakeMaturity />
   {/if}
 </CardInfo>
 
