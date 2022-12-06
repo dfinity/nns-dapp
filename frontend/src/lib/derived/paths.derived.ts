@@ -19,10 +19,10 @@ export const neuronsPathStore = derived<Readable<Page>, string>(
 
 export const proposalsPathStore = derived<Readable<Page>, string>(
   pageStore,
-  ({ universe }) => buildProposalsUrl({ universe })
+  () => buildProposalsUrl()
 );
 
 export const canistersPathStore = derived<Readable<Page>, string>(
   pageStore,
-  ({ universe }) => buildCanistersUrl({ universe })
+  () => buildCanistersUrl()
 );

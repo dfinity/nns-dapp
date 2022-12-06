@@ -8,7 +8,6 @@
   import { onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo | undefined;
@@ -21,7 +20,6 @@
 
     await goto(
       buildProposalUrl({
-        universe: $pageStore.universe,
         proposalId: nextProposal.id,
       })
     );
@@ -35,7 +33,6 @@
 
     await goto(
       buildProposalUrl({
-        universe: $pageStore.universe,
         proposalId: previousProposal.id,
       })
     );

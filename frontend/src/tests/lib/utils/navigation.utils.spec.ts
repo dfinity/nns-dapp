@@ -110,23 +110,17 @@ describe("navigation-utils", () => {
     it("should build proposal url", () => {
       expect(
         buildProposalUrl({
-          universe: OWN_CANISTER_ID_TEXT,
           proposalId: "123",
         })
-      ).toEqual(
-        `${AppPath.Proposal}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${PROPOSAL_PARAM}=123`
-      );
+      ).toEqual(`${AppPath.Proposal}/?${PROPOSAL_PARAM}=123`);
     });
 
     it("should build canister url", () => {
       expect(
         buildCanisterUrl({
-          universe: OWN_CANISTER_ID_TEXT,
           canister: "123",
         })
-      ).toEqual(
-        `${AppPath.Canister}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}&${CANISTER_PARAM}=123`
-      );
+      ).toEqual(`${AppPath.Canister}/?${CANISTER_PARAM}=123`);
     });
 
     it("should build accounts url", () => {
@@ -150,23 +144,11 @@ describe("navigation-utils", () => {
     });
 
     it("should build voting url", () => {
-      expect(
-        buildProposalsUrl({
-          universe: OWN_CANISTER_ID_TEXT,
-        })
-      ).toEqual(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect(buildProposalsUrl()).toEqual(`${AppPath.Proposals}/`);
     });
 
     it("should build canisters url", () => {
-      expect(
-        buildCanistersUrl({
-          universe: OWN_CANISTER_ID_TEXT,
-        })
-      ).toEqual(
-        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect(buildCanistersUrl()).toEqual(`${AppPath.Canisters}/`);
     });
   });
 });

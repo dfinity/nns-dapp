@@ -55,42 +55,34 @@ describe("paths derived stores", () => {
   });
 
   describe("proposalsPathStore", () => {
-    it("should return NNS proposals path as default", () => {
+    it("should not return universe when NNS", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(proposalsPathStore);
-      expect($store).toBe(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect($store).toBe(`${AppPath.Proposals}/`);
     });
 
-    it("should return SNS proposals path", () => {
+    it("should not return universe when SNS", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(proposalsPathStore);
-      expect($store).toBe(
-        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
-      );
+      expect($store).toBe(`${AppPath.Proposals}/`);
     });
   });
 
   describe("canistersPathStore", () => {
-    it("should return NNS canisters path as default", () => {
+    it("should not return universe when NNS", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store = get(canistersPathStore);
-      expect($store).toBe(
-        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      expect($store).toBe(`${AppPath.Canisters}/`);
     });
 
-    it("should return SNS canisters path", () => {
+    it("should not return universe when SNS", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
 
       const $store = get(canistersPathStore);
-      expect($store).toBe(
-        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
-      );
+      expect($store).toBe(`${AppPath.Canisters}/`);
     });
   });
 });

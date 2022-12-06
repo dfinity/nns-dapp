@@ -32,7 +32,6 @@
         const { length, [length - 1]: last } = hash.split("/");
         await goto(
           buildProposalUrl({
-            universe: OWN_CANISTER_ID_TEXT,
             proposalId: last,
           }),
           { replaceState: true }

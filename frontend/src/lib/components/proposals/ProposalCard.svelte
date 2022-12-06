@@ -11,7 +11,6 @@
   import ProposalCountdown from "./ProposalCountdown.svelte";
   import { keyOfOptional } from "$lib/utils/utils";
   import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
 
@@ -33,7 +32,6 @@
   const showProposal = async () =>
     await goto(
       buildProposalUrl({
-        universe: $pageStore.universe,
         proposalId: `${id}`,
       })
     );

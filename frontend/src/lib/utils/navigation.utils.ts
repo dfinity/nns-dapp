@@ -35,21 +35,32 @@ const buildUrl = ({
   params = {},
 }: {
   path: AppPath;
-  universe: string;
+  universe?: string;
   params?: Record<string, string>;
-}): string =>
-  `${path}/?${UNIVERSE_PARAM}=${universe}${Object.entries(params)
-    .map(([key, value]) => `&${key}=${value}`)
-    .join("")}`;
+}): string => {
+  const queryParams = new URLSearchParams();
+
+  if (universe !== undefined) {
+    queryParams.set(UNIVERSE_PARAM, universe);
+  }
+
+  Object.entries(params).forEach(([key, value]) => {
+    queryParams.set(key, value);
+  });
+
+  const hasQueryParams = queryParams.toString().length > 0;
+
+  return `${path}/${hasQueryParams ? "?" : ""}${queryParams.toString()}`;
+};
 
 export const buildAccountsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Accounts, universe });
 export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
-export const buildProposalsUrl = ({ universe }: { universe: string }) =>
-  buildUrl({ path: AppPath.Proposals, universe });
-export const buildCanistersUrl = ({ universe }: { universe: string }) =>
-  buildUrl({ path: AppPath.Canisters, universe });
+export const buildProposalsUrl = () =>
+  buildUrl({ path: AppPath.Proposals, universe: undefined });
+export const buildCanistersUrl = () =>
+  buildUrl({ path: AppPath.Canisters, universe: undefined });
 
 export const buildWalletUrl = ({
   universe,
@@ -78,27 +89,19 @@ export const buildNeuronUrl = ({
   });
 
 export const buildProposalUrl = ({
-  universe,
   proposalId,
 }: {
-  universe: string;
   proposalId: ProposalId | string;
 }): string =>
   buildUrl({
     path: AppPath.Proposal,
-    universe,
+    universe: undefined,
     params: { [PROPOSAL_PARAM]: `${proposalId}` },
   });
 
-export const buildCanisterUrl = ({
-  universe,
-  canister,
-}: {
-  universe: string;
-  canister: string;
-}): string =>
+export const buildCanisterUrl = ({ canister }: { canister: string }): string =>
   buildUrl({
     path: AppPath.Canister,
-    universe,
+    universe: undefined,
     params: { [CANISTER_PARAM]: canister },
   });
