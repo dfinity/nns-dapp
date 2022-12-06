@@ -1,6 +1,6 @@
 import type { Page } from "@sveltejs/kit";
 import { writable } from "svelte/store";
-import { OWN_CANISTER_ID_TEXT } from "../../src/lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
 const initPageStoreMock = () => {
   const { subscribe, set } = writable<Partial<Page>>({
