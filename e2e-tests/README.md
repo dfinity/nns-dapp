@@ -5,7 +5,11 @@ more info.
 
 ## Run the tests locally
 
-**NOTE: Most commands are executed from the root folder**
+**NOTE: Most commands are executed from the root folder.**
+
+### Requirements
+
+- dfx version same as in dfx.json.
 
 ### Start replica
 
@@ -21,49 +25,19 @@ dfx start --clean --background
 
 ### Download and install NNS canisters
 
-**TODO: Use new dfx version to install NNS projects.**
-
-#### NEW WAY
-
 Install dfx version `0.12.0-snsdemo.4` and set it in `dfx.json`.
 
 ```bash
 dfx nns install
 ```
 
-**NOTE: Not fully working yet.**
+### Deploy NNS Dapp
 
-#### OLD WAY
-
-This step downloads and installs the NNS canisters in the local replica.
-
-For example the governance and ledger canisters.
-
-```bash
-# from this file
-./scripts/nns-canister-download
-./scripts/nns-canister-install
-
-# from root
-./e2e-tests/scripts/nns-canister-download
-./e2e-tests/scripts/nns-canister-install
-```
-
-**IMPORTANT:**
-
-This step does not install sns-wasm. Therefore, there is always a notification error that prevents the tests to pass without manual interaction.
-
-We could add the step to remove the notifications. But the new way to install the nns canisters (including sns) is already working, but not yet officially released.
-
-### II and NNS Dapp
-
-Install Internet Identity and NNS Dapp in the local replica.
+Install NNS Dapp in the local replica.
 
 ```bash
 # in root folder
-dfx canister create internet_identity --no-wallet
-dfx canister create nns-dapp --no-wallet
-./deploy.sh --ii --nns-dapp local
+./deploy.sh --nns-dapp local
 ```
 
 ### Setup e2e tests
@@ -104,10 +78,6 @@ First e2e is also used to populate the nns dapp:
 ./deploy.sh --populate local
 ```
 
-This command sets the cycles exchange rate and the list of subnets CMC is authorized to create canisters in.
-
-Both through proposals which are needed for the e2e tests.
-
 Then it executes the e2e test in "user-N01-neuron-created.e2e.ts".
 
 Therefore, if this works your setup is ready.
@@ -121,12 +91,16 @@ All the e2e tests can be run with:
 npm run test
 ```
 
+**PENDING: Creating proposals is not working yet. Therefore, the related tests are skipped.**
+
 You can specify which test you want to run:
 
 ```bash
 # In this folder
 npm run test -- --spec "./specs/user-N01-neuron-created.e2e.ts"
 ```
+
+**Note: If you want to see the e2e in action, go to [the wdio config file](./wdio.conf.ts) and remove "headless" from `goog:chromeOptions`.**
 
 ### Stop Local Replica
 

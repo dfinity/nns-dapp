@@ -1,11 +1,15 @@
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { votingPower } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromNullable } from "@dfinity/utils";
+import type {
+  NervousSystemFunction,
+  NervousSystemParameters,
+} from "@dfinity/sns/dist/candid/sns_governance";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
@@ -69,12 +73,15 @@ export const getSnsLockedTimeInSeconds = (
 };
 
 // Delay from now. Source depends on the neuron state.
+// https://gitlab.com/dfinity-lab/public/ic/-/blob/f6c4a37e2fd23ed83e6f7126ab0112a3a48cf54f/rs/sns/governance/src/neuron.rs#L428
 export const getSnsDissolveDelaySeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const delay =
-    getSnsDissolvingTimeInSeconds(neuron) ?? getSnsLockedTimeInSeconds(neuron);
-  return delay;
+    getSnsDissolvingTimeInSeconds(neuron) ??
+    getSnsLockedTimeInSeconds(neuron) ??
+    0n;
+  return delay > 0n ? delay : 0n;
 };
 
 export const getSnsNeuronStake = ({
@@ -425,4 +432,85 @@ export const followeesByNeuronId = ({
     neuronIdHex,
     nsFunctions: followeesDictionary[neuronIdHex],
   }));
+};
+
+/**
+ * Returns the sns neuron voting power
+ * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
+ * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
+ *
+ * @param {SnsNeuron} neuron
+ * @param {NervousSystemParameters} snsParameters
+ * @param {number} newDissolveDelayInSeconds
+ */
+export const snsNeuronVotingPower = ({
+  neuron,
+  snsParameters,
+  newDissolveDelayInSeconds,
+}: {
+  neuron: SnsNeuron;
+  snsParameters: NervousSystemParameters;
+  newDissolveDelayInSeconds?: bigint;
+}): number => {
+  const dissolveDelayInSeconds =
+    newDissolveDelayInSeconds !== undefined
+      ? newDissolveDelayInSeconds
+      : getSnsDissolveDelaySeconds(neuron) ?? 0n;
+  const nowSeconds = nowInSeconds();
+  const {
+    max_dissolve_delay_seconds,
+    max_neuron_age_for_age_bonus,
+    max_dissolve_delay_bonus_percentage,
+    max_age_bonus_percentage,
+    neuron_minimum_dissolve_delay_to_vote_seconds,
+  } = snsParameters;
+  const maxDissolveDelaySeconds = fromDefinedNullable(
+    max_dissolve_delay_seconds
+  );
+  const maxNeuronAgeForAgeBonus = fromDefinedNullable(
+    max_neuron_age_for_age_bonus
+  );
+  const maxDissolveDelayBonusPercentage = fromDefinedNullable(
+    max_dissolve_delay_bonus_percentage
+  );
+  const maxAgeBonusPercentage = fromDefinedNullable(max_age_bonus_percentage);
+  const neuronMinimumDissolveDelayToVoteSeconds = fromDefinedNullable(
+    neuron_minimum_dissolve_delay_to_vote_seconds
+  );
+
+  // no voting power when less than minimum
+  if (dissolveDelayInSeconds < neuronMinimumDissolveDelayToVoteSeconds) {
+    return 0;
+  }
+
+  const {
+    voting_power_percentage_multiplier,
+    aging_since_timestamp_seconds,
+    maturity_e8s_equivalent,
+  } = neuron;
+  const dissolveDelay =
+    dissolveDelayInSeconds < maxDissolveDelaySeconds
+      ? dissolveDelayInSeconds
+      : maxDissolveDelaySeconds;
+  const stakeE8s = BigInt(
+    Math.max(Number(getSnsNeuronStake(neuron) + maturity_e8s_equivalent), 0)
+  );
+  const ageSeconds = BigInt(
+    Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
+  );
+  const vp = Number(
+    votingPower({
+      stakeE8s,
+      dissolveDelay,
+      ageSeconds,
+      ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
+      dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
+      maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),
+      maxAgeSeconds: Number(maxNeuronAgeForAgeBonus),
+      minDissolveDelaySeconds: Number(neuronMinimumDissolveDelayToVoteSeconds),
+    })
+  );
+
+  // The voting power multiplier is applied against the total voting power of the neuron
+  return vp * (Number(voting_power_percentage_multiplier) / 100);
 };

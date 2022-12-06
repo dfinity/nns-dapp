@@ -8,7 +8,8 @@ declare namespace App {
   // interface Platform {}
 }
 
-// eslint window checks for custom events
+/* eslint-disable */
+
 declare namespace svelte.JSX {
   // Svelte needs help to support typing of custom events.
   // Source: https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
@@ -21,6 +22,8 @@ declare namespace svelte.JSX {
     onnnsWalletModal?: (event: CustomEvent<any>) => void;
   }
 }
+
+/* eslint-enable */
 
 // Solves following lint warning:
 //

@@ -57,8 +57,9 @@
 <svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
 
 {#if nonNullish(neuron)}
-  {#if type === "increase-dissolve-delay"}
+  {#if type === "increase-dissolve-delay" && rootCanisterId !== undefined}
     <IncreaseSnsDissolveDelayModal
+      {rootCanisterId}
       {neuron}
       {token}
       {reloadNeuron}
@@ -66,8 +67,13 @@
     />
   {/if}
 
-  {#if type === "disburse"}
-    <DisburseSnsNeuronModal {neuron} {reloadNeuron} on:nnsClose={close} />
+  {#if type === "disburse" && rootCanisterId !== undefined}
+    <DisburseSnsNeuronModal
+      {rootCanisterId}
+      {neuron}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
   {/if}
 
   {#if type === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}

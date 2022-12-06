@@ -20,46 +20,7 @@ env:
       NNS_CACHING_KEY: dv-0004
 
 jobs:
-  nns_canisters:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
-
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
-
-      - name: Download prebuilt nns canisters
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        run: ./e2e-tests/scripts/nns-canister-download
-
-      - name: Set up docker buildx
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build nns canisters
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        uses: docker/build-push-action@v3
-        with:
-          context: e2e-tests/scripts
-          file: e2e-tests/scripts/nns-canister.Dockerfile
-          build-args: |
-            "IC_COMMIT=${{ env.IC_COMMIT }}"
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
-          outputs: target/ic
-
-      - name: Show canister versions
-        run: sha256sum target/ic/*.wasm
-
   build:
-    needs: [nns_canisters]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
@@ -107,25 +68,15 @@ jobs:
         run: |
           dfx start --background --clean
 
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
-      - name: Show canister versions
-        run: sha256sum target/ic/*.wasm
+      #   run: sha256sum target/ic/*.wasm
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy NNS canisters
         run: |
-          ./e2e-tests/scripts/nns-canister-install
+          dfx nns install
 
-      - name: Deploy
+      - name: Deploy NNS Dapp
         run: |
-          dfx canister create internet_identity --no-wallet
-          dfx canister create nns-dapp --no-wallet
-          ./deploy.sh --ii --nns-dapp local
+          ./deploy.sh --nns-dapp local
           cp nns-dapp.wasm nns-dapp_local.wasm
 
       - name: 'Upload nns-dapp_local wasm module'
@@ -157,21 +108,14 @@ jobs:
         run: |
           ./deploy.sh --populate local
 
-      - name: Build proxy
-        working-directory: proxy
-        run: |
-          npm ci
-          npm run build
-
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
           npm ci
-
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log || true
+          npm run test | tee -a wdio.log
 
       - name: Stop replica
         run: dfx stop
@@ -209,7 +153,7 @@ jobs:
           rm -rf screenshots
 
   build-pass:
-    needs: ["nns_canisters", "build"]
+    needs: ["build"]
     runs-on: ubuntu-20.04
     steps:
        - name: Build workflow passes

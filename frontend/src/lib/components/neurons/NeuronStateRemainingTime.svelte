@@ -7,13 +7,14 @@
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
+  export let defaultGaps = false;
   export let inline = true;
 </script>
 
 {#if timeInSeconds !== undefined}
   {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
     {#if inline}
-      <p class="duration label">
+      <p class="duration label" class:default-gaps={defaultGaps}>
         <Html
           text={replacePlaceholders($i18n.neurons.inline_remaining, {
             $duration: secondsToDuration(timeInSeconds),
@@ -30,7 +31,7 @@
     {/if}
   {:else if state === NeuronState.Locked}
     {#if inline}
-      <p class="duration label">
+      <p class="duration label" class:default-gaps={defaultGaps}>
         {secondsToDuration(timeInSeconds)} – {$i18n.neurons
           .dissolve_delay_title}
       </p>
@@ -50,5 +51,9 @@
 <style lang="scss">
   p {
     margin: var(--padding) 0 0;
+  }
+
+  .default-gaps {
+    margin-bottom: var(--padding);
   }
 </style>

@@ -1,5 +1,6 @@
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron, SnsNeuronPermissionType } from "@dfinity/sns";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
@@ -71,3 +72,44 @@ export const buildMockSortedSnsNeuronsStoreSubscribe =
     run(neurons);
     return () => undefined;
   };
+
+export const snsNervousSystemParametersMock: NervousSystemParameters = {
+  default_followees: [
+    {
+      followees: [],
+    },
+  ],
+  max_dissolve_delay_seconds: [3155760000n],
+  max_dissolve_delay_bonus_percentage: [100n],
+  max_followees_per_function: [15n],
+  neuron_claimer_permissions: [
+    {
+      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+    },
+  ],
+  neuron_minimum_stake_e8s: [100000000n],
+  max_neuron_age_for_age_bonus: [15778800n],
+  initial_voting_period_seconds: [345600n],
+  neuron_minimum_dissolve_delay_to_vote_seconds: [2629800n],
+  reject_cost_e8s: [100000000n],
+  max_proposals_to_keep_per_action: [100],
+  wait_for_quiet_deadline_increase_seconds: [86400n],
+  max_number_of_neurons: [200000n],
+  transaction_fee_e8s: [10000n],
+  max_number_of_proposals_with_ballots: [700n],
+  max_age_bonus_percentage: [25n],
+  neuron_grantable_permissions: [
+    {
+      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+    },
+  ],
+  voting_rewards_parameters: [
+    {
+      final_reward_rate_basis_points: [0n],
+      initial_reward_rate_basis_points: [0n],
+      reward_rate_transition_duration_seconds: [31557600n],
+      round_duration_seconds: [86400n],
+    },
+  ],
+  max_number_of_principals_per_neuron: [5n],
+};

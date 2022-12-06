@@ -14,10 +14,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import { assertNonNullish } from "@dfinity/utils";
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
   export let reloadNeuron: () => Promise<void>;
@@ -41,6 +42,10 @@
   let minDelayInSeconds: number | undefined;
   $: minDelayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
 
+  $: if ($snsOnlyProjectStore !== undefined) {
+    loadSnsParameters($snsOnlyProjectStore);
+  }
+
   const dispatcher = createEventDispatcher();
   const goNext = () => {
     modal.next();
@@ -51,10 +56,6 @@
       startBusy({
         initiator: "dissolve-sns-action",
       });
-
-      const rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
-
-      assertNonNullish(rootCanisterId);
 
       const { success } = await updateDelay({
         rootCanisterId,
@@ -84,6 +85,7 @@
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SetSnsDissolveDelay"}
     <SetSnsDissolveDelay
+      {rootCanisterId}
       {neuron}
       {token}
       {minDelayInSeconds}
@@ -94,6 +96,7 @@
   {/if}
   {#if currentStep.name === "ConfirmSnsDissolveDelay"}
     <ConfirmSnsDissolveDelay
+      {rootCanisterId}
       {neuron}
       {token}
       {delayInSeconds}
