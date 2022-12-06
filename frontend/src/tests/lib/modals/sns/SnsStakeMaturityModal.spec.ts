@@ -19,7 +19,7 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeMaturityModal", () => {
-  const reload = jest.fn();
+  const reloadNeuron = jest.fn();
 
   const renderSnsStakeMaturityModal = async (): Promise<
     RenderResult<SvelteComponent>
@@ -30,9 +30,7 @@ describe("SnsStakeMaturityModal", () => {
         neuron: mockSnsNeuron,
         neuronId: mockSnsNeuron.id,
         rootCanisterId: mockPrincipal,
-        reloadNeuron: async () => {
-          // Do nothing here
-        },
+        reloadNeuron,
       },
     });
   };
