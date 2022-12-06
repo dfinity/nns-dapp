@@ -37,15 +37,13 @@ describe("SnsStakeMaturityButton", () => {
   it("should be disabled if no maturity to stake", async () => {
     const { getByTestId } = render(SnsNeuronContextTest, {
       props: {
-        props: {
-          neuron: {
-            ...mockSnsNeuron,
-            maturity_e8s_equivalent: BigInt(0),
-            staked_maturity_e8s_equivalent: [],
-          },
-          rootCanisterId: mockPrincipal,
-          testComponent: SnsStakeMaturityButton,
+        neuron: {
+          ...mockSnsNeuron,
+          maturity_e8s_equivalent: BigInt(0),
+          staked_maturity_e8s_equivalent: [],
         },
+        rootCanisterId: mockPrincipal,
+        testComponent: SnsStakeMaturityButton,
       },
     });
 

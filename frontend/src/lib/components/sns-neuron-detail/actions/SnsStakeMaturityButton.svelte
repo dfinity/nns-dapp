@@ -1,8 +1,5 @@
 <script lang="ts">
-  import {
-    hasEnoughMaturityToStake,
-    hasPermissionToStakeMaturity,
-  } from "$lib/utils/sns-neuron.utils";
+  import { hasEnoughMaturityToStake } from "$lib/utils/sns-neuron.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
