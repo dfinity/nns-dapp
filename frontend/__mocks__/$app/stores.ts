@@ -26,7 +26,7 @@ const initPageStoreMock = () => {
     }) =>
       set({
         data,
-        route: { id: `(app)${routeId}` },
+        route: { id: `/(app)${routeId}` },
       }),
   };
 };
