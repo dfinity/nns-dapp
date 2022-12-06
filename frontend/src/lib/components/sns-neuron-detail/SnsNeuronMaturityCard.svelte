@@ -19,7 +19,7 @@
   import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
   import { isNullish } from "$lib/utils/utils";
   import { authStore } from "$lib/stores/auth.store";
-  import {ENABLE_SNS_2} from "$lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
