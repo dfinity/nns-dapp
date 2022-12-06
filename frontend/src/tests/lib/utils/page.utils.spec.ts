@@ -18,5 +18,9 @@ describe("page.utils", () => {
     expect(pathForRouteId(`${ROUTE_ID_GROUP_APP}${AppPath.Accounts}`)).toEqual(
       AppPath.Accounts
     );
+    // Check also with initial slash
+    expect(pathForRouteId(`/${ROUTE_ID_GROUP_APP}${AppPath.Accounts}`)).toEqual(
+      AppPath.Accounts
+    );
   });
 });
