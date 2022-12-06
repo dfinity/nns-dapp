@@ -790,8 +790,8 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve());
 
       const { success } = await stakeMaturity({
-        rootCanisterId,
         neuronId,
+        rootCanisterId,
         percentageToStake,
       });
 
@@ -799,8 +799,9 @@ describe("sns-neurons-services", () => {
 
       expect(spyOnStakeMaturity).toBeCalledWith({
         neuronId,
-        identity,
+        rootCanisterId,
         percentageToStake,
+        identity,
       });
     });
   });
