@@ -8,11 +8,10 @@
   import { createEventDispatcher } from "svelte";
   import { stakeMaturity } from "$lib/services/sns-neurons.services";
   import { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
-  import { assertNonNullish } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
+  export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
   let maturity: string;
@@ -25,10 +24,6 @@
     detail: { percentageToStake },
   }: CustomEvent<{ percentageToStake: number }>) => {
     startBusy({ initiator: "stake-maturity" });
-
-    const rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
-
-    assertNonNullish(rootCanisterId);
 
     const { success } = await stakeMaturity({
       neuronId,

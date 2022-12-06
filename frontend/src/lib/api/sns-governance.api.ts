@@ -324,15 +324,15 @@ export const setFollowees = async ({
 };
 
 export const stakeMaturity = async ({
-  percentageToStake,
+  neuronId,
   rootCanisterId,
   identity,
-  neuronId,
+  percentageToStake,
 }: {
-  percentageToStake: number;
+  neuronId: SnsNeuronId;
   rootCanisterId: Principal;
   identity: Identity;
-  neuronId: SnsNeuronId;
+  percentageToStake: number;
 }): Promise<void> => {
   logWithTimestamp(`Stake maturity: call...`);
 
@@ -348,4 +348,35 @@ export const stakeMaturity = async ({
   });
 
   logWithTimestamp(`Stake maturity: complete`);
+};
+
+export const autoStakeMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  autoStake,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  autoStake: boolean;
+}): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity call...`
+  );
+
+  const { autoStakeMaturity: autoStakeMaturityApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity complete.`
+  );
 };

@@ -22,6 +22,7 @@
     SnsNeuronModalType,
   } from "$lib/types/sns-neuron-detail.modal";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
+  import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
 
   // Modal events
 
@@ -57,25 +58,6 @@
 <svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
 
 {#if nonNullish(neuron)}
-  {#if type === "increase-dissolve-delay" && rootCanisterId !== undefined}
-    <IncreaseSnsDissolveDelayModal
-      {rootCanisterId}
-      {neuron}
-      {token}
-      {reloadNeuron}
-      on:nnsClose={close}
-    />
-  {/if}
-
-  {#if type === "disburse" && rootCanisterId !== undefined}
-    <DisburseSnsNeuronModal
-      {rootCanisterId}
-      {neuron}
-      {reloadNeuron}
-      on:nnsClose={close}
-    />
-  {/if}
-
   {#if type === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}
     <DissolveSnsNeuronModal
       {neuronId}
@@ -85,20 +67,52 @@
     />
   {/if}
 
-  {#if type === "follow" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
-  {/if}
-
   {#if type === "add-hotkey"}
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if type === "stake-maturity" && nonNullish(neuronId)}
-    <SnsStakeMaturityModal
-      {reloadNeuron}
-      on:nnsClose={close}
-      {neuronId}
-      {neuron}
-    />
+  {#if nonNullish(rootCanisterId)}
+    {#if type === "increase-dissolve-delay"}
+      <IncreaseSnsDissolveDelayModal
+        {rootCanisterId}
+        {neuron}
+        {token}
+        {reloadNeuron}
+        on:nnsClose={close}
+      />
+    {/if}
+
+    {#if type === "disburse"}
+      <DisburseSnsNeuronModal
+        {rootCanisterId}
+        {neuron}
+        {reloadNeuron}
+        on:nnsClose={close}
+      />
+    {/if}
+
+    {#if type === "follow"}
+      <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
+    {/if}
+
+    {#if nonNullish(neuronId)}
+      {#if type === "stake-maturity"}
+        <SnsStakeMaturityModal
+          {reloadNeuron}
+          on:nnsClose={close}
+          {neuronId}
+          {neuron}
+        />
+      {/if}
+
+      {#if type === "auto-stake-maturity"}
+        <SnsAutoStakeMaturityModal
+          {reloadNeuron}
+          on:nnsClose={close}
+          {neuronId}
+          {neuron}
+        />
+      {/if}
+    {/if}
   {/if}
 {/if}
