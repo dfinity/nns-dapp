@@ -730,6 +730,7 @@ interface I18nError__sns {
   sns_remove_followee: string;
   sns_load_functions: string;
   sns_add_hotkey: string;
+  sns_stake_maturity: string;
 }
 
 interface I18nAuth_accounts {
