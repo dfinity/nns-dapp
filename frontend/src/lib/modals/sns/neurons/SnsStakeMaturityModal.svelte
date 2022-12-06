@@ -7,7 +7,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import { stakeMaturity } from "$lib/services/sns-neurons.services";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;

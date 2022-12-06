@@ -6,7 +6,7 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { hasAutoStakeMaturityOn } from "$lib/utils/sns-neuron.utils";
   import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
