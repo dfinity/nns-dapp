@@ -87,7 +87,7 @@
     <button
       class="ghost"
       type="button"
-      aria-label={$i18n.proposal_detail.previous}
+      aria-label={$i18n.proposal_detail.newer}
       on:click={previous}
       class:hidden={proposalInfo !== undefined &&
         previousProposal === undefined}
@@ -95,19 +95,19 @@
       data-tid="proposal-nav-previous"
     >
       <IconWest />
-      {$i18n.core.previous}</button
+      {$i18n.proposal_detail.newer_short}</button
     >
 
     <button
       class="ghost"
       type="button"
-      aria-label={$i18n.proposal_detail.next}
+      aria-label={$i18n.proposal_detail.older}
       on:click={next}
       class:hidden={proposalInfo !== undefined && nextProposal === undefined}
       disabled={proposalInfo !== undefined && nextProposal === undefined}
       data-tid="proposal-nav-next"
     >
-      {$i18n.core.next}
+      {$i18n.proposal_detail.older_short}
       <IconEast />
     </button>
   </div>
