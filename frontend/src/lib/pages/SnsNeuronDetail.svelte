@@ -18,7 +18,6 @@
   import SnsNeuronMaturityCard from "$lib/components/sns-neuron-detail/SnsNeuronMaturityCard.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
@@ -112,9 +111,7 @@
         <SnsNeuronMetaInfoCard />
         <SnsNeuronInfoStake />
         <SnsNeuronMaturityCard />
-        {#if ENABLE_SNS_2}
-          <SnsNeuronFollowingCard />
-        {/if}
+        <SnsNeuronFollowingCard />
         <SnsNeuronHotkeysCard />
       {/if}
     </section>
