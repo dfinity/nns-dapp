@@ -7,7 +7,6 @@ import type { Navigation } from "@sveltejs/kit";
  *
  * Ex: /(app)/accounts/ returns AppPath.Accounts
  * Ex: /(app)/proposal/ returns AppPath.Proposal
- * Ex: (app)/accounts/ returns AppPath.Accounts
  *
  * @param routeId
  * @returns {AppPath}
@@ -20,9 +19,6 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   const index = Object.values(AppPath).indexOf(
     routeId
       .replace(ROUTE_ID_GROUP_APP, "")
-      // Substitute two or more slashes together with one.
-      // Sometimes the routeId is like this: /(app)/accounts others like this: (app)/accounts
-      .replace(/\/{2,}/, "/")
       // Remove trailing slash if present
       .replace(/\/$/, "") as unknown as AppPath
   );
