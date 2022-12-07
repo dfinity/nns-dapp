@@ -14,6 +14,7 @@ import {
   removeNeuronPermissions,
   setFollowees,
   stakeMaturity,
+  autoStakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -69,6 +70,7 @@ describe("sns-api", () => {
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
   const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -115,6 +117,7 @@ describe("sns-api", () => {
         nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
+        autoStakeMaturity: autoStakeMaturitySpy,
       })
     );
   });
@@ -195,6 +198,17 @@ describe("sns-api", () => {
       rootCanisterId: rootCanisterIdMock,
       neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
       percentageToStake: 60,
+    });
+
+    expect(stakeMaturitySpy).toBeCalled();
+  });
+
+  it("should autoStakeMaturity", async () => {
+    await autoStakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      autoStake: true
     });
 
     expect(stakeMaturitySpy).toBeCalled();
