@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        if: ${{ github.event_name != 'pull_request' }}
 
       - name: Install shfmt
         run: sudo snap install --classic shfmt
@@ -59,8 +66,15 @@ jobs:
         with:
           add: .
           author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
+          author_email: "<ci+nns-dapp-formatter@dfinity.org>"
           message: "Updating frontend formatting"
+
+      - name: Is formatted
+        run: [ -z "$(git status --porcelain)" ]
+        # Note: If the code was not formatted in a PR, there
+        # will have been a git push that should abort CI.  If
+        # the CI run was not from a PR, this serves to fail
+        # the CI run.
 
   clippy:
     needs: formatting
