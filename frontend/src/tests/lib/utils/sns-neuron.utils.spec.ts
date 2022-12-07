@@ -21,6 +21,7 @@ import {
   hasPermissionToDissolve,
   hasPermissionToStakeMaturity,
   hasPermissionToVote,
+  hasStakedMaturity,
   hasValidStake,
   isCommunityFund,
   isSnsNeuron,
@@ -895,7 +896,7 @@ describe("sns-neuron utils", () => {
     it("should return true if staked maturity", () => {
       const neuron = {
         ...mockSnsNeuron,
-        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+        maturity_e8s_equivalent: BigInt(200000000),
       };
       expect(hasEnoughMaturityToStake(neuron)).toBeTruthy();
     });
@@ -903,14 +904,46 @@ describe("sns-neuron utils", () => {
     it("should return false if no staked maturity", () => {
       const neuron = {
         ...mockSnsNeuron,
-        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+        maturity_e8s_equivalent: BigInt(0),
       };
+
       expect(hasEnoughMaturityToStake(neuron)).toBeFalsy();
     });
 
     it("should return false when no neuron provided", () => {
       expect(hasEnoughMaturityToStake(null)).toBeFalsy();
       expect(hasEnoughMaturityToStake(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("hasStakedMaturity", () => {
+    it("should return true if has staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeTruthy();
+    });
+
+    it("should return also true if staked maturity is zero", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(0)] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeTruthy();
+    });
+
+    it("should return false if no staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeFalsy();
+    });
+
+    it("should return false when no neuron provided", () => {
+      expect(hasStakedMaturity(null)).toBeFalsy();
+      expect(hasStakedMaturity(undefined)).toBeFalsy();
     });
   });
 

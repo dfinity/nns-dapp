@@ -5,8 +5,8 @@
   import {
     formattedTotalMaturity,
     formattedStakedMaturity,
-    hasEnoughMaturityToStake,
     hasPermissionToStakeMaturity,
+    hasStakedMaturity,
   } from "$lib/utils/sns-neuron.utils";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -42,7 +42,7 @@
     <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePair>
 
-  {#if hasEnoughMaturityToStake(neuron) && ENABLE_SNS_2}
+  {#if hasStakedMaturity(neuron) && ENABLE_SNS_2}
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 

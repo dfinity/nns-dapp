@@ -307,14 +307,21 @@ export const formattedTotalMaturity = (
   });
 
 /**
- * Is the staked maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
+ * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
 export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
+): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
+
+/**
+ * Does the neuron has staked maturity?
+ * @param neuron
+ */
+export const hasStakedMaturity = (
+  neuron: SnsNeuron | null | undefined
 ): boolean =>
-  (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)) >
-  BigInt(0);
+  nonNullish(fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []));
 
 /**
  * Format the staked maturity in a value (token "currency") way.
