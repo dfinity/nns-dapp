@@ -211,7 +211,7 @@ describe("sns-api", () => {
       autoStake: true,
     });
 
-    expect(stakeMaturitySpy).toBeCalled();
+    expect(autoStakeMaturity).toBeCalled();
   });
 
   it("should getNeuronBalance", async () => {
