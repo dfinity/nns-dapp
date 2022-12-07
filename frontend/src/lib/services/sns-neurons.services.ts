@@ -487,11 +487,11 @@ export const loadSnsNervousSystemFunctions = async (
  * - The new followee is the same neuron.
  * - The call throws an error.
  *
- * @param {Object}
- * @param {Principal} rootCanisterId
- * @param {SnsNeuron} neuron
- * @param {SnsNeuronId} followee
- * @param {bigint} functionId
+ * @param {Object} params
+ * @param {Principal} params.rootCanisterId
+ * @param {SnsNeuron} params.neuron
+ * @param {SnsNeuronId} params.followee
+ * @param {bigint} params.functionId
  * @returns
  */
 export const addFollowee = async ({
@@ -578,11 +578,11 @@ export const addFollowee = async ({
  * - The followee is not in the list of followees.
  * - The call throws an error.
  *
- * @param {Object}
- * @param {Principal} rootCanisterId
- * @param {SnsNeuron} neuron
- * @param {SnsNeuronId} followee
- * @param {bigint} functionId
+ * @param {Object} params
+ * @param {Principal} params.rootCanisterId
+ * @param {SnsNeuron} params.neuron
+ * @param {SnsNeuronId} params.followee
+ * @param {bigint} params.functionId
  * @returns
  */
 export const removeFollowee = async ({
