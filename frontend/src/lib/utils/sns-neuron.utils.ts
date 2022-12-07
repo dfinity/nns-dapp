@@ -11,7 +11,6 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
-import { enumValues } from "./enum.utils";
 import { arraysEqual, bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -187,17 +186,6 @@ export const hasPermissionToStakeMaturity = ({
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
     ],
   });
-
-const hasAllPermissions = (permission_type: Int32Array): boolean => {
-  const permissionsNumbers = Array.from(permission_type);
-  const allPermissions = enumValues(SnsNeuronPermissionType);
-  return (
-    allPermissions.length === permissionsNumbers.length &&
-    allPermissions.every((permission) =>
-      permissionsNumbers.includes(permission)
-    )
-  );
-};
 
 /*
  * Returns true if the neuron contains provided permissions
