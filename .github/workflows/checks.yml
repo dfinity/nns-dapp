@@ -2,9 +2,6 @@ name: CI Checks
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,61 +17,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-        if: ${{ github.event_name == 'pull_request' }}
-      - name: Checkout
-        uses: actions/checkout@v3
         if: ${{ github.event_name != 'pull_request' }}
 
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
-        run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
       - name: Install frontend dependencies
         run: npm ci
         working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
       - name: Install e2e test dependencies
         run: npm ci
         working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
 
-      - name: Format dfx.json
-        run: cat <<<$(jq . dfx.json) > dfx.json
+      - name: Format
+        run: ./scripts/fmt
 
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v9.1.1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<ci+nns-dapp-formatter@dfinity.org>"
-          message: "Updating formatting"
-
-      - name: Is formatted
+      - name: Check formatted
         run: test -z "$(git status --porcelain)"
-        # Note: If the code was not formatted in a PR, there
-        # will have been a git push that should abort CI.  If
-        # the CI run was not from a PR, this serves to fail
-        # the CI run.
 
   clippy:
     needs: formatting
