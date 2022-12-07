@@ -125,8 +125,6 @@
     "account_menu": "Open menu to access logout button"
   },
   "auth": {
-    "ic": "INTERNET COMPUTER",
-    "nns": "NETWORK NERVOUS SYSTEM",
     "login": "Sign in with Internet Identity",
     "title": "Open and autonomous governance running",
     "on_chain": "100% on-chain",

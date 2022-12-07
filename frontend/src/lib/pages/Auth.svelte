@@ -5,7 +5,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { IconWallet, IconPassword, IconUsers } from "@dfinity/gix-components";
+  import { IconWallet, IconPassword, IconUsers, IconRocketLaunch } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -49,20 +49,6 @@
   onDestroy(unsubscribe);
 </script>
 
-<div class="nns">
-  <img
-    src="/assets/ic-logo.svg"
-    role="presentation"
-    alt={$i18n.auth.ic_logo}
-    loading="lazy"
-  />
-
-  <p class="value">
-    <span>{$i18n.auth.ic}</span>
-    <span>{$i18n.auth.nns}</span>
-  </p>
-</div>
-
 <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
 
 <ul>
@@ -84,6 +70,12 @@
       {$i18n.auth.earn}</a
     >
   </li>
+  <li>
+    <a href={AppPath.Launchpad} data-tid="auth-link-launchpad"
+    ><IconRocketLaunch />
+      {$i18n.auth.earn}</a
+    >
+  </li>
 </ul>
 
 <div class="sign-in">
@@ -92,51 +84,14 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-
-  .nns {
-    display: flex;
-    align-items: center;
-
-    margin: var(--padding) 0 calc(5 * var(--padding));
-    gap: var(--padding-2x);
-
-    img {
-      height: 32px;
-    }
-
-    p {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-
-      font-size: var(--font-size-small);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: 0.1rem;
-    }
-
-    @media (min-width: 768px) and (min-height: 620px) {
-      justify-content: center;
-      flex-direction: column;
-
-      margin: var(--padding) 0 var(--padding-4x);
-      gap: var(--padding);
-
-      img {
-        height: 38px;
-      }
-
-      p {
-        font-size: var(--font-size-small);
-        align-items: center;
-      }
-    }
-  }
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   h1 {
-    line-height: 1.4;
-    font-size: var(--font-size-h2);
+    @include fonts.h2;
     margin: 0 0 var(--padding-2x);
     max-width: 330px;
+
+    letter-spacing: -0.02em;
 
     color: var(--value-color);
 
@@ -149,8 +104,9 @@
     }
 
     @media (min-width: 768px) and (min-height: 620px) {
-      max-width: 550px;
-      font-size: 2.441rem;
+      max-width: 100%;
+      font-size: calc(var(--font-size-h1) * 3);
+      line-height: var(--line-height-standard);
     }
   }
 
@@ -172,21 +128,13 @@
       display: flex;
       width: 100%;
       justify-content: center;
-      gap: var(--padding-6x);
-      padding: var(--padding-6x);
+      gap: var(--padding-2x);
+      padding: var(--padding-8x) 0;
     }
   }
 
   li {
-    font-size: var(--font-size-small);
     padding: var(--padding-1_5x) 0;
-
-    :global(svg) {
-      height: 20px;
-      width: 20px;
-      vertical-align: bottom;
-      margin: 0 var(--padding-0_5x) 0 0;
-    }
   }
 
   .sign-in {
@@ -208,10 +156,30 @@
     color: inherit;
     text-decoration: none;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: var(--padding-3x) var(--padding-4x);
+
+    background: linear-gradient(113.27deg, #24133C 0%, #291641 49.25%, #29103C 100%);
+    border: 1px solid #4B3870;
+    border-radius: var(--border-radius);
+
+    @include fonts.small;
+
     &:hover,
     &:active,
     &:focus {
       text-decoration: underline;
+    }
+
+    :global(svg) {
+      height: 20px;
+      width: 20px;
+      vertical-align: bottom;
+      margin: 0 0 var(--padding);
     }
   }
 </style>
