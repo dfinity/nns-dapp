@@ -280,8 +280,7 @@ export const hasValidStake = (neuron: SnsNeuron): boolean =>
  */
 export const hasAutoStakeMaturityOn = (
   neuron: SnsNeuron | null | undefined
-): boolean =>
-  (fromNullable(neuron?.auto_stake_maturity ?? []) ?? false) === true;
+): boolean => Boolean(fromNullable(neuron?.auto_stake_maturity ?? []));
 
 /**
  * Format the maturity in a value (token "currency") way.
