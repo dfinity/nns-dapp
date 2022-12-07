@@ -70,7 +70,7 @@ jobs:
           message: "Updating frontend formatting"
 
       - name: Is formatted
-        run: [ -z "$(git status --porcelain)" ]
+        run: test -z "$(git status --porcelain)"
         # Note: If the code was not formatted in a PR, there
         # will have been a git push that should abort CI.  If
         # the CI run was not from a PR, this serves to fail
