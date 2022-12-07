@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { bytesToHexString, isHash } from "$lib/utils/utils";
+  import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
@@ -27,38 +27,6 @@
     if (Array.isArray(json) && isHash(json)) return "hash";
     return typeof value;
   };
-  const stringify = (value: unknown): string | object => {
-    switch (typeof value) {
-      case "object": {
-        if (value === null) {
-          return "null";
-        }
-        // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-        if (isPrincipal(value)) {
-          const asText = value.toString();
-          if (asText !== "[object Object]") {
-            // To not stringify NOT-Principal object that contains _isPrincipal field
-            return `"${asText}"`;
-          }
-        }
-        // optimistic hash stringifying
-        if (Array.isArray(value) && isHash(value)) {
-          return bytesToHexString(value);
-        }
-        return value;
-      }
-      case "string":
-        return `"${value}"`;
-      case "bigint":
-        return value.toString();
-      case "function":
-        return "f () { ... }";
-      case "symbol":
-        return value.toString();
-      default:
-        return `${value}`;
-    }
-  };
 
   let valueType: ValueType;
   let value: unknown;
@@ -74,7 +42,7 @@
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
-    value = isExpandable ? json : stringify(json);
+    value = isExpandable ? json : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -170,16 +138,22 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
   }
   .key {
     display: inline-block;
     position: relative;
 
     color: var(--label-color);
+
+    margin-right: var(--padding-0_5x);
   }
-  .key-value {
-    // word-wrap long values in it's column
-    display: inline-flex;
+  .value {
+    // Values can be strings of JSON and long. We want to break the value, so that the keys stay on the same line.
+    word-break: break-all;
   }
   .arrow {
     @include interaction.tappable;
@@ -209,9 +183,11 @@
       position: absolute;
       left: 0;
       top: 0;
+      // Move left to compensate for the padding of the ul
+      // Move down to componsate for the gap between li
       transform: translate(
         calc(-1 * var(--padding-1_5x)),
-        calc(0.3 * var(--padding))
+        calc(0.8 * var(--padding))
       );
       font-size: var(--padding);
     }
@@ -243,7 +219,6 @@
     color: var(--json-principal-color);
   }
   .value.hash {
-    word-break: break-all;
     color: var(--json-hash-color);
   }
   .value.bigint {

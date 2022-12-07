@@ -4,19 +4,14 @@
 
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
-import { routeStore } from "$lib/stores/route.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import {
-  SnsNeuronPermissionType,
-  SnsSwapLifecycle,
-  type SnsNeuron,
-} from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
@@ -48,16 +43,9 @@ describe("SnsNeuronCard", () => {
   });
   beforeEach(() => {
     snsQueryStore.setData(data);
-    const [snsMetadatas] = data;
-    routeStore.update({
-      path: `${CONTEXT_PATH}/${snsMetadatas[0].rootCanisterId}/neurons`,
-    });
   });
   afterEach(() => {
     snsQueryStore.reset();
-    routeStore.update({
-      path: AppPath.LegacyNeurons,
-    });
   });
   it("renders a Card", () => {
     const { container } = render(SnsNeuronCard, {
@@ -187,10 +175,7 @@ describe("SnsNeuronCard", () => {
       permissions: [
         {
           principal: [mockIdentity.getPrincipal()],
-          permission_type: Int32Array.from([
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
-          ]),
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
         },
       ],
     };

@@ -1,92 +1,96 @@
 /**
  * @jest-environment jsdom
  */
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { AppPath, CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import {
   accountsPathStore,
-  neuronPathStore,
+  canistersPathStore,
   neuronsPathStore,
-  walletPathStore,
+  proposalsPathStore,
 } from "$lib/derived/paths.derived";
-import { routeStore } from "$lib/stores/route.store";
-import { paths } from "$lib/utils/app-path.utils";
+import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
+import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
 
 describe("paths derived stores", () => {
   describe("accountsPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
     it("should return NNS accounts path as default", () => {
-      const $store = get(accountsPathStore);
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
-      expect($store).toBe(paths.accounts(OWN_CANISTER_ID.toText()));
+      const $store = get(accountsPathStore);
+      expect($store).toBe(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
     it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+
       const $store = get(accountsPathStore);
-
-      expect($store).toBe(paths.accounts(context));
-    });
-  });
-
-  describe("walletPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
-    it("should return NNS accounts path as default", () => {
-      const $store = get(walletPathStore);
-
-      expect($store).toBe(paths.wallet(OWN_CANISTER_ID.toText()));
-    });
-
-    it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(walletPathStore);
-
-      expect($store).toBe(paths.wallet(context));
+      expect($store).toBe(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 
   describe("neuronsPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
-    });
-    it("should return NNS accounts path as default", () => {
+    it("should return NNS neurons path as default", () => {
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
       const $store = get(neuronsPathStore);
-
-      expect($store).toBe(paths.neurons(OWN_CANISTER_ID.toText()));
+      expect($store).toBe(
+        `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
-    it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(neuronsPathStore);
+    it("should return SNS neurons path", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
 
-      expect($store).toBe(paths.neurons(context));
+      const $store = get(neuronsPathStore);
+      expect($store).toBe(
+        `${AppPath.Neurons}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 
-  describe("neuronPathStore", () => {
-    beforeEach(() => {
-      routeStore.update({ path: AppPath.LegacyAccounts });
+  describe("proposalsPathStore", () => {
+    it("should return NNS proposals path as default", () => {
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+      const $store = get(proposalsPathStore);
+      expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
-    it("should return NNS accounts path as default", () => {
-      const $store = get(neuronPathStore);
 
-      expect($store).toBe(paths.neuronDetail(OWN_CANISTER_ID.toText()));
+    it("should return SNS proposals path", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+
+      const $store = get(proposalsPathStore);
+      expect($store).toBe(
+        `${AppPath.Proposals}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
+    });
+  });
+
+  describe("canistersPathStore", () => {
+    it("should return NNS canisters path as default", () => {
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+      const $store = get(canistersPathStore);
+      expect($store).toBe(
+        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
     });
 
-    it("should return SNS accounts path", () => {
-      const context = "aaaaa-aa";
-      routeStore.update({ path: `${CONTEXT_PATH}/${context}/neuron/12344` });
-      const $store = get(neuronPathStore);
+    it("should return SNS canisters path", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
 
-      expect($store).toBe(paths.neuronDetail(context));
+      const $store = get(canistersPathStore);
+      expect($store).toBe(
+        `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
+      );
     });
   });
 });

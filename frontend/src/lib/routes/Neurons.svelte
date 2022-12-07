@@ -1,45 +1,35 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
+  import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
   import {
     isNnsProjectStore,
-    snsProjectSelectedStore,
+    snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
-  import { onMount } from "svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
-
-  // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
-  onMount(() => {
-    if (
-      ENABLE_SNS &&
-      isRoutePath({
-        paths: [AppPath.LegacyNeurons],
-        routePath: $routeStore.path,
-      })
-    ) {
-      routeStore.changeContext(OWN_CANISTER_ID.toText());
-    }
-  });
+  import NeuronsTitle from "$lib/components/neurons/NeuronsTitle.svelte";
 </script>
 
-<main class="legacy">
-  {#if ENABLE_SNS}
-    <SelectProjectDropdownHeader />
-  {/if}
+<main>
+  <NeuronsTitle />
 
   {#if $isNnsProjectStore}
     <NnsNeurons />
-  {:else if $snsProjectSelectedStore !== undefined}
+  {:else if $snsProjectIdSelectedStore !== undefined}
     <SnsNeurons />
   {/if}
 </main>
 
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
+  <!-- Staking SNS Neurons has not yet been reviewed by security -->
+{:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_2}
+  <SnsNeuronsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

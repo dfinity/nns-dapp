@@ -11,6 +11,7 @@
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import {
+    Html,
     WizardModal,
     type WizardSteps,
     type WizardStep,
@@ -85,15 +86,17 @@
       on:nnsConfirm={stakeNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      {@html replacePlaceholders(
-        $i18n.neuron_detail.stake_maturity_confirmation,
-        {
-          $percentage: formatPercentage(percentageToStake / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          }),
-        }
-      )}
+      <Html
+        text={replacePlaceholders(
+          $i18n.neuron_detail.stake_maturity_confirmation,
+          {
+            $percentage: formatPercentage(percentageToStake / 100, {
+              minFraction: 0,
+              maxFraction: 0,
+            }),
+          }
+        )}
+      />
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>

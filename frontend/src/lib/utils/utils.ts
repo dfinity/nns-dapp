@@ -1,3 +1,4 @@
+import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
 import { errorToString } from "./error.utils";
 
@@ -47,6 +48,11 @@ export const stringifyJson = (
             const asText = value.toString();
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
+          }
+
+          // optimistic hash stringifying
+          if (Array.isArray(value) && isHash(value)) {
+            return bytesToHexString(value);
           }
 
           if (value instanceof Promise) {
@@ -300,3 +306,43 @@ export const keyOfOptional = <T>({
   obj: T | undefined;
   key: string | keyof T;
 }): T[keyof T] | undefined => obj?.[key as keyof T];
+
+/**
+ * Returns whether an asset is PNG or not.
+ *
+ * @param {string} asset
+ * @returns boolean
+ */
+export const isPngAsset = (
+  asset: string | undefined | PngDataUrl
+): asset is PngDataUrl =>
+  nonNullish(asset) && asset.startsWith("data:image/png;base64,");
+
+/**
+ * Takes an object and tries to parse inner string as JSON.
+ * If it fails, it returns the original string value.
+ *
+ * For example: {b: '{"c":"d"}'} becomes {b: {c: 'd'}}
+ *
+ * @param obj
+ * @returns parsed object
+ */
+export const expandObject = (
+  obj: Record<string, unknown>
+): Record<string, unknown> =>
+  Object.keys(obj).reduce((acc, key) => {
+    const value = obj[key];
+    if (typeof value === "string") {
+      try {
+        acc[key] = JSON.parse(value);
+      } catch (e) {
+        acc[key] = value;
+      }
+    } else if (typeof value === "object") {
+      acc[key] =
+        value !== null ? expandObject(value as Record<string, unknown>) : value;
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as Record<string, unknown>);

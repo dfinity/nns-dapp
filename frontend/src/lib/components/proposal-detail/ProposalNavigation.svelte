@@ -1,7 +1,5 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { routeStore } from "$lib/stores/route.store";
-  import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalInfo } from "@dfinity/nns";
   import {
     filteredProposals,
@@ -9,27 +7,38 @@
   } from "$lib/derived/proposals.derived";
   import { onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
 
   export let proposalInfo: ProposalInfo | undefined;
 
-  const next = () => {
-    if (nextProposal === undefined) {
+  const next = async () => {
+    // Type safety check only
+    if (nextProposal === undefined || nextProposal.id === undefined) {
       return;
     }
 
-    routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${nextProposal.id}`,
-    });
+    await goto(
+      buildProposalUrl({
+        universe: $pageStore.universe,
+        proposalId: nextProposal.id,
+      })
+    );
   };
 
-  const previous = () => {
-    if (previousProposal === undefined) {
+  const previous = async () => {
+    // Type safety check only
+    if (previousProposal === undefined || previousProposal.id === undefined) {
       return;
     }
 
-    routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${previousProposal.id}`,
-    });
+    await goto(
+      buildProposalUrl({
+        universe: $pageStore.universe,
+        proposalId: previousProposal.id,
+      })
+    );
   };
 
   let previousProposal: ProposalInfo | undefined;

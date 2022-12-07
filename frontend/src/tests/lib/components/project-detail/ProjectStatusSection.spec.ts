@@ -3,8 +3,10 @@
  */
 
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
@@ -12,6 +14,12 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectStatusSection", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   it("should render subtitle", () => {
     const { container } = renderContextCmp({
       summary: mockSnsFullProject.summary,

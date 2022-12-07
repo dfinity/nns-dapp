@@ -1,9 +1,18 @@
-<footer>
-  <slot />
+<script lang="ts">
+  import { Toolbar } from "@dfinity/gix-components";
+
+  export let columns = 2;
+</script>
+
+<footer style={`--footer-columns: ${columns}`}>
+  <Toolbar>
+    <slot />
+  </Toolbar>
 </footer>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   footer {
     height: var(--footer-height);
@@ -12,6 +21,7 @@
     pointer-events: none;
 
     background: var(--footer-background);
+    --button-secondary-background: var(--focus-background);
 
     :global(.toolbar) {
       align-items: end;
@@ -19,20 +29,42 @@
     }
 
     :global(.main) {
-      @include media.min-width(xsmall) {
-        min-width: 280px;
-        max-width: calc(var(--section-max-width) * 0.7);
-        width: 100%;
+      display: grid;
+      --footer-main-inner-width: calc(100% - (2 * var(--padding-0_5x)));
+      grid-template-columns: repeat(
+        var(--footer-columns),
+        calc(var(--footer-main-inner-width) / var(--footer-columns))
+      );
+
+      padding: var(--padding-0_5x);
+      background: var(--focus-background);
+      border-radius: var(--border-radius);
+
+      gap: calc(var(--padding) * 2 / 3);
+
+      @include media.min-width(small) {
+        grid-template-columns: repeat(
+          var(--footer-columns),
+          minmax(calc(var(--footer-main-inner-width) / 2), 180px)
+        );
       }
 
       @include media.min-width(medium) {
         margin-bottom: var(--padding-2x);
-        gap: var(--padding-2x);
       }
-    }
 
-    :global(button) {
-      width: 50%;
+      :global(div.tooltip-wrapper) {
+        width: 100%;
+      }
+
+      :global(button) {
+        @include text.truncate;
+
+        @media (min-width: 300px) {
+          overflow: inherit;
+          white-space: initial;
+        }
+      }
     }
   }
 </style>

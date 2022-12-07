@@ -11,11 +11,11 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { routeStore } from "$lib/stores/route.store";
   import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/neurons.services";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import { goto } from "$app/navigation";
 
   export let neuron: NeuronInfo;
 
@@ -70,13 +70,15 @@
       toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
       });
-
-      routeStore.replace({
-        path: $neuronsPathStore,
-      });
     }
 
+    // We need to dispatch the nnsClose event before we navigate away
+    // Otherwise the parent component that needs to close the modal is unmounted before closing the modal
     dispatcher("nnsClose");
+
+    if (success) {
+      await goto($neuronsPathStore, { replaceState: true });
+    }
   };
 </script>
 

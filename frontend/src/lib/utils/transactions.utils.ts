@@ -1,9 +1,10 @@
 import type {
   AccountIdentifierString,
-  Transaction,
+  Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
 // Value should match the key in i18n "transaction_names"
@@ -19,29 +20,8 @@ export enum AccountTransactionType {
   ParticipateSwap = "participateSwap",
 }
 
-export const accountName = ({
-  account,
-  mainName,
-}: {
-  account: Account | undefined;
-  mainName: string;
-}): string =>
-  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
-
-export interface AccountTransaction {
-  from: AccountIdentifierString;
-  to: AccountIdentifierString;
-  amount: TokenAmount;
-  date: Date;
-  fee: TokenAmount;
-  type: AccountTransactionType;
-  memo: bigint;
-  incomplete: boolean;
-  blockHeight: bigint;
-}
-
 export const transactionType = (
-  transaction: Transaction
+  transaction: NnsTransaction
 ): AccountTransactionType => {
   const { transaction_type } = transaction;
   if (transaction_type.length === 0) {
@@ -120,23 +100,27 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
-export const mapTransaction = ({
+export interface Transaction {
+  type: AccountTransactionType;
+  isReceive: boolean;
+  isSend: boolean;
+  // Account string representation
+  from: string | undefined;
+  // Account string representation
+  to: string | undefined;
+  displayAmount: TokenAmount;
+  date: Date;
+}
+
+export const mapNnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
 }: {
-  transaction: Transaction;
+  transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
-}): {
-  type: AccountTransactionType;
-  isReceive: boolean;
-  isSend: boolean;
-  from: AccountIdentifierString | undefined;
-  to: AccountIdentifierString | undefined;
-  displayAmount: TokenAmount;
-  date: Date;
-} => {
+}): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
@@ -205,26 +189,34 @@ export const transactionName = ({
   type,
   isReceive,
   labels,
+  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
+  tokenSymbol: string;
 }): string =>
-  type === AccountTransactionType.Send
-    ? isReceive
-      ? labels.receive
-      : labels.send
-    : labels[type] ?? type;
+  replacePlaceholders(
+    type === AccountTransactionType.Send
+      ? isReceive
+        ? labels.receive
+        : labels.send
+      : labels[type] ?? type,
+    { $tokenSymbol: tokenSymbol }
+  );
 
-/** (from==to workaround) Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = (
-  transactions: Transaction[]
-): { transaction: Transaction; toSelfTransaction: boolean }[] => {
+/** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
+export const mapToSelfTransaction = <T>(
+  transactions: T[]
+): { transaction: T; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.map((transaction) => ({
     transaction: { ...transaction },
     toSelfTransaction: false,
   }));
 
+  // We rely on self transactions to be one next to each other.
+  // We only set the first transaction to `toSelfTransaction: true`
+  // because the second one will be `toSelfTransaction: false` and it will be displayed as `Sent` transaction.
   for (let i = 0; i < resultTransactions.length - 1; i++) {
     const { transaction } = resultTransactions[i];
     const { transaction: nextTransaction } = resultTransactions[i + 1];

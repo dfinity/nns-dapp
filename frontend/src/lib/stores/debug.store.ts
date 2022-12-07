@@ -1,22 +1,34 @@
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { AddAccountStore } from "$lib/types/add-account.context";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
-import type { HardwareWalletNeuronsStore } from "$lib/types/hardware-wallet-neurons.context";
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
-import type { SelectedAccountStore } from "$lib/types/selected-account.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
-import { toastsStore } from "@dfinity/gix-components";
-import { derived, readable, type Readable, type Writable } from "svelte/store";
+import type { SelectedSnsNeuronStore } from "$lib/types/sns-neuron-detail.context";
+import type { WalletStore } from "$lib/types/wallet.context";
+import { busyStore, toastsStore } from "@dfinity/gix-components";
+import {
+  derived,
+  readable,
+  writable,
+  type Readable,
+  type Writable,
+} from "svelte/store";
 import { accountsStore } from "./accounts.store";
-import { busyStore } from "./busy.store";
 import { canistersStore } from "./canisters.store";
 import { knownNeuronsStore } from "./knownNeurons.store";
 import { neuronsStore } from "./neurons.store";
+import { projectsStore } from "./projects.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
 } from "./proposals.store";
+import { snsAccountsStore } from "./sns-accounts.store";
+import { snsFunctionsStore } from "./sns-functions.store";
+import { snsNeuronsStore } from "./sns-neurons.store";
+import { snsTransactionsStore } from "./sns-transactions.store";
+import { transactionsFeesStore } from "./transaction-fees.store";
 import { voteRegistrationStore } from "./vote-registration.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
@@ -26,19 +38,14 @@ let addAccountStore: Readable<AddAccountStore>;
 export const debugAddAccountStore = (store: Writable<AddAccountStore>) =>
   (addAccountStore = createDerivedStore(store));
 
-let hardwareWalletNeuronsStore: Readable<HardwareWalletNeuronsStore>;
-export const debugHardwareWalletNeuronsStore = (
-  store: Writable<HardwareWalletNeuronsStore>
-) => (hardwareWalletNeuronsStore = createDerivedStore(store));
-
 // Context stores might not be initialized when debugger is called.
 // Therefore, we need to initialize them here.
-let selectedAccountStore: Readable<SelectedAccountStore> = readable({
+let walletStore: Readable<WalletStore> = readable({
   account: undefined,
+  neurons: [],
 });
-export const debugSelectedAccountStore = (
-  store: Writable<SelectedAccountStore>
-) => (selectedAccountStore = createDerivedStore(store));
+export const debugSelectedAccountStore = (store: Writable<WalletStore>) =>
+  (walletStore = createDerivedStore(store));
 let selectedProposalStore: Readable<SelectedProposalStore> = readable({
   proposalId: undefined,
   proposal: undefined,
@@ -50,6 +57,8 @@ let selectedCanisterStore: Readable<SelectCanisterDetailsStore> = readable({
   info: undefined,
   details: undefined,
   controller: undefined,
+  modal: undefined,
+  selectedController: undefined,
 });
 export const debugSelectedCanisterStore = (
   store: Writable<SelectCanisterDetailsStore>
@@ -61,6 +70,17 @@ let selectedProjectStore: Readable<ProjectDetailStore> = readable({
 export const debugSelectedProjectStore = (
   store: Writable<ProjectDetailStore>
 ) => (selectedProjectStore = createDerivedStore(store));
+let selectedSnsNeuronStore: Readable<SelectedSnsNeuronStore> = readable({
+  selected: undefined,
+  neuron: undefined,
+});
+export const debugSelectedSnsNeuronStore = (
+  store: Writable<SelectedSnsNeuronStore>
+) => (selectedSnsNeuronStore = createDerivedStore(store));
+const transactionsStore = writable<Transaction[] | undefined>(undefined);
+export const debugTransactions = (transactions: Transaction[] | undefined) => {
+  transactionsStore.set(transactions);
+};
 
 /**
  * Collects state of all available stores (also from context)
@@ -69,7 +89,6 @@ export const initDebugStore = () =>
   derived(
     [
       // TODO (L2-611): anonymize wallet id and neuron ids
-      // TODO: (L2-683): add routeStore
       busyStore,
       accountsStore,
       neuronsStore,
@@ -81,12 +100,19 @@ export const initDebugStore = () =>
       proposalPayloadsStore,
       toastsStore,
       addAccountStore,
-      hardwareWalletNeuronsStore,
-      selectedAccountStore,
+      walletStore,
       selectedCanisterStore,
       selectedProposalStore,
       voteRegistrationStore,
       selectedProjectStore,
+      snsNeuronsStore,
+      snsAccountsStore,
+      snsTransactionsStore,
+      selectedSnsNeuronStore,
+      transactionsStore,
+      projectsStore,
+      snsFunctionsStore,
+      transactionsFeesStore,
     ],
     ([
       $busyStore,
@@ -100,12 +126,19 @@ export const initDebugStore = () =>
       $proposalPayloadsStore,
       $toastsStore,
       $addAccountStore,
-      $hardwareWalletNeuronsStore,
       $selectedAccountStore,
       $selectedCanisterStore,
       $selectedProposalStore,
       $voteRegistrationStore,
       $selectedProjectStore,
+      $snsNeuronsStore,
+      $snsAccountsStore,
+      $snsTransactionsStore,
+      $selectedSnsNeuronStore,
+      $transactionsStore,
+      $projectsStore,
+      $snsFunctionsStore,
+      $transactionsFeesStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -118,11 +151,18 @@ export const initDebugStore = () =>
       proposalPayloads: $proposalPayloadsStore,
       toasts: $toastsStore,
       addAccount: $addAccountStore,
-      hardwareWalletNeurons: $hardwareWalletNeuronsStore,
       selectedAccount: $selectedAccountStore,
       selectedCanister: $selectedCanisterStore,
       selectedProposal: $selectedProposalStore,
       voteRegistrationStore: $voteRegistrationStore,
       selectedProject: $selectedProjectStore,
+      snsNeurons: $snsNeuronsStore,
+      snsAccounts: $snsAccountsStore,
+      snsTransactions: $snsTransactionsStore,
+      selectedSnsNeuron: $selectedSnsNeuronStore,
+      transactions: $transactionsStore,
+      projects: $projectsStore,
+      snsFunctions: $snsFunctionsStore,
+      transactionsFees: $transactionsFeesStore,
     })
   );

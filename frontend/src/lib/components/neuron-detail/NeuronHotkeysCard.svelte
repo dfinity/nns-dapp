@@ -1,20 +1,20 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { IconClose } from "@dfinity/gix-components";
-  import { getIdentity } from "$lib/services/auth.services";
+  import { IconClose, Value } from "@dfinity/gix-components";
+  import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
+  import { goto } from "$app/navigation";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -36,7 +36,7 @@
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
-    const currentIdentityPrincipal = (await getIdentity())
+    const currentIdentityPrincipal = (await getAuthenticatedIdentity())
       .getPrincipal()
       .toText();
     // If the user removes itself from the hotkeys, it has no more access to the detail page.
@@ -45,7 +45,8 @@
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
       });
-      routeStore.replace({ path: AppPath.LegacyNeurons });
+
+      await goto(AppPath.Neurons, { replaceState: true });
     }
     stopBusy("remove-hotkey-neuron");
   };
@@ -74,10 +75,12 @@
   {/if}
   {#if isControllable}
     <div class="actions">
-      <AddHotkeyButton neuronId={neuron.neuronId} />
+      <AddHotkeyButton />
     </div>
   {/if}
 </CardInfo>
+
+<Separator />
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";

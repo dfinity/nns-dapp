@@ -1,72 +1,34 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
-  import { toggleCommunityFund } from "$lib/services/neurons.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasJoinedCommunityFund } from "$lib/utils/neuron.utils";
   import { Checkbox } from "@dfinity/gix-components";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let isOpen = false;
-
-  const showModal = () => (isOpen = true);
-  const closeModal = () => (isOpen = false);
-
-  const joinFund = async () => {
-    startBusy({ initiator: "toggle-community-fund" });
-    const successMessageKey = isCommunityFund
-      ? "neuron_detail.leave_community_fund_success"
-      : "neuron_detail.join_community_fund_success";
-    const id = await toggleCommunityFund(neuron);
-    if (id !== undefined) {
-      toastsSuccess({
-        labelKey: successMessageKey,
-      });
-    }
-    closeModal();
-    stopBusy("toggle-community-fund");
-  };
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
 <Checkbox
   preventDefault
   inputId="join-community-fund-checkbox"
   checked={isCommunityFund}
-  on:nnsChange={showModal}
+  on:nnsChange={() =>
+    openNnsNeuronModal({
+      type: "join-community-fund",
+      data: { neuron: $store.neuron },
+    })}
 >
   <span>{$i18n.neuron_detail.participate_community_fund}</span>
 </Checkbox>
-
-{#if isOpen}
-  <ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={joinFund}>
-    <div data-tid="join-community-fund-modal">
-      <h4>{$i18n.core.confirm}</h4>
-      {#if isCommunityFund}
-        <p>{@html $i18n.neuron_detail.leave_community_fund_description}</p>
-      {:else}
-        <p>{@html $i18n.neuron_detail.join_community_fund_description}</p>
-      {/if}
-    </div>
-  </ConfirmationModal>
-{/if}
-
-<style lang="scss">
-  @use "../../../themes/mixins/confirmation-modal";
-  div {
-    @include confirmation-modal.wrapper;
-  }
-
-  h4 {
-    @include confirmation-modal.title;
-  }
-
-  p {
-    @include confirmation-modal.text;
-  }
-</style>

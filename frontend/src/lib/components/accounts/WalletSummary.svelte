@@ -1,22 +1,24 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { accountName as getAccountName } from "$lib/utils/transactions.utils";
+  import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import Identifier from "$lib/components/ui/Identifier.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getContext } from "svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let accountName: string;
   $: accountName = getAccountName({
@@ -34,63 +36,64 @@
     value: accountBalance.toE8s(),
     detailed: true,
   });
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    layoutTitleStore.set(
+      intersecting
+        ? $i18n.wallet.title
+        : `${accountName} – ${formatToken({ value: accountBalance.toE8s() })} ${
+            accountBalance.token.symbol
+          }`
+    );
+  };
 </script>
 
-<div class="title" data-tid="wallet-summary">
-  <h1>{accountName}</h1>
-  <Tooltip
-    id="wallet-detailed-icp"
-    text={replacePlaceholders($i18n.accounts.current_balance_detail, {
-      $amount: detailedICP,
-    })}
-  >
-    <AmountDisplay amount={accountBalance} />
-  </Tooltip>
-</div>
-<div class="address">
-  <Identifier
-    identifier={$store.account?.identifier ?? ""}
-    label={$i18n.wallet.address}
-    showCopy
-    size="medium"
-  />
+<div class="content-cell-details">
+  <KeyValuePair>
+    <h3
+      slot="key"
+      data-tid="wallet-summary"
+      use:onIntersection
+      on:nnsIntersecting={updateLayoutTitle}
+    >
+      {accountName}
+    </h3>
+    <Tooltip
+      slot="value"
+      id="wallet-detailed-icp"
+      text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+        $amount: detailedICP,
+      })}
+    >
+      <AmountDisplay amount={accountBalance} inline />
+    </Tooltip>
+  </KeyValuePair>
+
+  <KeyValuePair>
+    <p slot="key" class="label">{$i18n.wallet.address}</p>
+    <p slot="value" class="value">
+      <IdentifierHash identifier={$store.account?.identifier ?? ""} />
+    </p>
+  </KeyValuePair>
+
   {#if isAccountHardwareWallet($store.account)}
-    <Identifier
-      identifier={$store.account?.principal?.toString() ?? ""}
-      label={$i18n.wallet.principal}
-      showCopy
-    />
+    <KeyValuePair>
+      <p slot="key" class="label">{$i18n.wallet.principal}</p>
+      <p slot="value" class="value">
+        <IdentifierHash
+          identifier={$store.account?.principal?.toString() ?? ""}
+        />
+      </p>
+    </KeyValuePair>
   {/if}
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  .title {
-    display: block;
-    width: 100%;
-
-    margin: 0 0 var(--padding-2x);
-
-    --token-font-size: var(--font-size-h1);
-    --tooltip-display: inline-block;
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--token-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-  }
-
-  .address {
-    margin-bottom: var(--padding-4x);
-    :global(p:first-of-type) {
-      margin-bottom: var(--padding);
-    }
+  p {
+    margin: 0;
   }
 </style>

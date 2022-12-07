@@ -17,6 +17,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -32,6 +33,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       snsTransactionsStore.addTransactions({
@@ -39,6 +41,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsSubAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -70,12 +73,14 @@ describe("SNS Transactions store", () => {
         transactions: [tx1, tx2],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       snsTransactionsStore.addTransactions({
         rootCanisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -85,12 +90,49 @@ describe("SNS Transactions store", () => {
       ).toBe(3);
     });
 
+    it("should not change txOldestId if not oldest", () => {
+      const tx1 = {
+        ...mockSnsTransactionWithId,
+        id: BigInt(1),
+      };
+      const tx2 = {
+        ...mockSnsTransactionWithId,
+        id: BigInt(2),
+      };
+      const tx3 = {
+        ...mockSnsTransactionWithId,
+        id: BigInt(3),
+      };
+      const oldestTxId = BigInt(1);
+      snsTransactionsStore.addTransactions({
+        rootCanisterId: mockPrincipal,
+        transactions: [tx1, tx2],
+        accountIdentifier: mockSnsMainAccount.identifier,
+        oldestTxId,
+        completed: false,
+      });
+      snsTransactionsStore.addTransactions({
+        rootCanisterId: mockPrincipal,
+        transactions: [tx1, tx3],
+        accountIdentifier: mockSnsMainAccount.identifier,
+        oldestTxId: BigInt(3),
+        completed: false,
+      });
+
+      const accountsInStore = get(snsTransactionsStore);
+      expect(
+        accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
+          ?.oldestTxId
+      ).toBe(oldestTxId);
+    });
+
     it("should reset accounts for a project", () => {
       snsTransactionsStore.addTransactions({
         rootCanisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
 
       const accountsInStore = get(snsTransactionsStore);
@@ -112,6 +154,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       const accountsInStore = get(snsTransactionsStore);
       expect(
@@ -124,6 +167,7 @@ describe("SNS Transactions store", () => {
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
+        completed: false,
       });
       const accountsInStore2 = get(snsTransactionsStore);
       expect(

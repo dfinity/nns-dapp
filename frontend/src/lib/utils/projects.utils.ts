@@ -13,7 +13,7 @@ import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
 import { formatToken } from "./token.utils";
 
-const filterProjectsStatus = ({
+export const filterProjectsStatus = ({
   swapLifecycle,
   projects,
 }: {
@@ -189,7 +189,10 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $commitment: formatToken({ value: totalCommitment }),
+        $newCommitment: formatToken({ value: amount.toE8s() }),
+        $currentCommitment: formatToken({
+          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        }),
         $maxCommitment: formatToken({
           value: project.summary.swap.params.max_participant_icp_e8s,
         }),

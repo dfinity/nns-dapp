@@ -1,8 +1,10 @@
 import { authStore } from "$lib/stores/auth.store";
+import { startBusy } from "$lib/stores/busy.store";
 import { toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
@@ -14,6 +16,9 @@ export const logout = async ({
 }: {
   msg?: Pick<ToastMsg, "labelKey" | "level">;
 }) => {
+  // To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
+  startBusy({ initiator: "logout" });
+
   await authStore.signOut();
 
   if (msg) {
@@ -30,10 +35,22 @@ export const logout = async ({
 };
 
 /**
+ * An anonymous identity that can be use for public call to the IC.
+ */
+export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
+
+/**
+ * Some services return data regardless if signed-in or not but, returns more information if signed-in.
+ * e.g. querying a proposals returns ballots information only if signed-in.
+ */
+export const getCurrentIdentity = (): Identity =>
+  get(authStore).identity ?? new AnonymousIdentity();
+
+/**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
  */
-export const getIdentity = async (): Promise<Identity> => {
+export const getAuthenticatedIdentity = async (): Promise<Identity> => {
   /* eslint-disable-next-line no-async-promise-executor */
   return new Promise<Identity>(async (resolve) => {
     const identity: Identity | undefined | null = get(authStore).identity;
@@ -52,19 +69,17 @@ export const getIdentity = async (): Promise<Identity> => {
 };
 
 /**
- * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timedout - append the information to the url as query params
+ * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timed-out - append the information to the url as query params
  */
 const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
   const { labelKey, level } = msg;
 
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.append(msgParam, encodeURI(labelKey));
-  urlParams.append(levelParam, level);
+  url.searchParams.append(msgParam, encodeURI(labelKey));
+  url.searchParams.append(levelParam, level);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
 
 /**
@@ -91,18 +106,10 @@ export const displayAndCleanLogoutMsg = () => {
 };
 
 const cleanUpMsgUrl = () => {
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.delete(msgParam);
-  urlParams.delete(levelParam);
+  url.searchParams.delete(msgParam);
+  url.searchParams.delete(levelParam);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
-
-const updateAuthUrl = (urlParams: URLSearchParams) =>
-  replaceHistory({
-    path: "/",
-    query: urlParams.toString(),
-  });

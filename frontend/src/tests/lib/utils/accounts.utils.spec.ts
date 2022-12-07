@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
+  accountName,
   assertEnoughAccountFunds,
   emptyAddress,
   getAccountByPrincipal,
@@ -10,8 +11,8 @@ import {
   invalidAddress,
   isAccountHardwareWallet,
   mainAccount,
-  routePathAccountIdentifier,
 } from "$lib/utils/accounts.utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { encodeSnsAccount } from "@dfinity/sns";
@@ -72,7 +73,7 @@ describe("accounts-utils", () => {
       const subaccount = new Uint8Array(32).fill(0);
       subaccount[31] = 1;
       const account = {
-        owner: Principal.fromText("2vxsx-fae"),
+        owner: new AnonymousIdentity().getPrincipal(),
         subaccount: subaccount,
       };
       const subaccountString = encodeSnsAccount(account);
@@ -297,24 +298,32 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("routePathAccountIdentifier", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get account identifier from valid path", () => {
+  describe("accountName", () => {
+    it("returns subAccount name", () => {
       expect(
-        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual({
-        accountIdentifier: mockMainAccount.identifier,
-      });
+        accountName({
+          account: mockSubAccount,
+          mainName: "main",
+        })
+      ).toBe(mockSubAccount.name);
     });
 
-    it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
-      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
+    it("returns main account name", () => {
+      expect(
+        accountName({
+          account: mockMainAccount,
+          mainName: "main",
+        })
+      ).toBe("main");
+    });
+
+    it('returns "" if no account', () => {
+      expect(
+        accountName({
+          account: undefined,
+          mainName: "main",
+        })
+      ).toBe("");
     });
   });
 });

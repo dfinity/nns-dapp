@@ -9,11 +9,12 @@
   import {
     formatVotingPower,
     neuronStake,
-    votingPower,
+    neuronVotingPower,
   } from "$lib/utils/neuron.utils";
-  import { busy, stopBusy } from "$lib/stores/busy.store";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { valueSpan } from "$lib/utils/utils";
+  import { Html, busy } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -51,18 +52,20 @@
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p>
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-      })}
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        })}
+      />
     </p>
   </div>
   <div class="voting-power">
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
       {formatVotingPower(
-        votingPower({
-          stake: neuronICP,
-          dissolveDelayInSeconds: delayInSeconds,
+        neuronVotingPower({
+          neuron,
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
         })
       )}
     </p>

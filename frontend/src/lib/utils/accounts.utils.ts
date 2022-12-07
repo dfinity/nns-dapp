@@ -1,4 +1,3 @@
-import { AppPath } from "$lib/constants/routes.constants";
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
@@ -6,7 +5,6 @@ import { InsufficientAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
-import { getLastPathDetail, isRoutePath } from "./app-path.utils";
 import { isNnsProject } from "./projects.utils";
 
 /*
@@ -84,10 +82,10 @@ export const getAccountFromStore = ({
   identifier,
   accounts,
 }: {
-  identifier: string | undefined;
+  identifier: string | undefined | null;
   accounts: Account[];
 }): Account | undefined => {
-  if (identifier === undefined) {
+  if (identifier === undefined || identifier === null) {
     return undefined;
   }
 
@@ -162,28 +160,11 @@ export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
 };
 
-/*
- * @param path current route path
- * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
- */
-export const routePathAccountIdentifier = (
-  path: string | undefined
-): { accountIdentifier: string | undefined } | undefined => {
-  if (
-    !isRoutePath({
-      paths: [AppPath.LegacyWallet, AppPath.Wallet],
-      routePath: path,
-    })
-  ) {
-    return undefined;
-  }
-
-  const accountIdentifier: string | undefined = getLastPathDetail(path);
-
-  return {
-    accountIdentifier:
-      accountIdentifier !== undefined && accountIdentifier !== ""
-        ? accountIdentifier
-        : undefined,
-  };
-};
+export const accountName = ({
+  account,
+  mainName,
+}: {
+  account: Account | undefined;
+  mainName: string;
+}): string =>
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");

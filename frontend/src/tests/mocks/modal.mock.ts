@@ -1,8 +1,8 @@
 import type { Account } from "$lib/types/account";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
+  WALLET_CONTEXT_KEY,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -32,7 +32,7 @@ export const renderModal = async ({
   component: typeof SvelteComponent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: Record<string, any>;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
   });
@@ -51,7 +51,7 @@ export const renderModalContextWrapper = async <T>({
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -72,12 +72,13 @@ export const renderModalSelectedAccountContextWrapper = ({
 }: {
   Component: typeof SvelteComponent;
   account: Account | undefined;
-}): Promise<RenderResult> =>
+}): Promise<RenderResult<SvelteComponent>> =>
   renderModalContextWrapper({
-    contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+    contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedAccountStore>({
+      store: writable<WalletStore>({
         account,
+        neurons: [],
       }),
     },
     Component,

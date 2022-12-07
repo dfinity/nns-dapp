@@ -9,7 +9,7 @@ export const getCanisterFromStore = ({
   canisterId,
   canistersStore: { canisters },
 }: {
-  canisterId: string | undefined;
+  canisterId: string | undefined | null;
   canistersStore: CanistersStore;
 }): CanisterInfo | undefined =>
   canisters?.find(({ canister_id }) => canister_id.toText() === canisterId);

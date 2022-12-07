@@ -71,14 +71,14 @@ import {
   syncAccounts,
   transferICP,
 } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { assertLedgerVersion } from "./ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
 ): Promise<{ identity: Identity; neuron: NeuronInfo }> => {
-  const currentIdentity = await getIdentity();
+  const currentIdentity = await getAuthenticatedIdentity();
   const neuron = await getNeuron({ neuronId, identity: currentIdentity });
 
   if (neuron === undefined) {
@@ -282,7 +282,7 @@ export const listNeurons = async ({
 
 // We always want to call this with the user identity
 const getAndLoadNeuron = async (neuronId: NeuronId) => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
     identity,
@@ -436,7 +436,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
       labelKey: "busy_screen.pending_approval_hw",
     });
 
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
     await addHotkeyApi({
@@ -525,7 +525,7 @@ export const removeHotkey = async ({
     if (removed && err instanceof NotAuthorizedNeuronError) {
       // There is no need to get the identity unless removing the hotkey succeeded
       // and it was `getAndLoadNeuron` that threw the error.
-      const currentIdentityPrincipal = (await getIdentity())
+      const currentIdentityPrincipal = (await getAuthenticatedIdentity())
         .getPrincipal()
         .toText();
       // This happens when a user removes itself from the hotkeys.
@@ -732,7 +732,7 @@ const setFolloweesHelper = async ({
       );
     }
     // We try to control by hotkey by default
-    let identity: Identity = await getIdentity();
+    let identity: Identity = await getAuthenticatedIdentity();
     if (!isHotKeyControllable({ neuron, identity })) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
@@ -884,7 +884,7 @@ export const loadNeuron = ({
 // Not resolve until the neuron has been loaded
 export const reloadNeuron = (neuronId: NeuronId) =>
   new Promise<void>((resolve) => {
-    getIdentity()
+    getAuthenticatedIdentity()
       // To update the neuron stake with the subaccount balance
       .then((identity) => claimOrRefreshNeuron({ identity, neuronId }))
       .then(() => {

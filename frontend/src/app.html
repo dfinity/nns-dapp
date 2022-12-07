@@ -25,7 +25,7 @@
     <meta content="website" property="og:type" />
     <meta content="https://nns.ic0.app/" property="og:url" />
     <meta
-      content="%sveltekit.assets%/assets/social-image.png"
+      content="https://nns.ic0.app/assets/social-image.png"
       property="og:image"
     />
     <meta content="summary_large_image" name="twitter:card" />
@@ -35,7 +35,7 @@
       name="twitter:description"
     />
     <meta
-      content="%sveltekit.assets%/assets/social-image.png"
+      content="https://nns.ic0.app/assets/social-image.png"
       name="twitter:image"
     />
     <meta content="@dfinity" name="twitter:creator" />
@@ -82,7 +82,7 @@
       content="%sveltekit.assets%/assets/favicons/browserconfig.xml"
     />
 
-    <meta name="theme-color" content="#383c3c" />
+    <meta name="theme-color" content="#352652" />
 
     <!-- Init theme as fast as possible -->
     <script>
@@ -107,12 +107,7 @@
       }
     </script>
 
-    <script>
-      const loader = document.createElement("script");
-      loader.type = "module";
-      loader.src = "./main.js";
-      document.head.appendChild(loader);
-    </script>
+    <!-- SCRIPT_LOADER -->
 
     %sveltekit.head%
   </head>

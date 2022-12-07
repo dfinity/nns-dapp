@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import MergeMaturityModal from "$lib/modals/neurons/MergeMaturityModal.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
@@ -10,18 +9,30 @@
     minMaturityMerge,
   } from "$lib/utils/neuron.utils";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
-
-  let isOpen = false;
-  const showModal = () => (isOpen = true);
-  const closeModal = () => (isOpen = false);
 
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToMerge({
     neuron,
     fee: $mainTransactionFeeStore,
   });
+
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
+
+  const showModal = () =>
+    openNnsNeuronModal({
+      type: "merge-maturity",
+      data: { neuron: $store.neuron },
+    });
 </script>
 
 {#if enoughMaturity}
@@ -49,8 +60,4 @@
       >{$i18n.neuron_detail.merge_maturity}</button
     >
   </Tooltip>
-{/if}
-
-{#if isOpen}
-  <MergeMaturityModal on:nnsClose={closeModal} {neuron} />
 {/if}

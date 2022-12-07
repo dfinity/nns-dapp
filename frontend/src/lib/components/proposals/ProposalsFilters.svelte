@@ -7,6 +7,8 @@
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import { enumsExclude } from "$lib/utils/enum.utils";
   import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
+  import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
+  import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -24,7 +26,7 @@
 
   let totalFiltersTopic = enumsExclude({
     obj: Topic as unknown as Topic,
-    values: [Topic.Unspecified],
+    values: [Topic.Unspecified, Topic.SnsDecentralizationSale],
   }).length;
   let totalFiltersProposalRewardStatus = enumsExclude({
     obj: ProposalRewardStatus as unknown as ProposalRewardStatus,
@@ -34,13 +36,18 @@
     obj: ProposalStatus as unknown as ProposalStatus,
     values: [ProposalStatus.Unknown],
   }).length;
+
+  let activeFiltersCount: number;
+  $: activeFiltersCount = topics.filter(
+    (topic) => !DEPRECATED_TOPICS.includes(topic)
+  ).length;
 </script>
 
 <div class="filters">
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
-    activeFilters={topics.length}
+    activeFilters={activeFiltersCount}
     on:nnsFilter={() =>
       openModal({
         category: "topics",
@@ -73,12 +80,14 @@
       })}>{$i18n.voting.status}</FiltersButton
   >
 
-  <Checkbox
-    inputId="hide-unavailable-proposals"
-    checked={excludeVotedProposals}
-    on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
-    text="block">{$i18n.voting.hide_unavailable_proposals}</Checkbox
-  >
+  <SignedInOnly>
+    <Checkbox
+      inputId="hide-unavailable-proposals"
+      checked={excludeVotedProposals}
+      on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
+      text="block">{$i18n.voting.hide_unavailable_proposals}</Checkbox
+    >
+  </SignedInOnly>
 </div>
 
 <ProposalsFilterModal
@@ -103,14 +112,6 @@
       width: fit-content;
       padding: var(--padding) calc(0.75 * var(--padding));
       margin: var(--padding) 0 0;
-    }
-
-    > :global(div.checkbox label) {
-      width: 100%;
-    }
-
-    > :global(div.checkbox input) {
-      margin-right: var(--padding);
     }
   }
 

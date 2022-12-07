@@ -56,11 +56,7 @@
     }
 
     small {
-      font-size: var(--font-size-ultra-small);
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-small);
-      }
+      font-size: var(--font-size-small);
     }
   }
 </style>

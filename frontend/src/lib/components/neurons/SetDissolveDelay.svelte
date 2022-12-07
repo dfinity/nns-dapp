@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import {
@@ -12,11 +11,12 @@
   import {
     formatVotingPower,
     neuronStake,
-    votingPower,
+    neuronVotingPower,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { InputRange } from "@dfinity/gix-components";
+  import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds = 0;
@@ -55,19 +55,22 @@
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p data-tid="neuron-stake">
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
-      })}
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        })}
+      />
     </p>
   </div>
 
-  {#if neuron.state === NeuronState.Locked && neuron.dissolveDelaySeconds}
+  {#if neuron.dissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
-      <p class="duration">
-        {@html valueSpan(secondsToDuration(neuron.dissolveDelaySeconds))} - {$i18n
-          .neurons.staked}
-      </p>
+      <NeuronStateRemainingTime
+        state={neuron.state}
+        timeInSeconds={neuron.dissolveDelaySeconds}
+        defaultGaps
+      />
     </div>
   {/if}
 
@@ -87,9 +90,9 @@
         <div>
           <p class="label">
             {formatVotingPower(
-              votingPower({
-                stake: neuronICP,
-                dissolveDelayInSeconds: delayInSeconds,
+              neuronVotingPower({
+                neuron,
+                newDissolveDelayInSeconds: BigInt(delayInSeconds),
               })
             )}
           </p>

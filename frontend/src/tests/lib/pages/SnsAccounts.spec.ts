@@ -2,17 +2,28 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { routeStore } from "$lib/stores/route.store";
+import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { formatToken } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
+import {
+  mockSnsAccountsStoreSubscribe,
+  mockSnsMainAccount,
+} from "../../mocks/sns-accounts.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+  mockSummary,
+} from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -26,16 +37,16 @@ describe("SnsAccounts", () => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-      // Context needs to match the mocked sns accounts
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
-      });
-    });
 
-    it("should render accounts title", () => {
-      const { getByTestId } = render(SnsAccounts);
+      jest
+        .spyOn(snsProjectSelectedStore, "subscribe")
+        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
-      expect(getByTestId("accounts-title")).toBeInTheDocument();
+      jest
+        .spyOn(committedProjectsStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+      page.mock({ data: { universe: mockPrincipal.toText() } });
     });
 
     it("should load accounts and transaction fee", () => {
@@ -71,6 +82,23 @@ describe("SnsAccounts", () => {
 
       expect(syncSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
     });
+
+    it("should render total accounts sns project", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      // we are testing with only one account so we can use it to check the total is displayed
+      await waitFor(() =>
+        expect(
+          titleRow?.textContent?.includes(
+            `${formatToken({ value: mockSnsMainAccount.balance.toE8s() })} ${
+              mockSnsMainAccount.balance.token.symbol
+            }`
+          )
+        ).toBeTruthy()
+      );
+    });
   });
 
   describe("when no accounts", () => {
@@ -89,6 +117,43 @@ describe("SnsAccounts", () => {
       expect(
         container.querySelector(".tooltip-wrapper")
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("meta project", () => {
+    beforeAll(() =>
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      })
+    );
+
+    it("should render project title", async () => {
+      const { getByText } = render(SnsAccounts);
+
+      await waitFor(() =>
+        expect(
+          getByText(mockSnsFullProject.summary.metadata.name)
+        ).toBeInTheDocument()
+      );
+    });
+
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      expect(
+        titleRow?.textContent?.includes(mockSummary.metadata.name)
+      ).toBeTruthy();
+    });
+
+    it("should render sns project logo", async () => {
+      const { getByTestId } = render(SnsAccounts);
+
+      const logo = getByTestId("summary-logo");
+      const img = logo.querySelector('[data-tid="logo"]');
+
+      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
     });
   });
 });

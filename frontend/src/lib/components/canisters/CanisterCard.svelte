@@ -10,18 +10,7 @@
 </script>
 
 <Card {role} {ariaLabel} on:click testId="canister-card">
-  <div slot="start" class="title-block">
-    <CanisterCardTitle {canister} />
-  </div>
+  <CanisterCardTitle {canister} />
 
   <CanisterCardSubTitle {canister} />
 </Card>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/card";
-
-  .title-block {
-    @include card.stacked-title;
-    @include card.title;
-  }
-</style>

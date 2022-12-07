@@ -16,7 +16,7 @@ describe("Layout", () => {
 
     it("should render a menu button", () => {
       const { getByTestId } = render(Layout);
-      const button = getByTestId("menu");
+      const button = getByTestId("menu-toggle");
       expect(button).not.toBeNull();
       expect(button).toBeVisible();
       expect(button.getAttribute("aria-label")).toEqual(en.header.menu);

@@ -1,13 +1,19 @@
 import { ENABLE_SNS } from "$lib/constants/environment.constants";
-import {
-  loadSnsSummariesProxy,
-  loadSnsSwapCommitmentsProxy,
-} from "$lib/proxy/sns.services.proxy";
+import { loadSnsSwapCommitmentsProxy } from "$lib/proxy/sns.services.proxy";
+import { loadMainTransactionFee } from "$lib/services/transaction-fees.services";
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
-import { loadMainTransactionFee } from "./transaction-fees.services";
 
-export const initApp = (): Promise<
+export const initAppPrivate = async () => {
+  // See initAppPublic for comments
+  // Commentint until we better understand the implications of this call
+  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
+  // await syncTime();
+
+  await initAppPrivateData();
+};
+
+const initAppPrivateData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [
@@ -18,7 +24,7 @@ export const initApp = (): Promise<
 
   // Sns in an initiative currently under development and not proposed on mainnet yet
   const initSns: Promise<void>[] = ENABLE_SNS
-    ? [loadSnsSummariesProxy(), loadSnsSwapCommitmentsProxy()]
+    ? [loadSnsSwapCommitmentsProxy()]
     : [];
 
   /**

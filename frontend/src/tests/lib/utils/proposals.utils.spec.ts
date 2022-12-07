@@ -24,6 +24,7 @@ import {
   selectedNeuronsVotingPower,
 } from "$lib/utils/proposals.utils";
 import type {
+  Action,
   Ballot,
   ExecuteNnsFunction,
   NeuronInfo,
@@ -38,6 +39,7 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import {
@@ -56,6 +58,25 @@ const proposalWithNnsFunctionAction = {
 const proposalWithRewardNodeProviderAction = {
   ...mockProposalInfo.proposal,
   action: proposalActionRewardNodeProvider,
+} as Proposal;
+
+const actionWithEmpty = {
+  RewardNodeProvider: {
+    nodeProvider: {
+      id: "aaaaa-aa",
+    },
+    amountE8s: undefined,
+    rewardMode: {
+      RewardToNeuron: {
+        dissolveDelaySeconds: BigInt(1000),
+      },
+    },
+  },
+} as Action;
+
+const proposalWithActionWithUndefined = {
+  ...mockProposalInfo.proposal,
+  action: actionWithEmpty,
 } as Proposal;
 
 describe("proposals-utils", () => {
@@ -98,6 +119,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -109,6 +131,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -120,6 +143,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -131,6 +155,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -150,6 +175,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -169,6 +195,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -180,6 +207,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -191,6 +219,22 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
+        })
+      ).toBeFalsy();
+
+      expect(
+        hideProposal({
+          proposalInfo: proposalWithBallot({
+            proposal: mockProposals[0],
+            vote: Vote.Yes,
+          }),
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+          identity: undefined,
         })
       ).toBeFalsy();
     });
@@ -207,6 +251,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -221,6 +266,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -237,6 +283,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -251,6 +298,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -265,6 +313,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -281,6 +330,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -295,6 +345,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -309,6 +360,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -325,6 +377,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -344,6 +397,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
     });
@@ -369,6 +423,7 @@ describe("proposals-utils", () => {
               neuronId: BigInt(666),
             } as NeuronInfo,
           ],
+          identity: mockIdentity,
         })
       ).toBeTruthy();
     });
@@ -390,6 +445,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -409,6 +465,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -431,6 +488,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -453,6 +511,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -475,6 +534,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeTruthy();
 
@@ -497,6 +557,29 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
+        })
+      ).toBeTruthy();
+
+      expect(
+        hasMatchingProposals({
+          proposals: [
+            {
+              ...mockProposals[0],
+              ballots: [
+                {
+                  neuronId: BigInt(0),
+                  vote: Vote.Yes,
+                } as Ballot,
+              ],
+            },
+          ],
+          filters: {
+            ...DEFAULT_PROPOSALS_FILTERS,
+            excludeVotedProposals: true,
+          },
+          neurons,
+          identity: null,
         })
       ).toBeTruthy();
     });
@@ -510,6 +593,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: false,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -531,6 +615,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
 
@@ -552,6 +637,7 @@ describe("proposals-utils", () => {
             excludeVotedProposals: true,
           },
           neurons,
+          identity: mockIdentity,
         })
       ).toBeFalsy();
     });
@@ -560,6 +646,14 @@ describe("proposals-utils", () => {
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
       const fields = proposalActionFields(proposalWithRewardNodeProviderAction);
+
+      expect(fields.map(([key]) => key).join()).toEqual(
+        "nodeProvider,amountE8s,rewardMode"
+      );
+    });
+
+    it("should include undefined action fields", () => {
+      const fields = proposalActionFields(proposalWithActionWithUndefined);
 
       expect(fields.map(([key]) => key).join()).toEqual(
         "nodeProvider,amountE8s,rewardMode"

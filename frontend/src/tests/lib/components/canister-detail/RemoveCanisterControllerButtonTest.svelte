@@ -7,6 +7,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
 
   export let reloadDetails: (canisterId: Principal) => Promise<void>;
   export let controller: string;
@@ -18,3 +19,5 @@
 </script>
 
 <RemoveCanisterControllerButton {controller} />
+
+<CanisterDetailModals />
