@@ -61,9 +61,6 @@ jobs:
           author_name: Formatting Committer
           author_email: "<nobody@example.com>"
           message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
 
   clippy:
     needs: formatting
