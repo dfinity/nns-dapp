@@ -273,7 +273,7 @@ const anonymizeSnsAccount = async (
   }
   const { owner, subaccount } = account;
   return {
-    owner: await anonymiseAvailability(owner),
+    owner: anonymiseAvailability(owner),
     subaccount: subaccount.map(subaccountToHexString),
   };
 };
