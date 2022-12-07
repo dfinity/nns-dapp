@@ -1,27 +1,18 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { stopBusy } from "$lib/stores/busy.store";
-  import { stakeMaturity } from "$lib/services/neurons.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
-  import { startBusyNeuron } from "$lib/services/busy.services";
   import {
     Html,
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
 
-  export let neuron: NeuronInfo;
-
-  let neuronId: NeuronId;
-  $: ({ neuronId } = neuron);
+  export let formattedMaturity: string;
 
   const steps: WizardSteps = [
     {
@@ -40,25 +31,8 @@
   let percentageToStake = 0;
 
   const dispatcher = createEventDispatcher();
-  const close = () => dispatcher("nnsClose");
-
-  const stakeNeuronMaturity = async () => {
-    startBusyNeuron({ initiator: "stake-maturity", neuronId });
-
-    const { success } = await stakeMaturity({
-      neuronId,
-      percentageToStake,
-    });
-
-    if (success) {
-      toastsSuccess({
-        labelKey: "neuron_detail.stake_maturity_success",
-      });
-      close();
-    }
-
-    stopBusy("stake-maturity");
-  };
+  const stakeNeuronMaturity = () =>
+    dispatcher("nnsStakeMaturity", { percentageToStake });
 
   const goToConfirm = () => modal.next();
 </script>
@@ -70,7 +44,7 @@
 
   {#if currentStep.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {neuron}
+      {formattedMaturity}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}

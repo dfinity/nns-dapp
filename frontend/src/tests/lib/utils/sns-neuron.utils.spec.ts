@@ -5,7 +5,9 @@ import {
   canIdentityManageHotkeys,
   followeesByFunction,
   followeesByNeuronId,
-  formattedSnsMaturity,
+  formattedMaturity,
+  formattedStakedMaturity,
+  formattedTotalMaturity,
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
@@ -13,10 +15,13 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  hasEnoughMaturityToStake,
   hasPermissions,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
+  hasPermissionToStakeMaturity,
   hasPermissionToVote,
+  hasStakedMaturity,
   hasValidStake,
   isCommunityFund,
   isSnsNeuron,
@@ -636,7 +641,46 @@ describe("sns-neuron utils", () => {
       });
 
       expect(
-        hasPermissionToDissolve({
+        hasPermissionToVote({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("hasPermissionToStakeMaturity", () => {
+    it("returns true when user has stake maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+        ],
+      });
+
+      expect(
+        hasPermissionToStakeMaturity({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no staking maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
+      });
+
+      expect(
+        hasPermissionToStakeMaturity({
           neuron,
           identity: mockIdentity,
         })
@@ -781,23 +825,148 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("formattedSnsMaturity", () => {
+  describe("formattedMaturity", () => {
     it("returns maturity with two decimals", () => {
       const neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: BigInt(200000000),
       };
-      expect(formattedSnsMaturity(neuron)).toBe("2.00");
+      expect(formattedMaturity(neuron)).toBe("2.00");
     });
 
     it("returns 0 when maturity is 0", () => {
-      const neuron = { ...mockSnsNeuron, maturity_e8s_equivalent: BigInt(0) };
-      expect(formattedSnsMaturity(neuron)).toBe("0");
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(0),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(formattedMaturity(neuron)).toBe("0");
     });
 
     it("returns 0 when no neuron provided", () => {
-      expect(formattedSnsMaturity(null)).toBe("0");
-      expect(formattedSnsMaturity(undefined)).toBe("0");
+      expect(formattedMaturity(null)).toBe("0");
+      expect(formattedMaturity(undefined)).toBe("0");
+    });
+  });
+
+  describe("formattedTotalMaturity", () => {
+    it("returns maturity with two decimals", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns total if maturity only is provided", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("2.00");
+    });
+
+    it("returns sum if staked maturity is provided", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("4.00");
+    });
+
+    it("returns 0 when maturity is 0", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(0),
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("0");
+    });
+
+    it("returns 0 when no neuron provided", () => {
+      expect(formattedTotalMaturity(null)).toBe("0");
+      expect(formattedTotalMaturity(undefined)).toBe("0");
+    });
+  });
+
+  describe("hasEnoughMaturityToStake", () => {
+    it("should return true if staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+      };
+      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy();
+    });
+
+    it("should return false if no staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(0),
+      };
+
+      expect(hasEnoughMaturityToStake(neuron)).toBeFalsy();
+    });
+
+    it("should return false when no neuron provided", () => {
+      expect(hasEnoughMaturityToStake(null)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("hasStakedMaturity", () => {
+    it("should return true if has staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeTruthy();
+    });
+
+    it("should return also true if staked maturity is zero", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(0)] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeTruthy();
+    });
+
+    it("should return false if no staked maturity", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
+      };
+      expect(hasStakedMaturity(neuron)).toBeFalsy();
+    });
+
+    it("should return false when no neuron provided", () => {
+      expect(hasStakedMaturity(null)).toBeFalsy();
+      expect(hasStakedMaturity(undefined)).toBeFalsy();
+    });
+  });
+
+  describe("formattedStakedMaturity", () => {
+    it("returns staked maturity with two decimals", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(2)] as [] | [bigint],
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0.00000002");
+    });
+
+    it("returns 0 when staked maturity is 0", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        staked_maturity_e8s_equivalent: [BigInt(0)] as [] | [bigint],
+      };
+      expect(formattedStakedMaturity(neuron)).toBe("0");
+    });
+
+    it("returns 0 when no neuron provided", () => {
+      expect(formattedStakedMaturity(null)).toBe("0");
+      expect(formattedStakedMaturity(undefined)).toBe("0");
     });
   });
 
@@ -806,6 +975,7 @@ describe("sns-neuron utils", () => {
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         source_nns_neuron_id: [BigInt(2)],
+        staked_maturity_e8s_equivalent: [] as [] | [bigint],
       };
       expect(isCommunityFund(neuron)).toBeTruthy();
     });
@@ -960,15 +1130,21 @@ describe("sns-neuron utils", () => {
   });
 
   describe("snsNeuronVotingPower", () => {
+    const votingPowerNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      staked_maturity_e8s_equivalent: [],
+      maturity_e8s_equivalent: BigInt(0),
+      neuron_fees_e8s: 0n,
+      dissolve_state: [{ DissolveDelaySeconds: 100n }],
+      aging_since_timestamp_seconds: 0n,
+      voting_power_percentage_multiplier: 100n,
+    };
+
     it("should use the neuron dissolve delay", () => {
       const baseStake = 100n;
       const neuron: SnsNeuron = {
-        ...mockSnsNeuron,
+        ...votingPowerNeuron,
         cached_neuron_stake_e8s: baseStake,
-        neuron_fees_e8s: 0n,
-        dissolve_state: [{ DissolveDelaySeconds: 100n }],
-        aging_since_timestamp_seconds: 0n,
-        voting_power_percentage_multiplier: 100n,
       };
       const votingPower = snsNeuronVotingPower({
         neuron,
@@ -993,12 +1169,8 @@ describe("sns-neuron utils", () => {
     it("should calculate fully boosted voting power", () => {
       const baseStake = 100n;
       const neuron: SnsNeuron = {
-        ...mockSnsNeuron,
+        ...votingPowerNeuron,
         cached_neuron_stake_e8s: baseStake,
-        neuron_fees_e8s: 0n,
-        dissolve_state: [{ DissolveDelaySeconds: 100n }],
-        aging_since_timestamp_seconds: 0n,
-        voting_power_percentage_multiplier: 100n,
       };
       const votingPower = snsNeuronVotingPower({
         neuron,
@@ -1021,9 +1193,9 @@ describe("sns-neuron utils", () => {
     });
 
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/sns/governance/src/neuron.rs#L747
-    it("should calculete voting power with bonus thresholds zero", () => {
+    it("should calculate voting power with bonus thresholds zero", () => {
       const neuron: SnsNeuron = {
-        ...mockSnsNeuron,
+        ...votingPowerNeuron,
         cached_neuron_stake_e8s: 100n,
         dissolve_state: [{ DissolveDelaySeconds: 100n }],
         aging_since_timestamp_seconds: 0n,
