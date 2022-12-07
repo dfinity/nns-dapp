@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 95714
 * Followees and dissolve delay in SNS neurons.
 * Improvements in rendering proposal payload.
 * Unspecific topic in sns.
