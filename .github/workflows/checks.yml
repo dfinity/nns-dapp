@@ -18,6 +18,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install rust formatter
+        run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
       - name: Install frontend dependencies
