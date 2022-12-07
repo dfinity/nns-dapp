@@ -4,6 +4,7 @@
 
 import {
   addNeuronPermissions,
+  autoStakeMaturity,
   claimNeuron,
   disburse,
   getNervousSystemFunctions,
@@ -14,7 +15,6 @@ import {
   removeNeuronPermissions,
   setFollowees,
   stakeMaturity,
-  autoStakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -208,7 +208,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-      autoStake: true
+      autoStake: true,
     });
 
     expect(stakeMaturitySpy).toBeCalled();
