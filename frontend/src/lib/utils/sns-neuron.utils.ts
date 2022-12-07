@@ -242,7 +242,7 @@ export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
     .filter(({ permission_type }) =>
       arraysEqual({
-        a: HOTKEY_PERMISSIONS.sort(),
+        a: [...HOTKEY_PERMISSIONS].sort(),
         b: Array.from(permission_type).sort(),
       })
     )
