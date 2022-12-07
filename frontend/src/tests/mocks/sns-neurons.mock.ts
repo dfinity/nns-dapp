@@ -19,12 +19,12 @@ export const createMockSnsNeuron = ({
   id: [{ id: arrayOfNumberToUint8Array(id) }],
   permissions: [],
   source_nns_neuron_id: [],
-  maturity_e8s_equivalent: BigInt(0),
+  maturity_e8s_equivalent: BigInt(1),
   cached_neuron_stake_e8s: stake,
   created_timestamp_seconds: BigInt(
     Math.floor(Date.now() / 1000 - mockSnsNeuronTimestampSeconds)
   ),
-  staked_maturity_e8s_equivalent: [],
+  staked_maturity_e8s_equivalent: [BigInt(2)],
   auto_stake_maturity: [],
   aging_since_timestamp_seconds: BigInt(100),
   voting_power_percentage_multiplier: BigInt(1),

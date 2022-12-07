@@ -8,8 +8,10 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
+  stakeMaturity,
   startDissolving,
   stopDissolving,
+  toggleAutoStakeMaturity,
   updateDelay,
 } from "$lib/services/sns-neurons.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -774,6 +776,112 @@ describe("sns-neurons-services", () => {
 
       expect(setFolloweesSpy).not.toBeCalled();
       expect(toastsError).toBeCalled();
+    });
+  });
+
+  describe("stakeMaturity", () => {
+    it("should call api.stakeMaturity", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const percentageToStake = 60;
+
+      const spyOnStakeMaturity = jest
+        .spyOn(governanceApi, "stakeMaturity")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await stakeMaturity({
+        neuronId,
+        rootCanisterId,
+        percentageToStake,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStakeMaturity).toBeCalledWith({
+        neuronId,
+        rootCanisterId,
+        percentageToStake,
+        identity,
+      });
+    });
+  });
+
+  describe("toggleAutoStakeMaturity", () => {
+    const spyOnStakeMaturity = jest
+      .spyOn(governanceApi, "autoStakeMaturity")
+      .mockImplementation(() => Promise.resolve());
+
+    const testToggle = async ({
+      neuron,
+      neuronId,
+      rootCanisterId,
+      identity,
+      autoStake,
+    }) => {
+      const { success } = await toggleAutoStakeMaturity({
+        neuron,
+        neuronId,
+        rootCanisterId,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStakeMaturity).toBeCalledWith({
+        neuronId,
+        rootCanisterId,
+        identity,
+        autoStake,
+      });
+    };
+
+    const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+    const identity = mockIdentity;
+    const rootCanisterId = mockPrincipal;
+
+    it("should call api.autoStakeMaturity with true for the first toggle", async () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        auto_stake_maturity: [] as [] | [boolean],
+      };
+
+      await testToggle({
+        neuronId,
+        neuron,
+        identity,
+        rootCanisterId,
+        autoStake: true,
+      });
+    });
+
+    it("should call api.autoStakeMaturity with false", async () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        auto_stake_maturity: [true] as [] | [boolean],
+      };
+
+      await testToggle({
+        neuronId,
+        neuron,
+        identity,
+        rootCanisterId,
+        autoStake: false,
+      });
+    });
+
+    it("should call api.autoStakeMaturity with true", async () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        auto_stake_maturity: [false] as [] | [boolean],
+      };
+
+      await testToggle({
+        neuronId,
+        neuron,
+        identity,
+        rootCanisterId,
+        autoStake: true,
+      });
     });
   });
 });

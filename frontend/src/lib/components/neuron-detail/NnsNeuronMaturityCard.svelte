@@ -8,10 +8,10 @@
     KeyValuePair,
     KeyValuePairInfo,
   } from "@dfinity/gix-components";
-  import StakeMaturityButton from "./actions/StakeMaturityButton.svelte";
+  import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
   import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
-  import AutoStakeMaturity from "./actions/AutoStakeMaturity.svelte";
+  import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
   import {
     isNeuronControllable,
     formattedStakedMaturity,
@@ -66,7 +66,7 @@
   {#if isControllable}
     <div class="actions">
       {#if stakeMaturityEnabled}
-        <StakeMaturityButton {neuron} />
+        <NnsStakeMaturityButton {neuron} />
       {:else}
         <MergeMaturityButton {neuron} />
       {/if}
@@ -75,7 +75,7 @@
     </div>
 
     {#if stakeMaturityEnabled}
-      <AutoStakeMaturity {neuron} />
+      <NnsAutoStakeMaturity {neuron} />
     {/if}
   {/if}
 </CardInfo>
@@ -83,18 +83,7 @@
 <Separator />
 
 <style lang="scss">
-  h3 {
-    line-height: var(--line-height-standard);
-  }
+  @use "../../themes/mixins/neuron";
 
-  .actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: var(--padding);
-    padding-top: var(--padding-2x);
-  }
-
-  .staked-maturity {
-    margin: var(--padding-0_5x) 0 0;
-  }
+  @include neuron.maturity-card-info;
 </style>

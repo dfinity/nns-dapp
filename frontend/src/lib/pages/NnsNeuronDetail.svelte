@@ -2,7 +2,7 @@
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
-  import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
+  import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
@@ -129,7 +129,7 @@
       {#if neuron && !inVotingProcess}
         <NnsNeuronMetaInfoCard {neuron} />
         <NnsNeuronInfoStake {neuron} />
-        <NeuronMaturityCard {neuron} />
+        <NnsNeuronMaturityCard {neuron} />
         <NeuronJoinFundCard {neuron} />
         <NeuronFollowingCard {neuron} />
 
