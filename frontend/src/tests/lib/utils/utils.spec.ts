@@ -1,4 +1,5 @@
 import {
+  arraysEqual,
   bytesToHexString,
   createChunks,
   debounce,
@@ -462,6 +463,24 @@ describe("utils", () => {
     it("should parse JSON strings", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
+    });
+  });
+
+  describe("arraysEqual", () => {
+    it("should return true for equal arrays", () => {
+      expect(arraysEqual({ a: [1, 2, 3], b: [1, 2, 3] })).toBe(true);
+    });
+
+    it("should return false for non equal arrays", () => {
+      expect(arraysEqual({ a: [1, 2, 3], b: [1, 2, 4] })).toBe(false);
+    });
+
+    it("order matters", () => {
+      expect(arraysEqual({ a: [1, 2, 3], b: [1, 3, 2] })).toBe(false);
+    });
+
+    it("uses identity equality not value comparison", () => {
+      expect(arraysEqual({ a: [{}, {}], b: [{}, {}] })).toBe(false);
     });
   });
 });

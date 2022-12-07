@@ -12,7 +12,7 @@ import type {
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import { enumValues } from "./enum.utils";
-import { bytesToHexString, isNullish, nonNullish } from "./utils";
+import { arraysEqual, bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -230,15 +230,21 @@ export const hasPermissions = ({
   return !permissions.some(notFound);
 };
 
+/**
+ * Returns the principals that have ONLY the hotkey permissions.
+ *
+ * If a neuron has more than those two permissions, it is not a hotkey.
+ *
+ * @param {SnsNeuron}
+ * @returns {string[]} principals that are hotkeys
+ */
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
-    // Filter the controller. The controller is the neuron with all permissions
-    .filter(({ permission_type }) => !hasAllPermissions(permission_type))
-    .filter(
-      ({ permission_type }) =>
-        HOTKEY_PERMISSIONS.find(
-          (permission) => !permission_type.includes(permission)
-        ) === undefined
+    .filter(({ permission_type }) =>
+      arraysEqual({
+        a: HOTKEY_PERMISSIONS.sort(),
+        b: Array.from(permission_type).sort(),
+      })
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
