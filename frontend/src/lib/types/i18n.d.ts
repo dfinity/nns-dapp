@@ -449,8 +449,10 @@ interface I18nProposal_detail {
   no_more_info: string;
   voting_results: string;
   remaining: string;
-  next: string;
-  previous: string;
+  older: string;
+  newer: string;
+  older_short: string;
+  newer_short: string;
   sign_in: string;
 }
 

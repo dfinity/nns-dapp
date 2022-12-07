@@ -430,8 +430,10 @@
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
     "remaining": "remaining",
-    "next": "Navigate to next proposal",
-    "previous": "Navigate to previous proposal",
+    "older": "Navigate to older proposal",
+    "newer": "Navigate to newer proposal",
+    "older_short": "Older",
+    "newer_short": "Newer",
     "sign_in": "Sign in to vote"
   },
   "proposal_detail__vote": {

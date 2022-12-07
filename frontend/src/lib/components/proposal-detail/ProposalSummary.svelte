@@ -67,6 +67,8 @@
     :global(table) {
       display: block;
       overflow: auto;
+      padding: var(--padding) 0 var(--padding);
+      margin: var(--padding) 0 var(--padding-2x);
     }
   }
 </style>
