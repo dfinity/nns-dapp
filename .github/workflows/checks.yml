@@ -67,7 +67,7 @@ jobs:
           add: .
           author_name: Formatting Committer
           author_email: "<ci+nns-dapp-formatter@dfinity.org>"
-          message: "Updating frontend formatting"
+          message: "Updating formatting"
 
       - name: Is formatted
         run: test -z "$(git status --porcelain)"
