@@ -6,7 +6,7 @@
   import { disburse } from "$lib/services/sns-neurons.services";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,

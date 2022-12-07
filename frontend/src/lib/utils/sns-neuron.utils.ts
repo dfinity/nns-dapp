@@ -380,8 +380,8 @@ export const followeesByNeuronId = ({
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
  *
  * @param {SnsNeuron} neuron
- * @param {NervousSystemParameters} snsParameters
- * @param {number} newDissolveDelayInSeconds
+ * @param {NervousSystemParameters} neuron.snsParameters
+ * @param {number} neuron.newDissolveDelayInSeconds
  */
 export const snsNeuronVotingPower = ({
   neuron,

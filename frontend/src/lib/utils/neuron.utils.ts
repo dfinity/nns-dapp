@@ -108,9 +108,9 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
  *
  * Reference: https://internetcomputer.org/docs/current/tokenomics/sns/rewards#recap-on-nns-voting-rewards
  *
- * @param {Object}
- * @param {NeuronInfo} neuron
- * @param {number} newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
+ * @param {Object} params
+ * @param {NeuronInfo} params.neuron
+ * @param {number} params.newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
  * @returns {bigint}
  */
 export const neuronVotingPower = ({
