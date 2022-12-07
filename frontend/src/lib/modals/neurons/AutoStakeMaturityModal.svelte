@@ -1,41 +1,12 @@
 <script lang="ts">
   import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
   import { Html } from "@dfinity/gix-components";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { hasAutoStakeMaturityOn } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
 
-  export let neuron: NeuronInfo;
-
-  let hasAutoStakeOn: boolean;
-  $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
-
-  const autoStake = async () => {
-    startBusy({ initiator: "auto-stake-maturity" });
-
-    const { success } = await toggleAutoStakeMaturity(neuron);
-
-    if (success) {
-      toastsSuccess({
-        labelKey: `neuron_detail.auto_stake_maturity_${
-          hasAutoStakeOn ? "on" : "off"
-        }_success`,
-      });
-    }
-
-    closeModal();
-    stopBusy("auto-stake-maturity");
-  };
-
-  const dispatcher = createEventDispatcher();
-  const closeModal = () => dispatcher("nnsClose");
+  export let hasAutoStakeOn: boolean;
 </script>
 
-<ConfirmationModal on:nnsClose={closeModal} on:nnsConfirm={autoStake}>
+<ConfirmationModal on:nnsClose on:nnsConfirm>
   <div data-tid="auto-stake-confirm-modal" class="wrapper">
     <h4>{$i18n.core.confirm}</h4>
     <p>

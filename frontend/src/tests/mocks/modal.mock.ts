@@ -9,6 +9,8 @@ import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
+// TODO: rename and move this modal.mock.ts to modal.test-utils.ts
+
 const waitModalIntroEnd = async ({
   container,
   selector,
