@@ -31,7 +31,8 @@ jobs:
         run: ./scripts/fmt
 
       - name: Check formatted
-        run: test -z "$(git status --porcelain)" || { echo "FIX: Please run ./scripts/fmt" ; exit 1 }
+        run: |
+          test -z "$(git status --porcelain)" || { echo "FIX: Please run ./scripts/fmt" ; exit 1 }
 
   clippy:
     needs: formatting
