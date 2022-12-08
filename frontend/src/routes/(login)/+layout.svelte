@@ -2,7 +2,7 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
   import { initAppAuth } from "$lib/services/$public/app.services";
-  import { Layout, ExternalLink, IconGitHub } from "@dfinity/gix-components";
+  import { Layout, ExternalLink, IconGitHub, MenuButton } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
 
   onMount(async () => await initAppAuth());
@@ -11,35 +11,37 @@
 <Layout layout="stretch">
   <Banner />
 
-  <header>
-    <div class="start">
-      <ExternalLink href="https://internetcomputer.org">internetcomputer.org</ExternalLink>
-    </div>
-
-    <img
-            class="logo-nns"
-            src={nnsLogo}
-            role="presentation"
-            alt="Network Nervous System logo"
-            loading="lazy"
-    />
-
-    <div class="end">
-      <ExternalLink href="https://internetcomputer.org/nns">About</ExternalLink>
-      <ExternalLink href="https://dashboard.internetcomputer.org/governance">Voting rewards</ExternalLink>
-    </div>
-  </header>
-
-  <div slot="menu-items" on:click >Menu</div>
-
   <main data-tid="auth-page">
-    <slot />
-  </main>
+    <header>
+      <div class="start">
+        <ExternalLink href="https://internetcomputer.org">internetcomputer.org</ExternalLink>
 
-  <footer>
-    <span>© 2022 Internet Computer</span>
-    <a class="github" href="https://github.com/dfinity/nns-dapp" rel="noopener noreferrer" alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a>
-  </footer>
+        <MenuButton />
+      </div>
+
+      <img
+              class="logo-nns"
+              src={nnsLogo}
+              role="presentation"
+              alt="Network Nervous System logo"
+              loading="lazy"
+      />
+
+      <div class="end">
+        <ExternalLink href="https://internetcomputer.org/nns">About</ExternalLink>
+        <ExternalLink href="https://dashboard.internetcomputer.org/governance">Voting rewards</ExternalLink>
+      </div>
+    </header>
+
+    <article>
+      <slot />
+    </article>
+
+    <footer>
+      <span>© 2022 Internet Computer</span>
+      <a class="github" href="https://github.com/dfinity/nns-dapp" rel="noopener noreferrer" alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a>
+    </footer>
+  </main>
 </Layout>
 
 <style lang="scss">
@@ -77,14 +79,18 @@
   }
 
   footer {
-    display: flex;
-    justify-content: space-between;
+    display: none;
 
-    box-sizing: border-box;
+    @include media.min-width(large) {
+      display: flex;
+      justify-content: space-between;
 
-    padding: var(--padding-4x) var(--padding-8x);
+      box-sizing: border-box;
 
-    @include fonts.small;
+      padding: var(--padding-4x) var(--padding-8x);
+
+      @include fonts.small;
+    }
   }
 
   @include media.light-theme {
@@ -99,8 +105,22 @@
   }
 
   .start, .end {
-    padding-top: var(--padding-4x);
+    padding-top: calc(4.5 * var(--padding));
     flex: 2;
+
+    :global(a) {
+      display: none;
+    }
+
+    @include media.min-width(large) {
+      :global(a) {
+        display: inline-block;
+      }
+
+      :global(button) {
+        display: none;
+      }
+    }
   }
 
   .end {
@@ -118,28 +138,32 @@
     }
   }
 
-  .container {
-    position: fixed;
-    @include display.inset;
-
-    display: block;
-
-    background: var(--body-background);
-    color: var(--label-color);
-  }
-
   main {
+    min-width: 100vw;
+    height: 100%;
+
     display: flex;
     flex-direction: column;
-    height: 100%;
-    background: transparent;
+    align-items: center;
+    justify-content: flex-end;
+
+    position: relative;
     overflow-y: auto;
 
     padding: var(--padding-6x) var(--padding-4x);
 
     @media (min-width: 768px) and (min-height: 620px) {
       justify-content: center;
-      align-items: center;
+    }
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 475px;
+
+    @media (min-width: 768px) and (min-height: 620px) {
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
       padding-top: calc(var(--login-header-height) + var(--padding-3x));

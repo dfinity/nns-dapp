@@ -51,6 +51,10 @@
 
 <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
 
+<div class="sign-in">
+  <SignIn />
+</div>
+
 <ul>
   <li>
     <a href={AppPath.Accounts} data-tid="auth-link-accounts"
@@ -77,10 +81,6 @@
     >
   </li>
 </ul>
-
-<div class="sign-in">
-  <SignIn />
-</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
@@ -113,19 +113,24 @@
   ul {
     flex-grow: 2;
     list-style-type: none;
+
     padding: 0;
     margin: var(--padding) 0 0;
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.05rem;
+
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-column-gap: var(--padding-2x);
+    grid-row-gap: var(--padding-2x);
+    width: calc(100% - var(--padding-2x));
 
     @media (min-width: 768px) and (min-height: 620px) {
+      display: flex;
       flex-grow: inherit;
 
       position: absolute;
       bottom: 0;
       left: 50%;
       transform: translate(-50%, 0);
-      display: flex;
       width: 100%;
       justify-content: center;
       gap: var(--padding-2x);
@@ -134,13 +139,16 @@
   }
 
   li {
-    padding: var(--padding-1_5x) 0;
+    @media (min-width: 768px) and (min-height: 620px) {
+      padding: var(--padding-1_5x) 0;
+    }
   }
 
   .sign-in {
     width: 100%;
-    max-width: 475px;
     align-self: center;
+
+    padding: var(--padding-4x) 0;
 
     :global(button) {
       width: 100%;
