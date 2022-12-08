@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 95968
 * fix sns minimum dissolve delay description calculation
 * fix sns hotkeys permissions
 * minor styling and label update
