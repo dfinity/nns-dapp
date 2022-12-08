@@ -11,7 +11,7 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
-import { arraysEqual, bytesToHexString, isNullish, nonNullish } from "./utils";
+import { bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]
@@ -228,11 +228,11 @@ export const hasPermissions = ({
  */
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
-    .filter(({ permission_type }) =>
-      arraysEqual({
-        a: [...HOTKEY_PERMISSIONS].sort(),
-        b: Array.from(permission_type).sort(),
-      })
+    .filter(
+      ({ permission_type }) =>
+        permission_type.every(
+          (p) => HOTKEY_PERMISSIONS.find((key) => key === p) !== undefined
+        ) && permission_type.length === HOTKEY_PERMISSIONS.length
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
