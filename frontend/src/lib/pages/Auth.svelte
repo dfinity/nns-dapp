@@ -49,7 +49,9 @@
   onDestroy(unsubscribe);
 </script>
 
-<h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
+<div class="title">
+  <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
+</div>
 
 <div class="sign-in">
   <SignIn />
@@ -86,10 +88,22 @@
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
 
+  .title {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: var(--padding-8x);
+
+    @media (min-width: 768px) and (min-height: 620px) {
+      padding-top: 0;
+    }
+  }
+
   h1 {
-    @include fonts.h2;
-    margin: 0 0 var(--padding-2x);
-    max-width: 330px;
+    font-size: calc(var(--font-size-h1) * 1.2);
+    line-height: var(--line-height-standard);
+    text-align: center;
 
     letter-spacing: -0.02em;
 
@@ -100,18 +114,16 @@
     }
 
     @media (min-width: 376px) {
-      font-size: var(--font-size-h1);
+      font-size: calc(var(--font-size-h1) * 1.7);
     }
 
     @media (min-width: 768px) and (min-height: 620px) {
-      max-width: 100%;
       font-size: calc(var(--font-size-h1) * 3);
       line-height: var(--line-height-standard);
     }
   }
 
   ul {
-    flex-grow: 2;
     list-style-type: none;
 
     padding: 0;
@@ -148,7 +160,7 @@
     width: 100%;
     align-self: center;
 
-    padding: var(--padding-4x) 0;
+    padding: var(--padding-3x) 0;
 
     :global(button) {
       width: 100%;
@@ -168,6 +180,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    box-sizing: border-box;
+    height: 100%;
 
     padding: var(--padding-3x) var(--padding-4x);
 

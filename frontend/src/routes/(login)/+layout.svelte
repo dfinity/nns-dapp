@@ -145,25 +145,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
 
     position: relative;
     overflow-y: auto;
 
     padding: var(--padding-6x) var(--padding-4x);
-
-    @media (min-width: 768px) and (min-height: 620px) {
-      justify-content: center;
-    }
   }
 
   article {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+
+    height: 100%;
     width: 100%;
     max-width: 475px;
 
     @media (min-width: 768px) and (min-height: 620px) {
+      height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
       padding-top: calc(var(--login-header-height) + var(--padding-3x));
