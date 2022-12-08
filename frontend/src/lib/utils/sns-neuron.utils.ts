@@ -11,7 +11,6 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
-import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -188,17 +187,6 @@ export const hasPermissionToStakeMaturity = ({
     ],
   });
 
-const hasAllPermissions = (permission_type: Int32Array): boolean => {
-  const permissionsNumbers = Array.from(permission_type);
-  const allPermissions = enumValues(SnsNeuronPermissionType);
-  return (
-    allPermissions.length === permissionsNumbers.length &&
-    allPermissions.every((permission) =>
-      permissionsNumbers.includes(permission)
-    )
-  );
-};
-
 /*
  * Returns true if the neuron contains provided permissions
  */
@@ -230,15 +218,21 @@ export const hasPermissions = ({
   return !permissions.some(notFound);
 };
 
+/**
+ * Returns the principals that have ONLY the hotkey permissions.
+ *
+ * If a neuron has more than those two permissions, it is not a hotkey.
+ *
+ * @param {SnsNeuron}
+ * @returns {string[]} principals that are hotkeys
+ */
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
-    // Filter the controller. The controller is the neuron with all permissions
-    .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        HOTKEY_PERMISSIONS.find(
-          (permission) => !permission_type.includes(permission)
-        ) === undefined
+        permission_type.every(
+          (p) => HOTKEY_PERMISSIONS.find((key) => key === p) !== undefined
+        ) && permission_type.length === HOTKEY_PERMISSIONS.length
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
