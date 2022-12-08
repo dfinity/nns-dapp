@@ -346,29 +346,3 @@ export const expandObject = (
     }
     return acc;
   }, {} as Record<string, unknown>);
-
-/**
- * Returns whether two arrays are equal or not. Order matters.
- *
- * Compares each element of the array with equality operator (===).
- *
- * @param a first array
- * @param b second array
- * @returns {boolean}
- */
-export const arraysEqual = ({
-  a,
-  b,
-}: {
-  a: unknown[];
-  b: unknown[];
-}): boolean => {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length !== b.length) return false;
-
-  for (let i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-};
