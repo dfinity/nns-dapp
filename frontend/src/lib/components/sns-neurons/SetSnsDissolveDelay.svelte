@@ -22,7 +22,7 @@
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils.js";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -72,6 +72,16 @@
       snsParameters,
     });
   }
+
+  let minDissolveDelayDescription = "";
+  $: minDissolveDelayDescription =
+    minDissolveDelaySeconds === undefined
+      ? ""
+      : replacePlaceholders($i18n.sns_neurons.dissolve_delay_description, {
+          $duration: secondsToDissolveDelayDuration(
+            BigInt(minDissolveDelaySeconds)
+          ),
+        });
 
   let disableUpdate: boolean;
   $: disableUpdate =
@@ -125,15 +135,7 @@
 
   <div>
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
-    {#if minDissolveDelaySeconds !== undefined}
-      <p class="description">
-        {replacePlaceholders($i18n.sns_neurons.dissolve_delay_description, {
-          $duration: secondsToDissolveDelayDuration(
-            BigInt(minDissolveDelaySeconds)
-          ),
-        })}
-      </p>
-    {/if}
+    <p class="description">{minDissolveDelayDescription}</p>
 
     <div class="select-delay-container">
       {#if maxDissolveDelaySeconds !== undefined}
