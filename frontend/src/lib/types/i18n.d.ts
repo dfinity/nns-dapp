@@ -139,7 +139,12 @@ interface I18nAuth {
   wallet: string;
   stake: string;
   earn: string;
+  launchpad: string;
   ic_logo: string;
+  about: string;
+  voting_rewards: string;
+  logo: string;
+  copyright: string;
 }
 
 interface I18nAccounts {

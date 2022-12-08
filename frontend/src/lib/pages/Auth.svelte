@@ -79,7 +79,7 @@
   <li>
     <a href={AppPath.Launchpad} data-tid="auth-link-launchpad"
     ><IconRocketLaunch />
-      {$i18n.auth.earn}</a
+      {$i18n.auth.launchpad}</a
     >
   </li>
 </ul>
