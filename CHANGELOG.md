@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal 95714
+* Followees and dissolve delay in SNS neurons.
+* Improvements in rendering proposal payload.
+* Unspecific topic in sns.
+* Documentation update.
+* Tag releases in GitHub automatically.
+* Bugfixes.
+
 ## Proposal 94588
 * UI Improvements in Wallet page.
 * UI Improvements in Neuron detail page.
