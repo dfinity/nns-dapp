@@ -411,6 +411,33 @@ describe("sns-neuron utils", () => {
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
       expect(expectedHotkeys.includes(hotkey)).toBe(true);
     });
+
+    it("doesn't return if more than hotkeys permissions", () => {
+      const nonHotkey =
+        "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+      const hotkey =
+        "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(nonHotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...Int32Array.from(HOTKEY_PERMISSIONS),
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+          controllerPermission,
+        ],
+      };
+      const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
+      expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
+      expect(expectedHotkeys.includes(hotkey)).toBe(true);
+    });
   });
 
   describe("isUserHotkey", () => {
@@ -431,7 +458,7 @@ describe("sns-neuron utils", () => {
         })
       ).toBe(true);
     });
-    it("returns true if user has voting and proposal permissions but not all permissions", () => {
+    it("returns false if user has voting and proposal permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
@@ -450,8 +477,9 @@ describe("sns-neuron utils", () => {
           neuron: hotkeyneuron,
           identity: mockIdentity,
         })
-      ).toBe(true);
+      ).toBe(false);
     });
+
     it("returns false if user has all the permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
