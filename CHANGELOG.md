@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal 95968
+* fix sns minimum dissolve delay description calculation
+* fix sns hotkeys permissions
+* minor styling and label update
+
 ## Proposal 95714
 * Followees and dissolve delay in SNS neurons.
 * Improvements in rendering proposal payload.
