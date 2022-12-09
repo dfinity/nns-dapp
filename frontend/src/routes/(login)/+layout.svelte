@@ -173,6 +173,7 @@
     @include media.min-width(xlarge) {
       :global(button.icon-only) {
         display: inherit;
+        color: inherit;
       }
     }
 
@@ -217,10 +218,10 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    align-items: center;
 
     height: 100%;
     width: 100%;
-    max-width: 475px;
 
     @media (min-width: 1024px) and (min-height: 620px) {
       height: auto;

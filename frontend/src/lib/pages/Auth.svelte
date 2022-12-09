@@ -124,17 +124,30 @@
       display: block;
     }
 
-    @media (min-height: 350px) {
+    @media (min-height: 380px) {
       font-size: calc(var(--font-size-h1) * 1.2);
     }
 
-    @media (min-width: 376px) and (min-height: 410px) {
+    @media (min-width: 376px) and (min-height: 520px) {
       font-size: calc(var(--font-size-h1) * 1.7);
+    }
+
+    @media (min-width: 440px) and (min-height: 860px) {
+      font-size: calc(var(--font-size-h1) * 2.5);
+      line-height: var(--line-height-standard);
     }
 
     @media (min-width: 1024px) and (min-height: 620px) {
       font-size: calc(var(--font-size-h1) * 3);
       line-height: var(--line-height-standard);
+    }
+  }
+
+  ul, .sign-in {
+    max-width: 475px;
+
+    @media (min-width: 1024px) and (min-height: 620px) {
+      max-width: inherit;
     }
   }
 
@@ -147,6 +160,7 @@
     grid-template-columns: repeat(2, 50%);
     grid-column-gap: var(--padding-2x);
     grid-row-gap: var(--padding-2x);
+
     width: calc(100% - var(--padding-2x));
 
     display: none;
