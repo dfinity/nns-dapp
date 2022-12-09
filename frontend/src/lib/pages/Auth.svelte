@@ -143,7 +143,8 @@
     }
   }
 
-  ul, .sign-in {
+  ul,
+  .sign-in {
     max-width: 475px;
 
     @media (min-width: 1024px) and (min-height: 620px) {

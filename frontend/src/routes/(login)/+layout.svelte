@@ -7,11 +7,12 @@
     ExternalLink,
     IconGitHub,
     MenuButton,
-    ContentBackdrop
+    ContentBackdrop,
   } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
   import LoginMenuItems from "$lib/components/auth/LoginMenuItems.svelte";
+  import LoginFooter from "$lib/components/auth/LoginFooter.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -28,26 +29,26 @@
       <header>
         <div class="start">
           <ExternalLink href="https://internetcomputer.org"
-          >internetcomputer.org</ExternalLink
+            >internetcomputer.org</ExternalLink
           >
 
           <MenuButton />
         </div>
 
         <img
-                class="logo-nns"
-                src={nnsLogo}
-                role="presentation"
-                alt={$i18n.auth.logo}
-                loading="lazy"
+          class="logo-nns"
+          src={nnsLogo}
+          role="presentation"
+          alt={$i18n.auth.logo}
+          loading="lazy"
         />
 
         <div class="end">
           <ExternalLink href="https://internetcomputer.org/nns"
-          >{$i18n.auth.about}</ExternalLink
+            >{$i18n.auth.about}</ExternalLink
           >
           <ExternalLink href="https://dashboard.internetcomputer.org/governance"
-          >{$i18n.auth.voting_rewards}</ExternalLink
+            >{$i18n.auth.voting_rewards}</ExternalLink
           >
         </div>
       </header>
@@ -56,15 +57,7 @@
         <slot />
       </article>
 
-      <footer>
-        <span>{$i18n.auth.copyright}</span>
-        <a
-                class="github"
-                href="https://github.com/dfinity/nns-dapp"
-                rel="noopener noreferrer"
-                alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a
-        >
-      </footer>
+      <LoginFooter />
     </main>
   </div>
 </Layout>
@@ -120,21 +113,6 @@
         rgba(255, 255, 255, 0) 101.34%
       );
       opacity: 0.5;
-    }
-  }
-
-  footer {
-    display: none;
-
-    @media (min-width: 1024px) and (min-height: 820px) {
-      display: flex;
-      justify-content: space-between;
-
-      box-sizing: border-box;
-
-      padding: var(--padding-4x) var(--padding-8x);
-
-      @include fonts.small;
     }
   }
 

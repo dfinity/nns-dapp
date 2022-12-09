@@ -145,6 +145,7 @@ interface I18nAuth {
   voting_rewards: string;
   logo: string;
   copyright: string;
+  github_link: string;
 }
 
 interface I18nAccounts {
