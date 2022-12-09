@@ -101,7 +101,7 @@
   }
 
   h1 {
-    font-size: calc(var(--font-size-h1) * 1.2);
+    font-size: inherit;
     line-height: var(--line-height-standard);
     text-align: center;
 
@@ -113,7 +113,17 @@
       display: block;
     }
 
-    @media (min-width: 376px) {
+    display: none;
+
+    @media (min-height: 300px) {
+      display: block;
+    }
+
+    @media (min-height: 350px) {
+      font-size: calc(var(--font-size-h1) * 1.2);
+    }
+
+    @media (min-width: 376px) and (min-height: 410px) {
       font-size: calc(var(--font-size-h1) * 1.7);
     }
 
