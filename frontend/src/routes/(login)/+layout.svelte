@@ -76,6 +76,12 @@
     overflow: hidden;
     margin: var(--padding) 0 var(--padding);
     box-sizing: border-box;
+
+    --login-header-height: 72px;
+
+    @media (min-width: 1024px) and (min-height: 820px) {
+      --login-header-height: 88px;
+    }
   }
 
   header {
@@ -129,12 +135,16 @@
   }
 
   .logo-nns {
-    height: var(--padding-8x);
+    height: var(--padding-6x);
+
+    @media (min-width: 1024px) and (min-height: 820px) {
+      height: var(--padding-8x);
+    }
   }
 
   .start,
   .end {
-    padding-top: calc(4.5 * var(--padding));
+    padding-top: var(--padding-2x);
     flex: 2;
 
     :global(a) {
@@ -142,6 +152,8 @@
     }
 
     @media (min-width: 1024px) and (min-height: 820px) {
+      padding-top: calc(4.5 * var(--padding));
+
       :global(a) {
         display: inline-block;
       }
