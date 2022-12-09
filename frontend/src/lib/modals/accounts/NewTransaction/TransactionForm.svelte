@@ -20,7 +20,7 @@
     type Token,
   } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import {translate} from "$lib/utils/i18n.utils";
+  import { translate } from "$lib/utils/i18n.utils";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -89,7 +89,9 @@
       }
 
       // solves display of the label key instead of the label value
-      errorMessage = translate({ labelKey: errorMessage });
+      if (errorMessage !== undefined) {
+        errorMessage = translate({ labelKey: errorMessage });
+      }
     }
   })();
   const dispatcher = createEventDispatcher();
