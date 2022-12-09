@@ -81,7 +81,7 @@
     border-top-left-radius: var(--border-radius-2x);
     border-bottom-left-radius: var(--border-radius-2x);
     overflow: hidden;
-    margin: var(--padding) 0 var(--padding) var(--padding);
+    margin: var(--padding) 0 var(--padding);
     box-sizing: border-box;
   }
 
