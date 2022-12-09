@@ -11,12 +11,15 @@
   } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
+  import LoginMenuItems from "$lib/components/auth/LoginMenuItems.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
 
 <Layout layout="stretch">
   <Banner />
+
+  <LoginMenuItems slot="menu-items" />
 
   <div class="content">
     <ContentBackdrop />
