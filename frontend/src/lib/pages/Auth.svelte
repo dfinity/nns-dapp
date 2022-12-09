@@ -5,7 +5,12 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { IconWallet, IconPassword, IconUsers, IconRocketLaunch } from "@dfinity/gix-components";
+  import {
+    IconWallet,
+    IconPassword,
+    IconUsers,
+    IconRocketLaunch,
+  } from "@dfinity/gix-components";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -60,25 +65,25 @@
 <ul>
   <li>
     <a href={AppPath.Accounts} data-tid="auth-link-accounts"
-      ><IconWallet />
+      ><IconWallet size="32px" />
       {$i18n.auth.wallet}</a
     >
   </li>
   <li>
     <a href={AppPath.Neurons} data-tid="auth-link-neurons"
-      ><IconPassword />
+      ><IconPassword size="32px" />
       {$i18n.auth.stake}</a
     >
   </li>
   <li>
     <a href={AppPath.Proposals} data-tid="auth-link-proposals"
-      ><IconUsers />
+      ><IconUsers size="32px" />
       {$i18n.auth.earn}</a
     >
   </li>
   <li>
     <a href={AppPath.Launchpad} data-tid="auth-link-launchpad"
-    ><IconRocketLaunch />
+      ><IconRocketLaunch size="32px" />
       {$i18n.auth.launchpad}</a
     >
   </li>
@@ -187,7 +192,6 @@
   }
 
   a {
-    color: inherit;
     text-decoration: none;
     text-align: center;
 
@@ -201,8 +205,15 @@
 
     padding: var(--padding-3x) var(--padding);
 
-    background: linear-gradient(113.27deg, #24133C 0%, #291641 49.25%, #29103C 100%);
-    border: 1px solid #4B3870;
+    background: linear-gradient(
+      113.27deg,
+      #24133c 0%,
+      #291641 49.25%,
+      #29103c 100%
+    );
+    color: var(--value-color);
+    border: 1px solid #4b3870;
+
     border-radius: var(--border-radius);
 
     @include fonts.small;
@@ -214,10 +225,25 @@
     }
 
     :global(svg) {
-      height: 20px;
-      width: 20px;
       vertical-align: bottom;
       margin: 0 0 var(--padding);
+      color: var(--secondary);
+    }
+  }
+
+  @include media.light-theme {
+    h1 {
+      color: inherit;
+    }
+
+    a {
+      background: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
+      border: 1px solid var(--line);
+      color: var(--text-color);
+
+      :global(svg) {
+        color: var(--primary);
+      }
     }
   }
 </style>

@@ -2,9 +2,14 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
   import { initAppAuth } from "$lib/services/$public/app.services";
-  import { Layout, ExternalLink, IconGitHub, MenuButton } from "@dfinity/gix-components";
+  import {
+    Layout,
+    ExternalLink,
+    IconGitHub,
+    MenuButton,
+  } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
-  import {i18n} from "$lib/stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -15,22 +20,28 @@
   <main data-tid="auth-page">
     <header>
       <div class="start">
-        <ExternalLink href="https://internetcomputer.org">internetcomputer.org</ExternalLink>
+        <ExternalLink href="https://internetcomputer.org"
+          >internetcomputer.org</ExternalLink
+        >
 
         <MenuButton />
       </div>
 
       <img
-              class="logo-nns"
-              src={nnsLogo}
-              role="presentation"
-              alt={$i18n.auth.logo}
-              loading="lazy"
+        class="logo-nns"
+        src={nnsLogo}
+        role="presentation"
+        alt={$i18n.auth.logo}
+        loading="lazy"
       />
 
       <div class="end">
-        <ExternalLink href="https://internetcomputer.org/nns">{$i18n.auth.about}</ExternalLink>
-        <ExternalLink href="https://dashboard.internetcomputer.org/governance">{$i18n.auth.voting_rewards}</ExternalLink>
+        <ExternalLink href="https://internetcomputer.org/nns"
+          >{$i18n.auth.about}</ExternalLink
+        >
+        <ExternalLink href="https://dashboard.internetcomputer.org/governance"
+          >{$i18n.auth.voting_rewards}</ExternalLink
+        >
       </div>
     </header>
 
@@ -40,7 +51,12 @@
 
     <footer>
       <span>{$i18n.auth.copyright}</span>
-      <a class="github" href="https://github.com/dfinity/nns-dapp" rel="noopener noreferrer" alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a>
+      <a
+        class="github"
+        href="https://github.com/dfinity/nns-dapp"
+        rel="noopener noreferrer"
+        alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a
+      >
     </footer>
   </main>
 </Layout>
@@ -74,7 +90,12 @@
       height: 1px;
       width: calc(100% - var(--padding-4x));
 
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 50.85%, rgba(255, 255, 255, 0) 101.34%);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        #ffffff 50.85%,
+        rgba(255, 255, 255, 0) 101.34%
+      );
       opacity: 0.5;
     }
   }
@@ -96,7 +117,12 @@
 
   @include media.light-theme {
     header::after {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.458333) 50.85%, rgba(255, 255, 255, 0) 101.34%);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.458333) 50.85%,
+        rgba(255, 255, 255, 0) 101.34%
+      );
       opacity: 0.4;
     }
   }
@@ -105,7 +131,8 @@
     height: var(--padding-8x);
   }
 
-  .start, .end {
+  .start,
+  .end {
     padding-top: calc(4.5 * var(--padding));
     flex: 2;
 
