@@ -20,6 +20,23 @@
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "@dfinity/gix-components/styles/mixins/text";
 
+  a {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    text-decoration: none;
+
+    span {
+      @include text.truncate;
+    }
+
+    :global(svg) {
+      vertical-align: bottom;
+      margin-right: var(--padding);
+    }
+  }
+
   .footer {
     display: none;
 
@@ -50,19 +67,6 @@
     a {
       padding: var(--padding-6x) var(--padding-4x) var(--padding);
       font-size: var(--font-size-small);
-
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-
-      span {
-        @include text.truncate;
-      }
-
-      :global(svg) {
-        vertical-align: bottom;
-        margin-right: var(--padding);
-      }
     }
   }
 </style>
