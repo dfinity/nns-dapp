@@ -82,7 +82,7 @@
   footer {
     display: none;
 
-    @include media.min-width(large) {
+    @media (min-width: 1024px) and (min-height: 820px) {
       display: flex;
       justify-content: space-between;
 
@@ -113,12 +113,24 @@
       display: none;
     }
 
-    @include media.min-width(large) {
+    @media (min-width: 1024px) and (min-height: 820px) {
       :global(a) {
         display: inline-block;
       }
 
       :global(button) {
+        display: none;
+      }
+    }
+
+    @include media.min-width(xlarge) {
+      :global(button.icon-only) {
+        display: inherit;
+      }
+    }
+
+    @media (min-width: 1300px) and (min-height: 820px) {
+      :global(button.icon-only) {
         display: none;
       }
     }
@@ -149,7 +161,7 @@
     justify-content: center;
 
     position: relative;
-    overflow-y: auto;
+    overflow-y: hidden;
 
     padding: var(--padding-6x) var(--padding-4x);
   }
@@ -163,7 +175,7 @@
     width: 100%;
     max-width: 475px;
 
-    @media (min-width: 768px) and (min-height: 620px) {
+    @media (min-width: 1024px) and (min-height: 620px) {
       height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
