@@ -7,6 +7,7 @@
     ExternalLink,
     IconGitHub,
     MenuButton,
+    ContentBackdrop
   } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
@@ -17,54 +18,63 @@
 <Layout layout="stretch">
   <Banner />
 
-  <main data-tid="auth-page">
-    <header>
-      <div class="start">
-        <ExternalLink href="https://internetcomputer.org"
+  <div class="content">
+    <ContentBackdrop />
+
+    <main data-tid="auth-page">
+      <header>
+        <div class="start">
+          <ExternalLink href="https://internetcomputer.org"
           >internetcomputer.org</ExternalLink
-        >
+          >
 
-        <MenuButton />
-      </div>
+          <MenuButton />
+        </div>
 
-      <img
-        class="logo-nns"
-        src={nnsLogo}
-        role="presentation"
-        alt={$i18n.auth.logo}
-        loading="lazy"
-      />
+        <img
+                class="logo-nns"
+                src={nnsLogo}
+                role="presentation"
+                alt={$i18n.auth.logo}
+                loading="lazy"
+        />
 
-      <div class="end">
-        <ExternalLink href="https://internetcomputer.org/nns"
+        <div class="end">
+          <ExternalLink href="https://internetcomputer.org/nns"
           >{$i18n.auth.about}</ExternalLink
-        >
-        <ExternalLink href="https://dashboard.internetcomputer.org/governance"
+          >
+          <ExternalLink href="https://dashboard.internetcomputer.org/governance"
           >{$i18n.auth.voting_rewards}</ExternalLink
+          >
+        </div>
+      </header>
+
+      <article>
+        <slot />
+      </article>
+
+      <footer>
+        <span>{$i18n.auth.copyright}</span>
+        <a
+                class="github"
+                href="https://github.com/dfinity/nns-dapp"
+                rel="noopener noreferrer"
+                alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a
         >
-      </div>
-    </header>
-
-    <article>
-      <slot />
-    </article>
-
-    <footer>
-      <span>{$i18n.auth.copyright}</span>
-      <a
-        class="github"
-        href="https://github.com/dfinity/nns-dapp"
-        rel="noopener noreferrer"
-        alt="Link to NNS-dapp repo on GitHub"><IconGitHub /> GitHub</a
-      >
-    </footer>
-  </main>
+      </footer>
+    </main>
+  </div>
 </Layout>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/display";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
+
+  .content {
+    --backdrop-z-index: var(--z-index);
+    position: relative;
+  }
 
   header {
     width: 100%;
