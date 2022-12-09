@@ -189,6 +189,7 @@
   a {
     color: inherit;
     text-decoration: none;
+    text-align: center;
 
     display: flex;
     flex-direction: column;
@@ -198,7 +199,7 @@
     box-sizing: border-box;
     height: 100%;
 
-    padding: var(--padding-3x) var(--padding-4x);
+    padding: var(--padding-3x) var(--padding);
 
     background: linear-gradient(113.27deg, #24133C 0%, #291641 49.25%, #29103C 100%);
     border: 1px solid #4B3870;
