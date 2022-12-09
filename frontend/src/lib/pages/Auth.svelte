@@ -138,21 +138,16 @@
     @media (min-width: 768px) and (min-height: 620px) {
       display: flex;
       flex-grow: inherit;
-
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 0);
-      width: 100%;
       justify-content: center;
       gap: var(--padding-2x);
-      padding: var(--padding-8x) 0;
+      padding: var(--padding-4x) 0;
     }
   }
 
   li {
     @media (min-width: 768px) and (min-height: 620px) {
       padding: var(--padding-1_5x) 0;
+      width: 206px;
     }
   }
 
@@ -167,7 +162,7 @@
     }
 
     @media (min-width: 768px) and (min-height: 620px) {
-      margin: var(--padding-6x) 0 calc(14 * var(--padding));
+      margin: var(--padding-6x) 0 var(--padding);
       width: auto;
     }
   }
