@@ -74,6 +74,12 @@
   .content {
     --backdrop-z-index: var(--z-index);
     position: relative;
+
+    border-top-left-radius: var(--border-radius-2x);
+    border-bottom-left-radius: var(--border-radius-2x);
+    overflow: hidden;
+    margin: var(--padding) 0 var(--padding) var(--padding);
+    box-sizing: border-box;
   }
 
   header {
@@ -86,7 +92,11 @@
 
     box-sizing: border-box;
 
-    padding: 0 var(--padding-8x);
+    padding: 0 var(--padding-2x);
+
+    @media (min-width: 1024px) and (min-height: 820px) {
+      padding: 0 var(--padding-8x);
+    }
 
     &::after {
       content: "";
