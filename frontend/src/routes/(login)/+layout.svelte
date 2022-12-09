@@ -5,7 +5,6 @@
   import {
     Layout,
     ExternalLink,
-    IconGitHub,
     MenuButton,
     ContentBackdrop,
   } from "@dfinity/gix-components";
@@ -85,6 +84,8 @@
   }
 
   header {
+    top: 0;
+
     width: 100%;
     height: var(--login-header-height);
 
@@ -205,6 +206,10 @@
     overflow-y: hidden;
 
     padding: var(--padding-6x) var(--padding-4x);
+
+    @media (min-width: 1024px) and (min-height: 620px) {
+      padding: 0;
+    }
   }
 
   article {
