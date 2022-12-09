@@ -14,11 +14,8 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import {
-    InsufficientAmountError,
-    TokenAmount,
-    type Token,
-  } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/nns";
+  import { InsufficientAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
 
@@ -80,9 +77,11 @@
     } catch (error: unknown) {
       if (error instanceof InsufficientAmountError) {
         errorMessage = $i18n.error.insufficient_funds;
+        return;
       }
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
+        return;
       }
       if (error instanceof Error) {
         errorMessage = translate({ labelKey: error.message });
