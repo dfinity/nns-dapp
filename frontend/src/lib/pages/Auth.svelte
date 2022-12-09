@@ -198,6 +198,7 @@
 
     :global(button) {
       width: 100%;
+      padding: var(--padding) var(--padding-4x);
     }
 
     @media (min-width: 1024px) and (min-height: 620px) {
