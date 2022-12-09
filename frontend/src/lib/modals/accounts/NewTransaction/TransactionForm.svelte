@@ -85,12 +85,7 @@
         errorMessage = $i18n.error.amount_not_valid;
       }
       if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      // solves display of the label key instead of the label value
-      if (errorMessage !== undefined) {
-        errorMessage = translate({ labelKey: errorMessage });
+        errorMessage = translate({ labelKey: error.message });
       }
     }
   })();
