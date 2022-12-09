@@ -158,11 +158,11 @@
     padding: 0;
     margin: var(--padding) 0 0;
 
-    grid-template-columns: repeat(2, 50%);
+    grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
     grid-column-gap: var(--padding-2x);
     grid-row-gap: var(--padding-2x);
 
-    width: calc(100% - var(--padding-2x));
+    width: 100%;
 
     display: none;
 
