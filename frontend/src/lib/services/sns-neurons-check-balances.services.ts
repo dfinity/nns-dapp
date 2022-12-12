@@ -22,7 +22,7 @@ import {
 } from "@dfinity/sns";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-import {get} from "svelte/store";
+import { get } from "svelte/store";
 
 const loadNeuron = async ({
   rootCanisterId,

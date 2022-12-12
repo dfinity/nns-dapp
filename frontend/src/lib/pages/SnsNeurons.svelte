@@ -26,11 +26,12 @@
         loading = true;
 
         // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
-        await loadSnsParameters(selectedProjectCanisterId),
-          await Promise.all([
-            syncSnsNeurons(selectedProjectCanisterId),
-            syncSnsAccounts(selectedProjectCanisterId),
-          ]);
+        await loadSnsParameters(selectedProjectCanisterId);
+
+        await Promise.all([
+          syncSnsNeurons(selectedProjectCanisterId),
+          syncSnsAccounts(selectedProjectCanisterId),
+        ]);
         loading = false;
       }
     }
