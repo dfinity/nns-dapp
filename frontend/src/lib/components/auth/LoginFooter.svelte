@@ -2,18 +2,21 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconGitHub } from "@dfinity/gix-components";
 
-  export let presentation: "footer" | "menu" = "footer"
+  export let presentation: "footer" | "menu" = "footer";
 </script>
 
-<footer class:footer={presentation === "footer"} class:menu={presentation === "menu"}>
-    <span class="copyright">{$i18n.auth.copyright}</span>
+<footer
+  class:footer={presentation === "footer"}
+  class:menu={presentation === "menu"}
+>
+  <span class="copyright">{$i18n.auth.copyright}</span>
 
-    <a
-            class="github"
-            href="https://github.com/dfinity/nns-dapp"
-            rel="noopener noreferrer"
-            alt={$i18n.auth.github_link}><IconGitHub /> <span>GitHub</span></a
-    >
+  <a
+    class="github"
+    href="https://github.com/dfinity/nns-dapp"
+    rel="noopener noreferrer"
+    alt={$i18n.auth.github_link}><IconGitHub /> <span>GitHub</span></a
+  >
 </footer>
 
 <style lang="scss">
