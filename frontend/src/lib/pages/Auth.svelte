@@ -92,6 +92,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "../themes/mixins/login";
 
   .title {
     flex: 1;
@@ -100,7 +101,7 @@
     align-items: center;
     padding-top: var(--padding-6x);
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       padding-top: 0;
     }
   }
@@ -133,7 +134,7 @@
       line-height: var(--line-height-standard);
     }
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       font-size: calc(var(--font-size-h1) * 3);
       line-height: var(--line-height-standard);
     }
@@ -143,7 +144,7 @@
   .sign-in {
     max-width: 475px;
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       max-width: inherit;
     }
   }
@@ -166,7 +167,7 @@
       display: grid;
     }
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       display: none;
     }
 
@@ -180,7 +181,7 @@
   }
 
   li {
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       padding: var(--padding-1_5x) 0;
       width: 206px;
     }
@@ -197,7 +198,7 @@
       padding: var(--padding) var(--padding-4x);
     }
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       margin: var(--padding-6x) 0 var(--padding);
       width: auto;
     }

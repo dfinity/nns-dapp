@@ -1,0 +1,5 @@
+@mixin min-size() {
+  @media (min-width: 1024px) and (min-height: 620px) {
+    @content;
+  }
+}

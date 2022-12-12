@@ -65,6 +65,7 @@
   @use "@dfinity/gix-components/styles/mixins/display";
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "../../lib/themes/mixins/login";
 
   .content {
     --backdrop-z-index: var(--z-index);
@@ -207,7 +208,7 @@
 
     padding: var(--padding-6x) var(--padding-4x);
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       padding: 0;
     }
   }
@@ -221,7 +222,7 @@
     height: 100%;
     width: 100%;
 
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @include login.min-size {
       height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
