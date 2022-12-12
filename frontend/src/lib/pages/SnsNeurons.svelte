@@ -16,6 +16,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 
   let loading = true;
 
@@ -23,10 +24,13 @@
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
-        await Promise.all([
-          syncSnsNeurons(selectedProjectCanisterId),
-          syncSnsAccounts(selectedProjectCanisterId),
-        ]);
+
+        // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
+        await loadSnsParameters(selectedProjectCanisterId),
+          await Promise.all([
+            syncSnsNeurons(selectedProjectCanisterId),
+            syncSnsAccounts(selectedProjectCanisterId),
+          ]);
         loading = false;
       }
     }
