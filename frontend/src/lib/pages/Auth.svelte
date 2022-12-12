@@ -98,7 +98,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: var(--padding-8x);
+    padding-top: var(--padding-6x);
 
     @media (min-width: 1024px) and (min-height: 620px) {
       padding-top: 0;
