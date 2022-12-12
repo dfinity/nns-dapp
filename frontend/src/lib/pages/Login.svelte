@@ -4,7 +4,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
-  import { i18n } from "$lib/stores/i18n";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import {
@@ -13,6 +12,7 @@
   } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import LoginLinks from "$lib/components/login/LoginLinks.svelte";
+  import LoginTitle from "$lib/components/login/LoginTitle.svelte";
 
   let signedIn = false;
 
@@ -48,9 +48,7 @@
   onDestroy(unsubscribe);
 </script>
 
-<div class="title">
-  <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
-</div>
+<LoginTitle />
 
 <div class="sign-in">
   <SignIn />
@@ -59,55 +57,8 @@
 <LoginLinks />
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "../themes/mixins/login";
-
-  .title {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: var(--padding-6x);
-
-    @include login.min-size(medium) {
-      padding-top: 0;
-    }
-  }
-
-  h1 {
-    font-size: inherit;
-    line-height: var(--line-height-standard);
-    text-align: center;
-
-    letter-spacing: -0.02em;
-
-    color: var(--value-color);
-
-    span {
-      display: block;
-    }
-
-    display: none;
-
-    @media (min-height: 300px) {
-      display: block;
-    }
-
-    @media (min-height: 380px) {
-      font-size: calc(var(--font-size-h1) * 1.2);
-    }
-
-    @media (min-width: 440px) and (min-height: 860px) {
-      font-size: calc(var(--font-size-h1) * 2.5);
-      line-height: var(--line-height-standard);
-    }
-
-    @include login.min-size(medium) {
-      font-size: calc(var(--font-size-h1) * 3);
-      line-height: var(--line-height-standard);
-    }
-  }
 
   .sign-in {
     width: 100%;
@@ -124,12 +75,6 @@
     @include login.min-size(medium) {
       margin: var(--padding-6x) 0 var(--padding);
       width: auto;
-    }
-  }
-
-  @include media.light-theme {
-    h1 {
-      color: inherit;
     }
   }
 </style>
