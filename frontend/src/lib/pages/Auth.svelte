@@ -128,10 +128,6 @@
       font-size: calc(var(--font-size-h1) * 1.2);
     }
 
-    @media (min-width: 376px) and (min-height: 520px) {
-      font-size: calc(var(--font-size-h1) * 1.7);
-    }
-
     @media (min-width: 440px) and (min-height: 860px) {
       font-size: calc(var(--font-size-h1) * 2.5);
       line-height: var(--line-height-standard);
