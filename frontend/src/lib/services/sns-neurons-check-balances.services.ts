@@ -22,6 +22,7 @@ import {
 } from "@dfinity/sns";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import {get} from "svelte/store";
 
 const loadNeuron = async ({
   rootCanisterId,
@@ -190,7 +191,7 @@ const checkNeuronsSubaccounts = async ({
       const neuron = neurons.find(findNeuronBySubaccount(subaccount));
       const neuronNotFound = neuron === undefined;
       const positiveBalance = currentBalance >= neuronMinimumStake;
-      // Subaccount balance > 0 but no neuron found, claim it.
+      // Subaccount balance >= `neuron_minimum_stake_e8s` but no neuron found, claim it.
       if (positiveBalance && neuronNotFound) {
         await claimAndLoadNeuron({
           rootCanisterId,
@@ -296,7 +297,7 @@ export const checkSnsNeuronBalances = async ({
 
   const neuronMinimumStake = fromDefinedNullable(
     (
-      snsParametersStore[rootCanisterId.toText()]
+      get(snsParametersStore)?.[rootCanisterId.toText()]
         ?.parameters as NervousSystemParameters
     ).neuron_minimum_stake_e8s ?? []
   );
