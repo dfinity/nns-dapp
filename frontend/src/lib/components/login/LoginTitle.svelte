@@ -47,12 +47,17 @@
 
     @media (min-width: 440px) and (min-height: 860px) {
       font-size: calc(var(--font-size-h1) * 2.5);
-      line-height: var(--line-height-standard);
+      line-height: 1;
     }
 
     @include login.min-size(medium) {
       font-size: calc(var(--font-size-h1) * 3);
-      line-height: var(--line-height-standard);
+      line-height: 1;
+    }
+
+    @include login.min-size(xlarge) {
+      font-size: calc(var(--font-size-h1) * 5);
+      line-height: 1;
     }
   }
 

@@ -1,12 +1,22 @@
+// From gix-cmp media.scss
+$breakpoint-large: 1024px;
+$breakpoint-extra-large: 1300px;
+
 @mixin min-size($breakpoint) {
   @if ($breakpoint == medium) {
-    @media (min-width: 1024px) and (min-height: 620px) {
+    @media (min-width: $breakpoint-large) and (min-height: 620px) {
+      @content;
+    }
+  } @else if ($breakpoint == large) {
+    @media (min-width: $breakpoint-large) and (min-height: 820px) {
+      @content;
+    }
+  } @else if ($breakpoint == xlarge) {
+    @media (min-width: 1800px) and (min-height: 1520px) {
       @content;
     }
   } @else {
-    @media (min-width: 1024px) and (min-height: 820px) {
-      @content;
-    }
+    @error "UNKNOWN LOGIN MEDIA BREAKPOINT #{$breakpoint}";
   }
 }
 

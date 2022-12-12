@@ -84,5 +84,9 @@
       text-align: center;
       padding-top: calc(var(--login-header-height) + var(--padding-3x));
     }
+
+    @include login.min-size(xlarge) {
+      max-width: 70vw;
+    }
   }
 </style>
