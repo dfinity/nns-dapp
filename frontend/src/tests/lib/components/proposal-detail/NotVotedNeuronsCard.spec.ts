@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+import NotVotedNeuronsCard from "$lib/components/proposal-detail/NotVotedNeuronsCard.svelte";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -18,9 +18,9 @@ const neuron = {
   createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
 } as NeuronInfo;
 
-describe("IneligibleNeuronsCard", () => {
+describe("NotVotedNeuronsCard", () => {
   it("should be hidden if no neurons", () => {
-    const { container } = render(IneligibleNeuronsCard, {
+    const { container } = render(NotVotedNeuronsCard, {
       props: {
         proposalInfo,
         neurons: [],
@@ -30,7 +30,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display texts", () => {
-    const { getByText } = render(IneligibleNeuronsCard, {
+    const { getByText } = render(NotVotedNeuronsCard, {
       props: {
         proposalInfo,
         neurons: [
@@ -48,7 +48,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display ineligible neurons (< 6 months) ", () => {
-    const { getByText } = render(IneligibleNeuronsCard, {
+    const { getByText } = render(NotVotedNeuronsCard, {
       props: {
         proposalInfo: { ...proposalInfo, ballots: [] },
         neurons: [
@@ -67,7 +67,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display ineligible neurons (created after proposal) ", () => {
-    const { getByText, container } = render(IneligibleNeuronsCard, {
+    const { getByText, container } = render(NotVotedNeuronsCard, {
       props: {
         proposalInfo: {
           ...proposalInfo,
@@ -89,7 +89,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display multiple ineligible neurons", () => {
-    const { container, getByText } = render(IneligibleNeuronsCard, {
+    const { container, getByText } = render(NotVotedNeuronsCard, {
       props: {
         proposalInfo: {
           ...proposalInfo,

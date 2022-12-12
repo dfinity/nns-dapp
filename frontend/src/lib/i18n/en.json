@@ -459,8 +459,10 @@
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
     "text": "The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
+    "text_settled": "The following neurons had a dissolve delay of less than 6 months at the time the proposal was submitted, were created after the proposal was submitted or did not vote on it:",
     "reason_since": "created after the proposal",
-    "reason_short": "dissolve delay < 6 months"
+    "reason_short": "dissolve delay < 6 months",
+    "reason_settled": "proposal reward has settled"
   },
   "neuron_detail": {
     "title": "Neuron",

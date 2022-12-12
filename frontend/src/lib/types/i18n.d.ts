@@ -480,8 +480,10 @@ interface I18nProposal_detail__vote {
 interface I18nProposal_detail__ineligible {
   headline: string;
   text: string;
+  text_settled: string;
   reason_since: string;
   reason_short: string;
+  reason_settled: string;
 }
 
 interface I18nNeuron_detail {
