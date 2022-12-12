@@ -41,15 +41,6 @@
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "../../themes/mixins/login";
 
-  ul,
-  .sign-in {
-    max-width: 475px;
-
-    @include login.min-size(medium) {
-      max-width: inherit;
-    }
-  }
-
   ul {
     list-style-type: none;
 
@@ -61,6 +52,7 @@
     grid-row-gap: var(--padding-2x);
 
     width: 100%;
+    @include login.hero-max-width;
 
     display: none;
 

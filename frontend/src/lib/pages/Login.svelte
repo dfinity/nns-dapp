@@ -109,17 +109,9 @@
     }
   }
 
-  ul,
-  .sign-in {
-    max-width: 475px;
-
-    @include login.min-size(medium) {
-      max-width: inherit;
-    }
-  }
-
   .sign-in {
     width: 100%;
+    @include login.hero-max-width;
     align-self: center;
 
     padding: var(--padding-3x) 0;

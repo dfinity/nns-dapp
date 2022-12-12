@@ -9,3 +9,11 @@
     }
   }
 }
+
+@mixin hero-max-width() {
+  max-width: 475px;
+
+  @include min-size(medium) {
+    max-width: inherit;
+  }
+}
