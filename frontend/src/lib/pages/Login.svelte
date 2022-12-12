@@ -131,15 +131,5 @@
     h1 {
       color: inherit;
     }
-
-    a {
-      background: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
-      border: 1px solid var(--line);
-      color: var(--text-color);
-
-      :global(svg) {
-        color: var(--primary);
-      }
-    }
   }
 </style>
