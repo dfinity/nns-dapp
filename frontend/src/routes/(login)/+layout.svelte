@@ -79,7 +79,7 @@
 
     --login-header-height: 72px;
 
-    @media (min-width: 1024px) and (min-height: 820px) {
+    @include login.min-size(large) {
       --login-header-height: 88px;
     }
   }
@@ -98,7 +98,7 @@
 
     padding: 0 var(--padding-2x);
 
-    @media (min-width: 1024px) and (min-height: 820px) {
+    @include login.min-size(large) {
       padding: 0 var(--padding-8x);
     }
 
@@ -139,7 +139,7 @@
   .logo-nns {
     height: var(--padding-6x);
 
-    @media (min-width: 1024px) and (min-height: 820px) {
+    @include login.min-size(large) {
       height: var(--padding-8x);
     }
   }
@@ -153,7 +153,7 @@
       display: none;
     }
 
-    @media (min-width: 1024px) and (min-height: 820px) {
+    @include login.min-size(large) {
       padding-top: calc(4.5 * var(--padding));
 
       :global(a) {
@@ -208,7 +208,7 @@
 
     padding: var(--padding-6x) var(--padding-4x);
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       padding: 0;
     }
   }
@@ -222,7 +222,7 @@
     height: 100%;
     width: 100%;
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;

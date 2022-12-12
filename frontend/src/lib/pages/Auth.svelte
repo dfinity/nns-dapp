@@ -101,7 +101,7 @@
     align-items: center;
     padding-top: var(--padding-6x);
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       padding-top: 0;
     }
   }
@@ -134,7 +134,7 @@
       line-height: var(--line-height-standard);
     }
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       font-size: calc(var(--font-size-h1) * 3);
       line-height: var(--line-height-standard);
     }
@@ -144,7 +144,7 @@
   .sign-in {
     max-width: 475px;
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       max-width: inherit;
     }
   }
@@ -167,11 +167,11 @@
       display: grid;
     }
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       display: none;
     }
 
-    @media (min-width: 1024px) and (min-height: 720px) {
+    @include login.min-size(large) {
       display: flex;
       flex-grow: inherit;
       justify-content: center;
@@ -181,7 +181,7 @@
   }
 
   li {
-    @include login.min-size {
+    @include login.min-size(medium) {
       padding: var(--padding-1_5x) 0;
       width: 206px;
     }
@@ -198,7 +198,7 @@
       padding: var(--padding) var(--padding-4x);
     }
 
-    @include login.min-size {
+    @include login.min-size(medium) {
       margin: var(--padding-6x) 0 var(--padding);
       width: auto;
     }

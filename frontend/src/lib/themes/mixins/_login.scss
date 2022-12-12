@@ -1,5 +1,11 @@
-@mixin min-size() {
-  @media (min-width: 1024px) and (min-height: 620px) {
-    @content;
+@mixin min-size($breakpoint) {
+  @if ($breakpoint == medium) {
+    @media (min-width: 1024px) and (min-height: 620px) {
+      @content;
+    }
+  } @else {
+    @media (min-width: 1024px) and (min-height: 820px) {
+      @content;
+    }
   }
 }
