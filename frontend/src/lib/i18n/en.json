@@ -605,11 +605,14 @@
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
-    "token_stake": "$amount $token Stake"
+    "token_stake": "$amount $token Stake",
+    "dissolve_delay_description": "Voting power is given when neurons are locked for at least $duration"
   },
   "time": {
     "year": "year",
     "year_plural": "years",
+    "month": "month",
+    "month_plural": "months",
     "day": "day",
     "day_plural": "days",
     "hour": "hour",

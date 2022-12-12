@@ -633,11 +633,14 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
+  dissolve_delay_description: string;
 }
 
 interface I18nTime {
   year: string;
   year_plural: string;
+  month: string;
+  month_plural: string;
   day: string;
   day_plural: string;
   hour: string;
