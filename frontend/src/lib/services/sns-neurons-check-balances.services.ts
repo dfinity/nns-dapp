@@ -295,6 +295,7 @@ export const checkSnsNeuronBalances = async ({
   // TODO: Check neurons controlled by linked HW?
   const identity = await getAuthenticatedIdentity();
 
+  // TODO: refactor using `getSnsParametersFromStore` https://dfinity.atlassian.net/browse/GIX-1178
   const neuronMinimumStake = fromDefinedNullable(
     (
       get(snsParametersStore)?.[rootCanisterId.toText()]
