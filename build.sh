@@ -97,6 +97,8 @@ cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 # brew install xz
 cd "$tarball_dir"
 
+find . -type f | xargs -I{} gzip "{}"
+
 "$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
 
 cd "$TOPLEVEL"
