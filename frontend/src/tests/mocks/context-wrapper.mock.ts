@@ -50,7 +50,6 @@ export const renderSelectedAccountContext = ({
     contextValue: {
       store: writable<WalletStore>({
         account,
-        modal: undefined,
         neurons: [],
       }),
     },
@@ -79,7 +78,6 @@ export const renderSelectedSnsNeuronContext = ({
           rootCanisterId: rootCanisterIdMock,
         },
         neuron,
-        modal: undefined,
       }),
       reload,
     } as SelectedSnsNeuronContext,

@@ -286,6 +286,7 @@ interface I18nNew_followee {
   unfollow: string;
   same_neuron: string;
   followee_does_not_exist: string;
+  neuron_not_followee: string;
   already_followed: string;
 }
 
@@ -448,8 +449,10 @@ interface I18nProposal_detail {
   no_more_info: string;
   voting_results: string;
   remaining: string;
-  next: string;
-  previous: string;
+  older: string;
+  newer: string;
+  older_short: string;
+  newer_short: string;
   sign_in: string;
 }
 
@@ -616,6 +619,7 @@ interface I18nSns_project_detail {
 
 interface I18nSns_neuron_detail {
   header: string;
+  all_topics: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
@@ -625,11 +629,14 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
+  dissolve_delay_description: string;
 }
 
 interface I18nTime {
   year: string;
   year_plural: string;
+  month: string;
+  month_plural: string;
   day: string;
   day_plural: string;
   hour: string;
@@ -703,6 +710,7 @@ interface I18nError__sns {
   load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
+  load_parameters: string;
   sns_remove_hotkey: string;
   sns_disburse: string;
   sns_start_dissolving: string;
@@ -724,8 +732,10 @@ interface I18nError__sns {
   ledger_too_old: string;
   ledger_unsufficient_funds: string;
   sns_add_followee: string;
+  sns_remove_followee: string;
   sns_load_functions: string;
   sns_add_hotkey: string;
+  sns_stake_maturity: string;
 }
 
 interface I18nAuth_accounts {

@@ -7,6 +7,7 @@ import type {
   SnsNeuronId,
   SnsNeuronPermissionType,
 } from "@dfinity/sns";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -267,6 +268,31 @@ export const getNervousSystemFunctions = async ({
   return functions;
 };
 
+export const nervousSystemParameters = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<NervousSystemParameters> => {
+  logWithTimestamp(`Querying nervous system parameters...`);
+
+  const { nervousSystemParameters: nervousSystemParametersApi } = await wrapper(
+    {
+      identity,
+      rootCanisterId: rootCanisterId.toText(),
+      certified,
+    }
+  );
+
+  const parameters = await nervousSystemParametersApi({});
+
+  logWithTimestamp(`Querying nervous system parameters complete.`);
+  return parameters;
+};
+
 export const setFollowees = async ({
   rootCanisterId,
   identity,
@@ -295,4 +321,62 @@ export const setFollowees = async ({
   });
 
   logWithTimestamp(`Setting sns neuron followee call complete.`);
+};
+
+export const stakeMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  percentageToStake,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  percentageToStake: number;
+}): Promise<void> => {
+  logWithTimestamp(`Stake maturity: call...`);
+
+  const { stakeMaturity: stakeMaturityApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await stakeMaturityApi({
+    neuronId,
+    percentageToStake,
+  });
+
+  logWithTimestamp(`Stake maturity: complete`);
+};
+
+export const autoStakeMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  autoStake,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  autoStake: boolean;
+}): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity call...`
+  );
+
+  const { autoStakeMaturity: autoStakeMaturityApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity complete.`
+  );
 };

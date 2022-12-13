@@ -8,8 +8,12 @@ import {
   anonymizeKnownNeuron,
   anonymizeNeuronInfo,
   anonymizeProposal,
+  anonymizeSnsNeuron,
   anonymizeSnsSummary,
   anonymizeSnsSwapCommitment,
+  anonymizeSnsTypeStore,
+  anonymizeTransaction,
+  anonymizeTransactionStore,
   cutAndAnonymize,
 } from "$lib/utils/anonymize.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -129,6 +133,13 @@ const anonymiseStoreState = async () => {
     selectedAccount,
     selectedProposal,
     selectedProject,
+    snsNeurons,
+    snsAccounts,
+    selectedSnsNeuron,
+    snsFunctions,
+    snsTransactions,
+    transactionsFees,
+    transactions,
   } = get(debugStore);
 
   return {
@@ -178,6 +189,33 @@ const anonymiseStoreState = async () => {
         selectedProject.swapCommitment
       ),
     },
+    snsNeurons: await anonymizeSnsTypeStore(
+      snsNeurons,
+      async ({ certified, neurons }) => ({
+        certified,
+        neurons: await mapPromises(neurons, anonymizeSnsNeuron),
+      })
+    ),
+    snsAccounts: await anonymizeSnsTypeStore(
+      snsAccounts,
+      async ({ certified, accounts }) => ({
+        certified,
+        accounts: await mapPromises(accounts, anonymizeAccount),
+      })
+    ),
+    selectedSnsNeuron: {
+      selected: selectedSnsNeuron.selected,
+      neuron: await anonymizeSnsNeuron(selectedSnsNeuron.neuron),
+    },
+    transactions: await mapPromises(transactions, (transaction) =>
+      anonymizeTransaction({ transaction, account: accounts?.main })
+    ),
+    snsFunctions,
+    snsTransactions: await anonymizeSnsTypeStore(
+      snsTransactions,
+      anonymizeTransactionStore
+    ),
+    transactionsFees,
   };
 };
 

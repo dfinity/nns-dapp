@@ -6,7 +6,7 @@
   import { disburse } from "$lib/services/sns-neurons.services";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { assertNonNullish, fromDefinedNullable } from "@dfinity/utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
@@ -28,6 +28,7 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { goto } from "$app/navigation";
 
+  export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let reloadNeuron: () => Promise<void>;
 
@@ -82,10 +83,6 @@
     });
 
     loading = true;
-
-    let rootCanisterId: Principal | undefined = $snsOnlyProjectStore;
-
-    assertNonNullish(rootCanisterId);
 
     const { success } = await disburse({
       rootCanisterId,

@@ -1,5 +1,32 @@
 # Changelog
 
+## Proposal 95968
+* fix sns minimum dissolve delay description calculation
+* fix sns hotkeys permissions
+* minor styling and label update
+
+## Proposal 95714
+* Followees and dissolve delay in SNS neurons.
+* Improvements in rendering proposal payload.
+* Unspecific topic in sns.
+* Documentation update.
+* Tag releases in GitHub automatically.
+* Bugfixes.
+
+## Proposal 94588
+* UI Improvements in Wallet page.
+* UI Improvements in Neuron detail page.
+* UI Improvements in Canister detail page.
+* Show "undefined" properties in proposal payload.
+* Parse bytes from candid payloads and show them as hash.
+* UI improvements when showing the payload as JSON.
+* Change order of NNS topics when adding new followees.
+* Change in some colors.
+* Improved title in wallet and sns neuron detail page.
+* Fix calculation with voting power in dissolbe delay modal.
+* Use absolute path in meta image tag.
+* Fix issue with rounding of the amount in transactions.
+
 ## Proposal 93596
 * Remove redirection in Launchpad page.
 

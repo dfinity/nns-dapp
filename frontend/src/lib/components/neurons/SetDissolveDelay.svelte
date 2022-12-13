@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import {
@@ -17,6 +16,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds = 0;
@@ -63,16 +63,14 @@
     </p>
   </div>
 
-  {#if neuron.state === NeuronState.Locked && neuron.dissolveDelaySeconds}
+  {#if neuron.dissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
-      <p class="duration">
-        <Html
-          text={`${valueSpan(
-            secondsToDuration(neuron.dissolveDelaySeconds)
-          )} - ${$i18n.neurons.staked}`}
-        />
-      </p>
+      <NeuronStateRemainingTime
+        state={neuron.state}
+        timeInSeconds={neuron.dissolveDelaySeconds}
+        defaultGaps
+      />
     </div>
   {/if}
 

@@ -5,13 +5,24 @@
 import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
+import { page } from "$mocks/$app/stores";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import { mockSnsNeuronWithPermissions } from "../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockTokenStore,
+} from "../../../mocks/sns-projects.mock";
 
 describe("SnsNeuronInfoStake", () => {
+  beforeAll(() =>
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    })
+  );
+
   beforeEach(() => {
     jest
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
@@ -32,7 +43,9 @@ describe("SnsNeuronInfoStake", () => {
       reload: jest.fn(),
     });
 
-    expect(queryByTestId("disburse-button")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(queryByTestId("disburse-button")).toBeInTheDocument()
+    );
   });
 
   it("should not render disburse button", async () => {

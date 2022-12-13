@@ -4,14 +4,17 @@
 
 import {
   addNeuronPermissions,
+  autoStakeMaturity,
   claimNeuron,
   disburse,
   getNervousSystemFunctions,
   getNeuronBalance,
   increaseDissolveDelay,
+  nervousSystemParameters,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  stakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -31,7 +34,10 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../mocks/sns-neurons.mock";
 import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -63,6 +69,8 @@ describe("sns-api", () => {
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
+  const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -70,6 +78,9 @@ describe("sns-api", () => {
   const getFunctionsSpy = jest
     .fn()
     .mockResolvedValue(nervousSystemFunctionsMock);
+  const nervousSystemParametersSpy = jest
+    .fn()
+    .mockResolvedValue(snsNervousSystemParametersMock);
 
   beforeEach(() => {
     jest
@@ -103,7 +114,10 @@ describe("sns-api", () => {
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
         listNervousSystemFunctions: getFunctionsSpy,
+        nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
+        stakeMaturity: stakeMaturitySpy,
+        autoStakeMaturity: autoStakeMaturitySpy,
       })
     );
   });
@@ -178,6 +192,28 @@ describe("sns-api", () => {
     expect(increaseDissolveDelaySpy).toBeCalled();
   });
 
+  it("should stakeMaturity", async () => {
+    await stakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      percentageToStake: 60,
+    });
+
+    expect(stakeMaturitySpy).toBeCalled();
+  });
+
+  it("should autoStakeMaturity", async () => {
+    await autoStakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      autoStake: true,
+    });
+
+    expect(autoStakeMaturitySpy).toBeCalled();
+  });
+
   it("should getNeuronBalance", async () => {
     await getNeuronBalance({
       identity: mockIdentity,
@@ -234,5 +270,16 @@ describe("sns-api", () => {
 
     expect(getFunctionsSpy).toBeCalled();
     expect(res).toEqual([nervousSystemFunctionMock]);
+  });
+
+  it("should get nervous system parameters", async () => {
+    const res = await nervousSystemParameters({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(nervousSystemParametersSpy).toBeCalled();
+    expect(res).toEqual(snsNervousSystemParametersMock);
   });
 });

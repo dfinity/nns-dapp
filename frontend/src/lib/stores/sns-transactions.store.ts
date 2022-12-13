@@ -3,7 +3,7 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsTransactionWithId } from "@dfinity/sns";
 import { writable } from "svelte/store";
 
-interface SnsTransactions {
+export interface SnsTransactions {
   // Each SNS Account is an entry in this Store.
   // We use the account string representation as the key to identify the transactions.
   [accountIdentifier: string]: {

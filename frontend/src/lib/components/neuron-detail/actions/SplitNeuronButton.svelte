@@ -9,11 +9,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-  } from "$lib/types/nns-neuron-detail.context";
-  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
 
@@ -23,11 +19,8 @@
     fee: $mainTransactionFeeStore,
   });
 
-  const { toggleModal }: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
-  );
-
-  const openModal = () => toggleModal("split-neuron");
+  const openModal = () =>
+    openNnsNeuronModal({ type: "split-neuron", data: { neuron } });
 </script>
 
 {#if splittable}

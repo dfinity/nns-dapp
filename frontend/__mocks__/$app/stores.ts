@@ -1,12 +1,16 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
 import type { Page } from "@sveltejs/kit";
 import { writable } from "svelte/store";
-import { OWN_CANISTER_ID_TEXT } from "../../src/lib/constants/canister-ids.constants";
 
 const initPageStoreMock = () => {
   const { subscribe, set } = writable<Partial<Page>>({
     data: {
       universe: OWN_CANISTER_ID_TEXT,
       path: undefined,
+    },
+    route: {
+      id: undefined,
     },
   });
 
@@ -23,7 +27,7 @@ const initPageStoreMock = () => {
     }) =>
       set({
         data,
-        routeId: `(app)${routeId}`,
+        route: { id: `${ROUTE_ID_GROUP_APP}${routeId}` },
       }),
   };
 };

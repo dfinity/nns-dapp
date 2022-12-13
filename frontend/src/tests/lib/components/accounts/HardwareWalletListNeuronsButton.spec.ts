@@ -50,13 +50,14 @@ describe("HardwareWalletListNeuronsButton", () => {
   });
 
   it("should list neurons and open modal", async () => {
-    const { getByTestId } = renderTestCmp();
+    const { getByTestId, container } = renderTestCmp();
     await fireEvent.click(
       getByTestId("ledger-list-button") as HTMLButtonElement
     );
 
-    await waitFor(() => expect(getByTestId("test-modal")).not.toBeNull());
-    expect(getByTestId("test-modal")?.textContent).toEqual("hw-list-neurons");
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
 
     expect(spy).toHaveBeenCalled();
   });

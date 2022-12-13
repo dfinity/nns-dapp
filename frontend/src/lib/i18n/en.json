@@ -275,6 +275,7 @@
     "unfollow": "Unfollow",
     "same_neuron": "You can't add the same neuron as followee.",
     "followee_does_not_exist": "Neuron with id $neuronId does not exist.",
+    "neuron_not_followee": "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
     "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {
@@ -429,8 +430,10 @@
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
     "remaining": "remaining",
-    "next": "Navigate to next proposal",
-    "previous": "Navigate to previous proposal",
+    "older": "Navigate to older proposal",
+    "newer": "Navigate to newer proposal",
+    "older_short": "Older",
+    "newer_short": "Newer",
     "sign_in": "Sign in to vote"
   },
   "proposal_detail__vote": {
@@ -590,6 +593,7 @@
   },
   "sns_neuron_detail": {
     "header": "Neuron",
+    "all_topics": "All topics",
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
@@ -597,11 +601,14 @@
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
-    "token_stake": "$amount $token Stake"
+    "token_stake": "$amount $token Stake",
+    "dissolve_delay_description": "Voting power is given when neurons are locked for at least $duration"
   },
   "time": {
     "year": "year",
     "year_plural": "years",
+    "month": "month",
+    "month_plural": "months",
     "day": "day",
     "day_plural": "days",
     "hour": "hour",
@@ -668,7 +675,8 @@
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
-    "load_swap_commitment": "There was an unexpected error while loading the commitment of of the project.",
+    "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
+    "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
@@ -690,8 +698,10 @@
     "ledger_too_old": "Sorry, the transaction is too old. Please try again.",
     "ledger_unsufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
     "sns_add_followee": "There was an error while adding a followee.",
+    "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
-    "sns_add_hotkey": "There was an error adding the hotkey."
+    "sns_add_hotkey": "There was an error adding the hotkey.",
+    "sns_stake_maturity": "There was an error while staking the maturity of the neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",

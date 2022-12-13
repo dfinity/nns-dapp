@@ -108,9 +108,9 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
  *
  * Reference: https://internetcomputer.org/docs/current/tokenomics/sns/rewards#recap-on-nns-voting-rewards
  *
- * @param {Object}
- * @param {NeuronInfo} neuron
- * @param {number} newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
+ * @param {Object} params
+ * @param {NeuronInfo} params.neuron
+ * @param {number} params.newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
  * @returns {bigint}
  */
 export const neuronVotingPower = ({
@@ -152,7 +152,7 @@ interface VotingPowerParams {
  * @param {VotingPowerParams}
  * @returns {bigint}
  */
-const votingPower = ({
+export const votingPower = ({
   stakeE8s,
   dissolveDelay,
   ageSeconds,
@@ -204,7 +204,12 @@ const bonusMultiplier = ({
   amount: bigint;
   multiplier: number;
   max: number;
-}): number => 1 + multiplier * (Math.min(Number(amount), max) / max);
+}): number =>
+  1 +
+  multiplier *
+    (Math.min(Number(amount), max) /
+      // to avoid NaN
+      (max === 0 ? 1 : max));
 
 // TODO: Do we need this? What does it mean to have a valid stake?
 // TODO: https://dfinity.atlassian.net/browse/L2-507
@@ -233,7 +238,7 @@ export const getSpawningTimeInSeconds = (
     ? neuron.fullNeuron.spawnAtTimesSeconds - BigInt(nowInSeconds())
     : undefined;
 
-export const formatVotingPower = (value: bigint): string =>
+export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>

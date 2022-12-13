@@ -3,6 +3,7 @@
  */
 
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -33,10 +34,19 @@ describe("FollowNeuronsModal", () => {
       ],
     },
   };
+
+  const fillNeuronStore = () =>
+    neuronsStore.setNeurons({
+      neurons: [neuronFollowing],
+      certified: true,
+    });
+
+  beforeAll(() => fillNeuronStore());
+
   it("renders title", () => {
     const { queryByText } = render(FollowNeuronsModal, {
       props: {
-        neuron: mockNeuron,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 
@@ -46,7 +56,7 @@ describe("FollowNeuronsModal", () => {
   it("renders badge with numbers of followees on the topic", () => {
     const { queryByTestId } = render(FollowNeuronsModal, {
       props: {
-        neuron: neuronFollowing,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 
@@ -68,7 +78,7 @@ describe("FollowNeuronsModal", () => {
   it("displays the followees of the user in specific topic", async () => {
     const { queryByTestId } = render(FollowNeuronsModal, {
       props: {
-        neuron: neuronFollowing,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 

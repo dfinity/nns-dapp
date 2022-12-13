@@ -2,7 +2,7 @@
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
-  import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
+  import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
@@ -28,10 +28,7 @@
     NnsNeuronContext,
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronModal,
-  } from "$lib/types/nns-neuron-detail.context";
+  import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
 
@@ -111,9 +108,7 @@
 
   // Context
   const selectedNeuronStore = writable<NnsNeuronStore>({
-    modal: undefined,
     neuron,
-    selectedFollowee: undefined,
   });
 
   $: neuron,
@@ -123,12 +118,8 @@
         neuron,
       })))();
 
-  const toggleModal = (modal: NnsNeuronModal | undefined) =>
-    selectedNeuronStore.update((data) => ({ ...data, modal }));
-
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {
     store: selectedNeuronStore,
-    toggleModal,
   });
 </script>
 
@@ -138,7 +129,7 @@
       {#if neuron && !inVotingProcess}
         <NnsNeuronMetaInfoCard {neuron} />
         <NnsNeuronInfoStake {neuron} />
-        <NeuronMaturityCard {neuron} />
+        <NnsNeuronMaturityCard {neuron} />
         <NeuronJoinFundCard {neuron} />
         <NeuronFollowingCard {neuron} />
 
