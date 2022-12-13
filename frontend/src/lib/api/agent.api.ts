@@ -15,6 +15,7 @@ export const createAgent = async ({
 }): Promise<HttpAgent> => {
   const principalAsText: string = identity.getPrincipal().toText();
 
+  // e.g. a particular agent for anonymous call and another for signed-in identity
   if (agents?.[principalAsText] === undefined) {
     const agent = await createAgentUtil({
       identity,
