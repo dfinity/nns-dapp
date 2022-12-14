@@ -1,1 +1,1 @@
-export class InsufficientAmountError extends Error {}
+export class NotEnoughAmountError extends Error {}

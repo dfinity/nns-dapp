@@ -1,7 +1,7 @@
 import type { AccountsStore } from "$lib/stores/accounts.store";
 import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
-import { InsufficientAmountError } from "$lib/types/common.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
@@ -138,7 +138,7 @@ export const getAccountsByRootCanister = ({
 
 /**
  * Throws error if the account doesn't have enough balance.
- * @throws InsufficientAmountError
+ * @throws NotEnoughAmountError
  */
 export const assertEnoughAccountFunds = ({
   account,
@@ -148,7 +148,7 @@ export const assertEnoughAccountFunds = ({
   amountE8s: bigint;
 }): void => {
   if (account.balance.toE8s() < amountE8s) {
-    throw new InsufficientAmountError("error.insufficient_funds");
+    throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
 
