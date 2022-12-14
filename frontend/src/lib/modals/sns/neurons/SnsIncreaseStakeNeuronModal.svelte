@@ -6,14 +6,21 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsStore } from "@dfinity/gix-components";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { NewTransaction } from "$lib/types/transaction";
+  import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { numberToE8s } from "$lib/utils/token.utils";
 
+  export let neuron: SnsNeuron;
   export let token: Token;
   export let rootCanisterId: Principal;
+  export let reloadNeuron: () => Promise<void>;
 
   let currentStep: WizardStep;
 
@@ -38,8 +45,35 @@
     });
   });
 
-  const increaseStake = async () => {
-    // TODO
+  const dispatcher = createEventDispatcher();
+  const increaseStake = async ({
+    detail: { amount, sourceAccount: account },
+  }: CustomEvent<NewTransaction>) => {
+    startBusy({
+      initiator: "stake-sns-neuron",
+      labelKey: "neurons.may_take_while",
+    });
+
+    const { success } = await increaseStakeNeuron({
+      rootCanisterId,
+      amount: numberToE8s(amount),
+      account,
+      neuron,
+    });
+
+    await reloadNeuron();
+
+    if (success) {
+      toastsSuccess({
+        labelKey: "sns_neurons.stake_sns_neuron_success",
+        substitutions: {
+          $tokenSymbol: token.symbol,
+        },
+      });
+      dispatcher("nnsClose");
+    }
+
+    stopBusy("stake-sns-neuron");
   };
 
   let governanceCanisterId: Principal | undefined;

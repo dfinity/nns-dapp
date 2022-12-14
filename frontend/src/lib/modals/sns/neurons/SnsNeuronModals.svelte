@@ -122,6 +122,8 @@
       <SnsIncreaseStakeNeuronModal
         {rootCanisterId}
         {token}
+        {neuron}
+        {reloadNeuron}
         on:nnsClose={close}
       />
     {/if}
