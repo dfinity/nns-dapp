@@ -4,7 +4,7 @@
 
 import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-import StakeSnsNeuronModal from "$lib/modals/sns/neurons/StakeSnsNeuronModal.svelte";
+import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -27,11 +27,11 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
-describe("StakeSnsNeuronModal", () => {
+describe("SnsStakeNeuronModal", () => {
   const token = { name: "SNS", symbol: "SNS" };
   const renderTransactionModal = () =>
     renderModal({
-      component: StakeSnsNeuronModal,
+      component: SnsStakeNeuronModal,
       props: {
         token,
         transactionFee: TokenAmount.fromE8s({

@@ -23,6 +23,10 @@
   } from "$lib/types/sns-neuron-detail.modal";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
   import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
+  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { TokenAmount } from "@dfinity/nns";
 
   // Modal events
 
@@ -53,6 +57,13 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
+
+  let governanceCanisterId: Principal | undefined;
+  $: governanceCanisterId =
+    $snsProjectSelectedStore?.summary.governanceCanisterId;
+
+  let transactionFee: TokenAmount | undefined;
+  $: transactionFee = $snsSelectedTransactionFeeStore;
 </script>
 
 <svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
@@ -115,6 +126,15 @@
           {rootCanisterId}
         />
       {/if}
+    {/if}
+
+    {#if type === "increase-stake" && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}
+      <SnsIncreaseStakeNeuronModal
+        {rootCanisterId}
+        {token}
+        {governanceCanisterId}
+        {transactionFee}
+      />
     {/if}
   {/if}
 {/if}
