@@ -69,7 +69,7 @@ describe("transactionFee-services", () => {
     );
 
     it("set transaction fee of the sns project to the ledger canister value", async () => {
-      await loadSnsTransactionFee(mockPrincipal);
+      await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });
 
       expect(spyTranactionFeeApi).toHaveBeenCalled();
 

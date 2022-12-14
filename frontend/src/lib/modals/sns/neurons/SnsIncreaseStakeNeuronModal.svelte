@@ -4,12 +4,13 @@
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import {snsProjectSelectedStore} from "$lib/derived/selected-project.derived";
-  import {snsSelectedTransactionFeeStore} from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import {onMount} from "svelte";
-  import {syncSnsAccounts} from "$lib/services/sns-accounts.services";
-  import {nonNullish} from "$lib/utils/utils";
-  import {startBusy, stopBusy} from "$lib/stores/busy.store";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { onMount } from "svelte";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { nonNullish } from "$lib/utils/utils";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { toastsStore } from "@dfinity/gix-components";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -31,8 +32,10 @@
       initiator: "load-sns-accounts",
     });
 
-    // TODO: on sync error close loader
-    await syncSnsAccounts(rootCanisterId);
+    await syncSnsAccounts({
+      rootCanisterId,
+      handleError: () => stopBusySpinner(),
+    });
   });
 
   const increaseStake = async () => {
@@ -41,37 +44,44 @@
 
   let governanceCanisterId: Principal | undefined;
   $: governanceCanisterId =
-          $snsProjectSelectedStore?.summary.governanceCanisterId;
+    $snsProjectSelectedStore?.summary.governanceCanisterId;
 
   let transactionFee: TokenAmount | undefined;
   $: transactionFee = $snsSelectedTransactionFeeStore;
 
   let loading = true;
-  $: loading = transactionFee === undefined || governanceCanisterId === undefined;
+  $: loading =
+    transactionFee === undefined || governanceCanisterId === undefined;
 
-  const stopBusySpinner = () => {
-    if (loading) {
-      return;
-    }
+  const stopBusySpinner = () => stopBusy("load-sns-accounts");
 
-    stopBusy("load-sns-accounts");
-  }
+  $: loading,
+    (() => {
+      if (loading) {
+        return;
+      }
 
-  $: loading, stopBusySpinner()
+      stopBusySpinner();
+    })();
+
+  let hasErrors: boolean;
+  $: hasErrors =
+    $toastsStore?.find(({ level }) => ["error", "warn"].includes(level)) !==
+    undefined;
 </script>
 
 {#if !loading && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}
   <SnsTransactionModal
-          {rootCanisterId}
-          on:nnsSubmit={increaseStake}
-          on:nnsClose
-          bind:currentStep
-          {token}
-          {transactionFee}
-          {governanceCanisterId}
+    {rootCanisterId}
+    on:nnsSubmit={increaseStake}
+    on:nnsClose
+    bind:currentStep
+    {token}
+    {transactionFee}
+    {governanceCanisterId}
   >
     <svelte:fragment slot="title"
-    >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
+      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
     >
     <p slot="description" class="value">here description</p>
   </SnsTransactionModal>

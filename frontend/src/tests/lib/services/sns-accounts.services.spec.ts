@@ -31,7 +31,7 @@ describe("sns-accounts-services", () => {
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
-      await services.loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       const store = get(snsAccountsStore);
@@ -49,7 +49,7 @@ describe("sns-accounts-services", () => {
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.reject(undefined));
 
-      await services.loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await waitFor(() => {
         const store = get(snsAccountsStore);
@@ -75,7 +75,7 @@ describe("sns-accounts-services", () => {
         .spyOn(ledgerApi, "transactionFee")
         .mockImplementation(() => Promise.resolve(fee));
 
-      await services.syncSnsAccounts(mockPrincipal);
+      await services.syncSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       expect(spyAccountsQuery).toBeCalled();

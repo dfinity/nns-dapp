@@ -33,6 +33,7 @@
     />
   {:else}
     <!-- A toast error is shown if there is an error fetching any of the needed data -->
+    <!-- TODO: replace with busy spinner pattern as in <SnsIncreateStakeNeuronModal /> -->
     <Modal on:nnsClose>
       <svelte:fragment slot="title"
         >{$i18n.neurons.stake_neuron}</svelte:fragment

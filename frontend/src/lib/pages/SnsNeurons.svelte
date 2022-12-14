@@ -25,7 +25,7 @@
         loading = true;
         await Promise.all([
           syncSnsNeurons(selectedProjectCanisterId),
-          syncSnsAccounts(selectedProjectCanisterId),
+          syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
         ]);
         loading = false;
       }

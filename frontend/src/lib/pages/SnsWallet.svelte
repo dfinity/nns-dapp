@@ -38,7 +38,7 @@
       if (selectedProjectCanisterId !== undefined) {
         // Reload accounts always.
         // Do not set to loading because we might use the account in the store.
-        await syncSnsAccounts(selectedProjectCanisterId);
+        await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
       }
     }
   );
