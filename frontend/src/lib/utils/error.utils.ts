@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-import { InsufficientAmountError } from "$lib/types/common.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import {
   CannotBeMerged,
@@ -83,7 +83,6 @@ const neuronMapper: Array<[Function, string]> = [
   [NotFoundError, "error.neuron_not_found"],
   [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
   [InvalidAmountError, "error.amount_not_valid"],
-  [InsufficientAmountError, "error.amount_not_enough_stake_neuron"],
   [CouldNotClaimNeuronError, "error.neuron_not_found"],
   [InsufficientAmountNNSError, "error.amount_not_enough_stake_neuron"],
   [InvalidSenderError, "error.invalid_sender"],
@@ -94,16 +93,19 @@ const neuronMapper: Array<[Function, string]> = [
   [NotFoundError, "error.neuron_not_found"],
   [TransferError, "error.transfer_error"],
   [CannotBeMerged, "error.cannot_merge"],
+  // dapp errors
+  [NotEnoughAmountError, "error.amount_not_enough_stake_neuron"],
 ];
 export const mapNeuronErrorToToastMessage =
   factoryMappingErrorToToastMessage(neuronMapper);
 
 // Check CMC and IC Mgt Canister Errors
 const canisterMapper: Array<[Function, string]> = [
-  [InsufficientAmountError, "error.insufficient_funds"],
   [RefundedError, "error.canister_refund"],
   [InvalidaTransactionError, "error.canister_invalid_transaction"],
   [UserNotTheControllerError, "error.not_canister_controller_to_update"],
+  // dapp errors
+  [NotEnoughAmountError, "error.insufficient_funds"],
 ];
 export const mapCanisterErrorToToastMessage =
   factoryMappingErrorToToastMessage(canisterMapper);
