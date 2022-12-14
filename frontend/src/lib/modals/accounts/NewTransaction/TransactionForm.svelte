@@ -14,12 +14,10 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import {
-    InsufficientAmountError,
-    TokenAmount,
-    type Token,
-  } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/nns";
+  import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
+  import { translate } from "$lib/utils/i18n.utils";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -77,14 +75,16 @@
       });
       errorMessage = validateAmount(amount);
     } catch (error: unknown) {
-      if (error instanceof InsufficientAmountError) {
+      if (error instanceof NotEnoughAmountError) {
         errorMessage = $i18n.error.insufficient_funds;
+        return;
       }
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
+        return;
       }
       if (error instanceof Error) {
-        errorMessage = error.message;
+        errorMessage = translate({ labelKey: error.message });
       }
     }
   })();
