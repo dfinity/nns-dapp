@@ -6,22 +6,11 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
 
-export const initAppPublic = async () => {
-  // We first try to sync the IC time to resolve a potential issue (see syncTime documentation).
-  // This is performed before initializing private and public data on an app scale because we do not want to call this initialization too much time.
-  // Doing so we do it at max twice. e.g. if we call it from the layout we have no control over it and it would be called more times.
-  // Commentint until we better understand the implications of this call
-  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
-  // await syncTime();
-
-  await initAppPublicData();
-};
-
 /**
  * Load the application public data that are available globally ("global stores").
  * These data can be read by any users without being signed-in.
  */
-const initAppPublicData = (): Promise<
+export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];
