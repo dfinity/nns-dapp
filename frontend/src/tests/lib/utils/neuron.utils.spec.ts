@@ -1843,7 +1843,7 @@ describe("neuron-utils", () => {
 
   describe("minNeuronSplittable", () => {
     it("returns fee plus two ICPs", () => {
-      const received = minNeuronSplittable(10_000);
+      const received = minNeuronSplittable(10_000, E8S_PER_ICP);
       expect(received).toBe(10_000 + 2 * E8S_PER_ICP);
     });
   });

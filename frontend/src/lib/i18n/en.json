@@ -506,7 +506,7 @@
     "merge_neurons_success": "Your neurons have been successfully merged.",
     "disburse_neuron_title": "Disburse Neuron",
     "split_neuron_success": "Your neuron has successfully been split.",
-    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount $token to be splittable.",
     "merge_maturity_disabled_tooltip": "You need at least the equivalent of $amount ICP to merge maturity.",
     "spawn_neuron_disabled_tooltip": "You need at least the equivalent of $amount ICP ($min / $varibility) to spawn a new neuron from maturity.",
     "hotkeys_title": "Hotkeys",

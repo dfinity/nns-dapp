@@ -23,6 +23,12 @@
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
+  import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
+  import {loadSnsParameters} from "$lib/services/sns-parameters.services";
+  import {snsParametersStore} from "$lib/stores/sns-parameters.store";
+  import {TokenAmount} from "@dfinity/nns";
+  import {snsSelectedTransactionFeeStore} from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import {loadSnsTransactionFee} from "$lib/services/transaction-fees.services";
 
   export let neuronId: string | null | undefined;
 
@@ -42,6 +48,15 @@
 
   const goBack = (replaceState: boolean): Promise<void> =>
     goto($neuronsPathStore, { replaceState });
+
+  let rootCanisterId: Principal;
+  $: rootCanisterId = Principal.fromText($pageStore.universe);
+
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters = $snsParametersStore?.[rootCanisterId]?.parameters;
+
+  let fee: TokenAmount | undefined;
+  $: fee = $snsSelectedTransactionFeeStore;
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -76,6 +91,16 @@
       return;
     }
 
+    if (parameters === undefined) {
+      // TODO: move to context store
+      loadSnsParameters(rootCanisterId);
+    }
+
+    if (fee === undefined) {
+      // TODO: move to context store
+      loadSnsTransactionFee(rootCanisterId);
+    }
+
     try {
       // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
       selectedSnsNeuronStore.set({
@@ -96,7 +121,8 @@
   // END: loading and navigation
 
   let loading: boolean;
-  $: loading = $selectedSnsNeuronStore.neuron === null;
+  $: loading = $selectedSnsNeuronStore.neuron === null || parameters === undefined || fee === undefined;
+  $: console.log('...loading', $selectedSnsNeuronStore.neuron, parameters, fee)
 </script>
 
 <Island>

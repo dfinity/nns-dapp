@@ -4,6 +4,7 @@
 
   // Same props as Input
   export let name: string;
+  // TODO: "icp" -> "token"
   export let inputType: "number" | "text" | "icp" = "number";
   export let required = true;
   export let spellcheck: boolean | undefined = undefined;

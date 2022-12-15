@@ -8,9 +8,10 @@
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
+    hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import type { NeuronState } from "@dfinity/nns";
+  import type {NeuronState, Token} from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
@@ -21,6 +22,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { authStore } from "$lib/stores/auth.store";
+  import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
+  import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
+  import {Principal} from "@dfinity/principal";
+  import {snsParametersStore} from "$lib/stores/sns-parameters.store";
+  import {snsTokenSymbolSelectedStore} from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -28,8 +35,27 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $store.selected?.rootCanisterId;
+
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
+
+  // TODO: move to context?
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters = $snsParametersStore?.[rootCanisterId?.toText()]?.parameters;
+
+  // TODO: refactor to param?
+  let token: Token;
+  token = $snsTokenSymbolSelectedStore as Token;
+
+  let allowedToSplit: boolean;
+  $: allowedToSplit = hasPermissionToSplit({
+    neuron,
+    identity: $authStore.identity,
+  });
+
+  $: console.log('allowedToSplit', allowedToSplit)
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -63,6 +89,12 @@
     <SnsNeuronAge {neuron} />
 
     <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+    <div class="buttons">
+      {#if allowedToSplit}
+        <SplitSnsNeuronButton {neuron} {parameters} {token} />
+      {/if}
+    </div>
   </div>
 
   <Separator />

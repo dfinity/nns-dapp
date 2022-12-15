@@ -2,7 +2,7 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { votingPower } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import type {
@@ -187,6 +187,19 @@ export const hasPermissionToStakeMaturity = ({
     ],
   });
 
+export const hasPermissionToSplit = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
+  });
+
 /*
  * Returns true if the neuron contains provided permissions
  */
@@ -266,6 +279,33 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+export const minNeuronSplittable = ({
+  fee,
+  neuronMinimumStake,
+}: {
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): bigint => 2n * neuronMinimumStake + fee;
+
+/*
+neuron_minimum_stake_e8s
+transaction_fee_e8s
+split.amount_e8s < min_stake + transaction_fee_e8s
+
+- The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
+- The parent's stake minus amount to split is more than the minimum stake (thus the parent neuron will have at least the minimum stake)
+ */
+export const neuronCanBeSplit = ({
+  neuron,
+  fee,
+  neuronMinimumStake,
+}: {
+  neuron: SnsNeuron;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean =>
+  getSnsNeuronStake(neuron) >= minNeuronSplittable({ fee, neuronMinimumStake });
 
 /**
  * Has the neuron the auto stake maturity feature turned on?

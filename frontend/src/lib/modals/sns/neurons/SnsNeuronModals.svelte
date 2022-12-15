@@ -23,6 +23,7 @@
   } from "$lib/types/sns-neuron-detail.modal";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
   import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
+  import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
 
   // Modal events
 
@@ -113,6 +114,16 @@
           {neuronId}
           {neuron}
           {rootCanisterId}
+        />
+      {/if}
+
+      {#if type === "split-neuron"}
+        <SplitSnsNeuronModal
+          {rootCanisterId}
+          {neuron}
+          {token}
+          {reloadNeuron}
+          on:nnsClose={close}
         />
       {/if}
     {/if}

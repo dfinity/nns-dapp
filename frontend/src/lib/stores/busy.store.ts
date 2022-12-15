@@ -34,6 +34,7 @@ export type BusyStateInitiatorType =
   | "disburse-neuron"
   | "top-up-neuron"
   | "stake-sns-neuron"
+  | "split-sns-neuron"
   | "dissolve-sns-action"
   | "add-sns-followee"
   | "remove-sns-followee"

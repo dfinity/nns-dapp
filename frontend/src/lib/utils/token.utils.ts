@@ -76,6 +76,16 @@ export const formattedTransactionFeeICP = (fee: number | bigint): string =>
     }).toE8s(),
   });
 
+// To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
+// e.g. not 0.00010000 but 0.0001
+export const formattedTransactionFee = (fee: TokenAmount): string =>
+  formatToken({
+    value: TokenAmount.fromE8s({
+      amount: BigInt(fee.toE8s()),
+      token: fee.token,
+    }).toE8s(),
+  });
+
 /**
  * Calculates the maximum amount for a transaction.
  *
