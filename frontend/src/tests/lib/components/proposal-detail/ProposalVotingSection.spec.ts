@@ -5,7 +5,12 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { ProposalStatus, type Ballot, type NeuronInfo } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  type Ballot,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
@@ -49,13 +54,11 @@ describe("ProposalVotingSection", () => {
     jest.resetAllMocks();
   });
 
-  const props = {
-    proposalInfo: {
-      ...mockProposalInfo,
-      ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
-      proposalTimestampSeconds: BigInt(2000),
-      status: ProposalStatus.Open,
-    },
+  const proposalInfo = {
+    ...mockProposalInfo,
+    ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
+    proposalTimestampSeconds: BigInt(2000),
+    status: ProposalStatus.Open,
   };
 
   describe("signed in", () => {
@@ -67,7 +70,12 @@ describe("ProposalVotingSection", () => {
 
     it("should render vote blocks", () => {
       const { queryByText, getByTestId } = render(ProposalVotingSectionTest, {
-        props,
+        props: {
+          proposalInfo: {
+            ...proposalInfo,
+            rewardStatus: ProposalRewardStatus.AcceptVotes,
+          },
+        },
       });
 
       expect(
@@ -77,6 +85,23 @@ describe("ProposalVotingSection", () => {
       expect(
         queryByText(en.proposal_detail__ineligible.headline)
       ).toBeInTheDocument();
+    });
+
+    it("should not render vote blocks if reward status has settled", () => {
+      const { queryByText, getByTestId } = render(ProposalVotingSectionTest, {
+        props: {
+          proposalInfo: {
+            ...proposalInfo,
+            rewardStatus: ProposalRewardStatus.Settled,
+          },
+        },
+      });
+
+      expect(
+        queryByText(en.proposal_detail.voting_results)
+      ).toBeInTheDocument();
+      expect(() => getByTestId("voting-confirmation-toolbar")).toThrow();
+      expect(queryByText(en.proposal_detail__ineligible.headline)).toBeNull();
     });
   });
 
@@ -89,7 +114,9 @@ describe("ProposalVotingSection", () => {
 
     it("should not render vote blocks", () => {
       const { queryByText, getByTestId } = render(ProposalVotingSectionTest, {
-        props,
+        props: {
+          proposalInfo,
+        },
       });
 
       expect(() => getByTestId("voting-confirmation-toolbar")).toThrow();
