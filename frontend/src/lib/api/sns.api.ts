@@ -429,7 +429,7 @@ export const increaseStakeNeuron = async ({
     certified: true,
   });
 
-  const newNeuronId = await increaseStakeNeuronApi({
+  await increaseStakeNeuronApi({
     stakeE8s,
     source,
     neuronId,

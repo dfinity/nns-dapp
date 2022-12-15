@@ -1,6 +1,6 @@
 <script lang="ts">
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import type { Token, TokenAmount } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -10,7 +10,6 @@
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toastsStore } from "@dfinity/gix-components";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
@@ -97,11 +96,6 @@
 
       stopBusySpinner();
     })();
-
-  let hasErrors: boolean;
-  $: hasErrors =
-    $toastsStore?.find(({ level }) => ["error", "warn"].includes(level)) !==
-    undefined;
 </script>
 
 {#if !loading && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}

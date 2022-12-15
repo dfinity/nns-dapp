@@ -15,8 +15,6 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
-import * as ledgerApi from "$lib/api/sns-ledger.api";
-import * as services from "$lib/services/sns-accounts.services";
 
 describe("transactionFee-services", () => {
   const fee = BigInt(30_000);
@@ -63,14 +61,14 @@ describe("transactionFee-services", () => {
       let spyTransactionFeeApi;
       beforeEach(() => {
         spyTransactionFeeApi = jest
-            .spyOn(snsApi, "transactionFee")
-            .mockResolvedValue(fee);
+          .spyOn(snsApi, "transactionFee")
+          .mockResolvedValue(fee);
         // Avoid to print errors during test
         jest.spyOn(console, "error").mockImplementation(() => undefined);
       });
 
       afterEach(() =>
-          transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S))
+        transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S))
       );
 
       it("set transaction fee of the sns project to the ledger canister value", async () => {
@@ -88,12 +86,15 @@ describe("transactionFee-services", () => {
     describe("error", () => {
       it("should call error callback", async () => {
         const spyTransactionFeeApi = jest
-            .spyOn(snsApi, "transactionFee")
-            .mockRejectedValue(new Error());
+          .spyOn(snsApi, "transactionFee")
+          .mockRejectedValue(new Error());
 
         const spy = jest.fn();
 
-        await loadSnsTransactionFee({ rootCanisterId: mockPrincipal, handleError: spy });
+        await loadSnsTransactionFee({
+          rootCanisterId: mockPrincipal,
+          handleError: spy,
+        });
 
         expect(spy).toBeCalled();
 
