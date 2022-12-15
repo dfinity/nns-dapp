@@ -14,10 +14,10 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@dfinity/sns";
   import { numberToE8s } from "$lib/utils/token.utils";
 
-  export let neuron: SnsNeuron;
+  export let neuronId: SnsNeuronId;
   export let token: Token;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
@@ -58,7 +58,7 @@
       rootCanisterId,
       amount: numberToE8s(amount),
       account,
-      neuron,
+      neuronId,
     });
 
     await reloadNeuron();

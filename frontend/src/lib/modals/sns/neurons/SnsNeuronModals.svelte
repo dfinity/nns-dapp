@@ -116,16 +116,16 @@
           {rootCanisterId}
         />
       {/if}
-    {/if}
 
-    {#if type === "increase-stake"}
-      <SnsIncreaseStakeNeuronModal
-        {rootCanisterId}
-        {token}
-        {neuron}
-        {reloadNeuron}
-        on:nnsClose={close}
-      />
+      {#if type === "increase-stake"}
+        <SnsIncreaseStakeNeuronModal
+          {rootCanisterId}
+          {token}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+        />
+      {/if}
     {/if}
   {/if}
 {/if}

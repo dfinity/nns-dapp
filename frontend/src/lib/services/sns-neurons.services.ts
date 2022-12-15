@@ -409,24 +409,26 @@ export const increaseStakeNeuron = async ({
   rootCanisterId,
   amount,
   account,
-  neuron,
+  neuronId,
 }: {
   rootCanisterId: Principal;
   amount: bigint;
   account: Account;
-  neuron: SnsNeuron;
+  neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
   try {
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
+
     await increaseStakeNeuronApi({
       // We can cast it because we already checked that the neuron id is not undefined
-      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      neuronId,
       rootCanisterId,
       stakeE8s: amount,
       identity,
       source: decodeSnsAccount(account.identifier),
     });
+
     return { success: true };
   } catch (err) {
     toastsError(
@@ -435,6 +437,7 @@ export const increaseStakeNeuron = async ({
         fallbackErrorLabelKey: "error__sns.sns_increase_stake",
       })
     );
+
     return { success: false };
   }
 };
