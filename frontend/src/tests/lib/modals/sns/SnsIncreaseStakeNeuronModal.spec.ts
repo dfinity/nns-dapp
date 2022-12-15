@@ -8,6 +8,7 @@ import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStak
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
+import * as busyStore from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { ICPToken } from "@dfinity/nns";
 import {
@@ -31,6 +32,7 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "../../../utils/neurons-modal.test-utils";
+import {startBusy, stopBusy} from "$lib/stores/busy.store";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -41,6 +43,13 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/stores/busy.store", () => {
+  return {
+    startBusy: jest.fn(),
+    stopBusy:  jest.fn(),
   };
 });
 
@@ -73,11 +82,19 @@ describe("SnsIncreaseStakeNeuronModal", () => {
     });
 
     it("should call sync sns accounts on init", async () => {
-      const { container } = await render(SnsIncreaseStakeNeuronModal, {
+      await render(SnsIncreaseStakeNeuronModal, {
         props,
       });
 
       expect(syncSnsAccounts).toBeCalled();
+    });
+
+    it("should display a spinner on init", async () => {
+      await render(SnsIncreaseStakeNeuronModal, {
+        props,
+      });
+
+      expect(startBusy).toHaveBeenCalled()
     });
   });
 
