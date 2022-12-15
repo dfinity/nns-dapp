@@ -62,19 +62,6 @@ impl Asset {
             stable: false,
         }
     }
-
-    pub fn new_stable(bytes: Vec<u8>) -> Self {
-        Self {
-            headers: vec![],
-            bytes,
-            stable: true,
-        }
-    }
-
-    pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
-        self.headers.push((key.into(), val.into()));
-        self
-    }
 }
 
 #[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]

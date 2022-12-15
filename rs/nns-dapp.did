@@ -257,5 +257,4 @@ service : {
     add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingTransactionResponse);
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
-    add_stable_asset: (asset: blob) -> ();
 }

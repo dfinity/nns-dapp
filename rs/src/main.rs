@@ -4,7 +4,6 @@ use crate::accounts_store::{
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
-use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
@@ -308,21 +307,6 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-}
-
-/// Add an asset to be served by the canister.
-///
-/// Only a whitelist of assets are accepted.
-#[export_name = "canister_update add_stable_asset"]
-pub fn add_stable_asset() {
-    over(candid_one, |asset_bytes: Vec<u8>| {
-        let hash_bytes = hash_bytes(&asset_bytes);
-        match hex::encode(&hash_bytes).as_str() {
-            unknown_hash => {
-                dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
-            }
-        }
-    })
 }
 
 #[derive(CandidType)]
