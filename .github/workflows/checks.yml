@@ -65,14 +65,6 @@ jobs:
           # the pushing fail
           pull_strategy: "NO-PULL"
 
-  clippy:
-    needs: formatting
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Noop
-        run: echo clippy is run by the formatting step
-
-
   cargo-tests:
     needs: formatting
     runs-on: ${{ matrix.os }}
@@ -103,11 +95,8 @@ jobs:
         run : |
           touch assets.tar.xz
 
-      # Does not support Node 16 yet
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features -- -D warnings
+      - name: Lint rust code
+        run: ./scripts/lint-rs
 
       - name: Run Tests
         shell: bash
@@ -223,7 +212,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes
