@@ -20,6 +20,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
+import { enterAmount } from "../../../utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -67,29 +68,11 @@ describe("SnsStakeNeuronModal", () => {
   });
 
   it("should stake a new sns neuron", async () => {
-    const { queryAllByText, getByTestId, container } =
-      await renderTransactionModal();
+    const renderResult = await renderTransactionModal();
 
-    await waitFor(() =>
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
-    );
-    const participateButton = getByTestId("transaction-button-next");
-    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+    await enterAmount(renderResult);
 
-    // Enter amount
-    const icpAmount = "10";
-    const input = container.querySelector("input[name='amount']");
-    input && fireEvent.input(input, { target: { value: icpAmount } });
-    await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-    );
-
-    fireEvent.click(participateButton);
-
-    await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
-    expect(queryAllByText(icpAmount, { exact: false }).length).toBeGreaterThan(
-      0
-    );
+    const { getByTestId } = renderResult;
 
     const confirmButton = getByTestId("transaction-button-execute");
     fireEvent.click(confirmButton);
