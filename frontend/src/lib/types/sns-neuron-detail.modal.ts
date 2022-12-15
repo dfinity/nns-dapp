@@ -3,7 +3,9 @@ export type SnsNeuronModalType =
   | "disburse"
   | "dissolve"
   | "follow"
-  | "add-hotkey";
+  | "add-hotkey"
+  | "stake-maturity"
+  | "auto-stake-maturity";
 
 export interface SnsNeuronModal {
   type: SnsNeuronModalType;

@@ -1,12 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { formattedMaturity } from "$lib/utils/neuron.utils";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
-  export let neuron: NeuronInfo;
+  export let formattedMaturity: string;
   export let percentage: number;
   export let buttonText: string;
   export let disabled = false;
@@ -17,7 +15,7 @@
 
 <KeyValuePair>
   <span slot="key" class="label">{$i18n.neuron_detail.available_maturity}</span>
-  <span class="value" slot="value">{formattedMaturity(neuron)}</span>
+  <span class="value" slot="value">{formattedMaturity}</span>
 </KeyValuePair>
 
 <slot name="description" />
