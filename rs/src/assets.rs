@@ -265,7 +265,13 @@ pub fn init_assets() {
 impl StableState for Assets {
     fn encode(&self) -> Vec<u8> {
         // Encode all stable assets.
-        let stable_assets: Assets = Assets(self.0.clone().into_iter().filter(|(_, asset)| /* Uncomment to re-enable stable assets: asset.stable */ false).collect());
+        let stable_assets: Assets = Assets(
+            self.0
+                .clone()
+                .into_iter()
+                .filter(|(_, _asset)| /* Uncomment to re-enable stable assets: asset.stable */ false)
+                .collect(),
+        );
 
         Encode!(&stable_assets).unwrap()
     }
