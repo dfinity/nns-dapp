@@ -26,6 +26,7 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
+
     it("should call api.getSnsAccounts and load neurons in store", async () => {
       const spyQuery = jest
         .spyOn(ledgerApi, "getSnsAccounts")
@@ -37,6 +38,25 @@ describe("sns-accounts-services", () => {
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalled();
+
+      spyQuery.mockClear();
+    });
+
+    it("should call error callback", async () => {
+      const spyQuery = jest
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockRejectedValue(new Error());
+
+      const spy = jest.fn();
+
+      await services.loadSnsAccounts({
+        rootCanisterId: mockPrincipal,
+        handleError: spy,
+      });
+
+      expect(spy).toBeCalled();
+
+      spyQuery.mockClear();
     });
 
     it("should empty store if update call fails", async () => {
