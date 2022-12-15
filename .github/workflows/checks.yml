@@ -91,10 +91,6 @@ jobs:
           rustup target add wasm32-unknown-unknown
           rustup component add clippy
 
-      - name: Create fake assets
-        run : |
-          touch assets.tar.xz
-
       - name: Lint rust code
         run: ./scripts/lint-rs
 
