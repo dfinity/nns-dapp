@@ -1,6 +1,6 @@
 use crate::accounts_store::encode_metrics;
 use crate::metrics_encoder::MetricsEncoder;
-use crate::state::STATE;
+use crate::state::{State, STATE};
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
@@ -26,6 +26,28 @@ pub struct HttpResponse {
     status_code: u16,
     headers: Vec<HeaderField>,
     body: ByteBuf,
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum ContentEncoding {
+    Identity,
+    GZip,
+}
+impl ContentEncoding {
+    /// Returns the file suffix for every encoding.
+    pub fn suffix(&self) -> &'static str {
+        match self {
+            ContentEncoding::Identity => "",
+            ContentEncoding::GZip => ".gz",
+        }
+    }
+    /// Returns thecontent encoding, if applicable.
+    pub fn header(&self) -> Option<&'static str> {
+        match self {
+            ContentEncoding::Identity => None,
+            ContentEncoding::GZip => Some("gzip"),
+        }
+    }
 }
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
@@ -81,12 +103,61 @@ impl Asset {
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
-    fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
+    const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
+    pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);
     }
+    pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
+        // Note: The logic for finding an asset is the reverse of listing all asset paths.
+        for (old_suffix, new_suffix) in [("/index.html/", "/index.html"), ("/", "/index.html")] {
+            if let Some(root) = path.strip_suffix(old_suffix) {
+                let new_path = root.to_string() + new_suffix;
+                return self.get(&new_path);
+            }
+        }
+        Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
+            self.get_with_encoding(*content_encoding, path)
+                .map(|asset| (*content_encoding, asset))
+        })
+    }
+    fn get_with_encoding(&self, content_encoding: ContentEncoding, path: &str) -> Option<&Asset> {
+        let path_with_suffix = {
+            let mut extended = String::new();
+            extended.push_str(path);
+            extended.push_str(content_encoding.suffix());
+            extended
+        };
+        let ans = self.0.get(&path_with_suffix);
+        dfn_core::api::print(format!("Looking for asset {path_with_suffix}: {}", ans.is_some()));
+        ans
+    }
 
-    fn get(&self, path: &str) -> Option<&Asset> {
-        self.0.get(path)
+    /// Returns the URL paths for which a given asset may be returned.
+    /// Note:  All these paths must be certified.
+    pub fn asset_paths(path: &str) -> Vec<String> {
+        // path.gz may be obtained as path.  Likewise for all encodings.
+        Self::CONTENT_ENCODINGS
+            .iter()
+            .filter_map(|content_encoding| {
+                if path.ends_with(content_encoding.suffix()) {
+                    Some(path[0..path.len() - content_encoding.suffix().len()].to_string())
+                } else {
+                    None
+                }
+            })
+            // Add the directory, with trailing slash, as an alternative path.
+            // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
+            .flat_map(|path| {
+                if let Some(root) = path.strip_suffix("/index.html") {
+                    ["/", "/index.html", "/index.html/"]
+                        .iter()
+                        .map(|suffix| root.to_string() + suffix)
+                        .collect::<Vec<String>>()
+                } else {
+                    vec![path]
+                }
+            })
+            .collect()
     }
 }
 
@@ -124,10 +195,13 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             headers.push(certificate_header);
 
             match s.assets.borrow().get(request_path) {
-                Some(asset) => {
+                Some((content_encoding, asset)) => {
                     headers.extend(asset.headers.clone());
                     if let Some(content_type) = content_type_of(request_path) {
                         headers.push(("Content-Type".to_string(), content_type.to_string()));
+                    }
+                    if let Some(content_encoding_header) = content_encoding.header() {
+                        headers.push(("Content-Encoding".to_string(), content_encoding_header.to_string()));
                     }
 
                     HttpResponse {
@@ -213,33 +287,25 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
     hasher.finalize().into()
 }
 
-/// Insert an asset into the state.
+/// Insert an asset into the state and update the certificates.
 pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
     dfn_core::api::print(format!("Inserting asset {}", &path.clone().into()));
-    STATE.with(|s| {
-        let mut asset_hashes = s.asset_hashes.borrow_mut();
-        let mut assets = s.assets.borrow_mut();
-        let path = path.into();
-
-        let index = "index.html";
-        if path.split('/').last() == Some(index) {
-            // Add the directory, with trailing slash, as an alternative path.
-            // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
-            let prefix_len = path.len() - index.len();
-            let dirname = &path[..prefix_len];
-            asset_hashes
-                .0
-                .insert(dirname.as_bytes().to_vec(), hash_bytes(&asset.bytes));
-            assets.insert(dirname, asset.clone());
-        }
-
-        asset_hashes
-            .0
-            .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
-        assets.insert(path, asset);
-
-        update_root_hash(&asset_hashes);
+    STATE.with(|state| {
+        insert_asset_into_state(state, path, asset);
+        update_root_hash(&state.asset_hashes.borrow_mut());
     });
+}
+/// Insert an asset into the given state
+pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, asset: Asset) {
+    dfn_core::api::print(format!("Inserting asset {}", &path.clone().into()));
+    let mut asset_hashes = state.asset_hashes.borrow_mut();
+    let mut assets = state.assets.borrow_mut();
+    let path: String = path.into();
+    let hash = hash_bytes(&asset.bytes);
+    for alternate_path in Assets::asset_paths(&path) {
+        asset_hashes.0.insert(alternate_path.as_bytes().to_vec(), hash);
+    }
+    assets.insert(path, asset);
 }
 
 // used both in init and post_upgrade
@@ -248,31 +314,33 @@ pub fn init_assets() {
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
-    for entry in tar.entries().unwrap() {
-        let mut entry = entry.unwrap();
+    STATE.with(|state| {
+        for entry in tar.entries().unwrap() {
+            let mut entry = entry.unwrap();
 
-        if !entry.header().entry_type().is_file() {
-            continue;
+            if !entry.header().entry_type().is_file() {
+                continue;
+            }
+
+            let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
+
+            let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
+                dfn_core::api::trap_with(&format!(
+                    "non-utf8 file name {}: {}",
+                    String::from_utf8_lossy(&name_bytes),
+                    e
+                ));
+                unreachable!()
+            });
+
+            let mut bytes = Vec::new();
+            entry.read_to_end(&mut bytes).unwrap();
+
+            dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
+            insert_asset_into_state(state, name, Asset::new(bytes));
         }
-
-        let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
-
-        let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
-            dfn_core::api::trap_with(&format!(
-                "non-utf8 file name {}: {}",
-                String::from_utf8_lossy(&name_bytes),
-                e
-            ));
-            unreachable!()
-        });
-
-        let mut bytes = Vec::new();
-        entry.read_to_end(&mut bytes).unwrap();
-
-        dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
-
-        insert_asset(name, Asset::new(bytes));
-    }
+        update_root_hash(&state.asset_hashes.borrow_mut());
+    })
 }
 
 impl StableState for Assets {
