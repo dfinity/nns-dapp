@@ -300,22 +300,3 @@ fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
     dfn_core::api::set_certified_data(&prefixed_root_hash[..]);
 }
-
-#[test]
-fn encode_decode() {
-    // Test that encoding/decoding preserves stable assets.
-    use maplit::hashmap;
-    let assets = Assets(hashmap! {
-        "x".to_string() => Asset::new_stable(vec![1,2,3]),
-        "y".to_string() => Asset::new(vec![4,5,6])
-    });
-
-    let assets = Assets::decode(assets.encode()).unwrap();
-
-    assert_eq!(
-        assets,
-        Assets(hashmap! {
-            "x".to_string() => Asset::new_stable(vec![1,2,3])
-        })
-    );
-}
