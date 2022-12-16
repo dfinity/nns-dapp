@@ -106,7 +106,7 @@ impl Assets {
     /// List of content encodings supported by the assets database.
     const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
     /// Inserts an asset into the database.
-    /// 
+    ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
     ///   e.g. foo.js.gz should be entered with the .gz suffix.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
@@ -125,7 +125,7 @@ impl Assets {
     ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
-        for (old_suffix, new_suffix) in [("/index.html/", "/index.html"), ("/", "/index.html")] {
+        for (old_suffix, new_suffix) in [("/", "/index.html")] {
             if let Some(root) = path.strip_suffix(old_suffix) {
                 let new_path = root.to_string() + new_suffix;
                 return self.get(&new_path);
@@ -164,7 +164,7 @@ impl Assets {
             // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
             .flat_map(|path| {
                 if let Some(root) = path.strip_suffix("/index.html") {
-                    ["/", "/index.html", "/index.html/"]
+                    ["/", "/index.html"]
                         .iter()
                         .map(|suffix| root.to_string() + suffix)
                         .collect::<Vec<String>>()
