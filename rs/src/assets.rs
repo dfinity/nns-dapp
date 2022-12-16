@@ -103,13 +103,24 @@ impl Asset {
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
+    /// List of content encodings supported by the assets database.
     const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
+    /// Inserts an asset into the database.
+    /// 
+    /// - The asset encoding is deduced from the asset path suffix.  Thus
+    ///   e.g. foo.js.gz should be entered with the .gz suffix.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);
     }
     /// Gets a given URL path from the assets, if available.
     ///
     /// - If the path looks like an index, the canonical suffix "/index.html" will be used.
+    /// - The retrieval search will look for compressed versions of the data.  E.g. if
+    ///   foo.json is requested and foo.json.gz is available, that will be returned along with
+    ///   "gzip" as the encoding.  The encoding can be set in the browser response HTTP header
+    ///   so that the browser will decompress the data before giving it to the requestor.  If
+    ///   the requestor wishes to receive the compressed data, without transparent decoding,
+    ///   the requestor should ask for "foo.json.gz" instead of "foo.json".
     /// - The current asset signature scheme supports only one signature per path, so we cannot
     ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
