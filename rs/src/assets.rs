@@ -107,6 +107,11 @@ impl Assets {
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);
     }
+    /// Gets a given URL path from the assets, if available.
+    ///
+    /// - If the path looks like an index, the canonical suffix "/index.html" will be used.
+    /// - The current asset signature scheme supports only one signature per path, so we cannot
+    ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
         for (old_suffix, new_suffix) in [("/index.html/", "/index.html"), ("/", "/index.html")] {
@@ -120,6 +125,7 @@ impl Assets {
                 .map(|asset| (*content_encoding, asset))
         })
     }
+    /// Gets the given URL path from the assets, with the given encoding.
     fn get_with_encoding(&self, content_encoding: ContentEncoding, path: &str) -> Option<&Asset> {
         let path_with_suffix = {
             let mut extended = String::new();
@@ -127,14 +133,12 @@ impl Assets {
             extended.push_str(content_encoding.suffix());
             extended
         };
-        let ans = self.0.get(&path_with_suffix);
-        dfn_core::api::print(format!("Looking for asset {path_with_suffix}: {}", ans.is_some()));
-        ans
+        self.0.get(&path_with_suffix)
     }
 
-    /// Returns the URL paths for which a given asset may be returned.
+    /// Returns the paths for which a given asset may be returned.
     /// Note:  All these paths must be certified.
-    pub fn asset_paths(path: &str) -> Vec<String> {
+    pub fn alternate_paths(path: &str) -> Vec<String> {
         // path.gz may be obtained as path.  Likewise for all encodings.
         Self::CONTENT_ENCODINGS
             .iter()
@@ -295,20 +299,28 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
         update_root_hash(&state.asset_hashes.borrow_mut());
     });
 }
-/// Insert an asset into the given state
+/// Insert an asset into the given state.
+///
+/// Note:  This does NOT update the certificates.  To insert multiple assets, call
+///        this repeatedly and then update the root hash.
 pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, asset: Asset) {
     dfn_core::api::print(format!("Inserting asset {}", &path.clone().into()));
     let mut asset_hashes = state.asset_hashes.borrow_mut();
     let mut assets = state.assets.borrow_mut();
     let path: String = path.into();
     let hash = hash_bytes(&asset.bytes);
-    for alternate_path in Assets::asset_paths(&path) {
+    for alternate_path in Assets::alternate_paths(&path) {
         asset_hashes.0.insert(alternate_path.as_bytes().to_vec(), hash);
     }
     assets.insert(path, asset);
 }
 
-// used both in init and post_upgrade
+/// Adds the files bundled in the wasm to the state.
+///
+/// - Adds the files to `state.assets`.
+/// - Signs the given path and all alternate paths for the given asset.
+///
+/// Note: Used both in init and post_upgrade
 pub fn init_assets() {
     let compressed = include_bytes!("../../assets.tar.xz").to_vec();
     let mut decompressed = Vec::new();
