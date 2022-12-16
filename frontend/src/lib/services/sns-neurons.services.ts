@@ -1,11 +1,13 @@
 import {
   addNeuronPermissions,
+  autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
   getNervousSystemFunctions,
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  stakeMaturity as stakeMaturityApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
@@ -31,6 +33,7 @@ import {
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
   getSnsNeuronIdAsHexString,
+  hasAutoStakeMaturityOn,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
@@ -557,7 +560,7 @@ export const addFollowee = async ({
     });
 
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsError({
       labelKey: "error__sns.sns_add_followee",
       err: error,
@@ -623,11 +626,71 @@ export const removeFollowee = async ({
     });
 
     return { success: true };
-  } catch (error) {
+  } catch (error: unknown) {
     toastsError({
       labelKey: "error__sns.sns_remove_followee",
       err: error,
     });
+    return { success: false };
+  }
+};
+
+export const stakeMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  percentageToStake,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  percentageToStake: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await stakeMaturityApi({
+      neuronId,
+      rootCanisterId,
+      percentageToStake,
+      identity,
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
+export const toggleAutoStakeMaturity = async ({
+  neuron,
+  neuronId,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean; err?: string }> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await autoStakeMaturityApi({
+      neuronId,
+      rootCanisterId,
+      identity,
+      autoStake: !hasAutoStakeMaturityOn(neuron),
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
     return { success: false };
   }
 };

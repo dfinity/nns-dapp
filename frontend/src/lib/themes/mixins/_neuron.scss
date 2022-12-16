@@ -1,0 +1,16 @@
+@mixin maturity-card-info {
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--padding);
+    padding-top: var(--padding-2x);
+  }
+
+  .staked-maturity {
+    margin: var(--padding-0_5x) 0 0;
+  }
+}

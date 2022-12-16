@@ -1,9 +1,9 @@
+import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { createAgent } from "$lib/utils/agent.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type {

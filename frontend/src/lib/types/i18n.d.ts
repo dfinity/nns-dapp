@@ -449,8 +449,10 @@ interface I18nProposal_detail {
   no_more_info: string;
   voting_results: string;
   remaining: string;
-  next: string;
-  previous: string;
+  older: string;
+  newer: string;
+  older_short: string;
+  newer_short: string;
   sign_in: string;
 }
 
@@ -627,11 +629,14 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
+  dissolve_delay_description: string;
 }
 
 interface I18nTime {
   year: string;
   year_plural: string;
+  month: string;
+  month_plural: string;
   day: string;
   day_plural: string;
   hour: string;
@@ -730,6 +735,7 @@ interface I18nError__sns {
   sns_remove_followee: string;
   sns_load_functions: string;
   sns_add_hotkey: string;
+  sns_stake_maturity: string;
 }
 
 interface I18nAuth_accounts {

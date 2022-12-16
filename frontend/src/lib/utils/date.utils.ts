@@ -2,12 +2,13 @@ import {
   SECONDS_IN_DAY,
   SECONDS_IN_HOUR,
   SECONDS_IN_MINUTE,
+  SECONDS_IN_MONTH,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { i18n } from "$lib/stores/i18n";
 import { get } from "svelte/store";
 
-type LabelKey = "year" | "day" | "hour" | "minute" | "second";
+type LabelKey = "year" | "month" | "day" | "hour" | "minute" | "second";
 type LabelInfo = {
   labelKey: LabelKey;
   amount: number;
@@ -37,6 +38,42 @@ export const secondsToDuration = (seconds: bigint): string => {
   return periods
     .filter(({ amount }) => amount > 0)
     .slice(0, 2)
+    .map(
+      (labelInfo) =>
+        `${labelInfo.amount} ${
+          labelInfo.amount == 1
+            ? i18nObj.time[labelInfo.labelKey]
+            : i18nObj.time[`${labelInfo.labelKey}_plural`]
+        }`
+    )
+    .join(", ");
+};
+
+/**
+ * Displays years, months and days.
+ *
+ * Uses constants for `year` and `month`:
+ * - a year = 365.25 * 24 * 60 * 60
+ * - a month = 1 year / 12
+ * - rounds up days
+ *
+ * @param seconds
+ */
+export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
+  const i18nObj = get(i18n);
+  const years = seconds / BigInt(SECONDS_IN_YEAR);
+  const months = (seconds % BigInt(SECONDS_IN_YEAR)) / BigInt(SECONDS_IN_MONTH);
+  const days = BigInt(
+    Math.ceil((Number(seconds) % SECONDS_IN_MONTH) / SECONDS_IN_DAY)
+  );
+  const periods = [
+    createLabel("year", years),
+    createLabel("month", months),
+    createLabel("day", days),
+  ];
+
+  return periods
+    .filter(({ amount }) => amount > 0)
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${

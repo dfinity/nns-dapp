@@ -34,7 +34,7 @@ import {
 } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
-import { InsufficientAmountError } from "$lib/types/common.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import {
   CannotBeMerged,
   NotAuthorizedNeuronError,
@@ -557,7 +557,7 @@ export const splitNeuron = async ({
     const amountE8s = numberToE8s(amount) + feeE8s;
 
     if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
-      throw new InsufficientAmountError();
+      throw new NotEnoughAmountError();
     }
 
     await splitNeuronApi({ neuronId, identity, amount: amountE8s });

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NeuronMaturityCard from "$lib/components/neuron-detail/NeuronMaturityCard.svelte";
+import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -23,7 +23,7 @@ import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-describe("NeuronMaturityCard", () => {
+describe("NnsNeuronMaturityCard", () => {
   const maturity = BigInt(E8S_PER_ICP * 2);
 
   const neuron = {
@@ -45,7 +45,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -56,7 +56,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -69,7 +69,7 @@ describe("NeuronMaturityCard", () => {
     const { getByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -90,7 +90,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronStake,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -113,7 +113,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: neuronStake,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -126,7 +126,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -146,7 +146,7 @@ describe("NeuronMaturityCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -160,7 +160,7 @@ describe("NeuronMaturityCard", () => {
     const { getByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -171,7 +171,7 @@ describe("NeuronMaturityCard", () => {
     const { getByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -189,7 +189,7 @@ describe("NeuronMaturityCard", () => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NeuronMaturityCard,
+        testComponent: NnsNeuronMaturityCard,
       },
     });
 
@@ -219,7 +219,7 @@ describe("NeuronMaturityCard", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
-          testComponent: NeuronMaturityCard,
+          testComponent: NnsNeuronMaturityCard,
         },
       });
 
@@ -230,7 +230,7 @@ describe("NeuronMaturityCard", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
-          testComponent: NeuronMaturityCard,
+          testComponent: NnsNeuronMaturityCard,
         },
       });
 
@@ -241,7 +241,7 @@ describe("NeuronMaturityCard", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
-          testComponent: NeuronMaturityCard,
+          testComponent: NnsNeuronMaturityCard,
         },
       });
 
