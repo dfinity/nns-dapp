@@ -22,7 +22,7 @@ import {
 } from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
+import { MIN_VERSION_STAKE_MATURITY_WORKAROUND } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -609,7 +609,7 @@ export const mergeMaturity = async ({
 
     await assertLedgerVersion({
       identity,
-      minVersion: MIN_VERSION_MERGE_MATURITY,
+      minVersion: MIN_VERSION_STAKE_MATURITY_WORKAROUND,
     });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
