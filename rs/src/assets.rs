@@ -41,7 +41,7 @@ impl ContentEncoding {
             ContentEncoding::GZip => ".gz",
         }
     }
-    /// Returns thecontent encoding, if applicable.
+    /// Returns the content encoding, if applicable.
     pub fn header(&self) -> Option<&'static str> {
         match self {
             ContentEncoding::Identity => None,
