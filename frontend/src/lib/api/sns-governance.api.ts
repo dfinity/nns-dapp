@@ -8,6 +8,7 @@ import type {
   SnsNeuronPermissionType,
 } from "@dfinity/sns";
 import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -88,6 +89,36 @@ export const disburse = async ({
   });
 
   logWithTimestamp(`Disburse sns neuron complete.`);
+};
+
+export const splitNeuron = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+  amount,
+  memo,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  amount: E8s;
+  memo: bigint;
+}): Promise<void> => {
+  logWithTimestamp(`Split sns neuron call...`);
+
+  const { splitNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await splitNeuron({
+    neuronId,
+    amount,
+    memo,
+  });
+
+  logWithTimestamp(`Split sns neuron complete.`);
 };
 
 export const startDissolving = async ({

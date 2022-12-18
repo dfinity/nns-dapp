@@ -1,10 +1,18 @@
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  MAX_NEURONS_SUBACCOUNTS,
+} from "$lib/constants/sns-neurons.constants";
+import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { votingPower } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import {
+  neuronSubaccount,
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import type {
   NervousSystemFunction,
   NervousSystemParameters,
@@ -117,6 +125,39 @@ export const getSnsNeuronIdAsHexString = ({
  */
 export const subaccountToHexString = (subaccount: Uint8Array): string =>
   bytesToHexString(Array.from(subaccount));
+
+/**
+ * Find the first not existed memo (index based).
+ * This approach works because sns neurons are not deleted.
+ *
+ * @param identity
+ * @param neurons
+ */
+export const nextMemo = ({
+  identity,
+  neurons,
+}: {
+  identity: Identity;
+  neurons: SnsNeuron[];
+}): bigint => {
+  const controller = identity.getPrincipal();
+  for (let index = 0; index < MAX_NEURONS_SUBACCOUNTS; index++) {
+    const subaccount = neuronSubaccount({
+      controller,
+      index,
+    });
+    if (
+      getSnsNeuronByHexId({
+        neuronIdHex: subaccountToHexString(subaccount),
+        neurons,
+      }) === undefined
+    ) {
+      return BigInt(index);
+    }
+  }
+
+  throw new NextMemoNotFoundError();
+};
 
 export const canIdentityManageHotkeys = ({
   neuron,

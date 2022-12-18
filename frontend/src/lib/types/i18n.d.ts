@@ -712,6 +712,7 @@ interface I18nError__sns {
   load_swap_commitment: string;
   load_parameters: string;
   sns_remove_hotkey: string;
+  sns_split_neuron: string;
   sns_disburse: string;
   sns_start_dissolving: string;
   sns_stop_dissolving: string;

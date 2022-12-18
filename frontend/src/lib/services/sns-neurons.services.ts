@@ -7,6 +7,7 @@ import {
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -34,10 +35,12 @@ import {
   getSnsNeuronByHexId,
   getSnsNeuronIdAsHexString,
   hasAutoStakeMaturityOn,
+  nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
@@ -113,7 +116,7 @@ export const syncSnsNeurons = async (
   });
 };
 
-const loadNeurons = async ({
+export const loadNeurons = async ({
   rootCanisterId,
   certified,
 }: {
@@ -286,6 +289,42 @@ export const removeHotkey = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_remove_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const splitNeuron = async ({
+  rootCanisterId,
+  neuronId,
+  neurons,
+  amount,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  neurons: SnsNeuron[];
+  amount: E8s;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getNeuronIdentity();
+    const memo = nextMemo({
+      identity,
+      neurons,
+    });
+
+    await splitNeuronApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+      amount,
+      memo,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_split_neuron",
       err,
     });
     return { success: false };
