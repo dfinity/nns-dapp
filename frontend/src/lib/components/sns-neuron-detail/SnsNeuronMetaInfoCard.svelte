@@ -10,8 +10,8 @@
     getSnsNeuronState,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
-  import type {NeuronState, Token} from "@dfinity/nns";
+  import { isDefined, isNullish, nonNullish } from "$lib/utils/utils";
+  import type { NeuronState, Token } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
@@ -24,10 +24,10 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
-  import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
-  import {Principal} from "@dfinity/principal";
-  import {snsParametersStore} from "$lib/stores/sns-parameters.store";
-  import {snsTokenSymbolSelectedStore} from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { Principal } from "@dfinity/principal";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -43,17 +43,20 @@
 
   // TODO: move to context?
   let parameters: NervousSystemParameters | undefined;
-  $: parameters = $snsParametersStore?.[rootCanisterId?.toText()]?.parameters;
+  $: parameters =
+    $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 
   // TODO: refactor to param?
   let token: Token;
   token = $snsTokenSymbolSelectedStore as Token;
 
   let allowedToSplit: boolean;
-  $: allowedToSplit = hasPermissionToSplit({
-    neuron,
-    identity: $authStore.identity,
-  });
+  $: allowedToSplit =
+    nonNullish(neuron) &&
+    hasPermissionToSplit({
+      neuron,
+      identity: $authStore.identity,
+    });
 
   $: console.log('allowedToSplit', allowedToSplit)
 
@@ -74,7 +77,7 @@
   };
 </script>
 
-{#if nonNullish(neuron) && nonNullish(neuronState)}
+{#if nonNullish(neuron) && nonNullish(neuronState) && nonNullish(parameters)}
   <div class="content-cell-details">
     <KeyValuePair>
       <SnsNeuronCardTitle

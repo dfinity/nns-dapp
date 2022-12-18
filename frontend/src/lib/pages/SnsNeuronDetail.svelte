@@ -23,12 +23,12 @@
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
-  import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
-  import {loadSnsParameters} from "$lib/services/sns-parameters.services";
-  import {snsParametersStore} from "$lib/stores/sns-parameters.store";
-  import {TokenAmount} from "@dfinity/nns";
-  import {snsSelectedTransactionFeeStore} from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import {loadSnsTransactionFee} from "$lib/services/transaction-fees.services";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import type { TokenAmount } from "@dfinity/nns";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 
   export let neuronId: string | null | undefined;
 
@@ -53,7 +53,7 @@
   $: rootCanisterId = Principal.fromText($pageStore.universe);
 
   let parameters: NervousSystemParameters | undefined;
-  $: parameters = $snsParametersStore?.[rootCanisterId]?.parameters;
+  $: parameters = $snsParametersStore?.[rootCanisterId.toText()]?.parameters;
 
   let fee: TokenAmount | undefined;
   $: fee = $snsSelectedTransactionFeeStore;
@@ -121,8 +121,11 @@
   // END: loading and navigation
 
   let loading: boolean;
-  $: loading = $selectedSnsNeuronStore.neuron === null || parameters === undefined || fee === undefined;
-  $: console.log('...loading', $selectedSnsNeuronStore.neuron, parameters, fee)
+  $: loading =
+    $selectedSnsNeuronStore.neuron === null ||
+    parameters === undefined ||
+    fee === undefined;
+  $: console.log("...loading", $selectedSnsNeuronStore.neuron, parameters, fee);
 </script>
 
 <Island>

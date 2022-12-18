@@ -678,6 +678,7 @@
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
     "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "sns_split_neuron": "There was an error while splitting the neuron.",
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",

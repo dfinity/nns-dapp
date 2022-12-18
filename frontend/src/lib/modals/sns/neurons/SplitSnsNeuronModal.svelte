@@ -7,7 +7,6 @@
   import type { E8s, Token } from "@dfinity/nns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { TokenAmount } from "@dfinity/nns";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -16,8 +15,10 @@
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { formattedTransactionFee } from "$lib/utils/token.utils.js";
-  import {snsSelectedTransactionFeeStore} from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import {toastsError} from "$lib/stores/toasts.store";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { E8S_PER_TOKEN } from "@dfinity/nns/dist/types/constants/constants";
+  import { loadNeurons, splitNeuron } from "$lib/services/sns-neurons.services";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -38,7 +39,8 @@
   //
   let amount: number | undefined;
 
-  let fee: TokenAmount;
+  let fee: TokenAmount | undefined;
+  // TODO: prop/context?
   $: fee = $snsSelectedTransactionFeeStore;
 
   let stakeE8s: E8s;
@@ -49,10 +51,15 @@
 
   let max = 0;
   $: max =
+    // TODO: get rid of `|| parameters === undefined || fee === undefined`
     stakeE8s === 0n || parameters === undefined || fee === undefined
       ? 0
-      : Number(stakeE8s - fee.toE8s()) /
-        Number(fromDefinedNullable(parameters.neuron_minimum_stake_e8s));
+      : // The parent neuron should have at least the minimum stake
+        Number(
+          stakeE8s -
+            fee.toE8s() -
+            fromDefinedNullable(parameters.neuron_minimum_stake_e8s)
+        ) / Number(E8S_PER_TOKEN);
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -63,7 +70,7 @@
   const close = () => dispatcher("nnsClose");
 
   const split = async () => {
-    // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
+    // TS is not smart enough to understand that `validForm` also covers `amount === undefined`
     if (!validForm || amount === undefined) {
       toastsError({
         labelKey: "error.amount_not_valid",
@@ -72,19 +79,29 @@
     }
     startBusy({ initiator: "split-neuron" });
 
-    /*
-    const id = await splitNeuron({
-      neuronId: neuron.neuronId,
-      amount,
+    console.log("👻E8S_PER_TOKEN", E8S_PER_TOKEN);
+
+    const { success } = await splitNeuron({
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
+      neurons: [],
+      amount: BigInt(amount * Number(E8S_PER_TOKEN)),
     });
 
-    if (id !== undefined) {
+    // TODO: is check neuron balances after splitNeuron needed? (to find neurons that need to be refreshed or claimed.)
+    await loadNeurons({
+      rootCanisterId,
+      certified: true,
+    });
+    await reloadNeuron();
+
+    if (success) {
       toastsSuccess({
         labelKey: "neuron_detail.split_neuron_success",
       });
+      close();
     }
-     */
-    close();
+
     stopBusy("split-neuron");
   };
 
@@ -112,13 +129,12 @@
       toastsError({
         labelKey: "error__sns.sns_dissolve_delay_action",
         err,
-      });
+      });gi
     }
 
     closeModal();
   };
   */
-
 </script>
 
 <Modal on:nnsClose>
@@ -133,11 +149,11 @@
     <div>
       <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
-        <Value
-          >
-                {formattedTransactionFee(TokenAmount.fromE8s({ amount: fee?.toE8s() ?? 0n, token }))}
-                </Value
-        > ICP
+        <Value>
+          {formattedTransactionFee(
+            TokenAmount.fromE8s({ amount: fee?.toE8s() ?? 0n, token })
+          )}
+        </Value> ICP
       </p>
     </div>
 
