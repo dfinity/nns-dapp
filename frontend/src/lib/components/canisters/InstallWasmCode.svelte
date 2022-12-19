@@ -7,6 +7,7 @@
   import { validateUrl } from "$lib/utils/utils";
   import { installCode } from "$lib/services/canisters.services";
   import type { Principal } from "@dfinity/principal";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
 
   export let canisterId: Principal;
 
@@ -56,6 +57,13 @@
     });
 
     if (success) {
+      toastsSuccess({
+        labelKey: "canisters.reinstall_canister_success",
+        substitutions: {
+          $canisterId: canisterId.toText(),
+        },
+      });
+
       dispatcher("nnsClose");
     }
 

@@ -360,7 +360,8 @@
     "select_file": "Select file",
     "execute": "Execute",
     "install_code": "Install Code",
-    "install_code_title": "Install Code - Experimental"
+    "install_code_title": "Install Code - Experimental",
+    "reinstall_canister_success": "The canister ($canisterId) has been reinstalled."
   },
   "canister_detail": {
     "title": "Canister",

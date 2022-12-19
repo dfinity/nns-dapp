@@ -375,6 +375,7 @@ interface I18nCanisters {
   execute: string;
   install_code: string;
   install_code_title: string;
+  reinstall_canister_success: string;
 }
 
 interface I18nCanister_detail {
