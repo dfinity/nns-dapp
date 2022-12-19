@@ -1,10 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
-    IconWallet,
-    IconPassword,
-    IconUsers,
-    IconRocketLaunch,
+    IconTokens,
+    IconNeurons,
+    IconVote,
+    IconLaunchpad,
   } from "@dfinity/gix-components";
   import { AppPath } from "$lib/constants/routes.constants";
   import {isSignedIn} from "$lib/utils/auth.utils";
@@ -17,25 +17,25 @@
 <ul>
   <li>
     <a href={AppPath.Accounts} data-tid="auth-link-accounts" aria-disabled={signedIn}
-      ><IconWallet size="32px" />
+      ><IconTokens />
       {$i18n.auth.wallet}</a
     >
   </li>
   <li>
     <a href={AppPath.Neurons} data-tid="auth-link-neurons" aria-disabled={signedIn}
-      ><IconPassword size="32px" />
+      ><IconNeurons />
       {$i18n.auth.stake}</a
     >
   </li>
   <li>
     <a href={AppPath.Proposals} data-tid="auth-link-proposals" aria-disabled={signedIn}
-      ><IconUsers size="32px" />
+      ><IconVote />
       {$i18n.auth.earn}</a
     >
   </li>
   <li>
     <a href={AppPath.Launchpad} data-tid="auth-link-launchpad" aria-disabled={signedIn}
-      ><IconRocketLaunch size="32px" />
+      ><IconLaunchpad />
       {$i18n.auth.launchpad}</a
     >
   </li>
