@@ -215,7 +215,7 @@ describe("NnsNeuronMaturityCard", () => {
       },
     };
 
-    it("should render merge maturity action for hardware wallet", () => {
+    it("should render stake maturity action for hardware wallet", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
@@ -223,7 +223,7 @@ describe("NnsNeuronMaturityCard", () => {
         },
       });
 
-      expect(getByTestId("merge-maturity-button")).not.toBeNull();
+      expect(getByTestId("stake-maturity-button")).not.toBeNull();
     });
 
     it("should not render auto stake maturity action for hardware wallet", () => {
@@ -237,7 +237,7 @@ describe("NnsNeuronMaturityCard", () => {
       expect(() => getByTestId("auto-stake-maturity-checkbox")).toThrow();
     });
 
-    it("should render merge maturity description", () => {
+    it("should render stake maturity description", () => {
       const { getByTestId } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
@@ -245,8 +245,11 @@ describe("NnsNeuronMaturityCard", () => {
         },
       });
 
+      const div = document.createElement("div");
+      div.innerHTML = en.neuron_detail.stake_maturity_tooltip;
+
       expect(getByTestId("maturity-description")?.textContent?.trim()).toEqual(
-        en.neuron_detail.merge_maturity_tooltip
+        div.textContent.trim()
       );
     });
   });

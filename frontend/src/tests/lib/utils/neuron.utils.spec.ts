@@ -33,7 +33,6 @@ import {
   getDissolvingTimeInSeconds,
   getNeuronById,
   getSpawningTimeInSeconds,
-  hasEnoughMaturityToMerge,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -48,7 +47,6 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
-  minMaturityMerge,
   minNeuronSplittable,
   neuronAge,
   neuronCanBeSplit,
@@ -1796,63 +1794,10 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("hasEnoughMaturityToMerge", () => {
-    it("returns false when no full neuron", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: undefined,
-      };
-      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
-    });
-
-    it("returns false if neuron maturity is 0", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(0),
-        },
-      };
-      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
-    });
-
-    it("returns true if maturity larger than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent:
-            BigInt(DEFAULT_TRANSACTION_FEE_E8S) + BigInt(1000),
-        },
-      };
-      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(true);
-    });
-
-    it("returns false if maturity smaller than needed", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent:
-            BigInt(DEFAULT_TRANSACTION_FEE_E8S) - BigInt(100),
-        },
-      };
-      expect(hasEnoughMaturityToMerge({ neuron, fee: 10_000 })).toBe(false);
-    });
-  });
-
   describe("minNeuronSplittable", () => {
     it("returns fee plus two ICPs", () => {
       const received = minNeuronSplittable(10_000);
       expect(received).toBe(10_000 + 2 * E8S_PER_ICP);
-    });
-  });
-
-  describe("minMaturityMerge", () => {
-    it("returns value of fee", () => {
-      const fee = 10_000;
-      const received = minMaturityMerge(10_000);
-      expect(received).toBe(fee);
     });
   });
 
