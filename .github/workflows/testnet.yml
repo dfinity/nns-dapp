@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          apt-get install -yy moreutils
+          sudo apt-get install -yy moreutils
       - name: Set the canister IDs
         run: |
           FILENAME=canister_ids.json
