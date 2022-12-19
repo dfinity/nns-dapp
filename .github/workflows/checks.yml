@@ -2,9 +2,6 @@ name: CI Checks
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,50 +17,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: Install rust formatter
+        run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
+      - name: Format
+        run: ./scripts/fmt
+      - name: Check formatted
         run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
-
-      - name: Format dfx.json
-        run: cat <<<$(jq . dfx.json) > dfx.json
-
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v9.1.1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
+          test -z "$(git status --porcelain)" || { echo "FIX: Please run ./scripts/fmt" ; exit 1 ; }
 
   cargo-tests:
     needs: formatting
