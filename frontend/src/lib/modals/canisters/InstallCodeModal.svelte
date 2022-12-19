@@ -8,7 +8,7 @@
 </script>
 
 <Modal on:nnsClose>
-  <span slot="title">{$i18n.canister_detail.install_code}</span>
+  <span slot="title">{$i18n.canisters.install_code_title}</span>
 
   <InstallWasmCode on:nnsClose {canisterId} />
 </Modal>

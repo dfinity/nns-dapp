@@ -351,14 +351,16 @@
     "edit_cycles": "Edit Cycles",
     "converted_to": "converted to",
     "canister_wasm_confirm": "Confirm canister WASM",
-    "reinstall_text": "Reinstall a canister you control. This action won't preserve any state.",
+    "reinstall_text": "Reinstall a canister you control. This action won't preserve any state. This feature is experimental and insecure ⚠️.",
     "upload": "Upload",
     "url": "URL",
     "enter_url": "Enter URL",
     "url_placeholder": "An URL to the WASM code to install",
     "upload_from_device": "Upload a WASM file from device",
     "select_file": "Select file",
-    "execute": "Execute"
+    "execute": "Execute",
+    "install_code": "Install Code",
+    "install_code_title": "Install Code - Experimental"
   },
   "canister_detail": {
     "title": "Canister",
@@ -367,7 +369,6 @@
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
     "add_cycles": "Add Cycles",
-    "install_code": "Install Code",
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
     "detach": "Detach",

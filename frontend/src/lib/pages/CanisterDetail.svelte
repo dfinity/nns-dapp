@@ -241,7 +241,7 @@
     class="secondary"
     on:click={openModalInstallCode}
     disabled={canisterInfo === undefined || $busy}
-    >{$i18n.canister_detail.install_code}</button
+    >{$i18n.canisters.install_code}</button
   >
 </Footer>
 

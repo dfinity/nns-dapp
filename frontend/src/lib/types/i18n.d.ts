@@ -373,6 +373,8 @@ interface I18nCanisters {
   upload_from_device: string;
   select_file: string;
   execute: string;
+  install_code: string;
+  install_code_title: string;
 }
 
 interface I18nCanister_detail {
@@ -382,7 +384,6 @@ interface I18nCanister_detail {
   controllers: string;
   t_cycles: string;
   add_cycles: string;
-  install_code: string;
   top_up_canister: string;
   top_up_successful: string;
   detach: string;
