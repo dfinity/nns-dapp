@@ -21,7 +21,7 @@ on:
 
 
 jobs:
-  build:
+  testnet:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
