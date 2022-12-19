@@ -1,6 +1,7 @@
 name: testnet
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       dfx_testnet:
