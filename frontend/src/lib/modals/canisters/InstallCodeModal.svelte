@@ -1,32 +1,14 @@
 <script lang="ts">
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { Modal } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import InputWasm from "$lib/components/canisters/InputWasm.svelte";
+  import InstallWasmCode from "$lib/components/canisters/InstallWasmCode.svelte";
+  import type { Principal } from "@dfinity/principal";
 
-  let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
-
-  const steps: WizardSteps = [
-    {
-      name: "Enter",
-      title: $i18n.canisters.canister_wasm,
-    },
-    {
-      name: "Confirm",
-      title: $i18n.canisters.canister_wasm_confirm,
-    },
-  ];
+  export let canisterId: Principal;
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <span slot="title">{currentStep?.title ?? $i18n.canisters.canister_wasm}</span
-  >
+<Modal on:nnsClose>
+  <span slot="title">{$i18n.canister_detail.install_code}</span>
 
-  {#if currentStep?.name === steps[0].name}
-    <InputWasm on:nnsClose on:nnsNext={modal.next} />
-  {/if}
-</WizardModal>
+  <InstallWasmCode on:nnsClose {canisterId} />
+</Modal>

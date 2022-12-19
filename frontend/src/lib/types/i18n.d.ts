@@ -364,7 +364,6 @@ interface I18nCanisters {
   change_source: string;
   edit_cycles: string;
   converted_to: string;
-  canister_wasm: string;
   canister_wasm_confirm: string;
   reinstall_text: string;
   upload: string;
@@ -373,6 +372,7 @@ interface I18nCanisters {
   url_placeholder: string;
   upload_from_device: string;
   select_file: string;
+  execute: string;
 }
 
 interface I18nCanister_detail {
@@ -707,6 +707,7 @@ interface I18nError__canister {
   unknown_attach: string;
   unknown_detach: string;
   get_exchange_rate: string;
+  no_file: string;
 }
 
 interface I18nTheme {

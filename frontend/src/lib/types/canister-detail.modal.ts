@@ -22,3 +22,7 @@ export type CanisterDetailModalRemoveController = CanisterDetailModalWithData<{
 export type CanisterDetailModalDetach = CanisterDetailModalWithData<{
   canisterId: Principal;
 }>;
+
+export type CanisterDetailModalInstallCode = CanisterDetailModalWithData<{
+  canisterId?: Principal;
+}>;

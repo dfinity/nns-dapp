@@ -313,3 +313,62 @@ const canisters = async (
 
   return { cmc, icMgt, nnsDapp };
 };
+
+export const installCodeFromFile = async ({
+  file,
+  canisterId,
+  identity,
+}: {
+  file: File;
+  canisterId: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Installing code from file to canister ${canisterId.toText()}...`
+  );
+
+  const wasm_module = [...new Uint8Array(await file.arrayBuffer())];
+
+  const {
+    icMgt: { installCode },
+  } = await canisters(identity);
+
+  await installCode({ wasm_module, canisterId });
+
+  logWithTimestamp(
+    `Installing code from file to canister ${canisterId.toText()} done.`
+  );
+};
+
+export const installCodeFromUrl = async ({
+  url,
+  canisterId,
+  identity,
+}: {
+  url: string;
+  canisterId: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Installing code from URL to canister ${canisterId.toText()}...`
+  );
+
+  const downloadWasm = async (src: string): Promise<Blob> => {
+    const wasm: Response = await fetch(src);
+    return wasm.blob();
+  };
+
+  const wasmBlob = await downloadWasm(url);
+
+  const wasm_module = [...new Uint8Array(await wasmBlob.arrayBuffer())];
+
+  const {
+    icMgt: { installCode },
+  } = await canisters(identity);
+
+  await installCode({ wasm_module, canisterId });
+
+  logWithTimestamp(
+    `Installing code from URL to canister ${canisterId.toText()} done.`
+  );
+};

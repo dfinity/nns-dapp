@@ -3,6 +3,8 @@ import {
   createCanister as createCanisterApi,
   detachCanister as detachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
+  installCodeFromFile,
+  installCodeFromUrl,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   topUpCanister as topUpCanisterApi,
@@ -23,6 +25,7 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
+import { validateUrl } from "$lib/utils/utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
@@ -282,5 +285,48 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
       err,
     });
     return;
+  }
+};
+
+export const installCode = async ({
+  source,
+  canisterId,
+  file,
+  url,
+}: {
+  source: "url" | "file";
+  canisterId: Principal;
+  file?: File;
+  url?: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+
+    if (source === "file") {
+      if (file === undefined) {
+        toastsError({
+          labelKey: "error__canister.no_file",
+        });
+        return { success: false };
+      }
+
+      await installCodeFromFile({ identity, canisterId, file });
+      return { success: true };
+    }
+
+    if (url === undefined || !validateUrl(url)) {
+      toastsError({
+        labelKey: "error.invalid_url",
+      });
+      return { success: false };
+    }
+
+    await installCodeFromUrl({ identity, canisterId, url });
+    return { success: true };
+  } catch (error: unknown) {
+    toastsShow(
+      mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
+    );
+    return { success: false };
   }
 };

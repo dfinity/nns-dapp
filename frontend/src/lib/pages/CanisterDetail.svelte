@@ -22,7 +22,6 @@
   } from "$lib/types/canister-detail.context";
   import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
@@ -36,6 +35,7 @@
   import { emit } from "$lib/utils/events.utils";
   import type {
     CanisterDetailModal,
+    CanisterDetailModalInstallCode,
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
 
@@ -186,6 +186,15 @@
       message: "nnsCanisterDetailModal",
       detail: { type },
     });
+
+  const openModalInstallCode = () =>
+    emit<CanisterDetailModalInstallCode>({
+      message: "nnsCanisterDetailModal",
+      detail: {
+        type: "install-code",
+        data: { canisterId: canisterInfo?.canister_id },
+      },
+    });
 </script>
 
 <Island>
@@ -230,7 +239,7 @@
 
   <button
     class="secondary"
-    on:click={() => openModal("install-code")}
+    on:click={openModalInstallCode}
     disabled={canisterInfo === undefined || $busy}
     >{$i18n.canister_detail.install_code}</button
   >

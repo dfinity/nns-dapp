@@ -3,6 +3,12 @@
   import { createEventDispatcher } from "svelte";
   import { Toggle } from "@dfinity/gix-components";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { validateUrl } from "$lib/utils/utils";
+  import { installCode } from "$lib/services/canisters.services";
+  import type { Principal } from "@dfinity/principal";
+
+  export let canisterId: Principal;
 
   const onToggle = () => {
     showUrlInput = !showUrlInput;
@@ -18,14 +24,10 @@
   let inputWasm: HTMLInputElement | undefined;
   let inputWasmName: string | undefined = undefined;
 
-  const checkUrl = () => {
-    try {
-      new URL(urlInput);
-      urlInputErrorMessage = undefined;
-    } catch (_) {
-      urlInputErrorMessage = $i18n.error.invalid_url;
-    }
-  };
+  const checkUrl = () =>
+    (urlInputErrorMessage = validateUrl(urlInput)
+      ? undefined
+      : $i18n.error.invalid_url);
 
   let validUrl = false;
   $: validUrl = urlInputErrorMessage === undefined && urlInput.length > 0;
@@ -42,11 +44,28 @@
   $: disableNext = (showUrlInput && !validUrl) || (!showUrlInput && !validFile);
 
   const dispatcher = createEventDispatcher();
+
+  const onSubmit = async () => {
+    startBusy({ initiator: "install-code" });
+
+    const { success } = await installCode({
+      source: showUrlInput ? "url" : "file",
+      url: urlInput,
+      file: inputWasm?.files?.[0],
+      canisterId,
+    });
+
+    if (success) {
+      dispatcher("nnsClose");
+    }
+
+    stopBusy("install-code");
+  };
 </script>
 
 <p class="label">{$i18n.canisters.reinstall_text}</p>
 
-<form on:submit|preventDefault={() => dispatcher("nnsNext")}>
+<form on:submit|preventDefault={onSubmit}>
   <div class="toggle">
     <span>{$i18n.canisters.upload}</span>
     <Toggle
@@ -99,8 +118,9 @@
     >
       {$i18n.core.cancel}
     </button>
+
     <button type="submit" class="primary" disabled={disableNext}>
-      {$i18n.core.next}
+      {$i18n.canisters.execute}
     </button>
   </div>
 </form>

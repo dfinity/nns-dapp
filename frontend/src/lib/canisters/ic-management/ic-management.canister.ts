@@ -2,6 +2,8 @@ import {
   getManagementCanister,
   type ManagementCanisterRecord,
 } from "@dfinity/agent";
+import type { wasm_module } from "@dfinity/agent/lib/esm/canisters/management_service";
+import { IDL } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import { toCanisterDetails } from "./converters";
 import type {
@@ -85,6 +87,27 @@ export class ICManagementCanister {
           memory_allocation: wrapWithArray(memoryAllocation),
           compute_allocation: wrapWithArray(computeAllocation),
         },
+      });
+    } catch (error: unknown) {
+      throw mapError(error);
+    }
+  };
+
+  public installCode = async ({
+    wasm_module,
+    canisterId,
+  }: {
+    wasm_module: wasm_module;
+    canisterId: Principal;
+  }): Promise<void> => {
+    try {
+      const emptyArg = IDL.encode([], []);
+
+      await this.service.install_code({
+        arg: [...new Uint8Array(emptyArg)],
+        mode: { reinstall: null },
+        canister_id: canisterId,
+        wasm_module,
       });
     } catch (error: unknown) {
       throw mapError(error);
