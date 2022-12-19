@@ -115,7 +115,8 @@
     &:hover,
     &:active,
     &:focus {
-      text-decoration: underline;
+      text-decoration: none;
+      background: var(--card-background);
     }
 
     :global(svg) {
@@ -131,12 +132,20 @@
 
   @include media.light-theme {
     a {
-      background: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
+      --login-links-light-bg: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
+      background: var(--login-links-light-bg);
       border: 1px solid var(--line);
       color: var(--text-color);
 
       :global(svg) {
         color: var(--primary);
+      }
+
+      &:hover,
+      &:active,
+      &:focus {
+        background: var(--login-links-light-bg);
+        transform: translateY(-3px);
       }
     }
   }
