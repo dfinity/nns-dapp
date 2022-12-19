@@ -34,7 +34,10 @@
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
-  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import type {
+    CanisterDetailModal,
+    CanisterDetailModalType,
+  } from "$lib/types/canister-detail.modal";
 
   // BEGIN: loading and navigation
 
@@ -178,10 +181,10 @@
 
   // END: loading and navigation
 
-  const openModal = () =>
+  const openModal = (type: CanisterDetailModalType) =>
     emit<CanisterDetailModal>({
       message: "nnsCanisterDetailModal",
-      detail: { type: "add-cycles" },
+      detail: { type },
     });
 </script>
 
@@ -217,12 +220,19 @@
   </main>
 </Island>
 
-<Footer columns={1}>
+<Footer columns={2}>
   <button
     class="primary"
-    on:click={openModal}
+    on:click={() => openModal("add-cycles")}
     disabled={canisterInfo === undefined || $busy}
     >{$i18n.canister_detail.add_cycles}</button
+  >
+
+  <button
+    class="secondary"
+    on:click={() => openModal("install-code")}
+    disabled={canisterInfo === undefined || $busy}
+    >{$i18n.canister_detail.install_code}</button
   >
 </Footer>
 

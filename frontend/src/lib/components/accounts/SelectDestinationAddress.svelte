@@ -83,11 +83,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .toggle {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: var(--padding);
-    }
+  }
+
+  .toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>

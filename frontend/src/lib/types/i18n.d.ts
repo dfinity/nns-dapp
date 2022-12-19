@@ -111,6 +111,7 @@ interface I18nError {
   fetch_transactions: string;
   transaction_data: string;
   canister_invalid_transaction: string;
+  invalid_url: string;
 }
 
 interface I18nWarning {
@@ -363,6 +364,15 @@ interface I18nCanisters {
   change_source: string;
   edit_cycles: string;
   converted_to: string;
+  canister_wasm: string;
+  canister_wasm_confirm: string;
+  reinstall_text: string;
+  upload: string;
+  url: string;
+  enter_url: string;
+  url_placeholder: string;
+  upload_from_device: string;
+  select_file: string;
 }
 
 interface I18nCanister_detail {
@@ -372,6 +382,7 @@ interface I18nCanister_detail {
   controllers: string;
   t_cycles: string;
   add_cycles: string;
+  install_code: string;
   top_up_canister: string;
   top_up_successful: string;
   detach: string;

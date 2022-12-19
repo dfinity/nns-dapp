@@ -106,7 +106,8 @@
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
+    "invalid_url": "Invalid or malformed URL."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -348,7 +349,16 @@
     "review_cycles_purchase": "Review Cycles Purchase",
     "change_source": "Change Source Account",
     "edit_cycles": "Edit Cycles",
-    "converted_to": "converted to"
+    "converted_to": "converted to",
+    "canister_wasm": "Canister WASM",
+    "canister_wasm_confirm": "Confirm canister WASM",
+    "reinstall_text": "Reinstall a canister you control. This action won't preserve any state.",
+    "upload": "Upload",
+    "url": "URL",
+    "enter_url": "Enter URL",
+    "url_placeholder": "An URL to the WASM code to install",
+    "upload_from_device": "Upload a WASM file from device",
+    "select_file": "Select file"
   },
   "canister_detail": {
     "title": "Canister",
@@ -357,6 +367,7 @@
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
     "add_cycles": "Add Cycles",
+    "install_code": "Install code",
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
     "detach": "Detach",

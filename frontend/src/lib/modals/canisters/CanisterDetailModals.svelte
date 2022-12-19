@@ -10,6 +10,7 @@
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
   import type { Principal } from "@dfinity/principal";
+  import InstallCodeModal from "$lib/modals/canisters/InstallCodeModal.svelte";
 
   let modal: CanisterDetailModal | undefined = undefined;
   const close = () => (modal = undefined);
@@ -42,4 +43,8 @@
 
 {#if type === "remove-controller" && controller !== undefined}
   <RemoveCanisterControllerModal {controller} on:nnsClose={close} />
+{/if}
+
+{#if type === "install-code"}
+  <InstallCodeModal on:nnsClose={close} />
 {/if}

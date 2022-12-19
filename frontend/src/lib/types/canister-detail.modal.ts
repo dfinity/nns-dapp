@@ -4,7 +4,8 @@ export type CanisterDetailModalType =
   | "add-cycles"
   | "detach"
   | "add-controller"
-  | "remove-controller";
+  | "remove-controller"
+  | "install-code";
 
 export interface CanisterDetailModal {
   type: CanisterDetailModalType;
