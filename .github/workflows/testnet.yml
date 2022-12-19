@@ -1,4 +1,4 @@
-name: E2e tests against a testnet
+name: testnet
 
 on:
   workflow_dispatch:
