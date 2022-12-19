@@ -11,7 +11,6 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
-import { enumValues } from "./enum.utils";
 import { bytesToHexString, isNullish, nonNullish } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -173,16 +172,20 @@ export const hasPermissionToVote = ({
     permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
   });
 
-const hasAllPermissions = (permission_type: Int32Array): boolean => {
-  const permissionsNumbers = Array.from(permission_type);
-  const allPermissions = enumValues(SnsNeuronPermissionType);
-  return (
-    allPermissions.length === permissionsNumbers.length &&
-    allPermissions.every((permission) =>
-      permissionsNumbers.includes(permission)
-    )
-  );
-};
+export const hasPermissionToStakeMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+    ],
+  });
 
 /*
  * Returns true if the neuron contains provided permissions
@@ -215,15 +218,21 @@ export const hasPermissions = ({
   return !permissions.some(notFound);
 };
 
+/**
+ * Returns the principals that have ONLY the hotkey permissions.
+ *
+ * If a neuron has more than those two permissions, it is not a hotkey.
+ *
+ * @param {SnsNeuron}
+ * @returns {string[]} principals that are hotkeys
+ */
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
-    // Filter the controller. The controller is the neuron with all permissions
-    .filter(({ permission_type }) => !hasAllPermissions(permission_type))
     .filter(
       ({ permission_type }) =>
-        HOTKEY_PERMISSIONS.find(
-          (permission) => !permission_type.includes(permission)
-        ) === undefined
+        permission_type.every(
+          (p) => HOTKEY_PERMISSIONS.find((key) => key === p) !== undefined
+        ) && permission_type.length === HOTKEY_PERMISSIONS.length
     )
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
@@ -259,14 +268,65 @@ export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
 
 /**
- * Format the maturity in a value (token "currency") way.
- * @param {SnsNeuron} neuron The neuron that contains the `maturityE8sEquivalent` formatted
+ * Has the neuron the auto stake maturity feature turned on?
+ * @param {SnsNeuron} neuron The neuron which potential has the feature on
+ * @returns {boolean}
  */
-export const formattedSnsMaturity = (
+export const hasAutoStakeMaturityOn = (
+  neuron: SnsNeuron | null | undefined
+): boolean => Boolean(fromNullable(neuron?.auto_stake_maturity ?? []));
+
+/**
+ * Format the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` that will be formatted
+ */
+export const formattedMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
   formatToken({
     value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
+  });
+
+/**
+ * Format the sum of the maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
+ */
+export const formattedTotalMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
+  formatToken({
+    value:
+      (neuron?.maturity_e8s_equivalent ?? BigInt(0)) +
+      (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)),
+  });
+
+/**
+ * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
+ * @param {SnsNeuron} neuron
+ */
+export const hasEnoughMaturityToStake = (
+  neuron: SnsNeuron | null | undefined
+): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
+
+/**
+ * Does the neuron has staked maturity?
+ * @param neuron
+ */
+export const hasStakedMaturity = (
+  neuron: SnsNeuron | null | undefined
+): boolean =>
+  nonNullish(fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []));
+
+/**
+ * Format the staked maturity in a value (token "currency") way.
+ * @param {SnsNeuron} neuron The neuron that contains the `staked_maturity_e8s_equivalent` that will be formatted
+ */
+export const formattedStakedMaturity = (
+  neuron: SnsNeuron | null | undefined
+): string =>
+  formatToken({
+    value:
+      fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0),
   });
 
 /**

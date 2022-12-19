@@ -1,6 +1,8 @@
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   secondsToDate,
   secondsToDateTime,
+  secondsToDissolveDelayDuration,
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
@@ -33,6 +35,56 @@ describe("secondsToDuration", () => {
 
   it("should give a second details", () => {
     expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
+  });
+});
+
+describe("secondsToDissolveDelayDuration", () => {
+  it("should display a day", () => {
+    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_DAY))).toContain(
+      en.time.day
+    );
+    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_DAY))).toContain(
+      "1"
+    );
+  });
+
+  it("should display 1 month", () => {
+    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))).toContain(
+      en.time.month
+    );
+    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))).toContain(
+      "1"
+    );
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))
+    ).not.toContain(en.time.month_plural);
+  });
+
+  it("should display 2 months", () => {
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 2))
+    ).toContain(en.time.month_plural);
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 2))
+    ).toContain("2");
+  });
+
+  it("should display 1 year", () => {
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
+    ).toContain(en.time.year);
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
+    ).toContain("1");
+    expect(
+      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
+    ).not.toContain(en.time.year_plural);
+  });
+
+  it("should display 2 years, 9 months, 11 days", () => {
+    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("2");
+    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("9");
+    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("11");
   });
 });
 

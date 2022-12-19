@@ -29,7 +29,7 @@
   const dissolveAction = async () => {
     const action = isDissolving ? stopDissolving : startDissolving;
 
-    let rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
+    const rootCanisterId: Principal = $snsOnlyProjectStore as Principal;
 
     startBusy({ initiator: "dissolve-action" });
 

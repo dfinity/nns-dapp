@@ -342,7 +342,7 @@
     "enter_amount": "Enter Amount",
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
-    "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
+    "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 0.1T Cycles fee if creating a new canister)",
     "minimum_cycles_text_2": "Transaction fee of $amount is charged to the source account.",
     "transaction_fee": "The Transaction fee of $amount is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",
@@ -430,8 +430,10 @@
     "no_more_info": "No particular information.",
     "voting_results": "Voting Results",
     "remaining": "remaining",
-    "next": "Navigate to next proposal",
-    "previous": "Navigate to previous proposal",
+    "older": "Navigate to older proposal",
+    "newer": "Navigate to newer proposal",
+    "older_short": "Older",
+    "newer_short": "Newer",
     "sign_in": "Sign in to vote"
   },
   "proposal_detail__vote": {
@@ -599,11 +601,14 @@
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
-    "token_stake": "$amount $token Stake"
+    "token_stake": "$amount $token Stake",
+    "dissolve_delay_description": "Voting power is given when neurons are locked for at least $duration"
   },
   "time": {
     "year": "year",
     "year_plural": "years",
+    "month": "month",
+    "month_plural": "months",
     "day": "day",
     "day_plural": "days",
     "hour": "hour",
@@ -695,7 +700,8 @@
     "sns_add_followee": "There was an error while adding a followee.",
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
-    "sns_add_hotkey": "There was an error adding the hotkey."
+    "sns_add_hotkey": "There was an error adding the hotkey.",
+    "sns_stake_maturity": "There was an error while staking the maturity of the neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",
