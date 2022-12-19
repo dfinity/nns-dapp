@@ -4,6 +4,7 @@
 
 import {
   addNeuronPermissions,
+  autoStakeMaturity,
   claimNeuron,
   disburse,
   getNervousSystemFunctions,
@@ -13,6 +14,7 @@ import {
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  stakeMaturity,
   startDissolving,
   stopDissolving,
 } from "$lib/api/sns-governance.api";
@@ -49,7 +51,7 @@ import {
 } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
-jest.mock("$lib/utils/agent.utils", () => {
+jest.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
@@ -67,6 +69,8 @@ describe("sns-api", () => {
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
+  const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -112,6 +116,8 @@ describe("sns-api", () => {
         listNervousSystemFunctions: getFunctionsSpy,
         nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
+        stakeMaturity: stakeMaturitySpy,
+        autoStakeMaturity: autoStakeMaturitySpy,
       })
     );
   });
@@ -184,6 +190,28 @@ describe("sns-api", () => {
     });
 
     expect(increaseDissolveDelaySpy).toBeCalled();
+  });
+
+  it("should stakeMaturity", async () => {
+    await stakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      percentageToStake: 60,
+    });
+
+    expect(stakeMaturitySpy).toBeCalled();
+  });
+
+  it("should autoStakeMaturity", async () => {
+    await autoStakeMaturity({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      autoStake: true,
+    });
+
+    expect(autoStakeMaturitySpy).toBeCalled();
   });
 
   it("should getNeuronBalance", async () => {

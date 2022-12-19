@@ -16,6 +16,7 @@
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { Html } from "@dfinity/gix-components";
+  import { formattedMaturity } from "$lib/utils/neuron.utils";
 
   export let neuron: NeuronInfo;
 
@@ -66,7 +67,7 @@
 
   {#if currentStep.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {neuron}
+      formattedMaturity={formattedMaturity(neuron)}
       buttonText={$i18n.neuron_detail.merge}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
