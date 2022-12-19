@@ -346,7 +346,7 @@
     "enter_amount": "Enter Amount",
     "review_create_canister": "Review Canister Creation",
     "t_cycles": "T Cycles",
-    "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 1T Cycles fee if creating a new canister)",
+    "minimum_cycles_text_1": "Minimum amount: 2T Cycles (inclusive of 0.1T Cycles fee if creating a new canister)",
     "minimum_cycles_text_2": "Transaction fee of $amount is charged to the source account.",
     "transaction_fee": "The Transaction fee of $amount is charged to the source account.",
     "review_cycles_purchase": "Review Cycles Purchase",

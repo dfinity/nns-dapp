@@ -51,7 +51,7 @@ import {
 } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
-jest.mock("$lib/utils/agent.utils", () => {
+jest.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
