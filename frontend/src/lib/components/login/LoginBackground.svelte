@@ -3,13 +3,11 @@
   import png768 from "$lib/assets/login/768.png";
   import png1024 from "$lib/assets/login/1024.png";
   import png1300 from "$lib/assets/login/1300.png";
-  import png1920 from "$lib/assets/login/1920.png";
 
   // Breakpoints source: https://css-tricks.com/optimizing-large-scale-displays/
 </script>
 
 <picture>
-  <source type="image/jpeg" media="(min-width: 2560px)" srcset={png1920}>
   <source type="image/jpeg" media="(min-width: 1920px)" srcset={png1300}>
   <source type="image/jpeg" media="(min-width: 1366px)" srcset={png1024}>
   <source type="image/jpeg" media="(min-width: 1024px)" srcset={png768}>
