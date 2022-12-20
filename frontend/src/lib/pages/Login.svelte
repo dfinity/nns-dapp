@@ -51,12 +51,15 @@
 <LoginTitle />
 
 <div class="sign-in">
-  <SignIn />
+  <div class="sign-in-container">
+    <SignIn />
+  </div>
 </div>
 
 <LoginLinks />
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "../themes/mixins/login";
 
@@ -75,6 +78,17 @@
     @include login.min-size(medium) {
       margin: var(--padding-6x) 0 var(--padding);
       width: auto;
+    }
+  }
+
+  .sign-in-container {
+    box-shadow: 0 0 70px rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+  }
+
+  @include media.light-theme {
+    .sign-in-container {
+      box-shadow: 0 0 70px rgba(255, 255, 255, 0.7);
     }
   }
 </style>
