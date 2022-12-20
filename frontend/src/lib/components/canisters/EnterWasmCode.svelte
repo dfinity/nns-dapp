@@ -3,11 +3,13 @@
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import { Toggle } from "@dfinity/gix-components";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
-  import { validateUrl } from "$lib/utils/utils";
+  import { isNullish, nonNullish, validateUrl } from "$lib/utils/utils";
   import {
     INSTALL_CODE_CONTEXT_KEY,
     type InstallCodeContext,
   } from "$lib/types/install-code.context";
+  import { downloadBlob } from "$lib/utils/download.utils";
+  import { sha256 } from "$lib/utils/crypto.utils";
 
   const { store, next, selectFile, resetFile }: InstallCodeContext =
     getContext<InstallCodeContext>(INSTALL_CODE_CONTEXT_KEY);
@@ -21,15 +23,43 @@
 
   onMount(() => updateInputWasmInfo());
 
-  const updateUrlStore = () => {
-    console.log("UPDATE", urlInput);
+  let downloading = false;
 
+  const updateUrlStore = async () => {
     store.update((values) => ({
       ...values,
       source: "url",
       url: urlInput !== "" ? urlInput : undefined,
-      file: undefined,
+      blob: undefined,
     }));
+
+    urlInputErrorMessage = undefined;
+
+    if (urlInput === "") {
+      // Input is empty
+      return;
+    }
+
+    if (!validateUrl(urlInput)) {
+      urlInputErrorMessage = $i18n.error.invalid_url;
+      return;
+    }
+
+    downloading = true;
+
+    try {
+      const wasmBlob = await downloadBlob(urlInput);
+
+      store.update((values) => ({
+        ...values,
+        blob: wasmBlob,
+      }));
+    } catch (err: unknown) {
+      urlInputErrorMessage = $i18n.error.cannot_download_wasm;
+      console.error(err);
+    }
+
+    downloading = false;
   };
 
   const onToggle = () => {
@@ -43,32 +73,57 @@
     updateUrlStore();
   };
 
-  const onBlur = () => {
-    checkUrl();
-    updateUrlStore();
-  };
-
-  const checkUrl = () =>
-    (urlInputErrorMessage = validateUrl(urlInput)
-      ? undefined
-      : $i18n.error.invalid_url);
-
   let validUrl = false;
   $: validUrl = urlInputErrorMessage === undefined && urlInput.length > 0;
 
   let validFile = false;
 
   const updateInputWasmInfo = () => {
-    validFile = $store.file !== undefined;
-    inputWasmName = $store.file?.name;
+    validFile = $store.blob !== undefined && $store.source === "file";
+    inputWasmName = validFile ? ($store.blob as File).name : undefined;
   };
 
   $: $store, updateInputWasmInfo();
 
-  let disableNext = false;
-  $: disableNext = (showUrlInput && !validUrl) || (!showUrlInput && !validFile);
-
   const dispatcher = createEventDispatcher();
+
+  let hashInput = $store.hash ?? "";
+  let validHash = false;
+
+  const verifyHash = async () => {
+    if (isNullish($store.blob)) {
+      validHash = false;
+      updateHashErrorMessage();
+      return;
+    }
+
+    const sha = await sha256($store.blob);
+    validHash = hashInput !== "" && hashInput === sha;
+    updateHashErrorMessage();
+  };
+
+  $: hashInput, $store.blob, (async () => await verifyHash())();
+
+  let hashErrorMessage: string | undefined = undefined;
+
+  // Avoid flickering of the screen because computing hash is async
+  const updateHashErrorMessage = () => {
+    hashErrorMessage =
+      !validHash && hashInput !== "" && nonNullish($store.blob)
+        ? $i18n.canisters.invalid_hash
+        : undefined;
+  };
+
+  const updateHashStore = async () => {
+    store.update((values) => ({
+      ...values,
+      hash: hashInput !== "" ? hashInput : undefined,
+    }));
+  };
+
+  let disableNext = true;
+  $: disableNext =
+    (showUrlInput && !validUrl) || (!showUrlInput && !validFile) || !validHash;
 </script>
 
 <p class="label">{$i18n.canisters.reinstall_text} {$i18n.canisters.insecure}</p>
@@ -91,7 +146,7 @@
       name="url"
       bind:value={urlInput}
       errorMessage={urlInputErrorMessage}
-      on:blur={onBlur}
+      on:blur={updateUrlStore}
     >
       <svelte:fragment slot="label">{$i18n.canisters.enter_url}</svelte:fragment
       >
@@ -109,6 +164,21 @@
       >
     </div>
   {/if}
+
+  <div>
+    <InputWithError
+      inputType="text"
+      placeholderLabelKey="canisters.matching_hash_placeholder"
+      name="hash"
+      bind:value={hashInput}
+      errorMessage={hashErrorMessage}
+      on:blur={updateHashStore}
+    >
+      <svelte:fragment slot="label"
+        >{$i18n.canisters.verify_hash}</svelte:fragment
+      >
+    </InputWithError>
+  </div>
 
   <div class="toolbar">
     <button

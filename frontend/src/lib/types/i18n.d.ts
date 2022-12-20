@@ -112,6 +112,7 @@ interface I18nError {
   transaction_data: string;
   canister_invalid_transaction: string;
   invalid_url: string;
+  cannot_download_wasm: string;
 }
 
 interface I18nWarning {
@@ -380,6 +381,11 @@ interface I18nCanisters {
   destination: string;
   insecure: string;
   reinstall: string;
+  matching_hash_placeholder: string;
+  verify_hash: string;
+  invalid_hash: string;
+  mode: string;
+  hash: string;
 }
 
 interface I18nCanister_detail {
@@ -713,7 +719,7 @@ interface I18nError__canister {
   unknown_attach: string;
   unknown_detach: string;
   get_exchange_rate: string;
-  no_file: string;
+  no_wasm: string;
 }
 
 interface I18nTheme {

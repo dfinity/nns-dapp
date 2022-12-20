@@ -4,8 +4,9 @@ import type { Writable } from "svelte/store";
 export interface InstallCodeStore {
   source: "url" | "file";
   canisterId: Principal;
-  file?: File;
   url?: string;
+  blob?: Blob;
+  hash?: string;
 }
 
 export interface InstallCodeContext {

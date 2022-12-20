@@ -21,10 +21,9 @@
     const canisterId = $store.canisterId;
 
     const { success } = await installCode({
-      source: $store.source,
-      url: $store.url,
-      file: $store.file,
+      blob: $store.blob,
       canisterId,
+      hash: $store.hash,
     });
 
     if (success) {
@@ -46,7 +45,7 @@
   <div>
     <p class="label">{$i18n.canisters.source}</p>
     <p class="value">
-      {($store.source === "url" ? $store.url : $store.file?.name) ?? ""}
+      {($store.source === "url" ? $store.url : $store.blob?.name) ?? ""}
     </p>
   </div>
 
@@ -58,7 +57,14 @@
   </div>
 
   <div>
-    <p class="label">Mode</p>
+    <p class="label">{$i18n.canisters.hash}</p>
+    <p class="value">
+      {$store.hash}
+    </p>
+  </div>
+
+  <div>
+    <p class="label">{$i18n.canisters.mode}</p>
     <p class="value">
       {$i18n.canisters.reinstall}
       {$i18n.canisters.insecure}

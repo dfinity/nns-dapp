@@ -3,8 +3,7 @@ import {
   createCanister as createCanisterApi,
   detachCanister as detachCanisterApi,
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
-  installCodeFromFile,
-  installCodeFromUrl,
+  installCode as installCodeApi,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
   topUpCanister as topUpCanisterApi,
@@ -21,11 +20,12 @@ import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { isController } from "$lib/utils/canisters.utils";
+import { sha256 } from "$lib/utils/crypto.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
-import { validateUrl } from "$lib/utils/utils";
+import { isNullish } from "$lib/utils/utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
@@ -289,39 +289,36 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
 };
 
 export const installCode = async ({
-  source,
   canisterId,
-  file,
-  url,
+  blob,
+  hash,
 }: {
-  source: "url" | "file";
   canisterId: Principal;
-  file?: File;
-  url?: string;
+  blob: Blob | undefined;
+  hash: string | undefined;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getAuthenticatedIdentity();
-
-    if (source === "file") {
-      if (file === undefined) {
-        toastsError({
-          labelKey: "error__canister.no_file",
-        });
-        return { success: false };
-      }
-
-      await installCodeFromFile({ identity, canisterId, file });
-      return { success: true };
-    }
-
-    if (url === undefined || !validateUrl(url)) {
+    if (isNullish(blob)) {
       toastsError({
-        labelKey: "error.invalid_url",
+        labelKey: "error__canister.no_wasm",
       });
       return { success: false };
     }
 
-    await installCodeFromUrl({ identity, canisterId, url });
+    // Verify hash once again
+    const sha = await sha256(blob);
+
+    if (sha !== hash || isNullish(hash) || hash === "") {
+      toastsError({
+        labelKey: "error__canister.invalid_hash",
+      });
+      return { success: false };
+    }
+
+    const identity = await getAuthenticatedIdentity();
+
+    await installCodeApi({ identity, canisterId, blob });
+
     return { success: true };
   } catch (error: unknown) {
     toastsShow(

@@ -107,7 +107,8 @@
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "invalid_url": "Invalid or malformed URL."
+    "invalid_url": "Invalid or malformed URL.",
+    "cannot_download_wasm": "WASM cannot be downloaded. Ensure your URL is whitelisted in the security policy and hosted on a platform that supports CORS."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -365,7 +366,12 @@
     "source": "Source",
     "destination": "Destination",
     "insecure": "This action won't preserve any state. This feature is experimental and insecure ⚠️",
-    "reinstall": "Reinstall."
+    "reinstall": "Reinstall.",
+    "matching_hash_placeholder": "A matching WASM sha256 value",
+    "verify_hash": "Verify hash",
+    "invalid_hash": "Invalid hash. WASM and entered hashes do not match.",
+    "mode": "Mode",
+    "hash": "Hash"
   },
   "canister_detail": {
     "title": "Canister",
@@ -681,7 +687,7 @@
     "unknown_attach": "Error attaching canister.",
     "unknown_detach": "Error detaching canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles.",
-    "no_file": "No WASM file provided."
+    "no_wasm": "No WASM code provided."
   },
   "theme": {
     "theme": "Theme",

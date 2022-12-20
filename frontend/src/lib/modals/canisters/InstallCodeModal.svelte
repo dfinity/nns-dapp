@@ -34,8 +34,8 @@
   const store = writable<InstallCodeStore>({
     source: "url",
     canisterId,
-    file: undefined,
-    url: undefined,
+    blob: undefined,
+    hash: undefined,
   });
 
   setContext<InstallCodeContext>(INSTALL_CODE_CONTEXT_KEY, {
@@ -57,7 +57,7 @@
       ...values,
       source: "file",
       url: undefined,
-      file: inputWasm?.files?.[0],
+      blob: inputWasm?.files?.[0],
     }));
 </script>
 
