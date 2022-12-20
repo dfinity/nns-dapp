@@ -19,10 +19,10 @@
   <div class="content">
     <ContentBackdrop />
 
+    <LoginBackground />
+
     <main data-tid="auth-page">
       <LoginHeader />
-
-      <LoginBackground />
 
       <article>
         <slot />
@@ -43,7 +43,7 @@
     border-top-left-radius: var(--border-radius-2x);
     border-bottom-left-radius: var(--border-radius-2x);
     overflow: hidden;
-    margin: var(--padding) 0 var(--padding);
+    padding: var(--padding) 0 var(--padding);
     box-sizing: border-box;
 
     --login-header-height: 72px;
