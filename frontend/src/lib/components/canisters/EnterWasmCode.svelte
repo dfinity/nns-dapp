@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext, onMount } from "svelte";
-  import { Toggle } from "@dfinity/gix-components";
+  import { Spinner, Toggle } from "@dfinity/gix-components";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { isNullish, nonNullish, validateUrl } from "$lib/utils/utils";
   import {
@@ -123,7 +123,10 @@
 
   let disableNext = true;
   $: disableNext =
-    (showUrlInput && !validUrl) || (!showUrlInput && !validFile) || !validHash;
+    (showUrlInput && !validUrl) ||
+    (!showUrlInput && !validFile) ||
+    !validHash ||
+    downloading;
 </script>
 
 <p class="label">{$i18n.canisters.reinstall_text} {$i18n.canisters.insecure}</p>
@@ -189,8 +192,12 @@
       {$i18n.core.cancel}
     </button>
 
-    <button type="submit" class="primary" disabled={disableNext}>
-      {$i18n.core.next}
+    <button type="submit" class="primary submit" disabled={disableNext}>
+      {#if downloading}
+        <Spinner size="small" />
+      {:else}
+        {$i18n.core.next}
+      {/if}
     </button>
   </div>
 </form>
@@ -227,5 +234,9 @@
 
   .input-wasm {
     @include text.truncate;
+  }
+
+  .submit {
+    min-width: 100px;
   }
 </style>
