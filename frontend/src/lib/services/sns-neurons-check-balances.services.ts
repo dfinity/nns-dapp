@@ -300,7 +300,7 @@ export const checkSnsNeuronBalances = async ({
     (
       get(snsParametersStore)?.[rootCanisterId.toText()]
         ?.parameters as NervousSystemParameters
-    ).neuron_minimum_stake_e8s ?? []
+    ).neuron_minimum_stake_e8s ?? [0n]
   );
 
   const unvisitedNeurons = await checkNeuronsSubaccounts({
