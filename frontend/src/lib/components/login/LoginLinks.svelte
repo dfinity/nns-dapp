@@ -144,8 +144,7 @@
       &:hover,
       &:active,
       &:focus {
-        background: var(--login-links-light-bg);
-        transform: translateY(-3px);
+        background: var(--background-disable);
       }
     }
   }
