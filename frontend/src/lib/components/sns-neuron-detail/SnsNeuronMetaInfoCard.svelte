@@ -58,8 +58,6 @@
       identity: $authStore.identity,
     });
 
-  $: console.log('allowedToSplit', allowedToSplit)
-
   const updateLayoutTitle = ($event: Event) => {
     const {
       detail: { intersecting },

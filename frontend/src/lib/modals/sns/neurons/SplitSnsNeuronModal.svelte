@@ -17,8 +17,10 @@
   import { formattedTransactionFee } from "$lib/utils/token.utils.js";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { E8S_PER_TOKEN } from "@dfinity/nns/dist/types/constants/constants";
   import { loadNeurons, splitNeuron } from "$lib/services/sns-neurons.services";
+  import {E8S_PER_ICP} from "$lib/constants/icp.constants";
+  import {querySnsNeurons} from "$lib/api/sns.api";
+  import {snsNeuronsStore} from "$lib/stores/sns-neurons.store";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -59,7 +61,7 @@
           stakeE8s -
             fee.toE8s() -
             fromDefinedNullable(parameters.neuron_minimum_stake_e8s)
-        ) / Number(E8S_PER_TOKEN);
+        ) / Number(E8S_PER_ICP);
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -79,13 +81,20 @@
     }
     startBusy({ initiator: "split-neuron" });
 
-    console.log("👻E8S_PER_TOKEN", E8S_PER_TOKEN);
+    // reload neurons
+    await loadNeurons({
+      rootCanisterId,
+      certified: true,
+    });
+    const neurons = $snsNeuronsStore?.[rootCanisterId?.toText()]?.neurons as SnsNeuron[];
+
+    console.log("👻E8S_PER_ICP", E8S_PER_ICP);
 
     const { success } = await splitNeuron({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
-      neurons: [],
-      amount: BigInt(amount * Number(E8S_PER_TOKEN)),
+      neurons,
+      amount: BigInt(amount * Number(E8S_PER_ICP)),
     });
 
     // TODO: is check neuron balances after splitNeuron needed? (to find neurons that need to be refreshed or claimed.)
