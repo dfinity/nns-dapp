@@ -367,7 +367,7 @@
     "destination": "Destination",
     "insecure": "This action won't preserve any state. This feature is experimental and insecure ⚠️",
     "reinstall": "Reinstall.",
-    "matching_hash_placeholder": "A matching WASM sha256 value",
+    "matching_hash_placeholder": "Enter corresponding WASM sha256",
     "verify_hash": "Verify hash",
     "invalid_hash": "Invalid hash. WASM and entered hashes do not match.",
     "mode": "Mode",
