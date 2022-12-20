@@ -350,8 +350,8 @@
     "change_source": "Change Source Account",
     "edit_cycles": "Edit Cycles",
     "converted_to": "converted to",
-    "canister_wasm_confirm": "Confirm canister WASM",
-    "reinstall_text": "Reinstall a canister you control. This action won't preserve any state. This feature is experimental and insecure ⚠️.",
+    "review_install_code": "Review Install Code",
+    "reinstall_text": "Reinstall a canister you control.",
     "upload": "Upload",
     "url": "URL",
     "enter_url": "Enter URL",
@@ -361,7 +361,11 @@
     "execute": "Execute",
     "install_code": "Install Code",
     "install_code_title": "Install Code - Experimental",
-    "reinstall_canister_success": "The canister ($canisterId) has been reinstalled."
+    "reinstall_canister_success": "The canister ($canisterId) has been reinstalled.",
+    "source": "Source",
+    "destination": "Destination",
+    "insecure": "This action won't preserve any state. This feature is experimental and insecure ⚠️",
+    "reinstall": "Reinstall."
   },
   "canister_detail": {
     "title": "Canister",

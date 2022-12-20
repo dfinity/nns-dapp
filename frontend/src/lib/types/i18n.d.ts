@@ -364,7 +364,7 @@ interface I18nCanisters {
   change_source: string;
   edit_cycles: string;
   converted_to: string;
-  canister_wasm_confirm: string;
+  review_install_code: string;
   reinstall_text: string;
   upload: string;
   url: string;
@@ -376,6 +376,10 @@ interface I18nCanisters {
   install_code: string;
   install_code_title: string;
   reinstall_canister_success: string;
+  source: string;
+  destination: string;
+  insecure: string;
+  reinstall: string;
 }
 
 interface I18nCanister_detail {
