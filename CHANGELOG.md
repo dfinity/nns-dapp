@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal XXX
+- Enable stake maturity for HW.
+- Hide vote pane from detail page if proposal reward status has settled.
+- Update tcycles fee in labels.
+- Keep track of http agent (optimisation).
+- Minor bugfixes.
+
 ## Proposal 95968
 * fix sns minimum dissolve delay description calculation
 * fix sns hotkeys permissions
