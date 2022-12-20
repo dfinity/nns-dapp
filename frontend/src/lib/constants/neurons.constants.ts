@@ -7,7 +7,8 @@ export const MIN_NEURON_STAKE = E8S_PER_ICP;
 export const MAX_CONCURRENCY = 10;
 export const SPAWN_VARIANCE_PERCENTAGE = 0.95;
 
-export const MIN_VERSION_MERGE_MATURITY = "2.0.6";
+// HW versions
+export const MIN_VERSION_STAKE_MATURITY_WORKAROUND = "2.0.7";
 
 export const DISSOLVE_DELAY_MULTIPLIER = 1;
 export const AGE_MULTIPLIER = 0.25;

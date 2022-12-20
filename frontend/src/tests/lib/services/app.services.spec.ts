@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { initAppPrivate } from "$lib/services/app.services";
+import { initAppPrivateData } from "$lib/services/app.services";
 import { loadSnsSwapCommitments } from "$lib/services/sns.services";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
@@ -47,7 +47,7 @@ describe("app-services", () => {
   });
 
   it("should init Nns", async () => {
-    await initAppPrivate();
+    await initAppPrivateData();
 
     // query + update calls
     const numberOfCalls = 2;
@@ -66,7 +66,7 @@ describe("app-services", () => {
   });
 
   it("should init Sns", async () => {
-    await initAppPrivate();
+    await initAppPrivateData();
 
     await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
   });

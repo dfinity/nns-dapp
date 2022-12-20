@@ -22,7 +22,7 @@ import {
 } from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { MIN_VERSION_MERGE_MATURITY } from "$lib/constants/neurons.constants";
+import { MIN_VERSION_STAKE_MATURITY_WORKAROUND } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -34,7 +34,7 @@ import {
 } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
-import { InsufficientAmountError } from "$lib/types/common.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import {
   CannotBeMerged,
   NotAuthorizedNeuronError,
@@ -557,7 +557,7 @@ export const splitNeuron = async ({
     const amountE8s = numberToE8s(amount) + feeE8s;
 
     if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
-      throw new InsufficientAmountError();
+      throw new NotEnoughAmountError();
     }
 
     await splitNeuronApi({ neuronId, identity, amount: amountE8s });
@@ -609,7 +609,7 @@ export const mergeMaturity = async ({
 
     await assertLedgerVersion({
       identity,
-      minVersion: MIN_VERSION_MERGE_MATURITY,
+      minVersion: MIN_VERSION_STAKE_MATURITY_WORKAROUND,
     });
 
     await mergeMaturityApi({ neuronId, percentageToMerge, identity });
