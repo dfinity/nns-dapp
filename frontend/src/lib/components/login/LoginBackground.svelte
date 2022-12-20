@@ -1,0 +1,51 @@
+<script lang="ts">
+  import png576 from "$lib/assets/login/576.png";
+  import webp576 from "$lib/assets/login/576.webp";
+  import png768 from "$lib/assets/login/768.png";
+  import webp768 from "$lib/assets/login/768.webp";
+  import png1024 from "$lib/assets/login/1024.png";
+  import webp1024 from "$lib/assets/login/1024.webp";
+  import png1300 from "$lib/assets/login/1300.png";
+  import webp1300 from "$lib/assets/login/1300.webp";
+  import png1920 from "$lib/assets/login/1920.png";
+  import webp1920 from "$lib/assets/login/1920.webp";
+
+  // Breakpoints source: https://css-tricks.com/optimizing-large-scale-displays/
+</script>
+
+<picture>
+  <source type="image/webp" media="(min-width: 2560px)" srcset={webp1920}>
+  <source type="image/jpeg" media="(min-width: 2560px)" srcset={png1920}>
+  <source type="image/webp" media="(min-width: 1920px)" srcset={webp1300}>
+  <source type="image/jpeg" media="(min-width: 1920px)" srcset={png1300}>
+  <source type="image/webp" media="(min-width: 1366px)" srcset={webp1024}>
+  <source type="image/jpeg" media="(min-width: 1366px)" srcset={png1024}>
+  <source type="image/webp" media="(min-width: 1024px)" srcset={webp768}>
+  <source type="image/jpeg" media="(min-width: 1024px)" srcset={png768}>
+  <source type="image/webp" srcset={webp576}>
+  <source type="image/jpeg" srcset={png576}>
+  <img src={png576} role="presentation" alt="An abstract image for design and presentation purpose only" decoding="async">
+</picture>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
+  picture {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  img {
+    max-width: 70vw;
+    aspect-ratio: 1;
+
+    @include media.min-width(large) {
+      max-width: inherit;
+      max-height: 70vh;
+      min-height: 50vh;
+      aspect-ratio: 1;
+    }
+  }
+</style>

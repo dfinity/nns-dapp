@@ -6,6 +6,7 @@
   import LoginMenuItems from "$lib/components/login/LoginMenuItems.svelte";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
+  import LoginBackground from "$lib/components/login/LoginBackground.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -20,6 +21,8 @@
 
     <main data-tid="auth-page">
       <LoginHeader />
+
+      <LoginBackground />
 
       <article>
         <slot />
@@ -60,7 +63,7 @@
     justify-content: center;
 
     position: relative;
-    overflow-y: hidden;
+    overflow: hidden;
 
     padding: var(--padding-6x) var(--padding-4x);
 
@@ -77,6 +80,8 @@
 
     height: 100%;
     width: 100%;
+
+    z-index: var(--z-index);
 
     @include login.min-size(medium) {
       height: auto;
