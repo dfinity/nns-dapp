@@ -5,8 +5,7 @@ import {
   KEY_STORAGE_DELEGATION,
   type AuthClient,
 } from "@dfinity/auth-client";
-import { isDelegationValid } from "@dfinity/authentication";
-import { DelegationChain } from "@dfinity/identity";
+import { DelegationChain, isDelegationValid } from "@dfinity/identity";
 
 onmessage = ({ data }: MessageEvent<PostMessageEventData>) => {
   const { msg } = data;

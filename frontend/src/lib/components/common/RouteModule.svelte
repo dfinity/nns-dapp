@@ -33,7 +33,7 @@
       case AppPath.Neuron:
         return (await import("../../routes/NeuronDetail.svelte")).default;
       default:
-        return (await import("../../pages/Auth.svelte")).default;
+        return (await import("../../pages/Login.svelte")).default;
     }
   };
 
