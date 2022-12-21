@@ -2,9 +2,6 @@ name: CI Checks
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,58 +17,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: Install rust formatter
+        run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
+      - name: Format
+        run: ./scripts/fmt
+      - name: Check formatted
         run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
-
-      - name: Format dfx.json
-        run: cat <<<$(jq . dfx.json) > dfx.json
-
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v9.1.1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
-
-  clippy:
-    needs: formatting
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Noop
-        run: echo clippy is run by the formatting step
-
+          test -z "$(git status --porcelain)" || { echo "FIX: Please run ./scripts/fmt" ; exit 1 ; }
 
   cargo-tests:
     needs: formatting
@@ -99,15 +53,8 @@ jobs:
           rustup target add wasm32-unknown-unknown
           rustup component add clippy
 
-      - name: Create fake assets
-        run : |
-          touch assets.tar.xz
-
-      # Does not support Node 16 yet
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features -- -D warnings
+      - name: Lint rust code
+        run: ./scripts/lint-rs
 
       - name: Run Tests
         shell: bash
@@ -223,7 +170,7 @@ jobs:
         SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
 
   checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
        - name: Checks workflow passes

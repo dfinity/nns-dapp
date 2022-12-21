@@ -508,13 +508,11 @@ interface I18nNeuron_detail {
   maturity_title: string;
   merge_maturity: string;
   stake_maturity: string;
-  merge: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
   stake_maturity_disabled_tooltip: string;
   stake_maturity_tooltip: string;
-  merge_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
@@ -529,7 +527,6 @@ interface I18nNeuron_detail {
   disburse_neuron_title: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
-  merge_maturity_disabled_tooltip: string;
   spawn_neuron_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
@@ -539,10 +536,6 @@ interface I18nNeuron_detail {
   remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;
-  merge_maturity_modal_title: string;
-  merge_confirmation_modal_title: string;
-  merge_maturity_modal_description: string;
-  merge_maturity_confirmation: string;
   edit_percentage: string;
   merge_maturity_success: string;
   stake_maturity_modal_title: string;
