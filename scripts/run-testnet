@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+gh workflow run testnet --ref e2e-testnet
+sleep 5
+gh run watch "$(gh run list --workflow=testnet.yml --limit 1 --json databaseId | jq -r '.[0].databaseId')"
+
