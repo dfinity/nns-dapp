@@ -116,19 +116,6 @@
         display: none;
       }
     }
-
-    @include media.min-width(xlarge) {
-      :global(button.icon-only) {
-        display: inherit;
-        color: inherit;
-      }
-    }
-
-    @media (min-width: 1300px) and (min-height: 820px) {
-      :global(button.icon-only) {
-        display: none;
-      }
-    }
   }
 
   .end {
