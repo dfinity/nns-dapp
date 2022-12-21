@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {i18n} from "$lib/stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 </script>
 
 <div class="title">
-    <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
+  <h1>{$i18n.auth.title}&nbsp;<span>{$i18n.auth.on_chain}</span></h1>
 </div>
 
 <style lang="scss">
@@ -15,16 +15,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: var(--padding-6x);
 
-    @include login.min-size(medium) {
+    z-index: var(--z-index);
+
+    @include media.min-width(large) {
       padding-top: 0;
     }
   }
 
   h1 {
-    font-size: inherit;
-    line-height: var(--line-height-standard);
     text-align: center;
 
     letter-spacing: -0.02em;
@@ -35,18 +34,11 @@
       display: block;
     }
 
-    display: none;
+    font-size: calc(var(--font-size-h1) * 1.2);
+    line-height: var(--line-height-standard);
 
-    @media (min-height: 300px) {
-      display: block;
-    }
-
-    @media (min-height: 380px) {
-      font-size: calc(var(--font-size-h1) * 1.2);
-    }
-
-    @media (min-width: 440px) and (min-height: 860px) {
-      font-size: calc(var(--font-size-h1) * 2.5);
+    @media (min-width: 440px) {
+      font-size: calc(var(--font-size-h1) * 2);
       line-height: 1;
     }
 

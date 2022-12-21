@@ -33,10 +33,11 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-  @use "../../../lib/themes/mixins/login";
 
   header {
-    top: 0;
+    position: relative;
+
+    z-index: var(--z-index);
 
     width: 100%;
     height: var(--login-header-height);
@@ -49,7 +50,7 @@
 
     padding: 0 var(--padding-2x);
 
-    @include login.min-size(large) {
+    @include media.min-width(large) {
       padding: 0 var(--padding-8x);
     }
 
@@ -90,7 +91,7 @@
   .logo-nns {
     height: var(--padding-6x);
 
-    @include login.min-size(large) {
+    @include media.min-width(large) {
       height: var(--padding-8x);
     }
   }
@@ -104,7 +105,7 @@
       display: none;
     }
 
-    @include login.min-size(large) {
+    @include media.min-width(large) {
       padding-top: calc(4.5 * var(--padding));
 
       :global(a) {

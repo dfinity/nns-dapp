@@ -19,56 +19,57 @@
   <div class="content">
     <ContentBackdrop />
 
-    <LoginBackground />
+    <div class="scroll-container">
+      <main data-tid="auth-page">
+        <LoginHeader />
 
-    <main data-tid="auth-page">
-      <LoginHeader />
+        <article>
+          <LoginBackground />
 
-      <article>
-        <slot />
-      </article>
+          <slot />
+        </article>
 
-      <LoginFooter />
-    </main>
+        <LoginFooter />
+      </main>
+    </div>
   </div>
 </Layout>
 
 <style lang="scss">
-  @use "../../lib/themes/mixins/login";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   .content {
-    --backdrop-z-index: var(--z-index);
+    --backdrop-z-index: calc(var(--overlay-z-index) + 5);
     position: relative;
 
     border-top-left-radius: var(--border-radius-2x);
     border-bottom-left-radius: var(--border-radius-2x);
     overflow: hidden;
-    padding: var(--padding) 0 var(--padding);
     box-sizing: border-box;
 
-    --login-header-height: 72px;
+    --login-header-height: 70px;
 
-    @include login.min-size(large) {
+    @include media.min-width(large) {
       --login-header-height: 88px;
     }
   }
 
-  main {
+  .scroll-container {
     min-width: 100vw;
     height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
+  main {
     position: relative;
-    overflow: hidden;
+    max-width: inherit;
 
-    padding: var(--padding-6x) var(--padding-4x);
+    padding: 0;
 
-    @include login.min-size(medium) {
-      padding: 0;
+    @include media.min-width(large) {
+      padding: 0 0 var(--login-footer-offset);
     }
   }
 
@@ -78,20 +79,27 @@
     justify-content: flex-end;
     align-items: center;
 
-    height: 100%;
+    min-height: calc(
+      100vh - var(--login-header-height) - (2 * var(--padding-4x)) -
+        var(--padding-2x)
+    );
     width: 100%;
 
-    z-index: var(--z-index);
+    margin: 0 auto;
+    padding: var(--padding-4x);
+    box-sizing: border-box;
 
-    @include login.min-size(medium) {
-      height: auto;
+    position: relative;
+
+    @include media.min-width(large) {
+      min-height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
-      padding-top: calc(var(--login-header-height) + var(--padding-3x));
+      padding-top: calc(var(--login-header-height) + (2 * var(--padding-8x)));
     }
 
-    @include login.min-size(xlarge) {
-      max-width: 70vw;
+    @include media.min-width(xlarge) {
+      max-width: 1300px;
     }
   }
 </style>

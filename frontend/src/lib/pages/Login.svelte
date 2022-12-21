@@ -70,12 +70,14 @@
 
     padding: var(--padding-3x) 0;
 
+    z-index: var(--z-index);
+
     :global(button) {
       width: 100%;
       padding: var(--padding) var(--padding-4x);
     }
 
-    @include login.min-size(medium) {
+    @include media.min-width(medium) {
       margin: var(--padding-6x) 0 var(--padding);
       width: auto;
     }

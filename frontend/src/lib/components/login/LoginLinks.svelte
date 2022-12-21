@@ -7,8 +7,8 @@
     IconLaunchpad,
   } from "@dfinity/gix-components";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {isSignedIn} from "$lib/utils/auth.utils";
-  import {authStore} from "$lib/stores/auth.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -16,25 +16,37 @@
 
 <ul>
   <li>
-    <a href={AppPath.Accounts} data-tid="auth-link-accounts" aria-disabled={signedIn}
+    <a
+      href={AppPath.Accounts}
+      data-tid="auth-link-accounts"
+      aria-disabled={signedIn}
       ><IconTokens />
       {$i18n.auth.wallet}</a
     >
   </li>
   <li>
-    <a href={AppPath.Neurons} data-tid="auth-link-neurons" aria-disabled={signedIn}
+    <a
+      href={AppPath.Neurons}
+      data-tid="auth-link-neurons"
+      aria-disabled={signedIn}
       ><IconNeurons />
       {$i18n.auth.stake}</a
     >
   </li>
   <li>
-    <a href={AppPath.Proposals} data-tid="auth-link-proposals" aria-disabled={signedIn}
+    <a
+      href={AppPath.Proposals}
+      data-tid="auth-link-proposals"
+      aria-disabled={signedIn}
       ><IconVote />
       {$i18n.auth.earn}</a
     >
   </li>
   <li>
-    <a href={AppPath.Launchpad} data-tid="auth-link-launchpad" aria-disabled={signedIn}
+    <a
+      href={AppPath.Launchpad}
+      data-tid="auth-link-launchpad"
+      aria-disabled={signedIn}
       ><IconLaunchpad />
       {$i18n.auth.launchpad}</a
     >
@@ -59,29 +71,23 @@
     width: 100%;
     @include login.hero-max-width;
 
-    display: none;
+    z-index: var(--z-index);
 
-    @media (min-height: 620px) {
-      display: grid;
-    }
+    display: grid;
 
-    @include login.min-size(medium) {
-      display: none;
-    }
-
-    @include login.min-size(large) {
+    @include media.min-width(large) {
       display: flex;
       flex-grow: inherit;
       justify-content: center;
       gap: var(--padding-2x);
       padding: var(--padding-4x) 0;
+      max-width: inherit;
     }
   }
 
   li {
-    @include login.min-size(medium) {
-      padding: var(--padding-1_5x) 0;
-      width: 206px;
+    @include media.min-width(medium) {
+      min-width: 206px;
     }
   }
 
@@ -132,7 +138,11 @@
 
   @include media.light-theme {
     a {
-      --login-links-light-bg: linear-gradient(113.27deg, #d5c7eb 0%, #eddcea 100%);
+      --login-links-light-bg: linear-gradient(
+        113.27deg,
+        #d5c7eb 0%,
+        #eddcea 100%
+      );
       background: var(--login-links-light-bg);
       border: 1px solid var(--line);
       color: var(--text-color);

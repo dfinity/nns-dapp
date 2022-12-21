@@ -22,6 +22,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   a {
     display: flex;
@@ -43,7 +44,7 @@
   .footer {
     display: none;
 
-    @media (min-width: 1024px) and (min-height: 820px) {
+    @include media.min-width(large) {
       display: flex;
       justify-content: space-between;
 
@@ -52,6 +53,8 @@
       padding: var(--padding-4x) var(--padding-8x);
 
       @include fonts.small;
+
+      z-index: var(--z-index);
     }
   }
 

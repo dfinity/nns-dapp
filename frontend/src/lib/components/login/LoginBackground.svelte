@@ -8,52 +8,47 @@
 </script>
 
 <picture>
-  <source type="image/jpeg" media="(min-width: 1920px)" srcset={png1300}>
-  <source type="image/jpeg" media="(min-width: 1366px)" srcset={png1024}>
-  <source type="image/jpeg" media="(min-width: 1024px)" srcset={png768}>
-  <source type="image/jpeg" srcset={png576}>
-  <img src={png576} role="presentation" alt="An abstract image for design and presentation purpose only" decoding="async">
+  <source type="image/jpeg" media="(min-width: 1920px)" srcset={png1300} />
+  <source type="image/jpeg" media="(min-width: 1366px)" srcset={png1024} />
+  <source type="image/jpeg" media="(min-width: 1024px)" srcset={png768} />
+  <source type="image/jpeg" srcset={png576} />
+  <img
+    src={png576}
+    role="presentation"
+    alt="An abstract image for design and presentation purpose only"
+    decoding="async"
+  />
 </picture>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
-  @use "../../../lib/themes/mixins/login";
 
   picture {
     position: absolute;
-    top: 45%;
+    top: 28%;
     left: 50%;
     transform: translate(-50%, -50%);
 
-    display: none;
-
-    @media (min-height: 380px) {
-      display: block;
-    }
-
-    @include media.min-width(medium) {
-      top: 38%;
-    }
-
-    @include login.min-size(medium) {
+    @include media.min-width(small) {
       top: 40%;
     }
 
-    @include login.min-size(large) {
-      top: 45%;
+    @include media.min-width(large) {
+      top: 54%;
     }
   }
 
   img {
+    width: 40rem;
+    max-width: calc(100vw - var(--padding-8x));
     aspect-ratio: 1;
 
-    max-height: 40vh;
-    min-height: 30vh;
+    @include media.min-width(small) {
+      width: 34rem;
+    }
 
     @include media.min-width(large) {
-      max-height: 60vh;
-      min-height: 40vh;
-      aspect-ratio: 1;
+      width: 50rem;
     }
   }
 </style>
