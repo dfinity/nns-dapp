@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+
+cd e2e-tests
+test -x node_modules/.bin/prettier || npm ci
+npm run format

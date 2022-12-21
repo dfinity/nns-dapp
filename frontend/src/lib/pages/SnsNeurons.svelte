@@ -16,6 +16,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 
   let loading = true;
 
@@ -23,6 +24,11 @@
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
+
+        // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
+        // TODO(GIX-1197): extract that logic in a service and have a test that check that loadSnsParameters is indeed called before the calls?
+        await loadSnsParameters(selectedProjectCanisterId);
+
         await Promise.all([
           syncSnsNeurons(selectedProjectCanisterId),
           syncSnsAccounts(selectedProjectCanisterId),
