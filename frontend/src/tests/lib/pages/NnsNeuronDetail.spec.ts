@@ -64,7 +64,7 @@ describe("NeuronDetail", () => {
 
     await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
 
-    const element = getByTestId("neuron-id") as HTMLElement;
+    const element = getByTestId("neuron-id-title") as HTMLElement;
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
