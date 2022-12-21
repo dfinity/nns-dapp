@@ -1,6 +1,12 @@
 name: testnet
 
 on:
+  # Manual trigger, can be run:
+  # - From the "Actions" tab in the github UI.
+  # - From the cli with:
+  #     gh workflow run testnet --ref <BRANCH_TAG_OR_COMMIT>
+  #   Note: This works for all branches whereas the UI has more limited options.
+  #   Note: If cloning or renaming this workflow, add a push trigger and run this workflow once.
   workflow_dispatch:
     inputs:
       dfx_testnet:
