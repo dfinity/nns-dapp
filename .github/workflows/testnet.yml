@@ -50,6 +50,7 @@ jobs:
           jq . canister_ids.json >/dev/null || echo '{}' > canister_ids.json
           jq '.["nns-dapp"]( env.DFX_NETWORK ) = ${{ github.event.inputs.nns_dapp_canister_id }}' canister_ids.json | sponge canister_ids.json
           jq '.["internet_identity"]( env.DFX_NETWORK ) = ${{ github.event.inputs.ii_canister_id }}' canister_ids.json | sponge canister_ids.json
+          cat canister_ids.json
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
       - name: Generate .env configuration for e2e-tests
@@ -57,7 +58,6 @@ jobs:
           export DFX_NETWORK="${{ github.event.inputs.dfx_testnet }}"
           export ENV_OUTPUT_FILE=./e2e-tests/.env
           ./config.sh
-          echo "VITE_OWN_CANISTER_ID=${{ github.event.inputs.nns_dapp_canister_id }}"
           cat "$ENV_OUTPUT_FILE"
 
       - name: prepare and run the test suite
