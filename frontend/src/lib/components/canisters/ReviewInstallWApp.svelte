@@ -50,13 +50,6 @@
   </div>
 
   <div>
-    <p class="label">{$i18n.canisters.destination}</p>
-    <p class="value">
-      {$store.canisterId.toText()}
-    </p>
-  </div>
-
-  <div>
     <p class="label">{$i18n.canisters.hash}</p>
     <p class="value">
       {$store.hash}
