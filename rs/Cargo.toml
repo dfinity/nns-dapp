@@ -1,6 +1,6 @@
 [package]
 name = "nns-dapp"
-version = "2.0.9"
+version = "2.0.10"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

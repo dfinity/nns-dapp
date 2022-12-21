@@ -7,6 +7,7 @@ import { getSnsNeuron } from "$lib/api/sns.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import {
   getSnsNeuronIdAsHexString,
   needsRefresh,
@@ -19,7 +20,9 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 const loadNeuron = async ({
   rootCanisterId,
@@ -154,10 +157,12 @@ const checkNeuronsSubaccounts = async ({
   identity,
   rootCanisterId,
   neurons,
+  neuronMinimumStake,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   neurons: SnsNeuron[];
+  neuronMinimumStake: bigint;
 }): Promise<SnsNeuron[]> => {
   const visitedSubaccounts = new Set<string>();
   const controller = identity.getPrincipal();
@@ -185,8 +190,8 @@ const checkNeuronsSubaccounts = async ({
       });
       const neuron = neurons.find(findNeuronBySubaccount(subaccount));
       const neuronNotFound = neuron === undefined;
-      const positiveBalance = currentBalance > BigInt(0);
-      // Subaccount balance > 0 but no neuron found, claim it.
+      const positiveBalance = currentBalance >= neuronMinimumStake;
+      // Subaccount balance >= `neuron_minimum_stake_e8s` but no neuron found, claim it.
       if (positiveBalance && neuronNotFound) {
         await claimAndLoadNeuron({
           rootCanisterId,
@@ -274,6 +279,9 @@ const checkNeurons = async ({
  *
  * It refetches the neurons that are not in sync with the subaccounts and adds them to the store.
  *
+ * Note:
+ * `NervousSystemParameters` should be preloaded before calling this function.
+ *
  * @param param0
  * @returns {boolean}
  */
@@ -287,10 +295,19 @@ export const checkSnsNeuronBalances = async ({
   // TODO: Check neurons controlled by linked HW?
   const identity = await getAuthenticatedIdentity();
 
+  // TODO: refactor using `getSnsParametersFromStore` https://dfinity.atlassian.net/browse/GIX-1178
+  const neuronMinimumStake = fromDefinedNullable(
+    (
+      get(snsParametersStore)?.[rootCanisterId.toText()]
+        ?.parameters as NervousSystemParameters
+    ).neuron_minimum_stake_e8s ?? [0n]
+  );
+
   const unvisitedNeurons = await checkNeuronsSubaccounts({
     identity,
     rootCanisterId,
     neurons,
+    neuronMinimumStake,
   });
 
   await checkNeurons({ identity, rootCanisterId, neurons: unvisitedNeurons });
