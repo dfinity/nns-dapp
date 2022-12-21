@@ -4,13 +4,13 @@
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import {
-    INSTALL_CODE_CONTEXT_KEY,
-    type InstallCodeContext,
-  } from "$lib/types/install-code.context";
+    INSTALL_WAPP_CONTEXT_KEY,
+    type InstallWAppContext,
+  } from "$lib/types/install-wapp.context";
   import { sha256 } from "$lib/utils/crypto.utils";
 
-  const { store, next, selectFile }: InstallCodeContext =
-    getContext<InstallCodeContext>(INSTALL_CODE_CONTEXT_KEY);
+  const { store, next, selectFile }: InstallWAppContext =
+    getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
 
   let validFile = false;
   let inputWasmName: string | undefined = undefined;

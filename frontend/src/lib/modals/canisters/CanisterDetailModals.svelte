@@ -10,8 +10,6 @@
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
   import type { Principal } from "@dfinity/principal";
-  import InstallCodeModal from "$lib/modals/canisters/InstallCodeModal.svelte";
-  import type { CanisterDetailModalInstallCode } from "$lib/types/canister-detail.modal";
 
   let modal: CanisterDetailModal | undefined = undefined;
   const close = () => (modal = undefined);
@@ -26,7 +24,7 @@
   let canisterId: Principal | undefined;
   $: canisterId = (
     modal as
-      | (CanisterDetailModalDetach | CanisterDetailModalInstallCode)
+      | (CanisterDetailModalDetach)
       | undefined
   )?.data?.canisterId;
 </script>
@@ -47,8 +45,4 @@
 
 {#if type === "remove-controller" && controller !== undefined}
   <RemoveCanisterControllerModal {controller} on:nnsClose={close} />
-{/if}
-
-{#if type === "install-code" && canisterId !== undefined}
-  <InstallCodeModal {canisterId} on:nnsClose={close} />
 {/if}

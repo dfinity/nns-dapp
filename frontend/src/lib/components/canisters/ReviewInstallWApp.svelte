@@ -5,18 +5,18 @@
   import { installCode } from "$lib/services/canisters.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
-    INSTALL_CODE_CONTEXT_KEY,
-    type InstallCodeContext,
-  } from "$lib/types/install-code.context";
+    INSTALL_WAPP_CONTEXT_KEY,
+    type InstallWAppContext,
+  } from "$lib/types/install-wapp.context";
 
-  const { store, back }: InstallCodeContext = getContext<InstallCodeContext>(
-    INSTALL_CODE_CONTEXT_KEY
+  const { store, back }: InstallWAppContext = getContext<InstallWAppContext>(
+    INSTALL_WAPP_CONTEXT_KEY
   );
 
   const dispatcher = createEventDispatcher();
 
   const onSubmit = async () => {
-    startBusy({ initiator: "install-code" });
+    startBusy({ initiator: "install-wapp" });
 
     const canisterId = $store.canisterId;
 
@@ -37,7 +37,7 @@
       dispatcher("nnsClose");
     }
 
-    stopBusy("install-code");
+    stopBusy("install-wapp");
   };
 </script>
 

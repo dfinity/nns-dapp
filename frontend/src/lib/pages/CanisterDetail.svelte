@@ -35,7 +35,6 @@
   import { emit } from "$lib/utils/events.utils";
   import type {
     CanisterDetailModal,
-    CanisterDetailModalInstallCode,
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
 
@@ -186,15 +185,6 @@
       message: "nnsCanisterDetailModal",
       detail: { type },
     });
-
-  const openModalInstallCode = () =>
-    emit<CanisterDetailModalInstallCode>({
-      message: "nnsCanisterDetailModal",
-      detail: {
-        type: "install-code",
-        data: { canisterId: canisterInfo?.canister_id },
-      },
-    });
 </script>
 
 <Island>
@@ -229,19 +219,12 @@
   </main>
 </Island>
 
-<Footer columns={2}>
+<Footer columns={1}>
   <button
     class="primary"
     on:click={() => openModal("add-cycles")}
     disabled={canisterInfo === undefined || $busy}
     >{$i18n.canister_detail.add_cycles}</button
-  >
-
-  <button
-    class="secondary"
-    on:click={openModalInstallCode}
-    disabled={canisterInfo === undefined || $busy}
-    >{$i18n.canisters.install_code}</button
   >
 </Footer>
 

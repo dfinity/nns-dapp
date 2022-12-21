@@ -5,13 +5,13 @@
   import { WizardModal } from "@dfinity/gix-components";
   import { writable } from "svelte/store";
   import type {
-    InstallCodeContext,
-    InstallCodeStore,
-  } from "$lib/types/install-code.context";
+    InstallWAppContext,
+    InstallWAppStore,
+  } from "$lib/types/install-wapp.context";
   import { setContext } from "svelte";
-  import { INSTALL_CODE_CONTEXT_KEY } from "$lib/types/install-code.context";
-  import EnterWasmCode from "$lib/components/canisters/EnterWasmCode.svelte";
-  import InstallWasmCode from "$lib/components/canisters/InstallWasmCode.svelte";
+  import { INSTALL_WAPP_CONTEXT_KEY } from "$lib/types/install-wapp.context";
+  import UploadWasmCode from "$lib/components/canisters/UploadWasmCode.svelte";
+  import ReviewInstallWApp from "$lib/components/canisters/ReviewInstallWApp.svelte";
 
   export let canisterId: Principal;
 
@@ -31,13 +31,13 @@
 
   let inputWasm: HTMLInputElement | undefined;
 
-  const store = writable<InstallCodeStore>({
+  const store = writable<InstallWAppStore>({
     canisterId,
     file: undefined,
     hash: undefined,
   });
 
-  setContext<InstallCodeContext>(INSTALL_CODE_CONTEXT_KEY, {
+  setContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY, {
     store,
     next: () => modal?.next(),
     back: () => modal?.back(),
@@ -66,11 +66,11 @@
   />
 
   {#if currentStep?.name === steps[0].name}
-    <EnterWasmCode on:nnsClose />
+    <UploadWasmCode on:nnsClose />
   {/if}
 
   {#if currentStep?.name === steps[1].name}
-    <InstallWasmCode on:nnsClose />
+    <ReviewInstallWApp on:nnsClose />
   {/if}
 </WizardModal>
 

@@ -38,7 +38,7 @@ export type BusyStateInitiatorType =
   | "add-sns-followee"
   | "remove-sns-followee"
   | "disburse-sns-neuron"
-  | "install-code";
+  | "install-wapp";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;
