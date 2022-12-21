@@ -47,9 +47,9 @@ jobs:
       - name: Set canister IDs
         run: |
           export DFX_NETWORK="${{ github.event.inputs.dfx_testnet }}"
-          jq . canister_ids.json >/dev/null || echo '{}' > canister_ids.json
-          jq '.["nns-dapp"][ env.DFX_NETWORK ] = ${{ github.event.inputs.nns_dapp_canister_id }}' canister_ids.json | sponge canister_ids.json
-          jq '.["internet_identity"][ env.DFX_NETWORK ] = ${{ github.event.inputs.ii_canister_id }}' canister_ids.json | sponge canister_ids.json
+          jq . canister_ids.json >/dev/null 2>/dev/null || echo '{}' > canister_ids.json
+          jq '.["nns-dapp"][ env.DFX_NETWORK ] = "${{ github.event.inputs.nns_dapp_canister_id }}"' canister_ids.json | sponge canister_ids.json
+          jq '.["internet_identity"][ env.DFX_NETWORK ] = "${{ github.event.inputs.ii_canister_id }}"' canister_ids.json | sponge canister_ids.json
           cat canister_ids.json
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
