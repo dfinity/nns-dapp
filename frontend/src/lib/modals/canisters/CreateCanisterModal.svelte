@@ -22,11 +22,12 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import SelectCyclesCreateCanister from "$lib/components/canisters/SelectCyclesCreateCanister.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
-  onMount(async () => {
-    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
-  });
+  onMount(
+    async () => (icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate())
+  );
 
   const steps: WizardSteps = [
     {
@@ -104,30 +105,13 @@
       />
     {/if}
     {#if currentStep?.name === "SelectCycles"}
-      <SelectCyclesCanister
+      <SelectCyclesCreateCanister
         {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsBack={modal.back}
         on:nnsSelectAmount={selectAmount}
-        minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
-      >
-        <svelte:fragment slot="select-amount"
-          >{$i18n.canisters.review_create_canister}</svelte:fragment
-        >
-        <div>
-          <p class="description">{$i18n.canisters.minimum_cycles_text_1}</p>
-          <p class="description">
-            <Html
-              text={replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
-                $amount: valueSpan(
-                  formattedTransactionFeeICP($mainTransactionFeeStore)
-                ),
-              })}
-            />
-          </p>
-        </div>
-      </SelectCyclesCanister>
+      />
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
       <ConfirmCyclesCanister

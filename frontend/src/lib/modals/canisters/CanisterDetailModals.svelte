@@ -22,11 +22,8 @@
     ?.data?.controller;
 
   let canisterId: Principal | undefined;
-  $: canisterId = (
-    modal as
-      | (CanisterDetailModalDetach)
-      | undefined
-  )?.data?.canisterId;
+  $: canisterId = (modal as CanisterDetailModalDetach | undefined)?.data
+    ?.canisterId;
 </script>
 
 <svelte:window on:nnsCanisterDetailModal={({ detail }) => (modal = detail)} />

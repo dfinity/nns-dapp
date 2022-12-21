@@ -12,7 +12,8 @@
 
 <div>
   <p>
-    "Wallet Apps" = new blockchain phenomenon coming on Internet Computer. Try it now!
+    "Wallet Apps" = new blockchain phenomenon coming on Internet Computer. Try
+    it now!
   </p>
 
   <button class="primary" on:click={toggleModal}>Install wApp</button>
