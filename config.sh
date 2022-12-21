@@ -18,7 +18,7 @@ set -euo pipefail
 #
 
 : "Move into the repository root directory"
-pushd "$(dirname "${BASH_SOURCE[0]}")"
+pushd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null
 ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 
 : "Scan environment:"
@@ -144,5 +144,5 @@ WASM_CANISTER_ID="$wasmCanisterId"
 export WASM_CANISTER_ID
 
 : "Return to the original working directory."
-popd
+popd >/dev/null
 echo FIN >&2
