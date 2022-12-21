@@ -119,9 +119,9 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  canisters: string;
   neurons: string;
   voting: string;
-  canisters: string;
   launchpad: string;
 }
 
