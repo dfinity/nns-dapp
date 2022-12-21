@@ -11,8 +11,6 @@
   import { INSTALL_WAPP_CONTEXT_KEY } from "$lib/types/install-wapp.context";
   import UploadWasmCode from "$lib/components/canisters/UploadWasmCode.svelte";
   import ReviewInstallWApp from "$lib/components/canisters/ReviewInstallWApp.svelte";
-  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
-  import type { Account } from "$lib/types/account";
   import SelectCyclesCreateCanister from "$lib/components/canisters/SelectCyclesCreateCanister.svelte";
   import { getIcpToCyclesExchangeRate } from "$lib/services/canisters.services";
 
@@ -29,10 +27,6 @@
     {
       name: "Enter",
       title: $i18n.canisters.install_code_title,
-    },
-    {
-      name: "SelectAccount",
-      title: $i18n.accounts.select_source,
     },
     {
       name: "SelectCycles",
@@ -60,17 +54,6 @@
       ...values,
       file: inputWasm?.files?.[0],
     }));
-
-  const onSelectAccount = ({
-    detail: { selectedAccount },
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    store.update((values) => ({
-      ...values,
-      account: selectedAccount,
-    }));
-
-    modal.next();
-  };
 
   const onSelectAmount = () => {
     store.update((values) => ({
@@ -101,13 +84,6 @@
   {/if}
 
   {#if currentStep?.name === steps[1].name}
-    <SelectAccount
-      hideHardwareWalletAccounts
-      on:nnsSelectAccount={onSelectAccount}
-    />
-  {/if}
-
-  {#if currentStep?.name === steps[2].name}
     <SelectCyclesCreateCanister
       {icpToCyclesExchangeRate}
       bind:amount
@@ -117,7 +93,7 @@
     />
   {/if}
 
-  {#if currentStep?.name === steps[3].name}
+  {#if currentStep?.name === steps[2].name}
     <ReviewInstallWApp on:nnsClose />
   {/if}
 </WizardModal>

@@ -18,6 +18,7 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
+  import TransactionFormSource from "$lib/modals/accounts/NewTransaction/TransactionFormSource.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -99,31 +100,11 @@
 </script>
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
-  <div class="select-account">
-    {#if selectedAccount !== undefined}
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.source}</span>
-        <AmountDisplay
-          slot="value"
-          singleLine
-          amount={selectedAccount?.balance}
-        />
-      </KeyValuePair>
-    {/if}
-
-    {#if canSelectSource}
-      <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
-    {:else}
-      <div class="given-source">
-        <p>
-          {selectedAccount?.name ?? $i18n.accounts.main}
-        </p>
-        <p class="account-identifier">
-          {selectedAccount?.identifier}
-        </p>
-      </div>
-    {/if}
-  </div>
+  <TransactionFormSource
+    {canSelectSource}
+    {rootCanisterId}
+    bind:selectedAccount
+  />
 
   <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
@@ -160,12 +141,6 @@
     --dropdown-width: 100%;
   }
 
-  .select-account {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -176,11 +151,5 @@
 
   .account-identifier {
     word-break: break-all;
-  }
-
-  .given-source {
-    p {
-      margin: 0;
-    }
   }
 </style>

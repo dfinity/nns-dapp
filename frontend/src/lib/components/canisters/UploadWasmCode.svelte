@@ -8,6 +8,10 @@
     type InstallWAppContext,
   } from "$lib/types/install-wapp.context";
   import { sha256 } from "$lib/utils/crypto.utils";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import type { Account } from "$lib/types/account";
+  import TransactionFormSource from "$lib/modals/accounts/NewTransaction/TransactionFormSource.svelte";
 
   const { store, next, selectFile }: InstallWAppContext =
     getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
@@ -62,6 +66,17 @@
 
   let disableNext = true;
   $: disableNext = !validFile || !validHash;
+
+  let selectedAccount: Account | undefined;
+  const filterAccounts = (account) => !isAccountHardwareWallet(account);
+
+  const onSelectAccount = (account: Account | undefined) =>
+    store.update((values) => ({
+      ...values,
+      account,
+    }));
+
+  $: onSelectAccount(selectedAccount);
 </script>
 
 <p class="label">{$i18n.canisters.reinstall_text} {$i18n.canisters.insecure}</p>
@@ -92,6 +107,15 @@
         >{$i18n.canisters.verify_hash}</svelte:fragment
       >
     </InputWithError>
+  </div>
+
+  <div>
+    <TransactionFormSource
+      rootCanisterId={OWN_CANISTER_ID}
+      {filterAccounts}
+      bind:selectedAccount
+      canSelectSource={true}
+    />
   </div>
 
   <div class="toolbar">
