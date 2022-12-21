@@ -23,7 +23,7 @@
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
-  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { NervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { TokenAmount } from "@dfinity/nns";

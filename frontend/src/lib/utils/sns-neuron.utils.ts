@@ -329,6 +329,16 @@ export const minNeuronSplittable = ({
   neuronMinimumStake: E8s;
 }): bigint => 2n * neuronMinimumStake + fee;
 
+export const isEnoughAmountToSplit = ({
+  amount,
+  fee,
+  neuronMinimumStake,
+}: {
+  amount: E8s;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean => amount >= neuronMinimumStake + fee;
+
 /*
 neuron_minimum_stake_e8s
 transaction_fee_e8s

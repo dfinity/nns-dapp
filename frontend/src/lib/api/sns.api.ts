@@ -1,4 +1,5 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
@@ -21,7 +22,6 @@ import { toNullable } from "@dfinity/utils";
 import { ledgerCanister } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 import { wrapper, wrappers } from "./sns-wrapper.api";
-import {E8S_PER_ICP} from "$lib/constants/icp.constants";
 
 export const queryAllSnsMetadata = async ({
   identity,

@@ -24,10 +24,10 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
-  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
   import type { Principal } from "@dfinity/principal";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import type { NervousSystemParameters } from "@dfinity/sns";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

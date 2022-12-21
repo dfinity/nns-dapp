@@ -35,12 +35,14 @@ import {
   getSnsNeuronByHexId,
   getSnsNeuronIdAsHexString,
   hasAutoStakeMaturityOn,
+  isEnoughAmountToSplit,
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import type { E8s } from "@dfinity/nns";
+import type { E8s, Token } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
@@ -60,12 +62,6 @@ import {
   neuronNeedsRefresh,
 } from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
-import {numberToE8s} from "$lib/utils/token.utils";
-import {assertEnoughAccountFunds} from "$lib/utils/accounts.utils";
-import {isEnoughToStakeNeuron} from "$lib/utils/neuron.utils";
-import {mainTransactionFeeE8sStore} from "$lib/stores/transaction-fees.store";
-import {NotEnoughAmountError} from "$lib/types/common.errors";
-import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
 
 /**
  * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
@@ -304,35 +300,47 @@ export const removeHotkey = async ({
 export const splitNeuron = async ({
   rootCanisterId,
   neuronId,
-  neurons,
   amount,
-  fee,
- parameters: {neuron_minimum_stake_e8s}
+  transactionFee,
+  token: { symbol },
+  neuronMinimumStake,
 }: {
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  neurons: SnsNeuron[];
   amount: E8s;
-  fee: E8s;
-  parameters: NervousSystemParameters;
+  transactionFee: E8s;
+  token: Token;
+  neuronMinimumStake: E8s;
 }): Promise<{ success: boolean }> => {
-  console.log('splitNeuron', amount);
   try {
-    // TODO(src/Daniel.T): should it be amount + fee?
-    const amountE8s = amount + fee;
+    const amountAndFee = amount + transactionFee;
 
-    console.log('amountE8s', amountE8s);
-
-    // check minimum
-    if (amountE8s < fromDefinedNullable(neuron_minimum_stake_e8s) + fee) {
-      throw new NotEnoughAmountError();
-
-      // error__sns.sns_amount_not_enough_stake_neuron
-      // $amount
-      // $token
+    // minimum validation
+    if (
+      !isEnoughAmountToSplit({
+        amount: amountAndFee,
+        fee: transactionFee,
+        neuronMinimumStake,
+      })
+    ) {
+      toastsError({
+        labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
+        substitutions: {
+          $minimum: formatToken({ value: neuronMinimumStake }),
+          $token: `${symbol}`,
+        },
+      });
+      return { success: false };
     }
 
     const identity = await getNeuronIdentity();
+    // reload neurons (should be actual for nextMemo calculation)
+    await loadNeurons({
+      rootCanisterId,
+      certified: true,
+    });
+    const neurons = get(snsNeuronsStore)[rootCanisterId.toText()]
+      .neurons as SnsNeuron[];
     const memo = nextMemo({
       identity,
       neurons,
@@ -342,7 +350,7 @@ export const splitNeuron = async ({
       rootCanisterId,
       identity,
       neuronId,
-      amount: amountE8s,
+      amount: amountAndFee,
       memo,
     });
 

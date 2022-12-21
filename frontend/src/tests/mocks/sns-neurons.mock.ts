@@ -1,6 +1,9 @@
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron, SnsNeuronPermissionType } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type {
+  NervousSystemParameters,
+  SnsNeuron,
+  SnsNeuronPermissionType,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";

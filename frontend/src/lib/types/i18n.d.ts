@@ -119,9 +119,9 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  canisters: string;
   neurons: string;
   voting: string;
-  canisters: string;
   launchpad: string;
 }
 
@@ -532,6 +532,7 @@ interface I18nNeuron_detail {
   disburse_neuron_title: string;
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
+  merge_maturity_disabled_tooltip: string;
   spawn_neuron_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;

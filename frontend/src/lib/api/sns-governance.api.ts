@@ -3,11 +3,11 @@ import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
+  NervousSystemParameters,
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronPermissionType,
 } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 

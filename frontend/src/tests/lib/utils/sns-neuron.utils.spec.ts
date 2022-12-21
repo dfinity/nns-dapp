@@ -36,12 +36,12 @@ import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemFunction,
   type SnsNeuron,
 } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";

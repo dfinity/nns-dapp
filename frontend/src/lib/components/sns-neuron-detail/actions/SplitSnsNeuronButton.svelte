@@ -3,7 +3,7 @@
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import { neuronCanBeSplit } from "$lib/utils/sns-neuron.utils";
-  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { NervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
