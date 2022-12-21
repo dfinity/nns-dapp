@@ -96,16 +96,27 @@ export class ICManagementCanister {
   public installCode = async ({
     wasm_module,
     canisterId,
+    mode,
   }: {
     wasm_module: wasm_module;
     canisterId: Principal;
+    mode:
+      | {
+          reinstall: null;
+        }
+      | {
+          upgrade: null;
+        }
+      | {
+          install: null;
+        };
   }): Promise<void> => {
     try {
       const emptyArg = IDL.encode([], []);
 
       await this.service.install_code({
         arg: [...new Uint8Array(emptyArg)],
-        mode: { reinstall: null },
+        mode,
         canister_id: canisterId,
         wasm_module,
       });

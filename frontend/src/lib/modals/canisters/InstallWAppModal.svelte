@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { Principal } from "@dfinity/principal";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import { WizardModal } from "@dfinity/gix-components";
   import { writable } from "svelte/store";
@@ -16,8 +15,6 @@
   import type { Account } from "$lib/types/account";
   import SelectCyclesCreateCanister from "$lib/components/canisters/SelectCyclesCreateCanister.svelte";
   import { getIcpToCyclesExchangeRate } from "$lib/services/canisters.services";
-
-  export let canisterId: Principal;
 
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
@@ -49,10 +46,7 @@
 
   let inputWasm: HTMLInputElement | undefined;
 
-  // TODO: canister id
-  const store = writable<InstallWAppStore>({
-    canisterId
-  });
+  const store = writable<InstallWAppStore>({});
 
   setContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY, {
     store,
@@ -68,8 +62,8 @@
     }));
 
   const onSelectAccount = ({
-                             detail: {selectedAccount},
-                           }: CustomEvent<{ selectedAccount: Account }>) => {
+    detail: { selectedAccount },
+  }: CustomEvent<{ selectedAccount: Account }>) => {
     store.update((values) => ({
       ...values,
       account: selectedAccount,

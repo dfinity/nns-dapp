@@ -17,6 +17,7 @@ import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nn
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import type { InstallWAppStore } from "$lib/types/install-wapp.context";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { isController } from "$lib/utils/canisters.utils";
@@ -288,36 +289,42 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
   }
 };
 
-export const installCode = async ({
-  canisterId,
+const assertBlobHash = async ({
   blob,
   hash,
 }: {
-  canisterId: Principal;
-  blob: Blob | undefined;
+  blob: Blob;
   hash: string | undefined;
+}): Promise<boolean> => {
+  // Verify hash once again
+  const sha = await sha256(blob);
+
+  if (sha !== hash || isNullish(hash) || hash === "") {
+    toastsError({
+      labelKey: "error__canister.invalid_hash",
+    });
+    return false;
+  }
+
+  return true;
+};
+
+const installCode = async ({
+  canisterId,
+  blob,
+}: {
+  canisterId: Principal;
+  blob: Blob;
 }): Promise<{ success: boolean }> => {
   try {
-    if (isNullish(blob)) {
-      toastsError({
-        labelKey: "error__canister.no_wasm",
-      });
-      return { success: false };
-    }
-
-    // Verify hash once again
-    const sha = await sha256(blob);
-
-    if (sha !== hash || isNullish(hash) || hash === "") {
-      toastsError({
-        labelKey: "error__canister.invalid_hash",
-      });
-      return { success: false };
-    }
-
     const identity = await getAuthenticatedIdentity();
 
-    await installCodeApi({ identity, canisterId, blob });
+    await installCodeApi({
+      identity,
+      canisterId,
+      blob,
+      mode: { install: null },
+    });
 
     return { success: true };
   } catch (error: unknown) {
@@ -326,4 +333,55 @@ export const installCode = async ({
     );
     return { success: false };
   }
+};
+
+export const installWApp = async ({
+  account,
+  amount,
+  file,
+  hash,
+}: InstallWAppStore): Promise<{
+  install: "invalid_params" | "create_error" | "install_error" | "success";
+  canisterId?: Principal;
+}> => {
+  if (isNullish(file)) {
+    toastsError({
+      labelKey: "error__canister.no_wasm",
+    });
+    return { install: "invalid_params" };
+  }
+
+  const valid = await assertBlobHash({ blob: file, hash });
+
+  if (!valid) {
+    return { install: "invalid_params" };
+  }
+
+  if (isNullish(amount)) {
+    toastsError({
+      labelKey: "error.amount_not_valid",
+    });
+    return { install: "invalid_params" };
+  }
+
+  if (isNullish(account)) {
+    toastsError({
+      labelKey: "error__account.not_found",
+    });
+    return { install: "invalid_params" };
+  }
+
+  const canisterId = await createCanister({
+    amount,
+    account,
+  });
+
+  if (canisterId === undefined) {
+    // The error has been displayed in the createCanister function
+    return { install: "create_error" };
+  }
+
+  const { success } = await installCode({ canisterId, blob: file });
+
+  return { install: success ? "success" : "install_error", canisterId };
 };

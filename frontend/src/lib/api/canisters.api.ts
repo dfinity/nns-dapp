@@ -318,10 +318,21 @@ export const installCode = async ({
   blob,
   canisterId,
   identity,
+  mode,
 }: {
   blob: Blob;
   canisterId: Principal;
   identity: Identity;
+  mode:
+    | {
+        reinstall: null;
+      }
+    | {
+        upgrade: null;
+      }
+    | {
+        install: null;
+      };
 }): Promise<void> => {
   logWithTimestamp(
     `Installing code from file to canister ${canisterId.toText()}...`
@@ -333,7 +344,7 @@ export const installCode = async ({
     icMgt: { installCode: installCodeApi },
   } = await canisters(identity);
 
-  await installCodeApi({ wasm_module, canisterId });
+  await installCodeApi({ wasm_module, canisterId, mode });
 
   logWithTimestamp(
     `Installing code from file to canister ${canisterId.toText()} done.`

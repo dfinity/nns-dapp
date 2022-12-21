@@ -1,9 +1,7 @@
-import type { Principal } from "@dfinity/principal";
-import type { Writable } from "svelte/store";
 import type { Account } from "$lib/types/account";
+import type { Writable } from "svelte/store";
 
 export interface InstallWAppStore {
-  canisterId: Principal;
   account?: Account;
   amount?: number;
   file?: File;

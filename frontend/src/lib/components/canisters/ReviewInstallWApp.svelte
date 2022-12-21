@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { installCode } from "$lib/services/canisters.services";
+  import { installWApp } from "$lib/services/canisters.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
     INSTALL_WAPP_CONTEXT_KEY,
@@ -18,24 +18,20 @@
   const onSubmit = async () => {
     startBusy({ initiator: "install-wapp" });
 
-    const canisterId = $store.canisterId;
+    const { install, canisterId } = await installWApp($store);
 
-    const { success } = await installCode({
-      blob: $store.file,
-      canisterId,
-      hash: $store.hash,
-    });
-
-    if (success) {
+    // We cannot have success without canisterId
+    if (install === "success" && canisterId !== undefined) {
       toastsSuccess({
-        labelKey: "canisters.reinstall_canister_success",
+        labelKey: "canisters.install_wapp_success",
         substitutions: {
           $canisterId: canisterId.toText(),
         },
       });
-
-      dispatcher("nnsClose");
     }
+
+    // We close the modal in any case
+    dispatcher("nnsClose");
 
     stopBusy("install-wapp");
   };

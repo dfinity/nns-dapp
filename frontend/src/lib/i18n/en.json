@@ -365,7 +365,7 @@
     "execute": "Execute",
     "install_code": "Install Code",
     "install_code_title": "Install Code - Experimental",
-    "reinstall_canister_success": "The canister ($canisterId) has been reinstalled.",
+    "install_wapp_success": "The wApp ($canisterId) has been installed.",
     "source": "Source",
     "destination": "Destination",
     "insecure": "This action won't preserve any state. This feature is experimental and insecure ⚠️",

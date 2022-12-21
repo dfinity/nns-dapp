@@ -379,7 +379,7 @@ interface I18nCanisters {
   execute: string;
   install_code: string;
   install_code_title: string;
-  reinstall_canister_success: string;
+  install_wapp_success: string;
   source: string;
   destination: string;
   insecure: string;
