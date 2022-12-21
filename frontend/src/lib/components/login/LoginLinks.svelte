@@ -62,7 +62,6 @@
     list-style-type: none;
 
     padding: 0;
-    margin: var(--padding) 0 0;
 
     grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
     grid-column-gap: var(--padding-2x);
@@ -74,6 +73,10 @@
     z-index: var(--z-index);
 
     display: grid;
+
+    @include media.min-width(medium) {
+      margin: var(--padding-6x) 0 var(--padding);
+    }
 
     @include media.min-width(large) {
       display: flex;
