@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 98082
 * Enable stake maturity for HW.
 * Hide vote pane from detail page if proposal reward status has settled.
 * Update tcycles fee description.
