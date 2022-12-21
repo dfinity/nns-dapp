@@ -49,7 +49,9 @@ jobs:
       - name: Generate .env configuration for e2e-tests
         run: |
           export DFX_NETWORK="${{ github.event.inputs.dfx_testnet }}"
-          ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
+          export ENV_OUTPUT_FILE=./e2e-tests/.env
+          ./config.sh
+          cat "$ENV_OUTPUT_FILE"
 
       - name: prepare and run the test suite
         working-directory: e2e-tests
