@@ -146,6 +146,7 @@ interface I18nAuth {
   logo: string;
   copyright: string;
   github_link: string;
+  background: string;
 }
 
 interface I18nAccounts {

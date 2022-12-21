@@ -3,6 +3,7 @@
   import png768 from "$lib/assets/login/768.png";
   import png1024 from "$lib/assets/login/1024.png";
   import png1300 from "$lib/assets/login/1300.png";
+  import { i18n } from "$lib/stores/i18n";
 
   // Breakpoints source: https://css-tricks.com/optimizing-large-scale-displays/
 </script>
@@ -15,7 +16,7 @@
   <img
     src={png576}
     role="presentation"
-    alt="An abstract image for design and presentation purpose only"
+    alt={$i18n.auth.background}
     decoding="async"
   />
 </picture>
