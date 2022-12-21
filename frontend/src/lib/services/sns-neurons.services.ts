@@ -60,6 +60,12 @@ import {
   neuronNeedsRefresh,
 } from "./sns-neurons-check-balances.services";
 import { queryAndUpdate } from "./utils.services";
+import {numberToE8s} from "$lib/utils/token.utils";
+import {assertEnoughAccountFunds} from "$lib/utils/accounts.utils";
+import {isEnoughToStakeNeuron} from "$lib/utils/neuron.utils";
+import {mainTransactionFeeE8sStore} from "$lib/stores/transaction-fees.store";
+import {NotEnoughAmountError} from "$lib/types/common.errors";
+import type {NervousSystemParameters} from "@dfinity/sns/dist/candid/sns_governance";
 
 /**
  * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
@@ -300,13 +306,32 @@ export const splitNeuron = async ({
   neuronId,
   neurons,
   amount,
+  fee,
+ parameters: {neuron_minimum_stake_e8s}
 }: {
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
   neurons: SnsNeuron[];
   amount: E8s;
+  fee: E8s;
+  parameters: NervousSystemParameters;
 }): Promise<{ success: boolean }> => {
+  console.log('splitNeuron', amount);
   try {
+    // TODO(src/Daniel.T): should it be amount + fee?
+    const amountE8s = amount + fee;
+
+    console.log('amountE8s', amountE8s);
+
+    // check minimum
+    if (amountE8s < fromDefinedNullable(neuron_minimum_stake_e8s) + fee) {
+      throw new NotEnoughAmountError();
+
+      // error__sns.sns_amount_not_enough_stake_neuron
+      // $amount
+      // $token
+    }
+
     const identity = await getNeuronIdentity();
     const memo = nextMemo({
       identity,
@@ -317,7 +342,7 @@ export const splitNeuron = async ({
       rootCanisterId,
       identity,
       neuronId,
-      amount,
+      amount: amountE8s,
       memo,
     });
 

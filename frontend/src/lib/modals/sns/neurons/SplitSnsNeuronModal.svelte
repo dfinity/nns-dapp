@@ -95,6 +95,8 @@
       neuronId: fromDefinedNullable(neuron.id),
       neurons,
       amount: BigInt(amount * Number(E8S_PER_ICP)),
+      fee: fee.toE8s(),
+      parameters,
     });
 
     // TODO: is check neuron balances after splitNeuron needed? (to find neurons that need to be refreshed or claimed.)
