@@ -80,8 +80,7 @@
     align-items: center;
 
     min-height: calc(
-      100vh - var(--login-header-height) - (2 * var(--padding-4x)) -
-        var(--padding-2x)
+      100vh - var(--login-header-height) - var(--padding-8x) - var(--padding-2x)
     );
     width: 100%;
 
