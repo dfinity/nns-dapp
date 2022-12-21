@@ -2,13 +2,16 @@
  * @jest-environment jsdom
  */
 
-import { initAppAuth, initAppPublic } from "$lib/services/$public/app.services";
+import {
+  initAppAuth,
+  initAppPublicData,
+} from "$lib/services/$public/app.services";
 import App from "$routes/(app)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/app.services", () => ({
   initAppAuth: jest.fn(() => Promise.resolve()),
-  initAppPublic: jest.fn(() => Promise.resolve()),
+  initAppPublicData: jest.fn(() => Promise.resolve()),
 }));
 
 describe("Layout", () => {
@@ -23,9 +26,9 @@ describe("Layout", () => {
     await waitFor(() => expect(initAppAuth).toHaveBeenCalled());
   });
 
-  it("should init the public data and sync time on mount", async () => {
+  it("should init the public data", async () => {
     render(App);
 
-    await waitFor(() => expect(initAppPublic).toHaveBeenCalled());
+    await waitFor(() => expect(initAppPublicData).toHaveBeenCalled());
   });
 });

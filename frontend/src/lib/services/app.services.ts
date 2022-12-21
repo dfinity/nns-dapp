@@ -4,16 +4,7 @@ import { loadMainTransactionFee } from "$lib/services/transaction-fees.services"
 import { syncAccounts } from "./accounts.services";
 import { listNeurons } from "./neurons.services";
 
-export const initAppPrivate = async () => {
-  // See initAppPublic for comments
-  // Commentint until we better understand the implications of this call
-  // TODO: https://dfinity.atlassian.net/browse/GIX-1160
-  // await syncTime();
-
-  await initAppPrivateData();
-};
-
-const initAppPrivateData = (): Promise<
+export const initAppPrivateData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [

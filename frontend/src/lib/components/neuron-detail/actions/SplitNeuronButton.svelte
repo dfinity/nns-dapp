@@ -38,7 +38,7 @@
           value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
           detailed: true,
         }),
-        $token: ICPToken.name,
+        $token: ICPToken.symbol,
       }
     )}
   >
