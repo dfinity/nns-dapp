@@ -21,7 +21,7 @@
     const canisterId = $store.canisterId;
 
     const { success } = await installCode({
-      blob: $store.blob,
+      blob: $store.file,
       canisterId,
       hash: $store.hash,
     });
@@ -45,7 +45,7 @@
   <div>
     <p class="label">{$i18n.canisters.source}</p>
     <p class="value">
-      {($store.source === "url" ? $store.url : $store.blob?.name) ?? ""}
+      {$store.file?.name ?? ""}
     </p>
   </div>
 

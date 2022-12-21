@@ -2,10 +2,8 @@ import type { Principal } from "@dfinity/principal";
 import type { Writable } from "svelte/store";
 
 export interface InstallCodeStore {
-  source: "url" | "file";
   canisterId: Principal;
-  url?: string;
-  blob?: Blob;
+  file?: File;
   hash?: string;
 }
 
@@ -14,7 +12,6 @@ export interface InstallCodeContext {
   next: () => void;
   back: () => void;
   selectFile: () => void;
-  resetFile: () => void;
 }
 
 export const INSTALL_CODE_CONTEXT_KEY = Symbol("install-code");

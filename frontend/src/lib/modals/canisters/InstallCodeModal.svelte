@@ -32,9 +32,8 @@
   let inputWasm: HTMLInputElement | undefined;
 
   const store = writable<InstallCodeStore>({
-    source: "url",
     canisterId,
-    blob: undefined,
+    file: undefined,
     hash: undefined,
   });
 
@@ -43,21 +42,12 @@
     next: () => modal?.next(),
     back: () => modal?.back(),
     selectFile: () => inputWasm?.click(),
-    resetFile: () => {
-      if (!inputWasm) {
-        return;
-      }
-
-      inputWasm.value = "";
-    },
   });
 
   const onInputChange = () =>
     store.update((values) => ({
       ...values,
-      source: "file",
-      url: undefined,
-      blob: inputWasm?.files?.[0],
+      file: inputWasm?.files?.[0],
     }));
 </script>
 
@@ -66,7 +56,7 @@
     >{currentStep?.title ?? $i18n.canisters.install_code_title}</span
   >
 
-  <!-- Maintain an input file for any steps -->
+  <!-- Maintain in memory the input file for any steps -->
   <input
     bind:this={inputWasm}
     type="file"

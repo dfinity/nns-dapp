@@ -367,10 +367,6 @@ interface I18nCanisters {
   converted_to: string;
   review_install_code: string;
   reinstall_text: string;
-  upload: string;
-  url: string;
-  enter_url: string;
-  url_placeholder: string;
   upload_from_device: string;
   select_file: string;
   execute: string;
