@@ -32,6 +32,8 @@
         return (await import("../../pages/ProjectDetail.svelte")).default;
       case AppPath.Neuron:
         return (await import("../../routes/NeuronDetail.svelte")).default;
+      case AppPath.WApps:
+        return (await import("../../pages/WApps.svelte")).default;
       default:
         return (await import("../../pages/Login.svelte")).default;
     }

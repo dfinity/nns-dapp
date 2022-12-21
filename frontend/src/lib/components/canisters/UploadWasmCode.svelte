@@ -41,10 +41,10 @@
 
       store.update((values) => ({
         ...values,
-        amount
+        amount,
       }));
     }
-  }
+  };
 
   onMount(async () => {
     updateInputWasmInfo();
@@ -96,13 +96,16 @@
   };
 
   let validAccountBalance = false;
-  $: validAccountBalance = $store.amount !== undefined && selectedAccount?.balance.toE8s() > numberToE8s($store.amount)
+  $: validAccountBalance =
+    $store.amount !== undefined &&
+    selectedAccount?.balance.toE8s() > numberToE8s($store.amount);
 
   let disableNext = true;
   $: disableNext = !validFile || !validHash || !validAccountBalance;
 
   let selectedAccount: Account | undefined;
-  const filterAccounts = (account: Account) => !isAccountHardwareWallet(account);
+  const filterAccounts = (account: Account) =>
+    !isAccountHardwareWallet(account);
 
   const onSelectAccount = (account: Account | undefined) =>
     store.update((values) => ({

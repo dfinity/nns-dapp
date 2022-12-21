@@ -50,6 +50,8 @@ export const buildProposalsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Proposals, universe });
 export const buildCanistersUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Canisters, universe });
+export const buildWAppsUrl = ({ universe }: { universe: string }) =>
+  buildUrl({ path: AppPath.WApps, universe });
 
 export const buildWalletUrl = ({
   universe,

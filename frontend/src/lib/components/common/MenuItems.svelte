@@ -17,6 +17,7 @@
     canistersPathStore,
     neuronsPathStore,
     proposalsPathStore,
+    wAppsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
@@ -49,13 +50,13 @@
       icon: IconWallet,
     },
     {
-      context: "canisters",
-      href: $canistersPathStore,
+      context: "wapps",
+      href: $wAppsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Canisters, AppPath.Canister],
+        paths: [AppPath.WApps],
       }),
-      label: "canisters",
+      label: "wapps",
       icon: IconExplore,
     },
     {
@@ -93,6 +94,16 @@
           },
         ]
       : []),
+    {
+      context: "canisters",
+      href: $canistersPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
+      label: "canisters",
+      icon: IconExplore,
+    },
   ];
 </script>
 

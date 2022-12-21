@@ -4,6 +4,7 @@ import {
   buildCanistersUrl,
   buildNeuronsUrl,
   buildProposalsUrl,
+  buildWAppsUrl,
 } from "$lib/utils/navigation.utils";
 import { derived, type Readable } from "svelte/store";
 
@@ -25,4 +26,9 @@ export const proposalsPathStore = derived<Readable<Page>, string>(
 export const canistersPathStore = derived<Readable<Page>, string>(
   pageStore,
   ({ universe }) => buildCanistersUrl({ universe })
+);
+
+export const wAppsPathStore = derived<Readable<Page>, string>(
+  pageStore,
+  ({ universe }) => buildWAppsUrl({ universe })
 );
