@@ -2,8 +2,6 @@
   import { createEventDispatcher, onMount } from "svelte";
   import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
-  import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
-  import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -11,13 +9,8 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import type { Account } from "$lib/types/account";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
   import {
-    Html,
     WizardModal,
     type WizardSteps,
     type WizardStep,
