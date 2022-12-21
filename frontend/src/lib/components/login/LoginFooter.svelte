@@ -14,7 +14,8 @@
   <a
     class="github"
     href="https://github.com/dfinity/nns-dapp"
-    rel="noopener noreferrer"
+    rel="noopener noreferrer external"
+    target="_blank"
     alt={$i18n.auth.github_link}><IconGitHub /> <span>GitHub</span></a
   >
 </footer>
