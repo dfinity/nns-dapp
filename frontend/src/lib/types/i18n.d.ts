@@ -133,15 +133,20 @@ interface I18nHeader {
 }
 
 interface I18nAuth {
-  ic: string;
-  nns: string;
   login: string;
   title: string;
   on_chain: string;
   wallet: string;
   stake: string;
   earn: string;
+  launchpad: string;
   ic_logo: string;
+  about: string;
+  voting_rewards: string;
+  logo: string;
+  copyright: string;
+  github_link: string;
+  background: string;
 }
 
 interface I18nAccounts {
