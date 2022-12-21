@@ -117,7 +117,7 @@ const updateCSP = (indexHtml) => {
   const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' ${cspConnectSrc()} https://raw.githubusercontent.com/;
+        connect-src 'self' ${cspConnectSrc()};
         img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/;
         child-src 'self';
         manifest-src 'self';
