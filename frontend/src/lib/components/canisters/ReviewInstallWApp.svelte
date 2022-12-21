@@ -8,6 +8,8 @@
     INSTALL_WAPP_CONTEXT_KEY,
     type InstallWAppContext,
   } from "$lib/types/install-wapp.context";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import InstallWAppAmount from "$lib/components/canisters/InstallWAppAmount.svelte";
 
   const { store, back }: InstallWAppContext = getContext<InstallWAppContext>(
     INSTALL_WAPP_CONTEXT_KEY
@@ -39,7 +41,7 @@
 
 <form on:submit|preventDefault={onSubmit} class="form">
   <div>
-    <p class="label">{$i18n.canisters.source}</p>
+    <p class="label">{$i18n.canisters.source_file}</p>
     <p class="value">
       {$store.file?.name ?? ""}
     </p>
@@ -51,6 +53,14 @@
       {$store.hash}
     </p>
   </div>
+
+  {#if $store.account !== undefined}
+    <TransactionSource account={$store.account} />
+  {/if}
+
+  <p class="description">
+    <InstallWAppAmount />
+  </p>
 
   <div class="toolbar">
     <button class="secondary" type="button" on:click={back}>

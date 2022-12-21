@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
-  import { isNullish, nonNullish, valueSpan } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import {
     INSTALL_WAPP_CONTEXT_KEY,
     type InstallWAppContext,
@@ -15,12 +15,10 @@
   import { getIcpToCyclesExchangeRate } from "$lib/services/canisters.services";
   import {
     convertTCyclesToIcpNumber,
-    formatToken,
     numberToE8s,
   } from "$lib/utils/token.utils";
   import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
-  import { Html } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import InstallWAppAmount from "$lib/components/canisters/InstallWAppAmount.svelte";
 
   const { store, next, selectFile }: InstallWAppContext =
     getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
@@ -153,19 +151,9 @@
   </div>
 
   <p class="description">
-    {#if $store.amount !== undefined}
-      <Html
-        text={replacePlaceholders($i18n.canisters.install_wapp_fee, {
-          $amount: valueSpan(
-            formatToken({
-              value: numberToE8s($store.amount),
-            })
-          ),
-        })}
-      />
-    {/if}
+    <InstallWAppAmount />
 
-    {#if !validAccountBalance}
+    {#if $store.amout !== undefined && !validAccountBalance}
       <span class="error">{$i18n.error__canister.not_enough_fund}</span>
     {/if}
   </p>
