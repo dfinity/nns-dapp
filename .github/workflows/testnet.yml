@@ -41,6 +41,9 @@ jobs:
       #    FILENAME=canister_ids.json
       #    jq . "$FILENAME" >/dev/null || echo '{}' > "$FILENAME"
       #    jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
+      - name: Install dfx
+        run: |
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
       - name: Generate .env configuration for e2e-tests
