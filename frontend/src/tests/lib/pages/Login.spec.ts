@@ -5,7 +5,7 @@
 import { page } from "$app/stores";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import Auth from "$lib/pages/Auth.svelte";
+import Login from "$lib/pages/Login.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -15,7 +15,7 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "../../mocks/auth.store.mock";
 
-describe("Auth", () => {
+describe("Login", () => {
   describe("Manual sign-in", () => {
     beforeAll(() => {
       jest
@@ -33,7 +33,7 @@ describe("Auth", () => {
     });
 
     it("should not redirect to account", () => {
-      render(Auth);
+      render(Login);
       const { path } = get(pageStore);
       expect(path).toBeNull();
     });
@@ -52,7 +52,7 @@ describe("Auth", () => {
     });
 
     it("should redirect to account", () => {
-      render(Auth);
+      render(Login);
       const { path } = get(pageStore);
       expect(path).toEqual(AppPath.Accounts);
     });
@@ -66,7 +66,7 @@ describe("Auth", () => {
         `/#/proposal/${proposalId}`
       );
 
-      render(Auth);
+      render(Login);
       const { path } = get(pageStore);
       expect(path).toEqual(AppPath.Proposal);
 
@@ -87,7 +87,7 @@ describe("Auth", () => {
       path: AppPath;
       testId: string;
     }) => {
-      const { getByTestId } = render(Auth);
+      const { getByTestId } = render(Login);
       expect(
         (getByTestId(testId) as HTMLLinkElement | null)?.getAttribute("href")
       ).toEqual(path);
