@@ -26,7 +26,7 @@
 
   picture {
     position: absolute;
-    top: 22%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
 

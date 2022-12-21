@@ -34,7 +34,7 @@
       display: block;
     }
 
-    font-size: calc(var(--font-size-h1) * 1.2);
+    font-size: var(--font-size-h1);
     line-height: var(--line-height-standard);
 
     @media (min-width: 440px) {
