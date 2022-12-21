@@ -680,7 +680,8 @@
     "unknown_attach": "Error attaching canister.",
     "unknown_detach": "Error detaching canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles.",
-    "no_wasm": "No WASM code provided."
+    "no_wasm": "No WASM code provided.",
+    "not_enough_fund": "The selected account has not enough funding to cover the fee."
   },
   "theme": {
     "theme": "Theme",

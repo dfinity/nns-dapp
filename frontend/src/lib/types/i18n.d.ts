@@ -713,6 +713,7 @@ interface I18nError__canister {
   unknown_detach: string;
   get_exchange_rate: string;
   no_wasm: string;
+  not_enough_fund: string;
 }
 
 interface I18nTheme {

@@ -97,8 +97,11 @@
     }));
   };
 
+  let validAccountBalance = false;
+  $: validAccountBalance = $store.amount !== undefined && selectedAccount?.balance.toE8s() > numberToE8s($store.amount)
+
   let disableNext = true;
-  $: disableNext = !validFile || !validHash;
+  $: disableNext = !validFile || !validHash || !validAccountBalance;
 
   let selectedAccount: Account | undefined;
   const filterAccounts = (account: Account) => !isAccountHardwareWallet(account);
@@ -161,6 +164,10 @@
         })}
       />
     {/if}
+
+    {#if !validAccountBalance}
+      <span class="error">{$i18n.error__canister.not_enough_fund}</span>
+    {/if}
   </p>
 
   <div class="toolbar">
@@ -204,5 +211,9 @@
 
   .input-wasm {
     @include text.truncate;
+  }
+
+  .error {
+    color: var(--negative-emphasis);
   }
 </style>
