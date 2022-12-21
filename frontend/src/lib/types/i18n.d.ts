@@ -373,7 +373,6 @@ interface I18nCanisters {
   edit_cycles: string;
   converted_to: string;
   review_install_code: string;
-  reinstall_text: string;
   upload_from_device: string;
   select_file: string;
   execute: string;
@@ -382,13 +381,11 @@ interface I18nCanisters {
   install_wapp_success: string;
   source: string;
   destination: string;
-  insecure: string;
-  reinstall: string;
   matching_hash_placeholder: string;
   verify_hash: string;
   invalid_hash: string;
-  mode: string;
   hash: string;
+  install_wapp_fee: string;
 }
 
 interface I18nCanister_detail {

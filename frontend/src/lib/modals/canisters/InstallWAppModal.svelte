@@ -7,30 +7,18 @@
     InstallWAppContext,
     InstallWAppStore,
   } from "$lib/types/install-wapp.context";
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import { INSTALL_WAPP_CONTEXT_KEY } from "$lib/types/install-wapp.context";
   import UploadWasmCode from "$lib/components/canisters/UploadWasmCode.svelte";
   import ReviewInstallWApp from "$lib/components/canisters/ReviewInstallWApp.svelte";
-  import SelectCyclesCreateCanister from "$lib/components/canisters/SelectCyclesCreateCanister.svelte";
-  import { getIcpToCyclesExchangeRate } from "$lib/services/canisters.services";
 
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
-  let icpToCyclesExchangeRate: bigint | undefined;
-  let amount: number | undefined;
-
-  onMount(
-    async () => (icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate())
-  );
 
   const steps: WizardSteps = [
     {
       name: "Enter",
       title: $i18n.canisters.install_code_title,
-    },
-    {
-      name: "SelectCycles",
-      title: $i18n.canisters.enter_amount,
     },
     {
       name: "Confirm",
@@ -54,15 +42,6 @@
       ...values,
       file: inputWasm?.files?.[0],
     }));
-
-  const onSelectAmount = () => {
-    store.update((values) => ({
-      ...values,
-      amount,
-    }));
-
-    modal.next();
-  };
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -84,16 +63,6 @@
   {/if}
 
   {#if currentStep?.name === steps[1].name}
-    <SelectCyclesCreateCanister
-      {icpToCyclesExchangeRate}
-      bind:amount
-      on:nnsClose
-      on:nnsBack={modal.back}
-      on:nnsSelectAmount={onSelectAmount}
-    />
-  {/if}
-
-  {#if currentStep?.name === steps[2].name}
     <ReviewInstallWApp on:nnsClose />
   {/if}
 </WizardModal>

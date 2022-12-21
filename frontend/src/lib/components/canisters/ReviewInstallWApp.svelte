@@ -52,14 +52,6 @@
     </p>
   </div>
 
-  <div>
-    <p class="label">{$i18n.canisters.mode}</p>
-    <p class="value">
-      {$i18n.canisters.reinstall}
-      {$i18n.canisters.insecure}
-    </p>
-  </div>
-
   <div class="toolbar">
     <button class="secondary" type="button" on:click={back}>
       {$i18n.core.back}

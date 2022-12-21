@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish, valueSpan } from "$lib/utils/utils";
   import {
     INSTALL_WAPP_CONTEXT_KEY,
     type InstallWAppContext,
@@ -12,6 +12,15 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
   import TransactionFormSource from "$lib/modals/accounts/NewTransaction/TransactionFormSource.svelte";
+  import { getIcpToCyclesExchangeRate } from "$lib/services/canisters.services";
+  import {
+    convertTCyclesToIcpNumber,
+    formatToken,
+    numberToE8s,
+  } from "$lib/utils/token.utils";
+  import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+  import { Html } from "@dfinity/gix-components";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   const { store, next, selectFile }: InstallWAppContext =
     getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
@@ -19,7 +28,31 @@
   let validFile = false;
   let inputWasmName: string | undefined = undefined;
 
-  onMount(() => updateInputWasmInfo());
+  let icpToCyclesExchangeRate: bigint | undefined;
+
+  const initInstallWAppAmount = async () => {
+    icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
+
+    if (icpToCyclesExchangeRate !== undefined) {
+      const amount = Number(
+        convertTCyclesToIcpNumber({
+          tCycles: NEW_CANISTER_MIN_T_CYCLES,
+          exchangeRate: icpToCyclesExchangeRate,
+        }).toFixed(8)
+      );
+
+      store.update((values) => ({
+        ...values,
+        amount
+      }));
+    }
+  }
+
+  onMount(async () => {
+    updateInputWasmInfo();
+
+    await initInstallWAppAmount();
+  });
 
   const updateInputWasmInfo = () => {
     validFile = $store.file !== undefined;
@@ -68,7 +101,7 @@
   $: disableNext = !validFile || !validHash;
 
   let selectedAccount: Account | undefined;
-  const filterAccounts = (account) => !isAccountHardwareWallet(account);
+  const filterAccounts = (account: Account) => !isAccountHardwareWallet(account);
 
   const onSelectAccount = (account: Account | undefined) =>
     store.update((values) => ({
@@ -78,8 +111,6 @@
 
   $: onSelectAccount(selectedAccount);
 </script>
-
-<p class="label">{$i18n.canisters.reinstall_text} {$i18n.canisters.insecure}</p>
 
 <form on:submit|preventDefault={next}>
   <div class="upload">
@@ -117,6 +148,20 @@
       canSelectSource={true}
     />
   </div>
+
+  <p class="description">
+    {#if $store.amount !== undefined}
+      <Html
+        text={replacePlaceholders($i18n.canisters.install_wapp_fee, {
+          $amount: valueSpan(
+            formatToken({
+              value: numberToE8s($store.amount),
+            })
+          ),
+        })}
+      />
+    {/if}
+  </p>
 
   <div class="toolbar">
     <button
