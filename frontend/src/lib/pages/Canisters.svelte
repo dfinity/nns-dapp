@@ -19,6 +19,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
+  import WApps from "$lib/components/canisters/WApps.svelte";
 
   export let referrerPath: AppPath | undefined = undefined;
 
@@ -72,6 +73,10 @@
   <Summary selectProjects={false}>
     <PrincipalText slot="details" inline />
   </Summary>
+
+  <WApps />
+
+  <h2>{$i18n.canisters.canisters}</h2>
 
   <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister}
@@ -127,5 +132,9 @@
     @include media.min-width(medium) {
       max-width: 75%;
     }
+  }
+
+  h2 {
+    margin: var(--padding-8x) 0 var(--padding-3x);
   }
 </style>

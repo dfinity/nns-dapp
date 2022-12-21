@@ -340,6 +340,8 @@ interface I18nVoting {
 
 interface I18nCanisters {
   title: string;
+  canisters: string;
+  wapps: string;
   aria_label_canister_card: string;
   text: string;
   create_canister: string;
