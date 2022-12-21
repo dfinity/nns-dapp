@@ -113,7 +113,7 @@
   },
   "navigation": {
     "tokens": "My Tokens",
-    "canisters": "My Wallet Apps",
+    "canisters": "Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
     "launchpad": "Launch Pad"
