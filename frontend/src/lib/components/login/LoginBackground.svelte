@@ -26,30 +26,16 @@
 
   picture {
     position: absolute;
-    top: 28%;
+    top: 22%;
     left: 50%;
     transform: translate(-50%, -50%);
 
-    @include media.min-width(small) {
-      top: 40%;
-    }
-
     @include media.min-width(large) {
-      top: 54%;
+      top: 45%;
     }
   }
 
   img {
-    width: 40rem;
-    max-width: calc(100vw - var(--padding-8x));
-    aspect-ratio: 1;
-
-    @include media.min-width(small) {
-      width: 34rem;
-    }
-
-    @include media.min-width(large) {
-      width: 50rem;
-    }
+    max-width: 100%;
   }
 </style>
