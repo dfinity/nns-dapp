@@ -50,6 +50,16 @@
       icon: IconWallet,
     },
     {
+      context: "canisters",
+      href: $canistersPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
+      label: "canisters",
+      icon: IconExplore,
+    },
+    {
       context: "neurons",
       href: $neuronsPathStore,
       selected: isSelectedPath({
@@ -68,16 +78,6 @@
       }),
       label: "voting",
       icon: IconUsers,
-    },
-    {
-      context: "canisters",
-      href: $canistersPathStore,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Canisters, AppPath.Canister],
-      }),
-      label: "canisters",
-      icon: IconExplore,
     },
     // Launchpad should not be visible on mainnet
     ...(ENABLE_SNS
