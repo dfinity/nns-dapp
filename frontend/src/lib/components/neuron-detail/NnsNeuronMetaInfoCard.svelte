@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
+  import SplitNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,

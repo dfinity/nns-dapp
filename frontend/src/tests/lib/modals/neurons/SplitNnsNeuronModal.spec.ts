@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
+import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/neurons.services";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";

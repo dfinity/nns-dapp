@@ -1,6 +1,6 @@
 <script lang="ts">
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
-  import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
+  import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
