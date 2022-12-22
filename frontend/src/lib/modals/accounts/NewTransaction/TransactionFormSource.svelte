@@ -14,7 +14,9 @@
 
 <div class="select-account">
   <KeyValuePair>
-    <span slot="key" class="label">{$i18n.accounts.source}</span>
+    <span slot="key" class="label">
+      <slot name="source">{$i18n.accounts.source}</slot>
+    </span>
     <div slot="value">
       {#if selectedAccount !== undefined}
         <AmountDisplay singleLine amount={selectedAccount?.balance} />

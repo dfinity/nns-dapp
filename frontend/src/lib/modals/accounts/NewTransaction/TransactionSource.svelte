@@ -8,7 +8,9 @@
 </script>
 
 <KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.source}</span>
+  <span class="label" slot="key">
+    <slot name="source">{$i18n.accounts.source}</slot>
+  </span>
   <div class="balance" slot="value">
     <span class="label">{$i18n.accounts.balance}</span>
     <AmountDisplay singleLine amount={account.balance} />

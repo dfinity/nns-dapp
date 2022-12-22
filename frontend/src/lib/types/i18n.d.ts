@@ -778,6 +778,8 @@ interface I18nWapps {
   install_wapp_success: string;
   source_file: string;
   install_wapp_fee: string;
+  select_account: string;
+  account_debited: string;
 }
 
 interface I18nNeuron_state {

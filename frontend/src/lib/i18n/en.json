@@ -737,6 +737,8 @@
     "install_code_title": "Install a Wallet App [Experimental]",
     "install_wapp_success": "The Wallet App ($canisterId) has been installed.",
     "source_file": "WASM file",
-    "install_wapp_fee": "Installing a Wallet App requires $amount ICP. Select which Account to debit."
+    "install_wapp_fee": "Installing a Wallet App requires $amount ICP.",
+    "select_account": "Select which Account to debit.",
+    "account_debited": "Account Debited"
   }
 }

@@ -48,11 +48,15 @@
   </div>
 
   {#if $store.account !== undefined}
-    <TransactionSource account={$store.account} />
+    <TransactionSource account={$store.account}>
+      <svelte:fragment slot="source"
+        >{$i18n.wapps.account_debited}</svelte:fragment
+      >
+    </TransactionSource>
   {/if}
 
   <p class="description">
-    <InstallWAppAmount />
+    <InstallWAppAmount selectText={false} />
   </p>
 
   <div class="toolbar">

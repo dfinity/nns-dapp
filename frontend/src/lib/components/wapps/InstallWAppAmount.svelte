@@ -13,11 +13,18 @@
   const { store }: InstallWAppContext = getContext<InstallWAppContext>(
     INSTALL_WAPP_CONTEXT_KEY
   );
+
+  export let selectText = true;
+
+  let text: string;
+  $: text = `${$i18n.wapps.install_wapp_fee}${
+    selectText ? ` ${$i18n.wapps.select_account}` : ""
+  }`;
 </script>
 
 {#if $store.amount !== undefined}
   <Html
-    text={replacePlaceholders($i18n.wapps.install_wapp_fee, {
+    text={replacePlaceholders(text, {
       $amount: valueSpan(
         formatToken({
           value: numberToE8s($store.amount),

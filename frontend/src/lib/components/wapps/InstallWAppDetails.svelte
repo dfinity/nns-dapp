@@ -95,7 +95,11 @@
       {filterAccounts}
       bind:selectedAccount
       canSelectSource={true}
-    />
+    >
+      <svelte:fragment slot="source"
+        >{$i18n.wapps.account_debited}</svelte:fragment
+      >
+    </TransactionFormSource>
   </div>
 
   <p class="description fee">
