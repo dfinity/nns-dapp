@@ -10,8 +10,8 @@
     getSnsNeuronState,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { isDefined, isNullish, nonNullish } from "$lib/utils/utils";
-  import type { NeuronState, Token } from "@dfinity/nns";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import type { E8s, NeuronState, Token } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
@@ -25,9 +25,11 @@
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import type { NervousSystemParameters } from "@dfinity/sns";
+
+  export let parameters: NervousSystemParameters;
+  export let token: Token;
+  export let transactionFee: E8s;
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -40,15 +42,6 @@
 
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
-
-  // TODO: move to context?
-  let parameters: NervousSystemParameters | undefined;
-  $: parameters =
-    $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
-
-  // TODO: refactor to param?
-  let token: Token;
-  token = $snsTokenSymbolSelectedStore as Token;
 
   let allowedToSplit: boolean;
   $: allowedToSplit =
@@ -93,7 +86,7 @@
 
     <div class="buttons">
       {#if allowedToSplit}
-        <SplitSnsNeuronButton {neuron} {parameters} {token} />
+        <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
       {/if}
     </div>
   </div>
