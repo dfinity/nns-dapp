@@ -40,6 +40,13 @@
 </script>
 
 <form on:submit|preventDefault={onSubmit} class="form">
+  <div class="source">
+    <p class="label">{$i18n.wapps.source_file}</p>
+    <p class="value">
+      {$store.file?.name ?? ""}
+    </p>
+  </div>
+
   {#if $store.account !== undefined}
     <TransactionSource account={$store.account} />
   {/if}
@@ -47,13 +54,6 @@
   <p class="description">
     <InstallWAppAmount />
   </p>
-
-  <div>
-    <p class="label">{$i18n.wapps.source_file}</p>
-    <p class="value">
-      {$store.file?.name ?? ""}
-    </p>
-  </div>
 
   <div class="toolbar">
     <button class="secondary" type="button" on:click={back}>
@@ -73,5 +73,9 @@
 
   p {
     word-break: break-word;
+  }
+
+  .source {
+    padding: 0 0 var(--padding);
   }
 </style>

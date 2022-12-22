@@ -77,6 +77,18 @@
 </script>
 
 <form on:submit|preventDefault={next}>
+  <div class="upload">
+    <p>{$i18n.wapps.upload_from_device}</p>
+    <button
+      class="primary full-width input-wasm"
+      role="button"
+      on:click|preventDefault={selectFile}
+      >{inputFileName !== undefined
+        ? `${inputFileName}`
+        : $i18n.wapps.select_file}</button
+    >
+  </div>
+
   <div>
     <TransactionFormSource
       rootCanisterId={OWN_CANISTER_ID}
@@ -93,18 +105,6 @@
       <span class="error">{$i18n.error__canister.not_enough_fund}</span>
     {/if}
   </p>
-
-  <div class="upload">
-    <p>{$i18n.wapps.upload_from_device}</p>
-    <button
-      class="primary full-width input-wasm"
-      role="button"
-      on:click|preventDefault={selectFile}
-      >{inputFileName !== undefined
-        ? `${inputFileName}`
-        : $i18n.wapps.select_file}</button
-    >
-  </div>
 
   <div class="toolbar">
     <button
