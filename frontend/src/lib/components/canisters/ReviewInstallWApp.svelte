@@ -33,7 +33,7 @@
     }
 
     // We close the modal in any case
-    dispatcher("nnsClose");
+    dispatcher("nnsWAppInstalled");
 
     stopBusy("install-wapp");
   };

@@ -63,7 +63,7 @@
   {/if}
 
   {#if currentStep?.name === steps[1].name}
-    <ReviewInstallWApp on:nnsClose />
+    <ReviewInstallWApp on:nnsClose on:nnsWAppInstalled />
   {/if}
 </WizardModal>
 

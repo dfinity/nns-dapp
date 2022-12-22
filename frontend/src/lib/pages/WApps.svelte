@@ -1,12 +1,42 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import InstallWAppModal from "$lib/modals/canisters/InstallWAppModal.svelte";
   import Footer from "$lib/components/common/Footer.svelte";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { toToastError } from "$lib/utils/error.utils";
+  import { listDemoApps } from "$lib/services/demoapps.services";
+  import type { Meta } from "$lib/canisters/demoapps/demoapps.did";
+  import { onMount } from "svelte";
+  import { Spinner } from "@dfinity/gix-components";
 
   let visible = false;
 
   const toggleModal = () => (visible = !visible);
+
+  const reload = async () => {
+    toggleModal();
+    await load();
+  };
+
+  let loading = true;
+  let metas: Meta[] = [];
+  const load = async () => {
+    loading = true;
+
+    try {
+      metas = await listDemoApps();
+    } catch (err: unknown) {
+      toastsError(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found",
+        })
+      );
+    }
+
+    loading = false;
+  };
+
+  onMount(async () => load());
 </script>
 
 <main>
@@ -20,10 +50,22 @@
       >Install your first wApp</button
     >
   </div>
+
+  {#if loading}
+    <Spinner />
+  {:else if metas.length > 0}
+    <h2>My Wallet Apps</h2>
+
+    <div class="card-grid">
+    {#each metas as meta}
+      <div>Hello</div>
+    {/each}
+    </div>
+  {/if}
 </main>
 
 {#if visible}
-  <InstallWAppModal on:nnsClose={toggleModal} />
+  <InstallWAppModal on:nnsClose={toggleModal} on:nnsWAppInstalled={reload} />
 {/if}
 
 <Footer columns={1}>
