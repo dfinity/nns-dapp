@@ -15,6 +15,8 @@
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import type { SnsNeuronId } from "@dfinity/sns";
   import { numberToE8s } from "$lib/utils/token.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;
@@ -111,6 +113,10 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
     >
-    <p slot="description" class="value">here description</p>
+    <p slot="description" class="value">
+      {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+        $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
+      })}
+    </p>
   </SnsTransactionModal>
 {/if}
