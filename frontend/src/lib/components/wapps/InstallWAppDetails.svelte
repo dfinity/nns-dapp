@@ -86,10 +86,10 @@
     />
   </div>
 
-  <p class="description">
+  <p class="description fee">
     <InstallWAppAmount />
 
-    {#if selectedAccount !== undefined && !validAccountBalance}
+    {#if selectedAccount !== undefined && icpToCyclesExchangeRate !== undefined && !validAccountBalance}
       <span class="error">{$i18n.error__canister.not_enough_fund}</span>
     {/if}
   </p>
@@ -122,7 +122,8 @@
 </form>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   p,
   form {
@@ -151,5 +152,13 @@
 
   .error {
     color: var(--negative-emphasis);
+  }
+
+  .fee {
+    min-height: calc(var(--padding) + var(--padding-4x));
+
+    @include media.min-width(medium) {
+      min-height: var(--padding-3x);
+    }
   }
 </style>
