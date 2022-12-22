@@ -70,7 +70,7 @@
       }
 
       loading = true;
-      await syncSnsAccounts(selectedProjectCanisterId);
+      await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
       loading = false;
     }
   );

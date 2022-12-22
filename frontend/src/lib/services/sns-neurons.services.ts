@@ -13,6 +13,7 @@ import {
 } from "$lib/api/sns-governance.api";
 import {
   getSnsNeuron as getSnsNeuronApi,
+  increaseStakeNeuron as increaseStakeNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
@@ -399,6 +400,43 @@ export const updateDelay = async ({
       labelKey: "error__sns.sns_dissolve_delay_action",
       err,
     });
+
+    return { success: false };
+  }
+};
+
+export const increaseStakeNeuron = async ({
+  rootCanisterId,
+  amount,
+  account,
+  neuronId,
+}: {
+  rootCanisterId: Principal;
+  amount: bigint;
+  account: Account;
+  neuronId: SnsNeuronId;
+}): Promise<{ success: boolean }> => {
+  try {
+    // TODO: Get identity depending on account to support HW accounts
+    const identity = await getAuthenticatedIdentity();
+
+    await increaseStakeNeuronApi({
+      // We can cast it because we already checked that the neuron id is not undefined
+      neuronId,
+      rootCanisterId,
+      stakeE8s: amount,
+      identity,
+      source: decodeSnsAccount(account.identifier),
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError(
+      ledgerErrorToToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.sns_increase_stake",
+      })
+    );
 
     return { success: false };
   }

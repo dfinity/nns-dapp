@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { NeuronState } from "@dfinity/nns";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
-  import IncreaseStakeButton from "./actions/IncreaseStakeButton.svelte";
+  import NnsIncreaseStakeButton from "./actions/NnsIncreaseStakeButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import {
@@ -43,7 +43,7 @@
   {/if}
 
   {#if isControllable || hotkeyControlled}
-    <IncreaseStakeButton />
+    <NnsIncreaseStakeButton />
   {/if}
 
   {#if isControllable}

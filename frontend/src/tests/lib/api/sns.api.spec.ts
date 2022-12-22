@@ -4,6 +4,7 @@
 
 import {
   getSnsNeuron,
+  increaseStakeNeuron,
   participateInSnsSwap,
   queryAllSnsMetadata,
   querySnsMetadata,
@@ -28,6 +29,7 @@ import {
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsNeuronId } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -73,6 +75,7 @@ describe("sns-api", () => {
   const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
+  const increaseStakeNeuronSpy = jest.fn();
 
   beforeEach(() => {
     jest
@@ -103,6 +106,7 @@ describe("sns-api", () => {
         getNeuron: getNeuronSpy,
         stakeNeuron: stakeNeuronSpy,
         queryNeuron: queryNeuronSpy,
+        increaseStakeNeuron: increaseStakeNeuronSpy,
       })
     );
   });
@@ -262,5 +266,19 @@ describe("sns-api", () => {
 
     expect(neuronId).toEqual(mockSnsNeuron.id);
     expect(stakeNeuronSpy).toBeCalled();
+  });
+
+  it("should increase stake neuron", async () => {
+    await increaseStakeNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      stakeE8s: BigInt(200_000_000),
+      source: {
+        owner: mockPrincipal,
+      },
+      neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+    });
+
+    expect(increaseStakeNeuronSpy).toBeCalled();
   });
 });

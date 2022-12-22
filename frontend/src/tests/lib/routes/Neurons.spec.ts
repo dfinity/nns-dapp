@@ -39,6 +39,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/sns-parameters.services", () => {
+  return {
+    loadSnsParameters: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Neurons", () => {
   beforeAll(() =>
     jest
