@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal XXX
+* Staking sns neuron.
+* Main “Login” page.
+* Update main menu entries.
+* Dependencies upgrade.
+* Minor bugfixes and UI improvements.
+
 ## Proposal 98082
 * Enable stake maturity for HW.
 * Hide vote pane from detail page if proposal reward status has settled.
