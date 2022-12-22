@@ -345,7 +345,6 @@ interface I18nVoting {
 
 interface I18nCanisters {
   title: string;
-  canisters: string;
   aria_label_canister_card: string;
   text: string;
   create_canister: string;
@@ -771,9 +770,6 @@ interface I18nAuth_sns {
 interface I18nWapps {
   title: string;
   description: string;
-  invalid_url: string;
-  cannot_download_wasm: string;
-  wapps: string;
   review_install_code: string;
   upload_from_device: string;
   select_file: string;
