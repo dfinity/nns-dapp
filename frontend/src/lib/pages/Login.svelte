@@ -50,13 +50,13 @@
 
 <LoginTitle />
 
+<LoginLinks />
+
 <div class="sign-in">
   <div class="sign-in-container">
     <SignIn />
   </div>
 </div>
-
-<LoginLinks />
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
@@ -69,8 +69,7 @@
     align-self: center;
 
     padding: var(--padding-3x) 0;
-
-    z-index: var(--z-index);
+    margin: 0;
 
     :global(button) {
       width: 100%;
@@ -78,8 +77,16 @@
     }
 
     @include media.min-width(medium) {
-      margin: var(--padding-6x) 0 var(--padding);
       width: auto;
+    }
+
+    @include media.min-width(large) {
+      padding: 0 0 var(--padding-3x);
+    }
+
+    @include login.min-size(xlarge) {
+      padding: var(--padding-3x) 0;
+      margin: var(--padding) 0 0;
     }
   }
 

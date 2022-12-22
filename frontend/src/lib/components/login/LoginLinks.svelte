@@ -62,7 +62,6 @@
     list-style-type: none;
 
     padding: 0;
-    margin: var(--padding) 0 0;
 
     grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
     grid-column-gap: var(--padding-2x);
@@ -75,6 +74,10 @@
 
     display: grid;
 
+    @include media.min-width(medium) {
+      margin: var(--padding-4x) 0 var(--padding);
+    }
+
     @include media.min-width(large) {
       display: flex;
       flex-grow: inherit;
@@ -82,6 +85,11 @@
       gap: var(--padding-2x);
       padding: var(--padding-4x) 0;
       max-width: inherit;
+      margin: var(--padding) 0;
+    }
+
+    @include login.min-size(xlarge) {
+      margin: var(--padding-6x) 0 var(--padding);
     }
   }
 

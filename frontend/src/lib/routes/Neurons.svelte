@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
@@ -24,7 +23,7 @@
 {#if $isNnsProjectStore}
   <NnsNeuronsFooter />
   <!-- Staking SNS Neurons has not yet been reviewed by security -->
-{:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_2}
+{:else if $snsProjectIdSelectedStore !== undefined}
   <SnsNeuronsFooter />
 {/if}
 
