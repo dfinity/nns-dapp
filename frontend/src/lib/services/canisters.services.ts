@@ -21,7 +21,6 @@ import type { InstallWAppStore } from "$lib/types/install-wapp.context";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { isController } from "$lib/utils/canisters.utils";
-import { sha256 } from "$lib/utils/crypto.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
@@ -289,26 +288,6 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
   }
 };
 
-const assertBlobHash = async ({
-  blob,
-  hash,
-}: {
-  blob: Blob;
-  hash: string | undefined;
-}): Promise<boolean> => {
-  // Verify hash once again
-  const sha = await sha256(blob);
-
-  if (sha !== hash || isNullish(hash) || hash === "") {
-    toastsError({
-      labelKey: "error__canister.invalid_hash",
-    });
-    return false;
-  }
-
-  return true;
-};
-
 const installCode = async ({
   canisterId,
   blob,
@@ -339,7 +318,6 @@ export const installWApp = async ({
   account,
   amount,
   file,
-  hash,
 }: InstallWAppStore): Promise<{
   install: "invalid_params" | "create_error" | "install_error" | "success";
   canisterId?: Principal;
@@ -348,12 +326,6 @@ export const installWApp = async ({
     toastsError({
       labelKey: "error__canister.no_wasm",
     });
-    return { install: "invalid_params" };
-  }
-
-  const valid = await assertBlobHash({ blob: file, hash });
-
-  if (!valid) {
     return { install: "invalid_params" };
   }
 

@@ -5,7 +5,6 @@ export interface InstallWAppStore {
   account?: Account;
   amount?: number;
   file?: File;
-  hash?: string;
 }
 
 export interface InstallWAppContext {

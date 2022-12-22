@@ -360,17 +360,13 @@
     "edit_cycles": "Edit Cycles",
     "converted_to": "converted to",
     "review_install_code": "Review Install Code",
-    "upload_from_device": "Upload a WASM file from device",
+    "upload_from_device": "Upload a WASM file from your device",
     "select_file": "Select file",
     "execute": "Execute",
     "install_code": "Install Code",
     "install_code_title": "Install Code - Experimental",
     "install_wapp_success": "The wApp ($canisterId) has been installed.",
     "source_file": "Source file",
-    "matching_hash_placeholder": "Enter corresponding WASM sha256",
-    "verify_hash": "Verify hash",
-    "invalid_hash": "Invalid hash. WASM and entered hashes do not match.",
-    "hash": "Hash",
     "install_wapp_fee": "An amount of $amount ICP is charged to the source account for installing the wApp."
   },
   "canister_detail": {

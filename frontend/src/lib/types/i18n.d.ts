@@ -381,10 +381,6 @@ interface I18nCanisters {
   install_code_title: string;
   install_wapp_success: string;
   source_file: string;
-  matching_hash_placeholder: string;
-  verify_hash: string;
-  invalid_hash: string;
-  hash: string;
   install_wapp_fee: string;
 }
 

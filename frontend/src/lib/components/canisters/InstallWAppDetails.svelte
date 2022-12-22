@@ -1,13 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext, onMount } from "svelte";
-  import InputWithError from "$lib/components/ui/InputWithError.svelte";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
   import {
     INSTALL_WAPP_CONTEXT_KEY,
     type InstallWAppContext,
   } from "$lib/types/install-wapp.context";
-  import { sha256 } from "$lib/utils/crypto.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
@@ -23,8 +20,7 @@
   const { store, next, selectFile }: InstallWAppContext =
     getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
 
-  let validFile = false;
-  let inputWasmName: string | undefined = undefined;
+  let inputFileName: string | undefined = undefined;
 
   let icpToCyclesExchangeRate: bigint | undefined;
 
@@ -47,53 +43,17 @@
   };
 
   onMount(async () => {
-    updateInputWasmInfo();
+    updateInputFileName();
 
     await initInstallWAppAmount();
   });
 
-  const updateInputWasmInfo = () => {
-    validFile = $store.file !== undefined;
-    inputWasmName = $store.file?.name ?? undefined;
-  };
+  const updateInputFileName = () =>
+    (inputFileName = $store.file?.name ?? undefined);
 
-  $: $store, updateInputWasmInfo();
+  $: $store, updateInputFileName();
 
   const dispatcher = createEventDispatcher();
-
-  let hashInput = $store.hash ?? "";
-  let validHash = false;
-
-  const verifyHash = async () => {
-    if (isNullish($store.file)) {
-      validHash = false;
-      updateHashErrorMessage();
-      return;
-    }
-
-    const sha = await sha256($store.file);
-    validHash = hashInput !== "" && hashInput === sha;
-    updateHashErrorMessage();
-  };
-
-  $: hashInput, $store.file, (async () => await verifyHash())();
-
-  let hashErrorMessage: string | undefined = undefined;
-
-  // Avoid flickering of the screen because computing hash is async
-  const updateHashErrorMessage = () => {
-    hashErrorMessage =
-      !validHash && hashInput !== "" && nonNullish($store.file)
-        ? $i18n.canisters.invalid_hash
-        : undefined;
-  };
-
-  const updateHashStore = async () => {
-    store.update((values) => ({
-      ...values,
-      hash: hashInput !== "" ? hashInput : undefined,
-    }));
-  };
 
   let validAccountBalance = false;
   $: validAccountBalance =
@@ -101,7 +61,7 @@
     selectedAccount?.balance.toE8s() > numberToE8s($store.amount);
 
   let disableNext = true;
-  $: disableNext = !validFile || !validHash || !validAccountBalance;
+  $: disableNext = $store.file === undefined || !validAccountBalance;
 
   let selectedAccount: Account | undefined;
   const filterAccounts = (account: Account) =>
@@ -117,33 +77,6 @@
 </script>
 
 <form on:submit|preventDefault={next}>
-  <div class="upload">
-    <p>{$i18n.canisters.upload_from_device}</p>
-    <button
-      class="primary full-width input-wasm"
-      role="button"
-      on:click|preventDefault={selectFile}
-      >{inputWasmName !== undefined
-        ? `${inputWasmName}`
-        : $i18n.canisters.select_file}</button
-    >
-  </div>
-
-  <div>
-    <InputWithError
-      inputType="text"
-      placeholderLabelKey="canisters.matching_hash_placeholder"
-      name="hash"
-      bind:value={hashInput}
-      errorMessage={hashErrorMessage}
-      on:blur={updateHashStore}
-    >
-      <svelte:fragment slot="label"
-        >{$i18n.canisters.verify_hash}</svelte:fragment
-      >
-    </InputWithError>
-  </div>
-
   <div>
     <TransactionFormSource
       rootCanisterId={OWN_CANISTER_ID}
@@ -156,10 +89,22 @@
   <p class="description">
     <InstallWAppAmount />
 
-    {#if $store.amout !== undefined && !validAccountBalance}
+    {#if selectedAccount !== undefined && !validAccountBalance}
       <span class="error">{$i18n.error__canister.not_enough_fund}</span>
     {/if}
   </p>
+
+  <div class="upload">
+    <p>{$i18n.canisters.upload_from_device}</p>
+    <button
+      class="primary full-width input-wasm"
+      role="button"
+      on:click|preventDefault={selectFile}
+      >{inputFileName !== undefined
+        ? `${inputFileName}`
+        : $i18n.canisters.select_file}</button
+    >
+  </div>
 
   <div class="toolbar">
     <button
