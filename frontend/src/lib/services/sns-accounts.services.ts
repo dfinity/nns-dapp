@@ -13,9 +13,13 @@ import { loadAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsAccounts = async (
-  rootCanisterId: Principal
-): Promise<void> => {
+export const loadSnsAccounts = async ({
+  rootCanisterId,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
@@ -42,16 +46,18 @@ export const loadSnsAccounts = async (
           fallbackErrorLabelKey: "error.sns_accounts_load",
         })
       );
+
+      handleError?.();
     },
     logMessage: "Syncing Sns Accounts",
   });
 };
 
-export const syncSnsAccounts = async (rootCanisterId: Principal) => {
-  await Promise.all([
-    loadSnsAccounts(rootCanisterId),
-    loadSnsTransactionFee(rootCanisterId),
-  ]);
+export const syncSnsAccounts = async (params: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}) => {
+  await Promise.all([loadSnsAccounts(params), loadSnsTransactionFee(params)]);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -87,7 +93,7 @@ export const snsTransferTokens = async ({
     });
 
     await Promise.all([
-      loadSnsAccounts(rootCanisterId),
+      loadSnsAccounts({ rootCanisterId }),
       loadTransactions
         ? loadAccountTransactions({ account: source, rootCanisterId })
         : Promise.resolve(),

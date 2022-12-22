@@ -23,6 +23,7 @@
   } from "$lib/types/sns-neuron-detail.modal";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
   import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
+  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 
   // Modal events
 
@@ -51,8 +52,8 @@
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
-  let token: Token;
-  $: token = $snsTokenSymbolSelectedStore as Token;
+  let token: Token | undefined;
+  $: token = $snsTokenSymbolSelectedStore;
 </script>
 
 <svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
@@ -71,7 +72,7 @@
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if nonNullish(rootCanisterId)}
+  {#if nonNullish(rootCanisterId) && nonNullish(token)}
     {#if type === "increase-dissolve-delay"}
       <IncreaseSnsDissolveDelayModal
         {rootCanisterId}
@@ -113,6 +114,16 @@
           {neuronId}
           {neuron}
           {rootCanisterId}
+        />
+      {/if}
+
+      {#if type === "increase-stake"}
+        <SnsIncreaseStakeNeuronModal
+          {rootCanisterId}
+          {token}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
         />
       {/if}
     {/if}
