@@ -23,9 +23,9 @@
   // window.location.host
 
   const mapWindowUrl = (): string => {
-    const { location, protocol } = window;
+    const { location } = window;
     const parts = location.host.split(".");
-    return `${protocol}//${canisterId.toText()}.${parts.slice(1).join(".")}/`;
+    return `${location.protocol}//${canisterId.toText()}.${parts.slice(1).join(".")}/`;
   };
 
   let validUrl: string;
