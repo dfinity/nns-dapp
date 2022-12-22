@@ -17,7 +17,7 @@
 
 {#if $store.amount !== undefined}
   <Html
-    text={replacePlaceholders($i18n.canisters.install_wapp_fee, {
+    text={replacePlaceholders($i18n.wapps.install_wapp_fee, {
       $amount: valueSpan(
         formatToken({
           value: numberToE8s($store.amount),

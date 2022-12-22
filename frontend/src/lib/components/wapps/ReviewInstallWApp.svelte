@@ -49,7 +49,7 @@
   </p>
 
   <div>
-    <p class="label">{$i18n.canisters.source_file}</p>
+    <p class="label">{$i18n.wapps.source_file}</p>
     <p class="value">
       {$store.file?.name ?? ""}
     </p>
@@ -61,7 +61,7 @@
     </button>
 
     <button type="submit" class="primary">
-      {$i18n.canisters.execute}
+      {$i18n.wapps.execute}
     </button>
   </div>
 </form>

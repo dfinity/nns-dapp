@@ -10,6 +10,7 @@
   import { onMount } from "svelte";
   import { Spinner } from "@dfinity/gix-components";
   import WAppCard from "$lib/components/wapps/WAppCard.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   let visible = false;
 
@@ -46,18 +47,18 @@
 </script>
 
 <main>
-  <div>
-    <p>
-      "Wallet Apps" = new blockchain phenomenon coming on Internet Computer. Try
-      it now!
-    </p>
-
-    {#if noWApps}
-      <button class="primary" on:click={toggleModal}
-        >Install your first wApp</button
-      >
-    {/if}
-  </div>
+  {#if noWApps}
+    <div>
+      <p>
+        {$i18n.wapps.description}
+      </p>
+      <div class="first-action">
+        <button class="primary" on:click={toggleModal}
+          >Install your first wApp</button
+        >
+      </div>
+    </div>
+  {/if}
 
   {#if loading}
     <Spinner />
@@ -76,7 +77,7 @@
   <InstallWAppModal on:nnsClose={toggleModal} on:nnsWAppInstalled={reload} />
 {/if}
 
-{#if !noWApps}
+{#if !noWApps && !loading}
   <Footer columns={1}>
     <button class="primary" on:click={toggleModal}>Install wApp</button>
   </Footer>
@@ -100,5 +101,10 @@
 
   p {
     padding: 0 0 var(--padding-2x);
+  }
+
+  .first-action {
+    display: flex;
+    justify-content: center;
   }
 </style>

@@ -95,14 +95,14 @@
   </p>
 
   <div class="upload">
-    <p>{$i18n.canisters.upload_from_device}</p>
+    <p>{$i18n.wapps.upload_from_device}</p>
     <button
       class="primary full-width input-wasm"
       role="button"
       on:click|preventDefault={selectFile}
       >{inputFileName !== undefined
         ? `${inputFileName}`
-        : $i18n.canisters.select_file}</button
+        : $i18n.wapps.select_file}</button
     >
   </div>
 

@@ -6,11 +6,10 @@
 </script>
 
 <main>
-  <h1>Wallet Apps</h1>
+  <h1>{$i18n.wapps.title}</h1>
 
   <p>
-    "Wallet Apps" = new blockchain phenomenon coming on Internet Computer.
-    Sign-in to launch your first wApps!
+    {$i18n.wapps.description}
   </p>
 
   <SignIn />

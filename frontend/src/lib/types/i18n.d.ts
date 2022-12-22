@@ -111,8 +111,6 @@ interface I18nError {
   fetch_transactions: string;
   transaction_data: string;
   canister_invalid_transaction: string;
-  invalid_url: string;
-  cannot_download_wasm: string;
 }
 
 interface I18nWarning {
@@ -347,7 +345,6 @@ interface I18nVoting {
 interface I18nCanisters {
   title: string;
   canisters: string;
-  wapps: string;
   aria_label_canister_card: string;
   text: string;
   create_canister: string;
@@ -373,15 +370,6 @@ interface I18nCanisters {
   change_source: string;
   edit_cycles: string;
   converted_to: string;
-  review_install_code: string;
-  upload_from_device: string;
-  select_file: string;
-  execute: string;
-  install_code: string;
-  install_code_title: string;
-  install_wapp_success: string;
-  source_file: string;
-  install_wapp_fee: string;
 }
 
 interface I18nCanister_detail {
@@ -779,6 +767,23 @@ interface I18nAuth_sns {
   text: string;
 }
 
+interface I18nWapps {
+  title: string;
+  description: string;
+  invalid_url: string;
+  cannot_download_wasm: string;
+  wapps: string;
+  review_install_code: string;
+  upload_from_device: string;
+  select_file: string;
+  execute: string;
+  install_code: string;
+  install_code_title: string;
+  install_wapp_success: string;
+  source_file: string;
+  install_wapp_fee: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1004,6 +1009,7 @@ interface I18n {
   auth_proposals: I18nAuth_proposals;
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
+  wapps: I18nWapps;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

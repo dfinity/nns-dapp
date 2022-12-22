@@ -106,9 +106,7 @@
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "invalid_url": "Invalid or malformed URL.",
-    "cannot_download_wasm": "WASM cannot be downloaded. Ensure your URL is whitelisted in the security policy and hosted on a platform that supports CORS."
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -333,7 +331,6 @@
   "canisters": {
     "title": "Canisters",
     "canisters": "Canisters",
-    "wapps": "wApps",
     "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "create_canister": "Create Canister",
@@ -358,16 +355,7 @@
     "review_cycles_purchase": "Review Cycles Purchase",
     "change_source": "Change Source Account",
     "edit_cycles": "Edit Cycles",
-    "converted_to": "converted to",
-    "review_install_code": "Review Install Code",
-    "upload_from_device": "Upload a WASM file from your device",
-    "select_file": "Select file",
-    "execute": "Execute",
-    "install_code": "Install Code",
-    "install_code_title": "Install Code - Experimental",
-    "install_wapp_success": "The wApp ($canisterId) has been installed.",
-    "source_file": "Source file",
-    "install_wapp_fee": "An amount of $amount ICP is charged to the source account for installing the wApp."
+    "converted_to": "converted to"
   },
   "canister_detail": {
     "title": "Canister",
@@ -738,5 +726,20 @@
   "auth_sns": {
     "title": "Service Nervous Systems (SNS)",
     "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
+  },
+  "wapps": {
+    "title": "Wallet Apps",
+    "description": "Wallet Apps are a new phenomenon coming to the Internet computer. Applications hosted on the blockchain which you install, update, own, and control. Sign in to install your first Wallet App in the blockchain.",
+    "invalid_url": "Invalid or malformed URL.",
+    "cannot_download_wasm": "WASM cannot be downloaded. Ensure your URL is whitelisted in the security policy and hosted on a platform that supports CORS.",
+    "wapps": "wApps",
+    "review_install_code": "Review Wallet App Installation",
+    "upload_from_device": "Upload a Wallet App WASM from your local drive",
+    "select_file": "Select file",
+    "execute": "Execute",
+    "install_code_title": "Install a Wallet App [Experimental]",
+    "install_wapp_success": "The wApp ($canisterId) has been installed.",
+    "source_file": "Source file",
+    "install_wapp_fee": "Installing a Wallet App requires $amount ICP. Select which Account to debit."
   }
 }

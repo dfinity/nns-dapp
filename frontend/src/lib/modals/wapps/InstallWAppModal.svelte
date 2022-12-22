@@ -18,11 +18,11 @@
   const steps: WizardSteps = [
     {
       name: "Enter",
-      title: $i18n.canisters.install_code_title,
+      title: $i18n.wapps.install_code_title,
     },
     {
       name: "Confirm",
-      title: $i18n.canisters.review_install_code,
+      title: $i18n.wapps.review_install_code,
     },
   ];
 
