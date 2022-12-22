@@ -80,7 +80,9 @@ describe("SnsAccounts", () => {
     it("should load sns accounts of the project", () => {
       render(SnsAccounts);
 
-      expect(syncSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
+      expect(syncSnsAccounts).toHaveBeenCalledWith({
+        rootCanisterId: mockPrincipal,
+      });
     });
 
     it("should render total accounts sns project", async () => {

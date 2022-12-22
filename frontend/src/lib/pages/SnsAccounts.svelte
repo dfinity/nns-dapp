@@ -21,7 +21,7 @@
       if (selectedProjectCanisterId !== undefined) {
         // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
-        await syncSnsAccounts(selectedProjectCanisterId);
+        await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
         loading = false;
       }
     }

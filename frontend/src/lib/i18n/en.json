@@ -113,7 +113,7 @@
   },
   "navigation": {
     "tokens": "My Tokens",
-    "canisters": "Canisters",
+    "canisters": "My Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
     "launchpad": "Launch Pad"
@@ -680,6 +680,7 @@
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
     "sns_stake": "There was an error while staking the neuron.",
+    "sns_increase_stake": "There was an error while increasing the stake of the neuron.",
     "sns_neuron_account": "There was an error while staking the neuron.",
     "sns_dissolve_delay_action": "There was an error while updating dissolve delay of the neuron.",
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
