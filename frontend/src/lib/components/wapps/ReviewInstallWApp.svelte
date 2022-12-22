@@ -9,7 +9,7 @@
     type InstallWAppContext,
   } from "$lib/types/install-wapp.context";
   import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
-  import InstallWAppAmount from "$lib/components/canisters/InstallWAppAmount.svelte";
+  import InstallWAppAmount from "$lib/components/wapps/InstallWAppAmount.svelte";
 
   const { store, back }: InstallWAppContext = getContext<InstallWAppContext>(
     INSTALL_WAPP_CONTEXT_KEY

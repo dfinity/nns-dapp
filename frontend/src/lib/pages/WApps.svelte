@@ -1,5 +1,5 @@
 <script lang="ts">
-  import InstallWAppModal from "$lib/modals/canisters/InstallWAppModal.svelte";
+  import InstallWAppModal from "$lib/modals/wapps/InstallWAppModal.svelte";
   import Footer from "$lib/components/common/Footer.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { toToastError } from "$lib/utils/error.utils";

@@ -15,7 +15,7 @@
     numberToE8s,
   } from "$lib/utils/token.utils";
   import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
-  import InstallWAppAmount from "$lib/components/canisters/InstallWAppAmount.svelte";
+  import InstallWAppAmount from "$lib/components/wapps/InstallWAppAmount.svelte";
 
   const { store, next, selectFile }: InstallWAppContext =
     getContext<InstallWAppContext>(INSTALL_WAPP_CONTEXT_KEY);
@@ -122,7 +122,7 @@
 </form>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/text";
 
   p,
   form {

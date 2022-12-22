@@ -9,8 +9,8 @@
   } from "$lib/types/install-wapp.context";
   import { setContext } from "svelte";
   import { INSTALL_WAPP_CONTEXT_KEY } from "$lib/types/install-wapp.context";
-  import InstallWAppDetails from "$lib/components/canisters/InstallWAppDetails.svelte";
-  import ReviewInstallWApp from "$lib/components/canisters/ReviewInstallWApp.svelte";
+  import InstallWAppDetails from "$lib/components/wapps/InstallWAppDetails.svelte";
+  import ReviewInstallWApp from "$lib/components/wapps/ReviewInstallWApp.svelte";
 
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
