@@ -20,6 +20,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../themes/mixins/login";
 
   picture {
     position: absolute;
@@ -27,7 +28,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
+    @include media.min-width(medium) {
+      top: 40%;
+    }
     @include media.min-width(large) {
+      top: 60%;
+    }
+    @include login.min-size(xlarge) {
       top: 45%;
     }
   }

@@ -51,7 +51,8 @@
     }
 
     @include login.min-size(medium) {
-      font-size: calc(var(--font-size-h1) * 3);
+      font-size: 76px;
+      width: 90%;
     }
 
     @include login.min-size(xlarge) {

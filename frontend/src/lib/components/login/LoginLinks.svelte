@@ -75,7 +75,7 @@
     display: grid;
 
     @include media.min-width(medium) {
-      margin: var(--padding-6x) 0 var(--padding);
+      margin: var(--padding-4x) 0 var(--padding);
     }
 
     @include media.min-width(large) {
@@ -85,6 +85,11 @@
       gap: var(--padding-2x);
       padding: var(--padding-4x) 0;
       max-width: inherit;
+      margin: var(--padding) 0;
+    }
+
+    @include login.min-size(xlarge) {
+      margin: var(--padding-6x) 0 var(--padding);
     }
   }
 

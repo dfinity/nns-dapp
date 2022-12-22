@@ -69,7 +69,7 @@
     align-self: center;
 
     padding: var(--padding-3x) 0;
-    margin: var(--padding) 0 0;
+    margin: 0;
 
     :global(button) {
       width: 100%;
@@ -78,6 +78,15 @@
 
     @include media.min-width(medium) {
       width: auto;
+    }
+
+    @include media.min-width(large) {
+      padding: 0 0 var(--padding-3x);
+    }
+
+    @include login.min-size(xlarge) {
+      padding: var(--padding-3x) 0;
+      margin: var(--padding) 0 0;
     }
   }
 
