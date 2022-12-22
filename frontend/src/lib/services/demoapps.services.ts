@@ -20,32 +20,7 @@ export const listDemoApps = async (): Promise<CanisterMeta[]> => {
   );
   const results = await Promise.all(promises);
 
-  const meta: CanisterMeta[] = [
-    {
-      meta: {
-        name: "Papyrs",
-        logo: "https://daviddalbusco.com/images/portfolio/icons/papyrs-icon.png",
-        theme: "#C4CDFF",
-        url: [],
-        description: [],
-      },
-      canisterId: Principal.fromText("qsgjb-riaaa-aaaaa-aaaga-cai"),
-    },
-    {
-      meta: {
-        name: "DeckDeckGo",
-        theme: "#3a81fe",
-        url: ["https://deckdeckgo.com"],
-        description: ["An open source web editor for presentations."],
-        logo: "https://daviddalbusco.com/images/portfolio/icons/deckdeckgo-icon.png",
-      },
-      canisterId: Principal.fromText("qsgjb-riaaa-aaaaa-aaaga-cai"),
-    },
-  ];
-
-  return [...results, ...meta].filter(
-    (meta) => meta !== undefined
-  ) as CanisterMeta[];
+  return results.filter((meta) => meta !== undefined) as CanisterMeta[];
 };
 
 const queryDemoAppsMeta = async ({

@@ -40,6 +40,9 @@
   };
 
   onMount(async () => load());
+
+  let noWApps = true;
+  $: noWApps = !loading && canisterMetas.length === 0;
 </script>
 
 <main>
@@ -49,7 +52,7 @@
       it now!
     </p>
 
-    {#if !loading && canisterMetas.length === 0}
+    {#if noWApps}
       <button class="primary" on:click={toggleModal}
         >Install your first wApp</button
       >
@@ -73,9 +76,11 @@
   <InstallWAppModal on:nnsClose={toggleModal} on:nnsWAppInstalled={reload} />
 {/if}
 
-<Footer columns={1}>
-  <button class="primary" on:click={toggleModal}>Install wApp</button>
-</Footer>
+{#if !noWApps}
+  <Footer columns={1}>
+    <button class="primary" on:click={toggleModal}>Install wApp</button>
+  </Footer>
+{/if}
 
 <style lang="scss">
   main {
