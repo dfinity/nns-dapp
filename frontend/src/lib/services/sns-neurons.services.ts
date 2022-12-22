@@ -333,6 +333,7 @@ export const splitNeuron = async ({
       return { success: false };
     }
 
+    // TODO: Get identity depending on account to support HW accounts
     const identity = await getNeuronIdentity();
     // reload neurons (should be actual for nextMemo calculation)
     await loadNeurons({
