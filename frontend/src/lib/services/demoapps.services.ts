@@ -6,9 +6,11 @@ import { queryDemoAppsMeta as queryDemoAppsMetaApi } from "$lib/api/demoapps.api
 import type { Meta } from "$lib/canisters/demoapps/demoapps.did";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 
-export const listDemoApps = async (): Promise<Meta[]> => {
+export type CanisterMeta = { canisterId: Principal; meta: Meta };
+
+export const listDemoApps = async (): Promise<CanisterMeta[]> => {
   const identity: Identity = await getAuthenticatedIdentity();
 
   const canisters = await queryCanisters({ identity, certified: false });
@@ -18,31 +20,48 @@ export const listDemoApps = async (): Promise<Meta[]> => {
   );
   const results = await Promise.all(promises);
 
-  const meta: Meta[] = [{
-    name: "Papyrs",
-    logo: "https://daviddalbusco.com/images/portfolio/icons/papyrs-icon.png",
-    theme: "#C4CDFF",
-    url: [],
-    description: []
-  }, {
-    name: "DeckDeckGo",
-    theme: "#3a81fe",
-    url: ["https://deckdeckgo.com"],
-    description: ["An open source web editor for presentations."],
-    logo: "https://daviddalbusco.com/images/portfolio/icons/deckdeckgo-icon.png"
-  }]
+  const meta: CanisterMeta[] = [
+    {
+      meta: {
+        name: "Papyrs",
+        logo: "https://daviddalbusco.com/images/portfolio/icons/papyrs-icon.png",
+        theme: "#C4CDFF",
+        url: [],
+        description: [],
+      },
+      canisterId: Principal.fromText("qsgjb-riaaa-aaaaa-aaaga-cai"),
+    },
+    {
+      meta: {
+        name: "DeckDeckGo",
+        theme: "#3a81fe",
+        url: ["https://deckdeckgo.com"],
+        description: ["An open source web editor for presentations."],
+        logo: "https://daviddalbusco.com/images/portfolio/icons/deckdeckgo-icon.png",
+      },
+      canisterId: Principal.fromText("qsgjb-riaaa-aaaaa-aaaga-cai"),
+    },
+  ];
 
-  return [...results, ...meta].filter((meta) => meta !== undefined) as Meta[];
+  return [...results, ...meta].filter(
+    (meta) => meta !== undefined
+  ) as CanisterMeta[];
 };
 
-const queryDemoAppsMeta = async (params: {
+const queryDemoAppsMeta = async ({
+  canisterId,
+  identity,
+}: {
   identity: Identity;
   canisterId: Principal;
-}): Promise<Meta | undefined> => {
+}): Promise<CanisterMeta | undefined> => {
   try {
     // TODO: ⚠️ like assuming there is a common spec ⚠️
-    const result = await queryDemoAppsMetaApi(params);
-    return result;
+    const meta = await queryDemoAppsMetaApi({ canisterId, identity });
+    return {
+      canisterId,
+      meta,
+    };
   } catch (err: unknown) {
     return undefined;
   }

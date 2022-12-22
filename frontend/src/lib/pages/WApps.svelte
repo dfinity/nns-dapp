@@ -3,10 +3,13 @@
   import Footer from "$lib/components/common/Footer.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { toToastError } from "$lib/utils/error.utils";
-  import { listDemoApps } from "$lib/services/demoapps.services";
-  import type { Meta } from "$lib/canisters/demoapps/demoapps.did";
+  import {
+    type CanisterMeta,
+    listDemoApps,
+  } from "$lib/services/demoapps.services";
   import { onMount } from "svelte";
   import { Spinner } from "@dfinity/gix-components";
+  import WAppCard from "$lib/components/wapps/WAppCard.svelte";
 
   let visible = false;
 
@@ -18,12 +21,12 @@
   };
 
   let loading = true;
-  let metas: Meta[] = [];
+  let canisterMetas: CanisterMeta[] = [];
   const load = async () => {
     loading = true;
 
     try {
-      metas = await listDemoApps();
+      canisterMetas = await listDemoApps();
     } catch (err: unknown) {
       toastsError(
         toToastError({
@@ -46,20 +49,22 @@
       it now!
     </p>
 
-    <button class="primary" on:click={toggleModal}
-      >Install your first wApp</button
-    >
+    {#if !loading && canisterMetas.length === 0}
+      <button class="primary" on:click={toggleModal}
+        >Install your first wApp</button
+      >
+    {/if}
   </div>
 
   {#if loading}
     <Spinner />
-  {:else if metas.length > 0}
+  {:else if canisterMetas.length > 0}
     <h2>My Wallet Apps</h2>
 
     <div class="card-grid">
-    {#each metas as meta}
-      <div>Hello</div>
-    {/each}
+      {#each canisterMetas as canisterMeta}
+        <WAppCard {canisterMeta} />
+      {/each}
     </div>
   {/if}
 </main>
