@@ -106,7 +106,8 @@
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
+    "wapps_not_found": "An error occurred while loading the Wallet Apps."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -330,7 +331,6 @@
   },
   "canisters": {
     "title": "Canisters",
-    "canisters": "Canisters",
     "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",
     "create_canister": "Create Canister",

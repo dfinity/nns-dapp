@@ -25,7 +25,7 @@
     // We cannot have success without canisterId
     if (install === "success" && canisterId !== undefined) {
       toastsSuccess({
-        labelKey: "canisters.install_wapp_success",
+        labelKey: "wapps.install_wapp_success",
         substitutions: {
           $canisterId: canisterId.toText(),
         },

@@ -32,7 +32,7 @@
       toastsError(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
+          fallbackErrorLabelKey: "error.wapps_not_found",
         })
       );
     }

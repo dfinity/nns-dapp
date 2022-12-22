@@ -111,6 +111,7 @@ interface I18nError {
   fetch_transactions: string;
   transaction_data: string;
   canister_invalid_transaction: string;
+  wapps_not_found: string;
 }
 
 interface I18nWarning {
@@ -777,7 +778,6 @@ interface I18nWapps {
   upload_from_device: string;
   select_file: string;
   execute: string;
-  install_code: string;
   install_code_title: string;
   install_wapp_success: string;
   source_file: string;
