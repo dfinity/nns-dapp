@@ -89,6 +89,10 @@
     >
   </div>
 
+  <p class="description fee">
+    <InstallWAppAmount />
+  </p>
+
   <div>
     <TransactionFormSource
       rootCanisterId={OWN_CANISTER_ID}
@@ -102,13 +106,9 @@
     </TransactionFormSource>
   </div>
 
-  <p class="description fee">
-    <InstallWAppAmount />
-
-    {#if selectedAccount !== undefined && icpToCyclesExchangeRate !== undefined && !validAccountBalance}
-      <span class="error">{$i18n.error__canister.not_enough_fund}</span>
-    {/if}
-  </p>
+  {#if selectedAccount !== undefined && icpToCyclesExchangeRate !== undefined && !validAccountBalance}
+    <p class="error">{$i18n.error__canister.not_enough_fund}</p>
+  {/if}
 
   <div class="toolbar">
     <button
@@ -164,5 +164,10 @@
     @include media.min-width(medium) {
       min-height: var(--padding-3x);
     }
+  }
+
+  .error,
+  .fee {
+    margin: 0;
   }
 </style>

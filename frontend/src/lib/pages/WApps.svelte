@@ -54,7 +54,7 @@
       </p>
       <div class="first-action">
         <button class="primary" on:click={toggleModal}
-          >Install your first wApp</button
+          >{$i18n.wapps.install_first_wapp}</button
         >
       </div>
     </div>

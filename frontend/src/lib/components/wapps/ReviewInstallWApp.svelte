@@ -47,17 +47,19 @@
     </p>
   </div>
 
-  {#if $store.account !== undefined}
-    <TransactionSource account={$store.account}>
-      <svelte:fragment slot="source"
-        >{$i18n.wapps.account_debited}</svelte:fragment
-      >
-    </TransactionSource>
-  {/if}
-
   <p class="description">
     <InstallWAppAmount selectText={false} />
   </p>
+
+  {#if $store.account !== undefined}
+    <div class="account">
+      <TransactionSource account={$store.account}>
+        <svelte:fragment slot="source"
+          >{$i18n.wapps.account_debited}</svelte:fragment
+        >
+      </TransactionSource>
+    </div>
+  {/if}
 
   <div class="toolbar">
     <button class="secondary" type="button" on:click={back}>
@@ -79,7 +81,7 @@
     word-break: break-word;
   }
 
-  .source {
-    padding: 0 0 var(--padding);
+  .account {
+    margin: var(--padding) 0 0;
   }
 </style>
