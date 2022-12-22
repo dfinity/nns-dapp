@@ -9,7 +9,7 @@
   } from "$lib/types/install-wapp.context";
   import { setContext } from "svelte";
   import { INSTALL_WAPP_CONTEXT_KEY } from "$lib/types/install-wapp.context";
-  import UploadWasmCode from "$lib/components/canisters/UploadWasmCode.svelte";
+  import InstallWAppDetails from "$lib/components/canisters/InstallWAppDetails.svelte";
   import ReviewInstallWApp from "$lib/components/canisters/ReviewInstallWApp.svelte";
 
   let currentStep: WizardStep | undefined;
@@ -59,7 +59,7 @@
   />
 
   {#if currentStep?.name === steps[0].name}
-    <UploadWasmCode on:nnsClose />
+    <InstallWAppDetails on:nnsClose />
   {/if}
 
   {#if currentStep?.name === steps[1].name}
