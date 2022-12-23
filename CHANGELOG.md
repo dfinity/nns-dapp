@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 98559
 * Staking sns neuron.
 * Main “Login” page.
 * Update main menu entries.
