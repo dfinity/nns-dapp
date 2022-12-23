@@ -81,6 +81,7 @@ jobs:
           export FILENAME=".dfx/local/canister_ids.json"
           export DFX_NETWORK=local
           export DFX_CANISTER_NAME="nns-dapp"
+          test -f "$FILENAME" || { echo "{}" > "$FILENAME" ; }
           jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
           dfx canister id nns-dapp
 
