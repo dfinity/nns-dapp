@@ -72,7 +72,17 @@ jobs:
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy NNS canisters
         run: |
-          dfx nns install
+          dfx nns install | tee ,nns-install
+
+      - name: Set nns-dapp canister ID
+        run: |
+          sudo apt-get install -yy moreutils
+          export DFX_CANISTER_ID="$(sed -nr 's,^nns-dapp +http://([-a-z0-9]+).*,\1,g;ta;b;:a;p;q' ,nns-install)"
+          export FILENAME=".dfx/local/canister_ids.json"
+          export DFX_NETWORK=local
+          export DFX_CANISTER_NAME="nns-dapp"
+          jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
+          dfx canister id nns-dapp
 
       - name: Deploy NNS Dapp
         run: |
