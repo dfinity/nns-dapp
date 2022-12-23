@@ -2,12 +2,10 @@
   import png576 from "$lib/assets/login/576.png";
   import png768 from "$lib/assets/login/768.png";
   import png1024 from "$lib/assets/login/1024.png";
-  import png1300 from "$lib/assets/login/1300.png";
   import { i18n } from "$lib/stores/i18n";
 </script>
 
 <picture>
-  <source media="(min-width: 1366px)" srcset={png1300} />
   <source media="(min-width: 1024px)" srcset={png1024} />
   <source media="(min-width: 768px)" srcset={png768} />
   <img
