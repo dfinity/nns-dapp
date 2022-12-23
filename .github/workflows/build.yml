@@ -76,6 +76,7 @@ jobs:
 
       - name: Set nns-dapp canister ID
         run: |
+          set -x
           sudo apt-get install -yy moreutils
           export DFX_CANISTER_ID="$(sed -nr 's,^nns-dapp +http://([-a-z0-9]+).*,\1,g;ta;b;:a;p;q' ,nns-install)"
           export FILENAME=".dfx/local/canister_ids.json"
@@ -84,6 +85,7 @@ jobs:
           test -f "$FILENAME" || { echo "{}" > "$FILENAME" ; }
           jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
           dfx canister id nns-dapp
+          jq -r '.canisters | keys | .[]' dfx.json | while read line ; do printf "%-30s   %s\n" "$(dfx canister id "$line" 2>/dev/null || echo "unknown")" "$line" ; done
 
       - name: Deploy NNS Dapp
         run: |
