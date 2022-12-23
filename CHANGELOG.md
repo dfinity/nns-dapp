@@ -1,6 +1,7 @@
 # Changelog
 
 ## Proposal 98559
+* Gzip wasm for proposal payload
 * Staking sns neuron.
 * Main “Login” page.
 * Update main menu entries.
