@@ -20,7 +20,11 @@
   import DissolveSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/DissolveSnsNeuronButton.svelte";
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
+  import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/SnsIncreaseStakeButton.svelte";
+  import {
+    ENABLE_SNS,
+    ENABLE_SNS_2,
+  } from "$lib/constants/environment.constants";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -63,6 +67,9 @@
   <div class="buttons">
     {#if allowedToDissolve && ENABLE_SNS}
       <IncreaseSnsDissolveDelayButton />
+    {/if}
+    {#if ENABLE_SNS_2}
+      <SnsIncreaseStakeButton />
     {/if}
     {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
       <DisburseSnsButton />

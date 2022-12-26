@@ -37,6 +37,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "../../lib/themes/mixins/login";
 
   .content {
     --backdrop-z-index: calc(var(--overlay-z-index) + 5);
@@ -94,11 +95,15 @@
       min-height: auto;
       max-width: calc(1024px - var(--padding-4x));
       text-align: center;
-      padding-top: calc(var(--login-header-height) + (2 * var(--padding-8x)));
     }
 
     @include media.min-width(xlarge) {
       max-width: 1300px;
+      padding-top: var(--padding-8x);
+    }
+
+    @include login.min-size(large) {
+      padding-top: calc(var(--login-header-height) + (2 * var(--padding-8x)));
     }
   }
 </style>

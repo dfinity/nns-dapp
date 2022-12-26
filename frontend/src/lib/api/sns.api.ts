@@ -405,3 +405,37 @@ export const stakeNeuron = async ({
   );
   return newNeuronId;
 };
+
+export const increaseStakeNeuron = async ({
+  neuronId,
+  stakeE8s,
+  rootCanisterId,
+  identity,
+  source,
+}: {
+  neuronId: SnsNeuronId;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: SnsAccount;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
+
+  const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await increaseStakeNeuronApi({
+    stakeE8s,
+    source,
+    neuronId,
+  });
+
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+};

@@ -28,6 +28,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { isDefined } from "$lib/utils/utils.js";
+  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 
   // Modal events
 
@@ -84,7 +85,7 @@
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if nonNullish(rootCanisterId)}
+  {#if nonNullish(rootCanisterId) && nonNullish(token)}
     {#if type === "increase-dissolve-delay"}
       <IncreaseSnsDissolveDelayModal
         {rootCanisterId}
@@ -141,6 +142,16 @@
             on:nnsClose={close}
           />
         {/if}
+      {/if}
+
+      {#if type === "increase-stake"}
+        <SnsIncreaseStakeNeuronModal
+          {rootCanisterId}
+          {token}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+        />
       {/if}
     {/if}
   {/if}

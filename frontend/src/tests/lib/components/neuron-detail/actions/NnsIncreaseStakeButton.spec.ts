@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
+import NnsIncreaseStakeButton from "$lib/components/neuron-detail/actions/NnsIncreaseStakeButton.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
-describe("IncreaseStakeButton", () => {
+describe("NnsIncreaseStakeButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -18,7 +18,7 @@ describe("IncreaseStakeButton", () => {
     const { getByText } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: IncreaseStakeButton,
+        testComponent: NnsIncreaseStakeButton,
       },
     });
 
@@ -29,7 +29,7 @@ describe("IncreaseStakeButton", () => {
     const { container } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: IncreaseStakeButton,
+        testComponent: NnsIncreaseStakeButton,
       },
     });
 

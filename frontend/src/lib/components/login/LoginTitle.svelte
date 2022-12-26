@@ -34,22 +34,29 @@
       display: block;
     }
 
-    font-size: var(--font-size-h1);
+    font-size: var(--font-size-h3);
     line-height: var(--line-height-standard);
 
-    @media (min-width: 440px) {
-      font-size: calc(var(--font-size-h1) * 2);
+    @media (min-width: 320px) {
+      font-size: var(--font-size-h1);
+    }
+
+    @media (min-width: 480px) {
+      font-size: calc(var(--font-size-h1) * 1.4);
       line-height: 1;
+    }
+
+    @media (min-width: 640px) {
+      font-size: calc(var(--font-size-h1) * 2);
     }
 
     @include login.min-size(medium) {
-      font-size: calc(var(--font-size-h1) * 3);
-      line-height: 1;
+      font-size: 76px;
+      width: 90%;
     }
 
     @include login.min-size(xlarge) {
-      font-size: calc(var(--font-size-h1) * 5);
-      line-height: 1;
+      font-size: calc(var(--font-size-h1) * 4);
     }
   }
 

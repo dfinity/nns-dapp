@@ -50,16 +50,6 @@
       icon: IconWallet,
     },
     {
-      context: "canisters",
-      href: $canistersPathStore,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Canisters, AppPath.Canister],
-      }),
-      label: "canisters",
-      icon: IconExplore,
-    },
-    {
       context: "neurons",
       href: $neuronsPathStore,
       selected: isSelectedPath({
@@ -95,6 +85,16 @@
           },
         ]
       : []),
+    {
+      context: "canisters",
+      href: $canistersPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
+      label: "canisters",
+      icon: IconExplore,
+    },
   ];
 </script>
 
