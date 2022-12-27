@@ -1,3 +1,4 @@
+import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { NeuronState } from "@dfinity/nns";
 import type {
   NervousSystemParameters,
@@ -7,6 +8,7 @@ import type {
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
+import { rootCanisterIdMock } from "./sns.api.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
@@ -115,4 +117,16 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
     },
   ],
   max_number_of_principals_per_neuron: [5n],
+};
+
+export const mockSnsParametersStore = (
+  run: Subscriber<{ [rootCanisterId: string]: SnsParameters }>
+): (() => void) => {
+  run({
+    [rootCanisterIdMock.toText()]: {
+      parameters: snsNervousSystemParametersMock,
+      certified: true,
+    },
+  });
+  return () => undefined;
 };

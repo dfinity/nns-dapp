@@ -26,7 +26,7 @@
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import type { E8s, TokenAmount } from "@dfinity/nns";
+  import type { E8s } from "@dfinity/nns";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
   import type { Token } from "@dfinity/nns";
@@ -51,11 +51,11 @@
   const goBack = (replaceState: boolean): Promise<void> =>
     goto($neuronsPathStore, { replaceState });
 
-  let rootCanisterId: Principal;
-  $: rootCanisterId = Principal.fromText($pageStore.universe);
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $selectedSnsNeuronStore.selected?.rootCanisterId;
 
   let parameters: NervousSystemParameters | undefined;
-  $: parameters = $snsParametersStore?.[rootCanisterId?.toText()]?.parameters;
+  $: parameters = $snsParametersStore?.[rootCanisterId?.toText() ?? '']?.parameters;
 
   let transactionFee: E8s | undefined;
   $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
@@ -90,18 +90,18 @@
     }
   };
 
+  $: rootCanisterId,
+    (() => {
+      if (rootCanisterId !== undefined) {
+        loadSnsParameters(rootCanisterId);
+        loadSnsTransactionFee({ rootCanisterId });
+      }
+    })();
+
   onMount(async () => {
     if (neuronId === undefined || neuronId === null) {
       await goBack(true);
       return;
-    }
-
-    if (parameters === undefined) {
-      loadSnsParameters(rootCanisterId).then();
-    }
-
-    if (transactionFee === undefined) {
-      loadSnsTransactionFee(rootCanisterId).then();
     }
 
     try {

@@ -27,7 +27,6 @@
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import { isDefined } from "$lib/utils/utils.js";
   import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 
   // Modal events
@@ -130,7 +129,7 @@
         />
       {/if}
 
-      {#if isDefined(parameters) && isDefined(transactionFee)}
+      {#if parameters !== undefined && transactionFee !== undefined}
         {#if type === "split-neuron"}
           <SplitSnsNeuronModal
             {rootCanisterId}

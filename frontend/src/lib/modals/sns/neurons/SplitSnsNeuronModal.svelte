@@ -12,11 +12,11 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { formattedTransactionFee } from "$lib/utils/token.utils.js";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import type { NervousSystemParameters } from "@dfinity/sns";
+  import { formattedTransactionFee } from "$lib/utils/token.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

@@ -4,16 +4,22 @@
 
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import {
+  mockSnsNeuron,
+  mockSnsParametersStore,
+} from "../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 let validNeuron = true;
 jest.mock("$lib/services/sns-neurons.services", () => {
@@ -34,6 +40,12 @@ describe("SnsNeuronDetail", () => {
     jest
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
       .mockImplementation(mockTokenStore);
+    jest
+      .spyOn(snsParametersStore, "subscribe")
+      .mockImplementation(mockSnsParametersStore);
+    jest
+      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
   });
 
   afterEach(() => {

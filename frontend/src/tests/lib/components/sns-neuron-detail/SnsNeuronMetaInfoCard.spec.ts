@@ -9,13 +9,18 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import type { Token } from "@dfinity/nns";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../../mocks/sns-neurons.mock";
+import { mockToken, mockTokenStore } from "../../../mocks/sns-projects.mock";
 
 describe("SnsNeuronMetaInfoCard", () => {
   beforeEach(() => {
@@ -33,6 +38,11 @@ describe("SnsNeuronMetaInfoCard", () => {
       Component: SnsNeuronMetaInfoCard,
       neuron: mockSnsNeuron,
       reload: jest.fn(),
+      props: {
+        parameters: snsNervousSystemParametersMock as NervousSystemParameters,
+        token: mockToken as Token,
+        transactionFee: 100n,
+      },
     });
 
   const hash = shortenWithMiddleEllipsis(
