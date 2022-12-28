@@ -1,5 +1,5 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {HOTKEY_PERMISSIONS, MAX_NEURONS_SUBACCOUNTS} from "$lib/constants/sns-neurons.constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
@@ -30,7 +30,7 @@ import {
   snsNeuronVotingPower,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
-  type SnsFolloweesByNeuron,
+  type SnsFolloweesByNeuron, nextMemo,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -40,7 +40,7 @@ import type { NervousSystemParameters } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemFunction,
-  type SnsNeuron,
+  type SnsNeuron, neuronSubaccount,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -50,6 +50,13 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
+import {NextMemoNotFoundError} from "$lib/types/sns-neurons.errors";
+
+
+jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
+  ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),
+  MAX_NEURONS_SUBACCOUNTS: 10,
+}));
 
 const appendPermissions = ({
   neuron,
@@ -218,6 +225,55 @@ describe("sns-neuron utils", () => {
       expect(subaccountToHexString(subaccount)).toBe(
         "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
       );
+    });
+  });
+
+  describe("nextMemo", () => {
+    it("returns next memo", () => {
+      const ids = [
+        neuronSubaccount({
+          controller: mockIdentity.getPrincipal(),
+          index: 0,
+        }),
+        neuronSubaccount({
+          controller: mockIdentity.getPrincipal(),
+          index: 1,
+        }),
+      ];
+      const neurons = ids.map(id => ({...mockSnsNeuron, id: [{id}]}) as SnsNeuron);
+      const memo = nextMemo({
+        neurons,
+        identity: mockIdentity
+        ,
+      })
+      expect(memo).toBe(
+        2n
+      );
+    });
+
+    it("returns 0 if no neurons", () => {
+      const memo = nextMemo({
+        neurons: [],
+        identity: mockIdentity
+        ,
+      })
+      expect(memo).toBe(
+        0n
+      );
+    });
+
+    it("throws NextMemoNotFoundError", () => {
+      const ids = Array.from(Array(MAX_NEURONS_SUBACCOUNTS + 1)).map((_, index) => neuronSubaccount({
+          controller: mockIdentity.getPrincipal(),
+          index,
+        }));
+      const neurons = ids.map(id => ({...mockSnsNeuron, id: [{id}]}) as SnsNeuron);
+
+      expect(() => nextMemo({
+        neurons,
+        identity: mockIdentity
+        ,
+      })).toThrowError(NextMemoNotFoundError);
     });
   });
 
