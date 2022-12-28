@@ -1,7 +1,8 @@
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   convertIcpToTCycles,
-  convertTCyclesToIcpNumber, formattedTransactionFee,
+  convertTCyclesToIcpNumber,
+  formattedTransactionFee,
   formattedTransactionFeeICP,
   formatToken,
   getMaxTransactionAmount,
@@ -119,9 +120,14 @@ describe("token-utils", () => {
     ));
 
   it("should format a specific transaction fee with given token", () =>
-    expect(formattedTransactionFee(TokenAmount.fromE8s({amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S), token: ICPToken}))).toEqual(
-      "0.0001"
-    ));
+    expect(
+      formattedTransactionFee(
+        TokenAmount.fromE8s({
+          amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+          token: ICPToken,
+        })
+      )
+    ).toEqual("0.0001"));
 
   it("getMaxTransactionAmount should max taking into account fee, maxAmount and converte it to a number", () => {
     const fee = BigInt(DEFAULT_TRANSACTION_FEE_E8S);
