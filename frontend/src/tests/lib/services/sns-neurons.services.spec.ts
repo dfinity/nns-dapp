@@ -5,6 +5,7 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
@@ -56,6 +57,12 @@ const {
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
+  };
+});
+
+jest.mock("$lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn(),
   };
 });
 
@@ -547,7 +554,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    it("should call sns api stakeNeuron and query neurons again", async () => {
+    it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
       const spyStake = jest
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -564,11 +571,12 @@ describe("sns-neurons-services", () => {
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 
   describe("increaseStakeNeuron", () => {
-    it("should call api.increaseStakeNeuron", async () => {
+    it("should call api.increaseStakeNeuron and load sns accounts", async () => {
       const spyOnIncreaseStakeNeuron = jest
         .spyOn(api, "increaseStakeNeuron")
         .mockImplementation(() => Promise.resolve());
@@ -596,6 +604,7 @@ describe("sns-neurons-services", () => {
         identity,
         source: identifier,
       });
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 

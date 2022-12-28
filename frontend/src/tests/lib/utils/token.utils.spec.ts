@@ -5,6 +5,7 @@ import {
   formattedTransactionFeeICP,
   formatToken,
   getMaxTransactionAmount,
+  numberToE8s,
   sumTokenAmounts,
 } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -223,6 +224,15 @@ describe("token-utils", () => {
           exchangeRate: BigInt(10_000),
         })
       ).toBe(4.32);
+    });
+  });
+
+  describe("numberToE8s", () => {
+    it("converts number to e8s", () => {
+      expect(numberToE8s(1.14)).toBe(BigInt(114_000_000));
+      expect(numberToE8s(1)).toBe(BigInt(100_000_000));
+      expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
+      expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
     });
   });
 });

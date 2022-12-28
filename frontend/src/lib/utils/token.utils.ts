@@ -124,4 +124,7 @@ export const convertTCyclesToIcpNumber = ({
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
 export const numberToE8s = (amount: number): bigint =>
-  BigInt(Math.floor(amount * E8S_PER_ICP));
+  TokenAmount.fromNumber({
+    amount,
+    token: ICPToken,
+  }).toE8s();
