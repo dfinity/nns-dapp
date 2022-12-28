@@ -123,6 +123,15 @@ export const convertTCyclesToIcpNumber = ({
   exchangeRate: bigint;
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
+/**
+ * Returns the number of E8s for the given amount.
+ *
+ * E8s have a precision of 8 decimals. An error is thrown if the amount has more than 8 decimals.
+ *
+ * @param {number} amount
+ * @returns {bigint}
+ * @throws {Error} If the amount has more than 8 decimals.
+ */
 export const numberToE8s = (amount: number): bigint =>
   TokenAmount.fromNumber({
     amount,

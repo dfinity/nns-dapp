@@ -4,7 +4,6 @@
   import { i18n } from "$lib/stores/i18n";
   import type { NewTransaction } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { numberToE8s } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Token, TokenAmount } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
@@ -41,7 +40,7 @@
 
     const { success } = await stakeNeuron({
       rootCanisterId,
-      amount: numberToE8s(detail.amount),
+      amount: detail.amount,
       account: detail.sourceAccount,
     });
 

@@ -5,6 +5,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
@@ -71,16 +72,17 @@ export const snsTransferTokens = async ({
   rootCanisterId,
   source,
   destinationAddress,
-  e8s,
+  amount,
   loadTransactions,
 }: {
   rootCanisterId: Principal;
   source: Account;
   destinationAddress: string;
-  e8s: bigint;
+  amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   try {
+    const e8s = numberToE8s(amount);
     const identity: Identity = await getSnsAccountIdentity(source);
     const to = decodeSnsAccount(destinationAddress);
 

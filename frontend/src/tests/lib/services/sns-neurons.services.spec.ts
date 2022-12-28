@@ -23,6 +23,7 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
@@ -564,7 +565,7 @@ describe("sns-neurons-services", () => {
 
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
-        amount: BigInt(200_000_000),
+        amount: 2,
         account: mockSnsMainAccount,
       });
 
@@ -582,7 +583,7 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve());
 
       const rootCanisterId = mockPrincipal;
-      const amount = BigInt(200_000_000);
+      const amount = 2;
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
@@ -600,7 +601,7 @@ describe("sns-neurons-services", () => {
       expect(spyOnIncreaseStakeNeuron).toBeCalledWith({
         neuronId,
         rootCanisterId,
-        stakeE8s: amount,
+        stakeE8s: numberToE8s(amount),
         identity,
         source: identifier,
       });
