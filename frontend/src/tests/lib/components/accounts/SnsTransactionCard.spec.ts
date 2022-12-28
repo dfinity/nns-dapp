@@ -80,6 +80,7 @@ describe("SnsTransactionCard", () => {
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
     const stakeNeuronTransaction = createSnstransactionWithId(toGov, from);
+    stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
       stakeNeuronTransaction,
