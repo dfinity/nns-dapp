@@ -143,7 +143,6 @@
         {#if transactionFee !== undefined && parameters !== undefined && token !== undefined}
           <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
         {:else}
-          f:{transactionFee} p:{parameters} t:{token}
           <SkeletonCard size="large" cardType="info" separator />
         {/if}
         <SnsNeuronInfoStake />
