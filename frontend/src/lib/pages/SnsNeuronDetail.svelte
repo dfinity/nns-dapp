@@ -55,7 +55,8 @@
   $: rootCanisterId = $selectedSnsNeuronStore.selected?.rootCanisterId;
 
   let parameters: NervousSystemParameters | undefined;
-  $: parameters = $snsParametersStore?.[rootCanisterId?.toText() ?? '']?.parameters;
+  $: parameters =
+    $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 
   let transactionFee: E8s | undefined;
   $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();

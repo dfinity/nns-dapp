@@ -33,7 +33,7 @@
   <button
     class="secondary"
     on:click={() => openSnsNeuronModal({ type: "split-neuron" })}
-    data-tid="disburse-button">{$i18n.neuron_detail.split_neuron}</button
+    data-tid="split-neuron-button">{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
   <Tooltip
