@@ -1,5 +1,7 @@
+import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { NeuronState } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type {
   NervousSystemParameters,
   SnsNeuron,
@@ -70,6 +72,26 @@ export const mockSnsNeuronWithPermissions = (
     },
   ],
 });
+
+export const buildMockSnsNeuronsStoreSubscribe =
+  ({
+    neurons,
+    rootCanisterId,
+  }: {
+    neurons: SnsNeuron[];
+    rootCanisterId: Principal;
+  }) =>
+  (
+    run: Subscriber<{ [rootCanisterId: string]: ProjectNeuronStore }>
+  ): (() => void) => {
+    run({
+      [rootCanisterId.toText()]: {
+        neurons,
+        certified: true,
+      },
+    });
+    return () => undefined;
+  };
 
 export const buildMockSortedSnsNeuronsStoreSubscribe =
   (neurons: SnsNeuron[] = []) =>

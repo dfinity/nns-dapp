@@ -41,13 +41,18 @@ import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import {
+  buildMockSnsNeuronsStoreSubscribe,
+  mockSnsNeuron,
+} from "../../mocks/sns-neurons.mock";
+import { mockToken } from "../../mocks/sns-projects.mock";
 
 const {
   syncSnsNeurons,
   getSnsNeuron,
   addHotkey,
   removeHotkey,
+  splitNeuron,
   stakeNeuron,
   loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
   addFollowee,
@@ -419,6 +424,71 @@ describe("sns-neurons-services", () => {
         rootCanisterId: mockPrincipal,
         permissions: HOTKEY_PERMISSIONS,
       });
+    });
+  });
+
+  describe("splitNeuron", () => {
+    beforeEach(() => {
+      jest.spyOn(services, "loadNeurons").mockResolvedValue(undefined);
+
+      jest.spyOn(snsNeuronsStore, "subscribe").mockImplementation(
+        buildMockSnsNeuronsStoreSubscribe({
+          rootCanisterId: mockPrincipal,
+          neurons: [mockSnsNeuron],
+        })
+      );
+    });
+
+    afterEach(jest.clearAllMocks);
+
+    it.only("should call api.addNeuronPermissions", async () => {
+      const spySplitNeuron = jest
+        .spyOn(governanceApi, "splitNeuron")
+        .mockImplementation(() => Promise.resolve());
+      const spyLoadNeurons = jest
+        .spyOn(services, "loadNeurons")
+        .mockResolvedValue(undefined);
+      const amount = 1000n;
+      const transactionFee = 100n;
+      const neuronMinimumStake = 1000n;
+      const { success } = await splitNeuron({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        rootCanisterId: mockPrincipal,
+        amount,
+        transactionFee,
+        token: mockToken,
+        neuronMinimumStake,
+      });
+      expect(success).toBeTruthy();
+      expect(spyLoadNeurons).toBeCalled();
+      expect(spySplitNeuron).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        identity: mockIdentity,
+        rootCanisterId: mockPrincipal,
+        amount: amount + transactionFee,
+        memo: 0n,
+      });
+    });
+
+    it.only("should display error if not enough amount", async () => {
+      const spySplitNeuron = jest
+        .spyOn(governanceApi, "splitNeuron")
+        .mockImplementation(() => Promise.resolve());
+      const amount = 1000n;
+      const transactionFee = 100n;
+      const neuronMinimumStake = 2000n;
+      const { success } = await splitNeuron({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        rootCanisterId: mockPrincipal,
+        amount,
+        transactionFee,
+        token: mockToken,
+        neuronMinimumStake,
+      });
+
+      expect(toastsError).toBeCalled();
+      expect(success).toBeFalsy();
+      expect(spySplitNeuron).not.toBeCalled();
     });
   });
 
