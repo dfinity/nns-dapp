@@ -115,7 +115,11 @@ const getSnsTransactionType = ({
   if (transfer !== undefined) {
     // A transaction to an account owned by the governance canister stakes a neuron.
     if (transfer.to.owner.toText() === governanceCanisterId?.toText()) {
-      return AccountTransactionType.StakeNeuron;
+      // Staking a neuron uses a memo, but topping up a neuron does not.
+      if (transfer.memo.length > 0) {
+        return AccountTransactionType.StakeNeuron;
+      }
+      return AccountTransactionType.TopUpNeuron;
     }
     return AccountTransactionType.Send;
   }
