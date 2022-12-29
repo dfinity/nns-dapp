@@ -48,6 +48,7 @@ import {
   mockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
 import { mockToken } from "../../mocks/sns-projects.mock";
+import {E8S_PER_ICP} from "$lib/constants/icp.constants";
 
 const {
   syncSnsNeurons,
@@ -983,7 +984,7 @@ describe("sns-neurons-services", () => {
       const spyLoadNeurons = jest
         .spyOn(services, "loadNeurons")
         .mockResolvedValue(undefined);
-      const amount = 1000n;
+      const amount = 10;
       const transactionFee = 100n;
       const neuronMinimumStake = 1000n;
       const { success } = await splitNeuron({
@@ -1000,7 +1001,7 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
-        amount: amount + transactionFee,
+        amount: BigInt(amount * E8S_PER_ICP) + transactionFee,
         memo: 0n,
       });
     });
@@ -1010,7 +1011,7 @@ describe("sns-neurons-services", () => {
         .spyOn(governanceApi, "splitNeuron")
         .mockImplementation(() => Promise.resolve())
         .mockReset();
-      const amount = 1000n;
+      const amount = .00001;
       const transactionFee = 100n;
       const neuronMinimumStake = 2000n;
       const { success } = await splitNeuron({
