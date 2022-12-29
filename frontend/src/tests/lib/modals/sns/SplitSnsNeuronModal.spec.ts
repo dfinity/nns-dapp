@@ -78,5 +78,6 @@ describe("SplitSnsNeuronModal", () => {
     splitButton && (await fireEvent.click(splitButton));
 
     expect(splitNeuron).toHaveBeenCalled();
+    expect(reloadNeuronSpy).toHaveBeenCalled();
   });
 });

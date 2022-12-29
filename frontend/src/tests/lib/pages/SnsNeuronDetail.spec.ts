@@ -8,6 +8,8 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { getSnsNeuron } from "$lib/services/sns-neurons.services";
+import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
@@ -22,6 +24,16 @@ import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 let validNeuron = true;
+jest.mock("$lib/services/sns-parameters.services", () => {
+  return {
+    loadSnsParameters: jest.fn(),
+  };
+});
+jest.mock("$lib/services/transaction-fees.services", () => {
+  return {
+    loadSnsTransactionFee: jest.fn(),
+  };
+});
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     getSnsNeuron: jest.fn().mockImplementation(({ onLoad, onError }) => {
@@ -69,6 +81,13 @@ describe("SnsNeuronDetail", () => {
       render(SnsNeuronDetail, props);
 
       await waitFor(() => expect(getSnsNeuron).toBeCalled());
+    });
+
+    it("should load parameters", async () => {
+      render(SnsNeuronDetail, props);
+
+      await waitFor(() => expect(loadSnsParameters).toBeCalled());
+      await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
     });
 
     it("should render main information card", async () => {
