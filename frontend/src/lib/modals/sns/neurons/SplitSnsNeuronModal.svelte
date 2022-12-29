@@ -63,7 +63,7 @@
       return;
     }
 
-    startBusy({ initiator: "split-neuron" });
+    startBusy({ initiator: "split-sns-neuron" });
 
     const { success } = await splitNeuron({
       rootCanisterId,
@@ -83,7 +83,7 @@
       close();
     }
 
-    stopBusy("split-neuron");
+    stopBusy("split-sns-neuron");
   };
 </script>
 
