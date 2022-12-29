@@ -58,6 +58,7 @@ import {
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
+import { loadSnsAccounts } from "./sns-accounts.services";
 import {
   checkSnsNeuronBalances,
   neuronNeedsRefresh,
@@ -487,7 +488,7 @@ export const increaseStakeNeuron = async ({
   neuronId,
 }: {
   rootCanisterId: Principal;
-  amount: bigint;
+  amount: number;
   account: Account;
   neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
@@ -495,14 +496,16 @@ export const increaseStakeNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
 
+    const stakeE8s = numberToE8s(amount);
     await increaseStakeNeuronApi({
       // We can cast it because we already checked that the neuron id is not undefined
       neuronId,
       rootCanisterId,
-      stakeE8s: amount,
+      stakeE8s,
       identity,
       source: decodeSnsAccount(account.identifier),
     });
+    await loadSnsAccounts({ rootCanisterId });
 
     return { success: true };
   } catch (err) {
@@ -523,20 +526,24 @@ export const stakeNeuron = async ({
   account,
 }: {
   rootCanisterId: Principal;
-  amount: bigint;
+  amount: number;
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
+    const stakeE8s = numberToE8s(amount);
     await stakeNeuronApi({
       controller: identity.getPrincipal(),
       rootCanisterId,
-      stakeE8s: amount,
+      stakeE8s,
       identity,
       source: decodeSnsAccount(account.identifier),
     });
-    await loadNeurons({ rootCanisterId, certified: true });
+    await Promise.all([
+      loadSnsAccounts({ rootCanisterId }),
+      loadNeurons({ rootCanisterId, certified: true }),
+    ]);
     return { success: true };
   } catch (err) {
     toastsError(

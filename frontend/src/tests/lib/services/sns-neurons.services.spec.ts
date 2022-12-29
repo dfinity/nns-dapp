@@ -5,6 +5,7 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
@@ -22,6 +23,7 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
@@ -61,6 +63,12 @@ const {
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
+  };
+});
+
+jest.mock("$lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn(),
   };
 });
 
@@ -552,7 +560,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    it("should call sns api stakeNeuron and query neurons again", async () => {
+    it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
       const spyStake = jest
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -562,24 +570,25 @@ describe("sns-neurons-services", () => {
 
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
-        amount: BigInt(200_000_000),
+        amount: 2,
         account: mockSnsMainAccount,
       });
 
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 
   describe("increaseStakeNeuron", () => {
-    it("should call api.increaseStakeNeuron", async () => {
+    it("should call api.increaseStakeNeuron and load sns accounts", async () => {
       const spyOnIncreaseStakeNeuron = jest
         .spyOn(api, "increaseStakeNeuron")
         .mockImplementation(() => Promise.resolve());
 
       const rootCanisterId = mockPrincipal;
-      const amount = BigInt(200_000_000);
+      const amount = 2;
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
@@ -597,10 +606,11 @@ describe("sns-neurons-services", () => {
       expect(spyOnIncreaseStakeNeuron).toBeCalledWith({
         neuronId,
         rootCanisterId,
-        stakeE8s: amount,
+        stakeE8s: numberToE8s(amount),
         identity,
         source: identifier,
       });
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 
