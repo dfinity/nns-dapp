@@ -321,6 +321,10 @@ export const isSnsNeuron = (
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
 
+/*
+- The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
+- The parent's stake minus amount to split is more than the minimum stake (thus the parent neuron will have at least the minimum stake)
+ */
 export const minNeuronSplittable = ({
   fee,
   neuronMinimumStake,
@@ -339,14 +343,6 @@ export const isEnoughAmountToSplit = ({
   neuronMinimumStake: E8s;
 }): boolean => amount >= neuronMinimumStake + fee;
 
-/*
-neuron_minimum_stake_e8s
-transaction_fee_e8s
-split.amount_e8s < min_stake + transaction_fee_e8s
-
-- The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
-- The parent's stake minus amount to split is more than the minimum stake (thus the parent neuron will have at least the minimum stake)
- */
 export const neuronCanBeSplit = ({
   neuron,
   fee,

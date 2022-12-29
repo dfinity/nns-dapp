@@ -68,7 +68,7 @@
     const { success } = await splitNeuron({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
-      amount: BigInt(Math.round(amount * Number(E8S_PER_ICP))),
+      amount,
       transactionFee,
       neuronMinimumStake,
       token,

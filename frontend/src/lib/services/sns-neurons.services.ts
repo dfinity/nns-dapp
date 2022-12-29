@@ -40,7 +40,7 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { E8s, Token } from "@dfinity/nns";
@@ -308,13 +308,15 @@ export const splitNeuron = async ({
 }: {
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  amount: E8s;
+  amount: number;
   transactionFee: E8s;
   token: Token;
   neuronMinimumStake: E8s;
 }): Promise<{ success: boolean }> => {
   try {
-    const amountAndFee = amount + transactionFee;
+    const amountE8s = numberToE8s(amount);
+
+    const amountAndFee = amountE8s + transactionFee;
 
     // minimum validation
     if (

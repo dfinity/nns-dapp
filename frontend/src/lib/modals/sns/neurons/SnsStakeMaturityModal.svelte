@@ -32,7 +32,6 @@
     });
 
     await reloadNeuron();
-    // TODO: Checks subaccounts of identity in order to find neurons that need to be refreshed or claimed. ?
 
     if (success) {
       toastsSuccess({
