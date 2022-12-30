@@ -16,8 +16,8 @@ import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
+  buildMockSnsParametersStore,
   mockSnsNeuron,
-  mockSnsParametersStore,
 } from "../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
@@ -48,20 +48,31 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsNeuronDetail", () => {
+  const mockParametersStore = () =>
+    jest
+      .spyOn(snsParametersStore, "subscribe")
+      .mockImplementation(buildMockSnsParametersStore());
+  const mockFeeStore = () =>
+    jest
+      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+
+  beforeAll(() => {
+    mockParametersStore();
+    mockFeeStore();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
   beforeEach(() => {
     jest
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
       .mockImplementation(mockTokenStore);
-    jest
-      .spyOn(snsParametersStore, "subscribe")
-      .mockImplementation(mockSnsParametersStore);
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     validNeuron = true;
   });
 
@@ -83,11 +94,38 @@ describe("SnsNeuronDetail", () => {
       await waitFor(() => expect(getSnsNeuron).toBeCalled());
     });
 
-    it("should load parameters", async () => {
+    it("should not load parameters and fee when available", async () => {
       render(SnsNeuronDetail, props);
 
-      await waitFor(() => expect(loadSnsParameters).toBeCalled());
-      await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
+      await waitFor(() => expect(loadSnsParameters).not.toBeCalled());
+      await waitFor(() => expect(loadSnsTransactionFee).not.toBeCalled());
+    });
+
+    describe("", () => {
+      beforeAll(() => {
+        // empty stores
+        jest
+          .spyOn(snsParametersStore, "subscribe")
+          .mockImplementation(buildMockSnsParametersStore(true));
+        jest
+          .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+          .mockImplementation(
+            mockSnsSelectedTransactionFeeStoreSubscribe(true)
+          );
+      });
+
+      afterAll(() => {
+        // restore stores
+        mockParametersStore();
+        mockFeeStore();
+      });
+
+      it("should load parameters and fee if not available", async () => {
+        render(SnsNeuronDetail, props);
+
+        await waitFor(() => expect(loadSnsParameters).toBeCalled());
+        await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
+      });
     });
 
     it("should render main information card", async () => {
