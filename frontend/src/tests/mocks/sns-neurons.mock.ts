@@ -141,14 +141,20 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   max_number_of_principals_per_neuron: [5n],
 };
 
-export const mockSnsParametersStore = (
-  run: Subscriber<{ [rootCanisterId: string]: SnsParameters }>
-): (() => void) => {
-  run({
-    [rootCanisterIdMock.toText()]: {
-      parameters: snsNervousSystemParametersMock,
-      certified: true,
-    },
-  });
-  return () => undefined;
-};
+export const buildMockSnsParametersStore =
+  (notDefined = false) =>
+  (
+    run: Subscriber<{ [rootCanisterId: string]: SnsParameters }>
+  ): (() => void) => {
+    run(
+      notDefined
+        ? undefined
+        : {
+            [rootCanisterIdMock.toText()]: {
+              parameters: snsNervousSystemParametersMock,
+              certified: true,
+            },
+          }
+    );
+    return () => undefined;
+  };
