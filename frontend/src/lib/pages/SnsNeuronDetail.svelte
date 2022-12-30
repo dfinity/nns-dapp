@@ -31,6 +31,7 @@
   import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
 
   export let neuronId: string | null | undefined;
 
@@ -91,14 +92,6 @@
     }
   };
 
-  $: rootCanisterId,
-    (() => {
-      if (rootCanisterId !== undefined) {
-        loadSnsParameters(rootCanisterId);
-        loadSnsTransactionFee({ rootCanisterId });
-      }
-    })();
-
   onMount(async () => {
     if (neuronId === undefined || neuronId === null) {
       await goBack(true);
@@ -106,16 +99,30 @@
     }
 
     try {
+      const rootCanisterId = Principal.fromText($pageStore.universe);
       // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
       selectedSnsNeuronStore.set({
         selected: {
           neuronIdHex: neuronId,
-          rootCanisterId: Principal.fromText($pageStore.universe),
+          rootCanisterId,
         },
         neuron: null,
       });
 
-      await loadNeuron();
+      const loadParameters = isNullish(
+        $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters
+      );
+      const loadTransactionFee = isNullish(
+        $snsSelectedTransactionFeeStore?.toE8s()
+      );
+
+      await Promise.all([
+        loadNeuron(),
+        loadParameters ? loadSnsParameters(rootCanisterId) : undefined,
+        loadTransactionFee
+          ? loadSnsTransactionFee({ rootCanisterId })
+          : undefined,
+      ]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack(true);
@@ -140,7 +147,7 @@
         <SkeletonCard cardType="info" separator />
         <SkeletonCard cardType="info" separator />
       {:else}
-        {#if transactionFee !== undefined && parameters !== undefined && token !== undefined}
+        {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
           <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
         {:else}
           <SkeletonCard size="large" cardType="info" separator />
