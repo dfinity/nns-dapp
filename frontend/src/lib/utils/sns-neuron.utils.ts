@@ -38,7 +38,9 @@ export const getSnsNeuronState = ({
       : NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    return dissolveState.WhenDissolvedTimestampSeconds < Date.now() / 1000
+    // In case `nowInSeconds` ever changes and doesn't return an integer we use Math.floor
+    return dissolveState.WhenDissolvedTimestampSeconds <
+      BigInt(Math.floor(nowInSeconds()))
       ? NeuronState.Dissolved
       : NeuronState.Dissolving;
   }
