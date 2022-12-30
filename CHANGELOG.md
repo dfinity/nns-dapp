@@ -3,7 +3,6 @@
 ## Proposal 99659
 * Fix disburse button in SNS neurons
 * Fix rounding error in sns transactions
-* Identify SNS top up neuron transaction
 
 ## Proposal 98559
 * Gzip wasm for proposal payload
