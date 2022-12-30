@@ -1,7 +1,7 @@
 # Changelog
 
-## Proposal XXX
-* Fix display dissolved neuron if dissolved in the past
+## Proposal 99659
+* Fix disburse button in SNS neurons
 * Fix rounding error in sns transactions
 * Identify SNS top up neuron transaction
 
