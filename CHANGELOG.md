@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXX
+* Fix display dissolved neuron if dissolved in the past
+* Fix rounding error in sns transactions
+* Identify SNS top up neuron transaction
+
 ## Proposal 98559
 * Gzip wasm for proposal payload
 * Staking sns neuron.
