@@ -74,9 +74,9 @@
       token,
     });
 
-    await reloadNeuron();
-
     if (success) {
+      await reloadNeuron();
+
       toastsSuccess({
         labelKey: "neuron_detail.split_neuron_success",
       });

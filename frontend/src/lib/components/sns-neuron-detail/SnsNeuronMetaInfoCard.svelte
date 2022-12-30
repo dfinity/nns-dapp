@@ -69,7 +69,7 @@
   };
 </script>
 
-{#if nonNullish(neuron) && nonNullish(neuronState) && nonNullish(parameters)}
+{#if nonNullish(neuron) && nonNullish(neuronState)}
   <div class="content-cell-details">
     <KeyValuePair>
       <SnsNeuronCardTitle
@@ -86,15 +86,8 @@
     <SnsNeuronStateRemainingTime {neuron} inline={false} />
 
     <div class="buttons">
-      {#if ENABLE_SNS_2}
-        {#if allowedToSplit}
-          <SplitSnsNeuronButton
-            {neuron}
-            {parameters}
-            {token}
-            {transactionFee}
-          />
-        {/if}
+      {#if ENABLE_SNS_2 && allowedToSplit}
+        <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
       {/if}
     </div>
   </div>

@@ -4,6 +4,7 @@
 
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
@@ -48,7 +49,6 @@ import {
   mockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
 import { mockToken } from "../../mocks/sns-projects.mock";
-import {E8S_PER_ICP} from "$lib/constants/icp.constants";
 
 const {
   syncSnsNeurons,
@@ -1011,7 +1011,7 @@ describe("sns-neurons-services", () => {
         .spyOn(governanceApi, "splitNeuron")
         .mockImplementation(() => Promise.resolve())
         .mockReset();
-      const amount = .00001;
+      const amount = 0.00001;
       const transactionFee = 100n;
       const neuronMinimumStake = 2000n;
       const { success } = await splitNeuron({

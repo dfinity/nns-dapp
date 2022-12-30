@@ -81,7 +81,7 @@ export const formattedTransactionFeeICP = (fee: number | bigint): string =>
 export const formattedTransactionFee = (fee: TokenAmount): string =>
   formatToken({
     value: TokenAmount.fromE8s({
-      amount: BigInt(fee.toE8s()),
+      amount: fee.toE8s(),
       token: fee.token,
     }).toE8s(),
   });

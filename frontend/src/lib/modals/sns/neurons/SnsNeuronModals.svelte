@@ -129,7 +129,7 @@
         />
       {/if}
 
-      {#if parameters !== undefined && transactionFee !== undefined}
+      {#if nonNullish(parameters) && nonNullish(transactionFee)}
         {#if type === "split-neuron"}
           <SplitSnsNeuronModal
             {rootCanisterId}

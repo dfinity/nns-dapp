@@ -700,7 +700,7 @@
     "sns_load_functions": "There was an error while loading the project topics.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
     "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
-    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake a neuron"
+    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake a neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",
