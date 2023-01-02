@@ -1,5 +1,6 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
+  import Content from "$lib/components/common/Content.svelte";
   import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
 
@@ -7,5 +8,7 @@
 </script>
 
 <Layout {back}>
-  <slot />
+  <Content {back}>
+    <slot />
+  </Content>
 </Layout>

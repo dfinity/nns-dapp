@@ -1,5 +1,6 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
+  import Content from "$lib/components/common/Content.svelte";
   import { afterNavigate, goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { Navigation } from "@sveltejs/kit";
@@ -14,6 +15,8 @@
     );
 </script>
 
-<Layout {back}>
-  <slot />
+<Layout>
+  <Content {back}>
+    <slot />
+  </Content>
 </Layout>

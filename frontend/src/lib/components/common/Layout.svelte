@@ -1,14 +1,7 @@
 <script lang="ts">
   import Banner from "../header/Banner.svelte";
   import MenuItems from "./MenuItems.svelte";
-  import { layoutTitleStore } from "$lib/stores/layout.store";
-  import { Layout, HeaderTitle, Content } from "@dfinity/gix-components";
-  import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import { triggerDebugReport } from "$lib/directives/debug.directives";
-
-  export let back: (() => Promise<void>) | undefined = undefined;
-
-  export let contrast = false;
+  import { Layout } from "@dfinity/gix-components";
 </script>
 
 <Banner />
@@ -16,23 +9,5 @@
 <Layout>
   <MenuItems slot="menu-items" />
 
-  <Content
-    back={back !== undefined}
-    {contrast}
-    on:nnsBack={async () => await back?.()}
-  >
-    <div use:triggerDebugReport slot="title">
-      <HeaderTitle>{$layoutTitleStore}</HeaderTitle>
-    </div>
-
-    <AccountMenu slot="toolbar-end" />
-
-    <slot />
-  </Content>
+  <slot />
 </Layout>
-
-<style lang="scss">
-  div {
-    max-width: inherit;
-  }
-</style>
