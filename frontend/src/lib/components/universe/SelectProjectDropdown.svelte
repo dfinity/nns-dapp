@@ -41,10 +41,12 @@
     name: string;
     canisterId: string;
   };
+
   const nnsProject = {
     name: $i18n.core.nns,
     canisterId: OWN_CANISTER_ID.toText(),
   };
+
   let selectableProjects: SelectableProject[] = [nnsProject];
   const unsubscribe = committedProjectsStore.subscribe((projects) => {
     selectableProjects = [
