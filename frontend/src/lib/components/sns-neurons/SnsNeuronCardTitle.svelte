@@ -23,7 +23,12 @@
 </script>
 
 <div class="identifier" data-tid="sns-neuron-card-title">
-  <div use:onIntersection on:nnsIntersecting data-tid="neuron-id-container">
+  <div
+    use:onIntersection
+    on:nnsIntersecting
+    data-tid="neuron-id-container"
+    class="hash"
+  >
     <Hash
       id="neuron-id"
       {tagName}
@@ -38,11 +43,11 @@
 </div>
 
 <style lang="scss">
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/media";
-  @use "../../../../node_modules/@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
-  .identifier {
-    @include card.stacked-title;
-    word-break: break-word;
+  .hash {
+    @include fonts.standard(true);
   }
 </style>
