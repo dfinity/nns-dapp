@@ -246,6 +246,7 @@
     "dissolve_delay_title": "Dissolve Delay",
     "no_delay": "0",
     "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "dissolve_delay_label": "Dissolve Delay (in days)",
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
