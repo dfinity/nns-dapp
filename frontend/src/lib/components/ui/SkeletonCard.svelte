@@ -36,7 +36,6 @@
       <SkeletonText />
       <SkeletonText />
     {/if}
-
   </div>
 </svelte:component>
 

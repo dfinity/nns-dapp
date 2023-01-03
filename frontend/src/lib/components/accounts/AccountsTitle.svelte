@@ -20,11 +20,11 @@
       <AccountsBalance {balance} />
     </div>
   </Summary>
-  {:else}
-    <div class="amount">
-      <AccountsBalance {balance} />
-    </div>
-  {/if}
+{:else}
+  <div class="amount">
+    <AccountsBalance {balance} />
+  </div>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";

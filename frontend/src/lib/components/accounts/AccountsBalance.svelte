@@ -12,9 +12,9 @@
   $: totalTokens =
     balance !== undefined
       ? formatToken({
-        value: balance.toE8s(),
-        detailed: true,
-      })
+          value: balance.toE8s(),
+          detailed: true,
+        })
       : "";
 </script>
 
@@ -22,8 +22,8 @@
   <Tooltip
     id="wallet-total-icp"
     text={replacePlaceholders($i18n.accounts.current_balance_total, {
-          $amount: totalTokens,
-        })}
+      $amount: totalTokens,
+    })}
   >
     <AmountDisplay copy amount={balance}>
       <span>{$i18n.accounts.total}</span>
