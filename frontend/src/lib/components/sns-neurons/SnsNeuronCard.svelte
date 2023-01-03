@@ -19,7 +19,7 @@
 </script>
 
 <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <SnsNeuronCardTitle slot="start" {neuron} />
+  <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
 
   <div class="content">
     <SnsNeuronAmount {neuron} />
@@ -33,11 +33,9 @@
 </NeuronCardContainer>
 
 <style lang="scss">
-  .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  @use "../../themes/mixins/neuron";
 
-    width: 100%;
+  .content {
+    @include neuron.neuron-card-content;
   }
 </style>

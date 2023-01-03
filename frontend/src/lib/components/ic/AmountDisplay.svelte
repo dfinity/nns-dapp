@@ -90,7 +90,11 @@
 
     &.title {
       span.value {
-        @include fonts.h1(true);
+        @include fonts.h2(true);
+
+        @include media.min-width(medium) {
+          @include fonts.h1(true);
+        }
       }
     }
 

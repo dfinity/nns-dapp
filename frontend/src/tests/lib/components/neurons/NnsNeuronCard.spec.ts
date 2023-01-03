@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
+import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -16,7 +16,7 @@ import {
 import en from "../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-describe("NeuronCard", () => {
+describe("NnsNeuronCard", () => {
   beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
@@ -24,7 +24,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders a Card", () => {
-    const { container } = render(NeuronCard, {
+    const { container } = render(NnsNeuronCard, {
       props: { neuron: mockNeuron },
     });
 
@@ -35,7 +35,7 @@ describe("NeuronCard", () => {
 
   it("is clickable", async () => {
     const spyClick = jest.fn();
-    const { container, component } = render(NeuronCard, {
+    const { container, component } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
       },
@@ -52,7 +52,7 @@ describe("NeuronCard", () => {
   it("renders role and aria-label passed", async () => {
     const role = "link";
     const ariaLabel = "test label";
-    const { container } = render(NeuronCard, {
+    const { container } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
         role,
@@ -67,7 +67,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders the neuron stake and identifier", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
       },
@@ -92,7 +92,7 @@ describe("NeuronCard", () => {
         spawnAtTimesSeconds: BigInt(3600 * 24 * 6 + 3600 * 4),
       },
     };
-    const { queryByTestId } = render(NeuronCard, {
+    const { queryByTestId } = render(NnsNeuronCard, {
       props: {
         neuron,
       },
@@ -102,7 +102,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders the community fund label when neuron part of community fund", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -115,7 +115,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders the hotkey_control label when neuron is not controlled by current user but by hotkey", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -133,7 +133,7 @@ describe("NeuronCard", () => {
 
   it("renders proper text when status is LOCKED", async () => {
     const MORE_THAN_ONE_YEAR = 60 * 60 * 24 * 365 * 1.5;
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -148,7 +148,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVED", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -161,7 +161,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders proper text when status is SPAWNING", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -179,7 +179,7 @@ describe("NeuronCard", () => {
 
   it("renders proper text when status is DISSOLVING", async () => {
     const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
           ...mockNeuron,
@@ -199,7 +199,7 @@ describe("NeuronCard", () => {
   });
 
   it("renders voting power in `proposerNeuron` version", async () => {
-    const { getByText } = render(NeuronCard, {
+    const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
         proposerNeuron: true,
