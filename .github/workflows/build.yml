@@ -76,6 +76,8 @@ jobs:
 
       - name: Set nns-dapp canister ID
         run: |
+          # Note: The nns-dapp deployed by 'dfx nns install' is replaced by the current build.
+          # The canister ID must match, so that the build can be used by future releases of 'dfx nns install'.
           set -x
           sudo apt-get install -yy moreutils
           export DFX_CANISTER_ID="$(sed -nr 's,^nns-dapp +http://([-a-z0-9]+).*,\1,g;ta;b;:a;p;q' ,nns-install)"
