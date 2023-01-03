@@ -23,6 +23,7 @@
 </script>
 
 <div class="identifier" data-tid="sns-neuron-card-title">
+  <!-- Forward on:nnsIntersecting to parent to update title on scroll -->
   <div
     use:onIntersection
     on:nnsIntersecting
