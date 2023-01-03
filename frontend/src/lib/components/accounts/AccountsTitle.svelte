@@ -19,7 +19,7 @@
       : "";
 </script>
 
-<Summary selectProjects={false}>
+<Summary projects="display">
   <div class="details" slot="details">
     {#if balance !== undefined}
       <Tooltip

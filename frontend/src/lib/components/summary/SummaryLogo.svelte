@@ -5,10 +5,10 @@
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
 
   export let size: "big" | "small" = "small";
-  export let selectProjects = ENABLE_SNS;
+  export let displayProjects = ENABLE_SNS;
 
   let summary: SnsSummary | undefined;
-  $: summary = selectProjects ? $snsProjectSelectedStore?.summary : undefined;
+  $: summary = displayProjects ? $snsProjectSelectedStore?.summary : undefined;
 </script>
 
 <ProjectLogo {size} {summary} />
