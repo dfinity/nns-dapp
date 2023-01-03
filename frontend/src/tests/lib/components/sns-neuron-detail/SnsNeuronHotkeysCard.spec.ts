@@ -6,8 +6,9 @@ import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHot
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
@@ -34,9 +35,13 @@ describe("SnsNeuronHotkeysCard", () => {
   ];
   const controlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
-    permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-      addHotkeyPermissions
-    ),
+    permissions: [
+      ...[...hotkeys].map(addHotkeyPermissions),
+      {
+        principal: [mockIdentity.getPrincipal()],
+        permission_type: Int32Array.from(enumValues(SnsNeuronPermissionType)),
+      },
+    ],
   };
 
   const unControlledNeuron: SnsNeuron = {
@@ -91,7 +96,31 @@ describe("SnsNeuronHotkeysCard", () => {
     const removeButtons = queryAllByTestId("remove-hotkey-button");
     fireEvent.click(removeButtons[0]);
 
-    expect(removeHotkey).toBeCalled();
     await waitFor(() => expect(reload).toBeCalledWith());
+    expect(removeHotkey).toBeCalled();
+  });
+
+  it("shows confirmation modal if hotkey is the current user", async () => {
+    const hotkeyNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      permissions: [mockIdentity.getPrincipal().toText()].map(
+        addHotkeyPermissions
+      ),
+    };
+    const { queryAllByTestId, queryByTestId } = renderCard(hotkeyNeuron);
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    fireEvent.click(removeButtons[0]);
+
+    await waitFor(() =>
+      expect(
+        queryByTestId("remove-current-user-hotkey-confirmation")
+      ).toBeInTheDocument()
+    );
+    const confirmButton = queryByTestId("confirm-yes");
+    confirmButton && fireEvent.click(confirmButton);
+
+    await waitFor(() => expect(reload).toBeCalledWith());
+    expect(removeHotkey).toBeCalled();
   });
 });

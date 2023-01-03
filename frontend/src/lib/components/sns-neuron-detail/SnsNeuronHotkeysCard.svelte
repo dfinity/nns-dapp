@@ -25,6 +25,10 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { goto } from "$app/navigation";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -50,6 +54,22 @@
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
 
+  let currentIdentityString: string | undefined;
+  $: currentIdentityString = $authStore.identity?.getPrincipal().toText();
+
+  let showConfirmationHotkey: string | undefined;
+  const closeConfirmation = () => {
+    showConfirmationHotkey = undefined;
+  };
+  const maybeRemove = async (hotkey: string) => {
+    // Require confirmation if the user is removing itself from the hotkeys.
+    if (currentIdentityString === hotkey) {
+      showConfirmationHotkey = hotkey;
+    } else {
+      remove(hotkey);
+    }
+  };
+
   const remove = async (hotkey: string) => {
     // Edge case: Remove button is shwon only when neuron is defined
     if (neuronId === undefined) {
@@ -63,6 +83,15 @@
       hotkey,
       rootCanisterId: $snsProjectIdSelectedStore,
     });
+    // If the user removes itself from the hotkeys, it has no more access to the detail page.
+    if (currentIdentityString === hotkey && success) {
+      toastsShow({
+        level: "success",
+        labelKey: "neurons.remove_hotkey_success",
+      });
+
+      await goto($neuronsPathStore);
+    }
     if (success) {
       await reload();
     }
@@ -103,7 +132,7 @@
               <button
                 class="text"
                 aria-label={$i18n.core.remove}
-                on:click={() => remove(hotkey)}
+                on:click={() => maybeRemove(hotkey)}
                 data-tid="remove-hotkey-button"
                 ><IconClose size="18px" /></button
               >
@@ -118,6 +147,15 @@
       </div>
     {/if}
   </CardInfo>
+{/if}
+
+{#if showConfirmationHotkey !== undefined}
+  <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->
+  {@const hotkey = showConfirmationHotkey}
+  <ConfirmRemoveCurrentUserHotkey
+    on:nnsClose={closeConfirmation}
+    on:nnsConfirm={() => remove(hotkey)}
+  />
 {/if}
 
 <style lang="scss">
