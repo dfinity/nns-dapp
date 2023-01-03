@@ -5,7 +5,6 @@
   import { formatToken } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let balance: TokenAmount | undefined;
 
@@ -19,22 +18,20 @@
       : "";
 </script>
 
-<Summary projects="display">
-  <div class="details" slot="details">
-    {#if balance !== undefined}
-      <Tooltip
-        id="wallet-total-icp"
-        text={replacePlaceholders($i18n.accounts.current_balance_total, {
+<div class="details">
+  {#if balance !== undefined}
+    <Tooltip
+      id="wallet-total-icp"
+      text={replacePlaceholders($i18n.accounts.current_balance_total, {
           $amount: totalTokens,
         })}
-      >
-        <AmountDisplay copy amount={balance}>
-          <span>{$i18n.accounts.total}</span>
-        </AmountDisplay>
-      </Tooltip>
-    {/if}
-  </div>
-</Summary>
+    >
+      <AmountDisplay copy amount={balance}>
+        <span>{$i18n.accounts.total}</span>
+      </AmountDisplay>
+    </Tooltip>
+  {/if}
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
@@ -42,6 +39,6 @@
   .details {
     height: var(--padding-4x);
     color: var(--description-color);
-    @include fonts.small;
+    padding: 0 0 var(--padding-2x);
   }
 </style>

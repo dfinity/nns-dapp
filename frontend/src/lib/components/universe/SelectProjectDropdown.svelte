@@ -48,7 +48,7 @@
 
     {#each $selectableProjects as { canisterId, summary } (canisterId)}
       <DropdownItem value={canisterId}
-        >{summary?.metadata.name ?? $i18n.core.nns}</DropdownItem
+        >{summary?.metadata.name ?? $i18n.core.ic}</DropdownItem
       >
     {/each}
   </Dropdown>

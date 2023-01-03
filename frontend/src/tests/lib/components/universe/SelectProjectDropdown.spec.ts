@@ -48,7 +48,7 @@ describe("SelectProjectDropdown", () => {
         (container.querySelector("option:first-of-type") as HTMLElement)
           .textContent ?? ""
       ).trim()
-    ).toBe(en.core.nns);
+    ).toBe(en.core.ic);
     expect(
       (
         (container.querySelector("option:last-of-type") as HTMLElement)

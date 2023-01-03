@@ -12,7 +12,7 @@
 </script>
 
 <Nav>
-  <h3 slot="title">{$i18n.core.pick_a_project}</h3>
+  <p slot="title">{$i18n.core.pick_a_project}</p>
 
   {#each $selectableProjects as { canisterId, summary } (canisterId)}
     <Card
@@ -24,7 +24,7 @@
       <div class:selected={canisterId === selectedCanisterId}>
         <ProjectLogo size="big" {summary} framed={true} />
 
-        <span class="title">{summary?.metadata.name ?? $i18n.core.nns}</span>
+        <span class="title">{summary?.metadata.name ?? $i18n.core.ic}</span>
       </div>
     </Card>
   {/each}

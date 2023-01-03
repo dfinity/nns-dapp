@@ -38,7 +38,7 @@ describe("NnsAccounts", () => {
           })} ICP`
         )
       ).toBeTruthy();
-      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
+      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
     });
 
     it("should render a main card", () => {
@@ -146,7 +146,7 @@ describe("NnsAccounts", () => {
 
       const titleRow = getByTestId("accounts-summary");
 
-      expect(titleRow?.textContent?.includes(en.core.nns)).toBeTruthy();
+      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
     });
 
     it("should render icp project logo", () => {
