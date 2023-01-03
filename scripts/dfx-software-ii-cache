@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+	cat <<-EOF
+	Downloads the internet_identity wasm and installs it in the dfx cache.
+
+	Note: Doing this will set the II version deployed by 'dfx nns install'
+	      to the version specified in our 'dfx.json'.  Our version is usually
+	      newer.
+	EOF
+}
+
+# Source the optparse.bash file ---------------------------------------------------
+source "$SOURCE_DIR/optparse.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(optparse.build)"
+set -euo pipefail
+
+: "Get the wasm.  I thought this is what 'dfx build' was meant to do but the build does no such thing.  Silly me."
+jq -r '.canisters.internet_identity.build' dfx.json | bash -euxo pipefail
+: Put the wasm into the cache, for use by 'dfx nns install'
+WASMS_DIR="$(dfx cache show)/wasms"
+mkdir -p "$WASMS_DIR"
+cp "$(jq -r '.canisters.internet_identity.wasm' dfx.json)" "$WASMS_DIR"

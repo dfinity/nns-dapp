@@ -72,6 +72,7 @@ jobs:
       # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy NNS canisters
         run: |
+          scripts/dfx-software-ii-cache
           dfx nns install
 
       - name: Deploy NNS Dapp
