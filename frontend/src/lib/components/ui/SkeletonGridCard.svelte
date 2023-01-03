@@ -3,7 +3,7 @@
 </script>
 
 <div class="loading">
-  <SkeletonCard />
+  <SkeletonCard size="medium" />
 </div>
 
 <style lang="scss">
