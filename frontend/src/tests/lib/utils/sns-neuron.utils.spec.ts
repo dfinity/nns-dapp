@@ -134,6 +134,20 @@ describe("sns-neuron utils", () => {
       expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
     });
 
+    it("returns DISSOLVED if dissolve in the past", () => {
+      const neuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: NeuronState.Dissolving,
+      });
+      const dissolveState = neuron.dissolve_state[0];
+      if ("WhenDissolvedTimestampSeconds" in dissolveState) {
+        dissolveState.WhenDissolvedTimestampSeconds = BigInt(
+          Math.floor(Date.now() / 1000 - 3600)
+        );
+      }
+      expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
+    });
+
     it("returns DISSOLVED when DissolveDelaySeconds=0", () => {
       const neuron = createMockSnsNeuron({
         id: [1, 2, 3, 4],
