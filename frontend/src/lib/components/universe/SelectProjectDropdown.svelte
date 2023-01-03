@@ -6,7 +6,6 @@
   import { committedProjectsStore } from "$lib/stores/projects.store";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
-  import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
 
