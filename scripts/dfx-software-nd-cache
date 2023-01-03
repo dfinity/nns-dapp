@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Builds the nns-dapp wasm and installs it in the dfx cache.
+
+	Note: Doing this will set the nns-dapp version deployed by 'dfx nns install'
+	      to the version in the current codebase.  Our version is usually
+	      newer.
+	EOF
+}
+
+# Source the optparse.bash file ---------------------------------------------------
+source "$SOURCE_DIR/optparse.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(optparse.build)"
+set -euo pipefail
+
+DFX_WASMS_DIR="$(dfx cache show)/wasms"
+LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
+
+: "Set the canister ID"
+: "Note: This should be the canister ID used by dfx nns install.  That, in turn, should soon match production.  But not yet."
+"$SOURCE_DIR/dfx-canister-set-id" --network local --canister_name nns-dapp --canister_id "qsgjb-riaaa-aaaaa-aaaga-cai"
+
+: "Build the wasm"
+dfx build nns-dapp
+
+: "Put the wasm into the cache, for use by 'dfx nns install'"
+mkdir -p "$DFX_WASMS_DIR"
+cp "$LOCAL_ND_WASM" nns-dapp_local.wasm
+cp nns-dapp_local.wasm "$DFX_WASMS_DIR"

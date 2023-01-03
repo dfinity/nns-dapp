@@ -64,6 +64,10 @@ jobs:
           cargo --version
           ic-cdk-optimizer --version
 
+      - name: Build NNS Dapp
+        run: |
+          ./scripts/dfx-software-nd-cache
+
       - name: Start replica
         run: |
           dfx start --background --clean
@@ -74,25 +78,16 @@ jobs:
         run: |
           dfx nns install | tee ,nns-install
 
-      - name: Set nns-dapp canister ID
+      - name: Verify that deployment matches local build
         run: |
-          # Note: The nns-dapp deployed by 'dfx nns install' is replaced by the current build.
-          # The canister ID must match, so that the build can be used by future releases of 'dfx nns install'.
-          set -x
-          sudo apt-get install -yy moreutils
-          export DFX_CANISTER_ID="$(sed -nr 's,^nns-dapp +http://([-a-z0-9]+).*,\1,g;ta;b;:a;p;q' ,nns-install)"
-          export FILENAME=".dfx/local/canister_ids.json"
-          export DFX_NETWORK=local
-          export DFX_CANISTER_NAME="nns-dapp"
-          test -f "$FILENAME" || { echo "{}" > "$FILENAME" ; }
-          jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
-          dfx canister id nns-dapp
-          jq -r '.canisters | keys | .[]' dfx.json | while read line ; do printf "%-30s   %s\n" "$(dfx canister id "$line" 2>/dev/null || echo "unknown")" "$line" ; done
-
-      - name: Deploy NNS Dapp
-        run: |
-          ./deploy.sh --nns-dapp local
-          cp nns-dapp.wasm nns-dapp_local.wasm
+          build_hash="$(sha256sum nns-dapp.wasm | awk '{print $1}')"
+          deployed_hash="$(dfx canister info nns-dapp | awk '/Module hash/{print $3}')"
+          [[ "0x$build_hash" == "$deployed_hash" ]] || {
+            echo "ERROR: Deployed nns-dapp hash does not match."
+            echo "Local build: ox$build_hash"
+            echo "Deployed:    $deployed_hash"
+            exit 1
+          }
 
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
