@@ -47,7 +47,9 @@
     <SummaryLogo slot="start" />
 
     {#each $selectableProjects as { canisterId, summary } (canisterId)}
-      <DropdownItem value={canisterId}>{summary?.metadata.name ?? $i18n.core.nns}</DropdownItem>
+      <DropdownItem value={canisterId}
+        >{summary?.metadata.name ?? $i18n.core.nns}</DropdownItem
+      >
     {/each}
   </Dropdown>
 {:else}

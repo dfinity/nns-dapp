@@ -5,13 +5,15 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let projects: 'select' | 'display' | 'none' = ENABLE_SNS ? 'select' : 'none';
+  export let projects: "select" | "display" | "none" = ENABLE_SNS
+    ? "select"
+    : "none";
 
   let selectProjects: boolean;
-  $: selectProjects = projects === 'select';
+  $: selectProjects = projects === "select";
 
   let displayProjects: boolean;
-  $: displayProjects = ['select', 'display'].includes(projects);
+  $: displayProjects = ["select", "display"].includes(projects);
 </script>
 
 <div
@@ -25,7 +27,7 @@
 
   {#if selectProjects}
     <SelectProjectDropdownWrapper />
-  {:else if projects === 'display'}
+  {:else if projects === "display"}
     <h1>{$snsProjectSelectedStore?.summary.metadata.name ?? $i18n.core.ic}</h1>
   {:else}
     <h1>{$i18n.core.ic}</h1>

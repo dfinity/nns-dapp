@@ -40,12 +40,16 @@ export const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
     })
 );
 
-export const activePadProjectsStore = derived<Readable<SnsFullProject[] | undefined>, SnsFullProject[] | undefined>(
-  projectsStore,
-  (projects: SnsFullProject[] | undefined) => filterActiveProjects(projects)
+export const activePadProjectsStore = derived<
+  Readable<SnsFullProject[] | undefined>,
+  SnsFullProject[] | undefined
+>(projectsStore, (projects: SnsFullProject[] | undefined) =>
+  filterActiveProjects(projects)
 );
 
-export const committedProjectsStore = derived<Readable<SnsFullProject[] | undefined>, SnsFullProject[] | undefined>(
-  projectsStore,
-  (projects: SnsFullProject[] | undefined) => filterCommittedProjects(projects)
+export const committedProjectsStore = derived<
+  Readable<SnsFullProject[] | undefined>,
+  SnsFullProject[] | undefined
+>(projectsStore, (projects: SnsFullProject[] | undefined) =>
+  filterCommittedProjects(projects)
 );
