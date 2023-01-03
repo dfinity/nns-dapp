@@ -26,8 +26,8 @@
 
   .framed {
     border-radius: 50%;
-    background: var(--background);
-    padding: var(--padding);
+    background: var(--logo-framed-background, var(--background));
+    padding: var(--padding-0_25x);
   }
 
   .big {

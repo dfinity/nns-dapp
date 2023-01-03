@@ -21,8 +21,8 @@
       transparent={canisterId !== selectedCanisterId}
       on:click={async () => await goto(buildSwitchUniverseUrl(canisterId))}
     >
-      <div>
-        <ProjectLogo size="big" {summary} />
+      <div class:selected={canisterId === selectedCanisterId}>
+        <ProjectLogo size="big" {summary} framed={true} />
 
         <span class="title">{summary?.metadata.name ?? $i18n.core.nns}</span>
       </div>
@@ -47,6 +47,10 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
+
+    &:not(.selected) {
+      --logo-framed-background: transparent;
+    }
   }
 
   .title {

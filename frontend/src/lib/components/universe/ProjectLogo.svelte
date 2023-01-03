@@ -8,6 +8,7 @@
 
   export let size: "big" | "small" = "small";
   export let summary: SnsSummary | undefined;
+  export let framed = false;
 
   let logo: string;
   $: logo = summary?.metadata.logo ?? IC_LOGO;
@@ -20,7 +21,7 @@
 </script>
 
 <div class={`${size}`}>
-  <Logo src={logo} alt={title} {size} framed={false} testId="logo" />
+  <Logo src={logo} alt={title} {size} {framed} testId="logo" />
 </div>
 
 <style lang="scss">
