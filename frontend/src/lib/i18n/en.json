@@ -27,7 +27,8 @@
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
-    "principal_is": "Your principal is"
+    "principal_is": "Your principal is",
+    "pick_a_project": "Pick a project"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",

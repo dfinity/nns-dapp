@@ -11,7 +11,7 @@
   $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
 </script>
 
-<h3>Pick a project</h3>
+<h3>{$i18n.core.pick_a_project}</h3>
 
 <nav>
   {#each $selectableProjects as { canisterId, summary } (canisterId)}

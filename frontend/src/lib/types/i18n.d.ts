@@ -31,6 +31,7 @@ interface I18nCore {
   previous: string;
   next: string;
   principal_is: string;
+  pick_a_project: string;
 }
 
 interface I18nError {
