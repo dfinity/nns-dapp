@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Card } from "@dfinity/gix-components";
+  import { Card, Nav } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { goto } from "$app/navigation";
@@ -11,9 +11,9 @@
   $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
 </script>
 
-<h3>{$i18n.core.pick_a_project}</h3>
+<Nav>
+  <h3 slot="title">{$i18n.core.pick_a_project}</h3>
 
-<nav>
   {#each $selectableProjects as { canisterId, summary } (canisterId)}
     <Card
       role="link"
@@ -28,20 +28,10 @@
       </div>
     </Card>
   {/each}
-</nav>
+</Nav>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
-
-  h3 {
-    padding: var(--padding-4x) var(--padding-4x) var(--padding-2x);
-    margin: 0;
-    line-height: 1.85;
-  }
-
-  nav {
-    padding: var(--padding-3x) var(--padding-2x) var(--padding-4x);
-  }
 
   div {
     display: flex;
