@@ -1,5 +1,6 @@
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
+  daysToDuration,
   secondsToDate,
   secondsToDateTime,
   secondsToDissolveDelayDuration,
@@ -35,6 +36,46 @@ describe("secondsToDuration", () => {
 
   it("should give a second details", () => {
     expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
+  });
+});
+
+describe("daysToDuration", () => {
+  // 376 => "1 Year, 11 Days" => [1, 11]
+  const parseDaysToDuration = (days: number) =>
+    Array.from(daysToDuration(days).match(/\d+/g)?.map(Number) ?? []);
+
+  it.only("should return 1 year", () => {
+    expect(parseDaysToDuration(364)).toEqual([364]);
+    expect(parseDaysToDuration(365)).toEqual([1]);
+    expect(parseDaysToDuration(366)).toEqual([1, 1]);
+  });
+
+  it.only("should return 2 years", () => {
+    expect(parseDaysToDuration(729)).toEqual([1, 364]);
+    expect(parseDaysToDuration(730)).toEqual([2]);
+    expect(parseDaysToDuration(731)).toEqual([2, 1]);
+  });
+
+  it.only("should return 3 years", () => {
+    expect(parseDaysToDuration(1094)).toEqual([2, 364]);
+    expect(parseDaysToDuration(1095)).toEqual([3]);
+    expect(parseDaysToDuration(1096)).toEqual([3, 1]);
+  });
+
+  it.only("should return a leap-year", () => {
+    expect(parseDaysToDuration(1460)).toEqual([3, 365]);
+    expect(parseDaysToDuration(1461)).toEqual([4]);
+    expect(parseDaysToDuration(1462)).toEqual([4, 1]);
+  });
+
+  it.only("should return 5+ years", () => {
+    expect(parseDaysToDuration(1825)).toEqual([4, 364]);
+    expect(parseDaysToDuration(1826)).toEqual([5]);
+    expect(parseDaysToDuration(1827)).toEqual([5, 1]);
+
+    expect(parseDaysToDuration(2190)).toEqual([5, 364]);
+    expect(parseDaysToDuration(2191)).toEqual([6]);
+    expect(parseDaysToDuration(2192)).toEqual([6, 1]);
   });
 });
 

@@ -6,7 +6,12 @@
     SECONDS_IN_HALF_YEAR,
   } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
-  import {daysToSeconds, secondsToDate, secondsToDays, secondsToDuration} from "$lib/utils/date.utils";
+  import {
+    daysToSeconds,
+    secondsToDate,
+    secondsToDays,
+    secondsToDuration,
+  } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
@@ -18,6 +23,7 @@
   import { valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
+  import { daysToDuration } from "$lib/utils/date.utils.js";
 
   export let neuron: NeuronInfo;
   export let delayInSeconds = 0;
@@ -26,7 +32,7 @@
   export let confirmButtonText: string;
 
   let delayInDays = 0;
-  $: delayInSeconds, (() => delayInDays = secondsToDays(delayInSeconds))();
+  $: delayInSeconds, (() => (delayInDays = secondsToDays(delayInSeconds)))();
 
   let minDelayInDays = 0;
   $: minDelayInDays = secondsToDays(minDelayInSeconds);
@@ -46,8 +52,9 @@
 
   let disableUpdate: boolean;
   $: disableUpdate =
-          delayInDays < secondsToDays(SECONDS_IN_HALF_YEAR) ||
-          delayInDays <= minDelayInDays || delayInDays > maxDelayInDays;
+    delayInDays < secondsToDays(SECONDS_IN_HALF_YEAR) ||
+    delayInDays <= minDelayInDays ||
+    delayInDays > maxDelayInDays;
 
   let days: number;
   $: days = secondsToDays(delayInSeconds);
@@ -63,14 +70,16 @@
     dispatcher("nnsConfirmDelay");
   };
   const setMin = () => {
-    delayInDays = Math.max(minDelayInDays + 1, secondsToDays(SECONDS_IN_HALF_YEAR));
+    delayInDays = Math.max(
+      minDelayInDays + 1,
+      secondsToDays(SECONDS_IN_HALF_YEAR)
+    );
     checkMinMax();
-  }
+  };
   const setMax = () => {
     delayInDays = maxDelayInDays;
-    checkMinMax()
-  }
-
+    checkMinMax();
+  };
 </script>
 
 <div class="wrapper">
@@ -105,17 +114,17 @@
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
     <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
   </div>
-  <div>
+  <div class="select-delay-container">
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
-    <div class="select-delay-container">
+    <div>
       <DayInput
-              min={0}
-              max={maxDelayInDays}
-              bind:days={delayInDays}
-              on:input={checkMinMax}
-              on:nnsMin={setMin}
-              on:nnsMax={setMax}
-      ></DayInput>
+        min={0}
+        max={maxDelayInDays}
+        bind:days={delayInDays}
+        on:input={checkMinMax}
+        on:nnsMin={setMin}
+        on:nnsMax={setMax}
+      />
     </div>
     <div class="range">
       <InputRange
@@ -139,7 +148,7 @@
         </div>
         <div>
           {#if delayInSeconds > 0}
-            <p class="label">{secondsToDuration(BigInt(delayInSeconds))}</p>
+            <p class="label">{daysToDuration(delayInDays)}</p>
           {:else}
             <p class="label">{$i18n.neurons.no_delay}</p>
           {/if}
