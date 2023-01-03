@@ -10,10 +10,10 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { sumTokenAmounts } from "$lib/utils/token.utils";
-  import SkeletonGridCard from "$lib/components/ui/SkeletonGridCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -50,7 +50,7 @@
 
 <div class="card-grid" data-tid="sns-accounts-body">
   {#if loading}
-    <SkeletonGridCard />
+    <SkeletonCard size="medium" />
   {:else}
     {#each $snsProjectAccountsStore ?? [] as account}
       <AccountCard

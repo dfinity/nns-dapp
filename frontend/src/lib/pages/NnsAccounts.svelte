@@ -11,7 +11,7 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
-  import SkeletonGridCard from "$lib/components/ui/SkeletonGridCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
 
   let accounts: AccountsStore | undefined;
 
@@ -67,6 +67,6 @@
       >
     {/each}
   {:else}
-    <SkeletonGridCard />
+    <SkeletonCard size="medium" />
   {/if}
 </div>

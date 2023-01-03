@@ -40,6 +40,7 @@
   @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .details {
+    height: var(--padding-4x);
     color: var(--description-color);
     @include fonts.small;
   }
