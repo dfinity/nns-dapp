@@ -8,6 +8,7 @@
   import { goto } from "$app/navigation";
   import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
   import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
+  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
 
   let selectedCanisterId: string | undefined;
 
@@ -29,8 +30,7 @@
 
   $: (async () => {
     if (selectedCanisterId !== undefined) {
-      const { pathname } = window.location;
-      await goto(`${pathname}?${UNIVERSE_PARAM}=${selectedCanisterId}`);
+      await goto(buildSwitchUniverseUrl(selectedCanisterId));
     }
   })();
 

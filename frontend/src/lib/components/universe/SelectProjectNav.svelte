@@ -7,6 +7,8 @@
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { goto } from "$app/navigation";
+  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
 
   let selectedCanisterId: string;
   $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
@@ -34,12 +36,15 @@
   onDestroy(unsubscribe);
 </script>
 
+<h3>Pick a project</h3>
+
 <nav>
   {#each selectableProjects as { canisterId, summary } (canisterId)}
     <Card
       role="link"
       selected={canisterId === selectedCanisterId}
       transparent={canisterId !== selectedCanisterId}
+      on:click={async () => await goto(buildSwitchUniverseUrl(canisterId))}
     >
       <div>
         <ProjectLogo size="big" {summary} />
@@ -53,14 +58,20 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
 
+  h3 {
+    padding: var(--padding-4x) var(--padding-4x) var(--padding-2x);
+    margin: 0;
+    line-height: 1.85;
+  }
+
   nav {
-    padding: var(--padding-4x) var(--padding-2x);
+    padding: var(--padding-3x) var(--padding-2x) var(--padding-4x);
   }
 
   div {
     display: flex;
     align-items: center;
-    gap: var(--padding);
+    gap: var(--padding-2x);
   }
 
   .title {

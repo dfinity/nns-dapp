@@ -29,6 +29,11 @@ export const reloadRouteData = <T>({
   return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };
 
+export const buildSwitchUniverseUrl = (universe: string): string => {
+  const { pathname } = window.location;
+  return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
+}
+
 const buildUrl = ({
   path,
   universe,
