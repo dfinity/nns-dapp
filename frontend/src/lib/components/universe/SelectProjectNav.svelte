@@ -12,7 +12,7 @@
 </script>
 
 <Nav>
-  <p slot="title">{$i18n.core.pick_a_project}</p>
+  <p class="title" slot="title">{$i18n.core.pick_a_project}</p>
 
   {#each $selectableProjects as { canisterId, summary } (canisterId)}
     <Card
@@ -24,7 +24,7 @@
       <div class:selected={canisterId === selectedCanisterId}>
         <ProjectLogo size="big" {summary} framed={true} />
 
-        <span class="title">{summary?.metadata.name ?? $i18n.core.ic}</span>
+        <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
       </div>
     </Card>
   {/each}
@@ -32,6 +32,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "@dfinity/gix-components/styles/mixins/media";
 
   div {
     display: flex;
@@ -44,6 +45,12 @@
   }
 
   .title {
+    @include media.min-width(large) {
+      @include fonts.h3(true);
+    }
+  }
+
+  .name {
     @include fonts.standard(true);
   }
 </style>
