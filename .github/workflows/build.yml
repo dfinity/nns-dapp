@@ -64,30 +64,16 @@ jobs:
           cargo --version
           ic-cdk-optimizer --version
 
-      - name: Build NNS Dapp
-        run: |
-          ./scripts/dfx-software-nd-cache
-
       - name: Start replica
         run: |
           dfx start --background --clean
 
-      #   run: sha256sum target/ic/*.wasm
-      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy NNS canisters
         run: |
-          dfx nns install | tee ,nns-install
-
-      - name: Verify that deployment matches local build
-        run: |
-          build_hash="$(sha256sum nns-dapp.wasm | awk '{print $1}')"
-          deployed_hash="$(dfx canister info nns-dapp | awk '/Module hash/{print $3}')"
-          [[ "0x$build_hash" == "$deployed_hash" ]] || {
-            echo "ERROR: Deployed nns-dapp hash does not match."
-            echo "Local build: ox$build_hash"
-            echo "Deployed:    $deployed_hash"
-            exit 1
-          }
+          # Note: This deploys standard NNS canisters but with:
+          # - The current code for the nns-dapp
+          # - The II version specified in dfx.json
+          ./scripts/dfx-nns-deploy-custom
 
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
