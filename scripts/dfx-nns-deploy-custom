@@ -15,8 +15,8 @@ source "$SOURCE_DIR/optparse.bash"
 source "$(optparse.build)"
 set -euo pipefail
 
-DFX_WASMS_DIR="$(dfx cache show)/wasms"
-LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
+: "Make sure that old wasms are purged"
+rm -f nns-dapp.wasm nns-dapp_local.wasm
 
 : "Build nns-dapp for local use, with standard canister IDs, and inject into the wasm cache."
 "$SOURCE_DIR"/dfx-software-nd-cache
@@ -27,14 +27,16 @@ LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
 : "Deploy nns-dapp with other NNS canisters"
 dfx nns install
 
-
 : "Verify that deployment matches local build"
-          build_hash="$(sha256sum nns-dapp.wasm | awk '{print $1}')"
-          deployed_hash="$(dfx canister info nns-dapp | awk '/Module hash/{print $3}')"
-          [[ "0x$build_hash" == "$deployed_hash" ]] || {
-            echo "ERROR: Deployed nns-dapp hash does not match."
-            echo "Local build: ox$build_hash"
-            echo "Deployed:    $deployed_hash"
-            exit 1
-          }
-
+build_hash="$(sha256sum nns-dapp.wasm | awk '{print $1}')"
+deployed_hash="$(dfx canister info nns-dapp | awk '/Module hash/{print $3}')"
+if [[ "0x$build_hash" == "$deployed_hash" ]]; then
+  echo "Check passed: Installed wasm hash matches built wasm."
+else
+  {
+    echo "ERROR: Deployed nns-dapp hash does not match."
+    echo "Local build: ox$build_hash"
+    echo "Deployed:    $deployed_hash"
+    exit 1
+  } >&2
+fi
