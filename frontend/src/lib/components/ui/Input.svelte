@@ -38,7 +38,7 @@
   on:keydown
   {showInfo}
 >
+  <svelte:fragment slot="left"><slot name="left" /></svelte:fragment>
   <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
-  <svelte:fragment slot="additional"><slot name="additional" /></svelte:fragment
-  >
+  <svelte:fragment slot="right"><slot name="right" /></svelte:fragment>
 </Input>

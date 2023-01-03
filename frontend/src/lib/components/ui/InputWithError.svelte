@@ -38,8 +38,9 @@
     on:blur
     on:input
   >
+    <slot name="left" slot="left" />
     <slot name="label" slot="label" />
-    <slot name="additional" slot="additional" />
+    <slot name="right" slot="right" />
   </Input>
 
   {#if error}
