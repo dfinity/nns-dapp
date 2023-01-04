@@ -44,7 +44,7 @@
     role="link"
     on:click={showProposal}
     testId="proposal-card"
-    withArrow={true}
+    icon="arrow"
   >
     <div class="card-meta id" data-proposal-id={id}>
       <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
