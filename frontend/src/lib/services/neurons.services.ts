@@ -22,7 +22,10 @@ import {
 } from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { MIN_VERSION_STAKE_MATURITY_WORKAROUND } from "$lib/constants/neurons.constants";
+import {
+  MIN_VERSION_STAKE_MATURITY,
+  MIN_VERSION_STAKE_MATURITY_WORKAROUND,
+} from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -595,6 +598,7 @@ export const disburse = async ({
   }
 };
 
+// TODO: Remove as soon as Stake Maturity is proven for Hardware Wallets
 export const mergeMaturity = async ({
   neuronId,
   percentageToMerge,
@@ -635,6 +639,11 @@ export const stakeMaturity = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
+
+    await assertLedgerVersion({
+      identity,
+      minVersion: MIN_VERSION_STAKE_MATURITY,
+    });
 
     await stakeMaturityApi({ neuronId, percentageToStake, identity });
 

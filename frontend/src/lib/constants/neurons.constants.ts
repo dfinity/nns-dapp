@@ -9,6 +9,7 @@ export const SPAWN_VARIANCE_PERCENTAGE = 0.95;
 
 // HW versions
 export const MIN_VERSION_STAKE_MATURITY_WORKAROUND = "2.0.7";
+export const MIN_VERSION_STAKE_MATURITY = "2.2.1";
 
 export const DISSOLVE_DELAY_MULTIPLIER = 1;
 export const AGE_MULTIPLIER = 0.25;
