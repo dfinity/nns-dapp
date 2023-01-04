@@ -25,7 +25,7 @@
 # Author: Nagarjuna Kumarappan <nagarjuna.412@gmail.com>
 
 optparse_usage=""
-optparse_contractions=""
+optparse_flags=""
 optparse_defaults=""
 optparse_arguments_string=""
 
@@ -90,11 +90,11 @@ function optparse.define() {
 		optparse_usage="${optparse_usage} [default:$default]"
 	fi
 	if [ "${nargs:-}" == "" ]; then
-		optparse_contractions="${optparse_contractions}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"\$1\"; shift 1;;"
+		optparse_flags="${optparse_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"\$1\"; shift 1;;"
 	elif [ "${nargs:-}" == "0" ]; then
-		optparse_contractions="${optparse_contractions}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"true\";;"
+		optparse_flags="${optparse_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"true\";;"
 	else
-		optparse_contractions="${optparse_contractions}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
+		optparse_flags="${optparse_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
 	fi
 	if [ "$default" != "" ]; then
 		optparse_defaults="${optparse_defaults}#NL${variable}=${default}"
@@ -109,8 +109,6 @@ function optparse.define() {
 function optparse.build() {
 	local build_file
 	build_file="$(mktemp -t "optparse-XXXXXX.tmp")"
-
-	# Building getopts header here
 
 	# Function usage
 	cat <<EOF >"$build_file"
@@ -137,7 +135,7 @@ while [ \$# -ne 0 ]; do
         shift 1
 
         case "\$param" in
-                $optparse_contractions
+                $optparse_flags
                 "-?"|--help)
 			print_help
 			echo
@@ -171,7 +169,7 @@ EOF
 	unset optparse_usage
 	unset optparse_arguments_string
 	unset optparse_defaults
-	unset optparse_contractions
+	unset optparse_flags
 
 	# Return file name to parent
 	echo "$build_file"
