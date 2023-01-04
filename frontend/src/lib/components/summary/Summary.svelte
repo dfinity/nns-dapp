@@ -1,10 +1,9 @@
 <script lang="ts">
   import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
 
-  export let selectProjects = ENABLE_SNS;
+  export let selectProjects = true;
 </script>
 
 <div
