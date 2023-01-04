@@ -23,7 +23,7 @@ import {
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
-  MIN_VERSION_STAKE_MATURITY,
+  CANDID_PARSER_VERSION,
   MIN_VERSION_STAKE_MATURITY_WORKAROUND,
 } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
@@ -368,6 +368,11 @@ export const toggleAutoStakeMaturity = async (
       neuronId
     );
 
+    await assertLedgerVersion({
+      identity,
+      minVersion: CANDID_PARSER_VERSION,
+    });
+
     await autoStakeMaturity({
       neuronId,
       identity,
@@ -642,7 +647,7 @@ export const stakeMaturity = async ({
 
     await assertLedgerVersion({
       identity,
-      minVersion: MIN_VERSION_STAKE_MATURITY,
+      minVersion: CANDID_PARSER_VERSION,
     });
 
     await stakeMaturityApi({ neuronId, percentageToStake, identity });
