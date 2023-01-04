@@ -1,13 +1,14 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Card, IconExpandMore } from "@dfinity/gix-components";
+  import { Card, IconExpandMore, IconCheckCircle } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
+  import { nonNullish } from "$lib/utils/utils";
 
   export let selected: boolean;
   export let canisterId: string;
   export let summary: SnsSummary | undefined = undefined;
-  export let expandMoreIcon = false;
+  export let icon: "expand" | "check" | undefined = undefined;
 </script>
 
 <Card role="link" {selected} transparent={!selected} on:click>
@@ -19,9 +20,13 @@
       <slot />
     </div>
 
-    {#if expandMoreIcon}
-      <div class="icon">
-        <IconExpandMore />
+    {#if nonNullish(icon)}
+      <div class="icon" class:selected>
+        {#if icon === "expand"}
+          <IconExpandMore />
+        {:else}
+          <IconCheckCircle />
+        {/if}
       </div>
     {/if}
   </div>
@@ -59,5 +64,10 @@
 
   .icon {
     color: var(--tertiary);
+
+    &.selected {
+      --icon-check-circle-background: var(--primary);
+      --icon-check-circle-color: var(--primary-contrast);
+    }
   }
 </style>
