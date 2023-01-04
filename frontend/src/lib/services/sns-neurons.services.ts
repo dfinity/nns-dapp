@@ -337,7 +337,7 @@ export const splitNeuron = async ({
         labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
         substitutions: {
           $minimum: formatToken({ value: neuronMinimumStake }),
-          $token: `${token.symbol}`,
+          $token: token.symbol,
         },
       });
       return { success: false };

@@ -109,7 +109,7 @@
         neuron: null,
       });
 
-      const loadParameters = isNullish(
+      const shouldLoadParameters = isNullish(
         $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters
       );
       const loadTransactionFee = isNullish(
@@ -118,7 +118,7 @@
 
       await Promise.all([
         loadNeuron(),
-        loadParameters ? loadSnsParameters(rootCanisterId) : undefined,
+        shouldLoadParameters ? loadSnsParameters(rootCanisterId) : undefined,
         loadTransactionFee
           ? loadSnsTransactionFee({ rootCanisterId })
           : undefined,

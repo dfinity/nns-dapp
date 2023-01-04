@@ -78,10 +78,11 @@
       toastsSuccess({
         labelKey: "neuron_detail.split_neuron_success",
       });
+      stopBusy("split-sns-neuron");
       close();
+    } else {
+      stopBusy("split-sns-neuron");
     }
-
-    stopBusy("split-sns-neuron");
   };
 </script>
 
