@@ -1,15 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Nav, SkeletonText } from "@dfinity/gix-components";
-  import {
-    snsProjectIdSelectedStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/selected-project.derived";
-  import { selectableProjects } from "$lib/derived/selectable-projects.derived";
-  import SelectProjectNavCard from "$lib/components/universe/SelectProjectCard.svelte";
-  import { selectedProjectBalance } from "$lib/derived/selected-project-balance.derived";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { Nav } from "@dfinity/gix-components";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import SelectProjectNavList from "$lib/components/universe/SelectProjectNavList.svelte";
+  import SelectProjectNavDropdown from "$lib/components/universe/SelectProjectNavDropdown.svelte";
 
   let selectedCanisterId: string;
   $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
@@ -27,28 +21,9 @@
   <p class="title" slot="title">{$i18n.core.pick_a_project}</p>
 
   {#if list}
-    {#each $selectableProjects as { canisterId, summary } (canisterId)}
-      <SelectProjectNavCard
-        {summary}
-        {canisterId}
-        selected={canisterId === selectedCanisterId}
-      />
-    {/each}
+    <SelectProjectNavList {selectedCanisterId} />
   {:else}
-    <SelectProjectNavCard
-      summary={$snsProjectSelectedStore?.summary}
-      canisterId={selectedCanisterId}
-      selected={true}
-      expandMoreIcon
-    >
-      {#if nonNullish($selectedProjectBalance.balance)}
-        <AmountDisplay copy amount={$selectedProjectBalance.balance} />
-      {:else}
-        <div class="skeleton">
-          <SkeletonText />
-        </div>
-      {/if}
-    </SelectProjectNavCard>
+    <SelectProjectNavDropdown {selectedCanisterId} />
   {/if}
 </Nav>
 
@@ -60,14 +35,5 @@
     @include media.min-width(large) {
       @include fonts.h3(true);
     }
-  }
-
-  .skeleton {
-    display: flex;
-    flex-direction: column;
-    height: var(--padding-4x);
-    box-sizing: border-box;
-    padding: var(--padding-0_5x) 0;
-    max-width: 240px;
   }
 </style>

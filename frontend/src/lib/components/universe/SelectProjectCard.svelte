@@ -2,8 +2,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { Card, IconExpandMore } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
-  import { goto } from "$app/navigation";
-  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
   import type { SnsSummary } from "$lib/types/sns";
 
   export let selected: boolean;
@@ -12,12 +10,7 @@
   export let expandMoreIcon = false;
 </script>
 
-<Card
-  role="link"
-  {selected}
-  transparent={!selected}
-  on:click={async () => await goto(buildSwitchUniverseUrl(canisterId))}
->
+<Card role="link" {selected} transparent={!selected} on:click>
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
