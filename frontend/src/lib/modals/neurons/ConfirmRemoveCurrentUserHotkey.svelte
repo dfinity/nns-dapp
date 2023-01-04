@@ -24,8 +24,4 @@
   p {
     @include confirmation-modal.text;
   }
-
-  h3 {
-    line-height: var(--line-height-standard);
-  }
 </style>

@@ -120,7 +120,6 @@ describe("SnsNeuronHotkeysCard", () => {
     const confirmButton = queryByTestId("confirm-yes");
     confirmButton && fireEvent.click(confirmButton);
 
-    await waitFor(() => expect(reload).toBeCalledWith());
-    expect(removeHotkey).toBeCalled();
+    await waitFor(() => expect(removeHotkey).toBeCalled());
   });
 });

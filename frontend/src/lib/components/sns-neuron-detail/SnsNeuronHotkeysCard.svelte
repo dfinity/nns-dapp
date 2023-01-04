@@ -66,7 +66,7 @@
     if (currentIdentityString === hotkey) {
       showConfirmationHotkey = hotkey;
     } else {
-      remove(hotkey);
+      await remove(hotkey);
     }
   };
 
@@ -91,6 +91,7 @@
       });
 
       await goto($neuronsPathStore);
+      return;
     }
     if (success) {
       await reload();
@@ -165,6 +166,10 @@
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
+  }
+
+  h3 {
+    line-height: var(--line-height-standard);
   }
 
   .warning {
