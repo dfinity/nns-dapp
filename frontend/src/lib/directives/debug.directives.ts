@@ -1,6 +1,8 @@
 import { addHotkey } from "$lib/api/governance.api";
+import { removeFollowee } from "$lib/services/neurons.services";
 import { initDebugStore } from "$lib/stores/debug.store";
 import { i18n } from "$lib/stores/i18n";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   anonymizeAccount,
@@ -18,9 +20,10 @@ import {
 } from "$lib/utils/anonymize.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumKeys } from "$lib/utils/enum.utils";
+import { followeesByTopic } from "$lib/utils/neuron.utils";
 import { saveToJSONFile } from "$lib/utils/save.utils";
 import { mapPromises, stringifyJson } from "$lib/utils/utils";
-import type { NeuronId } from "@dfinity/nns";
+import { Topic, type NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "../services/auth.services";
 import { claimSeedNeurons } from "../services/seed-neurons.services";
@@ -31,6 +34,9 @@ import { claimSeedNeurons } from "../services/seed-neurons.services";
  * coo - original as object -> console
  * f - pseudo-anonymised -> json file
  * fo - original -> json file
+ * cn - claim neurons
+ * ah - Tries to add the current user's principal as hotkey to the given neuron.
+ * rmf - Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
  */
 export enum LogType {
   Console = "c",
@@ -40,6 +46,7 @@ export enum LogType {
   FileOriginal = "fo",
   ClaimNeurons = "cn",
   AddHotkey = "ah",
+  removeFolloweesDecentralizedSale = "rmf",
 }
 
 /**
@@ -79,6 +86,11 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
+        if (LogType.removeFolloweesDecentralizedSale === logType) {
+          removeFolloweesDecentralizedSale();
+          return;
+        }
+
         generateDebugLog(logType);
       }
     } else {
@@ -112,6 +124,44 @@ const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
   } catch (err) {
     toastsError({
       labelKey: "neurons.add_hotkey_prompt_error",
+      err,
+    });
+  }
+};
+
+/**
+ * Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
+ */
+const removeFolloweesDecentralizedSale = async () => {
+  try {
+    const { neurons } = get(neuronsStore);
+    if (neurons !== undefined) {
+      await Promise.all(
+        neurons.map((neuron) => {
+          return Promise.all(
+            (
+              followeesByTopic({
+                neuron,
+                topic: Topic.SnsDecentralizationSale,
+              }) ?? []
+            ).map((neuronId) =>
+              removeFollowee({
+                neuronId: neuron.neuronId,
+                topic: Topic.SnsDecentralizationSale,
+                followee: neuronId,
+              })
+            )
+          );
+        })
+      );
+    }
+
+    toastsSuccess({
+      labelKey: "neurons.remove_followees_sale_prompt_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "neurons.remove_followees_sale_prompt_error",
       err,
     });
   }
