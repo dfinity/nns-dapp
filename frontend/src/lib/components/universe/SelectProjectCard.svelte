@@ -9,6 +9,9 @@
   export let canisterId: string;
   export let summary: SnsSummary | undefined = undefined;
   export let icon: "expand" | "check" | undefined = undefined;
+
+  let hasSlots = false;
+  $: hasSlots = $$slots.default === true;
 </script>
 
 <Card role="link" {selected} transparent={!selected} on:click>
@@ -16,7 +19,7 @@
     <ProjectLogo size="big" {summary} framed={true} />
 
     <div class="content">
-      <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
+      <span class="name" class:offset={hasSlots}>{summary?.metadata.name ?? $i18n.core.ic}</span>
       <slot />
     </div>
 
@@ -55,10 +58,12 @@
   .name {
     @include fonts.standard(true);
 
-    padding-top: var(--padding-0_5x);
+    &.offset {
+      padding-top: var(--padding-0_5x);
 
-    @include media.min-width(large) {
-      padding-top: 0;
+      @include media.min-width(large) {
+        padding-top: 0;
+      }
     }
   }
 
