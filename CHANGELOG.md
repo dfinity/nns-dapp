@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal 99659
+* Fix disburse button in SNS neurons
+* Fix rounding error in sns transactions
+
 ## Proposal 98559
 * Gzip wasm for proposal payload
 * Staking sns neuron.
