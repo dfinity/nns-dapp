@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Card } from "@dfinity/gix-components";
+  import { Card, IconExpandMore } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import { goto } from "$app/navigation";
   import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
@@ -9,6 +9,7 @@
   export let selected: boolean;
   export let canisterId: string;
   export let summary: SnsSummary | undefined = undefined;
+  export let expandMoreIcon = false;
 </script>
 
 <Card
@@ -24,6 +25,12 @@
       <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
       <slot />
     </div>
+
+    {#if expandMoreIcon}
+      <div class="icon">
+        <IconExpandMore />
+      </div>
+    {/if}
   </div>
 </Card>
 
@@ -44,6 +51,7 @@
   .content {
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
 
   .name {
@@ -54,5 +62,9 @@
     @include media.min-width(large) {
       padding-top: 0;
     }
+  }
+
+  .icon {
+    color: var(--tertiary);
   }
 </style>

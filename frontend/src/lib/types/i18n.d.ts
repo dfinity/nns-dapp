@@ -150,7 +150,6 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  total: string;
   main: string;
   balance: string;
   new_transaction: string;

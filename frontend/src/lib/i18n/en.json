@@ -141,7 +141,6 @@
     "background": "An abstract image for design and presentation purpose only"
   },
   "accounts": {
-    "total": "Total balance is",
     "main": "Main",
     "balance": "Balance",
     "new_transaction": "New Transaction",

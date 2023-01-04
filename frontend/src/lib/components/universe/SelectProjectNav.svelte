@@ -1,14 +1,15 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Nav } from "@dfinity/gix-components";
+  import { Nav, SkeletonText } from "@dfinity/gix-components";
   import {
     snsProjectIdSelectedStore,
     snsProjectSelectedStore,
   } from "$lib/derived/selected-project.derived";
   import { selectableProjects } from "$lib/derived/selectable-projects.derived";
-  import SelectProjectNavCard from "$lib/components/universe/SelectProjectNavCard.svelte";
-  import AccountsBalance from "$lib/components/accounts/AccountsBalance.svelte";
+  import SelectProjectNavCard from "$lib/components/universe/SelectProjectCard.svelte";
   import { selectedProjectBalance } from "$lib/derived/selected-project-balance.derived";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { nonNullish } from "$lib/utils/utils";
 
   let selectedCanisterId: string;
   $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
@@ -38,8 +39,15 @@
       summary={$snsProjectSelectedStore?.summary}
       canisterId={selectedCanisterId}
       selected={true}
+      expandMoreIcon
     >
-      <AccountsBalance balance={$selectedProjectBalance.balance} />
+      {#if nonNullish($selectedProjectBalance.balance)}
+        <AmountDisplay copy amount={$selectedProjectBalance.balance} />
+      {:else}
+        <div class="skeleton">
+          <SkeletonText />
+        </div>
+      {/if}
     </SelectProjectNavCard>
   {/if}
 </Nav>
@@ -52,5 +60,14 @@
     @include media.min-width(large) {
       @include fonts.h3(true);
     }
+  }
+
+  .skeleton {
+    display: flex;
+    flex-direction: column;
+    height: var(--padding-4x);
+    box-sizing: border-box;
+    padding: var(--padding-0_5x) 0;
+    max-width: 240px;
   }
 </style>

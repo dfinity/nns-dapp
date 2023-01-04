@@ -25,8 +25,6 @@
       $amount: totalTokens,
     })}
   >
-    <AmountDisplay copy amount={balance}>
-      <span>{$i18n.accounts.total}</span>
-    </AmountDisplay>
+    <AmountDisplay copy amount={balance} />
   </Tooltip>
 {/if}

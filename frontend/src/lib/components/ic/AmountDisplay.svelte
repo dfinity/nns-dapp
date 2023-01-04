@@ -23,7 +23,6 @@
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
-  <slot />
   <span data-tid="token-value" class="value"
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
