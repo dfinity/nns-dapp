@@ -13,7 +13,7 @@
   $: hasSlots = $$slots.default === true;
 </script>
 
-<Card role="link" {selected} transparent={!selected} on:click {icon}>
+<Card role="link" {selected} style={!selected ? "transparent" : undefined} on:click {icon}>
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
