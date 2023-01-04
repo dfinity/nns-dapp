@@ -20,6 +20,7 @@ import {
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
@@ -27,6 +28,7 @@ import {
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -43,7 +45,7 @@ import {
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import type { E8s, Token } from "@dfinity/nns";
+import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
@@ -53,6 +55,7 @@ import {
 } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
+  assertNonNullish,
   fromDefinedNullable,
   fromNullable,
 } from "@dfinity/utils";
@@ -303,20 +306,23 @@ export const splitNeuron = async ({
   rootCanisterId,
   neuronId,
   amount,
-  transactionFee,
-  token: { symbol },
   neuronMinimumStake,
 }: {
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
   amount: number;
-  transactionFee: E8s;
-  token: Token;
   neuronMinimumStake: E8s;
 }): Promise<{ success: boolean }> => {
   try {
-    const amountE8s = numberToE8s(amount);
+    const token = get(snsTokenSymbolSelectedStore);
+    assertNonNullish(token, "token not defined");
 
+    const transactionFee = get(transactionsFeesStore).projects[
+      rootCanisterId.toText()
+    ]?.fee;
+    assertNonNullish(transactionFee, "fee not defined");
+
+    const amountE8s = numberToE8s(amount);
     const amountAndFee = amountE8s + transactionFee;
 
     // minimum validation
@@ -331,7 +337,7 @@ export const splitNeuron = async ({
         labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
         substitutions: {
           $minimum: formatToken({ value: neuronMinimumStake }),
-          $token: `${symbol}`,
+          $token: `${token.symbol}`,
         },
       });
       return { success: false };
@@ -346,6 +352,9 @@ export const splitNeuron = async ({
     });
     const neurons = get(snsNeuronsStore)[rootCanisterId.toText()]
       .neurons as SnsNeuron[];
+    // User can try to split and stake at the same time for a single principal id.
+    // The call would fail but client could just try again after displaying the error to the user.
+    // `memo` parameter may become optional in the future.
     const memo = nextMemo({
       identity,
       neurons,

@@ -69,9 +69,7 @@
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
       amount,
-      transactionFee,
       neuronMinimumStake,
-      token,
     });
 
     if (success) {
