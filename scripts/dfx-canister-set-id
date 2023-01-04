@@ -2,14 +2,14 @@
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-# Source the optparse.bash file ---------------------------------------------------
-source "$SOURCE_DIR/optparse.bash"
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
 # Define options
-optparse.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-optparse.define short=i long=canister_id desc="The ID of the canister" variable=DFX_CANISTER_ID
-optparse.define short=N long=canister_name desc="The name of the canister" variable=DFX_CANISTER_NAME
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=i long=canister_id desc="The ID of the canister" variable=DFX_CANISTER_ID
+clap.define short=N long=canister_name desc="The name of the canister" variable=DFX_CANISTER_NAME
 # Source the output file ----------------------------------------------------------
-source "$(optparse.build)"
+source "$(clap.build)"
 set -euo pipefail
 
 export DFX_NETWORK

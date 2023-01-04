@@ -10,11 +10,11 @@ print_help() {
 	EOF
 }
 
-# Source the optparse.bash file ---------------------------------------------------
-source "$SOURCE_DIR/optparse.bash"
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
 # Define options
 # Source the output file ----------------------------------------------------------
-source "$(optparse.build)"
+source "$(clap.build)"
 set -euo pipefail
 
 DFX_WASMS_DIR="$(dfx cache show)/wasms"
