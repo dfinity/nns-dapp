@@ -155,7 +155,9 @@
         <SnsNeuronInfoStake />
         <SnsNeuronMaturityCard />
         <SnsNeuronFollowingCard />
-        <SnsNeuronHotkeysCard />
+        {#if nonNullish(parameters)}
+          <SnsNeuronHotkeysCard {parameters} />
+        {/if}
       {/if}
     </section>
   </main>

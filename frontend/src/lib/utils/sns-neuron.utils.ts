@@ -1,5 +1,5 @@
 import {
-  HOTKEY_PERMISSIONS,
+  HOTKEY_PERMISSIONS, HOTKEY_PERMISSIONS_V2,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
@@ -166,15 +166,23 @@ export const nextMemo = ({
 export const canIdentityManageHotkeys = ({
   neuron,
   identity,
+  parameters,
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
-}): boolean =>
-  hasPermissions({
+  parameters: NervousSystemParameters,
+}): boolean => {
+  const grantablePermissions = Array.from(fromDefinedNullable(parameters.neuron_grantable_permissions)?.permissions ?? []);
+  const hasManageVotingPermission = grantablePermissions.includes(SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION);
+
+  return hasPermissions({
     neuron,
     identity,
-    permissions: HOTKEY_PERMISSIONS,
-  });
+    // fallback (before `NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION` introduction)
+    // worst case scenario - showing the button that won’t work
+    permissions: hasManageVotingPermission ? HOTKEY_PERMISSIONS_V2 : HOTKEY_PERMISSIONS,
+  })
+}
 
 export const hasPermissionToDisburse = ({
   neuron,

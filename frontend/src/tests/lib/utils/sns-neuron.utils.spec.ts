@@ -58,7 +58,7 @@ import { mockNeuron } from "../../mocks/neurons.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
-  mockSnsNeuron,
+  mockSnsNeuron, snsNervousSystemParametersMock,
 } from "../../mocks/sns-neurons.mock";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
@@ -372,6 +372,7 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: controlledNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(true);
     });
@@ -385,6 +386,7 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: unControlledNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
       const otherPermissionNeuron: SnsNeuron = {
@@ -403,6 +405,7 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: otherPermissionNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
     });
@@ -423,9 +426,12 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: unControlledNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
     });
+
+    // TODO: add the permissions fallback test
   });
 
   describe("getSnsNeuronHotkeys", () => {
