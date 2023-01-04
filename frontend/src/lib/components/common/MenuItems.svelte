@@ -10,7 +10,7 @@
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
   import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
@@ -69,22 +69,17 @@
       label: "voting",
       icon: IconUsers,
     },
-    // Launchpad should not be visible on mainnet
-    ...(ENABLE_SNS
-      ? [
-          {
-            context: "launchpad",
-            href: `${AppPath.Launchpad}`,
-            selected: isSelectedPath({
-              currentPath: $pageStore.path,
-              paths: [AppPath.Launchpad, AppPath.Project],
-            }),
-            label: "launchpad",
-            icon: IconRocketLaunch,
-            statusIcon: BadgeNew,
-          },
-        ]
-      : []),
+    {
+      context: "launchpad",
+      href: `${AppPath.Launchpad}`,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Launchpad, AppPath.Project],
+      }),
+      label: "launchpad",
+      icon: IconRocketLaunch,
+      statusIcon: BadgeNew,
+    },
     {
       context: "canisters",
       href: $canistersPathStore,
