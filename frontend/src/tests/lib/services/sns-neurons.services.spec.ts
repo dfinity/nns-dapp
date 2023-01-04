@@ -59,6 +59,7 @@ const {
   removeHotkey,
   splitNeuron,
   stakeNeuron,
+  loadNeurons,
   loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
   addFollowee,
 } = services;
@@ -202,6 +203,35 @@ describe("sns-neurons-services", () => {
       await tick();
       const store = get(snsNeuronsStore);
       expect(store[mockPrincipal.toText()]).toBeUndefined();
+      expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("loadNeurons", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsNeuronsStore.reset();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should call api.querySnsNeurons and load neurons in store", async () => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
+      await loadNeurons({ rootCanisterId: mockPrincipal, certified: true });
+
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
       expect(spyQuery).toBeCalled();
     });
   });
