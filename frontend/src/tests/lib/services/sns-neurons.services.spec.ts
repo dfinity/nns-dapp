@@ -8,6 +8,7 @@ import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
+  increaseStakeNeuron,
   stakeMaturity,
   startDissolving,
   stopDissolving,
@@ -24,6 +25,7 @@ import {
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
+  decodeSnsAccount,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
@@ -562,6 +564,66 @@ describe("sns-neurons-services", () => {
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("increaseStakeNeuron", () => {
+    it("should call api.increaseStakeNeuron", async () => {
+      const spyOnIncreaseStakeNeuron = jest
+        .spyOn(api, "increaseStakeNeuron")
+        .mockImplementation(() => Promise.resolve());
+
+      const rootCanisterId = mockPrincipal;
+      const amount = BigInt(200_000_000);
+      const identity = mockIdentity;
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const account = mockSnsMainAccount;
+      const identifier = decodeSnsAccount(account.identifier);
+
+      const { success } = await increaseStakeNeuron({
+        rootCanisterId,
+        amount,
+        account,
+        neuronId,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnIncreaseStakeNeuron).toBeCalledWith({
+        neuronId,
+        rootCanisterId,
+        stakeE8s: amount,
+        identity,
+        source: identifier,
+      });
+    });
+  });
+
+  describe("stakeMaturity", () => {
+    it("should call api.stakeMaturity", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const percentageToStake = 60;
+
+      const spyOnStakeMaturity = jest
+        .spyOn(governanceApi, "stakeMaturity")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await stakeMaturity({
+        neuronId,
+        rootCanisterId,
+        percentageToStake,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnStakeMaturity).toBeCalledWith({
+        neuronId,
+        rootCanisterId,
+        percentageToStake,
+        identity,
+      });
     });
   });
 

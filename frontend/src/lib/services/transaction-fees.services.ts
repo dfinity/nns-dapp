@@ -18,7 +18,13 @@ export const loadMainTransactionFee = async () => {
   }
 };
 
-export const loadSnsTransactionFee = async (rootCanisterId: Principal) => {
+export const loadSnsTransactionFee = async ({
+  rootCanisterId,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}) => {
   return queryAndUpdate<bigint, unknown>({
     request: ({ certified, identity }) =>
       snsTransactionFee({
@@ -39,6 +45,8 @@ export const loadSnsTransactionFee = async (rootCanisterId: Principal) => {
         labelKey: "error.transaction_fee_not_found",
         err,
       });
+
+      handleError?.();
     },
   });
 };

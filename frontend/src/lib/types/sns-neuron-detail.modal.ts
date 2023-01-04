@@ -1,4 +1,5 @@
 export type SnsNeuronModalType =
+  | "increase-stake"
   | "increase-dissolve-delay"
   | "disburse"
   | "dissolve"

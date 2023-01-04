@@ -26,17 +26,37 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
+
     it("should call api.getSnsAccounts and load neurons in store", async () => {
       const spyQuery = jest
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
-      await services.loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalled();
+
+      spyQuery.mockClear();
+    });
+
+    it("should call error callback", async () => {
+      const spyQuery = jest
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockRejectedValue(new Error());
+
+      const spy = jest.fn();
+
+      await services.loadSnsAccounts({
+        rootCanisterId: mockPrincipal,
+        handleError: spy,
+      });
+
+      expect(spy).toBeCalled();
+
+      spyQuery.mockClear();
     });
 
     it("should empty store if update call fails", async () => {
@@ -49,7 +69,7 @@ describe("sns-accounts-services", () => {
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.reject(undefined));
 
-      await services.loadSnsAccounts(mockPrincipal);
+      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await waitFor(() => {
         const store = get(snsAccountsStore);
@@ -75,7 +95,7 @@ describe("sns-accounts-services", () => {
         .spyOn(ledgerApi, "transactionFee")
         .mockImplementation(() => Promise.resolve(fee));
 
-      await services.syncSnsAccounts(mockPrincipal);
+      await services.syncSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       expect(spyAccountsQuery).toBeCalled();

@@ -4,7 +4,7 @@
 
 import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-import StakeSnsNeuronModal from "$lib/modals/sns/neurons/StakeSnsNeuronModal.svelte";
+import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -20,6 +20,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
+import { enterAmount } from "../../../utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -27,11 +28,11 @@ jest.mock("$lib/services/sns-neurons.services", () => {
   };
 });
 
-describe("StakeSnsNeuronModal", () => {
+describe("SnsStakeNeuronModal", () => {
   const token = { name: "SNS", symbol: "SNS" };
   const renderTransactionModal = () =>
     renderModal({
-      component: StakeSnsNeuronModal,
+      component: SnsStakeNeuronModal,
       props: {
         token,
         transactionFee: TokenAmount.fromE8s({
@@ -67,29 +68,11 @@ describe("StakeSnsNeuronModal", () => {
   });
 
   it("should stake a new sns neuron", async () => {
-    const { queryAllByText, getByTestId, container } =
-      await renderTransactionModal();
+    const renderResult = await renderTransactionModal();
 
-    await waitFor(() =>
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
-    );
-    const participateButton = getByTestId("transaction-button-next");
-    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+    await enterAmount(renderResult);
 
-    // Enter amount
-    const icpAmount = "10";
-    const input = container.querySelector("input[name='amount']");
-    input && fireEvent.input(input, { target: { value: icpAmount } });
-    await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-    );
-
-    fireEvent.click(participateButton);
-
-    await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
-    expect(queryAllByText(icpAmount, { exact: false }).length).toBeGreaterThan(
-      0
-    );
+    const { getByTestId } = renderResult;
 
     const confirmButton = getByTestId("transaction-button-execute");
     fireEvent.click(confirmButton);

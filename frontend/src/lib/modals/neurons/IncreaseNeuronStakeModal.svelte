@@ -17,6 +17,7 @@
 
   let currentStep: WizardStep;
 
+  let title: string;
   $: title =
     currentStep?.name === "Form"
       ? $i18n.neurons.top_up_neuron

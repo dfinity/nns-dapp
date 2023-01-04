@@ -3,7 +3,6 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";
@@ -11,6 +10,7 @@
   import type { Principal } from "@dfinity/principal";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -25,6 +25,8 @@
       $tokenSymbol: token.symbol,
     }
   );
+
+  let title: string;
   $: title =
     currentStep?.name === "Form"
       ? stakeNeuronText
@@ -58,22 +60,19 @@
 </script>
 
 <!-- TODO: Fetch SNS params and use minimum neuron stake for validation -->
-<TransactionModal
+<SnsTransactionModal
   {rootCanisterId}
   on:nnsSubmit={stake}
   on:nnsClose
   bind:currentStep
   {token}
   {transactionFee}
-  destinationAddress={governanceCanisterId.toText()}
+  {governanceCanisterId}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
-  <svelte:fragment slot="destination-info">
-    {$i18n.sns_neurons.sns_neuron_destination}
-  </svelte:fragment>
   <p slot="description" class="value">
     {stakeNeuronText}
   </p>
-</TransactionModal>
+</SnsTransactionModal>
