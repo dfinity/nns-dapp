@@ -218,6 +218,8 @@
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
     "add_user_as_hotkey_success": "Your principal was added to the neuron successfully.",
+    "remove_user_hotkey_confirm_title": "Confirm Removal of Hotkey",
+    "remove_user_hotkey_confirm_text": "Are you sure you want to remove your principal from the hotkeys of the neuron?",
     "remove_hotkey_success": "Hotkey removed successfully.",
     "neuron_create_success": "Neuron created successfully.",
     "your_principal": "Your NNS Principal",

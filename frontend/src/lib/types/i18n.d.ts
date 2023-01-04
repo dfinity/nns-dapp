@@ -228,6 +228,8 @@ interface I18nNeurons {
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
   add_user_as_hotkey_success: string;
+  remove_user_hotkey_confirm_title: string;
+  remove_user_hotkey_confirm_text: string;
   remove_hotkey_success: string;
   neuron_create_success: string;
   your_principal: string;
