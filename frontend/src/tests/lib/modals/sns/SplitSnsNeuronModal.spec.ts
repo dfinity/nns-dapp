@@ -2,46 +2,55 @@
  * @jest-environment jsdom
  */
 
-import SplitNeuronModal from "$lib/modals/neurons/SplitNeuronModal.svelte";
-import { splitNeuron } from "$lib/services/neurons.services";
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import type { RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
+import { splitNeuron } from "$lib/services/sns-neurons.services";
+import { fireEvent } from "@testing-library/svelte";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../../mocks/sns-neurons.mock";
 
-jest.mock("$lib/services/neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    splitNeuron: jest.fn().mockResolvedValue(undefined),
+    splitNeuron: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-describe("SplitNeuronModal", () => {
-  const renderSplitNeuronModal = async (
-    neuron: NeuronInfo
-  ): Promise<RenderResult<SvelteComponent>> => {
-    return renderModal({
-      component: SplitNeuronModal,
-      props: { neuron },
+describe("SplitSnsNeuronModal", () => {
+  const token = { name: "SNS", symbol: "SNS" };
+  const reloadNeuronSpy = jest.fn().mockResolvedValue(undefined);
+  const renderSplitNeuronModal = () =>
+    renderModal({
+      component: SplitSnsNeuronModal,
+      props: {
+        rootCanisterId: mockPrincipal,
+        neuron: { ...mockSnsNeuron },
+        token,
+        parameters: snsNervousSystemParametersMock,
+        transactionFee: 0n,
+        reloadNeuron: reloadNeuronSpy,
+      },
     });
-  };
+
+  afterAll(jest.clearAllMocks);
 
   it("should display modal", async () => {
-    const { container } = await renderSplitNeuronModal(mockNeuron);
+    const { container } = await renderSplitNeuronModal();
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
   it("should have the split button button disabled by default", async () => {
-    const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
+    const { queryByTestId } = await renderSplitNeuronModal();
 
     const splitButton = queryByTestId("split-neuron-button");
     expect(splitButton?.getAttribute("disabled")).not.toBeNull();
   });
 
   it("should have disabled button if value is 0", async () => {
-    const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
+    const { queryByTestId } = await renderSplitNeuronModal();
 
     const inputElement = queryByTestId("input-ui-element");
     expect(inputElement).not.toBeNull();
@@ -54,7 +63,7 @@ describe("SplitNeuronModal", () => {
   });
 
   it("should call split neuron service if amount is valid", async () => {
-    const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
+    const { queryByTestId } = await renderSplitNeuronModal();
 
     const inputElement = queryByTestId("input-ui-element");
     expect(inputElement).not.toBeNull();
@@ -69,5 +78,6 @@ describe("SplitNeuronModal", () => {
     splitButton && (await fireEvent.click(splitButton));
 
     expect(splitNeuron).toHaveBeenCalled();
+    expect(reloadNeuronSpy).toHaveBeenCalled();
   });
 });

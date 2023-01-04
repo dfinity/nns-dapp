@@ -491,7 +491,6 @@
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
     "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
     "maturity_title": "Maturity",
-    "merge_maturity": "Merge Maturity",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
@@ -511,7 +510,7 @@
     "merge_neurons_success": "Your neurons have been successfully merged.",
     "disburse_neuron_title": "Disburse Neuron",
     "split_neuron_success": "Your neuron has successfully been split.",
-    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount $token to be splittable.",
     "spawn_neuron_disabled_tooltip": "You need at least the equivalent of $amount ICP ($min / $varibility) to spawn a new neuron from maturity.",
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
@@ -522,7 +521,6 @@
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
     "edit_percentage": "Edit percentage",
-    "merge_maturity_success": "Maturity merged successfully.",
     "stake_maturity_modal_title": "Stake Maturity",
     "stake_confirmation_modal_title": "Confirm Stake Maturity",
     "stake_maturity_modal_description": "Choose how much of the maturity available to stake into this neuron.",
@@ -678,6 +676,7 @@
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
     "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "sns_split_neuron": "There was an error while splitting the neuron.",
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
@@ -702,7 +701,8 @@
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
-    "sns_stake_maturity": "There was an error while staking the maturity of the neuron."
+    "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
+    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake a neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",

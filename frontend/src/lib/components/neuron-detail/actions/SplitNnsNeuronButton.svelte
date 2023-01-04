@@ -10,6 +10,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import { ICPToken } from "@dfinity/nns";
 
   export let neuron: NeuronInfo;
 
@@ -37,6 +38,7 @@
           value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
           detailed: true,
         }),
+        $token: ICPToken.symbol,
       }
     )}
   >

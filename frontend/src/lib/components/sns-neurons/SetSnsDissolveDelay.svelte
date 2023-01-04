@@ -16,7 +16,7 @@
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { NervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";

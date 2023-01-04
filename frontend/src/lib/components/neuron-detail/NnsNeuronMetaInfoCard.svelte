@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
+  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -99,7 +99,7 @@
 
 <div class="buttons">
   {#if isControlledByUser}
-    <SplitNeuronButton {neuron} />
+    <SplitNnsNeuronButton {neuron} />
   {/if}
 </div>
 

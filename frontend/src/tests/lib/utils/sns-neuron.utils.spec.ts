@@ -1,5 +1,9 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  MAX_NEURONS_SUBACCOUNTS,
+} from "$lib/constants/sns-neurons.constants";
+import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   canIdentityManageHotkeys,
@@ -19,14 +23,19 @@ import {
   hasPermissions,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
+  hasPermissionToSplit,
   hasPermissionToStakeMaturity,
   hasPermissionToVote,
   hasStakedMaturity,
   hasValidStake,
   isCommunityFund,
+  isEnoughAmountToSplit,
   isSnsNeuron,
   isUserHotkey,
+  minNeuronSplittable,
   needsRefresh,
+  neuronCanBeSplit,
+  nextMemo,
   snsNeuronVotingPower,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
@@ -36,12 +45,13 @@ import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import {
+  neuronSubaccount,
   SnsNeuronPermissionType,
   type SnsNervousSystemFunction,
   type SnsNeuron,
 } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
@@ -50,6 +60,11 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
+
+jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
+  ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),
+  MAX_NEURONS_SUBACCOUNTS: 10,
+}));
 
 const appendPermissions = ({
   neuron,
@@ -232,6 +247,57 @@ describe("sns-neuron utils", () => {
       expect(subaccountToHexString(subaccount)).toBe(
         "9aaefb31ec11d6bdc38c3a593d1d8a714f308825603dd732b641c6610813ee24"
       );
+    });
+  });
+
+  describe("nextMemo", () => {
+    it("returns next memo", () => {
+      const ids = [
+        neuronSubaccount({
+          controller: mockIdentity.getPrincipal(),
+          index: 0,
+        }),
+        neuronSubaccount({
+          controller: mockIdentity.getPrincipal(),
+          index: 1,
+        }),
+      ];
+      const neurons = ids.map(
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+      );
+      const memo = nextMemo({
+        neurons,
+        identity: mockIdentity,
+      });
+      expect(memo).toBe(2n);
+    });
+
+    it("returns 0 if no neurons", () => {
+      const memo = nextMemo({
+        neurons: [],
+        identity: mockIdentity,
+      });
+      expect(memo).toBe(0n);
+    });
+
+    it("throws NextMemoNotFoundError", () => {
+      const ids = Array.from(Array(MAX_NEURONS_SUBACCOUNTS + 1)).map(
+        (_, index) =>
+          neuronSubaccount({
+            controller: mockIdentity.getPrincipal(),
+            index,
+          })
+      );
+      const neurons = ids.map(
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+      );
+
+      expect(() =>
+        nextMemo({
+          neurons,
+          identity: mockIdentity,
+        })
+      ).toThrowError(NextMemoNotFoundError);
     });
   });
 
@@ -455,7 +521,7 @@ describe("sns-neuron utils", () => {
   });
 
   describe("isUserHotkey", () => {
-    it("returns true if user only has voting and proposal permissions but not all permissions", () => {
+    it("returns true if user onl has voting and proposal permissions but not all permissions", () => {
       const hotkeyneuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [
@@ -647,6 +713,43 @@ describe("sns-neuron utils", () => {
 
       expect(
         hasPermissionToDissolve({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("hasPermissionToSplit", () => {
+    it("returns true when user has split rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
+      });
+
+      expect(
+        hasPermissionToSplit({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no split rights", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        ],
+      });
+
+      expect(
+        hasPermissionToSplit({
           neuron,
           identity: mockIdentity,
         })
@@ -864,6 +967,69 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
       expect(hasValidStake(neuron)).toBeFalsy();
+    });
+  });
+
+  describe("minNeuronSplittable", () => {
+    it("returns minimum amount to be splittable", () => {
+      expect(
+        minNeuronSplittable({
+          fee: 100n,
+          neuronMinimumStake: 1000n,
+        })
+      ).toBe(2100n);
+    });
+  });
+
+  describe("isEnoughAmountToSplit", () => {
+    it("returns true if enough", () => {
+      expect(
+        isEnoughAmountToSplit({
+          amount: 1100n,
+          fee: 100n,
+          neuronMinimumStake: 1000n,
+        })
+      ).toBeTruthy();
+    });
+
+    it("returns false if not enough", () => {
+      expect(
+        isEnoughAmountToSplit({
+          amount: 1099n,
+          fee: 100n,
+          neuronMinimumStake: 1000n,
+        })
+      ).toBeFalsy();
+    });
+  });
+
+  describe("neuronCanBeSplit", () => {
+    it("returns true if enough", () => {
+      expect(
+        neuronCanBeSplit({
+          neuron: {
+            ...mockSnsNeuron,
+            cached_neuron_stake_e8s: 2100n,
+            neuron_fees_e8s: 0n,
+          },
+          fee: 100n,
+          neuronMinimumStake: 1000n,
+        })
+      ).toBeTruthy();
+    });
+
+    it("returns false if not enough", () => {
+      expect(
+        neuronCanBeSplit({
+          neuron: {
+            ...mockSnsNeuron,
+            cached_neuron_stake_e8s: 2099n,
+            neuron_fees_e8s: 0n,
+          },
+          fee: 100n,
+          neuronMinimumStake: 1000n,
+        })
+      ).toBeFalsy();
     });
   });
 
