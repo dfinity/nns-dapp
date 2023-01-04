@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import type { Unsubscriber } from "svelte/store";
   import { accountsStore } from "$lib/stores/accounts.store";
   import type { AccountsStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";

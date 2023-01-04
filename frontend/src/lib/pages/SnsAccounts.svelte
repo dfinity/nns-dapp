@@ -14,6 +14,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { sumAccounts } from "$lib/utils/sns-accounts.utils";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -30,12 +31,7 @@
   onDestroy(unsubscribe);
 
   let totalAmountToken: TokenAmount | undefined;
-  $: totalAmountToken =
-    $snsProjectAccountsStore === undefined
-      ? undefined
-      : sumTokenAmounts(
-          ...$snsProjectAccountsStore.map(({ balance }) => balance)
-        );
+  $: totalAmountToken = sumAccounts($snsProjectAccountsStore);
 
   const goToDetails = async ({ identifier }: Account) =>
     await goto(

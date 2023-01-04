@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import type { Unsubscriber } from "svelte/store";
   import { accountsStore } from "$lib/stores/accounts.store";
   import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
@@ -12,6 +12,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { sumAccounts } from "$lib/utils/accounts.utils";
 
   let accounts: AccountsStore | undefined;
 
@@ -30,14 +31,7 @@
   onDestroy(unsubscribe);
 
   let totalBalance: TokenAmount | undefined;
-  $: totalBalance =
-    accounts?.main?.balance !== undefined
-      ? sumTokenAmounts(
-          accounts?.main?.balance,
-          ...(accounts?.subAccounts || []).map(({ balance }) => balance),
-          ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
-        )
-      : undefined;
+  $: totalBalance = sumAccounts(accounts);
 </script>
 
 <AccountsTitle balance={totalBalance} />
