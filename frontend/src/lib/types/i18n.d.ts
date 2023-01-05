@@ -277,6 +277,8 @@ interface I18nNeurons {
   enter_neuron_id_prompt: string;
   add_hotkey_prompt_error: string;
   add_hotkey_prompt_success: string;
+  remove_followees_sale_prompt_error: string;
+  remove_followees_sale_prompt_success: string;
   top_up_neuron: string;
   top_up_description: string;
   community_fund_title: string;
