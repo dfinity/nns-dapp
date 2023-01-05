@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Nav } from "@dfinity/gix-components";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
-  import SelectProjectNavList from "$lib/components/universe/SelectProjectNavList.svelte";
+  import SelectProjectList from "$lib/components/universe/SelectProjectList.svelte";
   import SelectProjectNavDropdown from "$lib/components/universe/SelectProjectNavDropdown.svelte";
 
   let selectedCanisterId: string;
@@ -21,7 +21,7 @@
   <p class="title" slot="title">{$i18n.core.pick_a_project}</p>
 
   {#if list}
-    <SelectProjectNavList {selectedCanisterId} />
+    <SelectProjectList {selectedCanisterId} />
   {:else}
     <SelectProjectNavDropdown {selectedCanisterId} />
   {/if}

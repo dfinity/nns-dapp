@@ -5,18 +5,24 @@
   import type { SnsSummary } from "$lib/types/sns";
 
   export let selected: boolean;
-  export let canisterId: string;
+  export let role: "link" | "button" | "dropdown" = "link";
   export let summary: SnsSummary | undefined = undefined;
-  export let icon: "expand" | "check" | undefined = undefined;
 
   let hasSlots = false;
   $: hasSlots = $$slots.default === true;
+
+  let theme: "transparent" | "button" | "highlighted" | undefined =
+    "transparent";
+  $: theme = role === "button" ? "button" : role === "link" ? "transparent" : undefined;
+
+  let icon: "arrow" | "expand" | "check" | undefined = undefined;
+  $: icon = role === "button" ? "check" : role === "dropdown" ? "expand" : undefined;
 </script>
 
 <Card
-  role="link"
+  role={role === "link" ? "link" : "button"}
   {selected}
-  style={!selected ? "transparent" : undefined}
+  {theme}
   on:click
   {icon}
 >

@@ -27,9 +27,8 @@
 
 <SelectProjectCard
   summary={$snsProjectSelectedStore?.summary}
-  canisterId={selectedCanisterId}
   selected={true}
-  icon="expand"
+  role="dropdown"
   on:click={() => (showProjectPicker = true)}
 >
   {#if nonNullish($selectedProjectBalance.balance)}
