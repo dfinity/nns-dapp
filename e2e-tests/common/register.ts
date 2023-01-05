@@ -94,7 +94,8 @@ export const register = async (
       "registration-ii-new-identity",
       { timeout: 30_000 }
     )
-    .then((element) => element.getText());
+    .then((element) => element.getText())
+    .then((text) => text.trim());
   await navigator.click(
     IICongratulationsPage.CONTINUE_BUTTON_SELECTOR,
     "registration-ii-congratulations",
