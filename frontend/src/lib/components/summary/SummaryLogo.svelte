@@ -10,4 +10,4 @@
   $: summary = displayProjects ? $snsProjectSelectedStore?.summary : undefined;
 </script>
 
-<ProjectLogo {size} {summary} />
+<ProjectLogo {size} {summary} framed />

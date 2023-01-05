@@ -91,6 +91,10 @@
     margin: 0;
   }
 
+  h3 {
+    margin-top: var(--padding-0_25x);
+  }
+
   .logo {
     grid-row: 1 / 3;
 
