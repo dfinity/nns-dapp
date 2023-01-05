@@ -85,7 +85,7 @@
     word-break: break-all;
   }
 
-  h1 {
+  h1, h3 {
     display: inline-block;
     @include text.truncate;
     margin: 0;
