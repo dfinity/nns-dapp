@@ -181,20 +181,20 @@ export const canIdentityManageHotkeys = ({
     SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION
   );
 
-  return hasManageVotingPermission ?
-  hasPermissions({
-    neuron,
-    identity,
-    permissions: HOTKEY_PERMISSIONS_V2,
-    options: {any: true}
-  }):
-    // fallback (before `NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION` introduction)
-    // worst case scenario - showing the button that won’t work
-  hasPermissions({
-    neuron,
-    identity,
-    permissions: HOTKEY_PERMISSIONS,
-  });
+  return hasManageVotingPermission
+    ? hasPermissions({
+        neuron,
+        identity,
+        permissions: HOTKEY_PERMISSIONS_V2,
+        options: { any: true },
+      })
+    : // fallback (before `NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION` introduction)
+      // worst case scenario - showing the button that won’t work
+      hasPermissions({
+        neuron,
+        identity,
+        permissions: HOTKEY_PERMISSIONS,
+      });
 };
 
 export const hasPermissionToDisburse = ({
