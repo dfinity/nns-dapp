@@ -11,9 +11,9 @@
   let hasSlots = false;
   $: hasSlots = $$slots.default === true;
 
-  let theme: "transparent" | "button" | "highlighted" | undefined =
+  let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
-  $: theme = role === "button" ? "button" : role === "link" ? "transparent" : undefined;
+  $: theme = role === "button" ? "framed" : role === "link" ? "transparent" : undefined;
 
   let icon: "arrow" | "expand" | "check" | undefined = undefined;
   $: icon = role === "button" ? "check" : role === "dropdown" ? "expand" : undefined;
