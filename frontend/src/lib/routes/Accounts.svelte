@@ -6,7 +6,6 @@
     snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
-
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 </script>
 
