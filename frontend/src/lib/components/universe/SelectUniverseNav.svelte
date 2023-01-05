@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Nav } from "@dfinity/gix-components";
+  import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
@@ -11,7 +11,7 @@
   let innerWidth = 0;
   let list = false;
 
-  $: list = innerWidth > 1024;
+  $: list = innerWidth > BREAKPOINT_LARGE;
 </script>
 
 <svelte:window bind:innerWidth />

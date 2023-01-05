@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText, BREAKPOINT_LARGE } from "@dfinity/gix-components";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import { selectedProjectBalance } from "$lib/derived/selected-project-balance.derived";
@@ -15,7 +15,7 @@
 
   const onWindowSizeChange = (innerWidth: number) => {
     // Close project picker modal on large screen
-    if (innerWidth > 1024) {
+    if (innerWidth > BREAKPOINT_LARGE) {
       showProjectPicker = false;
     }
   };
