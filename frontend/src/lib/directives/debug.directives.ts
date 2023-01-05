@@ -1,5 +1,5 @@
 import { addHotkey } from "$lib/api/governance.api";
-import { removeFollowee } from "$lib/services/neurons.services";
+import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
 import { initDebugStore } from "$lib/stores/debug.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -36,7 +36,7 @@ import { claimSeedNeurons } from "../services/seed-neurons.services";
  * fo - original -> json file
  * cn - claim neurons
  * ah - Tries to add the current user's principal as hotkey to the given neuron.
- * rmf - Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
+ * rfds - Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
  */
 export enum LogType {
   Console = "c",
@@ -135,6 +135,7 @@ const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
 const removeFolloweesDecentralizedSale = async () => {
   try {
     const { neurons } = get(neuronsStore);
+    console.log(neurons);
     if (neurons !== undefined) {
       await Promise.all(
         neurons.map((neuron) => {
@@ -154,6 +155,7 @@ const removeFolloweesDecentralizedSale = async () => {
           );
         })
       );
+      await listNeurons();
     }
 
     toastsSuccess({
