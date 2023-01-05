@@ -18,7 +18,7 @@
     if (innerWidth > 1024) {
       showProjectPicker = false;
     }
-  }
+  };
 
   $: onWindowSizeChange(innerWidth);
 </script>
@@ -30,7 +30,7 @@
   canisterId={selectedCanisterId}
   selected={true}
   icon="expand"
-  on:click={() => showProjectPicker = true}
+  on:click={() => (showProjectPicker = true)}
 >
   {#if nonNullish($selectedProjectBalance.balance)}
     <AmountDisplay copy amount={$selectedProjectBalance.balance} />
@@ -42,7 +42,10 @@
 </SelectProjectCard>
 
 {#if showProjectPicker}
-  <SelectProjectModal {selectedCanisterId} on:nnsClose={() => showProjectPicker = false} />
+  <SelectProjectModal
+    {selectedCanisterId}
+    on:nnsClose={() => (showProjectPicker = false)}
+  />
 {/if}
 
 <style lang="scss">

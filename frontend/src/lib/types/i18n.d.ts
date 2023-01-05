@@ -227,6 +227,8 @@ interface I18nNeurons {
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
   add_user_as_hotkey_success: string;
+  remove_user_hotkey_confirm_title: string;
+  remove_user_hotkey_confirm_text: string;
   remove_hotkey_success: string;
   neuron_create_success: string;
   your_principal: string;
@@ -510,7 +512,6 @@ interface I18nNeuron_detail {
   auto_stake_maturity_off_success: string;
   community_fund_more_info: string;
   maturity_title: string;
-  merge_maturity: string;
   stake_maturity: string;
   stake: string;
   spawn_neuron: string;
@@ -541,7 +542,6 @@ interface I18nNeuron_detail {
   invalid_hotkey: string;
   disburse_success: string;
   edit_percentage: string;
-  merge_maturity_success: string;
   stake_maturity_modal_title: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
@@ -709,6 +709,7 @@ interface I18nError__sns {
   load_swap_commitment: string;
   load_parameters: string;
   sns_remove_hotkey: string;
+  sns_split_neuron: string;
   sns_disburse: string;
   sns_start_dissolving: string;
   sns_stop_dissolving: string;
@@ -734,6 +735,7 @@ interface I18nError__sns {
   sns_load_functions: string;
   sns_add_hotkey: string;
   sns_stake_maturity: string;
+  sns_amount_not_enough_stake_neuron: string;
 }
 
 interface I18nAuth_accounts {

@@ -14,6 +14,7 @@ import {
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  splitNeuron,
   stakeMaturity,
   startDissolving,
   stopDissolving,
@@ -62,6 +63,7 @@ describe("sns-api", () => {
   const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
+  const splitNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
@@ -107,6 +109,7 @@ describe("sns-api", () => {
         addNeuronPermissions: addNeuronPermissionsSpy,
         removeNeuronPermissions: removeNeuronPermissionsSpy,
         disburse: disburseSpy,
+        splitNeuron: splitNeuronSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
         increaseDissolveDelay: increaseDissolveDelaySpy,
@@ -159,6 +162,18 @@ describe("sns-api", () => {
     });
 
     expect(disburseSpy).toBeCalled();
+  });
+
+  it("should splitNeuron", async () => {
+    await splitNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      amount: 0n,
+      memo: 0n,
+    });
+
+    expect(splitNeuronSpy).toBeCalled();
   });
 
   it("should startDissolving", async () => {

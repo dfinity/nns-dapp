@@ -1,13 +1,10 @@
 <script lang="ts">
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let projects: "select" | "display" | "none" = ENABLE_SNS
-    ? "select"
-    : "none";
+  export let projects: "select" | "display" | "none" = "select";
 
   let selectProjects: boolean;
   $: selectProjects = projects === "select";

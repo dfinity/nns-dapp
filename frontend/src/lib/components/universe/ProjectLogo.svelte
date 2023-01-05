@@ -2,8 +2,6 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { IC_LOGO } from "$lib/constants/icp.constants";
   import type { SnsSummary } from "$lib/types/sns";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import { i18n } from "$lib/stores/i18n";
 
   export let size: "big" | "small" = "small";

@@ -13,12 +13,20 @@
   $: hasSlots = $$slots.default === true;
 </script>
 
-<Card role="link" {selected} style={!selected ? "transparent" : undefined} on:click {icon}>
+<Card
+  role="link"
+  {selected}
+  style={!selected ? "transparent" : undefined}
+  on:click
+  {icon}
+>
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
     <div class="content">
-      <span class="name" class:offset={hasSlots}>{summary?.metadata.name ?? $i18n.core.ic}</span>
+      <span class="name" class:offset={hasSlots}
+        >{summary?.metadata.name ?? $i18n.core.ic}</span
+      >
       <slot />
     </div>
   </div>
