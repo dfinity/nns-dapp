@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MenuItem, IconNorthEast, IconGitHub } from "@dfinity/gix-components";
+  import { MenuItem, IconNorthEast } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
 </script>

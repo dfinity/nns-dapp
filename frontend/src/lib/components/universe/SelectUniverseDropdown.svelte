@@ -48,15 +48,6 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/fonts";
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  .title {
-    @include media.min-width(large) {
-      @include fonts.h3(true);
-    }
-  }
-
   .skeleton {
     display: flex;
     flex-direction: column;

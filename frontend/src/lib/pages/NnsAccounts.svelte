@@ -6,7 +6,6 @@
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { TokenAmount } from "@dfinity/nns";
-  import { sumTokenAmounts } from "$lib/utils/token.utils";
   import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";

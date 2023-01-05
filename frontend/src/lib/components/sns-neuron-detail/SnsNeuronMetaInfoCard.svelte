@@ -24,7 +24,6 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
-  import type { Principal } from "@dfinity/principal";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 
@@ -37,9 +36,6 @@
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
-
-  let rootCanisterId: Principal | undefined;
-  $: rootCanisterId = $store.selected?.rootCanisterId;
 
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);

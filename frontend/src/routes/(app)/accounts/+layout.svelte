@@ -4,7 +4,7 @@
   import SplitContent from "$lib/components/common/SplitContent.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
