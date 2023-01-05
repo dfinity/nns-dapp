@@ -11,14 +11,13 @@
   let innerWidth = 0;
   let list = false;
 
-  // TODO: not sure if we want to hide/display the components with JS or CSS...
   $: list = innerWidth > 1024;
 </script>
 
 <svelte:window bind:innerWidth />
 
 <Nav>
-  <p class="title" slot="title">{list ? $i18n.navigation.tokens : $i18n.universe.pick_a_token}</p>
+  <p class="title" slot="title">{$i18n.universe.select_token}</p>
 
   {#if list}
     <SelectUniverseNavList {selectedCanisterId} />

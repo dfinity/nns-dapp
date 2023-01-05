@@ -18,7 +18,11 @@
 
   let icon: "arrow" | "expand" | "check" | undefined = undefined;
   $: icon =
-    role === "button" ? "check" : role === "dropdown" ? "expand" : undefined;
+    role === "button" && selected
+      ? "check"
+      : role === "dropdown"
+      ? "expand"
+      : undefined;
 </script>
 
 <Card

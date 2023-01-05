@@ -12,13 +12,12 @@
 
   let list = false;
 
-  // TODO: not sure if we want to hide/display the components with JS or CSS...
   let innerWidth = 0;
   $: list = innerWidth > 1024;
 
   $: (() => {
     layoutTitleStore.set(list ? "" : $i18n.navigation.tokens);
-  })()
+  })();
 </script>
 
 <svelte:window bind:innerWidth />

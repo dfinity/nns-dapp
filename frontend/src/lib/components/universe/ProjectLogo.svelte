@@ -4,7 +4,7 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
 
-  export let size: "big" | "small" = "small";
+  export let size: "big" | "medium" | "small" = "small";
   export let summary: SnsSummary | undefined;
   export let framed = false;
 

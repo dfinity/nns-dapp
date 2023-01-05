@@ -5,29 +5,36 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
   export let projects: "select" | "display" | "none" = "select";
+  export let size: "big" | "medium" | "small" = "big";
 
   let selectProjects: boolean;
   $: selectProjects = projects === "select";
 
   let displayProjects: boolean;
   $: displayProjects = ["select", "display"].includes(projects);
+
+  let titleTag: "h1" | "h3" = "h1";
+  $: titleTag = size === "big" ? "h1" : "h3";
 </script>
 
 <div
-  class="summary"
+  class={`summary ${size}`}
   data-tid="accounts-summary"
   class:dropdown={selectProjects}
 >
   <div class="logo" class:dropdown={selectProjects} data-tid="summary-logo">
-    <SummaryLogo size="big" {displayProjects} />
+    <SummaryLogo {size} {displayProjects} />
   </div>
 
   {#if selectProjects}
     <SelectProjectDropdownWrapper />
   {:else if projects === "display"}
-    <h1>{$snsProjectSelectedStore?.summary.metadata.name ?? $i18n.core.ic}</h1>
+    <svelte:element this={titleTag}
+      >{$snsProjectSelectedStore?.summary.metadata.name ??
+        $i18n.core.ic}</svelte:element
+    >
   {:else}
-    <h1>{$i18n.core.ic}</h1>
+    <svelte:element this={titleTag}>{$i18n.core.ic}</svelte:element>
   {/if}
 
   <div class:details={selectProjects}>
@@ -63,6 +70,16 @@
 
     @include media.min-width(small) {
       @include columns;
+    }
+
+    &:not(.big) {
+      &:not(.dropdown) {
+        column-gap: var(--padding-1_5x);
+      }
+
+      @include media.min-width(small) {
+        column-gap: var(--padding-1_5x);
+      }
     }
 
     word-break: break-all;

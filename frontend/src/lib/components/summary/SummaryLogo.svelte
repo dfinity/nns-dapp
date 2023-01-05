@@ -3,7 +3,7 @@
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
 
-  export let size: "big" | "small" = "small";
+  export let size: "big" | "medium" | "small" = "small";
   export let displayProjects = true;
 
   let summary: SnsSummary | undefined;

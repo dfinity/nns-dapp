@@ -11,28 +11,18 @@
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
 
-  const select = async () => {
-    await goto(buildSwitchUniverseUrl(selectedCanisterId));
+  const select = async (canisterId: string) => {
+    await goto(buildSwitchUniverseUrl(canisterId));
     close();
   };
 </script>
 
 <Modal on:nnsClose>
-  <span slot="title">{$i18n.universe.pick_a_token}</span>
+  <span slot="title">{$i18n.universe.select_token}</span>
 
   <SelectUniverseList
     {selectedCanisterId}
     role="button"
-    on:nnsSelectProject={({ detail }) => (selectedCanisterId = detail)}
+    on:nnsSelectProject={({ detail }) => select(detail)}
   />
-
-  <div class="toolbar">
-    <button class="secondary" type="button" on:click={close}>
-      {$i18n.core.cancel}
-    </button>
-
-    <button class="primary" type="button" on:click={select}>
-      {$i18n.universe.select}
-    </button>
-  </div>
 </Modal>

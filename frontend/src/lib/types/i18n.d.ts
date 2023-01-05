@@ -764,7 +764,7 @@ interface I18nAuth_sns {
 }
 
 interface I18nUniverse {
-  pick_a_token: string;
+  select_token: string;
   select: string;
 }
 

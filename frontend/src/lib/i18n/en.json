@@ -724,7 +724,7 @@
     "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
   },
   "universe": {
-    "pick_a_token": "Pick a token",
+    "select_token": "Select Token",
     "select": "Select"
   }
 }

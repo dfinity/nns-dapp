@@ -33,6 +33,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -111,6 +112,8 @@
   <main class="legacy" data-tid="nns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined}
+        <Summary projects="none" size="medium" />
+
         <WalletSummary />
         <WalletActions />
 
