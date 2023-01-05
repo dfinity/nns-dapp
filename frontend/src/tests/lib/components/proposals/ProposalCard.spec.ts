@@ -3,50 +3,36 @@
  */
 
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
-import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { authStore } from "$lib/stores/auth.store";
-import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-import { secondsToDuration } from "$lib/utils/date.utils";
-import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatusColor } from "$lib/constants/proposals.constants";
+import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+import { ProposalStatus } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("ProposalCard", () => {
-  const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
-
-  beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-  });
-
-  it("should render a proposal title", () => {
+  const nowSeconds = Math.floor(nowInSeconds());
+  const props = {
+    hidden: false,
+    status: ProposalStatus.Open,
+    id: BigInt(112),
+    title: "Test Proposal",
+    color: ProposalStatusColor.PRIMARY,
+    topic: "Test Topic",
+    proposer: "1233444",
+    type: "Test Type",
+    deadlineTimestampSeconds: BigInt(nowSeconds + 3600),
+  };
+  it("should render a title", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
-    const firstProposal = mockProposals[0] as ProposalInfo;
-    expect(
-      getByText((firstProposal.proposal as Proposal).title as string)
-    ).toBeInTheDocument();
+    expect(getByText(props.title)).toBeInTheDocument();
   });
 
   it("should render a proposal status", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
     expect(getByText(en.status.Open)).toBeInTheDocument();
@@ -54,60 +40,43 @@ describe("ProposalCard", () => {
 
   it("should render a proposer", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
-    expect(
-      getByText(`${mockProposals[0].proposer}`, { exact: false })
-    ).toBeInTheDocument();
+    expect(getByText(props.proposer, { exact: false })).toBeInTheDocument();
   });
 
   it("should render a proposal id", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
-    expect(
-      getByText(`${mockProposals[0].id}`, { exact: false })
-    ).toBeInTheDocument();
+    expect(getByText(`${props.id}`, { exact: false })).toBeInTheDocument();
   });
 
   it("should render a proposal topic", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
-    expect(
-      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, { exact: false })
-    ).toBeInTheDocument();
+    expect(getByText(props.topic, { exact: false })).toBeInTheDocument();
   });
 
   it("should render a proposal a type", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
-    expect(getByText(en.actions.RegisterKnownNeuron)).toBeInTheDocument();
+    expect(getByText(props.type)).toBeInTheDocument();
   });
 
   it("should render deadline", () => {
     const { getByText } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
     const durationTillDeadline =
-      (mockProposals[0].deadlineTimestampSeconds as bigint) -
-      BigInt(Math.round(Date.now() / 1000));
+      props.deadlineTimestampSeconds - BigInt(nowSeconds);
 
     const text = `${secondsToDuration(durationTillDeadline)} ${
       en.proposal_detail.remaining
@@ -118,9 +87,7 @@ describe("ProposalCard", () => {
 
   it("should render accessible info without label", () => {
     const { container } = render(ProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
+      props,
     });
 
     expect(
@@ -134,22 +101,13 @@ describe("ProposalCard", () => {
   });
 
   it("should render a specific color for the status", () => {
-    proposalsFiltersStore.filterStatus([
-      ...DEFAULT_PROPOSALS_FILTERS.status,
-      ProposalStatus.Executed,
-    ]);
-
     const { container } = render(ProposalCard, {
       props: {
-        proposalInfo: {
-          ...mockProposals[1],
-          status: ProposalStatus.Executed,
-        },
+        ...props,
+        color: ProposalStatusColor.SUCCESS,
       },
     });
 
     expect(container.querySelector(".success")).not.toBeNull();
-
-    proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
   });
 });
