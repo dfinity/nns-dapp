@@ -1,6 +1,6 @@
 <script lang="ts">
   import { selectableProjects } from "$lib/derived/selectable-projects.derived";
-  import SelectProjectCard from "$lib/components/universe/SelectProjectCard.svelte";
+  import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import { createEventDispatcher } from "svelte";
 
   export let selectedCanisterId: string;
@@ -10,7 +10,7 @@
 </script>
 
 {#each $selectableProjects as { canisterId, summary } (canisterId)}
-  <SelectProjectCard
+  <SelectUniverseCard
     {summary}
     {role}
     selected={canisterId === selectedCanisterId}

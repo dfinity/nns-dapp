@@ -1,11 +1,11 @@
 <script lang="ts">
   import { SkeletonText } from "@dfinity/gix-components";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import SelectProjectCard from "$lib/components/universe/SelectProjectCard.svelte";
+  import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import { selectedProjectBalance } from "$lib/derived/selected-project-balance.derived";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { nonNullish } from "$lib/utils/utils";
-  import SelectProjectModal from "$lib/modals/universe/SelectProjectModal.svelte";
+  import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
 
   export let selectedCanisterId: string;
 
@@ -25,7 +25,7 @@
 
 <svelte:window bind:innerWidth />
 
-<SelectProjectCard
+<SelectUniverseCard
   summary={$snsProjectSelectedStore?.summary}
   selected={true}
   role="dropdown"
@@ -38,10 +38,10 @@
       <SkeletonText />
     </div>
   {/if}
-</SelectProjectCard>
+</SelectUniverseCard>
 
 {#if showProjectPicker}
-  <SelectProjectModal
+  <SelectUniverseModal
     {selectedCanisterId}
     on:nnsClose={() => (showProjectPicker = false)}
   />

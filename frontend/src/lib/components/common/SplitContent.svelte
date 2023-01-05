@@ -2,11 +2,11 @@
   import { SplitContent } from "@dfinity/gix-components";
   import Title from "$lib/components/common/Title.svelte";
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import SelectProjectNav from "$lib/components/universe/SelectProjectNav.svelte";
+  import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
 </script>
 
 <SplitContent>
-  <SelectProjectNav slot="start" />
+  <SelectUniverseNav slot="start" />
 
   <Title slot="title" />
 

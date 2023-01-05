@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Modal } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import SelectProjectList from "$lib/components/universe/SelectProjectList.svelte";
+  import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
   import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
@@ -20,7 +20,7 @@
 <Modal on:nnsClose>
   <span slot="title">{$i18n.universe.pick_a_project}</span>
 
-  <SelectProjectList
+  <SelectUniverseList
     {selectedCanisterId}
     role="button"
     on:nnsSelectProject={({ detail }) => (selectedCanisterId = detail)}
