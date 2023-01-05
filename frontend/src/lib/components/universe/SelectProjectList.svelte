@@ -1,11 +1,12 @@
 <script lang="ts">
   import { selectableProjects } from "$lib/derived/selectable-projects.derived";
-  import { goto } from "$app/navigation";
-  import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
   import SelectProjectCard from "$lib/components/universe/SelectProjectCard.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let selectedCanisterId: string;
   export let role: "link" | "button" = "link";
+
+  const dispatch = createEventDispatcher();
 </script>
 
 {#each $selectableProjects as { canisterId, summary } (canisterId)}
@@ -13,6 +14,6 @@
     {summary}
     {role}
     selected={canisterId === selectedCanisterId}
-    on:click={async () => await goto(buildSwitchUniverseUrl(canisterId))}
+    on:click={() => dispatch("nnsSelectProject", canisterId)}
   />
 {/each}

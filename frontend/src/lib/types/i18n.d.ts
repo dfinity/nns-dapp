@@ -30,7 +30,6 @@ interface I18nCore {
   previous: string;
   next: string;
   principal_is: string;
-  pick_a_project: string;
 }
 
 interface I18nError {
@@ -764,6 +763,11 @@ interface I18nAuth_sns {
   text: string;
 }
 
+interface I18nUniverse {
+  pick_a_project: string;
+  select: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -989,6 +993,7 @@ interface I18n {
   auth_proposals: I18nAuth_proposals;
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
+  universe: I18nUniverse;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
