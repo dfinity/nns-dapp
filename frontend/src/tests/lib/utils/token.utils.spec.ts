@@ -2,9 +2,11 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   convertIcpToTCycles,
   convertTCyclesToIcpNumber,
+  formattedTransactionFee,
   formattedTransactionFeeICP,
   formatToken,
   getMaxTransactionAmount,
+  numberToE8s,
   sumTokenAmounts,
 } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -118,6 +120,16 @@ describe("token-utils", () => {
       "0.0001"
     ));
 
+  it("should format a specific transaction fee with given token", () =>
+    expect(
+      formattedTransactionFee(
+        TokenAmount.fromE8s({
+          amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+          token: ICPToken,
+        })
+      )
+    ).toEqual("0.0001"));
+
   it("getMaxTransactionAmount should max taking into account fee, maxAmount and converte it to a number", () => {
     const fee = BigInt(DEFAULT_TRANSACTION_FEE_E8S);
     expect(getMaxTransactionAmount({ fee })).toEqual(0);
@@ -223,6 +235,15 @@ describe("token-utils", () => {
           exchangeRate: BigInt(10_000),
         })
       ).toBe(4.32);
+    });
+  });
+
+  describe("numberToE8s", () => {
+    it("converts number to e8s", () => {
+      expect(numberToE8s(1.14)).toBe(BigInt(114_000_000));
+      expect(numberToE8s(1)).toBe(BigInt(100_000_000));
+      expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
+      expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
     });
   });
 });

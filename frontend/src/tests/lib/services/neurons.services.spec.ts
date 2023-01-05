@@ -1010,7 +1010,9 @@ describe("neurons-services", () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
       const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
-      const amountWithFee = amount + transactionFee;
+      // To avoid rounding errors, we round the amount with the fee to the nearest 8 decimals
+      const amountWithFee =
+        Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
       await services.splitNeuron({
         neuronId: controlledNeuron.neuronId,
         amount,

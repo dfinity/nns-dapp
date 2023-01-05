@@ -14,7 +14,6 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import type { SnsNeuronId } from "@dfinity/sns";
-  import { numberToE8s } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 
@@ -57,7 +56,7 @@
 
     const { success } = await increaseStakeNeuron({
       rootCanisterId,
-      amount: numberToE8s(amount),
+      amount,
       account,
       neuronId,
     });

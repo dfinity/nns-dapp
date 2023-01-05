@@ -4,7 +4,10 @@
 
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
@@ -18,10 +21,12 @@ import {
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 import {
@@ -41,14 +46,20 @@ import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import {
+  buildMockSnsNeuronsStoreSubscribe,
+  mockSnsNeuron,
+} from "../../mocks/sns-neurons.mock";
+import { mockTokenStore } from "../../mocks/sns-projects.mock";
 
 const {
   syncSnsNeurons,
   getSnsNeuron,
   addHotkey,
   removeHotkey,
+  splitNeuron,
   stakeNeuron,
+  loadNeurons,
   loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
   addFollowee,
 } = services;
@@ -56,6 +67,12 @@ const {
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
+  };
+});
+
+jest.mock("$lib/services/sns-accounts.services", () => {
+  return {
+    loadSnsAccounts: jest.fn(),
   };
 });
 
@@ -186,6 +203,35 @@ describe("sns-neurons-services", () => {
       await tick();
       const store = get(snsNeuronsStore);
       expect(store[mockPrincipal.toText()]).toBeUndefined();
+      expect(spyQuery).toBeCalled();
+    });
+  });
+
+  describe("loadNeurons", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsNeuronsStore.reset();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should call api.querySnsNeurons and load neurons in store", async () => {
+      const subaccount: Uint8Array = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 0,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyQuery = jest
+        .spyOn(api, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
+      await loadNeurons({ rootCanisterId: mockPrincipal, certified: true });
+
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
       expect(spyQuery).toBeCalled();
     });
   });
@@ -547,7 +593,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    it("should call sns api stakeNeuron and query neurons again", async () => {
+    it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
       const spyStake = jest
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -557,24 +603,25 @@ describe("sns-neurons-services", () => {
 
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
-        amount: BigInt(200_000_000),
+        amount: 2,
         account: mockSnsMainAccount,
       });
 
       expect(success).toBeTruthy();
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 
   describe("increaseStakeNeuron", () => {
-    it("should call api.increaseStakeNeuron", async () => {
+    it("should call api.increaseStakeNeuron and load sns accounts", async () => {
       const spyOnIncreaseStakeNeuron = jest
         .spyOn(api, "increaseStakeNeuron")
         .mockImplementation(() => Promise.resolve());
 
       const rootCanisterId = mockPrincipal;
-      const amount = BigInt(200_000_000);
+      const amount = 2;
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
@@ -592,10 +639,11 @@ describe("sns-neurons-services", () => {
       expect(spyOnIncreaseStakeNeuron).toBeCalledWith({
         neuronId,
         rootCanisterId,
-        stakeE8s: amount,
+        stakeE8s: numberToE8s(amount),
         identity,
         source: identifier,
       });
+      expect(loadSnsAccounts).toBeCalled();
     });
   });
 
@@ -944,6 +992,84 @@ describe("sns-neurons-services", () => {
         rootCanisterId,
         autoStake: true,
       });
+    });
+  });
+
+  describe("splitNeuron", () => {
+    const transactionFee = 100n;
+    let snsNeuronsStoreSpy: jest.SpyInstance;
+    let snsTokenSymbolSelectedStoreSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      snsNeuronsStoreSpy = jest
+        .spyOn(snsNeuronsStore, "subscribe")
+        .mockImplementation(
+          buildMockSnsNeuronsStoreSubscribe({
+            rootCanisterId: mockPrincipal,
+            neurons: [mockSnsNeuron],
+          })
+        );
+      snsTokenSymbolSelectedStoreSpy = jest
+        .spyOn(snsTokenSymbolSelectedStore, "subscribe")
+        .mockImplementation(mockTokenStore);
+
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(transactionFee),
+        certified: true,
+      });
+    });
+
+    afterEach(() => {
+      snsNeuronsStoreSpy.mockClear();
+      snsTokenSymbolSelectedStoreSpy.mockClear();
+      transactionsFeesStore.reset();
+    });
+
+    it("should call api.addNeuronPermissions", async () => {
+      const spySplitNeuron = jest
+        .spyOn(governanceApi, "splitNeuron")
+        .mockImplementation(() => Promise.resolve());
+      const spyLoadNeurons = jest
+        .spyOn(services, "loadNeurons")
+        .mockResolvedValue(undefined);
+      const amount = 10;
+
+      const neuronMinimumStake = 1000n;
+      const { success } = await splitNeuron({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        rootCanisterId: mockPrincipal,
+        amount,
+        neuronMinimumStake,
+      });
+      expect(success).toBeTruthy();
+      expect(spyLoadNeurons).toBeCalled();
+      expect(spySplitNeuron).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        identity: mockIdentity,
+        rootCanisterId: mockPrincipal,
+        amount: BigInt(amount * E8S_PER_ICP) + transactionFee,
+        memo: 0n,
+      });
+    });
+
+    it("should display error if not enough amount", async () => {
+      const spySplitNeuron = jest
+        .spyOn(governanceApi, "splitNeuron")
+        .mockImplementation(() => Promise.resolve())
+        .mockReset();
+      const amount = 0.00001;
+      const neuronMinimumStake = 2000n;
+      const { success } = await splitNeuron({
+        neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+        rootCanisterId: mockPrincipal,
+        amount,
+        neuronMinimumStake,
+      });
+
+      expect(toastsError).toBeCalled();
+      expect(success).toBeFalsy();
+      expect(spySplitNeuron).not.toBeCalled();
     });
   });
 });

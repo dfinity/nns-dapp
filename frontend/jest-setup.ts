@@ -33,7 +33,6 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   DEV: false,
   FETCH_ROOT_KEY: false,
   WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
-  ENABLE_SNS: true,
   ENABLE_SNS_2: true,
   STAKE_MATURITY: true,
 }));
