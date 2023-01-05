@@ -46,7 +46,7 @@ export enum LogType {
   FileOriginal = "fo",
   ClaimNeurons = "cn",
   AddHotkey = "ah",
-  removeFolloweesDecentralizedSale = "rmf",
+  RemoveFolloweesDecentralizedSale = "rfds",
 }
 
 /**
@@ -86,7 +86,7 @@ export function triggerDebugReport(node: HTMLElement) {
           return;
         }
 
-        if (LogType.removeFolloweesDecentralizedSale === logType) {
+        if (LogType.RemoveFolloweesDecentralizedSale === logType) {
           removeFolloweesDecentralizedSale();
           return;
         }
