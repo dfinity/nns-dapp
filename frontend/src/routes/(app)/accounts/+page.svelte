@@ -2,7 +2,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInAccounts from "$lib/pages/SignInAccounts.svelte";
-  import { onMount } from "svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import RouteModule from "$lib/components/common/RouteModule.svelte";
@@ -11,8 +10,18 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  onMount(() => layoutTitleStore.set($i18n.navigation.tokens));
+  let list = false;
+
+  // TODO: not sure if we want to hide/display the components with JS or CSS...
+  let innerWidth = 0;
+  $: list = innerWidth > 1024;
+
+  $: (() => {
+    layoutTitleStore.set(list ? "" : $i18n.navigation.tokens);
+  })()
 </script>
+
+<svelte:window bind:innerWidth />
 
 {#if signedIn}
   <RouteModule path={AppPath.Accounts} />

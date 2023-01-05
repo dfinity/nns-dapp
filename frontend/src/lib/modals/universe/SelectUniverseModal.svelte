@@ -18,7 +18,7 @@
 </script>
 
 <Modal on:nnsClose>
-  <span slot="title">{$i18n.universe.pick_a_project}</span>
+  <span slot="title">{$i18n.universe.pick_a_token}</span>
 
   <SelectUniverseList
     {selectedCanisterId}

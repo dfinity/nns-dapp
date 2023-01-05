@@ -8,9 +8,10 @@
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
 </script>
 
-<main>
+<main class:small-top-offset={$layoutTitleStore === ""}>
   {#if $isNnsProjectStore}
     <NnsAccounts />
   {:else if $snsProjectIdSelectedStore !== undefined}
