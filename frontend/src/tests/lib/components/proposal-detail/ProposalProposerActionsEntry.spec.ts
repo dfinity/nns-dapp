@@ -3,67 +3,46 @@
  */
 
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
-import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
-import type { Action, Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import {
-  mockProposalInfo,
-  proposalActionMotion,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
-} from "../../../mocks/proposal.mock";
-
-const proposalWithMotionAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionMotion,
-} as Proposal;
-
-const proposalWithRewardNodeProviderAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
-} as Proposal;
-
-const actionWithUndefined = {
-  Motion: {
-    motionText: undefined,
-  },
-} as Action;
-
-const proposalWithActionWithUndefined = {
-  ...mockProposalInfo.proposal,
-  action: actionWithUndefined,
-} as Proposal;
 
 describe("ProposalProposerActionsEntry", () => {
   it("should render action key", () => {
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithMotionAction,
+        actionKey: "actionKey",
+        actionFields: [],
       },
     });
 
-    const key = proposalFirstActionKey(proposalWithMotionAction) as string;
-    expect(getByText(key)).toBeInTheDocument();
+    expect(getByText("actionKey")).toBeInTheDocument();
   });
 
   it("should render action fields", () => {
+    const key = "key";
+    const value = "value";
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithMotionAction,
+        actionKey: "actionKey",
+        actionFields: [[key, value]],
       },
     });
 
-    const [key, value] = Object.entries(
-      (proposalWithMotionAction?.action as { Motion: object }).Motion
-    )[0];
     expect(getByText(key)).toBeInTheDocument();
     expect(getByText(value)).toBeInTheDocument();
   });
 
   it("should render object fields as JSON", () => {
+    const key = "key";
+    const value = { key: "value" };
+    const key2 = "key2";
+    const value2 = { key: "value" };
     const nodeProviderActions = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithRewardNodeProviderAction,
+        actionKey: "actionKey",
+        actionFields: [
+          [key, value],
+          [key2, value2],
+        ],
       },
     });
 
@@ -71,9 +50,12 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render text fields as plane text", () => {
+    const key = "key";
+    const value = "value";
     const motionActions = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithMotionAction,
+        actionKey: "actionKey",
+        actionFields: [[key, value]],
       },
     });
 
@@ -81,36 +63,15 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render undefined fields as 'undefined'", () => {
+    const key = "key";
+    const value = { key: "value", anotherKey: undefined };
     const { getByText } = render(ProposalProposerActionsEntry, {
       props: {
-        proposal: proposalWithActionWithUndefined,
+        actionKey: "actionKey",
+        actionFields: [[key, value]],
       },
     });
 
     expect(getByText("undefined")).toBeInTheDocument();
-  });
-
-  it("should render nnsFunction id", () => {
-    const proposalWithNnsFunctionAction = {
-      ...mockProposalInfo.proposal,
-      action: proposalActionNnsFunction21,
-    } as Proposal;
-
-    const { getByText } = render(ProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithNnsFunctionAction,
-      },
-    });
-
-    const [key, value] = Object.entries(
-      (
-        proposalWithNnsFunctionAction?.action as {
-          ExecuteNnsFunction: object;
-        }
-      ).ExecuteNnsFunction
-    )[0];
-
-    expect(getByText(key)).toBeInTheDocument();
-    expect(getByText(value)).toBeInTheDocument();
   });
 });

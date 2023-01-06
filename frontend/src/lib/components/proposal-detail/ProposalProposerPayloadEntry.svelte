@@ -1,43 +1,17 @@
 <script lang="ts">
-  import type { ProposalId } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import { loadProposalPayload } from "$lib/services/$public/proposals.services";
-  import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
-  import type { Proposal } from "@dfinity/nns";
-  import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
   import { expandObject, isNullish } from "$lib/utils/utils";
 
-  export let proposalId: ProposalId | undefined;
-  export let proposal: Proposal | undefined;
-
-  let payload: object | undefined | null;
+  export let payload: object | undefined | null;
   let expandedPayload: object | undefined | null;
   $: expandedPayload = isNullish(payload)
     ? payload
     : expandObject(payload as Record<string, unknown>);
-
-  $: $proposalPayloadsStore,
-    (payload =
-      proposalId !== undefined
-        ? $proposalPayloadsStore.get(proposalId)
-        : undefined);
-  $: if (
-    proposalId !== undefined &&
-    nnsFunctionKey !== undefined &&
-    !$proposalPayloadsStore.has(proposalId)
-  ) {
-    loadProposalPayload({
-      proposalId,
-    });
-  }
-
-  let nnsFunctionKey: string | undefined;
-  $: nnsFunctionKey = getNnsFunctionKey(proposal);
 </script>
 
-{#if nnsFunctionKey !== undefined && proposalId !== undefined}
+{#if payload !== undefined && payload !== null}
   <div class="content-cell-island">
     <h2
       class="content-cell-title"
