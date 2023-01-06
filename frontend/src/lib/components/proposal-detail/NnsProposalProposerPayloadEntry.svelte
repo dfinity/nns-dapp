@@ -4,17 +4,15 @@
   import { proposalPayloadsStore } from "$lib/stores/proposals.store";
   import type { Proposal } from "@dfinity/nns";
   import { getNnsFunctionKey } from "$lib/utils/proposals.utils";
-  import { expandObject, isNullish } from "$lib/utils/utils";
   import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
 
   export let proposalId: ProposalId | undefined;
   export let proposal: Proposal | undefined;
 
   let payload: object | undefined | null;
-  let expandedPayload: object | undefined | null;
-  $: expandedPayload = isNullish(payload)
-    ? payload
-    : expandObject(payload as Record<string, unknown>);
+  // Only proposals with nnsFunctionKey and proposalId have payload
+  let nnsFunctionKey: string | undefined;
+  $: nnsFunctionKey = getNnsFunctionKey(proposal);
 
   $: $proposalPayloadsStore,
     (payload =
@@ -30,9 +28,9 @@
       proposalId,
     });
   }
-
-  let nnsFunctionKey: string | undefined;
-  $: nnsFunctionKey = getNnsFunctionKey(proposal);
 </script>
 
-<ProposalProposerPayloadEntry {payload} />
+<!-- Only proposals with nnsFunctionKey and proposalId have payload -->
+{#if nnsFunctionKey !== undefined && proposalId !== undefined}
+  <ProposalProposerPayloadEntry {payload} />
+{/if}
