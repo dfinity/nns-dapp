@@ -2,10 +2,9 @@
   import { onDestroy, onMount } from "svelte";
   import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
   import { i18n } from "$lib/stores/i18n";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 
-  export let proposalInfo: ProposalInfo;
+  export let deadlineTimestampSeconds: bigint | undefined;
 
   const ZERO = BigInt(0);
 
@@ -20,8 +19,8 @@
 
   const next = () => {
     if (
-      proposalInfo.deadlineTimestampSeconds === undefined ||
-      proposalInfo.deadlineTimestampSeconds < ZERO
+      deadlineTimestampSeconds === undefined ||
+      deadlineTimestampSeconds < ZERO
     ) {
       clearCountdown();
       return;
@@ -32,7 +31,7 @@
       return;
     }
 
-    countdown = proposalInfo.deadlineTimestampSeconds - BigInt(nowInSeconds());
+    countdown = deadlineTimestampSeconds - BigInt(nowInSeconds());
 
     // No need to schedule an update if the countdown is longer than an hour plus the auth session duration because even if we refresh,
     // the display value would remain the same until the end of the session
