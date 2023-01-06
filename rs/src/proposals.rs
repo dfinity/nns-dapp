@@ -77,7 +77,7 @@ pub struct InternetIdentityInit {
     pub upgrade_persistent_state: Option<bool>,
 }
 /// Configuration parameters of the archive to be used on the next deployment.
-#[derive(Clone, Debug, CandidType, Deserialize, Eq, PartialEq)]
+#[derive(CandidType, Serialize, Deserialize)]
 pub struct ArchiveConfig {
     // Wasm module hash that is allowed to be deployed to the archive canister.
     pub module_hash: [u8; 32],
