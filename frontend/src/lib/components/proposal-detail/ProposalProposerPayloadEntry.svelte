@@ -5,7 +5,7 @@
   import { expandObject, isNullish } from "$lib/utils/utils";
 
   // `undefined` means that the payload is not loaded yet
-  // `null` means that the payload is `null`
+  // `null` means that the payload was not found
   // `object` means that the payload is an object
   export let payload: object | undefined | null;
   let expandedPayload: object | undefined | null;
