@@ -43,7 +43,7 @@
   ).length;
 </script>
 
-<div class="filters">
+<div class="filters" data-tid="nns-proposal-filters">
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
