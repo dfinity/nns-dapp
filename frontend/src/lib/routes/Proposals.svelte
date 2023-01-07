@@ -13,7 +13,7 @@
   {#if ENABLE_SNS_VOTING}
     <Summary />
   {/if}
-  {#if $isNnsProjectStore}
+  {#if $isNnsProjectStore || !ENABLE_SNS_VOTING}
     <Proposals />
   {:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_VOTING}
     <SnsProposals />
