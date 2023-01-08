@@ -14,7 +14,6 @@ describe("sns-parameters utils", () => {
         max_dissolve_delay_seconds,
         max_dissolve_delay_bonus_percentage,
         max_followees_per_function,
-        neuron_claimer_permissions,
         neuron_minimum_stake_e8s,
         max_neuron_age_for_age_bonus,
         initial_voting_period_seconds,
@@ -26,7 +25,6 @@ describe("sns-parameters utils", () => {
         transaction_fee_e8s,
         max_number_of_proposals_with_ballots,
         max_age_bonus_percentage,
-        voting_rewards_parameters,
         max_number_of_principals_per_neuron,
       } = mapNervousSystemParameters(snsNervousSystemParametersMock);
       expect(max_dissolve_delay_seconds).toEqual(

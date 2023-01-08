@@ -75,7 +75,7 @@ const getRewardsParameters = (
   ),
 });
 
-// TODO: move to ic-js
+// TODO: move to ic-js (https://dfinity.atlassian.net/browse/GIX-1215)
 export const mapNervousSystemParameters = (
   parameters: NervousSystemParameters
 ): NervousSystemParametersMap => ({
