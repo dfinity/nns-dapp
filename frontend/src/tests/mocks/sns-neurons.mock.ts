@@ -54,6 +54,10 @@ export const createMockSnsNeuron = ({
   neuron_fees_e8s: BigInt(0),
 });
 
+export const mockSnsNeuronId = {
+  id: arrayOfNumberToUint8Array([1, 5, 3, 9, 9, 3, 2]),
+};
+
 export const mockSnsNeuron = createMockSnsNeuron({
   stake: BigInt(1_000_000_000),
   id: [1, 5, 3, 9, 9, 3, 2],
@@ -104,7 +108,7 @@ export const buildMockSortedSnsNeuronsStoreSubscribe =
 export const snsNervousSystemParametersMock: NervousSystemParameters = {
   default_followees: [
     {
-      followees: [],
+      followees: [[0n, { followees: [mockSnsNeuronId] }]],
     },
   ],
   max_dissolve_delay_seconds: [3155760000n],
