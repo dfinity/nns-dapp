@@ -1,10 +1,11 @@
 import {
   HOTKEY_PERMISSIONS,
-  HOTKEY_PERMISSIONS_V2,
+  MANAGE_HOTKEY_PERMISSIONS,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { votingPower } from "$lib/utils/neuron.utils";
+import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
@@ -173,28 +174,19 @@ export const canIdentityManageHotkeys = ({
   identity: Identity | undefined | null;
   parameters: NervousSystemParameters;
 }): boolean => {
-  const grantablePermissions = Array.from(
-    fromDefinedNullable(parameters.neuron_grantable_permissions)?.permissions ??
-      []
+  const { neuron_grantable_permissions } =
+    mapNervousSystemParameters(parameters);
+  const grantableSet = new Set(neuron_grantable_permissions);
+  const hotkeyPermissionsGrantable = HOTKEY_PERMISSIONS.every((permission) =>
+    grantableSet.has(permission)
   );
-  const hasManageVotingPermission = grantablePermissions.includes(
-    SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION
-  );
-
-  return hasManageVotingPermission
-    ? hasPermissions({
-        neuron,
-        identity,
-        permissions: HOTKEY_PERMISSIONS_V2,
-        options: { any: true },
-      })
-    : // fallback (before `NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION` introduction)
-      // worst case scenario - showing the button that won’t work
-      hasPermissions({
-        neuron,
-        identity,
-        permissions: HOTKEY_PERMISSIONS,
-      });
+  const identityAllowedToManageHotkeys = hasPermissions({
+    neuron,
+    identity,
+    permissions: MANAGE_HOTKEY_PERMISSIONS,
+    options: { any: true },
+  });
+  return identityAllowedToManageHotkeys && hotkeyPermissionsGrantable;
 };
 
 export const hasPermissionToDisburse = ({
@@ -274,7 +266,7 @@ export const hasPermissionToSplit = ({
  * @param neuronPermissions
  * @param identity
  * @param permissions
- * @param {any}
+ * @param {boolean} options.any Any of provided permissions should be in principals list
  */
 export const hasPermissions = ({
   neuron: { id, permissions: neuronPermissions },
@@ -313,6 +305,20 @@ export const hasPermissions = ({
   return !permissions.some(notFound);
 };
 
+const comparePermissions = ({
+  permissions,
+  expected,
+}: {
+  permissions: SnsNeuronPermissionType[];
+  expected: SnsNeuronPermissionType[];
+}): boolean => {
+  const expectedSet = new Set(expected);
+  return (
+    permissions.length === expected.length &&
+    permissions.every((permission) => expectedSet.has(permission))
+  );
+};
+
 /**
  * Returns the principals that have ONLY the hotkey permissions.
  *
@@ -323,12 +329,38 @@ export const hasPermissions = ({
  */
 export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
   permissions
-    .filter(
-      ({ permission_type }) =>
-        permission_type.every(
-          (p) => HOTKEY_PERMISSIONS.find((key) => key === p) !== undefined
-        ) && permission_type.length === HOTKEY_PERMISSIONS.length
-    )
+    .filter(({ permission_type }) => {
+      const permissions = Array.from(permission_type);
+      // only those combinations define a hotkey
+      return (
+        comparePermissions({
+          permissions,
+          expected: HOTKEY_PERMISSIONS,
+        }) ||
+        comparePermissions({
+          permissions,
+          expected: [
+            ...HOTKEY_PERMISSIONS,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+          ],
+        }) ||
+        comparePermissions({
+          permissions,
+          expected: [
+            ...HOTKEY_PERMISSIONS,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+          ],
+        }) ||
+        comparePermissions({
+          permissions,
+          expected: [
+            ...HOTKEY_PERMISSIONS,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+          ],
+        })
+      );
+    })
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
 
