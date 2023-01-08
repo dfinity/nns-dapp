@@ -1,7 +1,7 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
-  HOTKEY_PERMISSIONS_V2,
+  MANAGE_HOTKEY_PERMISSIONS,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
@@ -354,10 +354,11 @@ describe("sns-neuron utils", () => {
   });
 
   describe("canIdentityManageHotkeys", () => {
-    const addV1HotkeysPermission = (key) => ({
-      principal: [Principal.fromText(key)] as [Principal],
-      permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
-    });
+    const hotkeyPermission =
+      (permissions: SnsNeuronPermissionType[]) => (key: string) => ({
+        principal: [Principal.fromText(key)] as [Principal],
+        permission_type: Int32Array.from(permissions),
+      });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
       "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
@@ -367,14 +368,19 @@ describe("sns-neuron utils", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          addV1HotkeysPermission
+          hotkeyPermission(MANAGE_HOTKEY_PERMISSIONS)
         ),
       };
       expect(
         canIdentityManageHotkeys({
           neuron: controlledNeuron,
           identity: mockIdentity,
-          parameters: snsNervousSystemParametersMock,
+          parameters: {
+            ...snsNervousSystemParametersMock,
+            neuron_grantable_permissions: [
+              { permissions: Int32Array.from([...HOTKEY_PERMISSIONS]) },
+            ],
+          },
         })
       ).toBe(true);
     });
@@ -382,7 +388,7 @@ describe("sns-neuron utils", () => {
     it("returns false when user has no hotkey permissions", () => {
       const unControlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
-        permissions: hotkeys.map(addV1HotkeysPermission),
+        permissions: hotkeys.map(hotkeyPermission(HOTKEY_PERMISSIONS)),
       };
       expect(
         canIdentityManageHotkeys({
@@ -431,57 +437,6 @@ describe("sns-neuron utils", () => {
           parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
-    });
-
-    it("should use V2 permissions when `NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION` is presented in `neuron_grantable_permissions`", () => {
-      const v1Neuron: SnsNeuron = {
-        ...mockSnsNeuron,
-        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          addV1HotkeysPermission
-        ),
-      };
-      const v2Neuron: SnsNeuron = {
-        ...mockSnsNeuron,
-        permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          (key) => ({
-            principal: [Principal.fromText(key)] as [Principal],
-            permission_type: Int32Array.from([HOTKEY_PERMISSIONS_V2[0]]),
-          })
-        ),
-      };
-      expect(
-        canIdentityManageHotkeys({
-          neuron: v1Neuron,
-          identity: mockIdentity,
-          parameters: {
-            ...snsNervousSystemParametersMock,
-            neuron_grantable_permissions: [
-              {
-                permissions: Int32Array.from([
-                  SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
-                ]),
-              },
-            ],
-          },
-        })
-      ).toBe(false);
-
-      expect(
-        canIdentityManageHotkeys({
-          neuron: v2Neuron,
-          identity: mockIdentity,
-          parameters: {
-            ...snsNervousSystemParametersMock,
-            neuron_grantable_permissions: [
-              {
-                permissions: Int32Array.from([
-                  SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
-                ]),
-              },
-            ],
-          },
-        })
-      ).toBe(true);
     });
   });
 

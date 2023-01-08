@@ -11,11 +11,13 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
+  buildMockSnsParametersStore,
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
@@ -68,6 +70,9 @@ describe("SnsNeurons", () => {
       jest
         .spyOn(sortedSnsCFNeuronsStore, "subscribe")
         .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(snsParametersStore, "subscribe")
+        .mockImplementation(buildMockSnsParametersStore());
     });
 
     afterEach(() => jest.clearAllMocks());

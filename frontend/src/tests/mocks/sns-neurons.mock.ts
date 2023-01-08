@@ -1,11 +1,12 @@
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type {
-  NervousSystemParameters,
-  SnsNeuron,
+import {
   SnsNeuronPermissionType,
+  type NervousSystemParameters,
+  type SnsNeuron,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
@@ -111,7 +112,7 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   max_followees_per_function: [15n],
   neuron_claimer_permissions: [
     {
-      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
     },
   ],
   neuron_minimum_stake_e8s: [100000000n],
@@ -127,7 +128,7 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   max_age_bonus_percentage: [25n],
   neuron_grantable_permissions: [
     {
-      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
     },
   ],
   voting_rewards_parameters: [
