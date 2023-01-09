@@ -17,7 +17,7 @@
       case AppPath.Neurons:
         return (await import("../../routes/Neurons.svelte")).default;
       case AppPath.Proposals:
-        return (await import("../../pages/Proposals.svelte")).default;
+        return (await import("../../routes/Proposals.svelte")).default;
       case AppPath.Canisters:
         return (await import("../../pages/Canisters.svelte")).default;
       case AppPath.Wallet:
