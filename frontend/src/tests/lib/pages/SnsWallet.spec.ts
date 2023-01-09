@@ -69,6 +69,14 @@ describe("SnsWallet", () => {
 
     afterAll(() => jest.clearAllMocks());
 
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsWallet, props);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      expect(titleRow).not.toBeNull();
+    });
+
     it("should hide spinner when selected account is loaded", async () => {
       const { queryByTestId } = render(SnsWallet, props);
 

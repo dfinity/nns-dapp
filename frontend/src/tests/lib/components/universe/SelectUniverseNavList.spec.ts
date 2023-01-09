@@ -36,6 +36,8 @@ describe("SelectUniverseNavList", () => {
     cards && (await fireEvent.click(cards[1]));
 
     const { universe } = get(pageStore);
-    await waitFor(() => expect(universe).toEqual(mockSnsFullProject.rootCanisterId.toText()));
+    await waitFor(() =>
+      expect(universe).toEqual(mockSnsFullProject.rootCanisterId.toText())
+    );
   });
 });

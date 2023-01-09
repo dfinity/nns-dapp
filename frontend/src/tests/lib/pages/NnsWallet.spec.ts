@@ -86,6 +86,14 @@ describe("NnsWallet", () => {
       accountIdentifier: mockMainAccount.identifier,
     };
 
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(NnsWallet, props);
+
+      const titleRow = getByTestId("accounts-summary");
+
+      expect(titleRow).not.toBeNull();
+    });
+
     it("should hide spinner when selected account is loaded", async () => {
       const { container } = render(NnsWallet, props);
 
