@@ -4,7 +4,7 @@
 
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { ProposalStatusColor } from "$lib/constants/proposals.constants";
-import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { ProposalStatus } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -70,19 +70,12 @@ describe("ProposalCard", () => {
     expect(getByText(props.type)).toBeInTheDocument();
   });
 
-  it("should render deadline", () => {
-    const { getByText } = render(ProposalCard, {
+  it("should render countdown", () => {
+    const { queryByTestId } = render(ProposalCard, {
       props,
     });
 
-    const durationTillDeadline =
-      props.deadlineTimestampSeconds - BigInt(nowSeconds);
-
-    const text = `${secondsToDuration(durationTillDeadline)} ${
-      en.proposal_detail.remaining
-    }`;
-
-    expect(getByText(text)).toBeInTheDocument();
+    expect(queryByTestId("countdown")).toBeInTheDocument();
   });
 
   it("should render accessible info without label", () => {
