@@ -165,6 +165,15 @@ export const nextMemo = ({
   throw new NextMemoNotFoundError();
 };
 
+/**
+ * Users are able to manage hotkeys when both:
+ * - User’s principal has the `ManageVotingPermission` or `ManagePrincipals` permission.
+ * - Both `Vote` and `SubmitProposal` are in `neuron_grantable_permissions` parameter
+ *
+ * @param neuron
+ * @param identity
+ * @param parameters
+ */
 export const canIdentityManageHotkeys = ({
   neuron,
   identity,
@@ -307,63 +316,59 @@ export const hasPermissions = ({
 };
 
 const comparePermissions = ({
-  permissions,
-  expected,
+  a,
+  b,
 }: {
-  permissions: SnsNeuronPermissionType[];
-  expected: SnsNeuronPermissionType[];
+  a: SnsNeuronPermissionType[];
+  b: SnsNeuronPermissionType[];
 }): boolean => {
-  const expectedSet = new Set(expected);
-  return (
-    permissions.length === expected.length &&
-    permissions.every((permission) => expectedSet.has(permission))
-  );
+  const bSet = new Set(b);
+  return a.length === b.length && a.every((permission) => bSet.has(permission));
 };
 
 /**
- * Returns the principals that have ONLY the hotkey permissions.
+ * Returns the principals that have ONLY the hotkey permissions:
+ * - Both `Vote` and `SubmitProposal`
+ * - `ManageVotingPermission` or/and `ManagePrincipals`
  *
- * If a neuron has more than those two permissions, it is not a hotkey.
+ * If a neuron has more than those permission combinations, it is not a hotkey.
  *
  * @param {SnsNeuron}
  * @returns {string[]} principals that are hotkeys
  */
-export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
-  permissions
+export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] => {
+  // only those combinations define a hotkey
+  const hotkeyPermissions = [
+    HOTKEY_PERMISSIONS,
+    [
+      ...HOTKEY_PERMISSIONS,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+    ],
+    [
+      ...HOTKEY_PERMISSIONS,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+    ],
+    [
+      ...HOTKEY_PERMISSIONS,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+    ],
+  ];
+  return permissions
     .filter(({ permission_type }) => {
-      const permissions = Array.from(permission_type);
-      // only those combinations define a hotkey
+      const neuronPermissions = Array.from(permission_type);
       return (
-        comparePermissions({
-          permissions,
-          expected: HOTKEY_PERMISSIONS,
-        }) ||
-        comparePermissions({
-          permissions,
-          expected: [
-            ...HOTKEY_PERMISSIONS,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
-          ],
-        }) ||
-        comparePermissions({
-          permissions,
-          expected: [
-            ...HOTKEY_PERMISSIONS,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
-          ],
-        }) ||
-        comparePermissions({
-          permissions,
-          expected: [
-            ...HOTKEY_PERMISSIONS,
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
-          ],
-        })
+        hotkeyPermissions.find((aHotkeyPermissions) =>
+          comparePermissions({
+            a: neuronPermissions,
+            b: aHotkeyPermissions,
+          })
+        ) !== undefined
       );
     })
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
+};
 
 export const isUserHotkey = ({
   neuron,
