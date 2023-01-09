@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import Layout from "$lib/components/common/Layout.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
@@ -15,7 +14,7 @@ describe("Layout", () => {
     afterAll(() => layoutTitleStore.set(""));
 
     it("should render a menu button", () => {
-      const { getByTestId } = render(Layout);
+      const { getByTestId } = render(LayoutTest, { props: { spy: undefined } });
       const button = getByTestId("menu-toggle");
       expect(button).not.toBeNull();
       expect(button).toBeVisible();
@@ -23,7 +22,7 @@ describe("Layout", () => {
     });
 
     it("should render a header", () => {
-      const { getByText } = render(Layout);
+      const { getByText } = render(LayoutTest);
 
       expect(getByText("the header")).toBeInTheDocument();
     });

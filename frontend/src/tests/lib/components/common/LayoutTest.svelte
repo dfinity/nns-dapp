@@ -1,15 +1,16 @@
 <script lang="ts">
   import Layout from "$lib/components/common/Layout.svelte";
   import Content from "$lib/components/common/Content.svelte";
+  import { nonNullish } from "$lib/utils/utils";
 
-  export let content: string;
-  export let spy: () => void;
+  export let content = "";
+  export let spy: (() => void) | undefined = undefined;
 
-  const back = () => spy();
+  const back = () => spy?.();
 </script>
 
 <Layout>
-  <Content {back}>
+  <Content back={nonNullish(spy) ? back : undefined}>
     <p>{content}</p>
   </Content>
 </Layout>
