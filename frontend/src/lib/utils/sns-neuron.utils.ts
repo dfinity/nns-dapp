@@ -134,8 +134,9 @@ export const subaccountToHexString = (subaccount: Uint8Array): string =>
  * Find the first not existed memo (index based).
  * This approach works because sns neurons are not deleted.
  *
- * @param identity
- * @param neurons
+ * @param {Object} params
+ * @param {Identity} params.identity
+ * @param {SnsNeuron[]} params.neurons
  */
 export const nextMemo = ({
   identity,
