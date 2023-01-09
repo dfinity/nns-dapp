@@ -266,7 +266,8 @@ export const hasPermissionToSplit = ({
  * @param neuronPermissions
  * @param identity
  * @param permissions
- * @param {boolean} options.any Any of provided permissions should be in principals list
+ * @param {Object} options Additional options
+ * @param {boolean} options.any At least one of provided permissions should be in principals list
  */
 export const hasPermissions = ({
   neuron: { id, permissions: neuronPermissions },
