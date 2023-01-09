@@ -31,7 +31,7 @@ export const reloadRouteData = <T>({
 
 export const buildSwitchUniverseUrl = (universe: string): string => {
   const { pathname } = window.location;
-  return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
+  return `${pathname}/?${UNIVERSE_PARAM}=${universe}`;
 };
 
 const buildUrl = ({

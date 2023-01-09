@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,
@@ -15,9 +19,11 @@ import {
   buildNeuronUrl,
   buildProposalsUrl,
   buildProposalUrl,
+  buildSwitchUniverseUrl,
   buildWalletUrl,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
+import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 
 describe("navigation-utils", () => {
   describe("reload", () => {
@@ -167,6 +173,30 @@ describe("navigation-utils", () => {
       ).toEqual(
         `${AppPath.Canisters}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
       );
+    });
+
+    it("should switch universe url", () => {
+      const location = window.location;
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: {
+          ...location,
+          pathname: `${AppPath.Accounts}`,
+          search: undefined,
+        },
+      });
+
+      const canisterId = mockSnsFullProject.rootCanisterId.toText();
+
+      expect(buildSwitchUniverseUrl(canisterId)).toEqual(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${canisterId}`
+      );
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location },
+      });
     });
   });
 });
