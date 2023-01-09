@@ -8,8 +8,7 @@ import en from "../../../mocks/i18n.mock";
 import { mockSummary } from "../../../mocks/sns-projects.mock";
 
 describe("SelectUniverseCard", () => {
-  
-  const props = { summary: undefined, selected: false }
+  const props = { summary: undefined, selected: false };
 
   describe("selected", () => {
     it("display a selected card", () => {
@@ -51,7 +50,6 @@ describe("SelectUniverseCard", () => {
     });
   });
 
-
   describe("icon", () => {
     it("display an icon if role button and selected", () => {
       const { container } = render(SelectUniverseCard, {
@@ -73,7 +71,6 @@ describe("SelectUniverseCard", () => {
       });
       expect(container.querySelector("svg")).not.toBeNull();
     });
-
   });
 
   describe("nns", () => {

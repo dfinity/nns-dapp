@@ -31,6 +31,7 @@
   {theme}
   on:click
   {icon}
+  testId="select-universe-card"
 >
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />

@@ -9,7 +9,7 @@
 
   export let selectedCanisterId: string;
 
-  export let showProjectPicker = false;
+  let showProjectPicker = false;
 
   let innerWidth = 0;
 

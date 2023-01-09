@@ -17,7 +17,7 @@
   };
 </script>
 
-<Modal on:nnsClose>
+<Modal testId="select-universe-modal" on:nnsClose>
   <span slot="title">{$i18n.universe.select_token}</span>
 
   <SelectUniverseList
