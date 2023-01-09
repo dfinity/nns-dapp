@@ -2,7 +2,6 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
-  getNervousSystemFunctions,
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
@@ -21,8 +20,6 @@ import {
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import { i18n } from "$lib/stores/i18n";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
@@ -49,7 +46,6 @@ import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
-  type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -564,47 +560,6 @@ export const stakeNeuron = async ({
     return { success: false };
   }
 };
-
-// This is a public service.
-export const loadSnsNervousSystemFunctions = async (
-  rootCanisterId: Principal
-) =>
-  queryAndUpdate<SnsNervousSystemFunction[], Error>({
-    request: ({ certified, identity }) =>
-      getNervousSystemFunctions({
-        rootCanisterId,
-        identity,
-        certified,
-      }),
-    onLoad: async ({ response: nsFunctions, certified }) => {
-      // TODO: Ideally, the name from the backend is user-friendly.
-      // https://dfinity.atlassian.net/browse/GIX-1169
-      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
-        if (nsFunction.id === BigInt(0)) {
-          const translationKeys = get(i18n);
-          return {
-            ...nsFunction,
-            name: translationKeys.sns_neuron_detail.all_topics,
-          };
-        }
-        return nsFunction;
-      });
-      snsFunctionsStore.setFunctions({
-        rootCanisterId,
-        nsFunctions: snsNervousSystemFunctions,
-        certified,
-      });
-    },
-    onError: ({ certified, error }) => {
-      if (certified) {
-        toastsError({
-          labelKey: "error__sns.sns_load_functions",
-          err: error,
-        });
-      }
-    },
-    logMessage: `Getting SNS ${rootCanisterId.toText()} nervous system functions`,
-  });
 
 /**
  * Makes a call to add a followee to the neuron for a specific topic

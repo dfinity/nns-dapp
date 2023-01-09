@@ -4,6 +4,7 @@ import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
   NervousSystemParameters,
+  SnsListProposalsParams,
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronPermissionType,
@@ -410,4 +411,29 @@ export const autoStakeMaturity = async ({
   logWithTimestamp(
     `${autoStake ? "Enable" : "Disable"} auto stake maturity complete.`
   );
+};
+
+export const getProposals = async ({
+  rootCanisterId,
+  identity,
+  certified,
+  params,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  params: SnsListProposalsParams;
+}) => {
+  logWithTimestamp(`Getting proposals call...`);
+
+  const { listProposals } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const proposals = await listProposals(params);
+
+  logWithTimestamp(`Getting proposals call complete.`);
+  return proposals;
 };

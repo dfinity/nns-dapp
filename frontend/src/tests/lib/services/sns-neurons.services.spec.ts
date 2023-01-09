@@ -18,7 +18,6 @@ import {
   toggleAutoStakeMaturity,
   updateDelay,
 } from "$lib/services/sns-neurons.services";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -45,7 +44,6 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
   mockSnsNeuron,
@@ -60,7 +58,6 @@ const {
   splitNeuron,
   stakeNeuron,
   loadNeurons,
-  loadSnsNervousSystemFunctions: loadSnsNervousSystemFunctions,
   addFollowee,
 } = services;
 
@@ -672,34 +669,6 @@ describe("sns-neurons-services", () => {
         percentageToStake,
         identity,
       });
-    });
-  });
-
-  describe("loadSnsNervousSystemFunctions", () => {
-    it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
-      const spyGetFunctions = jest
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
-
-      await loadSnsNervousSystemFunctions(mockPrincipal);
-
-      const store = get(snsFunctionsStore);
-      await waitFor(() =>
-        expect(store[mockPrincipal.toText()]?.nsFunctions).toEqual([
-          nervousSystemFunctionMock,
-        ])
-      );
-      expect(spyGetFunctions).toBeCalled();
-    });
-
-    it("should show a toast if api throws an error", async () => {
-      jest
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.reject("error"));
-
-      await loadSnsNervousSystemFunctions(mockPrincipal);
-
-      expect(toastsError).toBeCalled();
     });
   });
 
