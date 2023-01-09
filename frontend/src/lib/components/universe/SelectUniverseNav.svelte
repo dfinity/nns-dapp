@@ -16,7 +16,7 @@
 
 <svelte:window bind:innerWidth />
 
-<Nav>
+<Nav data-tid="select-universe-nav">
   <p class="title" slot="title">{$i18n.universe.select_token}</p>
 
   {#if list}
