@@ -4,6 +4,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
+  /**
+   * TODO: use only new universe picker and remove the dropdown selector
+   * @deprecated
+   */
   export let projects: "select" | "display" | "none" = "select";
   export let size: "big" | "medium" | "small" = "big";
 
