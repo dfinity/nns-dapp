@@ -520,16 +520,38 @@ describe("sns-neuron utils", () => {
           },
           {
             principal: [Principal.fromText(hotkey)] as [Principal],
-            permission_type: Int32Array.from([...HOTKEY_PERMISSIONS, ...MANAGE_HOTKEY_PERMISSIONS]),
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              ...MANAGE_HOTKEY_PERMISSIONS,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+            ]),
           },
           controllerPermission,
         ],
       };
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
-      expect(expectedHotkeys.includes(hotkey)).toBe(true);
+      expect(expectedHotkeys.filter(h => h === hotkey).length).toBe(4);
     });
-
 
     it("doesn't return if more than hotkeys permissions", () => {
       const nonHotkey =
