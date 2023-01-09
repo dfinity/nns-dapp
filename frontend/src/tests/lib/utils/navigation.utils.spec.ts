@@ -190,7 +190,7 @@ describe("navigation-utils", () => {
       const canisterId = mockSnsFullProject.rootCanisterId.toText();
 
       expect(buildSwitchUniverseUrl(canisterId)).toEqual(
-        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${canisterId}`
+        `${AppPath.Accounts}?${UNIVERSE_PARAM}=${canisterId}`
       );
 
       Object.defineProperty(window, "location", {
