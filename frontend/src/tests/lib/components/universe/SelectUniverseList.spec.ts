@@ -31,6 +31,8 @@ describe("SelectUniverseList", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe(projects));
 
+  afterAll(() => jest.clearAllMocks());
+
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList, {
       props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
