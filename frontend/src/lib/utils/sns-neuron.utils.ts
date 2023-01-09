@@ -185,6 +185,9 @@ export const canIdentityManageHotkeys = ({
 }): boolean => {
   const { neuron_grantable_permissions } =
     mapNervousSystemParameters(parameters);
+  const isSns1 = neuron_grantable_permissions.includes(
+    SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION
+  );
   const grantableSet = new Set(neuron_grantable_permissions);
   const hotkeyPermissionsGrantable = HOTKEY_PERMISSIONS.every((permission) =>
     grantableSet.has(permission)
@@ -195,7 +198,10 @@ export const canIdentityManageHotkeys = ({
     permissions: MANAGE_HOTKEY_PERMISSIONS,
     options: { any: true },
   });
-  return identityAllowedToManageHotkeys && hotkeyPermissionsGrantable;
+  return isSns1
+    ? // fallback for the version w/o 'MANAGE_VOTING_PERMISSION' support
+      identityAllowedToManageHotkeys
+    : identityAllowedToManageHotkeys && hotkeyPermissionsGrantable;
 };
 
 export const hasPermissionToDisburse = ({
