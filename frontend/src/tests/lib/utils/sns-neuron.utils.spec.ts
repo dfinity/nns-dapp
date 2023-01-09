@@ -520,9 +520,7 @@ describe("sns-neuron utils", () => {
           },
           {
             principal: [Principal.fromText(hotkey)] as [Principal],
-            permission_type: Int32Array.from([
-              ...HOTKEY_PERMISSIONS,
-            ]),
+            permission_type: Int32Array.from([...HOTKEY_PERMISSIONS]),
           },
           {
             principal: [Principal.fromText(hotkey)] as [Principal],
@@ -550,7 +548,7 @@ describe("sns-neuron utils", () => {
       };
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
-      expect(expectedHotkeys.filter(h => h === hotkey).length).toBe(4);
+      expect(expectedHotkeys.filter((h) => h === hotkey).length).toBe(4);
     });
 
     it("doesn't return if more than hotkeys permissions", () => {
