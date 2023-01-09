@@ -2,20 +2,17 @@
  * @jest-environment jsdom
  */
 
-import ProposalCountdown from "$lib/components/proposals/ProposalCountdown.svelte";
+import Countdown from "$lib/components/proposals/Countdown.svelte";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
-describe("ProposalCountdown", () => {
+describe("Countdown", () => {
   it("should render no countdown", () => {
-    const { container } = render(ProposalCountdown, {
+    const { container } = render(Countdown, {
       props: {
-        proposalInfo: {
-          ...mockProposals[0],
-          deadlineTimestampSeconds: undefined,
-        },
+        deadlineTimestampSeconds: undefined,
       },
     });
 
@@ -23,9 +20,9 @@ describe("ProposalCountdown", () => {
   });
 
   it("should render countdown", () => {
-    const { container } = render(ProposalCountdown, {
+    const { container } = render(Countdown, {
       props: {
-        proposalInfo: mockProposals[0],
+        deadlineTimestampSeconds: mockProposals[0].deadlineTimestampSeconds,
       },
     });
 

@@ -1,10 +1,18 @@
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  MAX_NEURONS_SUBACCOUNTS,
+} from "$lib/constants/sns-neurons.constants";
+import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { votingPower } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import {
+  neuronSubaccount,
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import type {
   NervousSystemFunction,
   NervousSystemParameters,
@@ -38,7 +46,11 @@ export const getSnsNeuronState = ({
       : NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    return NeuronState.Dissolving;
+    // In case `nowInSeconds` ever changes and doesn't return an integer we use Math.floor
+    return dissolveState.WhenDissolvedTimestampSeconds <
+      BigInt(Math.floor(nowInSeconds()))
+      ? NeuronState.Dissolved
+      : NeuronState.Dissolving;
   }
   return NeuronState.Unspecified;
 };
@@ -118,6 +130,39 @@ export const getSnsNeuronIdAsHexString = ({
 export const subaccountToHexString = (subaccount: Uint8Array): string =>
   bytesToHexString(Array.from(subaccount));
 
+/**
+ * Find the first not existed memo (index based).
+ * This approach works because sns neurons are not deleted.
+ *
+ * @param identity
+ * @param neurons
+ */
+export const nextMemo = ({
+  identity,
+  neurons,
+}: {
+  identity: Identity;
+  neurons: SnsNeuron[];
+}): bigint => {
+  const controller = identity.getPrincipal();
+  for (let index = 0; index < MAX_NEURONS_SUBACCOUNTS; index++) {
+    const subaccount = neuronSubaccount({
+      controller,
+      index,
+    });
+    if (
+      getSnsNeuronByHexId({
+        neuronIdHex: subaccountToHexString(subaccount),
+        neurons,
+      }) === undefined
+    ) {
+      return BigInt(index);
+    }
+  }
+
+  throw new NextMemoNotFoundError();
+};
+
 export const canIdentityManageHotkeys = ({
   neuron,
   identity,
@@ -185,6 +230,19 @@ export const hasPermissionToStakeMaturity = ({
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
     ],
+  });
+
+export const hasPermissionToSplit = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
   });
 
 /*
@@ -266,6 +324,39 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+/*
+- The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
+- The parent's stake minus amount to split is more than the minimum stake (thus the parent neuron will have at least the minimum stake)
+ */
+export const minNeuronSplittable = ({
+  fee,
+  neuronMinimumStake,
+}: {
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): bigint => 2n * neuronMinimumStake + fee;
+
+export const isEnoughAmountToSplit = ({
+  amount,
+  fee,
+  neuronMinimumStake,
+}: {
+  amount: E8s;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean => amount >= neuronMinimumStake + fee;
+
+export const neuronCanBeSplit = ({
+  neuron,
+  fee,
+  neuronMinimumStake,
+}: {
+  neuron: SnsNeuron;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean =>
+  getSnsNeuronStake(neuron) >= minNeuronSplittable({ fee, neuronMinimumStake });
 
 /**
  * Has the neuron the auto stake maturity feature turned on?

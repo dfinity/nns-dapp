@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-  import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+  import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
@@ -137,7 +137,7 @@
           <NeuronProposalsCard {neuron} />
         {/if}
 
-        <NeuronHotkeysCard {neuron} />
+        <NnsNeuronHotkeysCard {neuron} />
         <NeuronVotingHistoryCard {neuron} />
       {:else}
         <SkeletonCard size="large" cardType="info" separator />

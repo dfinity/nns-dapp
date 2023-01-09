@@ -4,7 +4,7 @@
 
 import { render, waitFor } from "@testing-library/svelte";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
-import ProposalTest from "./ProposalTest.svelte";
+import NnsProposalTest from "./NnsProposalTest.svelte";
 
 jest.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
@@ -12,7 +12,7 @@ jest.mock("$lib/utils/html.utils", () => ({
 
 describe("Proposal", () => {
   const renderProposalModern = () =>
-    render(ProposalTest, {
+    render(NnsProposalTest, {
       props: {
         proposalInfo: mockProposalInfo,
       },

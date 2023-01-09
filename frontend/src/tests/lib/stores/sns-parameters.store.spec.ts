@@ -1,6 +1,6 @@
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";

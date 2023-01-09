@@ -8,7 +8,10 @@ export const MAX_CONCURRENCY = 10;
 export const SPAWN_VARIANCE_PERCENTAGE = 0.95;
 
 // HW versions
+// Version published in december 2022
 export const MIN_VERSION_STAKE_MATURITY_WORKAROUND = "2.0.7";
+// Version published in January 2023
+export const CANDID_PARSER_VERSION = "2.2.1";
 
 export const DISSOLVE_DELAY_MULTIPLIER = 1;
 export const AGE_MULTIPLIER = 0.25;

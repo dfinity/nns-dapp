@@ -3,7 +3,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsParameters = async (

@@ -12,7 +12,7 @@
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import NeuronCard from "./NeuronCard.svelte";
+  import NnsNeuronCard from "./NnsNeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];
 
@@ -57,7 +57,7 @@
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}
       <li>
         {#if mergeable}
-          <NeuronCard
+          <NnsNeuronCard
             on:click={() => toggleNeuronId(neuron.neuronId)}
             role="checkbox"
             {selected}
@@ -68,7 +68,7 @@
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
             text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
-            <NeuronCard disabled role="checkbox" {neuron} />
+            <NnsNeuronCard disabled role="checkbox" {neuron} />
           </Tooltip>
         {/if}
       </li>

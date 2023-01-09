@@ -2,7 +2,6 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IconClose, Value } from "@dfinity/gix-components";
-  import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -15,8 +14,25 @@
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
 
   export let neuron: NeuronInfo;
+
+  let currentIdentityString: string | undefined;
+  $: currentIdentityString = $authStore.identity?.getPrincipal().toText();
+
+  let showConfirmationHotkey: string | undefined;
+  const closeConfirmation = () => {
+    showConfirmationHotkey = undefined;
+  };
+  const maybeRemove = async (hotkey: string) => {
+    // Require confirmation if the user is removing itself from the hotkeys.
+    if (currentIdentityString === hotkey) {
+      showConfirmationHotkey = hotkey;
+    } else {
+      await remove(hotkey);
+    }
+  };
 
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
@@ -36,11 +52,8 @@
       neuronId: neuron.neuronId,
       principalString: hotkey,
     });
-    const currentIdentityPrincipal = (await getAuthenticatedIdentity())
-      .getPrincipal()
-      .toText();
     // If the user removes itself from the hotkeys, it has no more access to the detail page.
-    if (currentIdentityPrincipal === hotkey && maybeNeuronId !== undefined) {
+    if (currentIdentityString === hotkey && maybeNeuronId !== undefined) {
       toastsShow({
         level: "success",
         labelKey: "neurons.remove_hotkey_success",
@@ -65,7 +78,7 @@
             <button
               class="text"
               aria-label={$i18n.core.remove}
-              on:click={() => remove(hotkey)}
+              on:click={() => maybeRemove(hotkey)}
               data-tid="remove-hotkey-button"><IconClose size="18px" /></button
             >
           {/if}
@@ -81,6 +94,15 @@
 </CardInfo>
 
 <Separator />
+
+{#if showConfirmationHotkey !== undefined}
+  <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->
+  {@const hotkey = showConfirmationHotkey}
+  <ConfirmRemoveCurrentUserHotkey
+    on:nnsClose={closeConfirmation}
+    on:nnsConfirm={() => remove(hotkey)}
+  />
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";

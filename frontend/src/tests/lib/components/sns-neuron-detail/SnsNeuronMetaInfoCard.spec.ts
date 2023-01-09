@@ -9,13 +9,22 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import type { Token } from "@dfinity/nns";
+import type { NervousSystemParameters } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../../mocks/sns-neurons.mock";
+import { mockToken, mockTokenStore } from "../../../mocks/sns-projects.mock";
 
 describe("SnsNeuronMetaInfoCard", () => {
   beforeEach(() => {
@@ -28,11 +37,27 @@ describe("SnsNeuronMetaInfoCard", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  const renderSnsNeuronCmp = () =>
+  const renderSnsNeuronCmp = (
+    extraPermissions: SnsNeuronPermissionType[] = []
+  ) =>
     renderSelectedSnsNeuronContext({
       Component: SnsNeuronMetaInfoCard,
-      neuron: mockSnsNeuron,
+      neuron: {
+        ...mockSnsNeuron,
+        permissions: [
+          ...mockSnsNeuron.permissions,
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(extraPermissions),
+          },
+        ],
+      },
       reload: jest.fn(),
+      props: {
+        parameters: snsNervousSystemParametersMock as NervousSystemParameters,
+        token: mockToken as Token,
+        transactionFee: 100n,
+      },
     });
 
   const hash = shortenWithMiddleEllipsis(
@@ -51,6 +76,20 @@ describe("SnsNeuronMetaInfoCard", () => {
     expect(getByTestId("neuron-state-info")?.textContent.trim()).toEqual(
       en.neuron_state.Dissolved
     );
+  });
+
+  it("should render split neuron button", () => {
+    const { getByTestId } = renderSnsNeuronCmp([
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
+    ]);
+
+    expect(getByTestId("split-neuron-button")).toBeInTheDocument();
+  });
+
+  it("should hide split neuron button", () => {
+    const { queryByTestId } = renderSnsNeuronCmp();
+
+    expect(queryByTestId("split-neuron-button")).toBeNull();
   });
 
   // TODO: uncomment for display neuron age
