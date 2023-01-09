@@ -31,7 +31,7 @@
   </p>
 
   <div class="summary">
-    <ProposalSummary proposal={proposal.proposal} />
+    <ProposalSummary summary={proposal.proposal.summary} />
   </div>
 {:else}
   <SkeletonText />

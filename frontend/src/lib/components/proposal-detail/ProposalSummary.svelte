@@ -1,11 +1,7 @@
 <script lang="ts">
-  import type { Proposal } from "@dfinity/nns";
   import Markdown from "$lib/components/ui/Markdown.svelte";
 
-  export let proposal: Proposal | undefined;
-
-  let summary: string | undefined;
-  $: summary = proposal?.summary;
+  export let summary: string | undefined;
 
   let showTitle: boolean;
   $: showTitle = $$slots.title !== undefined;

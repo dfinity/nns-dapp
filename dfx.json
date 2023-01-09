@@ -116,7 +116,8 @@
         "OWN_CANISTER_URL": "https://nns.ic0.app",
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": false
+          "ENABLE_SNS_2": false,
+          "ENABLE_SNS_VOTING": false
         }
       },
       "providers": [
@@ -129,7 +130,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": false
+          "ENABLE_SNS_2": false,
+          "ENABLE_SNS_VOTING": false
         }
       },
       "providers": [
@@ -142,7 +144,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -155,7 +158,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small14.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -168,7 +172,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small13.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -181,7 +186,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small12.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -194,7 +200,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small11.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -207,7 +214,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large02.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -220,7 +228,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small09.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -233,7 +242,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "https://small06.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "providers": [
@@ -246,7 +256,8 @@
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
         }
       },
       "bind": "127.0.0.1:8080",

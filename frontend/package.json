@@ -60,7 +60,7 @@
     "@dfinity/auth-client": "^0.15.1",
     "@dfinity/candid": "^0.15.1",
     "@dfinity/cmc": "next",
-    "@dfinity/gix-components": "next",
+    "@dfinity/gix-components": "file:../../gix-components/package",
     "@dfinity/identity": "^0.15.1",
     "@dfinity/nns": "next",
     "@dfinity/principal": "^0.15.1",

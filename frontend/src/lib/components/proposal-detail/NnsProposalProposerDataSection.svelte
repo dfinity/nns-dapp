@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import ProposalProposerPayloadEntry from "./ProposalProposerPayloadEntry.svelte";
-  import ProposalProposerActionsEntry from "./ProposalProposerActionsEntry.svelte";
+  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
+  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import type { Proposal, ProposalId } from "@dfinity/nns";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
 
@@ -13,7 +13,7 @@
 </script>
 
 {#if proposal !== undefined}
-  <ProposalProposerActionsEntry {proposal} />
+  <NnsProposalProposerActionsEntry {proposal} />
 
-  <ProposalProposerPayloadEntry {proposal} proposalId={id} />
+  <NnsProposalProposerPayloadEntry {proposal} proposalId={id} />
 {/if}

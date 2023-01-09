@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProposalCard from "./ProposalCard.svelte";
+  import NnsProposalCard from "./NnsProposalCard.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import ProposalsFilters from "./ProposalsFilters.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -22,7 +22,7 @@
   disabled={disableInfiniteScroll || loading}
 >
   {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-    <ProposalCard {hidden} {proposalInfo} />
+    <NnsProposalCard {hidden} {proposalInfo} />
   {/each}
 </InfiniteScroll>
 
