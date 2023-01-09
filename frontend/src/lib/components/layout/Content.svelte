@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Content } from "@dfinity/gix-components";
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import Title from "$lib/components/common/Title.svelte";
+  import Title from "$lib/components/header/Title.svelte";
 
   export let back: (() => Promise<void>) | undefined = undefined;
 </script>

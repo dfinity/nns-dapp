@@ -12,7 +12,7 @@
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
