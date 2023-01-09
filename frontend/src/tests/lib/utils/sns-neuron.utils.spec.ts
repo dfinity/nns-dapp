@@ -504,6 +504,33 @@ describe("sns-neuron utils", () => {
       expect(expectedHotkeys.includes(hotkey)).toBe(true);
     });
 
+    it("returns if only voting permission and voting management permissions", () => {
+      const nonHotkey =
+        "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+      const hotkey =
+        "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(nonHotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([...HOTKEY_PERMISSIONS, ...MANAGE_HOTKEY_PERMISSIONS]),
+          },
+          controllerPermission,
+        ],
+      };
+      const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
+      expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
+      expect(expectedHotkeys.includes(hotkey)).toBe(true);
+    });
+
+
     it("doesn't return if more than hotkeys permissions", () => {
       const nonHotkey =
         "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
