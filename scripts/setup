@@ -112,6 +112,15 @@ install_coreutils_linux() {
   sudo apt-get install build-essential
 }
 
+install_moreutils_darwin() {
+  echo "Installing moreutils..."
+  brew install moreutils
+}
+install_moreutils_linux() {
+  echo "Installing moreutils..."
+  sudo apt-get install moreutils
+}
+
 install_jq_darwin() {
   echo "Installing jq..."
   brew install jq
@@ -233,6 +242,7 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
+command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust

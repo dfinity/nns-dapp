@@ -8,7 +8,6 @@ import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import {
   mockSnsNeuron,
@@ -34,10 +33,9 @@ describe("SplitSnsNeuronButton", () => {
     neuron: {
       ...mockSnsNeuron,
     },
-    rootCanisterId: mockPrincipal,
     parameters: {
       ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [neuronMinimumStake],
+      neuron_minimum_stake_e8s: [neuronMinimumStake] as [bigint],
     },
     transactionFee,
     token: mockToken,

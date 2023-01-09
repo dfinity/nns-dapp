@@ -1,17 +1,10 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalSummary from "./ProposalSummary.svelte";
-  import type { Proposal } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
 
-  export let proposalInfo: ProposalInfo;
-
-  let title: string | undefined;
-  let proposal: Proposal | undefined;
-  let url: string | undefined;
-
-  $: ({ title, proposal, url } = mapProposalInfo(proposalInfo));
+  export let title: string | undefined;
+  export let summary: string | undefined;
+  export let url: string | undefined;
 </script>
 
 <div class="content-cell-island">
@@ -20,7 +13,7 @@
   </h2>
 
   <div class="content-cell-details">
-    <ProposalSummary {proposal}>
+    <ProposalSummary {summary}>
       <svelte:fragment slot="title">
         <h1>{title ?? ""}</h1>
 

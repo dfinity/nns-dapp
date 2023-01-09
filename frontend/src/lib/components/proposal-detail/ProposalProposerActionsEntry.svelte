@@ -1,20 +1,9 @@
 <script lang="ts">
-  import {
-    proposalActionFields,
-    proposalFirstActionKey,
-  } from "$lib/utils/proposals.utils";
-  import type { Proposal } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
 
-  export let proposal: Proposal | undefined;
-
-  let actionKey: string | undefined;
-  let actionFields: [string, unknown][] = [];
-  $: actionKey =
-    proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
-  $: actionFields =
-    proposal !== undefined ? proposalActionFields(proposal) : [];
+  export let actionKey: string | undefined;
+  export let actionFields: [string, unknown][] = [];
 </script>
 
 <div class="content-cell-island">
