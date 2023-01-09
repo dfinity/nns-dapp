@@ -18,7 +18,9 @@
 </script>
 
 <Modal testId="select-universe-modal" on:nnsClose>
-  <span slot="title">{$i18n.universe.select_token}</span>
+  <span slot="title" data-tid="select-universe-modal-title"
+    >{$i18n.universe.select_token}</span
+  >
 
   <SelectUniverseList
     {selectedCanisterId}

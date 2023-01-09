@@ -2,33 +2,39 @@
  * @jest-environment jsdom
  */
 
-import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { pageStore } from "$lib/derived/page.derived";
+import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import en from "../../../mocks/i18n.mock";
+import { renderModal } from "../../../mocks/modal.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
 
-describe("SelectUniverseNavList", () => {
+describe("SelectUniverseModal", () => {
   jest
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   afterAll(() => jest.clearAllMocks());
 
-  it("should render universe cards as links", () => {
-    const { getAllByRole } = render(SelectUniverseNavList, {
+  it("should render title", async () => {
+    const { getByTestId } = await renderModal({
+      component: SelectUniverseModal,
       props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
     });
-    // 1 for Sns project + 1 for Internet Computer - NNS
-    expect(getAllByRole("link").length).toEqual(2);
+
+    expect(
+      getByTestId("select-universe-modal-title")?.textContent ?? ""
+    ).toEqual(en.universe.select_token);
   });
 
   it("should navigate", async () => {
-    const { getAllByTestId } = render(SelectUniverseNavList, {
+    const { getAllByTestId } = await renderModal({
+      component: SelectUniverseModal,
       props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
     });
 
@@ -36,6 +42,6 @@ describe("SelectUniverseNavList", () => {
     cards && (await fireEvent.click(cards[1]));
 
     const { universe } = get(pageStore);
-    await waitFor(() => expect(universe).toEqual(mockSnsFullProject.rootCanisterId.toText()));
+    expect(universe).toEqual(mockSnsFullProject.rootCanisterId.toText());
   });
 });
