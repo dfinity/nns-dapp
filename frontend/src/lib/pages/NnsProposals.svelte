@@ -26,11 +26,12 @@
   import { authStore } from "$lib/stores/auth.store";
 
   export let referrerPath: AppPath | undefined = undefined;
+  // It's exported so that we can test the value
+  export let disableInfiniteScroll = false;
 
   let loading = false;
   let hidden = false;
   let initialized = false;
-  let disableInfiniteScroll = false;
 
   const loadFinished = ({ paginationOver }: { paginationOver: boolean }) => {
     loading = false;
@@ -155,13 +156,11 @@
     : "skeleton";
 </script>
 
-<main data-tid={`proposals-scroll-${disableInfiniteScroll ? "off" : "on"}`}>
-  <ProposalsList
-    {hidden}
-    {nothingFound}
-    {disableInfiniteScroll}
-    {loading}
-    {loadingAnimation}
-    on:nnsIntersect={findNextProposals}
-  />
-</main>
+<ProposalsList
+  {hidden}
+  {nothingFound}
+  {disableInfiniteScroll}
+  {loading}
+  {loadingAnimation}
+  on:nnsIntersect={findNextProposals}
+/>

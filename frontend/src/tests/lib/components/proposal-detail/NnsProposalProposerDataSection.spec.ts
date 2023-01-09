@@ -3,7 +3,7 @@
  */
 
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import ProposalProposerDataSection from "$lib/components/proposal-detail/ProposalProposerDataSection.svelte";
+import NnsProposalProposerDataSection from "$lib/components/proposal-detail/NnsProposalProposerDataSection.svelte";
 import type { Proposal } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
@@ -12,7 +12,7 @@ import {
   proposalActionNnsFunction21,
 } from "../../../mocks/proposal.mock";
 
-describe("ProposalProposerDataSection", () => {
+describe("NnsProposalProposerDataSection", () => {
   const nnsDappMock = mock<NNSDappCanister>();
   nnsDappMock.getProposalPayload.mockResolvedValue({});
   jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
@@ -23,7 +23,7 @@ describe("ProposalProposerDataSection", () => {
   } as Proposal;
 
   it("should render entries", async () => {
-    const renderResult = render(ProposalProposerDataSection, {
+    const renderResult = render(NnsProposalProposerDataSection, {
       props: {
         proposalInfo: {
           ...mockProposalInfo,

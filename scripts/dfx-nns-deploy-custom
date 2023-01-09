@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Deploys the NNS canisters with the following modifications:
+	- The nns-dapp wasm is built from the local codebase.
+	- The internet_identity is the one specified in dfx.json.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+: "Make sure that old wasms are purged"
+rm -f nns-dapp.wasm nns-dapp_local.wasm
+
+: "Build nns-dapp for local use, with standard canister IDs, and inject into the wasm cache."
+"$SOURCE_DIR"/dfx-software-nd-cache
+
+: "Get our chosen version of II and inject it into the wasm cache."
+"$SOURCE_DIR"/dfx-software-ii-cache
+
+: "Deploy nns-dapp with other NNS canisters"
+dfx nns install
+
+: "Verify that deployment has the expected canisters"
+for canister_name in nns-dapp internet_identity; do
+  wasm="$(n="$canister_name" jq -r '.canisters[env.n].wasm' dfx.json)"
+  build_hash="$(sha256sum "$wasm" | awk '{print $1}')"
+  deployed_hash="$(dfx canister info "$canister_name" | awk '/Module hash/{print $3}')"
+  if [[ "0x$build_hash" == "$deployed_hash" ]]; then
+    echo "Check passed: Installed $canister_name matches local wasm."
+  else
+    {
+      echo "ERROR: Deployed $canister_name hash does not match."
+      echo "Local build: 0x$build_hash"
+      echo "Deployed:    $deployed_hash"
+      exit 1
+    } >&2
+  fi
+done

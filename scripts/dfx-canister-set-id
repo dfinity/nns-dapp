@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=i long=canister_id desc="The ID of the canister" variable=DFX_CANISTER_ID
+clap.define short=N long=canister_name desc="The name of the canister" variable=DFX_CANISTER_NAME
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+export DFX_NETWORK
+export DFX_CANISTER_NAME
+export DFX_CANISTER_ID
+
+if [[ "$DFX_NETWORK" == "local" ]]; then
+  FILENAME=".dfx/local/canister_ids.json"
+else
+  FILENAME="canister_ids.json"
+fi
+
+(
+  set +euo pipefail
+  test -f "$FILENAME" && jq . "$FILENAME" | grep .
+) || {
+  mkdir -p "$(dirname "$FILENAME")"
+  echo "{}" >"$FILENAME"
+}
+
+jq '. * {(env.DFX_CANISTER_NAME): {(env.DFX_NETWORK): (env.DFX_CANISTER_ID)}}' "$FILENAME" | grep . | sponge "$FILENAME"
