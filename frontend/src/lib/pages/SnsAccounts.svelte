@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/nns";
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
-  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
@@ -13,7 +11,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { sumAccounts } from "$lib/utils/sns-accounts.utils";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
@@ -29,9 +27,6 @@
 
   onDestroy(unsubscribe);
 
-  let totalAmountToken: TokenAmount | undefined;
-  $: totalAmountToken = sumAccounts($snsProjectAccountsStore);
-
   const goToDetails = async ({ identifier }: Account) =>
     await goto(
       buildWalletUrl({
@@ -41,7 +36,7 @@
     );
 </script>
 
-<AccountsTitle balance={totalAmountToken} />
+<SummaryUniverse />
 
 <div class="card-grid" data-tid="sns-accounts-body">
   {#if loading}

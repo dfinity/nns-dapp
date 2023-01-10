@@ -3,6 +3,7 @@
   import { Card } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
+  import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -40,7 +41,9 @@
       <span class="name" class:offset={hasSlots}
         >{summary?.metadata.name ?? $i18n.core.ic}</span
       >
-      <slot />
+      {#if selected}
+        <ProjectBalance />
+      {/if}
     </div>
   </div>
 </Card>

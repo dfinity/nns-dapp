@@ -3,9 +3,7 @@
 </script>
 
 <div class="summary">
-  <Summary>
-    <slot slot="details" />
-  </Summary>
+  <Summary />
 </div>
 
 <style lang="scss">
