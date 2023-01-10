@@ -3,7 +3,7 @@
  */
 
 import { authStore } from "$lib/stores/auth.store";
-import AccountsPage from "$routes/(app)/(u)/(details)/accounts/+page.svelte";
+import AccountsPage from "$routes/(app)/(u)/(list)/accounts/+page.svelte";
 import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
