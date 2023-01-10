@@ -7,7 +7,7 @@
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import type { AppPath } from "$lib/constants/routes.constants";
 
   export let referrerPath: AppPath | undefined = undefined;
 </script>
