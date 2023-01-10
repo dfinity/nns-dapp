@@ -14,7 +14,7 @@
   $: loading = isNullish($snsProposalsStore);
 
   const load = () => {
-    if ($snsProposalsStore === undefined) {
+    if (isNullish($snsProposalsStore)) {
       loadProposalsSnsCF();
     }
   };

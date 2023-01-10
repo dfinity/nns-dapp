@@ -5,7 +5,7 @@
   import Countdown from "./Countdown.svelte";
 
   export let hidden = false;
-  export let status: string | undefined;
+  export let statusString: string | undefined;
   export let id: bigint | undefined;
   export let title: string | undefined;
   export let color: ProposalStatusColor | undefined;
@@ -54,7 +54,7 @@
 
     <KeyValuePair>
       <p slot="key" class={`${color ?? ""} status`}>
-        {status}
+        {statusString}
       </p>
       <Countdown slot="value" {deadlineTimestampSeconds} />
     </KeyValuePair>

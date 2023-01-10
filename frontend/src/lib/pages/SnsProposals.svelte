@@ -18,7 +18,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { fromNullable } from "@dfinity/utils";
 
-  onMount(async () => {
+  onMount(() => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
     if (!ENABLE_SNS_VOTING) {
       goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }));
@@ -52,6 +52,7 @@
       : undefined;
 </script>
 
+<!-- TODO: Remove when implementing filters https://dfinity.atlassian.net/browse/GIX-1212 -->
 <div data-tid="sns-proposals-page">
   {#if proposals === undefined}
     <div class="card-grid" data-tid="proposals-loading">

@@ -1,4 +1,4 @@
-import { getProposals } from "$lib/api/sns-governance.api";
+import { queryProposals } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import type { Principal } from "@dfinity/principal";
@@ -13,7 +13,7 @@ export const loadSnsProposals = async ({
   return queryAndUpdate<SnsProposalData[], unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
-      getProposals({
+      queryProposals({
         params: { limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE },
         identity,
         certified,

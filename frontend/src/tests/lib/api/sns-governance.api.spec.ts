@@ -9,9 +9,9 @@ import {
   disburse,
   getNervousSystemFunctions,
   getNeuronBalance,
-  getProposals,
   increaseDissolveDelay,
   nervousSystemParameters,
+  queryProposals,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
@@ -304,7 +304,7 @@ describe("sns-api", () => {
   });
 
   it("should get proposals", async () => {
-    const res = await getProposals({
+    const res = await queryProposals({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       certified: false,

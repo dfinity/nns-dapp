@@ -413,7 +413,7 @@ export const autoStakeMaturity = async ({
   );
 };
 
-export const getProposals = async ({
+export const queryProposals = async ({
   rootCanisterId,
   identity,
   certified,

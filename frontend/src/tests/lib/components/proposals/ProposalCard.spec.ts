@@ -12,7 +12,7 @@ describe("ProposalCard", () => {
   const nowSeconds = Math.floor(nowInSeconds());
   const props = {
     hidden: false,
-    status: "Open",
+    statusString: "Open",
     id: BigInt(112),
     title: "Test Proposal",
     color: ProposalStatusColor.PRIMARY,

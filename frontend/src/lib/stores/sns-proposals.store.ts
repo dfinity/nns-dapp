@@ -10,7 +10,7 @@ export interface ProjectProposalStore {
 }
 export interface SnsProposalsStore {
   // Each SNS Project is an entry in this Store.
-  // We use the root canister id as the key to identify the neurons for a specific project.
+  // We use the root canister id as the key to identify the proposals for a specific project.
   [rootCanisterId: string]: ProjectProposalStore;
 }
 

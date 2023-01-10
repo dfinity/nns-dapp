@@ -34,7 +34,7 @@
 <ProposalCard
   {hidden}
   on:click={showProposal}
-  status={statusString}
+  {statusString}
   {id}
   {title}
   {color}
