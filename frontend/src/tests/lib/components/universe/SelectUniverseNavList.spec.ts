@@ -5,6 +5,7 @@
 import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { pageStore } from "$lib/derived/page.derived";
 import { committedProjectsStore } from "$lib/stores/projects.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
@@ -17,20 +18,22 @@ describe("SelectUniverseNavList", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
+  beforeAll(() => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+  });
+
   afterAll(() => jest.clearAllMocks());
 
   it("should render universe cards as links", () => {
-    const { getAllByRole } = render(SelectUniverseNavList, {
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
-    });
+    const { getAllByRole } = render(SelectUniverseNavList);
     // 1 for Sns project + 1 for Internet Computer - NNS
     expect(getAllByRole("link").length).toEqual(2);
   });
 
   it("should navigate", async () => {
-    const { getAllByTestId } = render(SelectUniverseNavList, {
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
-    });
+    const { getAllByTestId } = render(SelectUniverseNavList);
 
     const cards = getAllByTestId("select-universe-card");
     cards && (await fireEvent.click(cards[1]));

@@ -4,6 +4,7 @@
 
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent, render } from "@testing-library/svelte";
 import {
   mockProjectSubscribe,
@@ -31,12 +32,16 @@ describe("SelectUniverseList", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe(projects));
 
+  beforeAll(() => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+  });
+
   afterAll(() => jest.clearAllMocks());
 
   it("should render universe cards", () => {
-    const { getAllByTestId } = render(SelectUniverseList, {
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
-    });
+    const { getAllByTestId } = render(SelectUniverseList);
     // +1 for Internet Computer - NNS
     expect(getAllByTestId("select-universe-card").length).toEqual(
       projects.length + 1
@@ -44,9 +49,7 @@ describe("SelectUniverseList", () => {
   });
 
   it("should render project selected", () => {
-    const { container } = render(SelectUniverseList, {
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
-    });
+    const { container } = render(SelectUniverseList);
     const card = container.querySelector(".selected");
     expect(card?.textContent.trim() ?? "").toEqual(
       projects[0].summary.metadata.name
@@ -57,9 +60,7 @@ describe("SelectUniverseList", () => {
   });
 
   it("should trigger select project", async () => {
-    const { component, getAllByTestId } = render(SelectUniverseList, {
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
-    });
+    const { component, getAllByTestId } = render(SelectUniverseList);
 
     const onSelect = jest.fn();
     component.$on("nnsSelectProject", onSelect);

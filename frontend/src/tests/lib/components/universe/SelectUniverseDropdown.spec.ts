@@ -28,8 +28,6 @@ describe("SelectUniverseDropdown", () => {
     .spyOn(snsTokenSymbolSelectedStore, "subscribe")
     .mockImplementation(mockTokenStore);
 
-  const props = { selectedCanisterId: mockSnsFullProject.rootCanisterId };
-
   beforeAll(() => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -39,7 +37,7 @@ describe("SelectUniverseDropdown", () => {
   afterAll(() => jest.clearAllMocks());
 
   it("should render a universe card with a role button", () => {
-    const { getByTestId } = render(SelectUniverseDropdown, props);
+    const { getByTestId } = render(SelectUniverseDropdown);
 
     const card = getByTestId("select-universe-card");
     expect(card).not.toBeNull();
@@ -47,7 +45,7 @@ describe("SelectUniverseDropdown", () => {
   });
 
   it("should logo of universe", async () => {
-    const { getByTestId } = render(SelectUniverseDropdown, props);
+    const { getByTestId } = render(SelectUniverseDropdown);
     await waitFor(() =>
       expect(getByTestId("logo")?.getAttribute("src")).toEqual(
         mockSnsFullProject.summary.metadata.logo
@@ -57,7 +55,7 @@ describe("SelectUniverseDropdown", () => {
 
   describe("no balance", () => {
     it("should render a skeleton on load balance", () => {
-      const { container } = render(SelectUniverseDropdown, props);
+      const { container } = render(SelectUniverseDropdown);
       expect(container.querySelector(".skeleton")).not.toBeNull();
     });
   });
@@ -72,7 +70,7 @@ describe("SelectUniverseDropdown", () => {
     );
 
     it("should render total balance of the project", async () => {
-      const { getByTestId } = render(SelectUniverseDropdown, props);
+      const { getByTestId } = render(SelectUniverseDropdown);
       expect(
         getByTestId("token-value-label")?.textContent.trim() ?? ""
       ).toEqual(
@@ -86,7 +84,7 @@ describe("SelectUniverseDropdown", () => {
   });
 
   it("should open modal", async () => {
-    const { getByTestId } = render(SelectUniverseDropdown, props);
+    const { getByTestId } = render(SelectUniverseDropdown);
 
     await fireEvent.click(getByTestId("select-universe-card") as HTMLElement);
     expect(getByTestId("select-universe-modal")).toBeInTheDocument();

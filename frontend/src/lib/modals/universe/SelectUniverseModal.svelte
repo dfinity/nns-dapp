@@ -5,8 +5,10 @@
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
   import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
+  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let selectedCanisterId: string;
+  let selectedCanisterId: string;
+  $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

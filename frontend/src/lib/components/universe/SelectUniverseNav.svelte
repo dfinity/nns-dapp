@@ -1,12 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
-
-  let selectedCanisterId: string;
-  $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
 
   let innerWidth = 0;
   let list = false;
@@ -22,9 +18,9 @@
   </p>
 
   {#if list}
-    <SelectUniverseNavList {selectedCanisterId} />
+    <SelectUniverseNavList />
   {:else}
-    <SelectUniverseDropdown {selectedCanisterId} />
+    <SelectUniverseDropdown />
   {/if}
 </Nav>
 

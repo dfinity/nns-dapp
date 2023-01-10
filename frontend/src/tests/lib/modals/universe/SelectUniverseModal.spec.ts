@@ -5,6 +5,7 @@
 import { pageStore } from "$lib/derived/page.derived";
 import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
 import { committedProjectsStore } from "$lib/stores/projects.store";
+import { page } from "$mocks/$app/stores";
 import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../../mocks/i18n.mock";
@@ -19,12 +20,17 @@ describe("SelectUniverseModal", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
+  beforeAll(() => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+  });
+
   afterAll(() => jest.clearAllMocks());
 
   it("should render title", async () => {
     const { getByTestId } = await renderModal({
       component: SelectUniverseModal,
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
     });
 
     expect(
@@ -35,7 +41,6 @@ describe("SelectUniverseModal", () => {
   it("should navigate", async () => {
     const { getAllByTestId } = await renderModal({
       component: SelectUniverseModal,
-      props: { selectedCanisterId: mockSnsFullProject.rootCanisterId.toText() },
     });
 
     const cards = getAllByTestId("select-universe-card");

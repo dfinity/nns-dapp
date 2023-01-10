@@ -7,8 +7,6 @@
   import { nonNullish } from "$lib/utils/utils";
   import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
 
-  export let selectedCanisterId: string;
-
   let showProjectPicker = false;
 
   let innerWidth = 0;
@@ -41,10 +39,7 @@
 </SelectUniverseCard>
 
 {#if showProjectPicker}
-  <SelectUniverseModal
-    {selectedCanisterId}
-    on:nnsClose={() => (showProjectPicker = false)}
-  />
+  <SelectUniverseModal on:nnsClose={() => (showProjectPicker = false)} />
 {/if}
 
 <style lang="scss">
