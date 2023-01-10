@@ -48,6 +48,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/fonts";
   @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/text";
 
   .container {
     display: flex;
@@ -67,6 +68,7 @@
 
   .name {
     @include fonts.standard(true);
+    @include text.clamp(2);
 
     &.offset {
       padding-top: var(--padding-0_5x);
