@@ -17,7 +17,7 @@ export const ROUTE_ID_GROUP_APP = "/(app)";
 export const ROUTE_ID_GROUP_UNIVERSE = "/(u)";
 export const ROUTE_ID_GROUP_NNS = "/(nns)";
 export const ROUTE_ID_GROUP_LIST = "/(list)";
-export const ROUTE_ID_GROUP_DETAILS = "/(details)";
+export const ROUTE_ID_GROUP_DETAILS = "/(detail)";
 
 export const ROUTE_ID_GROUPS = [ROUTE_ID_GROUP_APP, ROUTE_ID_GROUP_UNIVERSE, ROUTE_ID_GROUP_NNS, ROUTE_ID_GROUP_LIST, ROUTE_ID_GROUP_DETAILS];
 
