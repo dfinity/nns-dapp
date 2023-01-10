@@ -34,10 +34,10 @@
   {icon}
   testId="select-universe-card"
 >
-  <div class="container" class:selected>
+  <div class="container" class:selected >
     <ProjectLogo size="big" {summary} framed={true} />
 
-    <div class="content">
+    <div class={`content ${role}`}>
       <span class="name" class:offset={hasSlots}
         >{summary?.metadata.name ?? $i18n.core.ic}</span
       >
@@ -67,6 +67,10 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+
+    &.dropdown {
+      padding: var(--padding-0_5x) 0 0;
+    }
   }
 
   .name {

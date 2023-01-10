@@ -29,6 +29,8 @@
   @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
+    margin: 0;
+
     @include media.min-width(large) {
       @include fonts.h3(true);
     }

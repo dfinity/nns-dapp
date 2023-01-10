@@ -17,12 +17,12 @@ describe("Summary", () => {
 
   it("should render a logo", () => {
     const { getByTestId } = render(Summary);
-    expect(getByTestId("summary-logo")).not.toBeNull();
+    expect(getByTestId("project-logo")).not.toBeNull();
   });
 
   it("should render a logo", () => {
     const { getByTestId } = render(Summary);
-    expect(getByTestId("summary-logo")).not.toBeNull();
+    expect(getByTestId("project-logo")).not.toBeNull();
   });
 
   it("should render internet computer if none", () => {

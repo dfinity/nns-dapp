@@ -152,7 +152,7 @@ describe("NnsAccounts", () => {
     it("should render icp project logo", () => {
       const { getByTestId } = render(NnsAccounts);
 
-      const logo = getByTestId("summary-logo");
+      const logo = getByTestId("project-logo");
       const img = logo.querySelector('[data-tid="logo"]');
 
       expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);

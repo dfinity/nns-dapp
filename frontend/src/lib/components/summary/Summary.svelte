@@ -3,11 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let size: "big" | "medium" | "small" = "big";
   export let displayProjects = true;
-
-  let titleTag: "h1" | "h3" = "h1";
-  $: titleTag = size === "big" ? "h1" : "h3";
 
   let text = $i18n.core.ic;
   $: text = displayProjects
@@ -18,12 +14,12 @@
   $: twoLines = $$slots.details !== undefined;
 </script>
 
-<div class={`summary ${size}`} class:twoLines data-tid="projects-summary">
-  <div class="logo" data-tid="summary-logo">
-    <SummaryLogo {size} {displayProjects} />
-  </div>
+<div class="summary" data-tid="projects-summary">
+  <h1 class="title">
+    <span>{text}</span>
 
-  <svelte:element this={titleTag}>{text}</svelte:element>
+    <SummaryLogo {displayProjects} />
+  </h1>
 
   {#if twoLines}
     <div class="details">
@@ -37,48 +33,24 @@
   @use "@dfinity/gix-components/styles/mixins/text";
   @use "@dfinity/gix-components/styles/mixins/fonts";
 
-  @mixin columns {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-
-    column-gap: var(--padding-2x);
-
-    margin: 0 0 var(--padding-3x);
-
-    width: fit-content;
-  }
-
   .summary {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+
     margin: 0 0 var(--padding-3x);
-    max-width: 100%;
-
-    @include columns;
-
-    &:not(.big) {
-      @include media.min-width(small) {
-        column-gap: var(--padding-1_5x);
-      }
-    }
-
-    word-break: break-all;
   }
 
-  h1,
-  h3 {
-    display: inline-block;
+  .title {
+    display: inline-flex;
+  }
+
+  span {
+    @include fonts.h3;
+
+    max-width: calc(100% - var(--padding-6x));
     @include text.truncate;
+
     margin: 0;
-  }
-
-  h3 {
-    margin-top: var(--padding-0_5x);
-  }
-
-  .twoLines {
-    .logo {
-      grid-row: 1 / 3;
-    }
   }
 
   .details {
