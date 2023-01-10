@@ -1,6 +1,7 @@
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   isAccepted,
+  mapProposalInfo,
   snsDecisionStatus,
   snsRewardStatus,
 } from "$lib/utils/sns-proposals.utils";
@@ -9,6 +10,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
+import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import { mockSnsProposal } from "../../mocks/sns-proposals.mock";
 
 describe("sns-proposals utils", () => {
@@ -167,6 +169,96 @@ describe("sns-proposals utils", () => {
       };
       expect(snsRewardStatus(proposal)).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED
+      );
+    });
+  });
+
+  describe("mapProposalInfo", () => {
+    beforeEach(() => {
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
+    it("should add statuses with text and description", () => {
+      const now = BigInt(nowInSeconds());
+      const proposalData: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: BigInt(0),
+        reward_event_round: BigInt(0),
+        wait_for_quiet_state: [
+          {
+            current_deadline_timestamp_seconds: now - BigInt(100),
+          },
+        ],
+      };
+      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      expect(mappedProposal.rewardStatus).toBe(
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES
+      );
+      expect(mappedProposal.rewardStatusString).toBeDefined();
+      expect(mappedProposal.rewardStatusDescription).toBeDefined();
+      expect(mappedProposal.status).toBe(
+        SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN
+      );
+      expect(mappedProposal.statusString).toBeDefined();
+      expect(mappedProposal.statusDescription).toBeDefined();
+    });
+
+    it("should extract optional parameters from array", () => {
+      const now = BigInt(nowInSeconds());
+      const proposalData: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: BigInt(0),
+        reward_event_round: BigInt(0),
+        wait_for_quiet_state: [
+          {
+            current_deadline_timestamp_seconds: now - BigInt(100),
+          },
+        ],
+      };
+      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      expect(mappedProposal.id).not.toBeInstanceOf(Array);
+      expect(mappedProposal.payload_text_rendering).not.toBeInstanceOf(Array);
+      expect(mappedProposal.proposer).not.toBeInstanceOf(Array);
+      expect(mappedProposal.latest_tally).not.toBeInstanceOf(Array);
+    });
+
+    it("should extract nested data to the first level", () => {
+      const proposal = {
+        title: "Title test",
+        url: "https://test.com",
+        summary: "Description test",
+        action: [{ UpgradeSnsToNextVersion: {} }],
+      };
+      const current_deadline_timestamp_seconds = BigInt(1123);
+      const proposalData = {
+        ...mockSnsProposal,
+        proposal: [proposal],
+        wait_for_quiet_state: [{ current_deadline_timestamp_seconds }],
+      } as SnsProposalData;
+
+      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      expect(mappedProposal.title).toBe(proposal.title);
+      expect(mappedProposal.url).toBe(proposal.url);
+      expect(mappedProposal.summary).toBe(proposal.summary);
+      expect(mappedProposal.actionData).toBe(proposal.action[0]);
+      expect(mappedProposal.current_deadline_timestamp_seconds).toBe(
+        current_deadline_timestamp_seconds
+      );
+    });
+
+    it("should use the functions passed to set topic and topic description", () => {
+      const proposalData = {
+        ...mockSnsProposal,
+        action: nervousSystemFunctionMock.id,
+      } as SnsProposalData;
+
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [nervousSystemFunctionMock],
+      });
+      expect(mappedProposal.topic).toBe(nervousSystemFunctionMock.name);
+      expect(mappedProposal.topicDescription).toBe(
+        nervousSystemFunctionMock.description[0]
       );
     });
   });
