@@ -7,6 +7,9 @@
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
+  import type { AppPath } from "$lib/constants/routes.constants";
+
+  export let referrerPath: AppPath | undefined = undefined;
 </script>
 
 <main>
@@ -14,7 +17,7 @@
     <SummaryUniverse />
   {/if}
   {#if $isNnsProjectStore || !ENABLE_SNS_VOTING}
-    <Proposals />
+    <Proposals {referrerPath} />
   {:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_VOTING}
     <SnsProposals />
   {/if}
