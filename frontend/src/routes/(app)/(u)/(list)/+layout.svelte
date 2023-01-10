@@ -1,7 +1,7 @@
 <script lang="ts">
   import Layout from "$lib/components/layout/Layout.svelte";
   import Content from "$lib/components/layout/Content.svelte";
-  import SplitContent from "$lib/components/layout/SplitContent.svelte";
+  import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import type { SvelteComponent } from "svelte";
@@ -10,7 +10,7 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   let cmp: typeof SvelteComponent;
-  $: cmp = signedIn ? SplitContent : Content;
+  $: cmp = signedIn ? UniverseSplitContent : Content;
 </script>
 
 <Layout>
