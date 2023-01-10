@@ -31,6 +31,7 @@
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -127,6 +128,8 @@
   <main class="legacy">
     <section data-tid="neuron-detail">
       {#if neuron && !inVotingProcess}
+        <Summary projects="display" size="medium" />
+
         <NnsNeuronMetaInfoCard {neuron} />
         <NnsNeuronInfoStake {neuron} />
         <NnsNeuronMaturityCard {neuron} />

@@ -32,6 +32,7 @@
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -147,6 +148,8 @@
         <SkeletonCard cardType="info" separator />
         <SkeletonCard cardType="info" separator />
       {:else}
+        <Summary projects="display" size="medium" />
+
         {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
           <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
         {:else}
