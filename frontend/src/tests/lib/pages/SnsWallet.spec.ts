@@ -72,7 +72,7 @@ describe("SnsWallet", () => {
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
 
-      const titleRow = getByTestId("accounts-summary");
+      const titleRow = getByTestId("projects-summary");
 
       expect(titleRow).not.toBeNull();
     });

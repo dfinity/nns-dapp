@@ -88,6 +88,14 @@ describe("NeuronDetail", () => {
     await waitFor(() => expect(querySkeleton(container)).toBeNull());
   });
 
+  it("should render nns project name", async () => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(getByTestId("projects-summary")).not.toBeNull());
+  });
+
   it("should show skeletons when neuron is in voting process", async () => {
     const { container } = render(NnsNeuronDetail, props);
 

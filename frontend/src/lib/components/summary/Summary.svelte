@@ -18,7 +18,7 @@
   $: twoLines = $$slots.details !== undefined;
 </script>
 
-<div class={`summary ${size}`} class:twoLines data-tid="accounts-summary">
+<div class={`summary ${size}`} class:twoLines data-tid="projects-summary">
   <div class="logo" data-tid="summary-logo">
     <SummaryLogo {size} {displayProjects} />
   </div>

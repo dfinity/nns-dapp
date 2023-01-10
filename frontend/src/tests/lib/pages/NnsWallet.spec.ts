@@ -86,10 +86,10 @@ describe("NnsWallet", () => {
       accountIdentifier: mockMainAccount.identifier,
     };
 
-    it("should render sns project name", async () => {
+    it("should render nns project name", async () => {
       const { getByTestId } = render(NnsWallet, props);
 
-      const titleRow = getByTestId("accounts-summary");
+      const titleRow = getByTestId("projects-summary");
 
       expect(titleRow).not.toBeNull();
     });
