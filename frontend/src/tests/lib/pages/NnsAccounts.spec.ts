@@ -181,6 +181,7 @@ describe("NnsAccounts", () => {
             value: totalBalance,
             detailed: true,
           })}`,
+          $token: en.core.icp,
         })
       );
     });
