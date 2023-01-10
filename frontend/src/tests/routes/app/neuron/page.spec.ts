@@ -3,7 +3,7 @@
  */
 
 import { authStore } from "$lib/stores/auth.store";
-import NeuronPage from "$routes/(app)/neuron/+page.svelte";
+import NeuronPage from "$routes/(app)/(u)/(list)/neuron/+page.svelte";
 import { render } from "@testing-library/svelte";
 import {
   authStoreMock,

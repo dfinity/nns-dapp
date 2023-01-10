@@ -1,4 +1,7 @@
-import { AppPath, ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
+import {
+  AppPath,
+  ROUTE_ID_GROUPS
+} from "$lib/constants/routes.constants";
 import { isNullish } from "$lib/utils/utils";
 import type { Navigation } from "@sveltejs/kit";
 
@@ -16,12 +19,14 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
     return AppPath.Authentication;
   }
 
+  const routeIdWithoutGroups = (routeId: string): string => ROUTE_ID_GROUPS.reduce((acc: string, regex: string) => acc.replace(regex, ""), routeId);
+
   const index = Object.values(AppPath).indexOf(
-    routeId
-      .replace(ROUTE_ID_GROUP_APP, "")
+    routeIdWithoutGroups(routeId)
       // Remove trailing slash if present
       .replace(/\/$/, "") as unknown as AppPath
   );
+
   const key = Object.keys(AppPath)[index];
 
   // TODO: solve eslint type checking
