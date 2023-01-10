@@ -6,6 +6,6 @@
   export let balance: TokenAmount | undefined;
 </script>
 
-<SummaryUniverse projects="display">
+<SummaryUniverse>
   <AccountsBalance {balance} />
 </SummaryUniverse>

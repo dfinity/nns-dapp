@@ -112,7 +112,7 @@
   <main class="legacy" data-tid="nns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined}
-        <Summary projects="none" size="medium" />
+        <Summary displayProjects={false} size="medium" />
 
         <WalletSummary />
         <WalletActions />

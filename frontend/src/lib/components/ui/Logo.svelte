@@ -22,8 +22,6 @@
     width: var(--padding-3x);
     height: var(--padding-3x);
 
-    display: var(--logo-display);
-
     user-select: none;
     -webkit-user-drag: none;
     user-drag: none;
