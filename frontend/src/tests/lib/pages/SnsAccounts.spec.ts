@@ -88,7 +88,7 @@ describe("SnsAccounts", () => {
     it("should render total accounts sns project", async () => {
       const { getByTestId } = render(SnsAccounts);
 
-      const titleRow = getByTestId("accounts-summary");
+      const titleRow = getByTestId("projects-summary");
 
       // we are testing with only one account so we can use it to check the total is displayed
       await waitFor(() =>
@@ -142,7 +142,7 @@ describe("SnsAccounts", () => {
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsAccounts);
 
-      const titleRow = getByTestId("accounts-summary");
+      const titleRow = getByTestId("projects-summary");
 
       expect(
         titleRow?.textContent?.includes(mockSummary.metadata.name)

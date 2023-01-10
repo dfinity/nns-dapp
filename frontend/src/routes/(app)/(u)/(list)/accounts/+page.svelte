@@ -11,9 +11,9 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  let list = false;
-
   let innerWidth = 0;
+
+  let list = false;
   $: list = innerWidth > BREAKPOINT_LARGE;
 
   $: (() => {

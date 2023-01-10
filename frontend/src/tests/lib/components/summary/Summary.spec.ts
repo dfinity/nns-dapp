@@ -26,7 +26,9 @@ describe("Summary", () => {
   });
 
   it("should render internet computer if none", () => {
-    const { container } = render(Summary, { props: { projects: "none" } });
+    const { container } = render(Summary, {
+      props: { displayProjects: false },
+    });
     expect(
       container?.querySelector("h1")?.textContent?.includes(en.core.ic)
     ).toBeTruthy();
@@ -42,7 +44,7 @@ describe("Summary", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render internet computer", () => {
-      const { container } = render(Summary, { props: { projects: "display" } });
+      const { container } = render(Summary);
 
       expect(
         container?.querySelector("h1")?.textContent?.includes(en.core.ic)
@@ -60,7 +62,7 @@ describe("Summary", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render project", () => {
-      const { container } = render(Summary, { props: { projects: "display" } });
+      const { container } = render(Summary);
       expect(
         container
           ?.querySelector("h1")

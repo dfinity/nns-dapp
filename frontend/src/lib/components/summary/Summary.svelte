@@ -1,54 +1,41 @@
 <script lang="ts">
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
-  import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  /**
-   * TODO: use only new universe picker and remove the dropdown selector
-   * @deprecated
-   */
-  export let projects: "select" | "display" | "none" = "select";
   export let size: "big" | "medium" | "small" = "big";
-
-  let selectProjects: boolean;
-  $: selectProjects = projects === "select";
-
-  let displayProjects: boolean;
-  $: displayProjects = ["select", "display"].includes(projects);
+  export let displayProjects = true;
 
   let titleTag: "h1" | "h3" = "h1";
   $: titleTag = size === "big" ? "h1" : "h3";
+
+  let text = $i18n.core.ic;
+  $: text = displayProjects
+    ? $snsProjectSelectedStore?.summary.metadata.name ?? $i18n.core.ic
+    : $i18n.core.ic;
+
+  let twoLines = true;
+  $: twoLines = $$slots.details !== undefined;
 </script>
 
-<div
-  class={`summary ${size}`}
-  data-tid="accounts-summary"
-  class:dropdown={selectProjects}
->
-  <div class="logo" class:dropdown={selectProjects} data-tid="summary-logo">
+<div class={`summary ${size}`} class:twoLines data-tid="projects-summary">
+  <div class="logo" data-tid="summary-logo">
     <SummaryLogo {size} {displayProjects} />
   </div>
 
-  {#if selectProjects}
-    <SelectProjectDropdownWrapper />
-  {:else if projects === "display"}
-    <svelte:element this={titleTag}
-      >{$snsProjectSelectedStore?.summary.metadata.name ??
-        $i18n.core.ic}</svelte:element
-    >
-  {:else}
-    <svelte:element this={titleTag}>{$i18n.core.ic}</svelte:element>
-  {/if}
+  <svelte:element this={titleTag}>{text}</svelte:element>
 
-  <div class:details={selectProjects}>
-    <slot name="details" />
-  </div>
+  {#if twoLines}
+    <div class="details">
+      <slot name="details" />
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   @mixin columns {
     display: grid;
@@ -62,25 +49,13 @@
   }
 
   .summary {
-    display: flex;
-    flex-direction: column;
     width: 100%;
     margin: 0 0 var(--padding-3x);
     max-width: 100%;
 
-    &:not(.dropdown) {
-      @include columns;
-    }
-
-    @include media.min-width(small) {
-      @include columns;
-    }
+    @include columns;
 
     &:not(.big) {
-      &:not(.dropdown) {
-        column-gap: var(--padding-1_5x);
-      }
-
       @include media.min-width(small) {
         column-gap: var(--padding-1_5x);
       }
@@ -97,26 +72,18 @@
   }
 
   h3 {
-    margin-top: var(--padding-0_25x);
+    margin-top: var(--padding-0_5x);
   }
 
-  .logo {
-    grid-row: 1 / 3;
-
-    &.dropdown {
-      --logo-display: none;
-
-      @include media.min-width(small) {
-        --logo-display: block;
-      }
+  .twoLines {
+    .logo {
+      grid-row: 1 / 3;
     }
   }
 
   .details {
-    padding: 0 0 0 var(--padding-1_5x);
-
-    @include media.min-width(small) {
-      padding: 0 0 0 var(--padding-2x);
-    }
+    height: var(--padding-4x);
+    color: var(--description-color);
+    @include fonts.small;
   }
 </style>
