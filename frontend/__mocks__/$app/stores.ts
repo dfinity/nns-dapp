@@ -27,6 +27,7 @@ const initPageStoreMock = () => {
     }) =>
       set({
         data,
+        // We mock only ROUTE_ID_GROUP_APP and no other sub-group-ids because we do not need these for our test suite and it simplifies the usage of the mock calls
         route: { id: `${ROUTE_ID_GROUP_APP}${routeId}` },
       }),
   };
