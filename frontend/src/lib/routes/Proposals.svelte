@@ -6,12 +6,12 @@
   } from "$lib/derived/selected-project.derived";
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
-  import Summary from "$lib/components/summary/Summary.svelte";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 </script>
 
 <main>
   {#if ENABLE_SNS_VOTING}
-    <Summary />
+    <SummaryUniverse />
   {/if}
   {#if $isNnsProjectStore || !ENABLE_SNS_VOTING}
     <Proposals />

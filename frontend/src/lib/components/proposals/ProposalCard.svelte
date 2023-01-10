@@ -45,7 +45,7 @@
       {#if proposer !== undefined}
         <KeyValuePair>
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
-          <span slot="value" class="meta-data-value">{proposer}</span>
+          <span slot="value" class="meta-data-value proposer">{proposer}</span>
         </KeyValuePair>
       {/if}
     </div>
@@ -133,6 +133,13 @@
     // ProposalStatusColor.ERROR
     &.error {
       --badge-color: var(--negative-emphasis-light);
+    }
+  }
+
+  .proposer {
+    @media (min-width: media.$breakpoint-extra-large) and (max-width: 1600px) {
+      max-width: 6vw;
+      @include text.truncate;
     }
   }
 </style>

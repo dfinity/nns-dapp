@@ -1,10 +1,22 @@
 <script lang="ts">
   import Layout from "$lib/components/layout/Layout.svelte";
   import Content from "$lib/components/layout/Content.svelte";
+  import SplitContent from "$lib/components/layout/SplitContent.svelte";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import type { SvelteComponent } from "svelte";
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
+
+  let cmp: typeof SvelteComponent;
+  $: cmp = signedIn ? SplitContent : Content;
+
+  // TODO(David): refactor SvelteKit routes - e.g. (something) - to avoid +layout.ts code duplications
 </script>
 
 <Layout>
-  <Content>
+  <svelte:component this={cmp}>
     <slot />
-  </Content>
+  </svelte:component>
 </Layout>
