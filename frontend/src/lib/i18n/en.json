@@ -192,14 +192,14 @@
     "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
     "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
     "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?",
-    "current_balance_total": "Total balance: $amount ICP",
+    "current_balance_total": "Total balance: $amount $token",
     "description": "Description",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "select": "Select",
     "manual": "Manual",
     "no_account_select": "No accounts to select",
-    "current_balance_detail": "Current balance: $amount ICP"
+    "current_balance_detail": "Current balance: $amount $token"
   },
   "neurons": {
     "title": "Neurons",

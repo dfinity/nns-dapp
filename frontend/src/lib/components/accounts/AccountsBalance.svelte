@@ -16,6 +16,9 @@
           detailed: true,
         })
       : "";
+
+  let tokenSymbol: string;
+  $: tokenSymbol = balance?.token.symbol ?? "";
 </script>
 
 {#if balance !== undefined}
@@ -23,6 +26,7 @@
     id="wallet-total-icp"
     text={replacePlaceholders($i18n.accounts.current_balance_total, {
       $amount: totalTokens,
+      $token: tokenSymbol,
     })}
   >
     <AmountDisplay copy amount={balance} />
