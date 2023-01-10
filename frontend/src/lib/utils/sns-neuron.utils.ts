@@ -196,7 +196,7 @@ export const canIdentityManageHotkeys = ({
     neuron,
     identity,
     permissions: MANAGE_HOTKEY_PERMISSIONS,
-    options: { any: true },
+    options: { anyPermission: true },
   });
   return isSns1
     ? // fallback for the version w/o 'MANAGE_VOTING_PERMISSION' support
@@ -293,7 +293,7 @@ export const hasPermissions = ({
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
   permissions: SnsNeuronPermissionType[];
-  options?: { any: boolean };
+  options?: { anyPermission: boolean };
 }): boolean => {
   const neuronId = fromNullable(id);
   const principalAsText = identity?.getPrincipal().toText();
@@ -308,7 +308,7 @@ export const hasPermissions = ({
     )?.permission_type ?? []
   );
 
-  if (options?.any) {
+  if (options?.anyPermission) {
     return Boolean(
       permissions.find((permission: SnsNeuronPermissionType) =>
         principalPermissions.includes(permission)

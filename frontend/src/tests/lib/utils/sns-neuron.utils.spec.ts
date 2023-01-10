@@ -1000,7 +1000,7 @@ describe("sns-neuron utils", () => {
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_UNSPECIFIED,
           ],
-          options: { any: true },
+          options: { anyPermission: true },
         })
       ).toBe(false);
 
@@ -1012,7 +1012,7 @@ describe("sns-neuron utils", () => {
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
             SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
           ],
-          options: { any: true },
+          options: { anyPermission: true },
         })
       ).toBe(true);
     });
