@@ -1,7 +1,4 @@
-import {
-  AppPath,
-  ROUTE_ID_GROUPS
-} from "$lib/constants/routes.constants";
+import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
 import { isNullish } from "$lib/utils/utils";
 import type { Navigation } from "@sveltejs/kit";
 
@@ -19,7 +16,11 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
     return AppPath.Authentication;
   }
 
-  const routeIdWithoutGroups = (routeId: string): string => ROUTE_ID_GROUPS.reduce((acc: string, regex: string) => acc.replace(regex, ""), routeId);
+  const routeIdWithoutGroups = (routeId: string): string =>
+    ROUTE_ID_GROUPS.reduce(
+      (acc: string, regex: string) => acc.replace(regex, ""),
+      routeId
+    );
 
   const index = Object.values(AppPath).indexOf(
     routeIdWithoutGroups(routeId)
