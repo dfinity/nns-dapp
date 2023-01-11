@@ -11,6 +11,7 @@ import {
   getNeuronBalance,
   increaseDissolveDelay,
   nervousSystemParameters,
+  queryProposals,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
@@ -43,6 +44,7 @@ import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
 } from "../../mocks/sns-projects.mock";
+import { mockSnsProposal } from "../../mocks/sns-proposals.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -60,6 +62,7 @@ jest.mock("$lib/api/agent.api", () => {
 
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
+  const proposals = [mockSnsProposal];
   const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
@@ -73,6 +76,7 @@ describe("sns-api", () => {
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
   const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -121,6 +125,7 @@ describe("sns-api", () => {
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
         autoStakeMaturity: autoStakeMaturitySpy,
+        listProposals: listProposalsSpy,
       })
     );
   });
@@ -296,5 +301,17 @@ describe("sns-api", () => {
 
     expect(nervousSystemParametersSpy).toBeCalled();
     expect(res).toEqual(snsNervousSystemParametersMock);
+  });
+
+  it("should get proposals", async () => {
+    const res = await queryProposals({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      params: {},
+    });
+
+    expect(listProposalsSpy).toBeCalled();
+    expect(res).toEqual(proposals);
   });
 });

@@ -3,7 +3,7 @@
  */
 
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
-import { listSnsProposals } from "$lib/services/$public/sns.services";
+import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -12,7 +12,7 @@ import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {
-    listSnsProposals: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadProposalsSnsCF: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -26,13 +26,13 @@ describe("Proposals", () => {
 
   afterAll(jest.clearAllMocks);
 
-  it("should trigger listSnsProposals", () => {
+  it("should trigger loadProposalsSnsCF", () => {
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(loadProposalsSnsCF).toBeCalled();
   });
 
-  it("should not trigger listSnsProposals if already loaded", () => {
+  it("should not trigger loadProposalsSnsCF if already loaded", () => {
     snsProposalsStore.setProposals({
       proposals: [],
       certified: true,
@@ -40,7 +40,7 @@ describe("Proposals", () => {
 
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(loadProposalsSnsCF).toBeCalled();
   });
 
   it("should display skeletons", async () => {
