@@ -271,12 +271,12 @@ export const hasPermissionToSplit = ({
  * Returns true if the neuron contains provided permissions
  * By default neuron should have all of `permissions`. This can be changed w/ `options.any` flag.
  *
- * @param id
- * @param neuronPermissions
- * @param identity
- * @param permissions
- * @param {Object} options Additional options
- * @param {boolean} options.any At least one of provided permissions should be in principals list
+ * @param {Object} param
+ * @param {SnsNeuron} param.neuron
+ * @param {Identity | undefined | null} param.identity
+ * @param {SnsNeuronPermissionType[]} param.permissions
+ * @param {Object} param.options Additional options
+ * @param {boolean} param.options.any At least one of provided permissions should be in principals list
  */
 export const hasPermissions = ({
   neuron: { id, permissions: neuronPermissions },
