@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { MenuItem, IconNorthEast } from "@dfinity/gix-components";
+  import {
+    MenuItem,
+    IconNorthEast,
+    ThemeToggle,
+  } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
 </script>
@@ -28,6 +32,10 @@
   <span>{$i18n.auth.voting_rewards} <IconNorthEast /></span>
 </MenuItem>
 
+<div class="theme" on:click|stopPropagation>
+  <span>{$i18n.theme.switch_theme}</span><ThemeToggle />
+</div>
+
 <LoginFooter presentation="menu" />
 
 <style lang="scss">
@@ -40,5 +48,13 @@
       width: 16px;
       height: 16px;
     }
+  }
+
+  .theme {
+    display: flex;
+    gap: var(--padding);
+    padding: var(--padding-3x) var(--padding-2x) var(--padding-3x)
+      var(--padding-4x);
+    width: calc(var(--menu-width) - var(--padding-6x));
   }
 </style>
