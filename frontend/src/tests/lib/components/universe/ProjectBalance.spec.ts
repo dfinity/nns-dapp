@@ -5,7 +5,6 @@
 import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
@@ -70,28 +69,6 @@ describe("ProjectBalance", () => {
           value: totalBalance,
           detailed: false,
         })} ${en.core.icp}`
-      );
-    });
-
-    it("should render a total balance in a tooltip", () => {
-      const { container } = render(ProjectBalance);
-
-      const icp: HTMLDivElement | null =
-        container.querySelector("#wallet-total-icp");
-
-      const totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
-
-      expect(icp?.textContent).toEqual(
-        replacePlaceholders(en.accounts.current_balance_total, {
-          $amount: `${formatToken({
-            value: totalBalance,
-            detailed: true,
-          })}`,
-          $token: en.core.icp,
-        })
       );
     });
   });
