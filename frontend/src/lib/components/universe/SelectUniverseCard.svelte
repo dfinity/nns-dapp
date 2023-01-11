@@ -46,9 +46,7 @@
     <ProjectLogo size="big" {summary} framed={true} />
 
     <div class={`content ${role}`} class:balance={displayProjectBalance}>
-      <span class="name"
-        >{summary?.metadata.name ?? $i18n.core.ic}</span
-      >
+      <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
       {#if displayProjectBalance}
         <ProjectBalance />
       {/if}
