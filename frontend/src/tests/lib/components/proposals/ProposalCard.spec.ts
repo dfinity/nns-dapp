@@ -9,6 +9,8 @@ import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("ProposalCard", () => {
+  jest.useFakeTimers().setSystemTime(Date.now());
+
   const nowSeconds = Math.floor(nowInSeconds());
   const props = {
     hidden: false,
@@ -21,6 +23,9 @@ describe("ProposalCard", () => {
     type: "Test Type",
     deadlineTimestampSeconds: BigInt(nowSeconds + 3600),
   };
+
+  afterAll(jest.useRealTimers);
+
   it("should render a title", () => {
     const { getByText } = render(ProposalCard, {
       props,
