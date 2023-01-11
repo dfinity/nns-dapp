@@ -629,6 +629,7 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
+  sns_make_dummy_proposals: string;
   dissolve_delay_description: string;
 }
 
@@ -738,6 +739,7 @@ interface I18nError__sns {
   sns_load_functions: string;
   sns_add_hotkey: string;
   sns_stake_maturity: string;
+  sns_make_dummy_proposals: string;
   sns_amount_not_enough_stake_neuron: string;
 }
 

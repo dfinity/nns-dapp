@@ -31,6 +31,7 @@
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
+  import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -134,7 +135,7 @@
         <NeuronFollowingCard {neuron} />
 
         {#if IS_TESTNET}
-          <NeuronProposalsCard {neuron} />
+          <NnsNeuronProposalsCard {neuron} />
         {/if}
 
         <NnsNeuronHotkeysCard {neuron} />
