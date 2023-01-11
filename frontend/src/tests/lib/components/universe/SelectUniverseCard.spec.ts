@@ -2,8 +2,17 @@
  * @jest-environment jsdom
  */
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
+import {
+  mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
+  mockSubAccount,
+} from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSummary } from "../../../mocks/sns-projects.mock";
 
@@ -106,6 +115,55 @@ describe("SelectUniverseCard", () => {
         props: { summary: mockSummary, selected: false },
       });
       expect(getByText(mockSummary.metadata.name)).toBeInTheDocument();
+    });
+  });
+
+  describe("project-balance", () => {
+    jest
+      .spyOn(accountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe(
+          [mockSubAccount],
+          [mockHardwareWalletAccount]
+        )
+      );
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should display balance", () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+
+      const { getByTestId } = render(SelectUniverseCard, {
+        props: { summary: mockSummary, selected: true },
+      });
+      expect(getByTestId("token-value")).not.toBeNull();
+    });
+
+    it("should not display balance on other path", () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Neurons,
+      });
+
+      const { getByTestId } = render(SelectUniverseCard, {
+        props: { summary: mockSummary, selected: true },
+      });
+      expect(() => getByTestId("token-value")).toThrow();
+    });
+
+    it("should not display balance if not selected", () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+
+      const { getByTestId } = render(SelectUniverseCard, {
+        props: { summary: mockSummary, selected: false },
+      });
+      expect(() => getByTestId("token-value")).toThrow();
     });
   });
 });

@@ -10,19 +10,9 @@ import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 
 describe("Summary", () => {
-  it("should render a property size", () => {
-    const { container } = render(Summary, { props: { size: "small" } });
-    expect(container.querySelector(".small")).not.toBeNull();
-  });
-
   it("should render a logo", () => {
     const { getByTestId } = render(Summary);
-    expect(getByTestId("summary-logo")).not.toBeNull();
-  });
-
-  it("should render a logo", () => {
-    const { getByTestId } = render(Summary);
-    expect(getByTestId("summary-logo")).not.toBeNull();
+    expect(getByTestId("project-logo")).not.toBeNull();
   });
 
   it("should render internet computer if none", () => {

@@ -21,6 +21,7 @@ import {
   buildProposalUrl,
   buildSwitchUniverseUrl,
   buildWalletUrl,
+  isSelectedPath,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
@@ -197,6 +198,33 @@ describe("navigation-utils", () => {
         writable: true,
         value: { ...location },
       });
+    });
+  });
+
+  describe("path", () => {
+    it("should match selected path", () => {
+      expect(
+        isSelectedPath({
+          currentPath: AppPath.Wallet,
+          paths: [AppPath.Accounts, AppPath.Wallet],
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not match selected path", () => {
+      expect(
+        isSelectedPath({
+          currentPath: AppPath.Authentication,
+          paths: [AppPath.Accounts, AppPath.Wallet],
+        })
+      ).toBeFalsy();
+
+      expect(
+        isSelectedPath({
+          currentPath: null,
+          paths: [AppPath.Accounts, AppPath.Wallet],
+        })
+      ).toBeFalsy();
     });
   });
 });

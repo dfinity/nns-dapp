@@ -65,7 +65,7 @@
   <main class="legacy" data-tid="sns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
-        <Summary size="medium" />
+        <Summary />
 
         <WalletSummary />
 

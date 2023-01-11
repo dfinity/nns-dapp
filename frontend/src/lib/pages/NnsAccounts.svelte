@@ -5,13 +5,11 @@
   import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { TokenAmount } from "@dfinity/nns";
-  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { sumAccounts } from "$lib/utils/accounts.utils";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 
   let accounts: AccountsStore | undefined;
 
@@ -28,12 +26,9 @@
     );
 
   onDestroy(unsubscribe);
-
-  let totalBalance: TokenAmount | undefined;
-  $: totalBalance = sumAccounts(accounts);
 </script>
 
-<AccountsTitle balance={totalBalance} />
+<SummaryUniverse />
 
 <div class="card-grid" data-tid="accounts-body">
   {#if accounts?.main?.identifier}

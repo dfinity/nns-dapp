@@ -148,7 +148,7 @@
         <SkeletonCard cardType="info" separator />
         <SkeletonCard cardType="info" separator />
       {:else}
-        <Summary size="medium" />
+        <Summary />
 
         {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
           <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />

@@ -4,7 +4,7 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
 
-  export let size: "big" | "medium" | "small" = "small";
+  export let size: "big" | "small" = "small";
   export let summary: SnsSummary | undefined;
   export let framed = false;
 
@@ -18,7 +18,7 @@
       : $i18n.auth.ic_logo;
 </script>
 
-<div class={`${size}`}>
+<div class={`${size}`} data-tid="project-logo">
   <Logo src={logo} alt={title} {size} {framed} testId="logo" />
 </div>
 

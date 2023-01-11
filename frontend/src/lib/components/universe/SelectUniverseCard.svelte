@@ -3,13 +3,14 @@
   import { Card } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
+  import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
   export let summary: SnsSummary | undefined = undefined;
-
-  let hasSlots = false;
-  $: hasSlots = $$slots.default === true;
 
   let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
@@ -23,6 +24,14 @@
       : role === "dropdown"
       ? "expand"
       : undefined;
+
+  let displayProjectBalance = false;
+  $: displayProjectBalance =
+    selected &&
+    isSelectedPath({
+      currentPath: $pageStore.path,
+      paths: [AppPath.Accounts, AppPath.Wallet],
+    });
 </script>
 
 <Card
@@ -36,11 +45,11 @@
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
-    <div class="content">
-      <span class="name" class:offset={hasSlots}
-        >{summary?.metadata.name ?? $i18n.core.ic}</span
-      >
-      <slot />
+    <div class={`content ${role}`} class:balance={displayProjectBalance}>
+      <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
+      {#if displayProjectBalance}
+        <ProjectBalance />
+      {/if}
     </div>
   </div>
 </Card>
@@ -64,18 +73,19 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+
+    &.dropdown,
+    &.balance {
+      padding: var(--padding-0_5x) 0 0;
+    }
+
+    &.balance {
+      gap: var(--padding-0_5x);
+    }
   }
 
   .name {
     @include fonts.standard(true);
     @include text.clamp(2);
-
-    &.offset {
-      padding-top: var(--padding-0_5x);
-
-      @include media.min-width(large) {
-        padding-top: 0;
-      }
-    }
   }
 </style>

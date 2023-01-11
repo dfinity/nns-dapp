@@ -100,6 +100,9 @@
     &.copy {
       span.value {
         @include fonts.standard(true);
+
+        // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
+        line-height: 1.8;
       }
 
       vertical-align: sub;
