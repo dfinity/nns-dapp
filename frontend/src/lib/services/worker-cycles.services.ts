@@ -17,7 +17,7 @@ export const initCyclesWorker = async () => {
     const { msg } = data;
 
     switch (msg) {
-      case "syncCanister":
+      case "nnsSyncCanister":
         cyclesCallback?.(data.data);
         return;
     }
@@ -34,13 +34,13 @@ export const initCyclesWorker = async () => {
       cyclesCallback = callback;
 
       cyclesWorker.postMessage({
-        msg: "startCyclesTimer",
+        msg: "nnsStartCyclesTimer",
         data: { canisterIds },
       });
     },
     stopCyclesTimer: () => {
       cyclesWorker.postMessage({
-        msg: "stopCyclesTimer",
+        msg: "nnsStopCyclesTimer",
       });
     },
   };

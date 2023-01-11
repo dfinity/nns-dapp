@@ -15,10 +15,10 @@ onmessage = async ({
   const { msg, data } = dataMsg;
 
   switch (msg) {
-    case "stopCyclesTimer":
+    case "nnsStopCyclesTimer":
       await stopCyclesTimer();
       return;
-    case "startCyclesTimer":
+    case "nnsStartCyclesTimer":
       await startCyclesTimer({ data });
       return;
   }
@@ -113,7 +113,7 @@ const syncNnsCanisters = async ({
 // Update ui with one canister information
 const emitCanister = (canister: CanisterSync) =>
   postMessage({
-    msg: "syncCanister",
+    msg: "nnsSyncCanister",
     data: {
       canister,
     },

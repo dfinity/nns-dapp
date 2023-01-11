@@ -11,11 +11,10 @@ export interface PostMessageDataResponse {
 export type PostMessageRequest =
   | "nnsStartIdleTimer"
   | "nnsStopIdleTimer"
-  | "nnsSignOut"
-  | "startCyclesTimer"
-  | "stopCyclesTimer";
+  | "nnsStartCyclesTimer"
+  | "nnsStopCyclesTimer";
 
-export type PostMessageResponse = "syncCanister" | "signOutIdleTimer";
+export type PostMessageResponse = "nnsSyncCanister" | "nnsSignOut";
 
 export interface PostMessage<
   T extends PostMessageDataRequest | PostMessageDataResponse
