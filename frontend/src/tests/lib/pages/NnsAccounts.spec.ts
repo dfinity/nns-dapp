@@ -5,7 +5,6 @@
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -23,21 +22,13 @@ describe("NnsAccounts", () => {
   describe("when there are accounts", () => {
     let accountsStoreMock: jest.SpyInstance;
 
-    it("should render title and account icp", () => {
+    it("should render title", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
       const { getByTestId } = render(NnsAccounts);
 
       const titleRow = getByTestId("projects-summary");
-
-      expect(
-        titleRow?.textContent?.includes(
-          `${formatToken({
-            value: mockMainAccount.balance.toE8s(),
-          })} ICP`
-        )
-      ).toBeTruthy();
       expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
     });
 
@@ -129,18 +120,6 @@ describe("NnsAccounts", () => {
 
     afterAll(jest.clearAllMocks);
 
-    it("should render total accounts icp", () => {
-      const { getByTestId } = render(NnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      expect(
-        titleRow?.textContent?.includes(
-          `${formatToken({ value: totalBalance })} ICP`
-        )
-      ).toBeTruthy();
-    });
-
     it("should render nns name", () => {
       const { getByTestId } = render(NnsAccounts);
 
@@ -162,28 +141,6 @@ describe("NnsAccounts", () => {
       const { container } = render(NnsAccounts);
 
       expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-    });
-
-    it("should render a total balance in a tooltip", () => {
-      const { container } = render(NnsAccounts);
-
-      const icp: HTMLDivElement | null =
-        container.querySelector("#wallet-total-icp");
-
-      const totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
-
-      expect(icp?.textContent).toEqual(
-        replacePlaceholders(en.accounts.current_balance_total, {
-          $amount: `${formatToken({
-            value: totalBalance,
-            detailed: true,
-          })}`,
-          $token: en.core.icp,
-        })
-      );
     });
   });
 
