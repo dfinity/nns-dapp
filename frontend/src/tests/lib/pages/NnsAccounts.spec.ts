@@ -101,12 +101,7 @@ describe("NnsAccounts", () => {
     });
   });
 
-  describe("Total ICPs", () => {
-    const totalBalance =
-      mockMainAccount.balance.toE8s() +
-      mockSubAccount.balance.toE8s() +
-      mockHardwareWalletAccount.balance.toE8s();
-
+  describe("summary", () => {
     beforeAll(() =>
       jest
         .spyOn(accountsStore, "subscribe")

@@ -12,9 +12,6 @@
   export let role: "link" | "button" | "dropdown" = "link";
   export let summary: SnsSummary | undefined = undefined;
 
-  let hasSlots = false;
-  $: hasSlots = $$slots.default === true;
-
   let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
   $: theme =
@@ -49,7 +46,7 @@
     <ProjectLogo size="big" {summary} framed={true} />
 
     <div class={`content ${role}`} class:balance={displayProjectBalance}>
-      <span class="name" class:offset={hasSlots}
+      <span class="name"
         >{summary?.metadata.name ?? $i18n.core.ic}</span
       >
       {#if displayProjectBalance}
@@ -92,13 +89,5 @@
   .name {
     @include fonts.standard(true);
     @include text.clamp(2);
-
-    &.offset {
-      padding-top: var(--padding-0_5x);
-
-      @include media.min-width(large) {
-        padding-top: 0;
-      }
-    }
   }
 </style>
