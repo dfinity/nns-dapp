@@ -107,3 +107,11 @@ export const buildCanisterUrl = ({
     universe,
     params: { [CANISTER_PARAM]: canister },
   });
+
+export const isSelectedPath = ({
+  paths,
+  currentPath,
+}: {
+  currentPath: AppPath | null;
+  paths: (AppPath | null)[];
+}): boolean => currentPath !== null && paths.includes(currentPath);

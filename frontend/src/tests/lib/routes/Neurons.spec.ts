@@ -9,10 +9,7 @@ import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,

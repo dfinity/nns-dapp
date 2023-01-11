@@ -14,9 +14,7 @@ import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-} from "../../mocks/sns-accounts.mock";
+import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,

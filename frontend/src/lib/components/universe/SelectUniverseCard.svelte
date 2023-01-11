@@ -4,6 +4,9 @@
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
   import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -24,6 +27,14 @@
       : role === "dropdown"
       ? "expand"
       : undefined;
+
+  let displayProjectBalance = false;
+  $: displayProjectBalance =
+    selected &&
+    isSelectedPath({
+      currentPath: $pageStore.path,
+      paths: [AppPath.Accounts, AppPath.Wallet],
+    });
 </script>
 
 <Card
@@ -37,11 +48,11 @@
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
-    <div class={`content ${role}`}>
+    <div class={`content ${role}`} class:balance={displayProjectBalance}>
       <span class="name" class:offset={hasSlots}
         >{summary?.metadata.name ?? $i18n.core.ic}</span
       >
-      {#if selected}
+      {#if displayProjectBalance}
         <ProjectBalance />
       {/if}
     </div>
@@ -68,7 +79,8 @@
     flex-direction: column;
     flex: 1;
 
-    &.dropdown {
+    &.dropdown,
+    &.balance {
       padding: var(--padding-0_5x) 0 0;
     }
   }
