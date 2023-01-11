@@ -8,7 +8,6 @@ import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -17,7 +16,6 @@ import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
 import {
   mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
 } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
@@ -55,12 +53,6 @@ describe("SnsAccounts", () => {
       expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
-    it("should contain a tooltip", () => {
-      const { container } = render(SnsAccounts);
-
-      expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-    });
-
     it("should render a main Account", async () => {
       const { getByText } = render(SnsAccounts);
 
@@ -83,23 +75,6 @@ describe("SnsAccounts", () => {
       expect(syncSnsAccounts).toHaveBeenCalledWith({
         rootCanisterId: mockPrincipal,
       });
-    });
-
-    it("should render total accounts sns project", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      // we are testing with only one account so we can use it to check the total is displayed
-      await waitFor(() =>
-        expect(
-          titleRow?.textContent?.includes(
-            `${formatToken({ value: mockSnsMainAccount.balance.toE8s() })} ${
-              mockSnsMainAccount.balance.token.symbol
-            }`
-          )
-        ).toBeTruthy()
-      );
     });
   });
 

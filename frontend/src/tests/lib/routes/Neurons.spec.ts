@@ -74,12 +74,4 @@ describe("Neurons", () => {
       expect(queryByTestId("sns-neurons-body")).toBeInTheDocument()
     );
   });
-
-  it("should render a principal as text", () => {
-    const { getByText } = render(Neurons);
-
-    expect(
-      getByText(mockPrincipal.toText(), { exact: false })
-    ).toBeInTheDocument();
-  });
 });
