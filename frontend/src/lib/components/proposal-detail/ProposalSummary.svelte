@@ -93,6 +93,10 @@
       padding: var(--padding-2x) 0;
     }
 
+    :global(th) {
+      font-weight: 400;
+    }
+
     :global(pre) {
       // make the <code> scrollable
       overflow-x: auto;
