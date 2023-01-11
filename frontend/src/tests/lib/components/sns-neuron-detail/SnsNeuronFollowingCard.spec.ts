@@ -3,7 +3,7 @@
  */
 
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { loadSnsNervousSystemFunctions } from "$lib/services/sns-neurons.services";
+import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -26,7 +26,7 @@ import {
 } from "../../../mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
 
-jest.mock("../../../../../src/lib/services/sns-neurons.services", () => ({
+jest.mock("../../../../../src/lib/services/$public/sns.services", () => ({
   loadSnsNervousSystemFunctions: jest.fn(),
 }));
 

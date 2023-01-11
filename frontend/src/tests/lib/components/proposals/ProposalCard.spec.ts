@@ -5,7 +5,6 @@
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { ProposalStatus } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
@@ -13,7 +12,7 @@ describe("ProposalCard", () => {
   const nowSeconds = Math.floor(nowInSeconds());
   const props = {
     hidden: false,
-    status: ProposalStatus.Open,
+    statusString: "Open",
     id: BigInt(112),
     title: "Test Proposal",
     color: ProposalStatusColor.PRIMARY,

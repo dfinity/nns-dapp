@@ -3,7 +3,7 @@
  */
 
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -150,7 +150,8 @@ describe("SnsNeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
-    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
+    // Add one day of buffer to avoid flakiness
+    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + nowInSeconds() + SECONDS_IN_DAY;
     const { getByText } = render(SnsNeuronCard, {
       props: {
         neuron: {
