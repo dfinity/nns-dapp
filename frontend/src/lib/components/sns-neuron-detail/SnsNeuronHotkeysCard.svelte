@@ -29,6 +29,9 @@
   import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+
+  export let parameters: NervousSystemParameters;
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -45,6 +48,7 @@
       ? canIdentityManageHotkeys({
           neuron,
           identity: $authStore.identity,
+          parameters,
         })
       : false;
   let hotkeys: string[];
