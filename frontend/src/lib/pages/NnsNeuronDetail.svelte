@@ -128,7 +128,7 @@
   <main class="legacy">
     <section data-tid="neuron-detail">
       {#if neuron && !inVotingProcess}
-        <Summary displayProjects={false} size="medium" />
+        <Summary displayProjects={false} />
 
         <NnsNeuronMetaInfoCard {neuron} />
         <NnsNeuronInfoStake {neuron} />
