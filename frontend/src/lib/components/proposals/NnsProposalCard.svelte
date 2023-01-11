@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    type ProposalInfo,
-    type NeuronId,
-    type ProposalId,
-    ProposalStatus,
-  } from "@dfinity/nns";
+  import type { ProposalInfo, NeuronId, ProposalId } from "@dfinity/nns";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
@@ -15,7 +10,7 @@
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
 
-  let status: ProposalStatus = ProposalStatus.Unknown;
+  let statusString: string;
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
@@ -24,7 +19,7 @@
   let proposer: NeuronId | undefined;
   let type: string | undefined;
 
-  $: ({ status, id, title, color, topic, proposer, type } =
+  $: ({ status, id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
   const showProposal = async () =>
@@ -39,7 +34,7 @@
 <ProposalCard
   {hidden}
   on:click={showProposal}
-  {status}
+  {statusString}
   {id}
   {title}
   {color}

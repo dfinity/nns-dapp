@@ -8,14 +8,14 @@
   import { isNullish } from "$lib/utils/utils";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
-  import { listSnsProposals } from "$lib/services/$public/sns.services";
+  import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 
   let loading = false;
   $: loading = isNullish($snsProposalsStore);
 
   const load = () => {
-    if ($snsProposalsStore === undefined) {
-      listSnsProposals();
+    if (isNullish($snsProposalsStore)) {
+      loadProposalsSnsCF();
     }
   };
 

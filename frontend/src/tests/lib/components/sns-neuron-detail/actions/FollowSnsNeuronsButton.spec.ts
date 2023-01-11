@@ -11,7 +11,7 @@ import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../../../mocks/sns-projects.mock";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
     loadSnsNervousSystemFunctions: jest.fn(),
   };
