@@ -12,7 +12,7 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "../../../mocks/auth.store.mock";
 
-describe("SplitContent", () => {
+describe("UniverseSplitContent", () => {
   jest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
