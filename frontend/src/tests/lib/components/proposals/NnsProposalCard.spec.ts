@@ -4,31 +4,15 @@
 
 import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { authStore } from "$lib/stores/auth.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { GovernanceCanister, ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("NnsProposalCard", () => {
-  const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
-
-  beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-  });
-
   it("should render a proposal title", () => {
     const { getByText } = render(NnsProposalCard, {
       props: {

@@ -18,12 +18,19 @@ import {
 jest.mock("$lib/services/$public/sns.services", () => {
   return {
     loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
+    loadSnsNervousSystemFunctions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
 jest.mock("$lib/services/$public/proposals.services", () => {
   return {
     listProposals: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/$public/sns-proposals.services", () => {
+  return {
+    loadSnsProposals: jest.fn().mockResolvedValue(undefined),
   };
 });
 

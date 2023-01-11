@@ -770,6 +770,38 @@ interface I18nUniverse {
   select: string;
 }
 
+interface I18nSns_rewards_status {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+}
+
+interface I18nSns_rewards_description {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+}
+
+interface I18nSns_status {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+}
+
+interface I18nSns_status_description {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -996,6 +1028,10 @@ interface I18n {
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
   universe: I18nUniverse;
+  sns_rewards_status: I18nSns_rewards_status;
+  sns_rewards_description: I18nSns_rewards_description;
+  sns_status: I18nSns_status;
+  sns_status_description: I18nSns_status_description;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
