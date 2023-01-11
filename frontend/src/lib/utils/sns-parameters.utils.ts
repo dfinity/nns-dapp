@@ -13,35 +13,39 @@ interface DefaultFolloweeMap {
   functionId: bigint;
   followees: NeuronId[];
 }
-
-interface VotingRewardsParametersMap {
-  final_reward_rate_basis_points: bigint;
-  initial_reward_rate_basis_points: bigint;
-  reward_rate_transition_duration_seconds: bigint;
-  round_duration_seconds: bigint;
-}
-
-interface NervousSystemParametersMap {
-  default_followees: DefaultFolloweeMap[];
-  max_dissolve_delay_seconds: bigint;
-  max_dissolve_delay_bonus_percentage: bigint;
-  max_followees_per_function: bigint;
-  neuron_claimer_permissions: SnsNeuronPermissionType[];
-  neuron_minimum_stake_e8s: bigint;
-  max_neuron_age_for_age_bonus: bigint;
-  initial_voting_period_seconds: bigint;
-  neuron_minimum_dissolve_delay_to_vote_seconds: bigint;
-  reject_cost_e8s: bigint;
-  max_proposals_to_keep_per_action: number;
-  wait_for_quiet_deadline_increase_seconds: bigint;
-  max_number_of_neurons: bigint;
-  transaction_fee_e8s: bigint;
-  max_number_of_proposals_with_ballots: bigint;
-  max_age_bonus_percentage: bigint;
-  neuron_grantable_permissions: SnsNeuronPermissionType[];
-  voting_rewards_parameters: VotingRewardsParametersMap;
-  max_number_of_principals_per_neuron: bigint;
-}
+type NervousSystemParametersMap = Readonly<Record<
+  keyof Pick<NervousSystemParameters, "voting_rewards_parameters">,
+  Record<keyof VotingRewardsParameters, bigint>
+> &
+  Record<
+    keyof Pick<NervousSystemParameters, "default_followees">,
+    {
+      functionId: bigint;
+      followees: NeuronId[];
+    }[]
+  > &
+  Record<
+    keyof Pick<
+      NervousSystemParameters,
+      "neuron_claimer_permissions" | "neuron_grantable_permissions"
+    >,
+    SnsNeuronPermissionType[]
+  > &
+  Record<
+    keyof Pick<NervousSystemParameters, "max_proposals_to_keep_per_action">,
+    number
+  > &
+  Record<
+    keyof Omit<
+      NervousSystemParameters,
+      | "voting_rewards_parameters"
+      | "default_followees"
+      | "neuron_claimer_permissions"
+      | "neuron_grantable_permissions"
+      | "max_proposals_to_keep_per_action"
+    >,
+    bigint
+  >>;
 
 const getDefaultFollowees = (
   followees: DefaultFollowees
@@ -60,7 +64,7 @@ const getPermissions = (
 
 const getRewardsParameters = (
   rewardsParameters: VotingRewardsParameters
-): VotingRewardsParametersMap => ({
+): Record<keyof VotingRewardsParameters, bigint> => ({
   final_reward_rate_basis_points: fromDefinedNullable(
     rewardsParameters.final_reward_rate_basis_points
   ),
