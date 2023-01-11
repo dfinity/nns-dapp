@@ -6,12 +6,7 @@
     SECONDS_IN_HALF_YEAR,
   } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    daysToSeconds,
-    secondsToDate,
-    secondsToDays,
-    secondsToDuration,
-  } from "$lib/utils/date.utils";
+  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
@@ -20,7 +15,7 @@
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
-  import { valueSpan } from "$lib/utils/utils";
+  import { isDefined, valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils.js";
@@ -80,6 +75,17 @@
     delayInDays = maxDelayInDays;
     checkMinMax();
   };
+  let inputError: string | undefined;
+  const updateInputError = () => {
+    if (delayInDays > maxDelayInDays) {
+      inputError = $i18n.neurons.dissolve_delay_above_maximum;
+    } else if (delayInDays < minDelayInDays) {
+      inputError = $i18n.neurons.dissolve_delay_below_minimum;
+    } else if (isDefined(inputError)) {
+      // clear the error
+      inputError = undefined;
+    }
+  };
 </script>
 
 <div class="wrapper">
@@ -118,12 +124,12 @@
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
     <div>
       <DayInput
-        min={0}
-        max={maxDelayInDays}
         bind:days={delayInDays}
-        on:input={checkMinMax}
         on:nnsMin={setMin}
         on:nnsMax={setMax}
+        on:input={updateInputError}
+        on:blur={updateInputError}
+        errorMessage={inputError}
       />
     </div>
     <div class="range">
