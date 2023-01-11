@@ -36,7 +36,7 @@ describe("SnsNeuronHotkeysCard", () => {
   const addHotkeyPermissions = (key) => ({
     principal: [Principal.fromText(key)] as [Principal],
     permission_type: Int32Array.from([
-      ...MANAGE_HOTKEY_PERMISSIONS,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
       ...HOTKEY_PERMISSIONS,
     ]),
   });

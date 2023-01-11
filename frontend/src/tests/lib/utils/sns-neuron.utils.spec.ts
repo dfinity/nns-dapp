@@ -548,7 +548,7 @@ describe("sns-neuron utils", () => {
       };
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
-      expect(expectedHotkeys.filter((h) => h === hotkey).length).toBe(4);
+      expect(expectedHotkeys.filter((h) => h === hotkey).length).toBe(2);
     });
 
     it("doesn't return if more than hotkeys permissions", () => {
