@@ -218,6 +218,8 @@
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
     "add_user_as_hotkey_success": "Your principal was added to the neuron successfully.",
+    "remove_user_hotkey_confirm_title": "Confirm Removal of Hotkey",
+    "remove_user_hotkey_confirm_text": "Are you sure you want to remove your principal from the hotkeys of the neuron?",
     "remove_hotkey_success": "Hotkey removed successfully.",
     "neuron_create_success": "Neuron created successfully.",
     "your_principal": "Your NNS Principal",
@@ -265,6 +267,8 @@
     "enter_neuron_id_prompt": "Enter neuron id",
     "add_hotkey_prompt_error": "Error adding hotkey.",
     "add_hotkey_prompt_success": "Hotkey added successfully.",
+    "remove_followees_sale_prompt_error": "There was an error removing the followee for topic Decentralization Sale.",
+    "remove_followees_sale_prompt_success": "Followees for topic Decentralization Sale removed successfully.",
     "top_up_neuron": "Increase Neuron Stake",
     "top_up_description": "Increase stake of neuron $neuronId",
     "community_fund_title": "Community Fund Membership",
@@ -489,7 +493,6 @@
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
     "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
     "maturity_title": "Maturity",
-    "merge_maturity": "Merge Maturity",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
@@ -509,7 +512,7 @@
     "merge_neurons_success": "Your neurons have been successfully merged.",
     "disburse_neuron_title": "Disburse Neuron",
     "split_neuron_success": "Your neuron has successfully been split.",
-    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount ICP to be splittable.",
+    "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount $token to be splittable.",
     "spawn_neuron_disabled_tooltip": "You need at least the equivalent of $amount ICP ($min / $varibility) to spawn a new neuron from maturity.",
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
@@ -520,7 +523,6 @@
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
     "disburse_success": "Neuron disbursed successfully",
     "edit_percentage": "Edit percentage",
-    "merge_maturity_success": "Maturity merged successfully.",
     "stake_maturity_modal_title": "Stake Maturity",
     "stake_confirmation_modal_title": "Confirm Stake Maturity",
     "stake_maturity_modal_description": "Choose how much of the maturity available to stake into this neuron.",
@@ -630,7 +632,7 @@
     "unexpected_wallet": "Found unexpected public key. Are you sure you're using the right hardware wallet?",
     "access_denied": "Access denied to use the ledger device.",
     "user_rejected_transaction": "The transaction was rejected on the ledger device.",
-    "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to $minVersion as soon as it is available.",
+    "version_not_supported": "Sorry, transaction not supported with version $currentVersion. Please upgrade the Ledger App to at least version $minVersion.",
     "browser_not_supported": "Sorry, the browser does not support the WebHID API needed to connect the hardware wallet. Check support in https://caniuse.com/?search=WebHID",
     "incorrect_identifier": "Wallet account identifier doesn't match. Are you sure you connected the right hardware wallet? Expected identifier: $identifier. Wallet identifier: $ledgerIdentifier."
   },
@@ -676,6 +678,7 @@
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
     "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
+    "sns_split_neuron": "There was an error while splitting the neuron.",
     "sns_disburse": "There was an error while disbursing the neuron.",
     "sns_start_dissolving": "There was an error while starting dissolving the neuron.",
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
@@ -700,7 +703,8 @@
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
-    "sns_stake_maturity": "There was an error while staking the maturity of the neuron."
+    "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
+    "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake a neuron."
   },
   "auth_accounts": {
     "title": "Your ICP wallet",
@@ -722,5 +726,33 @@
   "auth_sns": {
     "title": "Service Nervous Systems (SNS)",
     "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
+  },
+  "sns_rewards_status": {
+    "0": "Unknown",
+    "1": "Accepting Votes",
+    "2": "Ready to Settle",
+    "3": "Settled"
+  },
+  "sns_rewards_description": {
+    "0": "",
+    "1": "The proposal is still accepting votes, for the purpose of voting rewards.",
+    "2": "The proposal is no longer accepting votes. It is due to settle in the next reward event.",
+    "3": "The proposal has been taken into account in a reward event."
+  },
+  "sns_status": {
+    "0": "Unknown",
+    "1": "Open",
+    "2": "Rejected",
+    "3": "Adopted",
+    "4": "Executed",
+    "5": "Failed"
+  },
+  "sns_status_description": {
+    "0": "",
+    "1": "A decision has not yet been made to adopt or reject the proposal.",
+    "2": "The proposal has been rejected.",
+    "3": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
+    "4": "The proposal was adopted and successfully executed.",
+    "5": "The proposal was adopted, but execution failed."
   }
 }

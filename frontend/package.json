@@ -1,14 +1,16 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
     "build:robots": "node scripts/build.robots.mjs",
     "build:preload": "node scripts/build.preload.mjs",
+    "build:reproducible": "node scripts/build.reproducible.mjs",
+    "build:post-process": "npm run build:robots && npm run build:csp && npm run build:reproducible",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
-    "build": "npm run i18n && vite build && npm run build:robots && npm run build:csp && ./scripts/make-reproducible",
+    "build": "npm run i18n && vite build && npm run build:post-process",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

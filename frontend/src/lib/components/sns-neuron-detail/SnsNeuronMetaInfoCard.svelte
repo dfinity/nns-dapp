@@ -8,9 +8,10 @@
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
+    hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import type { NeuronState } from "@dfinity/nns";
+  import type { E8s, NeuronState, Token } from "@dfinity/nns";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
@@ -21,6 +22,15 @@
   import { i18n } from "$lib/stores/i18n";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { authStore } from "$lib/stores/auth.store";
+  import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
+  import type { Principal } from "@dfinity/principal";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+
+  export let parameters: NervousSystemParameters;
+  export let token: Token;
+  export let transactionFee: E8s;
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -28,8 +38,19 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $store.selected?.rootCanisterId;
+
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
+
+  let allowedToSplit: boolean;
+  $: allowedToSplit =
+    nonNullish(neuron) &&
+    hasPermissionToSplit({
+      neuron,
+      identity: $authStore.identity,
+    });
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -63,6 +84,12 @@
     <SnsNeuronAge {neuron} />
 
     <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+    <div class="buttons">
+      {#if ENABLE_SNS_2 && allowedToSplit}
+        <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
+      {/if}
+    </div>
   </div>
 
   <Separator />

@@ -68,16 +68,12 @@ jobs:
         run: |
           dfx start --background --clean
 
-      #   run: sha256sum target/ic/*.wasm
-      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
       - name: Deploy NNS canisters
         run: |
-          dfx nns install
-
-      - name: Deploy NNS Dapp
-        run: |
-          ./deploy.sh --nns-dapp local
-          cp nns-dapp.wasm nns-dapp_local.wasm
+          # Note: This deploys standard NNS canisters but with:
+          # - The current code for the nns-dapp
+          # - The II version specified in dfx.json
+          ./scripts/dfx-nns-deploy-custom
 
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3

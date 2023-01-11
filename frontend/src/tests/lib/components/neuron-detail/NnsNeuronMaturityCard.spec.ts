@@ -226,15 +226,17 @@ describe("NnsNeuronMaturityCard", () => {
       expect(getByTestId("stake-maturity-button")).not.toBeNull();
     });
 
-    it("should not render auto stake maturity action for hardware wallet", () => {
-      const { getByTestId } = render(NeuronContextActionsTest, {
+    it("should render auto stake maturity action for hardware wallet", () => {
+      const { container } = render(NeuronContextActionsTest, {
         props: {
           neuron: neuronHW,
           testComponent: NnsNeuronMaturityCard,
         },
       });
 
-      expect(() => getByTestId("auto-stake-maturity-checkbox")).toThrow();
+      expect(
+        container.querySelector("#auto-stake-maturity-checkbox")
+      ).toBeInTheDocument();
     });
 
     it("should render stake maturity description", () => {

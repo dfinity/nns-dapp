@@ -2,11 +2,11 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
-  getNervousSystemFunctions,
   increaseDissolveDelay as increaseDissolveDelayApi,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
   startDissolving as startDissolvingApi,
   stopDissolving as stopDissolvingApi,
@@ -19,13 +19,13 @@ import {
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
-import { i18n } from "$lib/stores/i18n";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -35,20 +35,23 @@ import {
   getSnsNeuronByHexId,
   getSnsNeuronIdAsHexString,
   hasAutoStakeMaturityOn,
+  isEnoughAmountToSplit,
+  nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
+import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   decodeSnsAccount,
-  type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
+  assertNonNullish,
   fromDefinedNullable,
   fromNullable,
 } from "@dfinity/utils";
@@ -116,7 +119,7 @@ export const syncSnsNeurons = async (
   });
 };
 
-const loadNeurons = async ({
+export const loadNeurons = async ({
   rootCanisterId,
   certified,
 }: {
@@ -289,6 +292,82 @@ export const removeHotkey = async ({
   } catch (err) {
     toastsError({
       labelKey: "error__sns.sns_remove_hotkey",
+      err,
+    });
+    return { success: false };
+  }
+};
+
+export const splitNeuron = async ({
+  rootCanisterId,
+  neuronId,
+  amount,
+  neuronMinimumStake,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  amount: number;
+  neuronMinimumStake: E8s;
+}): Promise<{ success: boolean }> => {
+  try {
+    const token = get(snsTokenSymbolSelectedStore);
+    assertNonNullish(token, "token not defined");
+
+    const transactionFee = get(transactionsFeesStore).projects[
+      rootCanisterId.toText()
+    ]?.fee;
+    assertNonNullish(transactionFee, "fee not defined");
+
+    const amountE8s = numberToE8s(amount);
+    const amountAndFee = amountE8s + transactionFee;
+
+    // minimum validation
+    if (
+      !isEnoughAmountToSplit({
+        amount: amountAndFee,
+        fee: transactionFee,
+        neuronMinimumStake,
+      })
+    ) {
+      toastsError({
+        labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
+        substitutions: {
+          $minimum: formatToken({ value: neuronMinimumStake }),
+          $token: token.symbol,
+        },
+      });
+      return { success: false };
+    }
+
+    // TODO: Get identity depending on account to support HW accounts
+    const identity = await getNeuronIdentity();
+    // reload neurons (should be actual for nextMemo calculation)
+    await loadNeurons({
+      rootCanisterId,
+      certified: true,
+    });
+    const neurons = get(snsNeuronsStore)[rootCanisterId.toText()]
+      .neurons as SnsNeuron[];
+    // User can try to split and stake at the same time for a single principal id.
+    // The call would fail but client could just try again after displaying the error to the user.
+    // `memo` parameter may become optional in the future.
+    const memo = nextMemo({
+      identity,
+      neurons,
+    });
+
+    await splitNeuronApi({
+      rootCanisterId,
+      identity,
+      neuronId,
+      amount: amountAndFee,
+      memo,
+    });
+
+    return { success: true };
+  } catch (err) {
+    toastsError({
+      labelKey: "error__sns.sns_split_neuron",
       err,
     });
     return { success: false };
@@ -481,47 +560,6 @@ export const stakeNeuron = async ({
     return { success: false };
   }
 };
-
-// This is a public service.
-export const loadSnsNervousSystemFunctions = async (
-  rootCanisterId: Principal
-) =>
-  queryAndUpdate<SnsNervousSystemFunction[], Error>({
-    request: ({ certified, identity }) =>
-      getNervousSystemFunctions({
-        rootCanisterId,
-        identity,
-        certified,
-      }),
-    onLoad: async ({ response: nsFunctions, certified }) => {
-      // TODO: Ideally, the name from the backend is user-friendly.
-      // https://dfinity.atlassian.net/browse/GIX-1169
-      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
-        if (nsFunction.id === BigInt(0)) {
-          const translationKeys = get(i18n);
-          return {
-            ...nsFunction,
-            name: translationKeys.sns_neuron_detail.all_topics,
-          };
-        }
-        return nsFunction;
-      });
-      snsFunctionsStore.setFunctions({
-        rootCanisterId,
-        nsFunctions: snsNervousSystemFunctions,
-        certified,
-      });
-    },
-    onError: ({ certified, error }) => {
-      if (certified) {
-        toastsError({
-          labelKey: "error__sns.sns_load_functions",
-          err: error,
-        });
-      }
-    },
-    logMessage: `Getting SNS ${rootCanisterId.toText()} nervous system functions`,
-  });
 
 /**
  * Makes a call to add a followee to the neuron for a specific topic

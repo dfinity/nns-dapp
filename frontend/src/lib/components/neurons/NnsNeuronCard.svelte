@@ -40,6 +40,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+  @use "../../themes/mixins/neuron";
 
   // TODO: avoid root global styling
   :global(div.modal article > div) {
@@ -51,10 +52,6 @@
   }
 
   .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    width: 100%;
+    @include neuron.neuron-card-content;
   }
 </style>
