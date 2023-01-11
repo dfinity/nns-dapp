@@ -62,4 +62,18 @@ describe("format.utils", () => {
       "1234567...8901234"
     );
   });
+
+  it("should format with ellipsis in the middle with split custom length", () => {
+    expect(shortenWithMiddleEllipsis("123456789", 5)).toEqual("123456789");
+    expect(shortenWithMiddleEllipsis("123456789", 2)).toEqual("12...89");
+    expect(shortenWithMiddleEllipsis("1234567890123456", 8)).toEqual(
+      "1234567890123456"
+    );
+    expect(shortenWithMiddleEllipsis("1234567890123456", 7)).toEqual(
+      "1234567890123456"
+    );
+    expect(shortenWithMiddleEllipsis("1234567890123456", 6)).toEqual(
+      "123456...123456"
+    );
+  });
 });

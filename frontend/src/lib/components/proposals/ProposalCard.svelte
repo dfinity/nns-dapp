@@ -47,7 +47,7 @@
         <KeyValuePair>
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
           <span slot="value" class="meta-data-value"
-            >{shortenWithMiddleEllipsis(proposer)}</span
+            >{shortenWithMiddleEllipsis(proposer, 5)}</span
           >
         </KeyValuePair>
       {/if}
