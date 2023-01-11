@@ -13,39 +13,41 @@ interface DefaultFolloweeMap {
   functionId: bigint;
   followees: NeuronId[];
 }
-type NervousSystemParametersMap = Readonly<Record<
-  keyof Pick<NervousSystemParameters, "voting_rewards_parameters">,
-  Record<keyof VotingRewardsParameters, bigint>
-> &
+type NervousSystemParametersMap = Readonly<
   Record<
-    keyof Pick<NervousSystemParameters, "default_followees">,
-    {
-      functionId: bigint;
-      followees: NeuronId[];
-    }[]
+    keyof Pick<NervousSystemParameters, "voting_rewards_parameters">,
+    Record<keyof VotingRewardsParameters, bigint>
   > &
-  Record<
-    keyof Pick<
-      NervousSystemParameters,
-      "neuron_claimer_permissions" | "neuron_grantable_permissions"
-    >,
-    SnsNeuronPermissionType[]
-  > &
-  Record<
-    keyof Pick<NervousSystemParameters, "max_proposals_to_keep_per_action">,
-    number
-  > &
-  Record<
-    keyof Omit<
-      NervousSystemParameters,
-      | "voting_rewards_parameters"
-      | "default_followees"
-      | "neuron_claimer_permissions"
-      | "neuron_grantable_permissions"
-      | "max_proposals_to_keep_per_action"
-    >,
-    bigint
-  >>;
+    Record<
+      keyof Pick<NervousSystemParameters, "default_followees">,
+      {
+        functionId: bigint;
+        followees: NeuronId[];
+      }[]
+    > &
+    Record<
+      keyof Pick<
+        NervousSystemParameters,
+        "neuron_claimer_permissions" | "neuron_grantable_permissions"
+      >,
+      SnsNeuronPermissionType[]
+    > &
+    Record<
+      keyof Pick<NervousSystemParameters, "max_proposals_to_keep_per_action">,
+      number
+    > &
+    Record<
+      keyof Omit<
+        NervousSystemParameters,
+        | "voting_rewards_parameters"
+        | "default_followees"
+        | "neuron_claimer_permissions"
+        | "neuron_grantable_permissions"
+        | "max_proposals_to_keep_per_action"
+      >,
+      bigint
+    >
+>;
 
 const getDefaultFollowees = (
   followees: DefaultFollowees
