@@ -105,7 +105,7 @@
     --checkbox-font-size: var(--font-size-small);
 
     :global(button) {
-      margin: var(--padding) var(--padding) 0 0;
+      margin: 0 var(--padding) 0 0;
     }
 
     > :global(div.checkbox) {
