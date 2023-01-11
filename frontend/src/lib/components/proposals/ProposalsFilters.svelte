@@ -96,6 +96,8 @@
 />
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -105,7 +107,11 @@
     --checkbox-font-size: var(--font-size-small);
 
     :global(button) {
-      margin: 0 var(--padding) 0 0;
+      margin: var(--padding) var(--padding) 0 0;
+
+      @include media.min-width(large) {
+        margin: 0 var(--padding) 0 0;
+      }
     }
 
     > :global(div.checkbox) {
