@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -54,6 +55,15 @@ describe("SelectUniverseDropdown", () => {
   });
 
   describe("no balance", () => {
+    beforeAll(() =>
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      })
+    );
+
+    afterAll(() => jest.clearAllMocks());
+
     it("should render a skeleton on load balance", () => {
       const { container } = render(SelectUniverseDropdown);
       expect(container.querySelector(".skeleton")).not.toBeNull();
@@ -61,13 +71,20 @@ describe("SelectUniverseDropdown", () => {
   });
 
   describe("balance", () => {
-    beforeAll(() =>
+    beforeAll(() => {
       snsAccountsStore.setAccounts({
         rootCanisterId: mockSnsFullProject.rootCanisterId,
         accounts: [mockSnsMainAccount, mockSnsSubAccount],
         certified: true,
-      })
-    );
+      });
+
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      });
+    });
+
+    afterAll(() => jest.clearAllMocks());
 
     it("should render total balance of the project", async () => {
       const { getByTestId } = render(SelectUniverseDropdown);
