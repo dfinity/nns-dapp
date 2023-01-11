@@ -34,6 +34,11 @@ jest.mock("$lib/services/transaction-fees.services", () => {
     loadSnsTransactionFee: jest.fn(),
   };
 });
+jest.mock("$lib/services/$public/sns.services", () => {
+  return {
+    loadSnsNervousSystemFunctions: jest.fn(),
+  };
+});
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     getSnsNeuron: jest.fn().mockImplementation(({ onLoad, onError }) => {
@@ -43,7 +48,6 @@ jest.mock("$lib/services/sns-neurons.services", () => {
         onError();
       }
     }),
-    loadSnsNervousSystemFunctions: jest.fn(),
   };
 });
 
