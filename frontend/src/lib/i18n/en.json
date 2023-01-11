@@ -728,5 +728,33 @@
   "universe": {
     "select_token": "Select Token",
     "select": "Select"
+  },
+  "sns_rewards_status": {
+    "0": "Unknown",
+    "1": "Accepting Votes",
+    "2": "Ready to Settle",
+    "3": "Settled"
+  },
+  "sns_rewards_description": {
+    "0": "",
+    "1": "The proposal is still accepting votes, for the purpose of voting rewards.",
+    "2": "The proposal is no longer accepting votes. It is due to settle in the next reward event.",
+    "3": "The proposal has been taken into account in a reward event."
+  },
+  "sns_status": {
+    "0": "Unknown",
+    "1": "Open",
+    "2": "Rejected",
+    "3": "Adopted",
+    "4": "Executed",
+    "5": "Failed"
+  },
+  "sns_status_description": {
+    "0": "",
+    "1": "A decision has not yet been made to adopt or reject the proposal.",
+    "2": "The proposal has been rejected.",
+    "3": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
+    "4": "The proposal was adopted and successfully executed.",
+    "5": "The proposal was adopted, but execution failed."
   }
 }

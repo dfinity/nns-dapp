@@ -1,20 +1,18 @@
 <script lang="ts">
   import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
-  import { ProposalStatus } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { keyOfOptional } from "$lib/utils/utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let hidden = false;
-  export let status: ProposalStatus = ProposalStatus.Unknown;
+  export let statusString: string | undefined;
   export let id: bigint | undefined;
   export let title: string | undefined;
   export let color: ProposalStatusColor | undefined;
   export let topic: string | undefined;
   export let proposer: string | undefined;
-  export let type: string | undefined;
+  export let type: string | undefined = undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
 </script>
 
@@ -59,8 +57,7 @@
 
     <KeyValuePair>
       <p slot="key" class={`${color ?? ""} status`}>
-        {keyOfOptional({ obj: $i18n.status, key: ProposalStatus[status] }) ??
-          ""}
+        {statusString}
       </p>
       <Countdown slot="value" {deadlineTimestampSeconds} />
     </KeyValuePair>
