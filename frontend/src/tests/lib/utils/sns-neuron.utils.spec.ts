@@ -1,6 +1,7 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
+  MANAGE_HOTKEY_PERMISSIONS,
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
@@ -59,6 +60,7 @@ import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
+  snsNervousSystemParametersMock,
 } from "../../mocks/sns-neurons.mock";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
@@ -352,10 +354,11 @@ describe("sns-neuron utils", () => {
   });
 
   describe("canIdentityManageHotkeys", () => {
-    const addHotkeysPermission = (key) => ({
-      principal: [Principal.fromText(key)] as [Principal],
-      permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
-    });
+    const hotkeyPermission =
+      (permissions: SnsNeuronPermissionType[]) => (key: string) => ({
+        principal: [Principal.fromText(key)] as [Principal],
+        permission_type: Int32Array.from(permissions),
+      });
     const hotkeys = [
       "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
       "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
@@ -365,13 +368,19 @@ describe("sns-neuron utils", () => {
       const controlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
         permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-          addHotkeysPermission
+          hotkeyPermission(MANAGE_HOTKEY_PERMISSIONS)
         ),
       };
       expect(
         canIdentityManageHotkeys({
           neuron: controlledNeuron,
           identity: mockIdentity,
+          parameters: {
+            ...snsNervousSystemParametersMock,
+            neuron_grantable_permissions: [
+              { permissions: Int32Array.from([...HOTKEY_PERMISSIONS]) },
+            ],
+          },
         })
       ).toBe(true);
     });
@@ -379,12 +388,13 @@ describe("sns-neuron utils", () => {
     it("returns false when user has no hotkey permissions", () => {
       const unControlledNeuron: SnsNeuron = {
         ...mockSnsNeuron,
-        permissions: hotkeys.map(addHotkeysPermission),
+        permissions: hotkeys.map(hotkeyPermission(HOTKEY_PERMISSIONS)),
       };
       expect(
         canIdentityManageHotkeys({
           neuron: unControlledNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
       const otherPermissionNeuron: SnsNeuron = {
@@ -403,6 +413,7 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: otherPermissionNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
     });
@@ -423,6 +434,7 @@ describe("sns-neuron utils", () => {
         canIdentityManageHotkeys({
           neuron: unControlledNeuron,
           identity: mockIdentity,
+          parameters: snsNervousSystemParametersMock,
         })
       ).toBe(false);
     });
@@ -490,6 +502,53 @@ describe("sns-neuron utils", () => {
       const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
       expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
       expect(expectedHotkeys.includes(hotkey)).toBe(true);
+    });
+
+    it("returns if only voting permission and voting management permissions", () => {
+      const nonHotkey =
+        "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe";
+      const hotkey =
+        "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae";
+      const controlledNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        permissions: [
+          {
+            principal: [Principal.fromText(nonHotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([...HOTKEY_PERMISSIONS]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              ...MANAGE_HOTKEY_PERMISSIONS,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+            ]),
+          },
+          {
+            principal: [Principal.fromText(hotkey)] as [Principal],
+            permission_type: Int32Array.from([
+              ...HOTKEY_PERMISSIONS,
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
+            ]),
+          },
+          controllerPermission,
+        ],
+      };
+      const expectedHotkeys = getSnsNeuronHotkeys(controlledNeuron);
+      expect(expectedHotkeys.includes(nonHotkey)).toBe(false);
+      expect(expectedHotkeys.filter((h) => h === hotkey).length).toBe(2);
     });
 
     it("doesn't return if more than hotkeys permissions", () => {
@@ -915,6 +974,45 @@ describe("sns-neuron utils", () => {
           neuron,
           identity: mockIdentity,
           permissions,
+        })
+      ).toBe(true);
+    });
+
+    it("returns true when user has multiple selected permission", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      const permissions = [
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MERGE_MATURITY,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
+      ];
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [...permissions],
+      });
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: mockIdentity,
+          permissions: [
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_UNSPECIFIED,
+          ],
+          options: { anyPermission: true },
+        })
+      ).toBe(false);
+
+      expect(
+        hasPermissions({
+          neuron,
+          identity: mockIdentity,
+          permissions: [
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+          ],
+          options: { anyPermission: true },
         })
       ).toBe(true);
     });
