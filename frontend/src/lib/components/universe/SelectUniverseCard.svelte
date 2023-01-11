@@ -34,7 +34,7 @@
   {icon}
   testId="select-universe-card"
 >
-  <div class="container" class:selected >
+  <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
     <div class={`content ${role}`}>

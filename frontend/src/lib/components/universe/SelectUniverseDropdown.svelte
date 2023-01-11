@@ -25,9 +25,8 @@
   selected={true}
   role="dropdown"
   on:click={() => (showProjectPicker = true)}
- />
+/>
 
 {#if showProjectPicker}
   <SelectUniverseModal on:nnsClose={() => (showProjectPicker = false)} />
 {/if}
-
