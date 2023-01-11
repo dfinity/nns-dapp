@@ -83,6 +83,10 @@
     &.balance {
       padding: var(--padding-0_5x) 0 0;
     }
+
+    &.balance {
+      gap: var(--padding-0_5x);
+    }
   }
 
   .name {
