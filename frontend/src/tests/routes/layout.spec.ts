@@ -3,7 +3,7 @@
  */
 
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
-import { initWorker } from "$lib/services/worker.services";
+import { initWorker } from "$lib/services/worker-auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
 import { toastsStore } from "@dfinity/gix-components";

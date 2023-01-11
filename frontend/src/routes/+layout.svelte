@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
-  import { initWorker } from "$lib/services/worker.services";
+  import { initWorker } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsReset } from "$lib/stores/toasts.store";
 
