@@ -797,11 +797,11 @@ export const makeDummyProposals = async ({
     });
 
     toastsSuccess({
-      labelKey: "sns_neurons.sns_make_dummy_proposals",
+      labelKey: "neuron_detail.dummy_proposal_success",
     });
   } catch (err) {
     toastsError({
-      labelKey: "error__sns.sns_make_dummy_proposals",
+      labelKey: "error.dummy_proposal",
       err,
     });
   }

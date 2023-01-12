@@ -11,7 +11,6 @@ import { SnsGovernanceCanister, type SnsNeuronId } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
-import { snsProposals } from "./sns-dummy.api";
 import { initSns, wrapper } from "./sns-wrapper.api";
 
 const getTestAccountAgent = async (): Promise<HttpAgent> => {
@@ -149,6 +148,8 @@ export const makeSnsDummyProposals = async ({
     agent,
     canisterId: canisterIds.governanceCanisterId,
   });
+
+  const { snsProposals } = await import("./sns-dummy.api");
 
   await Promise.all(
     snsProposals.map((proposal) =>
