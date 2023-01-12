@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import {
@@ -40,11 +40,10 @@
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SetDissolveDelay"}
-    <SetDissolveDelay
+    <SetNnsDissolveDelay
       {neuron}
       cancelButtonText={$i18n.core.cancel}
       confirmButtonText={$i18n.neurons.update_delay}
-      minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds

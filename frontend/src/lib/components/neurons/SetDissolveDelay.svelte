@@ -1,30 +1,32 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import {
-    SECONDS_IN_EIGHT_YEARS,
-    SECONDS_IN_HALF_YEAR,
-  } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import {
-    formatVotingPower,
-    neuronStake,
-    neuronVotingPower,
-  } from "$lib/utils/neuron.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
   import { isDefined, valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils.js";
+  import type { NeuronState, TokenAmount } from "@dfinity/nns";
+  import Hash from "$lib/components/ui/Hash.svelte";
 
-  export let neuron: NeuronInfo;
+  export let neuronIdText: string;
+  export let neuronState: NeuronState;
+  export let neuronDissolveDelaySeconds: bigint;
+  export let neuronStake: TokenAmount;
   export let delayInSeconds = 0;
   export let minDelayInSeconds = 0;
-  export let cancelButtonText: string;
+  export let minProjectDelayInSeconds: number;
+  export let maxDelayInSeconds = 0;
+  export let calculateVotingPower: (delayInSeconds: number) => bigint;
+  export let minDissolveDelayDescription = "";
   export let confirmButtonText: string;
+  export let cancelButtonText: string;
+
+  const dispatch = createEventDispatcher();
 
   let delayInDays = 0;
   $: delayInSeconds, (() => (delayInDays = secondsToDays(delayInSeconds)))();
@@ -32,7 +34,21 @@
   let minDelayInDays = 0;
   $: minDelayInDays = secondsToDays(minDelayInSeconds);
 
-  const maxDelayInDays = secondsToDays(SECONDS_IN_EIGHT_YEARS);
+  let maxDelayInDays = 0;
+  $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
+
+  let votingPower: bigint;
+  $: votingPower = calculateVotingPower(delayInSeconds);
+
+  let inputError: string | undefined;
+
+  let disableUpdate: boolean;
+  $: disableUpdate =
+    delayInDays <
+      Math.max(minDelayInDays, secondsToDays(minProjectDelayInSeconds)) ||
+    delayInDays <= minDelayInDays ||
+    delayInDays > maxDelayInDays;
+
   const checkMinMax = () => {
     if (delayInDays < minDelayInDays) {
       delayInDays = minDelayInDays;
@@ -44,30 +60,10 @@
 
     delayInSeconds = daysToSeconds(delayInDays);
   };
-
-  let disableUpdate: boolean;
-  $: disableUpdate =
-    delayInDays < secondsToDays(SECONDS_IN_HALF_YEAR) ||
-    delayInDays <= minDelayInDays ||
-    delayInDays > maxDelayInDays;
-
-  let days: number;
-  $: days = secondsToDays(delayInSeconds);
-
-  const dispatcher = createEventDispatcher();
-  const cancel = (): void => {
-    dispatcher("nnsCancel");
-  };
-  let neuronICP: bigint;
-  $: neuronICP = neuronStake(neuron);
-
-  const goToConfirmation = async () => {
-    dispatcher("nnsConfirmDelay");
-  };
   const setMin = () => {
     delayInDays = Math.max(
       minDelayInDays + 1,
-      secondsToDays(SECONDS_IN_HALF_YEAR)
+      secondsToDays(minProjectDelayInSeconds)
     );
     checkMinMax();
   };
@@ -75,7 +71,6 @@
     delayInDays = maxDelayInDays;
     checkMinMax();
   };
-  let inputError: string | undefined;
   const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
       inputError = $i18n.neurons.dissolve_delay_above_maximum;
@@ -86,31 +81,36 @@
       inputError = undefined;
     }
   };
+  const cancel = () => dispatch("nnsCancel");
+  const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
 <div class="wrapper">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <p class="value">{neuron.neuronId}</p>
+    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronIdText} />
   </div>
 
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p data-tid="neuron-stake">
       <Html
-        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
+          $amount: valueSpan(
+            formatToken({ value: neuronStake.toE8s(), detailed: true })
+          ),
+          $token: neuronStake.token.symbol,
         })}
       />
     </p>
   </div>
 
-  {#if neuron.dissolveDelaySeconds}
+  {#if neuronDissolveDelaySeconds}
     <div>
       <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
       <NeuronStateRemainingTime
-        state={neuron.state}
-        timeInSeconds={neuron.dissolveDelaySeconds}
+        state={neuronState}
+        timeInSeconds={neuronDissolveDelaySeconds}
         defaultGaps
       />
     </div>
@@ -118,7 +118,7 @@
 
   <div>
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
-    <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
+    <p class="description">{minDissolveDelayDescription}</p>
   </div>
   <div class="select-delay-container">
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
@@ -143,12 +143,7 @@
       <div class="details">
         <div>
           <p class="label">
-            {formatVotingPower(
-              neuronVotingPower({
-                neuron,
-                newDissolveDelayInSeconds: BigInt(delayInSeconds),
-              })
-            )}
+            {formatVotingPower(votingPower)}
           </p>
           <p>{$i18n.neurons.voting_power}</p>
         </div>

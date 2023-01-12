@@ -3,7 +3,7 @@
   import type { Account } from "$lib/types/account";
   import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
   import StakeNeuron from "$lib/components/neurons/StakeNeuron.svelte";
-  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
@@ -177,7 +177,7 @@
   {/if}
   {#if currentStep?.name === "SetDissolveDelay"}
     {#if newNeuron !== undefined}
-      <SetDissolveDelay
+      <SetNnsDissolveDelay
         cancelButtonText={$i18n.neurons.skip}
         confirmButtonText={$i18n.neurons.set_delay}
         neuron={newNeuron}

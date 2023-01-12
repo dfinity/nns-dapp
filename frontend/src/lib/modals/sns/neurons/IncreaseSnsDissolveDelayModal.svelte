@@ -6,7 +6,6 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
@@ -17,6 +16,10 @@
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -45,6 +48,24 @@
   $: if ($snsOnlyProjectStore !== undefined) {
     loadSnsParameters($snsOnlyProjectStore);
   }
+
+  let snsParameters: NervousSystemParameters | undefined;
+  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
+  let snsMaxDissolveDelaySeconds: number | undefined;
+  $: snsMaxDissolveDelaySeconds =
+    snsParameters === undefined
+      ? undefined
+      : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
+
+  let snsMinDissolveDelaySeconds: number | undefined;
+  $: snsMinDissolveDelaySeconds =
+    snsParameters === undefined
+      ? undefined
+      : Number(
+          fromDefinedNullable(
+            snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
+          )
+        );
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {
