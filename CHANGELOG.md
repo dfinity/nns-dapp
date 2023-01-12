@@ -1,5 +1,15 @@
 # Changelog
 
+## Proposal XXX
+* Increase sns neuron stake.
+* Split sns neuron.
+* Permission update for sns hotkeys.
+* UX changes.
+  * Theme switcher on login screen.
+  * Improve proposal payment and summary rendering.
+  * Copyright update.
+* Bugfixes.
+
 ## Proposal 99659
 * Fix disburse button in SNS neurons
 * Fix rounding error in sns transactions
