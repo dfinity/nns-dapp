@@ -239,7 +239,7 @@ export const snsRewardStatus = ({
 export const lastProposalId = (
   proposals: SnsProposalData[]
 ): SnsProposalId | undefined => {
-  const last = sortById(proposals)?.[proposals.length - 1];
+  const last = sortSnsProposalsById(proposals)?.[proposals.length - 1];
   return fromNullable(last?.id ?? []);
 };
 
@@ -251,7 +251,7 @@ export const lastProposalId = (
  * @param {SnsProposalData[]} proposals
  * @returns {SnsProposalData[]}
  */
-export const sortById = (
+export const sortSnsProposalsById = (
   proposals: SnsProposalData[] | undefined
 ): SnsProposalData[] | undefined =>
   proposals === undefined

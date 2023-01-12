@@ -13,8 +13,10 @@
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import SnsProposalsList from "./SnsProposalsList.svelte";
-  import { lastProposalId, sortById } from "$lib/utils/sns-proposals.utils";
-
+  import {
+    lastProposalId,
+    sortSnsProposalsById,
+  } from "$lib/utils/sns-proposals.utils";
   onMount(() => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
     if (!ENABLE_SNS_VOTING) {
@@ -55,7 +57,9 @@
   let proposals: SnsProposalData[] | undefined;
   $: proposals =
     $snsOnlyProjectStore !== undefined
-      ? sortById($snsProposalsStore[$snsOnlyProjectStore.toText()]?.proposals)
+      ? sortSnsProposalsById(
+          $snsProposalsStore[$snsOnlyProjectStore.toText()]?.proposals
+        )
       : undefined;
 
   let nsFunctions: SnsNervousSystemFunction[] | undefined;
