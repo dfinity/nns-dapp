@@ -235,3 +235,30 @@ export const snsRewardStatus = ({
   }
   return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
 };
+
+export const lastProposalId = (
+  proposals: SnsProposalData[]
+): SnsProposalId | undefined => {
+  const last = sortById(proposals)?.[proposals.length - 1];
+  return fromNullable(last?.id ?? []);
+};
+
+/**
+ * Sort proposals by id in descending order.
+ *
+ * Returns a new array.
+ *
+ * @param {SnsProposalData[]} proposals
+ * @returns {SnsProposalData[]}
+ */
+export const sortById = (
+  proposals: SnsProposalData[] | undefined
+): SnsProposalData[] | undefined =>
+  proposals === undefined
+    ? undefined
+    : [...proposals].sort(({ id: idA }, { id: idB }) =>
+        (fromNullable(idA)?.id ?? BigInt(0)) >
+        (fromNullable(idB)?.id ?? BigInt(0))
+          ? -1
+          : 1
+      );

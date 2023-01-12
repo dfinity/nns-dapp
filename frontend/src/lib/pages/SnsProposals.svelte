@@ -8,15 +8,12 @@
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import type { SnsProposalData } from "@dfinity/sns";
-  import { i18n } from "$lib/stores/i18n";
   import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-  import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
-  import { InfiniteScroll } from "@dfinity/gix-components";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { fromNullable } from "@dfinity/utils";
+  import SnsProposalsList from "./SnsProposalsList.svelte";
+  import { lastProposalId, sortById } from "$lib/utils/sns-proposals.utils";
 
   onMount(() => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
@@ -38,11 +35,27 @@
 
   onDestroy(unsubscribe);
 
+  let loadingNextPage = false;
+  let loadNextPage: () => void;
+  $: loadNextPage = async () => {
+    const selectedProjectCanisterId = $snsOnlyProjectStore;
+    if (selectedProjectCanisterId !== undefined) {
+      const beforeProposalId =
+        proposals !== undefined ? lastProposalId(proposals) : undefined;
+      loadingNextPage = true;
+      await loadSnsProposals({
+        rootCanisterId: selectedProjectCanisterId,
+        beforeProposalId,
+      });
+      loadingNextPage = false;
+    }
+  };
+
   // `undefined` means that we haven't loaded the proposals yet.
   let proposals: SnsProposalData[] | undefined;
   $: proposals =
     $snsOnlyProjectStore !== undefined
-      ? $snsProposalsStore[$snsOnlyProjectStore.toText()]?.proposals
+      ? sortById($snsProposalsStore[$snsOnlyProjectStore.toText()]?.proposals)
       : undefined;
 
   let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -50,23 +63,18 @@
     $snsOnlyProjectStore !== undefined
       ? $snsFunctionsStore[$snsOnlyProjectStore.toText()]?.nsFunctions
       : undefined;
+
+  let disableInfiniteScroll: boolean;
+  $: disableInfiniteScroll =
+    $snsOnlyProjectStore !== undefined
+      ? $snsProposalsStore[$snsOnlyProjectStore.toText()]?.completed ?? false
+      : false;
 </script>
 
-<!-- TODO: Remove when implementing filters https://dfinity.atlassian.net/browse/GIX-1212 -->
-<div data-tid="sns-proposals-page">
-  {#if proposals === undefined}
-    <div class="card-grid" data-tid="proposals-loading">
-      <SkeletonCard />
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  {:else if proposals.length === 0}
-    <p class="description">{$i18n.voting.nothing_found}</p>
-  {:else}
-    <InfiniteScroll layout="grid">
-      {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-        <SnsProposalCard {proposalData} {nsFunctions} />
-      {/each}
-    </InfiniteScroll>
-  {/if}
-</div>
+<SnsProposalsList
+  {proposals}
+  {nsFunctions}
+  on:nnsIntersect={loadNextPage}
+  {disableInfiniteScroll}
+  {loadingNextPage}
+/>
