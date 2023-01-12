@@ -22,7 +22,9 @@
       <SkeletonCard />
     </div>
   {:else if proposals.length === 0}
-    <p class="description">{$i18n.voting.nothing_found}</p>
+    <p class="description" data-tid="no-proposals-msg">
+      {$i18n.voting.nothing_found}
+    </p>
   {:else}
     <InfiniteScroll
       layout="grid"
@@ -34,7 +36,7 @@
       {/each}
     </InfiniteScroll>
     {#if loadingNextPage}
-      <div class="spinner">
+      <div class="spinner" data-tid="next-page-sns-proposals-spinner">
         <Spinner inline />
       </div>
     {/if}

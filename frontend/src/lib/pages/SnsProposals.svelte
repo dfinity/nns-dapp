@@ -12,7 +12,7 @@
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import SnsProposalsList from "./SnsProposalsList.svelte";
+  import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
   import {
     lastProposalId,
     sortSnsProposalsById,
