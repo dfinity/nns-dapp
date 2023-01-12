@@ -1,6 +1,6 @@
 import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import { writable } from "svelte/store";
 
 export interface SnsParameters {

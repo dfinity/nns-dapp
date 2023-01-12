@@ -11,7 +11,7 @@
   } from "$lib/types/selected-proposal.context";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
   import { debugSelectedProposalStore } from "$lib/stores/debug.store";
-  import Proposal from "$lib/components/proposal-detail/Proposal.svelte";
+  import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
@@ -112,5 +112,5 @@
 </script>
 
 <main>
-  <Proposal />
+  <NnsProposal />
 </main>

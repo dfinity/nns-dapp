@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { removeHotkey } from "$lib/services/neurons.services";
@@ -24,7 +24,7 @@ jest.mock("$lib/services/neurons.services", () => {
   };
 });
 
-describe("NeuronHotkeysCard", () => {
+describe("NnsNeuronHotkeysCard", () => {
   const hotKeys = [
     "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
     "ucmt2-grxhb-qutyd-sp76m-amcvp-3h6sr-lqnoj-fik7c-bbcc3-irpdn-oae",
@@ -56,7 +56,7 @@ describe("NeuronHotkeysCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: controlledNeuron,
-        testComponent: NeuronHotkeysCard,
+        testComponent: NnsNeuronHotkeysCard,
       },
     });
 
@@ -67,7 +67,7 @@ describe("NeuronHotkeysCard", () => {
     const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: controlledNeuron,
-        testComponent: NeuronHotkeysCard,
+        testComponent: NnsNeuronHotkeysCard,
       },
     });
 
@@ -80,7 +80,7 @@ describe("NeuronHotkeysCard", () => {
       {
         props: {
           neuron: unControlledNeuron,
-          testComponent: NeuronHotkeysCard,
+          testComponent: NnsNeuronHotkeysCard,
         },
       }
     );
@@ -93,7 +93,7 @@ describe("NeuronHotkeysCard", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: controlledNeuron,
-        testComponent: NeuronHotkeysCard,
+        testComponent: NnsNeuronHotkeysCard,
       },
     });
 
@@ -105,7 +105,7 @@ describe("NeuronHotkeysCard", () => {
     const { queryAllByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: controlledNeuron,
-        testComponent: NeuronHotkeysCard,
+        testComponent: NnsNeuronHotkeysCard,
       },
     });
 
@@ -127,12 +127,15 @@ describe("NeuronHotkeysCard", () => {
       },
     };
 
-    const { queryAllByTestId } = render(NeuronContextActionsTest, {
-      props: {
-        neuron,
-        testComponent: NeuronHotkeysCard,
-      },
-    });
+    const { queryAllByTestId, queryByTestId } = render(
+      NeuronContextActionsTest,
+      {
+        props: {
+          neuron,
+          testComponent: NnsNeuronHotkeysCard,
+        },
+      }
+    );
 
     const removeButtons = queryAllByTestId("remove-hotkey-button");
     expect(removeButtons.length).toBeGreaterThan(0);
@@ -141,6 +144,14 @@ describe("NeuronHotkeysCard", () => {
 
     await fireEvent.click(firstButton);
     expect(removeHotkey).toBeCalled();
+
+    await waitFor(() =>
+      expect(
+        queryByTestId("remove-current-user-hotkey-confirmation")
+      ).toBeInTheDocument()
+    );
+    const confirmButton = queryByTestId("confirm-yes");
+    confirmButton && fireEvent.click(confirmButton);
 
     await waitFor(() => expect(get(pageStore).path).toEqual(AppPath.Neurons));
   });

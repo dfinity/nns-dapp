@@ -15,12 +15,12 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import {
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -295,7 +295,7 @@ export const checkSnsNeuronBalances = async ({
   // TODO: Check neurons controlled by linked HW?
   const identity = await getAuthenticatedIdentity();
 
-  // TODO: refactor using `getSnsParametersFromStore` https://dfinity.atlassian.net/browse/GIX-1178
+  // TODO(Maks): refactor using `getSnsParametersFromStore` https://dfinity.atlassian.net/browse/GIX-1178
   const neuronMinimumStake = fromDefinedNullable(
     (
       get(snsParametersStore)?.[rootCanisterId.toText()]

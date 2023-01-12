@@ -23,6 +23,17 @@
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import type { E8s } from "@dfinity/nns";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
+  import type { Token } from "@dfinity/nns";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -42,6 +53,19 @@
 
   const goBack = (replaceState: boolean): Promise<void> =>
     goto($neuronsPathStore, { replaceState });
+
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = $selectedSnsNeuronStore.selected?.rootCanisterId;
+
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters =
+    $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
+
+  let transactionFee: E8s | undefined;
+  $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
+
+  let token: Token;
+  $: token = $snsTokenSymbolSelectedStore as Token;
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -77,16 +101,30 @@
     }
 
     try {
+      const rootCanisterId = Principal.fromText($pageStore.universe);
       // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
       selectedSnsNeuronStore.set({
         selected: {
           neuronIdHex: neuronId,
-          rootCanisterId: Principal.fromText($pageStore.universe),
+          rootCanisterId,
         },
         neuron: null,
       });
 
-      await loadNeuron();
+      const shouldLoadParameters = isNullish(
+        $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters
+      );
+      const loadTransactionFee = isNullish(
+        $snsSelectedTransactionFeeStore?.toE8s()
+      );
+
+      await Promise.all([
+        loadNeuron(),
+        shouldLoadParameters ? loadSnsParameters(rootCanisterId) : undefined,
+        loadTransactionFee
+          ? loadSnsTransactionFee({ rootCanisterId })
+          : undefined,
+      ]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack(true);
@@ -96,7 +134,10 @@
   // END: loading and navigation
 
   let loading: boolean;
-  $: loading = $selectedSnsNeuronStore.neuron === null;
+  $: loading =
+    $selectedSnsNeuronStore.neuron === null ||
+    parameters === undefined ||
+    transactionFee === undefined;
 </script>
 
 <Island>
@@ -108,11 +149,20 @@
         <SkeletonCard cardType="info" separator />
         <SkeletonCard cardType="info" separator />
       {:else}
-        <SnsNeuronMetaInfoCard />
+        {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
+          <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
+        {:else}
+          <SkeletonCard size="large" cardType="info" separator />
+        {/if}
         <SnsNeuronInfoStake />
         <SnsNeuronMaturityCard />
         <SnsNeuronFollowingCard />
-        <SnsNeuronHotkeysCard />
+        {#if IS_TESTNET}
+          <SnsNeuronProposalsCard />
+        {/if}
+        {#if nonNullish(parameters)}
+          <SnsNeuronHotkeysCard {parameters} />
+        {/if}
       {/if}
     </section>
   </main>

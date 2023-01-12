@@ -20,7 +20,7 @@
   });
 </script>
 
-<div class="lock" data-tid="neuron-card-title">
+<div class="title" data-tid="neuron-card-title">
   <svelte:element this={tagName} data-tid="neuron-id"
     >{neuron.neuronId}</svelte:element
   >
@@ -35,9 +35,15 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
-  .lock {
+  .title {
     @include card.stacked-title;
     word-break: break-word;
+  }
+
+  p {
+    margin: 0 0 var(--padding-0_5x);
+    @include fonts.standard(true);
   }
 </style>

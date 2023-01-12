@@ -1,14 +1,17 @@
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { SnsGovernanceCanister, type SnsNeuronId } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
+import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
-import { initSns } from "./sns-wrapper.api";
+import { initSns, wrapper } from "./sns-wrapper.api";
 
 const getTestAccountAgent = async (): Promise<HttpAgent> => {
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
@@ -117,4 +120,45 @@ const assertTestnet = () => {
 // If ultimately we need this function in many calls, we shall move it in "converter.utils" of nns-js and expose the function
 const base64ToUInt8Array = (base64String: string): Uint8Array => {
   return Uint8Array.from(window.atob(base64String), (c) => c.charCodeAt(0));
+};
+
+export const makeSnsDummyProposals = async ({
+  neuronId,
+  identity,
+  rootCanisterId,
+}: {
+  neuronId: SnsNeuronId;
+  identity: Identity;
+  rootCanisterId: Principal;
+}): Promise<void> => {
+  assertTestnet();
+  logWithTimestamp(`Making dummy proposals call...`);
+
+  const { canisterIds } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+
+  const canister = await SnsGovernanceCanister.create({
+    agent,
+    canisterId: canisterIds.governanceCanisterId,
+  });
+
+  const { snsProposals } = await import("./sns-dummy.api");
+
+  await Promise.all(
+    snsProposals.map((proposal) =>
+      canister.manageNeuron({
+        subaccount: neuronId.id,
+        command: [{ MakeProposal: proposal }],
+      })
+    )
+  );
+
+  logWithTimestamp(`Making dummy proposals call complete.`);
 };

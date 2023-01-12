@@ -3,7 +3,7 @@
  */
 
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import Proposals from "$lib/pages/Proposals.svelte";
+import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { neuronsStore, type NeuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -35,7 +35,7 @@ import {
   mockProposalsStoreSubscribe,
 } from "../../mocks/proposals.store.mock";
 
-describe("Proposals", () => {
+describe("NnsProposals", () => {
   const nothingFound = (
     container: HTMLElement
   ): HTMLParagraphElement | undefined =>
@@ -79,7 +79,7 @@ describe("Proposals", () => {
       );
 
       it("should render filters", () => {
-        const { getByText } = render(Proposals);
+        const { getByText } = render(NnsProposals);
 
         expect(getByText("Topics")).toBeInTheDocument();
         expect(getByText("Reward Status")).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe("Proposals", () => {
       });
 
       it("should render a spinner while searching proposals", async () => {
-        const { getByTestId } = render(Proposals);
+        const { getByTestId } = render(NnsProposals);
 
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
@@ -104,7 +104,7 @@ describe("Proposals", () => {
       it("should render proposals", () => {
         mockLoadProposals();
 
-        const { getByText } = render(Proposals);
+        const { getByText } = render(NnsProposals);
 
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
@@ -123,7 +123,7 @@ describe("Proposals", () => {
           .spyOn(neuronsStore, "subscribe")
           .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
-        const { container } = render(Proposals);
+        const { container } = render(NnsProposals);
 
         proposalsFiltersStore.toggleExcludeVotedProposals();
 
@@ -137,15 +137,19 @@ describe("Proposals", () => {
       it("should disable infinite scroll when all proposals loaded", async () => {
         mockLoadProposals();
 
-        const { getByTestId } = render(Proposals);
+        const { component } = render(NnsProposals);
 
+        // How to check the value of a prop in a Svelte component
+        // https://github.com/testing-library/svelte-testing-library/issues/117
         await waitFor(() =>
-          expect(getByTestId("proposals-scroll-off")).not.toBeNull()
+          expect(
+            component.$$.ctx[component.$$.props["disableInfiniteScroll"]]
+          ).toBe(false)
         );
       });
 
       it("should not render not found text on init", () => {
-        const { container } = render(Proposals);
+        const { container } = render(NnsProposals);
 
         const p: HTMLParagraphElement | undefined = nothingFound(container);
 
@@ -168,7 +172,7 @@ describe("Proposals", () => {
           .spyOn(proposalsStore, "subscribe")
           .mockImplementation(mockEmptyProposalsStoreSubscribe);
 
-        const { container } = render(Proposals);
+        const { container } = render(NnsProposals);
 
         await waitFor(() => {
           const p: HTMLParagraphElement | undefined = nothingFound(container);
@@ -209,7 +213,7 @@ describe("Proposals", () => {
       it("should render proposals", () => {
         mockLoadProposals();
 
-        const { getByText } = render(Proposals);
+        const { getByText } = render(NnsProposals);
 
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
@@ -224,7 +228,7 @@ describe("Proposals", () => {
       it("should render proposals also when ", () => {
         mockLoadProposals();
 
-        const { getByText } = render(Proposals);
+        const { getByText } = render(NnsProposals);
 
         const firstProposal = mockProposals[0] as ProposalInfo;
         const secondProposal = mockProposals[1] as ProposalInfo;
@@ -260,7 +264,7 @@ describe("Proposals", () => {
         identity: undefined,
       });
 
-      render(Proposals);
+      render(NnsProposals);
 
       authStoreMock.next({
         identity: mockIdentity,
@@ -274,7 +278,7 @@ describe("Proposals", () => {
         identity: mockIdentity,
       });
 
-      render(Proposals);
+      render(NnsProposals);
 
       authStoreMock.next({
         identity: undefined,

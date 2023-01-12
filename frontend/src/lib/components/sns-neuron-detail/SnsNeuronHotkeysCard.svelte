@@ -25,6 +25,13 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { goto } from "$app/navigation";
+  import { neuronsPathStore } from "$lib/derived/paths.derived";
+  import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+
+  export let parameters: NervousSystemParameters;
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -41,6 +48,7 @@
       ? canIdentityManageHotkeys({
           neuron,
           identity: $authStore.identity,
+          parameters,
         })
       : false;
   let hotkeys: string[];
@@ -49,6 +57,22 @@
 
   let showTooltip: boolean;
   $: showTooltip = hotkeys.length > 0 && canManageHotkeys;
+
+  let currentIdentityString: string | undefined;
+  $: currentIdentityString = $authStore.identity?.getPrincipal().toText();
+
+  let showConfirmationHotkey: string | undefined;
+  const closeConfirmation = () => {
+    showConfirmationHotkey = undefined;
+  };
+  const maybeRemove = async (hotkey: string) => {
+    // Require confirmation if the user is removing itself from the hotkeys.
+    if (currentIdentityString === hotkey) {
+      showConfirmationHotkey = hotkey;
+    } else {
+      await remove(hotkey);
+    }
+  };
 
   const remove = async (hotkey: string) => {
     // Edge case: Remove button is shwon only when neuron is defined
@@ -63,6 +87,16 @@
       hotkey,
       rootCanisterId: $snsProjectIdSelectedStore,
     });
+    // If the user removes itself from the hotkeys, it has no more access to the detail page.
+    if (currentIdentityString === hotkey && success) {
+      toastsShow({
+        level: "success",
+        labelKey: "neurons.remove_hotkey_success",
+      });
+
+      await goto($neuronsPathStore);
+      return;
+    }
     if (success) {
       await reload();
     }
@@ -103,7 +137,7 @@
               <button
                 class="text"
                 aria-label={$i18n.core.remove}
-                on:click={() => remove(hotkey)}
+                on:click={() => maybeRemove(hotkey)}
                 data-tid="remove-hotkey-button"
                 ><IconClose size="18px" /></button
               >
@@ -120,6 +154,15 @@
   </CardInfo>
 {/if}
 
+{#if showConfirmationHotkey !== undefined}
+  <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->
+  {@const hotkey = showConfirmationHotkey}
+  <ConfirmRemoveCurrentUserHotkey
+    on:nnsClose={closeConfirmation}
+    on:nnsConfirm={() => remove(hotkey)}
+  />
+{/if}
+
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
 
@@ -127,6 +170,10 @@
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
+  }
+
+  h3 {
+    line-height: var(--line-height-standard);
   }
 
   .warning {

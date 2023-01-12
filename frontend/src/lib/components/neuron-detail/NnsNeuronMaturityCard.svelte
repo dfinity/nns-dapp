@@ -14,7 +14,6 @@
   import {
     isNeuronControllable,
     formattedStakedMaturity,
-    isNeuronControlledByHardwareWallet,
     formattedTotalMaturity,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -26,12 +25,6 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
-  });
-
-  let controlledByHardwareWallet: boolean;
-  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
-    neuron,
     accounts: $accountsStore,
   });
 </script>
@@ -62,9 +55,7 @@
       <SpawnNeuronButton {neuron} />
     </div>
 
-    {#if !controlledByHardwareWallet}
-      <NnsAutoStakeMaturity {neuron} />
-    {/if}
+    <NnsAutoStakeMaturity {neuron} />
   {/if}
 </CardInfo>
 

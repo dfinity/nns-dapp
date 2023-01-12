@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { ExternalLink, MenuButton } from "@dfinity/gix-components";
+  import {
+    ExternalLink,
+    MenuButton,
+    ThemeToggle,
+  } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
 </script>
@@ -28,6 +32,7 @@
     <ExternalLink href="https://dashboard.internetcomputer.org/governance"
       >{$i18n.auth.voting_rewards}</ExternalLink
     >
+    <ThemeToggle />
   </div>
 </header>
 
@@ -92,6 +97,11 @@
     height: var(--padding-6x);
 
     @include media.min-width(large) {
+      padding-top: var(--padding);
+    }
+
+    @include media.min-width(xlarge) {
+      padding-top: 0;
       height: var(--padding-8x);
     }
   }
@@ -101,7 +111,8 @@
     padding-top: var(--padding-2x);
     flex: 2;
 
-    :global(a) {
+    :global(a),
+    :global(.theme-toggle) {
       display: none;
     }
 
@@ -112,6 +123,10 @@
         display: inline-block;
       }
 
+      :global(.theme-toggle) {
+        display: flex;
+      }
+
       :global(button) {
         display: none;
       }
@@ -120,7 +135,11 @@
 
   .end {
     display: flex;
-    gap: var(--padding-4x);
+    gap: var(--padding-2x);
     justify-content: flex-end;
+
+    @include media.min-width(xlarge) {
+      gap: var(--padding-4x);
+    }
   }
 </style>

@@ -1,9 +1,17 @@
+import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
+import type { SnsParameters } from "$lib/stores/sns-parameters.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron, SnsNeuronPermissionType } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { Principal } from "@dfinity/principal";
+import {
+  SnsNeuronPermissionType,
+  type NervousSystemParameters,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
+import { rootCanisterIdMock } from "./sns.api.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
@@ -46,6 +54,10 @@ export const createMockSnsNeuron = ({
   neuron_fees_e8s: BigInt(0),
 });
 
+export const mockSnsNeuronId = {
+  id: arrayOfNumberToUint8Array([1, 5, 3, 9, 9, 3, 2]),
+};
+
 export const mockSnsNeuron = createMockSnsNeuron({
   stake: BigInt(1_000_000_000),
   id: [1, 5, 3, 9, 9, 3, 2],
@@ -66,6 +78,26 @@ export const mockSnsNeuronWithPermissions = (
   ],
 });
 
+export const buildMockSnsNeuronsStoreSubscribe =
+  ({
+    neurons,
+    rootCanisterId,
+  }: {
+    neurons: SnsNeuron[];
+    rootCanisterId: Principal;
+  }) =>
+  (
+    run: Subscriber<{ [rootCanisterId: string]: ProjectNeuronStore }>
+  ): (() => void) => {
+    run({
+      [rootCanisterId.toText()]: {
+        neurons,
+        certified: true,
+      },
+    });
+    return () => undefined;
+  };
+
 export const buildMockSortedSnsNeuronsStoreSubscribe =
   (neurons: SnsNeuron[] = []) =>
   (run: Subscriber<SnsNeuron[]>): (() => void) => {
@@ -76,7 +108,7 @@ export const buildMockSortedSnsNeuronsStoreSubscribe =
 export const snsNervousSystemParametersMock: NervousSystemParameters = {
   default_followees: [
     {
-      followees: [],
+      followees: [[0n, { followees: [mockSnsNeuronId] }]],
     },
   ],
   max_dissolve_delay_seconds: [3155760000n],
@@ -84,7 +116,7 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   max_followees_per_function: [15n],
   neuron_claimer_permissions: [
     {
-      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
     },
   ],
   neuron_minimum_stake_e8s: [100000000n],
@@ -100,7 +132,7 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   max_age_bonus_percentage: [25n],
   neuron_grantable_permissions: [
     {
-      permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
+      permissions: Int32Array.from(enumValues(SnsNeuronPermissionType)),
     },
   ],
   voting_rewards_parameters: [
@@ -113,3 +145,21 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
   ],
   max_number_of_principals_per_neuron: [5n],
 };
+
+export const buildMockSnsParametersStore =
+  (notDefined = false) =>
+  (
+    run: Subscriber<{ [rootCanisterId: string]: SnsParameters }>
+  ): (() => void) => {
+    run(
+      notDefined
+        ? undefined
+        : {
+            [rootCanisterIdMock.toText()]: {
+              parameters: snsNervousSystemParametersMock,
+              certified: true,
+            },
+          }
+    );
+    return () => undefined;
+  };

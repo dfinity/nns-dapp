@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-  import NeuronHotkeysCard from "$lib/components/neuron-detail/NeuronHotkeysCard.svelte";
+  import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
@@ -31,6 +31,7 @@
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
+  import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -134,10 +135,10 @@
         <NeuronFollowingCard {neuron} />
 
         {#if IS_TESTNET}
-          <NeuronProposalsCard {neuron} />
+          <NnsNeuronProposalsCard {neuron} />
         {/if}
 
-        <NeuronHotkeysCard {neuron} />
+        <NnsNeuronHotkeysCard {neuron} />
         <NeuronVotingHistoryCard {neuron} />
       {:else}
         <SkeletonCard size="large" cardType="info" separator />

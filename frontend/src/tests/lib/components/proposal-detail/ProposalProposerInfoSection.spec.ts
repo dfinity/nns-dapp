@@ -1,24 +1,22 @@
 /**
  * @jest-environment jsdom
  */
-
 import ProposalProposerInfoSection from "$lib/components/proposal-detail/ProposalProposerInfoSection.svelte";
-import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 jest.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
 describe("ProposalProposerInfoSection", () => {
-  const { title, proposal, url } = mapProposalInfo(mockProposalInfo);
+  const title = "title";
+  const summary = "# Some Summary";
+  const url = "https://nns.ic0.app/";
+  const props = { title, summary, url };
 
   it("should render title", () => {
     const renderResult = render(ProposalProposerInfoSection, {
-      props: {
-        proposalInfo: mockProposalInfo,
-      },
+      props,
     });
 
     const { getByText } = renderResult;
@@ -27,25 +25,19 @@ describe("ProposalProposerInfoSection", () => {
 
   it("should render summary", async () => {
     const renderResult = render(ProposalProposerInfoSection, {
-      props: {
-        proposalInfo: mockProposalInfo,
-      },
+      props,
     });
 
     const { getByText } = renderResult;
-    await waitFor(() =>
-      expect(getByText(proposal?.summary as string)).toBeInTheDocument()
-    );
+    await waitFor(() => expect(getByText(summary)).toBeInTheDocument());
   });
 
   it("should render url", async () => {
     const renderResult = render(ProposalProposerInfoSection, {
-      props: {
-        proposalInfo: mockProposalInfo,
-      },
+      props,
     });
 
     const { getByText } = renderResult;
-    await waitFor(() => expect(getByText(url as string)).toBeInTheDocument());
+    await waitFor(() => expect(getByText(url)).toBeInTheDocument());
   });
 });
