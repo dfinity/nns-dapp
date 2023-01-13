@@ -7,7 +7,6 @@
 * UX changes:
   * Theme switcher on login screen.
   * Improve proposal payment and summary rendering.
-  * Copyright update.
 * Bugfixes.
 
 ## Proposal 99659
