@@ -117,7 +117,7 @@
 {:else}
   <!-- key:value -->
   <span data-tid={testId} class="key-value">
-    <span class="key" class:root>{keyLabel}</span><span
+    {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span>{/if}<span
       class="value {valueType}"
       {title}>{value}</span
     ></span
