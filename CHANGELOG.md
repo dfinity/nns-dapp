@@ -4,7 +4,7 @@
 * Increase sns neuron stake.
 * Split sns neuron.
 * Permission update for sns hotkeys.
-* UX changes.
+* UX changes:
   * Theme switcher on login screen.
   * Improve proposal payment and summary rendering.
   * Copyright update.
