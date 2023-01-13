@@ -30,6 +30,7 @@ describe("SNS Proposals stores", () => {
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
+        completed: true,
       });
 
       const proposalsInStore = get(snsProposalsStore);
@@ -44,6 +45,7 @@ describe("SNS Proposals stores", () => {
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
+        completed: false,
       });
       const proposals2: SnsProposalData[] = [snsProposal3];
       const principal2 = Principal.fromText("aaaaa-aa");
@@ -51,6 +53,7 @@ describe("SNS Proposals stores", () => {
         rootCanisterId: principal2,
         proposals: proposals2,
         certified: true,
+        completed: false,
       });
       const proposalsInStore = get(snsProposalsStore);
       expect(proposalsInStore[mockPrincipal.toText()].proposals).toEqual(
@@ -67,12 +70,36 @@ describe("SNS Proposals stores", () => {
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
+        completed: false,
       });
       const proposals2: SnsProposalData[] = [snsProposal3];
       snsProposalsStore.addProposals({
         rootCanisterId: mockPrincipal,
         proposals: proposals2,
         certified: true,
+        completed: true,
+      });
+
+      const proposalsInStore = get(snsProposalsStore);
+      expect(proposalsInStore[mockPrincipal.toText()].proposals.length).toEqual(
+        3
+      );
+    });
+
+    it("should add proposals to a project without proposals using `addProposals`", () => {
+      const proposals: SnsProposalData[] = [snsProposal1, snsProposal2];
+      snsProposalsStore.addProposals({
+        rootCanisterId: mockPrincipal,
+        proposals,
+        certified: true,
+        completed: false,
+      });
+      const proposals2: SnsProposalData[] = [snsProposal3];
+      snsProposalsStore.addProposals({
+        rootCanisterId: mockPrincipal,
+        proposals: proposals2,
+        certified: true,
+        completed: true,
       });
 
       const proposalsInStore = get(snsProposalsStore);
