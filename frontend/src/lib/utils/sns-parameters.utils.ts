@@ -69,7 +69,7 @@ const getRewardsParameters = (
 
 export const mapNervousSystemParameters = (
   parameters: NervousSystemParameters
-): NervousSystemParametersMap => ({
+): Readonly<NervousSystemParametersMap> => ({
   default_followees: getDefaultFollowees(
     fromDefinedNullable(parameters.default_followees)
   ),
