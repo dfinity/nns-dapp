@@ -61,7 +61,6 @@
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
   const toggle = () => (collapsed = !collapsed);
-  $: console.log(keyLabel, value)
 </script>
 
 {#if isExpandable && hasChildren}
