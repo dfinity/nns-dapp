@@ -18,7 +18,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { reloadRouteData } from "$lib/utils/navigation.utils";
-  import ProposalsList from "$lib/components/proposals/ProposalsList.svelte";
+  import NnsProposalsList from "$lib/components/proposals/NnsProposalsList.svelte";
   import {
     sortedProposals,
     filteredProposals,
@@ -156,7 +156,7 @@
     : "skeleton";
 </script>
 
-<ProposalsList
+<NnsProposalsList
   {hidden}
   {nothingFound}
   {disableInfiniteScroll}
