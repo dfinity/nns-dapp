@@ -61,6 +61,7 @@
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
   const toggle = () => (collapsed = !collapsed);
+  $: console.log(keyLabel, value)
 </script>
 
 {#if isExpandable && hasChildren}
@@ -117,10 +118,8 @@
 {:else}
   <!-- key:value -->
   <span data-tid={testId} class="key-value">
-    {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span>{/if}<span
-      class="value {valueType}"
-      {title}>{value}</span
-    ></span
+    {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+      >{/if}<span class="value {valueType}" {title}>{value}</span></span
   >
 {/if}
 
