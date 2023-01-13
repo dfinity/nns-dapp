@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 101945
 * Increase sns neuron stake.
 * Split sns neuron.
 * Permission update for sns hotkeys.
