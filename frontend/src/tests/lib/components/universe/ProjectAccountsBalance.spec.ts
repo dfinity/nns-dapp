@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProjectBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
+import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -20,7 +20,7 @@ import {
   mockSnsCanisterIdText,
 } from "../../../mocks/sns.api.mock";
 
-describe("ProjectBalance", () => {
+describe("ProjectAccountsBalance", () => {
   describe("no balance", () => {
     beforeAll(() => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
@@ -29,7 +29,7 @@ describe("ProjectBalance", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render skeleton while loading", () => {
-      const { container } = render(ProjectBalance, {
+      const { container } = render(ProjectAccountsBalance, {
         props: { rootCanisterId: mockSnsCanisterId },
       });
 
@@ -37,7 +37,7 @@ describe("ProjectBalance", () => {
     });
 
     it("should render no balance", () => {
-      const { getByTestId } = render(ProjectBalance, {
+      const { getByTestId } = render(ProjectAccountsBalance, {
         props: { rootCanisterId: mockSnsCanisterId },
       });
 
@@ -62,7 +62,7 @@ describe("ProjectBalance", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render a total balance", () => {
-      const { getByTestId } = render(ProjectBalance, {
+      const { getByTestId } = render(ProjectAccountsBalance, {
         props: { rootCanisterId: undefined },
       });
 
