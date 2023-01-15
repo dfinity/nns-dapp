@@ -1,9 +1,8 @@
+import type { RootCanisterIdText } from "$lib/types/sns";
 import { removeKeys } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { writable, type Readable } from "svelte/store";
-
-export type RootCanisterId = string;
 
 interface SnsAccountsBalance {
   balance: TokenAmount | undefined;
@@ -11,7 +10,7 @@ interface SnsAccountsBalance {
 }
 
 export type SnsAccountsBalanceWritableStore = Record<
-  RootCanisterId,
+  RootCanisterIdText,
   SnsAccountsBalance
 >;
 

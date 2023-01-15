@@ -6,15 +6,15 @@ import {
 import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import type { RootCanisterId } from "$lib/types/sns";
 import { toToastError } from "$lib/utils/error.utils";
 import { sumAccounts } from "$lib/utils/sns-accounts.utils";
-import type { Principal } from "@dfinity/principal";
 
-export const loadSnsBalance = async ({
+export const loadSnsBalance = ({
   rootCanisterId,
   strategy,
 }: {
-  rootCanisterId: Principal;
+  rootCanisterId: RootCanisterId;
   strategy: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
@@ -47,3 +47,17 @@ export const loadSnsBalance = async ({
     strategy,
   });
 };
+
+export const insecureLoadSnsBalances = ({
+  rootCanisterIds,
+}: {
+  rootCanisterIds: RootCanisterId[];
+}): Promise<void[]> =>
+  Promise.all(
+    rootCanisterIds.map((rootCanisterId) =>
+      loadSnsBalance({
+        rootCanisterId,
+        strategy: "query",
+      })
+    )
+  );
