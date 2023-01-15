@@ -3,7 +3,7 @@
  */
 
 import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+import { listKnownNeurons } from "$lib/services/known-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
