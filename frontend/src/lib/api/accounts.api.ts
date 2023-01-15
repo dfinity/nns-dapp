@@ -6,7 +6,7 @@ import type {
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsWritableStore } from "$lib/stores/accounts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
@@ -24,7 +24,7 @@ export const loadAccounts = async ({
 }: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStore> => {
+}): Promise<AccountsWritableStore> => {
   // Helper
   const getAccountBalance = async (
     identifierString: string
@@ -80,6 +80,7 @@ export const loadAccounts = async ({
     main,
     subAccounts,
     hardwareWallets,
+    certified,
   };
 };
 

@@ -1,11 +1,11 @@
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsWritableStore } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { get } from "svelte/store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 
 describe("accountsStore", () => {
   const expectStoreInitialValues = () => {
-    const initState: AccountsStore = get(accountsStore);
+    const initState: AccountsWritableStore = get(accountsStore);
 
     expect(initState.main).toBeUndefined();
     expect(initState.subAccounts).toBeUndefined();

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
+import ProjectBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";

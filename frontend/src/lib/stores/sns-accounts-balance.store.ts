@@ -1,13 +1,11 @@
+import type { ProjectAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import { removeKeys } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { writable, type Readable } from "svelte/store";
 
-interface SnsAccountsBalance {
-  balance: TokenAmount | undefined;
-  certified: boolean;
-}
+type SnsAccountsBalance = ProjectAccountsBalance;
 
 export type SnsAccountsBalanceWritableStore = Record<
   RootCanisterIdText,

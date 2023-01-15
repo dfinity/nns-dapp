@@ -16,7 +16,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsWritableStore } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -318,7 +318,7 @@ export const isNeuronControllable = ({
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
-  accounts: AccountsStore;
+  accounts: AccountsWritableStore;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
@@ -330,7 +330,7 @@ export const isNeuronControlledByHardwareWallet = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsWritableStore;
 }): boolean => {
   if (neuron.fullNeuron?.controller !== undefined) {
     const account = getAccountByPrincipal({
@@ -446,7 +446,7 @@ const isMergeableNeuron = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsWritableStore;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
@@ -458,7 +458,7 @@ const getMergeableNeuronMessageKey = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsWritableStore;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
@@ -494,7 +494,7 @@ export const mapMergeableNeurons = ({
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  accounts: AccountsStore;
+  accounts: AccountsWritableStore;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons

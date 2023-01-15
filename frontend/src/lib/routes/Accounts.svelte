@@ -9,13 +9,9 @@
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
   import { uncertifiedLoadSnsBalances } from "$lib/services/projects.services";
   import { snsSummariesStore } from "$lib/stores/sns.store";
-  import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 
   $: (async () =>
     await uncertifiedLoadSnsBalances({ summaries: $snsSummariesStore }))();
-
-  // TODO
-  $: console.log($snsAccountsBalanceStore);
 </script>
 
 <main>
