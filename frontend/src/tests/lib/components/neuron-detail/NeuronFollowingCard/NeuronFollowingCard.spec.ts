@@ -15,7 +15,7 @@ import en from "../../../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn().mockResolvedValue(undefined),
   };
