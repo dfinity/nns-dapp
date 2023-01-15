@@ -5,7 +5,10 @@ import {
 } from "$lib/utils/projects.utils";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
-import { snsSummariesStore, snsSwapCommitmentsStore } from "./sns.store";
+import {
+  snsSummariesStore,
+  snsSwapCommitmentsStore,
+} from "../stores/sns.store";
 
 // ************** Sns full project - all information **************
 

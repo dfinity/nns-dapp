@@ -13,23 +13,23 @@ import {
   type Readable,
   type Writable,
 } from "svelte/store";
-import { accountsStore } from "./accounts.store";
-import { canistersStore } from "./canisters.store";
-import { knownNeuronsStore } from "./knownNeurons.store";
-import { neuronsStore } from "./neurons.store";
-import { projectsStore } from "./projects.store";
+import { accountsStore } from "../stores/accounts.store";
+import { canistersStore } from "../stores/canisters.store";
+import { knownNeuronsStore } from "../stores/knownNeurons.store";
+import { neuronsStore } from "../stores/neurons.store";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
-} from "./proposals.store";
-import { snsAccountsStore } from "./sns-accounts.store";
-import { snsFunctionsStore } from "./sns-functions.store";
-import { snsNeuronsStore } from "./sns-neurons.store";
-import { snsTransactionsStore } from "./sns-transactions.store";
-import { transactionsFeesStore } from "./transaction-fees.store";
-import { voteRegistrationStore } from "./vote-registration.store";
+} from "../stores/proposals.store";
+import { snsAccountsStore } from "../stores/sns-accounts.store";
+import { snsFunctionsStore } from "../stores/sns-functions.store";
+import { snsNeuronsStore } from "../stores/sns-neurons.store";
+import { snsTransactionsStore } from "../stores/sns-transactions.store";
+import { transactionsFeesStore } from "../stores/transaction-fees.store";
+import { voteRegistrationStore } from "../stores/vote-registration.store";
+import { projectsStore } from "./projects.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
   derived(store, (store) => store);
