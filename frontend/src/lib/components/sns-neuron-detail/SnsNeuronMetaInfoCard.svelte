@@ -25,7 +25,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { NervousSystemParameters } from "@dfinity/sns";
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 
   export let parameters: NervousSystemParameters;
   export let token: Token;
@@ -82,7 +81,7 @@
     <SnsNeuronStateRemainingTime {neuron} inline={false} />
 
     <div class="buttons">
-      {#if ENABLE_SNS_2 && allowedToSplit}
+      {#if allowedToSplit}
         <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
       {/if}
     </div>

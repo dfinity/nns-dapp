@@ -7,6 +7,8 @@ export interface ProjectProposalStore {
   proposals: SnsProposalData[];
   // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
+  // Whether all proposals have been loaded
+  completed: boolean;
 }
 export interface SnsProposalsStore {
   // Each SNS Project is an entry in this Store.
@@ -30,16 +32,19 @@ const initSnsProposalsStore = () => {
       rootCanisterId,
       proposals,
       certified,
+      completed,
     }: {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
       certified: boolean | undefined;
+      completed: boolean;
     }) {
       update((currentState: SnsProposalsStore) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           proposals: proposals,
           certified,
+          completed,
         },
       }));
     },
@@ -48,10 +53,12 @@ const initSnsProposalsStore = () => {
       rootCanisterId,
       proposals,
       certified,
+      completed,
     }: {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
       certified: boolean | undefined;
+      completed: boolean;
     }) {
       update((currentState: SnsProposalsStore) => {
         const newIds = new Set(proposals.map(({ id }) => fromNullable(id)?.id));
@@ -65,6 +72,7 @@ const initSnsProposalsStore = () => {
               ) ?? []),
             ],
             certified,
+            completed,
           },
         };
       });

@@ -1,9 +1,11 @@
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   isAccepted,
+  lastProposalId,
   mapProposalInfo,
   snsDecisionStatus,
   snsRewardStatus,
+  sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import {
@@ -260,6 +262,61 @@ describe("sns-proposals utils", () => {
       expect(mappedProposal.topicDescription).toBe(
         nervousSystemFunctionMock.description[0]
       );
+    });
+  });
+
+  describe("lastProposalId", () => {
+    it("should return the last proposal id", async () => {
+      const proposal1: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(1) }],
+      };
+      const proposal2: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(2) }],
+      };
+      const proposal3: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(3) }],
+      };
+      const proposalId = lastProposalId([proposal3, proposal1, proposal2]);
+      expect(proposalId.id).toEqual(BigInt(1));
+    });
+
+    it("should return undefined when empty array", () => {
+      const proposalId = lastProposalId([]);
+      expect(proposalId).toBeUndefined();
+    });
+  });
+
+  describe("sortSnsProposalsById", () => {
+    it("sorts proposals by id in descending", () => {
+      const proposal1: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(1) }],
+      };
+      const proposal2: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(2) }],
+      };
+      const proposal3: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [{ id: BigInt(3) }],
+      };
+      const sortedProposals = sortSnsProposalsById([
+        proposal3,
+        proposal1,
+        proposal2,
+      ]);
+      expect(sortedProposals).toEqual([proposal3, proposal2, proposal1]);
+    });
+
+    it("returns undefined when array is undefined", () => {
+      expect(sortSnsProposalsById(undefined)).toBeUndefined();
+    });
+
+    it("returns empty array when array is empty", () => {
+      expect(sortSnsProposalsById([])).toEqual([]);
     });
   });
 });
