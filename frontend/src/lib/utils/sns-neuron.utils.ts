@@ -171,9 +171,10 @@ export const nextMemo = ({
  * - User’s principal has the `ManageVotingPermission` or `ManagePrincipals` permission.
  * - Both `Vote` and `SubmitProposal` are in `neuron_grantable_permissions` parameter
  *
- * @param neuron
- * @param identity
- * @param parameters
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {Identity | undefined | null} params.identity
+ * @param {NervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,

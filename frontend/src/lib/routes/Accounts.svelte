@@ -32,7 +32,8 @@
       return;
     }
 
-    const projectAccountsBalance = $projectsAccountsBalance[projectIdSelected];
+    const projectAccountsBalance =
+      $projectsAccountsBalance[projectIdSelected.toText()];
 
     // e.g. user has entered an unknown project ID in the browser url bar
     // Should not happen because user is redirect to Nns but never too sure

@@ -5,7 +5,6 @@
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
-  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { neuronsStore } from "$lib/stores/neurons.store";
