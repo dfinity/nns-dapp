@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
-  import { accountsStore } from "$lib/stores/accounts.store";
-  import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
@@ -10,12 +6,7 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-
-  let accounts: AccountsStore | undefined;
-
-  const unsubscribe: Unsubscriber = accountsStore.subscribe(
-    async (storeData: AccountsStore) => (accounts = storeData)
-  );
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   const cardClick = async (identifier: string) =>
     await goto(
@@ -24,21 +15,19 @@
         account: identifier,
       })
     );
-
-  onDestroy(unsubscribe);
 </script>
 
 <SummaryUniverse />
 
 <div class="card-grid" data-tid="accounts-body">
-  {#if accounts?.main?.identifier}
+  {#if $accountsStore?.main?.identifier}
     <AccountCard
       role="link"
-      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
+      on:click={() => cardClick($accountsStore?.main?.identifier ?? "")}
       hash
-      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+      account={$accountsStore?.main}>{$i18n.accounts.main}</AccountCard
     >
-    {#each accounts.subAccounts ?? [] as subAccount}
+    {#each $accountsStore.subAccounts ?? [] as subAccount}
       <AccountCard
         role="link"
         on:click={() => cardClick(subAccount.identifier)}
@@ -46,7 +35,7 @@
         account={subAccount}>{subAccount.name}</AccountCard
       >
     {/each}
-    {#each accounts.hardwareWallets ?? [] as walletAccount}
+    {#each $accountsStore.hardwareWallets ?? [] as walletAccount}
       <AccountCard
         role="link"
         on:click={() => cardClick(walletAccount.identifier)}
