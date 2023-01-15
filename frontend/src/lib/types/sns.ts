@@ -68,6 +68,16 @@ export interface SnsSummary {
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */
   derived: SnsSwapDerivedState;
+
+  /**
+   * Are the fetched metadata certified?
+   */
+  metadataCertified: boolean;
+
+  /**
+   * Are the fetched swap information certified?
+   */
+  swapCertified: boolean;
 }
 
 export interface SnsSwapCommitment {

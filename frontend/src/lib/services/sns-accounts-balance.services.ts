@@ -47,17 +47,3 @@ export const loadSnsBalance = ({
     strategy,
   });
 };
-
-export const insecureLoadSnsBalances = ({
-  rootCanisterIds,
-}: {
-  rootCanisterIds: RootCanisterId[];
-}): Promise<void[]> =>
-  Promise.all(
-    rootCanisterIds.map((rootCanisterId) =>
-      loadSnsBalance({
-        rootCanisterId,
-        strategy: "query",
-      })
-    )
-  );

@@ -131,6 +131,14 @@ export const mockToken: SnsTokenMetadata = {
   symbol: "TET",
 };
 
+const mockSnsSummaryCertified: Pick<
+  SnsSummary,
+  "metadataCertified" | "swapCertified"
+> = {
+  metadataCertified: true,
+  swapCertified: true,
+};
+
 export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
@@ -140,6 +148,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: mockToken,
     swap: mockSwap,
     derived: mockDerived,
+    ...mockSnsSummaryCertified,
   },
   {
     rootCanisterId: principal(1),
@@ -158,6 +167,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    ...mockSnsSummaryCertified,
   },
   {
     rootCanisterId: principal(2),
@@ -176,6 +186,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    ...mockSnsSummaryCertified,
   },
   {
     rootCanisterId: principal(3),
@@ -194,6 +205,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    ...mockSnsSummaryCertified,
   },
 ];
 

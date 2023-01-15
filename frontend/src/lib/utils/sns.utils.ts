@@ -29,18 +29,18 @@ type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
   params?: SnsParams;
 };
 
-type OptionalSummary = QuerySns & {
+type OptionalSummary = Omit<QuerySns, "certified"> & {
   metadata?: SnsSummaryMetadata;
   token?: SnsTokenMetadata;
   swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
   governanceCanisterId?: Principal;
-};
+} & Partial<Pick<SnsSummary, "metadataCertified" | "swapCertified">>;
 
-type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
+type ValidSummary = Required<Omit<OptionalSummary, "swap" | "certified">> & {
   swap: SnsSummarySwap;
-};
+} & Required<Pick<SnsSummary, "metadataCertified" | "swapCertified">>;
 
 /**
  * Sort Sns summaries according their swap end dates. Sooner end dates first.
@@ -163,7 +163,13 @@ export const mapAndSortSnsQueryToSummaries = ({
   swaps: QuerySnsSwapState[];
 }): SnsSummary[] => {
   const allSummaries: OptionalSummary[] = metadata.map(
-    ({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
+    ({
+      rootCanisterId,
+      metadata,
+      token,
+      certified,
+      ...rest
+    }: QuerySnsMetadata) => {
       const swapState = swaps.find(
         ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
           swapRootCanisterId === rootCanisterId
@@ -179,6 +185,8 @@ export const mapAndSortSnsQueryToSummaries = ({
         governanceCanisterId: swapState?.governanceCanisterId,
         swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
+        metadataCertified: certified,
+        swapCertified: swapState?.certified,
       };
     }
   );
@@ -192,7 +200,8 @@ export const mapAndSortSnsQueryToSummaries = ({
       entry.governanceCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
-      entry.token !== undefined
+      entry.token !== undefined &&
+      entry.swapCertified !== undefined
   );
 
   return sortSnsSummaries(
