@@ -15,7 +15,10 @@ import {
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsCanisterIdText } from "../../../mocks/sns.api.mock";
+import {
+  mockSnsCanisterId,
+  mockSnsCanisterIdText,
+} from "../../../mocks/sns.api.mock";
 
 describe("ProjectBalance", () => {
   describe("no balance", () => {
@@ -26,13 +29,17 @@ describe("ProjectBalance", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render skeleton while loading", () => {
-      const { container } = render(ProjectBalance);
+      const { container } = render(ProjectBalance, {
+        props: { rootCanisterId: mockSnsCanisterId },
+      });
 
       expect(container.querySelector(".skeleton")).not.toBeNull();
     });
 
     it("should render no balance", () => {
-      const { getByTestId } = render(ProjectBalance);
+      const { getByTestId } = render(ProjectBalance, {
+        props: { rootCanisterId: mockSnsCanisterId },
+      });
 
       expect(() => getByTestId("token-value")).toThrow();
     });
@@ -55,7 +62,9 @@ describe("ProjectBalance", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should render a total balance", () => {
-      const { getByTestId } = render(ProjectBalance);
+      const { getByTestId } = render(ProjectBalance, {
+        props: { rootCanisterId: undefined },
+      });
 
       const icp: HTMLElement | null = getByTestId("token-value-label");
 
