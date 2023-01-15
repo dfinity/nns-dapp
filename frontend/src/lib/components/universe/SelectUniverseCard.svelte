@@ -7,7 +7,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { nonNullish } from "$lib/utils/utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -65,6 +64,8 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
+
+    --value-color: var(--text-color);
 
     &:not(.selected) {
       --logo-framed-background: transparent;
