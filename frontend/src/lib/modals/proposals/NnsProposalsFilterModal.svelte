@@ -97,9 +97,13 @@
   const onChange = ({
     detail: { filter },
   }: CustomEvent<{
-    filter: Filter<Topic | ProposalRewardStatus | ProposalStatus>;
+    filter: Filter<Topic | ProposalRewardStatus | ProposalStatus> | undefined;
   }>) => {
-    applyFilterChange(filter.value);
+    // `undefined` is added to be type safe, but it should never happen
+    // checkboxes are shown only for filters that are defined
+    if (filter !== undefined) {
+      applyFilterChange(filter.value);
+    }
   };
 
   const filter = () => {
