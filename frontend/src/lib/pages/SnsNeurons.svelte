@@ -8,7 +8,10 @@
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/selected-project.derived";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
@@ -17,6 +20,10 @@
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { SnsSummary } from "$lib/types/sns";
+  import { nonNullish } from "$lib/utils/utils";
 
   let loading = true;
 
@@ -49,6 +56,14 @@
       })
     );
   };
+
+  let empty: boolean;
+  $: empty =
+    $sortedSnsUserNeuronsStore.length === 0 &&
+    $sortedSnsCFNeuronsStore.length === 0;
+
+  let summary: SnsSummary | undefined;
+  $: summary = $snsProjectSelectedStore?.summary;
 </script>
 
 <div class="card-grid" data-tid="sns-neurons-body">
@@ -82,6 +97,14 @@
     {/if}
   {/if}
 </div>
+
+{#if !loading && empty && nonNullish(summary)}
+  <EmptyMessage
+    >{replacePlaceholders($i18n.sns_neurons.text, {
+      $project: summary.metadata.name,
+    })}</EmptyMessage
+  >
+{/if}
 
 <style lang="scss">
   .top-margin {
