@@ -25,7 +25,6 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
-  badgeNew: string;
   nns: string;
   ic: string;
   previous: string;
