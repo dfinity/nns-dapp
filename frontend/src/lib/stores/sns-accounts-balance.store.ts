@@ -21,6 +21,12 @@ export interface SnsAccountsBalanceStore
   reset: () => void;
 }
 
+/**
+ * A store that contains the balance of the Sns accounts of the projects.
+ *
+ * - setBalance: set the balance for a project (total of the balance of the accounts of a Sns project).
+ * - reset: reset the store to an empty state. used for testing purpose.
+ */
 const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
   const initialEmptyWritableStore: SnsAccountsBalanceWritableStore = {};
 
