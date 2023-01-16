@@ -6,7 +6,7 @@
   import type { Filter } from "$lib/types/filters";
   import { onMount } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { nonNullish } from "$lib/utils/utils";
+  import { isNullish } from "$lib/utils/utils";
 
   // Source: https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#solution
   type T = $$Generic;
@@ -15,7 +15,7 @@
   export let visible = true;
 
   let loading: boolean;
-  $: loading = nonNullish(filters);
+  $: loading = isNullish(filters);
 
   onMount(() => {
     if (filters !== undefined) {
