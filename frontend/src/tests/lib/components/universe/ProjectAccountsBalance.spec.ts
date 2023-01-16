@@ -3,10 +3,9 @@
  */
 
 import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
@@ -15,19 +14,12 @@ import {
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
-import {
-  mockSnsCanisterId,
-  mockSnsCanisterIdText,
-} from "../../../mocks/sns.api.mock";
+import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
 
 describe("ProjectAccountsBalance", () => {
   describe("no balance", () => {
-    beforeAll(() => {
-      page.mock({ data: { universe: mockSnsCanisterIdText } });
-    });
-
-    afterAll(() => jest.clearAllMocks());
-
     it("should render skeleton while loading", () => {
       const { container } = render(ProjectAccountsBalance, {
         props: { rootCanisterId: mockSnsCanisterId },
@@ -55,29 +47,50 @@ describe("ProjectAccountsBalance", () => {
         )
       );
 
-    beforeAll(() => {
-      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-    });
-
     afterAll(() => jest.clearAllMocks());
 
-    it("should render a total balance", () => {
+    it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {
         props: { rootCanisterId: undefined },
       });
 
-      const icp: HTMLElement | null = getByTestId("token-value-label");
+      const balance: HTMLElement | null = getByTestId("token-value-label");
 
       const totalBalance =
         mockMainAccount.balance.toE8s() +
         mockSubAccount.balance.toE8s() +
         mockHardwareWalletAccount.balance.toE8s();
 
-      expect(icp?.textContent.trim() ?? "").toEqual(
+      expect(balance?.textContent.trim() ?? "").toEqual(
         `${formatToken({
           value: totalBalance,
           detailed: false,
         })} ${en.core.icp}`
+      );
+    });
+
+    it("should render a total balance for Sns", () => {
+      const rootCanisterId = mockSnsFullProject.rootCanisterId;
+
+      const totalBalance = mockSnsMainAccount.balance;
+
+      snsAccountsBalanceStore.setBalance({
+        rootCanisterId,
+        balance: totalBalance,
+        certified: true,
+      });
+
+      const { getByTestId } = render(ProjectAccountsBalance, {
+        props: { rootCanisterId },
+      });
+
+      const balance: HTMLElement | null = getByTestId("token-value-label");
+
+      expect(balance?.textContent.trim() ?? "").toEqual(
+        `${formatToken({
+          value: totalBalance.toE8s(),
+          detailed: false,
+        })} ${mockSnsMainAccount.balance.token.symbol}`
       );
     });
   });
