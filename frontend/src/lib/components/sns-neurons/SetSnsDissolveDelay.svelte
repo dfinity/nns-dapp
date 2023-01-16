@@ -17,7 +17,7 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { TokenAmount } from "@dfinity/nns";
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
-  import {getSnsNeuronIdAsHexString} from "$lib/utils/sns-neuron.utils.js";
+  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils.js";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -71,7 +71,6 @@
           BigInt(minSnsDissolveDelaySeconds)
         ),
       });
-
 </script>
 
 <SetDissolveDelay
