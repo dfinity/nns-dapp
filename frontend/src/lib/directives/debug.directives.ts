@@ -1,5 +1,5 @@
 import { addHotkey } from "$lib/api/governance.api";
-import { initDebugStore } from "$lib/derived/debug.store";
+import { initDebugStore } from "$lib/derived/debug.derived";
 import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsStore } from "$lib/stores/neurons.store";
