@@ -22,6 +22,10 @@ import {
   createMockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+import en from "../../mocks/i18n.mock";
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { mockStoreSubscribe } from "../../mocks/commont.mock";
+import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -129,6 +133,20 @@ describe("SnsNeurons", () => {
       await waitFor(() =>
         expect(queryByTestId("community-fund-title")).toBeInTheDocument()
       );
+    });
+  });
+
+  describe("no neurons", () => {
+    jest
+      .spyOn(snsProjectSelectedStore, "subscribe")
+      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+
+    afterAll(() => jest.clearAllMocks());
+
+    it("should render Community Fund title", async () => {
+      const { getByText } = render(SnsNeurons);
+
+      expect(getByText(en.sns_neurons.text)).toBeInTheDocument();
     });
   });
 });

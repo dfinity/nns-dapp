@@ -625,6 +625,7 @@ interface I18nSns_neuron_detail {
 }
 
 interface I18nSns_neurons {
+  text: string;
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;

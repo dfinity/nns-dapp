@@ -13,6 +13,7 @@ import {
   mockFullNeuron,
   mockNeuron,
 } from "../../mocks/neurons.mock";
+import en from "../../mocks/i18n.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -56,6 +57,8 @@ describe("NnsNeurons", () => {
         );
     });
 
+    afterEach(() => jest.resetAllMocks());
+
     it("should render spawning neurons as disabled", () => {
       const { queryAllByTestId } = render(NnsNeurons);
 
@@ -79,4 +82,20 @@ describe("NnsNeurons", () => {
       );
     });
   });
+
+  describe("no neurons", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(
+          buildMockNeuronsStoreSubscribe([])
+        );
+    });
+
+    it("should render an empty message",  () => {
+      const { getByText } = render(NnsNeurons);
+
+      expect(getByText(en.neurons.text)).toBeInTheDocument();
+    })
+  })
 });
