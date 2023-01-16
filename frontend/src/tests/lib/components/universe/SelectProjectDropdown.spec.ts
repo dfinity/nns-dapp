@@ -6,8 +6,8 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import { committedProjectsStore } from "$lib/derived/projects.store";
 import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
-import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

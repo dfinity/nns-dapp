@@ -1,3 +1,4 @@
+import { makeSnsDummyProposals } from "$lib/api/dev.api";
 import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
@@ -24,7 +25,7 @@ import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
-import { toastsError } from "$lib/stores/toasts.store";
+import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
@@ -776,5 +777,32 @@ export const toggleAutoStakeMaturity = async ({
     });
 
     return { success: false };
+  }
+};
+
+export const makeDummyProposals = async ({
+  neuronId,
+  rootCanisterId,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+}): Promise<void> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await makeSnsDummyProposals({
+      neuronId,
+      rootCanisterId,
+      identity,
+    });
+
+    toastsSuccess({
+      labelKey: "neuron_detail.dummy_proposal_success",
+    });
+  } catch (err) {
+    toastsError({
+      labelKey: "error.dummy_proposal",
+      err,
+    });
   }
 };

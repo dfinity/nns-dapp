@@ -1,6 +1,6 @@
 import * as api from "$lib/api/governance.api";
-import { listKnownNeurons } from "$lib/services/knownNeurons.services";
-import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+import { listKnownNeurons } from "$lib/services/known-neurons.services";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { get } from "svelte/store";
 import {
   mockIdentityErrorMsg,

@@ -97,7 +97,7 @@ describe("NnsProposals", () => {
         proposalsFiltersStore.filterTopics(DEFAULT_PROPOSALS_FILTERS.topics);
 
         await waitFor(() =>
-          expect(getByTestId("proposals-spinner")).not.toBeNull()
+          expect(getByTestId("next-page-sns-proposals-spinner")).not.toBeNull()
         );
       });
 

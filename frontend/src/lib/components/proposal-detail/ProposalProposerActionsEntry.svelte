@@ -34,4 +34,10 @@
   .content-cell-island {
     margin-top: var(--row-gap);
   }
+
+  .content-cell-details {
+    overflow-x: auto;
+    // get rid of vertical scroll
+    padding-bottom: 1px;
+  }
 </style>

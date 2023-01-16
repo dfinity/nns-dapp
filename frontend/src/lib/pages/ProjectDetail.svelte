@@ -19,7 +19,7 @@
   import { snsSummariesStore } from "$lib/stores/sns.store";
   import { Principal } from "@dfinity/principal";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { debugSelectedProjectStore } from "$lib/stores/debug.store";
+  import { debugSelectedProjectStore } from "$lib/derived/debug.store";
   import { goto } from "$app/navigation";
 
   const loadSummary = (rootCanisterId: string) =>
