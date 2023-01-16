@@ -15,9 +15,9 @@
   export let visible = true;
 
   let loading: boolean;
-  $: loading = filters === undefined;
+  $: loading = nonNullish(filters);
 
-  onMount(async () => {
+  onMount(() => {
     if (filters !== undefined) {
       return;
     }
@@ -47,7 +47,7 @@
   };
 </script>
 
-{#if nonNullish(filters)}
+{#if !loading}
   <Modal {visible} on:nnsClose role="alert">
     <slot slot="title" name="title" />
 
