@@ -1,12 +1,12 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
+import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsSummaryList } from "../../mocks/sns-projects.mock";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {
@@ -37,7 +37,8 @@ describe("sns-accounts-balance.services", () => {
     await tick();
 
     const store = get(projectsAccountsBalance);
-    expect(Object.keys(store)).toHaveLength(1);
+    // Nns + 1 Sns
+    expect(Object.keys(store)).toHaveLength(2);
     expect(store[summary.rootCanisterId.toText()].balance.toE8s()).toEqual(
       mockSnsMainAccount.balance.toE8s()
     );
@@ -61,7 +62,8 @@ describe("sns-accounts-balance.services", () => {
     await tick();
 
     const store = get(projectsAccountsBalance);
-    expect(Object.keys(store)).toHaveLength(0);
+    // Nns
+    expect(Object.keys(store)).toHaveLength(1);
     expect(spyQuery).not.toHaveBeenCalled();
   });
 
@@ -72,15 +74,5 @@ describe("sns-accounts-balance.services", () => {
     await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
 
     expect(toastsError).toHaveBeenCalled();
-  });
-
-  it("should set a balance to null on error", async () => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
-
-    await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
-
-    const store = get(projectsAccountsBalance);
-    expect(store[summary.rootCanisterId.toText()].balance).toBeNull();
   });
 });

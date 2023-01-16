@@ -9,18 +9,15 @@
 
   export let rootCanisterId: RootCanisterId | undefined;
 
-  let balance: TokenAmount | undefined | null;
+  let balance: TokenAmount | undefined;
   $: balance =
     $projectsAccountsBalance[(rootCanisterId ?? OWN_CANISTER_ID).toText()]
       ?.balance;
-
-  let loading = true;
-  $: loading = balance === undefined;
 </script>
 
 {#if nonNullish(balance)}
   <AmountDisplay copy amount={balance} />
-{:else if loading}
+{:else}
   <div class="skeleton">
     <SkeletonText />
   </div>
