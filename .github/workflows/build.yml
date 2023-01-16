@@ -81,11 +81,12 @@ jobs:
         run: |
           dfx-sns-demo-install
 
-      - name: Deploy NNS canisters
+      - name: Deploy NNS and SNS canisters
         run: |
           # Note: This deploys standard NNS canisters but with:
           # - The current code for the nns-dapp
           # - The II version specified in dfx.json
+          # - Functional SNS canisters
           ./scripts/dfx-nns-deploy-custom --features sns
 
       - name: 'Upload nns-dapp_local wasm module'
