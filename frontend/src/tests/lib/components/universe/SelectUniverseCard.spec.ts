@@ -154,7 +154,7 @@ describe("SelectUniverseCard", () => {
       expect(getByTestId("token-value")).not.toBeNull();
     });
 
-    it("should not display balance on other path", () => {
+    it("should not display balance on other path than accounts", () => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Neurons,
