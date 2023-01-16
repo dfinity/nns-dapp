@@ -19,7 +19,6 @@ export interface SnsAccountsBalanceStore
     balance: TokenAmount | undefined;
     certified: boolean;
   }) => void;
-  resetProject: (rootCanisterId: Principal) => void;
 }
 
 const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
@@ -44,15 +43,6 @@ const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
           certified,
         },
       }));
-    },
-
-    resetProject(rootCanisterId: Principal) {
-      update((currentState: SnsAccountsBalanceWritableStore) =>
-        removeKeys({
-          obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
-        })
-      );
     },
   };
 };

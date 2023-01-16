@@ -10,6 +10,8 @@ import type {
 } from "$lib/types/sns";
 import { toToastError } from "$lib/utils/error.utils";
 import { sumAccounts } from "$lib/utils/sns-accounts.utils";
+import { SnsWrapper } from "@dfinity/sns";
+import { ApiErrorKey } from "$lib/types/api.errors";
 
 const uncertifiedLoadSnsAccountsBalance = ({
   rootCanisterId,
@@ -25,24 +27,10 @@ const uncertifiedLoadSnsAccountsBalance = ({
         rootCanisterId,
         certified,
       }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err }) => {
       console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // hide unproven data
-      snsAccountsBalanceStore.resetProject(rootCanisterId);
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.sns_accounts_load",
-        })
-      );
     },
-    logMessage: "Syncing Sns Balance",
+    logMessage: "Syncing Sns Accounts Balance",
     strategy: "query",
   });
 };
@@ -56,14 +44,14 @@ const uncertifiedLoadSnsAccountsBalance = ({
  * @param {SnsSummary[]} params.summaries The list of summaries - Sns projects - for which the balance of the accounts should be fetched.
  * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
-export const uncertifiedLoadSnsAccountsBalances = ({
+export const uncertifiedLoadSnsAccountsBalances = async ({
   summaries,
   excludeRootCanisterIds = [],
 }: {
   summaries: SnsSummary[];
   excludeRootCanisterIds?: RootCanisterIdText[];
-}): Promise<void[]> =>
-  Promise.all(
+}): Promise<void> => {
+  const results: PromiseSettledResult<void>[] = await Promise.allSettled(
     (
       summaries.filter(
         ({ metadataCertified, rootCanisterId }) =>
@@ -75,4 +63,13 @@ export const uncertifiedLoadSnsAccountsBalances = ({
         rootCanisterId,
       })
     )
-  );
+  )
+
+  const error: boolean =
+    results.find(({ status }) => status === "rejected") !== undefined;
+  if (error) {
+    toastsError(
+      {labelKey: "error.sns_accounts_balance_load"}
+    );
+  }
+}

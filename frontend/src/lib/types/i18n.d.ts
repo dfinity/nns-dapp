@@ -43,6 +43,7 @@ interface I18nError {
   neuron_load: string;
   sns_neurons_load: string;
   sns_accounts_load: string;
+  sns_accounts_balance_load: string;
   sns_token_load: string;
   list_proposals: string;
   list_canisters: string;
