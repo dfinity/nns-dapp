@@ -10,7 +10,7 @@
   import { snsSummariesStore } from "$lib/stores/sns.store";
   import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 
-  // Selected project ID on mount
+  // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let projectIdSelected = $snsProjectIdSelectedStore;
 
   $: (async () =>
