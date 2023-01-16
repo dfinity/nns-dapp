@@ -39,6 +39,7 @@ export type BusyStateInitiatorType =
   | "add-sns-followee"
   | "remove-sns-followee"
   | "disburse-sns-neuron"
+  | "load-sns-filters"
   | "load-sns-accounts";
 
 export interface BusyState {
