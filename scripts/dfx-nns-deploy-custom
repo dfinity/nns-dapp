@@ -35,6 +35,7 @@ sns)
   : "Deploy nns-dapp with NNS and SNS canisters"
   dfx-sns-demo-install
   dfx-sns-demo
+  ;;
 *)
   {
     echo "ERROR: Unsupported feature set: '$DFX_NETWORK_FEATURES'"
