@@ -1,5 +1,6 @@
 import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type {
@@ -7,9 +8,6 @@ import type {
   RootCanisterIdText,
   SnsSummary,
 } from "$lib/types/sns";
-import { sumAccounts } from "$lib/utils/sns-accounts.utils";
-import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 
 const uncertifiedLoadSnsAccountsBalance = ({
   rootCanisterId,

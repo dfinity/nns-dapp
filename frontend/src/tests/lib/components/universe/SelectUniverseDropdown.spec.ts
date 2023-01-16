@@ -6,7 +6,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { sumAccounts } from "$lib/utils/sns-accounts.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { fireEvent } from "@testing-library/dom";

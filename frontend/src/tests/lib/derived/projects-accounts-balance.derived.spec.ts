@@ -1,6 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
@@ -8,7 +9,6 @@ import {
 } from "../../mocks/accounts.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 
 describe("projects-accounts-balance.derived", () => {
   jest

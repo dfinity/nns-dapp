@@ -4,7 +4,6 @@ import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { sumAccounts } from "$lib/utils/sns-accounts.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
@@ -25,11 +24,12 @@ export const loadSnsAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
-    onLoad: ({ response: accounts, certified }) => snsAccountsStore.setAccounts({
-      accounts,
-      rootCanisterId,
-      certified,
-    }),
+    onLoad: ({ response: accounts, certified }) =>
+      snsAccountsStore.setAccounts({
+        accounts,
+        rootCanisterId,
+        certified,
+      }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 

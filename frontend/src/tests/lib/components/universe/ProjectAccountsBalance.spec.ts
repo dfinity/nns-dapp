@@ -4,6 +4,7 @@
 
 import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import {
@@ -16,7 +17,6 @@ import en from "../../../mocks/i18n.mock";
 import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 
 describe("ProjectAccountsBalance", () => {
   describe("no balance", () => {
