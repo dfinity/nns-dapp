@@ -126,7 +126,7 @@
         bind:days={delayInDays}
         on:nnsMin={setMin}
         on:nnsMax={setMax}
-        on:input={updateInputError}
+        on:nnsInput={updateInputError}
         on:blur={updateInputError}
         errorMessage={inputError}
       />

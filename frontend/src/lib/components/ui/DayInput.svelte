@@ -22,9 +22,9 @@
   {max}
   inputType="number"
   {errorMessage}
-  on:input
+  on:nnsInput
   on:blur
 >
-  <MinButton on:click={setMin} slot="left" />
-  <MaxButton on:click={setMax} slot="additional" />
+  <MinButton on:click={setMin} slot="start" />
+  <MaxButton on:click={setMax} slot="end" />
 </InputWithError>

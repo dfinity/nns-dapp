@@ -34,11 +34,11 @@
   {autocomplete}
   on:blur
   on:focus
-  on:input
+  on:nnsInput
   on:keydown
   {showInfo}
 >
-  <svelte:fragment slot="left"><slot name="left" /></svelte:fragment>
+  <svelte:fragment slot="start"><slot name="start" /></svelte:fragment>
   <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
-  <svelte:fragment slot="additional"><slot name="right" /></svelte:fragment>
+  <svelte:fragment slot="end"><slot name="end" /></svelte:fragment>
 </Input>
