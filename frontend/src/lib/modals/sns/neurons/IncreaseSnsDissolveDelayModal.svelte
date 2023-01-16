@@ -16,9 +16,6 @@
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-  import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
-  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
 
   export let rootCanisterId: Principal;
@@ -48,24 +45,6 @@
   $: if ($snsOnlyProjectStore !== undefined) {
     loadSnsParameters($snsOnlyProjectStore);
   }
-
-  let snsParameters: NervousSystemParameters | undefined;
-  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
-  let snsMaxDissolveDelaySeconds: number | undefined;
-  $: snsMaxDissolveDelaySeconds =
-    snsParameters === undefined
-      ? undefined
-      : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
-
-  let snsMinDissolveDelaySeconds: number | undefined;
-  $: snsMinDissolveDelaySeconds =
-    snsParameters === undefined
-      ? undefined
-      : Number(
-          fromDefinedNullable(
-            snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
-          )
-        );
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {
@@ -113,6 +92,8 @@
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
+      cancelButtonText={$i18n.core.cancel}
+      confirmButtonText={$i18n.neurons.update_delay}
     />
   {/if}
   {#if currentStep.name === "ConfirmSnsDissolveDelay"}

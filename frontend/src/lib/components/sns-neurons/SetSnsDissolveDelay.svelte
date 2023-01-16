@@ -1,202 +1,92 @@
 <script lang="ts">
   import type { NeuronState, Token } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
-  import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Html, InputRange } from "@dfinity/gix-components";
-  import { valueSpan } from "$lib/utils/utils";
+  import { isNullish } from "$lib/utils/utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     getSnsLockedTimeInSeconds,
-    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import Hash from "$lib/components/ui/Hash.svelte";
-  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { TokenAmount } from "@dfinity/nns";
+  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
+  import {getSnsNeuronIdAsHexString} from "$lib/utils/sns-neuron.utils.js";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
-  export let delayInSeconds = 0; // bound
-  export let minDelayInSeconds = 0;
+  export let delayInSeconds: number;
+  export let cancelButtonText: string;
+  export let confirmButtonText: string;
 
-  const checkMinimum = () => {
-    if (delayInSeconds < minDelayInSeconds) {
-      delayInSeconds = minDelayInSeconds;
-    }
-  };
-
-  let neuronState: NeuronState;
-  $: neuronState = getSnsNeuronState(neuron);
-
-  let neuronStake: bigint;
-  $: neuronStake = getSnsNeuronStake(neuron);
-
-  let dissolveDelaySeconds: bigint;
-  $: dissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
+  let neuronDissolveDelaySeconds: bigint;
+  $: neuronDissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
 
   let snsParameters: NervousSystemParameters | undefined;
   $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
-  let maxDissolveDelaySeconds: number | undefined;
-  $: maxDissolveDelaySeconds =
-    snsParameters === undefined
-      ? undefined
-      : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
+  let neuronStake: TokenAmount;
+  $: neuronStake = TokenAmount.fromE8s({
+    amount: getSnsNeuronStake(neuron),
+    token,
+  });
 
-  let minDissolveDelaySeconds: number | undefined;
-  $: minDissolveDelaySeconds =
-    snsParameters === undefined
-      ? undefined
-      : Number(
-          fromDefinedNullable(
-            snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
-          )
-        );
+  let neuronState: NeuronState;
+  $: neuronState = getSnsNeuronState(neuron);
 
-  let votingPower: number | undefined;
-  $: if (neuron !== undefined && snsParameters !== undefined) {
-    votingPower = snsNeuronVotingPower({
-      newDissolveDelayInSeconds: BigInt(delayInSeconds),
-      neuron,
-      snsParameters,
-    });
-  }
+  const calculateVotingPower = (delayInSeconds: number) =>
+    isNullish(snsParameters)
+      ? 0n
+      : snsNeuronVotingPower({
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          neuron,
+          snsParameters,
+        });
+  let maxSnsDelayInSeconds: number | undefined;
+  $: maxSnsDelayInSeconds = isNullish(snsParameters)
+    ? undefined
+    : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
+
+  let minSnsDissolveDelaySeconds: number | undefined;
+  $: minSnsDissolveDelaySeconds = isNullish(snsParameters)
+    ? undefined
+    : Number(
+        fromDefinedNullable(
+          snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
+        )
+      );
 
   let minDissolveDelayDescription = "";
-  $: minDissolveDelayDescription =
-    minDissolveDelaySeconds === undefined
-      ? ""
-      : replacePlaceholders($i18n.sns_neurons.dissolve_delay_description, {
-          $duration: secondsToDissolveDelayDuration(
-            BigInt(minDissolveDelaySeconds)
-          ),
-        });
+  $: minDissolveDelayDescription = isNullish(snsParameters)
+    ? ""
+    : replacePlaceholders($i18n.sns_neurons.dissolve_delay_description, {
+        $duration: secondsToDissolveDelayDuration(
+          BigInt(minSnsDissolveDelaySeconds)
+        ),
+      });
 
-  let disableUpdate: boolean;
-  $: disableUpdate =
-    delayInSeconds < (minDissolveDelaySeconds ?? 0) ||
-    delayInSeconds <= minDelayInSeconds;
-  const dispatcher = createEventDispatcher();
-  const cancel = (): void => {
-    dispatcher("nnsCancel");
-  };
-
-  const goToConfirmation = async () => {
-    dispatcher("nnsConfirmDelay");
-  };
 </script>
 
-<div class="wrapper">
-  <div>
-    <p class="label">{$i18n.neurons.neuron_id}</p>
-    <Hash
-      id="neuron-id"
-      tagName="p"
-      testId="neuron-id"
-      text={getSnsNeuronIdAsHexString(neuron)}
-    />
-  </div>
-
-  <div>
-    <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p data-tid="neuron-stake">
-      <Html
-        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
-          $amount: valueSpan(
-            formatToken({ value: neuronStake, detailed: true })
-          ),
-          $token: token.symbol,
-        })}
-      />
-    </p>
-  </div>
-
-  {#if dissolveDelaySeconds}
-    <div>
-      <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
-      <NeuronStateRemainingTime
-        state={neuronState}
-        timeInSeconds={dissolveDelaySeconds}
-        defaultGaps
-      />
-    </div>
-  {/if}
-
-  <div>
-    <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
-    <p class="description">{minDissolveDelayDescription}</p>
-
-    <div class="select-delay-container">
-      {#if maxDissolveDelaySeconds !== undefined}
-        <InputRange
-          ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-          min={0}
-          max={maxDissolveDelaySeconds}
-          bind:value={delayInSeconds}
-          handleInput={checkMinimum}
-        />
-      {/if}
-      <div class="details">
-        <div>
-          <p class="label">
-            {#if votingPower !== undefined}
-              {formatVotingPower(votingPower)}
-            {/if}
-          </p>
-          <p>{$i18n.neurons.voting_power}</p>
-        </div>
-        <div>
-          {#if delayInSeconds > 0}
-            <p class="label">{secondsToDuration(BigInt(delayInSeconds))}</p>
-          {:else}
-            <p class="label">{$i18n.neurons.no_delay}</p>
-          {/if}
-          <p>{$i18n.neurons.dissolve_delay_title}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toolbar">
-    <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
-      >{$i18n.core.cancel}</button
-    >
-    <button
-      class="primary"
-      disabled={disableUpdate}
-      on:click={goToConfirmation}
-      data-tid="go-confirm-delay-button"
-    >
-      {$i18n.neurons.update_delay}
-    </button>
-  </div>
-</div>
-
-<style lang="scss">
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
-  .select-delay-container {
-    width: 100%;
-
-    .details {
-      margin-top: var(--padding);
-      display: flex;
-      justify-content: space-around;
-    }
-  }
-</style>
+<SetDissolveDelay
+  bind:delayInSeconds
+  on:nnsCancel
+  on:nnsConfirmDelay
+  neuronIdText={getSnsNeuronIdAsHexString(neuron)}
+  {neuronState}
+  {neuronDissolveDelaySeconds}
+  {neuronStake}
+  minProjectDelayInSeconds={minSnsDissolveDelaySeconds}
+  minDelayInSeconds={Number(neuronDissolveDelaySeconds)}
+  maxDelayInSeconds={maxSnsDelayInSeconds}
+  {cancelButtonText}
+  {confirmButtonText}
+  {calculateVotingPower}
+  minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
+/>

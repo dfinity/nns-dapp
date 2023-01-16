@@ -44,8 +44,7 @@
 
   let disableUpdate: boolean;
   $: disableUpdate =
-    delayInDays <
-      Math.max(minDelayInDays, secondsToDays(minProjectDelayInSeconds)) ||
+    delayInDays < secondsToDays(minProjectDelayInSeconds) ||
     delayInDays <= minDelayInDays ||
     delayInDays > maxDelayInDays;
 
