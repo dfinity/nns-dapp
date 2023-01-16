@@ -73,7 +73,7 @@
         $token: tokenSymbol,
       })}
     >
-      <AmountDisplay amount={accountBalance} inline />
+      <AmountDisplay copy amount={accountBalance} inline />
     </Tooltip>
   </KeyValuePair>
 
@@ -99,5 +99,9 @@
 <style lang="scss">
   p {
     margin: 0;
+  }
+
+  div {
+    --token-font-size: var(--font-size-h3);
   }
 </style>
