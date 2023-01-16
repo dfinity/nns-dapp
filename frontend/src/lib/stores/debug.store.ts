@@ -15,7 +15,7 @@ import {
 } from "svelte/store";
 import { accountsStore } from "./accounts.store";
 import { canistersStore } from "./canisters.store";
-import { knownNeuronsStore } from "./knownNeurons.store";
+import { knownNeuronsStore } from "./known-neurons.store";
 import { neuronsStore } from "./neurons.store";
 import { projectsStore } from "./projects.store";
 import {
