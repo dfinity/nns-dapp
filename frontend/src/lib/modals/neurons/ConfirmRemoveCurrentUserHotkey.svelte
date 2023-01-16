@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import ConfirmationModal from "../ConfirmationModal.svelte";
+  import ConfirmationModal from "../common/ConfirmationModal.svelte";
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>

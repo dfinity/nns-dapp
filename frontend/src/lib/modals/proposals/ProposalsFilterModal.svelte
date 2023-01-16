@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { Modal } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
   } from "$lib/types/proposals";
-  import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { enumValues } from "$lib/utils/enum.utils";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -17,14 +15,37 @@
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
+  import FilterModal from "../common/FilterModal.svelte";
+  import type { Filter } from "$lib/types/filters";
 
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
   let category: string;
+  let i18nKeys: unknown;
+  $: i18nKeys =
+    props?.category !== undefined
+      ? keyOf({ obj: $i18n, key: props?.category })
+      : undefined;
   let filters: ProposalsFilters | undefined;
-  let filtersValues: number[];
+  let filtersValues: Filter<Topic | ProposalRewardStatus | ProposalStatus>[];
   let selectedFilters: (Topic | ProposalRewardStatus | ProposalStatus)[];
+
+  let mapToFilter: (
+    value: Topic | ProposalRewardStatus | ProposalStatus
+  ) => Filter<Topic | ProposalRewardStatus | ProposalStatus>;
+  $: mapToFilter = (value: Topic | ProposalRewardStatus | ProposalStatus) => {
+    return {
+      id: String(value),
+      value,
+      name:
+        keyOfOptional({
+          obj: i18nKeys,
+          key: filters?.[value] ?? "Unspecified",
+        }) ?? "Unspecified",
+      checked: selectedFilters?.includes(value),
+    };
+  };
 
   $: visible = props !== undefined;
   $: category = props?.category ?? "uncategorized";
@@ -35,6 +56,7 @@
         .filter((value) =>
           category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
         )
+        .map(mapToFilter)
     : [];
   $: selectedFilters = props?.selectedFilters || [];
 
@@ -72,8 +94,13 @@
     }
   };
 
-  const onChange = (filter: Topic | ProposalRewardStatus | ProposalStatus) =>
-    applyFilterChange(filter);
+  const onChange = ({
+    detail: { filter },
+  }: CustomEvent<{
+    filter: Filter<Topic | ProposalRewardStatus | ProposalStatus>;
+  }>) => {
+    applyFilterChange(filter.value);
+  };
 
   const filter = () => {
     updateProposalStoreFilters();
@@ -82,42 +109,14 @@
   };
 </script>
 
-<Modal {visible} on:nnsClose={close} role="alert">
+<FilterModal
+  {visible}
+  on:nnsClose={close}
+  on:nnsConfirm={filter}
+  on:nnsChange={onChange}
+  filters={filtersValues}
+>
   <span slot="title"
     >{keyOfOptional({ obj: $i18n.voting, key: category }) ?? ""}</span
   >
-
-  {#if filters}
-    <div class="filters">
-      {#each filtersValues as key (key)}
-        {@const keys = keyOf({ obj: $i18n, key: category })}
-        <Checkbox
-          inputId={`${key}`}
-          checked={selectedFilters.includes(key)}
-          on:nnsChange={() => onChange(key)}
-          >{keyOf({ obj: keys, key: filters[key] })}</Checkbox
-        >
-      {/each}
-    </div>
-  {/if}
-
-  <svelte:fragment slot="footer">
-    <button class="secondary" type="button" on:click={close}>
-      {$i18n.core.cancel}
-    </button>
-    <button
-      class="primary"
-      type="button"
-      on:click={filter}
-      data-tid="apply-proposals-filter"
-    >
-      {$i18n.core.filter}
-    </button>
-  </svelte:fragment>
-</Modal>
-
-<style lang="scss">
-  .filters {
-    --checkbox-padding: var(--padding-2x) var(--padding) var(--padding-2x);
-  }
-</style>
+</FilterModal>

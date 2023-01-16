@@ -91,7 +91,7 @@ describe("ProposalsFilterModal", () => {
     fireEvent.click(secondInput);
     await waitFor(() => expect(secondInput.checked).toBeTruthy());
 
-    await clickByTestId(queryByTestId, "apply-proposals-filter");
+    await clickByTestId(queryByTestId, "apply-filters");
 
     const selectedTopics = get(proposalsFiltersStore).topics;
 
