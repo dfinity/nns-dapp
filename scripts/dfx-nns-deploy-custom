@@ -11,6 +11,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
+optparse.define short=f long=features desc="The feature set you would like in the test environment" variable=DFX_NETWORK_FEATURES default="nns"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 set -euo pipefail
@@ -24,8 +25,23 @@ rm -f nns-dapp.wasm nns-dapp_local.wasm
 : "Get our chosen version of II and inject it into the wasm cache."
 "$SOURCE_DIR"/dfx-software-ii-cache
 
-: "Deploy nns-dapp with other NNS canisters"
-dfx nns install
+case "$DFX_NETWORK_FEATURES" in
+nns)
+  : "Deploy nns-dapp with other NNS canisters"
+  dfx start --background --clean
+  dfx nns install
+  ;;
+sns)
+  : "Deploy nns-dapp with NNS and SNS canisters"
+  dfx-sns-demo-install
+  dfx-sns-demo
+*)
+  {
+    echo "ERROR: Unsupported feature set: '$DFX_NETWORK_FEATURES'"
+    exit 1
+  } >&2
+  ;;
+esac
 
 : "Verify that deployment has the expected canisters"
 for canister_name in nns-dapp internet_identity; do
