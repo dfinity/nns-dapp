@@ -1,6 +1,6 @@
 import { acquireICPTs, acquireSnsTokens } from "$lib/api/dev.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import type { AccountsWritableStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
   snsAccountsStore,
@@ -12,7 +12,7 @@ import { syncAccounts } from "./accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getICPs = async (icps: number) => {
-  const { main }: AccountsWritableStore = get(accountsStore);
+  const { main }: AccountsStoreData = get(accountsStore);
 
   if (!main) {
     throw new Error("No account found to get ICPs");

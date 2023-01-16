@@ -13,7 +13,7 @@ import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import type { AccountsWritableStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -33,7 +33,7 @@ import { queryAndUpdate } from "./utils.services";
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
 export const syncAccounts = (): Promise<void> => {
-  return queryAndUpdate<AccountsWritableStore, unknown>({
+  return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error: err, certified }) => {

@@ -6,7 +6,7 @@ import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import {
   accountsStore,
-  type AccountsWritableStore,
+  type AccountsStoreData,
 } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -147,7 +147,7 @@ describe("NnsAccounts", () => {
       jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(
-          (run: Subscriber<AccountsWritableStore>): (() => void) => {
+          (run: Subscriber<AccountsStoreData>): (() => void) => {
             run({
               main: undefined,
               subAccounts: undefined,

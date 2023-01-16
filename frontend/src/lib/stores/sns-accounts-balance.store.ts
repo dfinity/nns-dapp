@@ -6,13 +6,13 @@ import { writable, type Readable } from "svelte/store";
 
 type SnsAccountsBalance = ProjectAccountsBalance;
 
-export type SnsAccountsBalanceWritableStore = Record<
+export type SnsAccountsBalanceStoreData = Record<
   RootCanisterIdText,
   SnsAccountsBalance
 >;
 
 export interface SnsAccountsBalanceStore
-  extends Readable<SnsAccountsBalanceWritableStore> {
+  extends Readable<SnsAccountsBalanceStoreData> {
   setBalance: (params: {
     rootCanisterId: Principal;
     balance: TokenAmount | undefined | null;
@@ -28,10 +28,10 @@ export interface SnsAccountsBalanceStore
  * - reset: reset the store to an empty state. used for testing purpose.
  */
 const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
-  const initialEmptyWritableStore: SnsAccountsBalanceWritableStore = {};
+  const initialEmptyStoreData: SnsAccountsBalanceStoreData = {};
 
-  const { subscribe, update, set } = writable<SnsAccountsBalanceWritableStore>(
-    initialEmptyWritableStore
+  const { subscribe, update, set } = writable<SnsAccountsBalanceStoreData>(
+    initialEmptyStoreData
   );
 
   return {
@@ -46,7 +46,7 @@ const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
       balance: TokenAmount | undefined | null;
       certified: boolean;
     }) {
-      update((currentState: SnsAccountsBalanceWritableStore) => ({
+      update((currentState: SnsAccountsBalanceStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           balance,
@@ -57,7 +57,7 @@ const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
 
     // Used for testing
     reset() {
-      set(initialEmptyWritableStore);
+      set(initialEmptyStoreData);
     },
   };
 };

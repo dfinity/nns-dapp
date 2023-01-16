@@ -58,7 +58,7 @@ export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
 // ************** Sns summaries and swaps **************
 
-export type SnsQueryWritableStore =
+export type SnsQueryStoreData =
   | {
       metadata: QuerySnsMetadata[];
       swaps: QuerySnsSwapState[];
@@ -66,7 +66,7 @@ export type SnsQueryWritableStore =
   | undefined
   | null;
 
-export interface SnsQueryStore extends Readable<SnsQueryWritableStore> {
+export interface SnsQueryStore extends Readable<SnsQueryStoreData> {
   reset: () => void;
   setLoadingState: () => void;
   setData: (data: [QuerySnsMetadata[], QuerySnsSwapState[]]) => void;
@@ -90,7 +90,7 @@ export interface SnsQueryStore extends Readable<SnsQueryWritableStore> {
  * - updateData: a function to update the data of a particular root canister id - e.g. used to reload a particular sns project after user has participated to a sale
  */
 const initSnsQueryStore = (): SnsQueryStore => {
-  const { subscribe, set, update } = writable<SnsQueryWritableStore>(undefined);
+  const { subscribe, set, update } = writable<SnsQueryStoreData>(undefined);
 
   return {
     subscribe,
@@ -124,25 +124,25 @@ const initSnsQueryStore = (): SnsQueryStore => {
       data: [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined];
       rootCanisterId: string;
     }) {
-      update((store: SnsQueryWritableStore) => ({
+      update((data: SnsQueryStoreData) => ({
         metadata:
           updatedMetadata === undefined
-            ? (store?.metadata ?? []).filter(
+            ? (data?.metadata ?? []).filter(
                 ({ rootCanisterId: canisterId }) =>
                   canisterId !== rootCanisterId
               )
-            : (store?.metadata ?? []).map((metadata) =>
+            : (data?.metadata ?? []).map((metadata) =>
                 metadata.rootCanisterId === rootCanisterId
                   ? updatedMetadata
                   : metadata
               ),
         swaps:
           updatedSwap === undefined
-            ? (store?.swaps ?? []).filter(
+            ? (data?.swaps ?? []).filter(
                 ({ rootCanisterId: canisterId }) =>
                   canisterId !== rootCanisterId
               )
-            : (store?.swaps ?? []).map((swap) =>
+            : (data?.swaps ?? []).map((swap) =>
                 swap.rootCanisterId === rootCanisterId ? updatedSwap : swap
               ),
       }));
@@ -162,9 +162,9 @@ const initSnsQueryStore = (): SnsQueryStore => {
       swapData: QuerySnsSwapState;
       rootCanisterId: string;
     }) {
-      update((store: SnsQueryWritableStore) => ({
-        metadata: store?.metadata ?? [],
-        swaps: (store?.swaps ?? []).map((swap) =>
+      update((data: SnsQueryStoreData) => ({
+        metadata: data?.metadata ?? [],
+        swaps: (data?.swaps ?? []).map((swap) =>
           swap.rootCanisterId === rootCanisterId ? swapData : swap
         ),
       }));
@@ -182,7 +182,7 @@ export const snsQueryStore = initSnsQueryStore();
  */
 export const snsSummariesStore = derived<SnsQueryStore, SnsSummary[]>(
   snsQueryStore,
-  (data: SnsQueryWritableStore) =>
+  (data: SnsQueryStoreData) =>
     mapAndSortSnsQueryToSummaries({
       metadata: data?.metadata ?? [],
       swaps: data?.swaps ?? [],

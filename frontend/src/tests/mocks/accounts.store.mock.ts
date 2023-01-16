@@ -3,7 +3,7 @@ import type {
   HardwareWalletAccountDetails,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { AccountsWritableStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -73,7 +73,7 @@ export const mockHardwareWalletAccountDetails: HardwareWalletAccountDetails = {
 
 export const mockAccountsStoreSubscribe =
   (subAccounts: Account[] = [], hardwareWalletAccounts: Account[] = []) =>
-  (run: Subscriber<AccountsWritableStore>): (() => void) => {
+  (run: Subscriber<AccountsStoreData>): (() => void) => {
     run({
       main: mockMainAccount,
       subAccounts,
