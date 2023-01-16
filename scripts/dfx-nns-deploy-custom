@@ -11,7 +11,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-optparse.define short=f long=features desc="The feature set you would like in the test environment" variable=DFX_NETWORK_FEATURES default="nns"
+clap.define short=f long=features desc="The feature set you would like in the test environment" variable=DFX_NETWORK_FEATURES default="nns"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 set -euo pipefail
