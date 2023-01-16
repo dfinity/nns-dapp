@@ -46,7 +46,7 @@
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
-        proposalId: `${id.id}`,
+        proposalId: `${id?.id}`,
       })
     );
 </script>

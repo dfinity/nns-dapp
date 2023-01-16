@@ -11,8 +11,6 @@
 
   export let referrerPath: AppPath | undefined = undefined;
   export let proposalIdText: string | null | undefined;
-
-  $: console.log(proposalIdText)
 </script>
 
 <main>
