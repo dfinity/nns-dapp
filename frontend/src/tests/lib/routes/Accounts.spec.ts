@@ -20,10 +20,17 @@ import {
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
+import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/sns-accounts-balance.services", () => {
+  return {
+    uncertifiedLoadSnsAccountsBalances: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -122,5 +129,11 @@ describe("Accounts", () => {
     await waitFor(() => {
       expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
+  });
+
+  it("should load Sns accounts balances", () => {
+    render(Accounts);
+
+    expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled();
   });
 });
