@@ -14,6 +14,7 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 
 jest.mock("$lib/services/sns-transactions.services", () => ({
   loadAccountTransactions: jest.fn(),
@@ -38,6 +39,22 @@ describe("sns-accounts-services", () => {
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalled();
+
+      spyQuery.mockClear();
+    });
+
+    it("should also set balance to store", async () => {
+      const spyQuery = jest
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+
+      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
+
+      await tick();
+      const store = get(snsAccountsBalanceStore);
+      expect(store[mockPrincipal.toText()].balance.toE8s()).toEqual(
+        mockSnsMainAccount.balance.toE8s()
+      );
 
       spyQuery.mockClear();
     });
