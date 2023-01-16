@@ -23,6 +23,20 @@ describe("accountsStore", () => {
     expect(main).toEqual(mockMainAccount);
   });
 
+  it("should set certified data", () => {
+    const { certified: initialCertified } = get(accountsStore);
+    expect(initialCertified).toBeFalsy();
+
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: [],
+      certified: true,
+    });
+
+    const { certified } = get(accountsStore);
+    expect(certified).toBeTruthy();
+  });
+
   it("should reset account store", () => {
     accountsStore.set({ main: mockMainAccount, subAccounts: [] });
 
