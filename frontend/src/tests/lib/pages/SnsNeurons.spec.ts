@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
@@ -12,20 +13,20 @@ import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import { mockStoreSubscribe } from "../../mocks/commont.mock";
+import en from "../../mocks/i18n.mock";
 import {
   buildMockSnsParametersStore,
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
-import en from "../../mocks/i18n.mock";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -141,12 +142,25 @@ describe("SnsNeurons", () => {
       .spyOn(snsProjectSelectedStore, "subscribe")
       .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
+    beforeAll(() => {
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+    });
+
     afterAll(() => jest.clearAllMocks());
 
-    it("should render Community Fund title", async () => {
+    it("should render empty text if no neurons", async () => {
       const { getByText } = render(SnsNeurons);
 
-      expect(getByText(en.sns_neurons.text)).toBeInTheDocument();
+      const expectedText = replacePlaceholders(en.sns_neurons.text, {
+        $project: mockSnsFullProject.summary.metadata.name,
+      });
+
+      await waitFor(() => expect(getByText(expectedText)).toBeInTheDocument());
     });
   });
 });

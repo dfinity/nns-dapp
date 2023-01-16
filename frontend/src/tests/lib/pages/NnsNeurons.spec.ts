@@ -8,12 +8,12 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
 } from "../../mocks/neurons.mock";
-import en from "../../mocks/i18n.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -87,15 +87,13 @@ describe("NnsNeurons", () => {
     beforeAll(() => {
       jest
         .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockNeuronsStoreSubscribe([])
-        );
+        .mockImplementation(buildMockNeuronsStoreSubscribe([]));
     });
 
-    it("should render an empty message",  () => {
+    it("should render an empty message", () => {
       const { getByText } = render(NnsNeurons);
 
       expect(getByText(en.neurons.text)).toBeInTheDocument();
-    })
-  })
+    });
+  });
 });
