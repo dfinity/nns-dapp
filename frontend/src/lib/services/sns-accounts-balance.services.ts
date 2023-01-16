@@ -61,6 +61,7 @@ export const uncertifiedLoadSnsAccountsBalances = async ({
     (
       summaries.filter(
         ({ metadataCertified, rootCanisterId }) =>
+          // As we perform only query calls, this function has to be chain with the loading of Sns projects that is also performed with "query" too
           metadataCertified === false &&
           !excludeRootCanisterIds.includes(rootCanisterId.toText())
       ) ?? []
