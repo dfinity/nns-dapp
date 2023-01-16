@@ -26,5 +26,5 @@
   on:blur
 >
   <MinButton on:click={setMin} slot="left" />
-  <MaxButton on:click={setMax} slot="right" />
+  <MaxButton on:click={setMax} slot="additional" />
 </InputWithError>
