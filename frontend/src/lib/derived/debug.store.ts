@@ -1,4 +1,21 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { projectsStore } from "$lib/derived/projects.store";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import {
+  proposalPayloadsStore,
+  proposalsFiltersStore,
+  proposalsStore,
+  votingNeuronSelectStore,
+} from "$lib/stores/proposals.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { AddAccountStore } from "$lib/types/add-account.context";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
@@ -13,23 +30,6 @@ import {
   type Readable,
   type Writable,
 } from "svelte/store";
-import { accountsStore } from "./accounts.store";
-import { canistersStore } from "./canisters.store";
-import { knownNeuronsStore } from "./knownNeurons.store";
-import { neuronsStore } from "./neurons.store";
-import { projectsStore } from "./projects.store";
-import {
-  proposalPayloadsStore,
-  proposalsFiltersStore,
-  proposalsStore,
-  votingNeuronSelectStore,
-} from "./proposals.store";
-import { snsAccountsStore } from "./sns-accounts.store";
-import { snsFunctionsStore } from "./sns-functions.store";
-import { snsNeuronsStore } from "./sns-neurons.store";
-import { snsTransactionsStore } from "./sns-transactions.store";
-import { transactionsFeesStore } from "./transaction-fees.store";
-import { voteRegistrationStore } from "./vote-registration.store";
 
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
   derived(store, (store) => store);

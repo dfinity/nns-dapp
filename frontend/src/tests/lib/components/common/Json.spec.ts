@@ -111,6 +111,16 @@ describe("Json", () => {
     expect(getByTitle(hash.join())).toBeInTheDocument();
   });
 
+  it("should not render empty root key element", () => {
+    const json = "test";
+    const { container, getByText } = render(Json, {
+      props: { json },
+    });
+
+    expect(getByText('"test"')).toBeInTheDocument();
+    expect(container.querySelector(".key")).toBeNull();
+  });
+
   it("should collaps and expand", async () => {
     const json = {
       obj: {

@@ -1,19 +1,9 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { makeDummyProposals } from "$lib/services/neurons.services";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
 
-  export let neuron: NeuronInfo;
-
-  let loading = false;
-
-  const makeProposals = async () => {
-    loading = true;
-    await makeDummyProposals(neuron.neuronId);
-    loading = false;
-  };
+  export let loading = false;
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
@@ -22,7 +12,7 @@
 
   <div>
     <button
-      on:click={makeProposals}
+      on:click
       class={`primary ${loading ? "icon-only" : ""}`}
       disabled={loading}
     >

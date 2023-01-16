@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";

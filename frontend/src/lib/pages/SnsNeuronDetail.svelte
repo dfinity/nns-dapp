@@ -22,7 +22,7 @@
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
-  import { debugSelectedSnsNeuronStore } from "$lib/stores/debug.store";
+  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.store";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -32,6 +32,8 @@
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -155,6 +157,9 @@
         <SnsNeuronInfoStake />
         <SnsNeuronMaturityCard />
         <SnsNeuronFollowingCard />
+        {#if IS_TESTNET}
+          <SnsNeuronProposalsCard />
+        {/if}
         {#if nonNullish(parameters)}
           <SnsNeuronHotkeysCard {parameters} />
         {/if}

@@ -4,13 +4,13 @@
   import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { sortedknownNeuronsStore } from "$lib/stores/knownNeurons.store";
+  import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
   import {
     followeesByTopic,
     isHotKeyControllable,

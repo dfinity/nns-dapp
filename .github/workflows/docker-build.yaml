@@ -83,7 +83,7 @@ jobs:
       - name: "Verify that the WASM module is small enough to deploy"
         run: |
          wasm_size="$(wc -c < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
-         max_size=3670016
+         max_size=3145728
          echo "WASM size:          $wasm_size"
          echo "Max supported size: $max_size"
          (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }

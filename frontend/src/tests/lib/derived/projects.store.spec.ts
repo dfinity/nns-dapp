@@ -2,7 +2,7 @@ import {
   activePadProjectsStore,
   committedProjectsStore,
   projectsStore,
-} from "$lib/stores/projects.store";
+} from "$lib/derived/projects.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
