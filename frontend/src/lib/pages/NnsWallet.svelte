@@ -20,7 +20,7 @@
   import {
     debugSelectedAccountStore,
     debugTransactions,
-  } from "$lib/stores/debug.store";
+  } from "$lib/derived/debug.store";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,

@@ -4,7 +4,7 @@
   import FollowNnsTopicSection from "./FollowNnsTopicSection.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
-  import { listKnownNeurons } from "$lib/services/knownNeurons.services";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
 

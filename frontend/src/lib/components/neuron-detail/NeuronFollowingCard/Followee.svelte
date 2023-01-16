@@ -2,7 +2,7 @@
   import type { Topic } from "@dfinity/nns";
   import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
-  import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+  import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
   import { Tag } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
