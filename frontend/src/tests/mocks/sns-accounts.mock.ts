@@ -31,7 +31,7 @@ export const mockSnsSubAccount: Account = {
     subaccount: Uint8Array.from(subAccount),
   }),
   balance: TokenAmount.fromString({
-    amount: "1234567.8901",
+    amount: "5671234.0189",
     token: {
       name: "Test",
       symbol: "TST",
