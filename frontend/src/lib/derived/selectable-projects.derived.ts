@@ -2,7 +2,7 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   type SnsFullProject,
-} from "$lib/stores/projects.store";
+} from "$lib/derived/projects.store";
 import type { SnsSummary } from "$lib/types/sns";
 import { derived, type Readable } from "svelte/store";
 

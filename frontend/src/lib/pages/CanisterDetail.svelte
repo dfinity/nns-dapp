@@ -20,7 +20,7 @@
     type CanisterDetailsContext,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
-  import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
+  import { debugSelectedCanisterStore } from "$lib/derived/debug.store";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";

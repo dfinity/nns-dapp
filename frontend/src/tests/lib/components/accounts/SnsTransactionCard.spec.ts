@@ -3,7 +3,7 @@
  */
 
 import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
-import { projectsStore } from "$lib/stores/projects.store";
+import { projectsStore } from "$lib/derived/projects.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";

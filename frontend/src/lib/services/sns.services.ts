@@ -5,7 +5,10 @@ import {
   querySnsSwapCommitments,
   querySnsSwapState,
 } from "$lib/api/sns.api";
-import { projectsStore, type SnsFullProject } from "$lib/stores/projects.store";
+import {
+  projectsStore,
+  type SnsFullProject,
+} from "$lib/derived/projects.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";

@@ -3,9 +3,9 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { committedProjectsStore } from "$lib/derived/projects.store";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { committedProjectsStore } from "$lib/stores/projects.store";
 import { page } from "$mocks/$app/stores";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";

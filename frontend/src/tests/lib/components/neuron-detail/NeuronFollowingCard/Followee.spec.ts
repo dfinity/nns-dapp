@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";

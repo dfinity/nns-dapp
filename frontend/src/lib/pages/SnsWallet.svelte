@@ -6,7 +6,7 @@
   import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { debugSelectedAccountStore } from "$lib/stores/debug.store";
+  import { debugSelectedAccountStore } from "$lib/derived/debug.store";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,

@@ -1,6 +1,6 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { committedProjectsStore } from "$lib/derived/projects.store";
 import { selectableProjects } from "$lib/derived/selectable-projects.derived";
-import { committedProjectsStore } from "$lib/stores/projects.store";
 import { get } from "svelte/store";
 import {
   mockProjectSubscribe,

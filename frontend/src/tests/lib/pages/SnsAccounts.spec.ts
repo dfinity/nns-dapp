@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import { committedProjectsStore } from "$lib/derived/projects.store";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { committedProjectsStore } from "$lib/stores/projects.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";

@@ -1,20 +1,10 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import type { AccountsWritableStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";
-  import AddAcountModal from "$lib/modals/accounts/AddAccountModal.svelte";
+  import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-
-  let accounts: AccountsWritableStore | undefined;
-
-  const unsubscribe: Unsubscriber = accountsStore.subscribe(
-    async (storeData: AccountsWritableStore) => (accounts = storeData)
-  );
-
-  onDestroy(unsubscribe);
+  import { nonNullish } from "$lib/utils/utils";
 
   let modal: "AddAccountModal" | "NewTransaction" | undefined = undefined;
   const openAddAccountModal = () => (modal = "AddAccountModal");
@@ -23,13 +13,13 @@
 </script>
 
 {#if modal === "AddAccountModal"}
-  <AddAcountModal on:nnsClose={closeModal} />
+  <AddAccountModal on:nnsClose={closeModal} />
 {/if}
 {#if modal === "NewTransaction"}
   <IcpTransactionModal on:nnsClose={closeModal} />
 {/if}
 
-{#if accounts !== undefined}
+{#if nonNullish($accountsStore)}
   <Footer>
     <button
       class="primary full-width"
