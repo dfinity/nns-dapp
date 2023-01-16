@@ -15,4 +15,6 @@
   });
 </script>
 
-<h1>SnsProposalDetail: {proposalIdText}</h1>
+<div class="content-grid" data-tid="sns-proposal-details-grid">
+  <h1>SnsProposalDetail: {proposalIdText}</h1>
+</div>
