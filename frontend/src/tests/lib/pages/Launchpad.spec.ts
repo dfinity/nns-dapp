@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import Launchpad from "$lib/pages/Launchpad.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
