@@ -1,6 +1,5 @@
 import type { ProjectAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import type { RootCanisterIdText } from "$lib/types/sns";
-import { removeKeys } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { writable, type Readable } from "svelte/store";
@@ -16,7 +15,7 @@ export interface SnsAccountsBalanceStore
   extends Readable<SnsAccountsBalanceWritableStore> {
   setBalance: (params: {
     rootCanisterId: Principal;
-    balance: TokenAmount | undefined;
+    balance: TokenAmount | undefined | null;
     certified: boolean;
   }) => void;
 }
@@ -33,7 +32,7 @@ const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
       certified,
     }: {
       rootCanisterId: Principal;
-      balance: TokenAmount | undefined;
+      balance: TokenAmount | undefined | null;
       certified: boolean;
     }) {
       update((currentState: SnsAccountsBalanceWritableStore) => ({

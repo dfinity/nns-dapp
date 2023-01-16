@@ -10,7 +10,7 @@ import type { TokenAmount } from "@dfinity/nns";
 import { derived } from "svelte/store";
 
 export interface ProjectAccountsBalance {
-  balance: TokenAmount | undefined;
+  balance: TokenAmount | undefined | null;
   certified: boolean;
 }
 

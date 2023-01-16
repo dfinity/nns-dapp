@@ -8,10 +8,7 @@ import type {
   RootCanisterIdText,
   SnsSummary,
 } from "$lib/types/sns";
-import { toToastError } from "$lib/utils/error.utils";
 import { sumAccounts } from "$lib/utils/sns-accounts.utils";
-import { SnsWrapper } from "@dfinity/sns";
-import { ApiErrorKey } from "$lib/types/api.errors";
 
 const uncertifiedLoadSnsAccountsBalance = ({
   rootCanisterId,
@@ -27,8 +24,17 @@ const uncertifiedLoadSnsAccountsBalance = ({
         rootCanisterId,
         certified,
       }),
-    onError: ({ error: err }) => {
+    onError: ({ error: err, certified }) => {
       console.error(err);
+
+      // Hide data on error
+      snsAccountsBalanceStore.setBalance({
+        balance: null,
+        rootCanisterId,
+        certified,
+      });
+
+      throw err;
     },
     logMessage: "Syncing Sns Accounts Balance",
     strategy: "query",
@@ -63,13 +69,11 @@ export const uncertifiedLoadSnsAccountsBalances = async ({
         rootCanisterId,
       })
     )
-  )
+  );
 
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
   if (error) {
-    toastsError(
-      {labelKey: "error.sns_accounts_balance_load"}
-    );
+    toastsError({ labelKey: "error.sns_accounts_balance_load" });
   }
-}
+};
