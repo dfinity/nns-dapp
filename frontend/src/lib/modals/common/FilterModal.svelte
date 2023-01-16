@@ -18,13 +18,11 @@
   $: loading = isNullish(filters);
 
   onMount(() => {
-    if (filters !== undefined) {
-      return;
+    if (isNullish(filters)) {
+      startBusy({
+        initiator: "load-sns-filters",
+      });
     }
-
-    startBusy({
-      initiator: "load-sns-filters",
-    });
   });
 
   $: loading,
