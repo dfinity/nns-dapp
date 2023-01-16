@@ -6,6 +6,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { committedProjectsStore } from "$lib/derived/projects.store";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
+import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -20,7 +21,6 @@ import {
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
-import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

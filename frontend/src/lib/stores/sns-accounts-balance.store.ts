@@ -18,10 +18,15 @@ export interface SnsAccountsBalanceStore
     balance: TokenAmount | undefined | null;
     certified: boolean;
   }) => void;
+  reset: () => void;
 }
 
 const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
-  const { subscribe, update } = writable<SnsAccountsBalanceWritableStore>({});
+  const initialEmptyWritableStore: SnsAccountsBalanceWritableStore = {};
+
+  const { subscribe, update, set } = writable<SnsAccountsBalanceWritableStore>(
+    initialEmptyWritableStore
+  );
 
   return {
     subscribe,
@@ -42,6 +47,11 @@ const initSnsProjectsAccountsBalanceStore = (): SnsAccountsBalanceStore => {
           certified,
         },
       }));
+    },
+
+    // Used for testing
+    reset() {
+      set(initialEmptyWritableStore);
     },
   };
 };
