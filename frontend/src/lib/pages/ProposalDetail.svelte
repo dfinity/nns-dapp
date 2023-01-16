@@ -10,7 +10,7 @@
     SelectedProposalStore,
   } from "$lib/types/selected-proposal.context";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
-  import { debugSelectedProposalStore } from "$lib/derived/debug.store";
+  import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";

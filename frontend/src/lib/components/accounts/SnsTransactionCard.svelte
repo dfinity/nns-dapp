@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { projectsStore } from "$lib/derived/projects.store";
+  import { projectsStore } from "$lib/derived/projects.derived";
   import type { Account } from "$lib/types/account";
   import { mapSnsTransaction } from "$lib/utils/sns-transactions.utils";
   import type { Transaction } from "$lib/utils/transactions.utils";

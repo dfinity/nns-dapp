@@ -2,7 +2,7 @@ import {
   activePadProjectsStore,
   committedProjectsStore,
   projectsStore,
-} from "$lib/derived/projects.store";
+} from "$lib/derived/projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -12,8 +12,8 @@ import {
 } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-describe("projects.store", () => {
-  describe("projectsStore", () => {
+describe("projects.derived", () => {
+  describe("projectsDerived", () => {
     beforeAll(() => {
       snsQueryStore.reset();
     });
@@ -39,7 +39,7 @@ describe("projects.store", () => {
       expect(projects).toHaveLength(2);
     });
   });
-  describe("filter projects store", () => {
+  describe("filter projects derived", () => {
     beforeAll(() => {
       snsQueryStore.reset();
     });
