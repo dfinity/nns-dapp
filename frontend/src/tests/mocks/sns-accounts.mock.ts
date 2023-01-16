@@ -11,7 +11,7 @@ export const mockSnsMainAccount: Account = {
     owner: mockPrincipal,
   }),
   balance: TokenAmount.fromString({
-    amount: "1234567.8901",
+    amount: "8901567.1234",
     token: {
       name: "Test",
       symbol: "TST",
