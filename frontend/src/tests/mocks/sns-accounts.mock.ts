@@ -1,4 +1,4 @@
-import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
+import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -42,7 +42,7 @@ export const mockSnsSubAccount: Account = {
   type: "subAccount",
 };
 
-const mockSnsAccountsStore = (principal: Principal): SnsAccountsStore => ({
+const mockSnsAccountsStore = (principal: Principal): SnsAccountsStoreData => ({
   [principal.toText()]: {
     accounts: [mockSnsMainAccount],
     certified: true,
@@ -51,7 +51,7 @@ const mockSnsAccountsStore = (principal: Principal): SnsAccountsStore => ({
 
 export const mockSnsAccountsStoreSubscribe =
   (principal: Principal = mockPrincipal) =>
-  (run: Subscriber<SnsAccountsStore>): (() => void) => {
+  (run: Subscriber<SnsAccountsStoreData>): (() => void) => {
     run(mockSnsAccountsStore(principal));
     return () => undefined;
   };

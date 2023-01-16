@@ -1,5 +1,4 @@
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -26,19 +25,11 @@ export const loadSnsAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
-    onLoad: ({ response: accounts, certified }) => {
-      snsAccountsStore.setAccounts({
-        accounts,
-        rootCanisterId,
-        certified,
-      });
-
-      snsAccountsBalanceStore.setBalance({
-        balance: sumAccounts(accounts),
-        rootCanisterId,
-        certified,
-      });
-    },
+    onLoad: ({ response: accounts, certified }) => snsAccountsStore.setAccounts({
+      accounts,
+      rootCanisterId,
+      certified,
+    }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 

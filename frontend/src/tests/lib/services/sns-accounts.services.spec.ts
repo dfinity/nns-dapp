@@ -5,7 +5,6 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
 import { loadAccountTransactions } from "$lib/services/sns-transactions.services";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -39,22 +38,6 @@ describe("sns-accounts-services", () => {
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalled();
-
-      spyQuery.mockClear();
-    });
-
-    it("should also set balance to store", async () => {
-      const spyQuery = jest
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-
-      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
-
-      await tick();
-      const store = get(snsAccountsBalanceStore);
-      expect(store[mockPrincipal.toText()].balance.toE8s()).toEqual(
-        mockSnsMainAccount.balance.toE8s()
-      );
 
       spyQuery.mockClear();
     });

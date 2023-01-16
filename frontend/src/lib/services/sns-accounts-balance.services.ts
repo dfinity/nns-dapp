@@ -1,6 +1,5 @@
 import { getSnsAccounts } from "$lib/api/sns-ledger.api";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type {
@@ -9,6 +8,8 @@ import type {
   SnsSummary,
 } from "$lib/types/sns";
 import { sumAccounts } from "$lib/utils/sns-accounts.utils";
+import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 
 const uncertifiedLoadSnsAccountsBalance = ({
   rootCanisterId,
@@ -19,21 +20,13 @@ const uncertifiedLoadSnsAccountsBalance = ({
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
-      snsAccountsBalanceStore.setBalance({
-        balance: sumAccounts(accounts),
+      snsAccountsStore.setAccounts({
+        accounts,
         rootCanisterId,
         certified,
       }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err }) => {
       console.error(err);
-
-      // Hide data on error
-      snsAccountsBalanceStore.setBalance({
-        balance: null,
-        rootCanisterId,
-        certified,
-      });
-
       throw err;
     },
     logMessage: "Syncing Sns Accounts Balance",

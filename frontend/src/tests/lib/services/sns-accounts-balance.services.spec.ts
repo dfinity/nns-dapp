@@ -1,11 +1,12 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts-balance.services";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import { mockSnsSummaryList } from "../../mocks/sns-projects.mock";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {
@@ -17,7 +18,7 @@ describe("sns-accounts-balance.services", () => {
   afterEach(() => {
     jest.clearAllMocks();
 
-    snsAccountsBalanceStore.reset();
+    snsAccountsStore.reset();
   });
 
   const summary = {
@@ -35,7 +36,7 @@ describe("sns-accounts-balance.services", () => {
 
     await tick();
 
-    const store = get(snsAccountsBalanceStore);
+    const store = get(projectsAccountsBalance);
     expect(Object.keys(store)).toHaveLength(1);
     expect(store[summary.rootCanisterId.toText()].balance.toE8s()).toEqual(
       mockSnsMainAccount.balance.toE8s()
@@ -59,7 +60,7 @@ describe("sns-accounts-balance.services", () => {
 
     await tick();
 
-    const store = get(snsAccountsBalanceStore);
+    const store = get(projectsAccountsBalance);
     expect(Object.keys(store)).toHaveLength(0);
     expect(spyQuery).not.toHaveBeenCalled();
   });
@@ -79,7 +80,7 @@ describe("sns-accounts-balance.services", () => {
 
     await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
 
-    const store = get(snsAccountsBalanceStore);
+    const store = get(projectsAccountsBalance);
     expect(store[summary.rootCanisterId.toText()].balance).toBeNull();
   });
 });
