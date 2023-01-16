@@ -70,6 +70,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
+          # Version from Mon Jan 16 10:10:47
+          ref: 'e1d7dd4c10fb8a731a534ae2ef4b08474fea5f6b'
 
       - name: Add SNS scripts to the path
         run: |
