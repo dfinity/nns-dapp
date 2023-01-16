@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
-  import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
+  import NnsProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
   import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { ProposalStatus, ProposalRewardStatus, Topic } from "@dfinity/nns";
@@ -90,7 +90,7 @@
   </SignedInOnly>
 </div>
 
-<ProposalsFilterModal
+<NnsProposalsFilterModal
   props={modalFilters}
   on:nnsClose={() => (modalFilters = undefined)}
 />

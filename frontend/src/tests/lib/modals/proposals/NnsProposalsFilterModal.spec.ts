@@ -3,7 +3,7 @@
  */
 
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import ProposalsFilterModal from "$lib/modals/proposals/ProposalsFilterModal.svelte";
+import ProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "$lib/types/proposals";
 import { enumKeys } from "$lib/utils/enum.utils";
@@ -91,7 +91,7 @@ describe("ProposalsFilterModal", () => {
     fireEvent.click(secondInput);
     await waitFor(() => expect(secondInput.checked).toBeTruthy());
 
-    await clickByTestId(queryByTestId, "apply-proposals-filter");
+    await clickByTestId(queryByTestId, "apply-filters");
 
     const selectedTopics = get(proposalsFiltersStore).topics;
 
