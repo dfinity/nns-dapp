@@ -5,7 +5,7 @@
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
@@ -24,7 +24,7 @@ jest.mock("$lib/services/neurons.services", () => {
   };
 });
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

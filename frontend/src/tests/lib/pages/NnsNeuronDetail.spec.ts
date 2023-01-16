@@ -13,7 +13,7 @@ import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn().mockResolvedValue(undefined),
   };
