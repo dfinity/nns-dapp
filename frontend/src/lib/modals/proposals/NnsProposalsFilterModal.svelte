@@ -22,7 +22,7 @@
 
   let visible: boolean;
   let category: string;
-  let i18nKeys: unknown;
+  let i18nKeys: unknown | undefined;
   $: i18nKeys =
     props?.category !== undefined
       ? keyOf({ obj: $i18n, key: props?.category })
@@ -41,7 +41,7 @@
       name:
         keyOfOptional({
           obj: i18nKeys,
-          key: filters?.[value] ?? "Unspecified",
+          key: filters?.[value] ?? "",
         }) ?? "Unspecified",
       checked: selectedFilters?.includes(value),
     };
