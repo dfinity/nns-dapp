@@ -3,7 +3,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { committedProjectsStore } from "$lib/stores/projects.store";
+  import { committedProjectsStore } from "$lib/derived/projects.store";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { goto } from "$app/navigation";
   import { UNIVERSE_PARAM } from "$lib/constants/routes.constants";
