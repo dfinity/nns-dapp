@@ -33,7 +33,6 @@ nns)
   ;;
 sns)
   : "Deploy nns-dapp with NNS and SNS canisters"
-  dfx-sns-demo-install
   dfx-sns-demo
   ;;
 *)
