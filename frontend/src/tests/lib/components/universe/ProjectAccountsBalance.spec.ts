@@ -4,7 +4,7 @@
 
 import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import {
@@ -74,9 +74,9 @@ describe("ProjectAccountsBalance", () => {
 
       const totalBalance = mockSnsMainAccount.balance;
 
-      snsAccountsBalanceStore.setBalance({
+      snsAccountsStore.setAccounts({
         rootCanisterId,
-        balance: totalBalance,
+        accounts: [mockSnsMainAccount],
         certified: true,
       });
 

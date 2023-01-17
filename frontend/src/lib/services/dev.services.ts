@@ -4,7 +4,7 @@ import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
   snsAccountsStore,
-  type SnsAccountsStore,
+  type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -35,7 +35,7 @@ export const getTokens = async ({
 }) => {
   // Accounts are loaded when user visits the Accounts page, so we need to load them here.
   await loadSnsAccounts({ rootCanisterId });
-  const store: SnsAccountsStore = get(snsAccountsStore);
+  const store: SnsAccountsStoreData = get(snsAccountsStore);
   const { accounts } = store[rootCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
 

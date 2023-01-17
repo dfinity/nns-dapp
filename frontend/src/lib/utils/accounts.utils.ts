@@ -1,5 +1,5 @@
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
+import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
@@ -101,7 +101,7 @@ export const getAccountByRootCanister = ({
 }: {
   identifier: string | undefined;
   nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStore;
+  snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account | undefined => {
   if (identifier === undefined) {
@@ -127,7 +127,7 @@ export const getAccountsByRootCanister = ({
   rootCanisterId,
 }: {
   nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStore;
+  snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account[] | undefined => {
   if (isNnsProject(rootCanisterId)) {
