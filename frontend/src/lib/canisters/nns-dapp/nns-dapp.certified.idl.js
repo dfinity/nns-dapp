@@ -37,6 +37,10 @@ export const idlFactory = ({ IDL }) => {
     Ok: IDL.Null,
     CanisterNotFound: IDL.Null,
   });
+  const FetchExchangeRateRequest = IDL.Record({
+    quote_symbol: IDL.Opt(IDL.Text),
+    base_symbol: IDL.Opt(IDL.Text),
+  });
   const ExchangeRateMetadata = IDL.Record({
     decimals: IDL.Nat32,
     forex_timestamp: IDL.Opt(IDL.Nat64),
@@ -61,7 +65,7 @@ export const idlFactory = ({ IDL }) => {
     quote_asset: ExchangeRateAsset,
     base_asset: ExchangeRateAsset,
   });
-  const ExchangeRateResult = IDL.Variant({
+  const FetchExchangeRateResponse = IDL.Variant({
     Ok: ExchangeRate,
     Err: IDL.Text,
   });
@@ -219,8 +223,8 @@ export const idlFactory = ({ IDL }) => {
       []
     ),
     fetch_exchange_rate: IDL.Func(
-      [IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
-      [ExchangeRateResult],
+      [FetchExchangeRateRequest],
+      [FetchExchangeRateResponse],
       []
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),

@@ -241,7 +241,11 @@ record {
     body: blob;
 };
 
-type ExchangeRateResult = variant { Ok : ExchangeRate; Err : text };
+type FetchExchangeRateRequest = record {
+    base_symbol: opt text;
+    quote_symbol: opt text;
+};
+type FetchExchangeRateResponse = variant { Ok : ExchangeRate; Err : text };
 type ExchangeRate = record {
     metadata : ExchangeRateMetadata;
     rate : nat64;
@@ -280,6 +284,6 @@ service : {
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
 
-    fetch_exchange_rate : (opt text, opt text) -> (ExchangeRateResult);
+    fetch_exchange_rate : (FetchExchangeRateRequest) -> (FetchExchangeRateResponse);
     get_exchange_rate : (text) -> (ExchangeRate) query;
 }

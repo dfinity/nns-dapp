@@ -5,13 +5,11 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::canisters::xrc::candid::ExchangeRate;
-use crate::canisters::xrc::canister::fetch_exchange_rate as fetch_exchange_rate_call;
-use crate::canisters::xrc::constants::{QUOTE_USD, RATE_ICP};
+use crate::dashboard::lib::{fetch_exchange_rate_impl, get_exchange_rate_impl};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
-use candid::{candid_method, CandidType, export_service};
+use candid::{CandidType};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
@@ -60,7 +58,6 @@ fn post_upgrade() {
     assets::init_assets();
 }
 
-#[candid_method(query)]
 #[export_name = "canister_query http_request"]
 pub fn http_request() {
     over(candid_one, assets::http_request);
@@ -71,7 +68,6 @@ pub fn http_request() {
 /// The account details contain each of the AccountIdentifiers linked to the user's account. These
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
-#[candid_method(query)]
 #[export_name = "canister_query get_account"]
 pub fn get_account() {
     over(candid, |()| get_account_impl());
@@ -89,7 +85,6 @@ fn get_account_impl() -> GetAccountResponse {
 ///
 /// Returns true if the account was created, else false (which happens if the principal already has
 /// an account).
-#[candid_method(update)]
 #[export_name = "canister_update add_account"]
 fn add_account() {
     over(candid, |()| add_account_impl());
@@ -105,7 +100,6 @@ fn add_account_impl() -> AccountIdentifier {
 ///
 /// The AccountIdentifier must be linked to the caller's account, else an empty Vec will be
 /// returned.
-#[candid_method(query)]
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
     over(candid_one, get_transactions_impl);
@@ -121,7 +115,6 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
 /// This newly created account can be used to send and receive ICP and is controlled only by the
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
-#[candid_method(update)]
 #[export_name = "canister_update create_sub_account"]
 pub fn create_sub_account() {
     over(candid_one, create_sub_account_impl);
@@ -139,7 +132,6 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
 /// Changes the alias given to the chosen sub account.
 ///
 /// These aliases are not visible externally or to anyone else.
-#[candid_method(update)]
 #[export_name = "canister_update rename_sub_account"]
 pub fn rename_sub_account() {
     over(candid_one, rename_sub_account_impl);
@@ -155,7 +147,6 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 /// A single hardware wallet can be linked to multiple user accounts, but in order to make calls to
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some readonly calls do not require signing, eg. viewing the account's ICP balance.
-#[candid_method(update)]
 #[export_name = "canister_update register_hardware_wallet"]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
@@ -171,7 +162,6 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
 }
 
 /// Returns the list of canisters which the user has attached to their account.
-#[candid_method(query)]
 #[export_name = "canister_query get_canisters"]
 pub fn get_canisters() {
     over(candid, |()| get_canisters_impl());
@@ -183,7 +173,6 @@ fn get_canisters_impl() -> Vec<NamedCanister> {
 }
 
 /// Attaches a canister to the user's account.
-#[candid_method(update)]
 #[export_name = "canister_update attach_canister"]
 pub fn attach_canister() {
     over(candid_one, attach_canister_impl);
@@ -195,7 +184,6 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
 }
 
 /// Detaches a canister from the user's account.
-#[candid_method(update)]
 #[export_name = "canister_update detach_canister"]
 pub fn detach_canister() {
     over(candid_one, detach_canister_impl);
@@ -206,13 +194,11 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
-#[candid_method(update)]
 #[export_name = "canister_update get_proposal_payload"]
 pub fn get_proposal_payload() {
     over_async(candid_one, proposals::get_proposal_payload)
 }
 
-#[candid_method(update)]
 #[export_name = "canister_update add_pending_notify_swap"]
 pub fn add_pending_notify_swap() {
     over(candid_one, add_pending_notify_swap_impl);
@@ -241,7 +227,6 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
 /// Some actions are 'multi-part' and are handled by background processes, eg. staking a neuron or
 /// topping up a canister, this method can be polled by the front end to check on the statuses of
 /// these actions.
-#[candid_method(query)]
 #[export_name = "canister_query get_multi_part_transaction_status"]
 pub fn get_multi_part_transaction_status() {
     over(candid, |(principal, block_height): (PrincipalId, BlockIndex)| {
@@ -292,7 +277,6 @@ fn get_multi_part_transaction_status_impl(
 }
 
 /// Returns the list of errors, if any, that have occurred while processing 'multi-part' actions.
-#[candid_method(query)]
 #[export_name = "canister_query get_multi_part_transaction_errors"]
 pub fn get_multi_part_transaction_errors() {
     over(candid, |()| get_multi_part_transaction_errors_impl());
@@ -306,7 +290,6 @@ fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
 ///
 /// These stats include things such as the number of accounts registered, the memory usage, the
 /// number of neurons created, etc.
-#[candid_method(query)]
 #[export_name = "canister_query get_stats"]
 pub fn get_stats() {
     over(candid, |()| get_stats_impl());
@@ -332,7 +315,6 @@ pub fn canister_heartbeat() {
 /// Add an asset to be served by the canister.
 ///
 /// Only a whitelist of assets are accepted.
-#[candid_method(update)]
 #[export_name = "canister_update add_stable_asset"]
 pub fn add_stable_asset() {
     over(candid_one, |asset_bytes: Vec<u8>| {
@@ -366,66 +348,12 @@ pub enum GetAccountResponse {
 
 /// Dashboard
 
-#[candid_method(query)]
 #[export_name = "canister_query get_exchange_rate"]
-pub fn get_exchange_rate(key: String) {
-    over(candid, |()| get_exchange_rate_impl(&key));
+pub fn get_exchange_rate() {
+    over(candid_one, get_exchange_rate_impl);
 }
 
-#[candid_method(update)]
 #[export_name = "canister_update fetch_exchange_rate"]
-pub async fn fetch_exchange_rate(
-    base_symbol: &Option<String>,
-    quote_symbol: &Option<String>,
-) -> Result<ExchangeRate, String> {
-    let result = fetch_exchange_rate_call(base_symbol, quote_symbol).await?;
-
-    match result {
-        Err(error) => Err(format!("Exchange rate cannot be queried: {:?}", error)),
-        Ok(exchange_rate) => {
-            set_exchange_rate_impl(base_symbol, quote_symbol, &exchange_rate);
-
-            Ok(exchange_rate)
-        }
-    }
-}
-
-fn get_exchange_rate_impl(key: &String) -> Option<ExchangeRate> {
-    STATE.with(|s| s.dashboard.borrow().get_exchange_rate(key))
-}
-
-fn set_exchange_rate_impl(base_symbol: &Option<String>, quote_symbol: &Option<String>, rate: &ExchangeRate) {
-    let key = [
-        base_symbol.clone().unwrap_or_else(|| RATE_ICP.to_string()),
-        "-".to_string(),
-        quote_symbol.clone().unwrap_or_else(|| QUOTE_USD.to_string()),
-    ]
-    .join("");
-    STATE.with(|s| s.dashboard.borrow_mut().set_exchange_rate(&key, rate));
-}
-
-
-///
-/// Generate did files
-///
-
-#[export_name = "canister_query __get_candid_interface_tmp_hack"]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        write(dir.join("nns-dapp-generated.did"), export_candid()).expect("Write failed.");
-    }
+pub fn fetch_exchange_rate() {
+    over_async(candid_one, fetch_exchange_rate_impl);
 }

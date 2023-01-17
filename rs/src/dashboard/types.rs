@@ -9,3 +9,14 @@ pub mod state {
         pub exchange_rates: HashMap<String, ExchangeRate>,
     }
 }
+
+pub mod interface {
+    use candid::CandidType;
+    use serde::Deserialize;
+
+    #[derive(CandidType, Deserialize)]
+    pub struct FetchExchangeRateArgs {
+        pub base_symbol: Option<String>,
+        pub quote_symbol: Option<String>,
+    }
+}

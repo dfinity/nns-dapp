@@ -24,17 +24,17 @@ import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
-  AccountIdentifier as AccountIdentifierString,
+  AccountIdentifierString,
   AddPendingNotifySwapRequest,
   CanisterDetails,
-  CreateSubAccountResponse,
+  CreateSubAccountResponse, FetchExchangeRateResponse,
   GetAccountResponse,
   GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
   RenameSubAccountResponse,
-  SubAccountDetails,
+  SubAccountDetails
 } from "./nns-dapp.types";
 
 export class NNSDappCanister {
@@ -349,4 +349,13 @@ export class NNSDappCanister {
       `Unknown response for add_pending_notify_swap ${JSON.stringify(response)}`
     );
   }
+
+  public fetchExchangeRate = async (): Promise<FetchExchangeRateResponse> => {
+    // Always certified, it's an update call
+    const { fetch_exchange_rate } = this.getNNSDappService(true);
+    return fetch_exchange_rate({
+      base_symbol: [],
+      quote_symbol: []
+    });
+  };
 }
