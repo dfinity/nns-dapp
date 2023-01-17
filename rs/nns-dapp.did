@@ -240,6 +240,26 @@ type HttpResponse =
         body: blob;
     };
 
+type ExchangeRateResult = variant { Ok : ExchangeRate; Err : text };
+type ExchangeRate = record {
+    metadata : ExchangeRateMetadata;
+    rate : nat64;
+    timestamp : nat64;
+    quote_asset : ExchangeRateAsset;
+    base_asset : ExchangeRateAsset;
+};
+type ExchangeRateAsset = record { class : ExchangeRateAssetClass; symbol : text };
+type ExchangeRateAssetClass = variant { Cryptocurrency; FiatCurrency };
+type ExchangeRateMetadata = record {
+    decimals : nat32;
+    forex_timestamp : opt nat64;
+    quote_asset_num_received_rates : nat64;
+    base_asset_num_received_rates : nat64;
+    base_asset_num_queried_sources : nat64;
+    standard_deviation : nat64;
+    quote_asset_num_queried_sources : nat64;
+};
+
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
@@ -258,4 +278,7 @@ service : {
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
+
+    fetch_exchange_rate : (opt text, opt text) -> (ExchangeRateResult);
+    get_exchange_rate : (text) -> (ExchangeRate) query;
 }
