@@ -15,21 +15,27 @@
       ?.balance;
 </script>
 
-{#if nonNullish(balance)}
-  <AmountDisplay text amount={balance} />
-{:else}
-  <div class="skeleton">
-    <SkeletonText />
-  </div>
-{/if}
+<div class="amount">
+  {#if nonNullish(balance)}
+    <AmountDisplay text amount={balance} />
+  {:else}
+    <div class="skeleton">
+      <SkeletonText />
+    </div>
+  {/if}
+</div>
 
 <style lang="scss">
+  .amount {
+    min-height: var(--padding-3x);
+  }
+
   .skeleton {
     display: flex;
     flex-direction: column;
-    height: var(--padding-4x);
+    height: var(--padding-3x);
     box-sizing: border-box;
-    padding: var(--padding-0_5x) 0;
+    padding: 0 0 var(--padding-0_5x);
     max-width: 240px;
   }
 </style>

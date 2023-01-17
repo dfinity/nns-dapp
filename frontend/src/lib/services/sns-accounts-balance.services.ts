@@ -3,11 +3,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type {
-  RootCanisterId,
-  RootCanisterIdText,
-  SnsSummary,
-} from "$lib/types/sns";
+import type { RootCanisterId, RootCanisterIdText } from "$lib/types/sns";
 
 const uncertifiedLoadSnsAccountsBalance = ({
   rootCanisterId,

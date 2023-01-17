@@ -106,15 +106,19 @@
       span.value {
         font-size: var(--token-font-size, var(--font-size-standard));
         font-weight: var(--font-weight-bold);
-
-        // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
-        line-height: 1.8;
       }
 
       vertical-align: sub;
 
       :global(button) {
         vertical-align: sub;
+      }
+    }
+
+    &.copy {
+      span.value {
+        // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
+        line-height: 1.8;
       }
     }
   }
