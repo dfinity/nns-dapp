@@ -1,6 +1,6 @@
-use crate::canisters::xrd::candid::AssetClass::Cryptocurrency;
-use crate::canisters::xrd::candid::{Asset, GetExchangeRateRequest, GetExchangeRateResult};
-use crate::canisters::xrd::constants::{QUOTE_USD, RATE_ICP, XRD_CANISTER_ID};
+use crate::canisters::xrc::candid::AssetClass::Cryptocurrency;
+use crate::canisters::xrc::candid::{Asset, GetExchangeRateRequest, GetExchangeRateResult};
+use crate::canisters::xrc::constants::{QUOTE_USD, RATE_ICP, XRC_CANISTER_ID};
 use dfn_candid::candid;
 use dfn_core::api::ic0::time;
 use dfn_core::call;
@@ -28,7 +28,7 @@ pub async fn fetch_exchange_rate(
         },
     };
 
-    let canister_id = CanisterId::from_str(XRD_CANISTER_ID).unwrap();
+    let canister_id = CanisterId::from_str(XRC_CANISTER_ID).unwrap();
     call(canister_id, "get_exchange_rate", candid, (request,))
         .await
         .map_err(|e| e.1)

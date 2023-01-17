@@ -5,9 +5,9 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::canisters::xrd::candid::ExchangeRate;
-use crate::canisters::xrd::canister::fetch_exchange_rate as fetch_exchange_rate_call;
-use crate::canisters::xrd::constants::{QUOTE_USD, RATE_ICP};
+use crate::canisters::xrc::candid::ExchangeRate;
+use crate::canisters::xrc::canister::fetch_exchange_rate as fetch_exchange_rate_call;
+use crate::canisters::xrc::constants::{QUOTE_USD, RATE_ICP};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};

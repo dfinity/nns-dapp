@@ -1,4 +1,4 @@
-use crate::canisters::xrd::candid::ExchangeRate;
+use crate::canisters::xrc::candid::ExchangeRate;
 use crate::dashboard::types::state::Dashboard;
 use crate::state::StableState;
 use dfn_candid::Candid;
