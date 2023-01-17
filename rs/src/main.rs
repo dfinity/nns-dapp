@@ -1,3 +1,4 @@
+use std::time::Duration;
 use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
@@ -5,14 +6,16 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::dashboard::lib::{fetch_exchange_rate_impl, get_exchange_rate_impl};
+use crate::dashboard::lib::{fetch_exchange_rate_impl, get_exchange_rate_impl, spawn_exchange_rate};
 use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::{CandidType};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::api::spawn;
 use ic_base_types::PrincipalId;
+use ic_cdk::timer::set_timer_interval;
 use ledger_canister::{AccountIdentifier, BlockIndex};
 
 mod accounts_store;
@@ -56,6 +59,10 @@ fn post_upgrade() {
     });
 
     assets::init_assets();
+
+    set_timer_interval(Duration::from_secs(10), || {
+        spawn(spawn_exchange_rate())
+    });
 }
 
 #[export_name = "canister_query http_request"]

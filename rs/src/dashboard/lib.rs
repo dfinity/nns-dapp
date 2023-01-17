@@ -1,3 +1,4 @@
+use dfn_core::api::print;
 use crate::canisters::xrc::candid::ExchangeRate;
 use crate::canisters::xrc::canister::fetch_exchange_rate as fetch_exchange_rate_call;
 use crate::canisters::xrc::constants::{QUOTE_USD, RATE_ICP};
@@ -6,6 +7,16 @@ use crate::state::STATE;
 
 pub fn get_exchange_rate_impl(key: String) -> Option<ExchangeRate> {
     STATE.with(|s| s.dashboard.borrow().get_exchange_rate(&key))
+}
+
+pub async fn spawn_exchange_rate() {
+    // TODO: we safely ignore the errors?
+    let result = fetch_exchange_rate_impl(FetchExchangeRateArgs {base_symbol: None, quote_symbol: None}).await;
+
+    match result {
+        Err(error) => print(format!("Error while fetching the exchange rate with the XCR canister {}", error)),
+        Ok(_) => ()
+    }
 }
 
 pub async fn fetch_exchange_rate_impl(
