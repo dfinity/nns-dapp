@@ -25,7 +25,6 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
-  badgeNew: string;
   ic: string;
   previous: string;
   next: string;
@@ -624,6 +623,7 @@ interface I18nSns_neuron_detail {
 }
 
 interface I18nSns_neurons {
+  text: string;
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;

@@ -1,5 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { SnsFullProject } from "$lib/derived/projects.store";
+import type { SnsFullProject } from "$lib/derived/projects.derived";
 import type {
   SnsSummary,
   SnsSummarySwap,

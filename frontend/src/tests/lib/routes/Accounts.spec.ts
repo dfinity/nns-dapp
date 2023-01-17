@@ -3,7 +3,7 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";

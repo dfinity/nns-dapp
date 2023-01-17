@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
