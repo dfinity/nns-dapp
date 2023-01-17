@@ -50,6 +50,7 @@ on_wire = { git = "https://github.com/dfinity/ic", rev = "a3608ed7cf64a01dcdb824
 # Registry canister deploy as of 2022-11-23, ahead of Blessed Replica Version
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "0a729806f2fbc717f2183b07efac19f24f32e717" }
 idl2json = { git = "https://github.com/dfinity/idl2json", rev="c983dea6fc5666912218e7babf2b6b2f8b5648a4" }
+ic-cdk = { features = ["timers"] }
 
 [dev-dependencies]
 maplit = "1.0.2"
