@@ -24,5 +24,10 @@
     "typescript": "^4.5.4",
     "wdio-chromedriver-service": "^7.2.6",
     "wdio-geckodriver-service": "^2.1.1"
+  },
+  "dependencies": {
+    "-": "^0.0.1",
+    "@wdio/devtools-service": "^8.1.3",
+    "save-dev": "^0.0.1-security"
   }
 }

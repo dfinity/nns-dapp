@@ -134,7 +134,7 @@ export const config: WebdriverIO.Config = {
   capabilities: capabilitiesFromEnv(),
   logLevel: (process.env.LOG_LEVEL ??
     "warn") as WebDriverOptions.WebDriverLogTypes,
-  services: ["chromedriver", "geckodriver"],
+  services: ["chromedriver", "geckodriver", "devtools"],
 
   framework: "mocha",
   reporters: ["spec"],
