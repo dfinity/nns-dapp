@@ -9,7 +9,7 @@
   import { isDefined, valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
-  import { daysToDuration } from "$lib/utils/date.utils.js";
+  import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState, TokenAmount } from "@dfinity/nns";
   import Hash from "$lib/components/ui/Hash.svelte";
 

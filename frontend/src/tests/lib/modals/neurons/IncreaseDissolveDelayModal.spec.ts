@@ -5,6 +5,7 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
+import { secondsToDays } from "$lib/utils/date.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
@@ -59,7 +60,7 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR * 2 },
+        target: { value: secondsToDays(SECONDS_IN_YEAR * 2) },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -102,18 +103,19 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR / 2 },
+        target: { value: secondsToDays(SECONDS_IN_YEAR / 2) },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
     );
+
     await waitFor(() =>
       expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull()
     );
     inputRange &&
       (await waitFor(() =>
-        expect(inputRange.value).toBe(String(SECONDS_IN_YEAR))
+        expect(inputRange.value).toBe(String(secondsToDays(SECONDS_IN_YEAR)))
       ));
   });
 });
