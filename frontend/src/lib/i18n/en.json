@@ -22,7 +22,6 @@
     "log": "Log",
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard",
-    "nns": "Network Nervous System",
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
@@ -39,6 +38,7 @@
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
     "sns_accounts_load": "An error occurred while loading the accounts.",
+    "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
     "sns_token_load": "An error occurred while loading the project token.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
@@ -140,7 +140,6 @@
     "background": "An abstract image for design and presentation purpose only"
   },
   "accounts": {
-    "total": "Total balance is",
     "main": "Main",
     "balance": "Balance",
     "new_transaction": "New Transaction",
@@ -193,14 +192,14 @@
     "hardware_wallet_add_hotkey_text_neuron": "This action will add your NNS dapp principal as a hotkey to neuron $neuronId.",
     "hardware_wallet_add_hotkey_text_principal": "Your NNS dapp principal is: $principalId",
     "hardware_wallet_add_hotkey_text_confirm": "Are you sure you want to continue?",
-    "current_balance_total": "Total balance: $amount ICP",
+    "current_balance_total": "Total balance: $amount $token",
     "description": "Description",
     "edit_transaction": "Edit Transaction",
     "execute": "Execute",
     "select": "Select",
     "manual": "Manual",
     "no_account_select": "No accounts to select",
-    "current_balance_detail": "Current balance: $amount ICP"
+    "current_balance_detail": "Current balance: $amount $token"
   },
   "neurons": {
     "title": "Neurons",
@@ -726,6 +725,10 @@
   "auth_sns": {
     "title": "Service Nervous Systems (SNS)",
     "text": "Put the autonomy in DAO. No centralized power, no administrative overhead, no legal headache, only code and its community."
+  },
+  "universe": {
+    "select_token": "Select Token",
+    "select": "Select"
   },
   "sns_rewards_status": {
     "0": "Unknown",

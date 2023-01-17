@@ -29,6 +29,11 @@ export const reloadRouteData = <T>({
   return isArrayEmpty(currentData ?? []) || !isReferrerDetail;
 };
 
+export const buildSwitchUniverseUrl = (universe: string): string => {
+  const { pathname } = window.location;
+  return `${pathname}?${UNIVERSE_PARAM}=${universe}`;
+};
+
 const buildUrl = ({
   path,
   universe,
@@ -102,3 +107,11 @@ export const buildCanisterUrl = ({
     universe,
     params: { [CANISTER_PARAM]: canister },
   });
+
+export const isSelectedPath = ({
+  paths,
+  currentPath,
+}: {
+  currentPath: AppPath | null;
+  paths: (AppPath | null)[];
+}): boolean => currentPath !== null && paths.includes(currentPath);

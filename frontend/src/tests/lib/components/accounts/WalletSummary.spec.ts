@@ -77,6 +77,7 @@ describe("WalletSummary", () => {
           value: mockMainAccount.balance.toE8s(),
           detailed: true,
         })}`,
+        $token: en.core.icp,
       })
     );
   });

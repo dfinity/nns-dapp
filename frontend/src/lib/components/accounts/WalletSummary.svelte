@@ -37,6 +37,9 @@
     detailed: true,
   });
 
+  let tokenSymbol: string;
+  $: tokenSymbol = accountBalance.token.symbol;
+
   const updateLayoutTitle = ($event: Event) => {
     const {
       detail: { intersecting },
@@ -67,9 +70,10 @@
       id="wallet-detailed-icp"
       text={replacePlaceholders($i18n.accounts.current_balance_detail, {
         $amount: detailedICP,
+        $token: tokenSymbol,
       })}
     >
-      <AmountDisplay amount={accountBalance} inline />
+      <AmountDisplay copy amount={accountBalance} inline />
     </Tooltip>
   </KeyValuePair>
 
@@ -95,5 +99,9 @@
 <style lang="scss">
   p {
     margin: 0;
+  }
+
+  div {
+    --token-font-size: var(--font-size-h3);
   }
 </style>

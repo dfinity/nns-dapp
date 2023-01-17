@@ -39,7 +39,7 @@
 <Card
   role="link"
   on:click={showProject}
-  highlighted={commitmentE8s !== undefined}
+  theme={commitmentE8s !== undefined ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />

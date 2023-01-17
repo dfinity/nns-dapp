@@ -25,7 +25,6 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
-  nns: string;
   ic: string;
   previous: string;
   next: string;
@@ -43,6 +42,7 @@ interface I18nError {
   neuron_load: string;
   sns_neurons_load: string;
   sns_accounts_load: string;
+  sns_accounts_balance_load: string;
   sns_token_load: string;
   list_proposals: string;
   list_canisters: string;
@@ -149,7 +149,6 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  total: string;
   main: string;
   balance: string;
   new_transaction: string;
@@ -767,6 +766,11 @@ interface I18nAuth_sns {
   text: string;
 }
 
+interface I18nUniverse {
+  select_token: string;
+  select: string;
+}
+
 interface I18nSns_rewards_status {
   0: string;
   1: string;
@@ -1024,6 +1028,7 @@ interface I18n {
   auth_proposals: I18nAuth_proposals;
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
+  universe: I18nUniverse;
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;

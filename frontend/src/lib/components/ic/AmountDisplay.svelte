@@ -9,6 +9,7 @@
   export let singleLine = false;
   export let title = false;
   export let copy = false;
+  export let text = false;
   export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
   export let detailed = false;
@@ -20,10 +21,10 @@
   class:inheritSize
   class:title
   class:copy
+  class:text
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
-  <slot />
   <span data-tid="token-value" class="value"
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
@@ -79,6 +80,7 @@
     }
 
     &.title,
+    &.text,
     &.copy {
       display: block;
       word-break: break-word;
@@ -88,7 +90,8 @@
       }
     }
 
-    &.title {
+    &.title,
+    &.copy.title {
       span.value {
         @include fonts.h2(true);
 
@@ -98,15 +101,24 @@
       }
     }
 
+    &.text,
     &.copy {
       span.value {
-        @include fonts.standard(true);
+        font-size: var(--token-font-size, var(--font-size-standard));
+        font-weight: var(--font-weight-bold);
       }
 
       vertical-align: sub;
 
       :global(button) {
         vertical-align: sub;
+      }
+    }
+
+    &.copy {
+      span.value {
+        // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
+        line-height: 1.8;
       }
     }
   }
