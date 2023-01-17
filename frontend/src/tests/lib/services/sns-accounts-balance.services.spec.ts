@@ -1,6 +1,7 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
+import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -17,7 +18,7 @@ describe("sns-accounts-balance.services", () => {
   afterEach(() => {
     jest.clearAllMocks();
 
-    snsAccountsBalanceStore.reset();
+    snsAccountsStore.reset();
   });
 
   const summary = {
@@ -35,8 +36,9 @@ describe("sns-accounts-balance.services", () => {
 
     await tick();
 
-    const store = get(snsAccountsBalanceStore);
-    expect(Object.keys(store)).toHaveLength(1);
+    const store = get(projectsAccountsBalance);
+    // Nns + 1 Sns
+    expect(Object.keys(store)).toHaveLength(2);
     expect(store[summary.rootCanisterId.toText()].balance.toE8s()).toEqual(
       mockSnsMainAccount.balance.toE8s()
     );
@@ -59,8 +61,9 @@ describe("sns-accounts-balance.services", () => {
 
     await tick();
 
-    const store = get(snsAccountsBalanceStore);
-    expect(Object.keys(store)).toHaveLength(0);
+    const store = get(projectsAccountsBalance);
+    // Nns
+    expect(Object.keys(store)).toHaveLength(1);
     expect(spyQuery).not.toHaveBeenCalled();
   });
 
@@ -71,15 +74,5 @@ describe("sns-accounts-balance.services", () => {
     await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
 
     expect(toastsError).toHaveBeenCalled();
-  });
-
-  it("should set a balance to null on error", async () => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
-
-    await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
-
-    const store = get(snsAccountsBalanceStore);
-    expect(store[summary.rootCanisterId.toText()].balance).toBeNull();
   });
 });

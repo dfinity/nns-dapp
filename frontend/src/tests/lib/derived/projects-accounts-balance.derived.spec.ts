@@ -1,7 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { snsAccountsBalanceStore } from "$lib/stores/sns-accounts-balance.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
@@ -17,12 +17,10 @@ describe("projects-accounts-balance.derived", () => {
 
   const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
-  const totalBalance = mockSnsMainAccount.balance;
-
   beforeAll(() => {
-    snsAccountsBalanceStore.setBalance({
+    snsAccountsStore.setAccounts({
       rootCanisterId,
-      balance: totalBalance,
+      accounts: [mockSnsMainAccount],
       certified: true,
     });
   });
