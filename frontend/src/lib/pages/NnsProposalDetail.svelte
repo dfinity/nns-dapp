@@ -111,6 +111,4 @@
   );
 </script>
 
-<main>
-  <NnsProposal />
-</main>
+<NnsProposal />
