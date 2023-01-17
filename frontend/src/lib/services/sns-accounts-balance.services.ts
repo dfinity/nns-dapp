@@ -37,8 +37,8 @@ const uncertifiedLoadSnsAccountsBalance = ({
  *
  * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when a Sns project is manually selected either through the token navigation switcher or accessed directly via the browser url.
  *
- * @param {summaries: SnsSummary[], excludeRootCanisterIds?: RootCanisterIdText[]} params
- * @param {SnsSummary[]} params.summaries The list of summaries - Sns projects - for which the balance of the accounts should be fetched.
+ * @param {rootCanisterIds: RootCanisterId[], excludeRootCanisterIds?: RootCanisterIdText[]} params
+ * @param {RootCanisterId[]} params.rootCanisterIds The list of root canister ids - Sns projects - for which the balance of the accounts should be fetched.
  * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
 export const uncertifiedLoadSnsAccountsBalances = async ({
