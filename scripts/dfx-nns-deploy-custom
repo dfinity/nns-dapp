@@ -33,6 +33,7 @@ nns)
   ;;
 sns)
   : "Deploy nns-dapp with NNS and SNS canisters"
+  : "Note: This is done with a script from the snsdemo repository."
   dfx-sns-demo
   ;;
 *)
