@@ -6,7 +6,7 @@
 </script>
 
 {#if nonNullish($selectedProjectBalance.balance)}
-  <AmountDisplay copy amount={$selectedProjectBalance.balance} />
+  <AmountDisplay text amount={$selectedProjectBalance.balance} />
 {:else}
   <div class="skeleton">
     <SkeletonText />
