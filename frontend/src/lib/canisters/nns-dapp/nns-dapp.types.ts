@@ -64,7 +64,11 @@ export interface ExchangeRateMetadata {
   standard_deviation: bigint;
   quote_asset_num_queried_sources: bigint;
 }
-export type ExchangeRateResult = { Ok: ExchangeRate } | { Err: string };
+export interface FetchExchangeRateRequest {
+  quote_symbol: [] | [string];
+  base_symbol: [] | [string];
+}
+export type FetchExchangeRateResponse = { Ok: ExchangeRate } | { Err: string };
 export type GetAccountResponse =
   | { Ok: AccountDetails }
   | { AccountNotFound: null };
@@ -200,8 +204,8 @@ export interface _SERVICE {
   create_sub_account: ActorMethod<[string], CreateSubAccountResponse>;
   detach_canister: ActorMethod<[DetachCanisterRequest], DetachCanisterResponse>;
   fetch_exchange_rate: ActorMethod<
-    [[] | [string], [] | [string]],
-    ExchangeRateResult
+    [FetchExchangeRateRequest],
+    FetchExchangeRateResponse
   >;
   get_account: ActorMethod<[], GetAccountResponse>;
   get_canisters: ActorMethod<[], Array<CanisterDetails>>;
