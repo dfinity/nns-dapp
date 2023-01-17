@@ -16,7 +16,7 @@
 </script>
 
 {#if nonNullish(balance)}
-  <AmountDisplay copy amount={balance} />
+  <AmountDisplay text amount={balance} />
 {:else}
   <div class="skeleton">
     <SkeletonText />
