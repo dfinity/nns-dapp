@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProposalsFilters from "$lib/components/proposals/ProposalsFilters.svelte";
+import NnsProposalsFilters from "$lib/components/proposals/NnsProposalsFilters.svelte";
 import {
   DEFAULT_PROPOSALS_FILTERS,
   DEPRECATED_TOPICS,
@@ -20,7 +20,7 @@ import {
 } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
-describe("ProposalsFilters", () => {
+describe("NnsProposalsFilters", () => {
   const shouldRenderFilter = ({
     container,
     activeFilters,
@@ -47,7 +47,7 @@ describe("ProposalsFilters", () => {
       .mockImplementation(mutableMockAuthStoreSubscribe);
 
     it("should render topics filters", () => {
-      const { container } = render(ProposalsFilters);
+      const { container } = render(NnsProposalsFilters);
 
       const nonShownTopicsLength = [
         PROPOSAL_FILTER_UNSPECIFIED_VALUE,
@@ -63,7 +63,7 @@ describe("ProposalsFilters", () => {
     });
 
     it("should render rewards filters", () => {
-      const { container } = render(ProposalsFilters);
+      const { container } = render(NnsProposalsFilters);
 
       shouldRenderFilter({
         container,
@@ -74,7 +74,7 @@ describe("ProposalsFilters", () => {
     });
 
     it("should render proposals filters", () => {
-      const { container } = render(ProposalsFilters);
+      const { container } = render(NnsProposalsFilters);
 
       shouldRenderFilter({
         container,
@@ -92,7 +92,7 @@ describe("ProposalsFilters", () => {
       });
 
       it("should render a checkbox", () => {
-        const { container } = render(ProposalsFilters);
+        const { container } = render(NnsProposalsFilters);
 
         const input: HTMLInputElement | null = container.querySelector("input");
 
@@ -109,7 +109,7 @@ describe("ProposalsFilters", () => {
       });
 
       it("should not render a checkbox", () => {
-        const { getByTestId } = render(ProposalsFilters);
+        const { getByTestId } = render(NnsProposalsFilters);
 
         expect(() => getByTestId("hide-unavailable-proposals")).toThrow();
       });
@@ -129,7 +129,7 @@ describe("ProposalsFilters", () => {
       ];
       proposalsFiltersStore.filterTopics(activeFilters);
 
-      const { container } = render(ProposalsFilters);
+      const { container } = render(NnsProposalsFilters);
 
       const nonShownTopicsLength = [
         PROPOSAL_FILTER_UNSPECIFIED_VALUE,

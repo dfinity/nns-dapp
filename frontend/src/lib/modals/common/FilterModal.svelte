@@ -46,7 +46,7 @@
 </script>
 
 {#if !loading}
-  <Modal {visible} on:nnsClose role="alert">
+  <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
     <slot slot="title" name="title" />
 
     {#if filters}
