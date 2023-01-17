@@ -3,7 +3,7 @@
   import { Card } from "@dfinity/gix-components";
   import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
   import type { SnsSummary } from "$lib/types/sns";
-  import ProjectBalance from "$lib/components/universe/ProjectBalance.svelte";
+  import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
@@ -25,13 +25,11 @@
       ? "expand"
       : undefined;
 
-  let displayProjectBalance = false;
-  $: displayProjectBalance =
-    selected &&
-    isSelectedPath({
-      currentPath: $pageStore.path,
-      paths: [AppPath.Accounts, AppPath.Wallet],
-    });
+  let displayProjectAccountsBalance = false;
+  $: displayProjectAccountsBalance = isSelectedPath({
+    currentPath: $pageStore.path,
+    paths: [AppPath.Accounts, AppPath.Wallet],
+  });
 </script>
 
 <Card
@@ -45,10 +43,13 @@
   <div class="container" class:selected>
     <ProjectLogo size="big" {summary} framed={true} />
 
-    <div class={`content ${role}`} class:balance={displayProjectBalance}>
+    <div
+      class={`content ${role}`}
+      class:balance={displayProjectAccountsBalance}
+    >
       <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
-      {#if displayProjectBalance}
-        <ProjectBalance />
+      {#if displayProjectAccountsBalance}
+        <ProjectAccountsBalance rootCanisterId={summary?.rootCanisterId} />
       {/if}
     </div>
   </div>
@@ -63,6 +64,8 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
+
+    --value-color: var(--text-color);
 
     &:not(.selected) {
       --logo-framed-background: transparent;

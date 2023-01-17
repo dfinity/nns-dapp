@@ -130,19 +130,31 @@ describe("SelectUniverseCard", () => {
 
     afterAll(() => jest.clearAllMocks());
 
-    it("should display balance", () => {
+    it("should display balance if selected", () => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Accounts,
       });
 
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: mockSummary, selected: true },
+        props: { summary: undefined, selected: true },
       });
       expect(getByTestId("token-value")).not.toBeNull();
     });
 
-    it("should not display balance on other path", () => {
+    it("should display balance if not selected", () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+
+      const { getByTestId } = render(SelectUniverseCard, {
+        props: { summary: undefined, selected: false },
+      });
+      expect(getByTestId("token-value")).not.toBeNull();
+    });
+
+    it("should not display balance on other path than accounts", () => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Neurons,
@@ -154,12 +166,13 @@ describe("SelectUniverseCard", () => {
       expect(() => getByTestId("token-value")).toThrow();
     });
 
-    it("should not display balance if not selected", () => {
+    it("should not display balance if summary balance not loaded", () => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Accounts,
       });
 
+      // Mock contains only Nns balance
       const { getByTestId } = render(SelectUniverseCard, {
         props: { summary: mockSummary, selected: false },
       });

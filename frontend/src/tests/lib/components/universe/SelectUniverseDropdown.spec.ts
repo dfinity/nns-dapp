@@ -72,9 +72,12 @@ describe("SelectUniverseDropdown", () => {
 
   describe("balance", () => {
     beforeAll(() => {
+      const accounts = [mockSnsMainAccount, mockSnsSubAccount];
+      const rootCanisterId = mockSnsFullProject.rootCanisterId;
+
       snsAccountsStore.setAccounts({
-        rootCanisterId: mockSnsFullProject.rootCanisterId,
-        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        rootCanisterId,
+        accounts,
         certified: true,
       });
 

@@ -4,7 +4,10 @@
 
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
-import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
+import {
+  accountsStore,
+  type AccountsStoreData,
+} from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
@@ -143,15 +146,17 @@ describe("NnsAccounts", () => {
     beforeEach(() => {
       jest
         .spyOn(accountsStore, "subscribe")
-        .mockImplementation((run: Subscriber<AccountsStore>): (() => void) => {
-          run({
-            main: undefined,
-            subAccounts: undefined,
-            hardwareWallets: undefined,
-          });
+        .mockImplementation(
+          (run: Subscriber<AccountsStoreData>): (() => void) => {
+            run({
+              main: undefined,
+              subAccounts: undefined,
+              hardwareWallets: undefined,
+            });
 
-          return () => undefined;
-        });
+            return () => undefined;
+          }
+        );
     });
     it("should not render a token amount component nor zero", () => {
       const { container } = render(NnsAccounts);
