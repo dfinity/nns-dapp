@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let hidden = false;
   export let statusString: string | undefined;
@@ -16,7 +17,7 @@
 </script>
 
 <li class:hidden>
-  <Card role="link" on:click testId="proposal-card" withArrow={true}>
+  <Card role="link" on:click testId="proposal-card" icon="arrow">
     <div class="id" data-proposal-id={id}>
       <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
     </div>
@@ -43,7 +44,9 @@
       {#if proposer !== undefined}
         <KeyValuePair>
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
-          <span slot="value" class="meta-data-value">{proposer}</span>
+          <span slot="value" class="meta-data-value"
+            >{shortenWithMiddleEllipsis(proposer, 5)}</span
+          >
         </KeyValuePair>
       {/if}
     </div>

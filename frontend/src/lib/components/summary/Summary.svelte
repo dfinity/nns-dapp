@@ -1,87 +1,61 @@
 <script lang="ts">
-  import SummaryProjectLogo from "$lib/components/summary/SummaryProjectLogo.svelte";
-  import SelectProjectDropdownWrapper from "$lib/components/universe/SelectProjectDropdownWrapper.svelte";
+  import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 
-  export let selectProjects = true;
+  export let displayProjects = true;
+
+  let text = $i18n.core.ic;
+  $: text = displayProjects
+    ? $snsProjectSelectedStore?.summary.metadata.name ?? $i18n.core.ic
+    : $i18n.core.ic;
+
+  let twoLines = true;
+  $: twoLines = $$slots.details !== undefined;
 </script>
 
-<div
-  class="summary"
-  data-tid="accounts-summary"
-  class:dropdown={selectProjects}
->
-  <div class="logo" class:dropdown={selectProjects} data-tid="summary-logo">
-    <SummaryProjectLogo size="big" {selectProjects} />
-  </div>
+<div class="summary" data-tid="projects-summary">
+  <h1 class="title">
+    <span>{text}</span>
 
-  {#if selectProjects}
-    <SelectProjectDropdownWrapper />
-  {:else}
-    <h1>{$i18n.core.ic}</h1>
+    <SummaryLogo {displayProjects} />
+  </h1>
+
+  {#if twoLines}
+    <div class="details">
+      <slot name="details" />
+    </div>
   {/if}
-
-  <div class:details={selectProjects}>
-    <slot name="details" />
-  </div>
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
   @use "@dfinity/gix-components/styles/mixins/text";
-
-  @mixin columns {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-
-    column-gap: var(--padding-2x);
-
-    margin: var(--padding) 0 var(--padding-3x);
-
-    width: fit-content;
-  }
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .summary {
     display: flex;
     flex-direction: column;
-    width: 100%;
+
     margin: 0 0 var(--padding-3x);
-    max-width: 100%;
-
-    &:not(.dropdown) {
-      @include columns;
-    }
-
-    @include media.min-width(small) {
-      @include columns;
-    }
-
-    word-break: break-all;
   }
 
-  h1 {
-    display: inline-block;
+  .title {
+    display: inline-flex;
+  }
+
+  span {
+    @include fonts.h3;
+
+    max-width: calc(100% - var(--padding-6x));
     @include text.truncate;
+
     margin: 0;
   }
 
-  .logo {
-    grid-row: 1 / 3;
-
-    &.dropdown {
-      --logo-display: none;
-
-      @include media.min-width(small) {
-        --logo-display: block;
-      }
-    }
-  }
-
   .details {
-    padding: 0 0 0 var(--padding-1_5x);
-
-    @include media.min-width(small) {
-      padding: 0 0 0 var(--padding-2x);
-    }
+    height: var(--padding-4x);
+    color: var(--description-color);
+    @include fonts.small;
   }
 </style>

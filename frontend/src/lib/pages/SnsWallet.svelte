@@ -12,12 +12,13 @@
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   let showNewTransactionModal = false;
 
@@ -64,6 +65,8 @@
   <main class="legacy" data-tid="sns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
+        <Summary />
+
         <WalletSummary />
 
         <Separator />

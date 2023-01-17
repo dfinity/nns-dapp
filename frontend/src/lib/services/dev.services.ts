@@ -1,10 +1,10 @@
 import { acquireICPTs, acquireSnsTokens } from "$lib/api/dev.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
   snsAccountsStore,
-  type SnsAccountsStore,
+  type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -12,7 +12,7 @@ import { syncAccounts } from "./accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getICPs = async (icps: number) => {
-  const { main }: AccountsStore = get(accountsStore);
+  const { main }: AccountsStoreData = get(accountsStore);
 
   if (!main) {
     throw new Error("No account found to get ICPs");
@@ -35,7 +35,7 @@ export const getTokens = async ({
 }) => {
   // Accounts are loaded when user visits the Accounts page, so we need to load them here.
   await loadSnsAccounts({ rootCanisterId });
-  const store: SnsAccountsStore = get(snsAccountsStore);
+  const store: SnsAccountsStoreData = get(snsAccountsStore);
   const { accounts } = store[rootCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
 

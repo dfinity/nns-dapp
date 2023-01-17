@@ -30,7 +30,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";

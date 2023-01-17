@@ -136,8 +136,9 @@ export const subaccountToHexString = (subaccount: Uint8Array): string =>
  * Find the first not existed memo (index based).
  * This approach works because sns neurons are not deleted.
  *
- * @param identity
- * @param neurons
+ * @param {Object} params
+ * @param {Identity} params.identity
+ * @param {SnsNeuron[]} params.neurons
  */
 export const nextMemo = ({
   identity,
@@ -170,9 +171,10 @@ export const nextMemo = ({
  * - User’s principal has the `ManageVotingPermission` or `ManagePrincipals` permission.
  * - Both `Vote` and `SubmitProposal` are in `neuron_grantable_permissions` parameter
  *
- * @param neuron
- * @param identity
- * @param parameters
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {Identity | undefined | null} params.identity
+ * @param {NervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,

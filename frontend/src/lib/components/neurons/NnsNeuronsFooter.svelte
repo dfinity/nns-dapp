@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import { sortedNeuronStore } from "$lib/stores/neurons.store";

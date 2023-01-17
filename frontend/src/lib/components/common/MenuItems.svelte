@@ -20,14 +20,7 @@
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
-
-  const isSelectedPath = ({
-    paths,
-    currentPath,
-  }: {
-    currentPath: AppPath | null;
-    paths: (AppPath | null)[];
-  }): boolean => currentPath !== null && paths.includes(currentPath);
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
 
   let routes: {
     context: string;
