@@ -1,6 +1,6 @@
 import { addHotkey } from "$lib/api/governance.api";
+import { initDebugStore } from "$lib/derived/debug.derived";
 import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
-import { initDebugStore } from "$lib/stores/debug.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";

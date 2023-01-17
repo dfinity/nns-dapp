@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { getAccountTransactions } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
@@ -20,7 +20,7 @@
   import {
     debugSelectedAccountStore,
     debugTransactions,
-  } from "$lib/stores/debug.store";
+  } from "$lib/derived/debug.derived";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import type {
     AccountIdentifierString,
@@ -33,6 +33,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -111,6 +112,8 @@
   <main class="legacy" data-tid="nns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined}
+        <Summary displayProjects={false} />
+
         <WalletSummary />
         <WalletActions />
 

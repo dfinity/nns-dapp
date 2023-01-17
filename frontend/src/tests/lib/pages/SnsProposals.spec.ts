@@ -44,6 +44,7 @@ describe("SnsProposals", () => {
       beforeEach(() => {
         snsProposalsStore.reset();
       });
+
       it("should load proposals and nervous system functions functions", () => {
         render(SnsProposals);
 
@@ -65,6 +66,7 @@ describe("SnsProposals", () => {
           rootCanisterId: mockPrincipal,
           proposals,
           certified: true,
+          completed: true,
         });
 
         const { queryAllByTestId } = render(SnsProposals);
@@ -92,6 +94,7 @@ describe("SnsProposals", () => {
           rootCanisterId: mockPrincipal,
           proposals: [],
           certified: true,
+          completed: true,
         });
 
         const { container } = render(SnsProposals);
@@ -116,6 +119,7 @@ describe("SnsProposals", () => {
           rootCanisterId: mockPrincipal,
           proposals,
           certified: true,
+          completed: true,
         });
 
         const { queryAllByTestId } = render(SnsProposals);

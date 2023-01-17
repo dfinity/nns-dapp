@@ -13,7 +13,7 @@ import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn().mockResolvedValue(undefined),
   };
@@ -88,12 +88,20 @@ describe("NeuronDetail", () => {
     await waitFor(() => expect(querySkeleton(container)).toBeNull());
   });
 
+  it("should render nns project name", async () => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(getByTestId("projects-summary")).not.toBeNull());
+  });
+
   it("should show skeletons when neuron is in voting process", async () => {
     const { container } = render(NnsNeuronDetail, props);
 
     fillNeuronStore();
 
-    waitFor(() => expect(querySkeleton(container)).toBeNull());
+    await waitFor(() => expect(querySkeleton(container)).toBeNull());
 
     voteRegistrationStore.add({
       ...mockVoteRegistration,

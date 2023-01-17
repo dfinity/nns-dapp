@@ -15,7 +15,7 @@ jest.mock("$lib/services/neurons.services", () => {
   };
 });
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

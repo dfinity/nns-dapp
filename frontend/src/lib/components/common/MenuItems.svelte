@@ -11,7 +11,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
@@ -21,14 +20,7 @@
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
-
-  const isSelectedPath = ({
-    paths,
-    currentPath,
-  }: {
-    currentPath: AppPath | null;
-    paths: (AppPath | null)[];
-  }): boolean => currentPath !== null && paths.includes(currentPath);
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
 
   let routes: {
     context: string;
@@ -78,7 +70,6 @@
       }),
       label: "launchpad",
       icon: IconRocketLaunch,
-      statusIcon: BadgeNew,
     },
     {
       context: "canisters",

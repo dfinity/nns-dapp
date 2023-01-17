@@ -136,8 +136,9 @@ export const subaccountToHexString = (subaccount: Uint8Array): string =>
  * Find the first not existed memo (index based).
  * This approach works because sns neurons are not deleted.
  *
- * @param identity
- * @param neurons
+ * @param {Object} params
+ * @param {Identity} params.identity
+ * @param {SnsNeuron[]} params.neurons
  */
 export const nextMemo = ({
   identity,
@@ -170,9 +171,10 @@ export const nextMemo = ({
  * - User’s principal has the `ManageVotingPermission` or `ManagePrincipals` permission.
  * - Both `Vote` and `SubmitProposal` are in `neuron_grantable_permissions` parameter
  *
- * @param neuron
- * @param identity
- * @param parameters
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {Identity | undefined | null} params.identity
+ * @param {NervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,
@@ -644,14 +646,20 @@ export const snsNeuronVotingPower = ({
   const {
     voting_power_percentage_multiplier,
     aging_since_timestamp_seconds,
-    maturity_e8s_equivalent,
+    staked_maturity_e8s_equivalent,
   } = neuron;
   const dissolveDelay =
     dissolveDelayInSeconds < maxDissolveDelaySeconds
       ? dissolveDelayInSeconds
       : maxDissolveDelaySeconds;
   const stakeE8s = BigInt(
-    Math.max(Number(getSnsNeuronStake(neuron) + maturity_e8s_equivalent), 0)
+    Math.max(
+      Number(
+        getSnsNeuronStake(neuron) +
+          (fromNullable(staked_maturity_e8s_equivalent) ?? BigInt(0))
+      ),
+      0
+    )
   );
   const ageSeconds = BigInt(
     Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
