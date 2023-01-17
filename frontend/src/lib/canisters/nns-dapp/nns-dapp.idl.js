@@ -1,10 +1,9 @@
-/* Do not edit.  Compiled with ./scripts/compile-idl-js from src/lib/canisters/nns-dapp/nns-dapp.did */
 export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
   const SubAccount = IDL.Vec(IDL.Nat8);
   const AddPendingNotifySwapRequest = IDL.Record({
-    swap_canister_id: IDL.Principal,
     buyer_sub_account: IDL.Opt(SubAccount),
+    swap_canister_id: IDL.Principal,
     buyer: IDL.Principal,
   });
   const AddPendingTransactionResponse = IDL.Variant({
@@ -37,6 +36,34 @@ export const idlFactory = ({ IDL }) => {
   const DetachCanisterResponse = IDL.Variant({
     Ok: IDL.Null,
     CanisterNotFound: IDL.Null,
+  });
+  const ExchangeRateMetadata = IDL.Record({
+    decimals: IDL.Nat32,
+    forex_timestamp: IDL.Opt(IDL.Nat64),
+    quote_asset_num_received_rates: IDL.Nat64,
+    base_asset_num_received_rates: IDL.Nat64,
+    base_asset_num_queried_sources: IDL.Nat64,
+    standard_deviation: IDL.Nat64,
+    quote_asset_num_queried_sources: IDL.Nat64,
+  });
+  const ExchangeRateAssetClass = IDL.Variant({
+    Cryptocurrency: IDL.Null,
+    FiatCurrency: IDL.Null,
+  });
+  const ExchangeRateAsset = IDL.Record({
+    class: ExchangeRateAssetClass,
+    symbol: IDL.Text,
+  });
+  const ExchangeRate = IDL.Record({
+    metadata: ExchangeRateMetadata,
+    rate: IDL.Nat64,
+    timestamp: IDL.Nat64,
+    quote_asset: ExchangeRateAsset,
+    base_asset: ExchangeRateAsset,
+  });
+  const ExchangeRateResult = IDL.Variant({
+    Ok: ExchangeRate,
+    Err: IDL.Text,
   });
   const HardwareWalletAccountDetails = IDL.Record({
     principal: IDL.Principal,
@@ -191,8 +218,14 @@ export const idlFactory = ({ IDL }) => {
       [DetachCanisterResponse],
       []
     ),
+    fetch_exchange_rate: IDL.Func(
+      [IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
+      [ExchangeRateResult],
+      []
+    ),
     get_account: IDL.Func([], [GetAccountResponse], ["query"]),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], ["query"]),
+    get_exchange_rate: IDL.Func([IDL.Text], [ExchangeRate], ["query"]),
     get_multi_part_transaction_errors: IDL.Func(
       [],
       [IDL.Vec(MultiPartTransactionError)],

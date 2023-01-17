@@ -1,17 +1,16 @@
-import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
+import type { ActorMethod } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
+
 export interface AccountDetails {
   principal: Principal;
-  account_identifier: AccountIdentifierString;
+  account_identifier: AccountIdentifier;
   hardware_wallet_accounts: Array<HardwareWalletAccountDetails>;
   sub_accounts: Array<SubAccountDetails>;
 }
-// ledger and account canisters in nns-js define a AccountIdentifier as an object that contains the bytes array as a variable
-// nns-dapp canister returns a string
-export type AccountIdentifierString = string;
+export type AccountIdentifier = string;
 export interface AddPendingNotifySwapRequest {
+  buyer_sub_account: [] | [SubAccount];
   swap_canister_id: Principal;
-  buyer_sub_account: [] | [SubAccountArray];
   buyer: Principal;
 }
 export type AddPendingTransactionResponse =
@@ -27,9 +26,10 @@ export type AttachCanisterResponse =
   | { NameAlreadyTaken: null }
   | { NameTooLong: null }
   | { CanisterLimitExceeded: null };
+export type BlockHeight = bigint;
 export interface CanisterDetails {
   name: string;
-  canister_id: CanisterId;
+  canister_id: Principal;
 }
 export type CanisterId = Principal;
 export type CreateSubAccountResponse =
@@ -41,6 +41,30 @@ export interface DetachCanisterRequest {
   canister_id: Principal;
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
+export interface ExchangeRate {
+  metadata: ExchangeRateMetadata;
+  rate: bigint;
+  timestamp: bigint;
+  quote_asset: ExchangeRateAsset;
+  base_asset: ExchangeRateAsset;
+}
+export interface ExchangeRateAsset {
+  class: ExchangeRateAssetClass;
+  symbol: string;
+}
+export type ExchangeRateAssetClass =
+  | { Cryptocurrency: null }
+  | { FiatCurrency: null };
+export interface ExchangeRateMetadata {
+  decimals: number;
+  forex_timestamp: [] | [bigint];
+  quote_asset_num_received_rates: bigint;
+  base_asset_num_received_rates: bigint;
+  base_asset_num_queried_sources: bigint;
+  standard_deviation: bigint;
+  quote_asset_num_queried_sources: bigint;
+}
+export type ExchangeRateResult = { Ok: ExchangeRate } | { Err: string };
 export type GetAccountResponse =
   | { Ok: AccountDetails }
   | { AccountNotFound: null };
@@ -48,7 +72,7 @@ export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface GetTransactionsRequest {
   page_size: number;
   offset: number;
-  account_identifier: AccountIdentifierString;
+  account_identifier: AccountIdentifier;
 }
 export interface GetTransactionsResponse {
   total: number;
@@ -57,23 +81,24 @@ export interface GetTransactionsResponse {
 export interface HardwareWalletAccountDetails {
   principal: Principal;
   name: string;
-  account_identifier: AccountIdentifierString;
+  account_identifier: AccountIdentifier;
 }
 export type HeaderField = [string, string];
 export interface HttpRequest {
   url: string;
   method: string;
-  body: Array<number>;
+  body: Uint8Array;
   headers: Array<HeaderField>;
 }
 export interface HttpResponse {
-  body: Array<number>;
+  body: Uint8Array;
   headers: Array<HeaderField>;
   status_code: number;
 }
 export interface ICPTs {
-  e8s: E8s;
+  e8s: bigint;
 }
+export type Memo = bigint;
 export interface MultiPartTransactionError {
   error_message: string;
   block_height: BlockHeight;
@@ -88,9 +113,10 @@ export type MultiPartTransactionStatus =
   | { NeuronCreated: NeuronId }
   | { PendingSync: null }
   | { ErrorWithRefundPending: string };
+export type NeuronId = bigint;
 export interface Receive {
   fee: ICPTs;
-  from: AccountIdentifierString;
+  from: AccountIdentifier;
   amount: ICPTs;
 }
 export interface RegisterHardwareWalletRequest {
@@ -105,7 +131,7 @@ export type RegisterHardwareWalletResponse =
   | { NameTooLong: null };
 export interface RenameSubAccountRequest {
   new_name: string;
-  account_identifier: AccountIdentifierString;
+  account_identifier: AccountIdentifier;
 }
 export type RenameSubAccountResponse =
   | { Ok: null }
@@ -113,7 +139,7 @@ export type RenameSubAccountResponse =
   | { SubAccountNotFound: null }
   | { NameTooLong: null };
 export interface Send {
-  to: AccountIdentifierString;
+  to: AccountIdentifier;
   fee: ICPTs;
   amount: ICPTs;
 }
@@ -132,13 +158,11 @@ export interface Stats {
   latest_transaction_timestamp_nanos: bigint;
   earliest_transaction_timestamp_nanos: bigint;
 }
-// ledger and account canisters in nns-js define a SubAccount as an object that contains the bytes array as a variable
-// nns-dapp canister returns a string
-export type SubAccountArray = Array<number>;
+export type SubAccount = Uint8Array;
 export interface SubAccountDetails {
   name: string;
-  sub_account: SubAccountArray;
-  account_identifier: AccountIdentifierString;
+  sub_account: SubAccount;
+  account_identifier: AccountIdentifier;
 }
 export interface Timestamp {
   timestamp_nanos: bigint;
@@ -165,38 +189,44 @@ export type Transfer =
   | { Mint: { amount: ICPTs } }
   | { Send: Send }
   | { Receive: Receive };
-export default interface _SERVICE {
-  add_account: () => Promise<AccountIdentifierString>;
-  add_pending_notify_swap: (
-    arg_0: AddPendingNotifySwapRequest
-  ) => Promise<AddPendingTransactionResponse>;
-  add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
-  attach_canister: (
-    arg_0: AttachCanisterRequest
-  ) => Promise<AttachCanisterResponse>;
-  create_sub_account: (arg_0: string) => Promise<CreateSubAccountResponse>;
-  detach_canister: (
-    arg_0: DetachCanisterRequest
-  ) => Promise<DetachCanisterResponse>;
-  get_account: () => Promise<GetAccountResponse>;
-  get_canisters: () => Promise<Array<CanisterDetails>>;
-  get_multi_part_transaction_errors: () => Promise<
+export interface _SERVICE {
+  add_account: ActorMethod<[], AccountIdentifier>;
+  add_pending_notify_swap: ActorMethod<
+    [AddPendingNotifySwapRequest],
+    AddPendingTransactionResponse
+  >;
+  add_stable_asset: ActorMethod<[Uint8Array], undefined>;
+  attach_canister: ActorMethod<[AttachCanisterRequest], AttachCanisterResponse>;
+  create_sub_account: ActorMethod<[string], CreateSubAccountResponse>;
+  detach_canister: ActorMethod<[DetachCanisterRequest], DetachCanisterResponse>;
+  fetch_exchange_rate: ActorMethod<
+    [[] | [string], [] | [string]],
+    ExchangeRateResult
+  >;
+  get_account: ActorMethod<[], GetAccountResponse>;
+  get_canisters: ActorMethod<[], Array<CanisterDetails>>;
+  get_exchange_rate: ActorMethod<[string], ExchangeRate>;
+  get_multi_part_transaction_errors: ActorMethod<
+    [],
     Array<MultiPartTransactionError>
   >;
-  get_multi_part_transaction_status: (
-    arg_0: Principal,
-    arg_1: BlockHeight
-  ) => Promise<MultiPartTransactionStatus>;
-  get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
-  get_stats: () => Promise<Stats>;
-  get_transactions: (
-    arg_0: GetTransactionsRequest
-  ) => Promise<GetTransactionsResponse>;
-  http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
-  register_hardware_wallet: (
-    arg_0: RegisterHardwareWalletRequest
-  ) => Promise<RegisterHardwareWalletResponse>;
-  rename_sub_account: (
-    arg_0: RenameSubAccountRequest
-  ) => Promise<RenameSubAccountResponse>;
+  get_multi_part_transaction_status: ActorMethod<
+    [Principal, BlockHeight],
+    MultiPartTransactionStatus
+  >;
+  get_proposal_payload: ActorMethod<[bigint], GetProposalPayloadResponse>;
+  get_stats: ActorMethod<[], Stats>;
+  get_transactions: ActorMethod<
+    [GetTransactionsRequest],
+    GetTransactionsResponse
+  >;
+  http_request: ActorMethod<[HttpRequest], HttpResponse>;
+  register_hardware_wallet: ActorMethod<
+    [RegisterHardwareWalletRequest],
+    RegisterHardwareWalletResponse
+  >;
+  rename_sub_account: ActorMethod<
+    [RenameSubAccountRequest],
+    RenameSubAccountResponse
+  >;
 }

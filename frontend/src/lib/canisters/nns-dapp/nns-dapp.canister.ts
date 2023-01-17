@@ -24,7 +24,7 @@ import type { NNSDappService } from "./nns-dapp.idl";
 import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
-  AccountIdentifierString,
+  AccountIdentifier as AccountIdentifierString,
   AddPendingNotifySwapRequest,
   CanisterDetails,
   CreateSubAccountResponse,
