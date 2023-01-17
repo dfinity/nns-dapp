@@ -4,7 +4,7 @@
 
 import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { pageStore } from "$lib/derived/page.derived";
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

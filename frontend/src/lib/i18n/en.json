@@ -22,7 +22,6 @@
     "log": "Log",
     "principal_id": "Principal ID",
     "copy": "Copy \"$value\" to clipboard",
-    "badgeNew": "new",
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
@@ -596,6 +595,7 @@
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
   "sns_neurons": {
+    "text": "You have no $project neurons. Stake a neuron to vote on proposals for $project.",
     "stake_sns_neuron": "Stake $tokenSymbol Neuron",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",

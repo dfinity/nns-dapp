@@ -11,7 +11,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
@@ -71,7 +70,6 @@
       }),
       label: "launchpad",
       icon: IconRocketLaunch,
-      statusIcon: BadgeNew,
     },
     {
       context: "canisters",

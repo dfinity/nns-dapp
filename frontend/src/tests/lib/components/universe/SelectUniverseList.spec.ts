@@ -3,7 +3,7 @@
  */
 
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render } from "@testing-library/svelte";
 import {

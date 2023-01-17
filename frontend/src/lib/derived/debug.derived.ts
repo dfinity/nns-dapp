@@ -1,5 +1,5 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { projectsStore } from "$lib/derived/projects.store";
+import { projectsStore } from "$lib/derived/projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";

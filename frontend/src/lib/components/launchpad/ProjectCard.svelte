@@ -2,7 +2,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsFullProject } from "$lib/derived/projects.store";
+  import type { SnsFullProject } from "$lib/derived/projects.derived";
   import { Card } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { Spinner } from "@dfinity/gix-components";

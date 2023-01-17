@@ -22,7 +22,7 @@
   import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
-  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.store";
+  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
