@@ -32,7 +32,9 @@ describe("sns-accounts-balance.services", () => {
       .spyOn(ledgerApi, "getSnsAccounts")
       .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
-    await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
+    await services.uncertifiedLoadSnsAccountsBalances({
+      rootCanisterIds: [mockSnsMainAccount.principal],
+    });
 
     await tick();
 
@@ -45,33 +47,13 @@ describe("sns-accounts-balance.services", () => {
     expect(spyQuery).toBeCalled();
   });
 
-  it("should not call api.getSnsAccounts and load balance in store if summaries are certified", async () => {
-    const spyQuery = jest
-      .spyOn(ledgerApi, "getSnsAccounts")
-      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-
-    const certifiedSummary = {
-      ...summary,
-      metadataCertified: true,
-    };
-
-    await services.uncertifiedLoadSnsAccountsBalances({
-      summaries: [certifiedSummary],
-    });
-
-    await tick();
-
-    const store = get(projectsAccountsBalance);
-    // Nns
-    expect(Object.keys(store)).toHaveLength(1);
-    expect(spyQuery).not.toHaveBeenCalled();
-  });
-
   it("should toast error", async () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
     jest.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
 
-    await services.uncertifiedLoadSnsAccountsBalances({ summaries: [summary] });
+    await services.uncertifiedLoadSnsAccountsBalances({
+      rootCanisterIds: [mockSnsMainAccount.principal],
+    });
 
     expect(toastsError).toHaveBeenCalled();
   });

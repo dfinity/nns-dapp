@@ -131,9 +131,11 @@ describe("Accounts", () => {
     });
   });
 
-  it("should load Sns accounts balances", () => {
+  it("should load Sns accounts balances", async () => {
     render(Accounts);
 
-    expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled();
+    await waitFor(() =>
+      expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled()
+    );
   });
 });

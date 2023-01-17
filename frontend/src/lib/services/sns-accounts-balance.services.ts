@@ -42,21 +42,19 @@ const uncertifiedLoadSnsAccountsBalance = ({
  * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
 export const uncertifiedLoadSnsAccountsBalances = async ({
-  summaries,
+  rootCanisterIds,
   excludeRootCanisterIds = [],
 }: {
-  summaries: SnsSummary[];
+  rootCanisterIds: RootCanisterId[];
   excludeRootCanisterIds?: RootCanisterIdText[];
 }): Promise<void> => {
   const results: PromiseSettledResult<void>[] = await Promise.allSettled(
     (
-      summaries.filter(
-        ({ metadataCertified, rootCanisterId }) =>
-          // As we perform only query calls, this function has to be chain with the loading of Sns projects that is also performed with "query" too
-          metadataCertified === false &&
+      rootCanisterIds.filter(
+        (rootCanisterId) =>
           !excludeRootCanisterIds.includes(rootCanisterId.toText())
       ) ?? []
-    ).map(({ rootCanisterId }) =>
+    ).map((rootCanisterId) =>
       uncertifiedLoadSnsAccountsBalance({
         rootCanisterId,
       })
