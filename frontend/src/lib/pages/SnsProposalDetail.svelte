@@ -10,7 +10,9 @@
   onMount(() => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
     if (!ENABLE_SNS_VOTING) {
-      goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }));
+      goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
+        replaceState: true,
+      });
     }
   });
 </script>
