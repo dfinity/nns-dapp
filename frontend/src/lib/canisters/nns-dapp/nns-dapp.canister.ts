@@ -27,14 +27,16 @@ import type {
   AccountIdentifierString,
   AddPendingNotifySwapRequest,
   CanisterDetails,
-  CreateSubAccountResponse, FetchExchangeRateResponse,
+  CreateSubAccountResponse,
+  ExchangeRate,
+  FetchExchangeRateResponse,
   GetAccountResponse,
   GetTransactionsResponse,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
   RenameSubAccountResponse,
-  SubAccountDetails
+  SubAccountDetails,
 } from "./nns-dapp.types";
 
 export class NNSDappCanister {
@@ -355,7 +357,13 @@ export class NNSDappCanister {
     const { fetch_exchange_rate } = this.getNNSDappService(true);
     return fetch_exchange_rate({
       base_symbol: [],
-      quote_symbol: []
+      quote_symbol: [],
     });
+  };
+
+  public getExchangeRate = async (key: string): Promise<ExchangeRate> => {
+    // Always certified, it's an update call
+    const { get_exchange_rate } = this.getNNSDappService(true);
+    return get_exchange_rate(key);
   };
 }

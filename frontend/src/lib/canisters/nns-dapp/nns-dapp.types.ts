@@ -211,7 +211,7 @@ export default interface _SERVICE {
   ) => Promise<FetchExchangeRateResponse>;
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
-  get_exchange_rate: () => Promise<ExchangeRate>;
+  get_exchange_rate: (arg_0: string) => Promise<[] | [ExchangeRate]>;
   get_multi_part_transaction_errors: () => Promise<
     Array<MultiPartTransactionError>
   >;

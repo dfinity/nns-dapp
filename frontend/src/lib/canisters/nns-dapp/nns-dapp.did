@@ -285,5 +285,5 @@ service : {
     add_stable_asset: (asset: blob) -> ();
 
     fetch_exchange_rate : (FetchExchangeRateRequest) -> (FetchExchangeRateResponse);
-    get_exchange_rate : (text) -> (ExchangeRate) query;
+    get_exchange_rate : (text) -> (opt ExchangeRate) query;
 }

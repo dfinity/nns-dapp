@@ -229,7 +229,7 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], ["query"]),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], ["query"]),
-    get_exchange_rate: IDL.Func([IDL.Text], [ExchangeRate], ["query"]),
+    get_exchange_rate: IDL.Func([IDL.Text], [IDL.Opt(ExchangeRate)], ["query"]),
     get_multi_part_transaction_errors: IDL.Func(
       [],
       [IDL.Vec(MultiPartTransactionError)],
