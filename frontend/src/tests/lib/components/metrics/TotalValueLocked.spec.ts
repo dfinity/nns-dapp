@@ -8,6 +8,7 @@ import { metricsStore } from "$lib/stores/metrics.store";
 import type { BinanceAvgPrice } from "$lib/types/binance";
 import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
@@ -64,6 +65,8 @@ describe("TotalValueLocked", () => {
   it("should not render TVL if response has no metrics", async () => {
     const { getByTestId } = render(TotalValueLocked);
 
+    await tick();
+
     metricsCallback?.({});
 
     await waitFor(() => expect(() => getByTestId("tvl-metric")).toThrow());
@@ -72,8 +75,7 @@ describe("TotalValueLocked", () => {
   it("should not render TVL if response has zero metrics", async () => {
     const { getByTestId } = render(TotalValueLocked);
 
-    // Wait for initialization
-    await waitFor(() => expect(metricsCallback).not.toBeUndefined());
+    await tick();
 
     const avgPrice: BinanceAvgPrice = { mins: 5, price: "0" };
     const dissolvingNeurons: DissolvingNeurons = {
