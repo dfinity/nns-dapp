@@ -18,9 +18,9 @@
   onMount(async () => (worker = await initMetricsWorker()));
   onDestroy(() => worker?.stopMetricsTimer());
 
-  let canisterSync: MetricsSync | undefined = undefined;
+  let metricsSync: MetricsSync | undefined = undefined;
   const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
-    (canisterSync = data);
+    (metricsSync = data);
 
   $: worker,
     (() =>
@@ -30,20 +30,20 @@
 
   let totalNeurons: number | undefined;
   $: totalNeurons =
-    canisterSync?.dissolvingTotalNeurons?.data?.[0]?.samples[0]?.value +
-    canisterSync?.notDissolvingTotalNeurons?.data?.[0]?.samples[0]?.value;
+    (metricsSync?.dissolvingNeurons?.totalDissolvingNeurons ?? 0) +
+    (metricsSync?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
 
   let total: number | undefined;
   $: total = totalNeurons ?? 0;
 </script>
 
-<p>ICP to USD: {canisterSync?.avgPrice?.price}</p>
+<p>ICP to USD: {metricsSync?.avgPrice?.price}</p>
 <p>
-  Total dissolving neurons: {canisterSync?.dissolvingTotalNeurons?.data?.[0]
-    ?.samples[0]?.value}
+  Total dissolving neurons: {metricsSync?.dissolvingNeurons
+    ?.totalDissolvingNeurons}
 </p>
 <p>
-  Total not dissolving neurons: {canisterSync?.notDissolvingTotalNeurons
-    ?.data?.[0]?.samples[0]?.value}
+  Total not dissolving neurons: {metricsSync?.dissolvingNeurons
+    ?.totalNotDissolvingNeurons}
 </p>
 <p>TVL in USD: {total}</p>

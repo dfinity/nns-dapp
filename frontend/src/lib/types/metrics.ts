@@ -1,8 +1,7 @@
 import type { BinanceAvgPrice } from "$lib/types/binance";
-import type { StakingMetrics } from "$lib/types/dashboard";
+import type { GovernanceMetrics } from "$lib/types/governance-metrics";
 
 export interface MetricsSync {
   avgPrice: BinanceAvgPrice | null;
-  dissolvingTotalNeurons: StakingMetrics | null;
-  notDissolvingTotalNeurons: StakingMetrics | null;
+  dissolvingNeurons: GovernanceMetrics | null;
 }
