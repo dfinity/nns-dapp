@@ -11,6 +11,7 @@
   import { fade } from "svelte/transition";
   import { nonNullish } from "$lib/utils/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 
   export let layout: "inline" | "stacked" = "inline";
 
@@ -40,7 +41,7 @@
 
   let total: number | undefined;
   $: total =
-    ((totalNeurons ?? 0) / 1_000_00_000) *
+    ((totalNeurons ?? 0) / E8S_PER_ICP) *
     Number($metricsStore?.avgPrice?.price ?? "0");
 
   const formatter = new Intl.NumberFormat("en-US", {
