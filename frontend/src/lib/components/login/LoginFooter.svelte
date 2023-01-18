@@ -77,13 +77,13 @@
     flex-direction: column-reverse;
 
     .copyright {
-      padding: var(--padding) var(--padding-4x);
+      padding: var(--padding) var(--padding-3x);
       font-size: var(--font-size-small);
       @include text.truncate;
     }
 
     a {
-      padding: var(--padding-6x) var(--padding-4x) var(--padding);
+      padding: var(--padding-6x) var(--padding-3x) var(--padding);
       font-size: var(--font-size-small);
     }
   }

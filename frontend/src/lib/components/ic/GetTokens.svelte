@@ -138,7 +138,7 @@
     }
 
     span {
-      margin: 0 var(--padding) 0 var(--padding-2x);
+      margin: 0 var(--padding) 0 0;
     }
   }
 
