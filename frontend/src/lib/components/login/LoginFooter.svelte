@@ -45,6 +45,12 @@
       vertical-align: bottom;
       margin-right: var(--padding);
     }
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: var(--menu-select-color);
+    }
   }
 
   .footer {

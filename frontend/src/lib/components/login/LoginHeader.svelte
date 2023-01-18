@@ -121,6 +121,12 @@
     @include media.min-width(large) {
       :global(a) {
         display: inline-block;
+
+        &:active,
+        &:focus,
+        &:hover {
+          color: var(--menu-select-color);
+        }
       }
 
       :global(.theme-toggle) {
