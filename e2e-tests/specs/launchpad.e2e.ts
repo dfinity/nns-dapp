@@ -12,7 +12,7 @@ describe("View launchpad while logged out", () => {
     await browser.url("/launchpad/");
     await waitForLoad(browser);
     await waitForImages(browser);
-    await browser.pause(2000); // Wait a second for the back-end data to load
+    await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
     await browser["screenshot"]("launchpad-while-logged-out");
   });
 });
@@ -27,7 +27,7 @@ describe("View launchpad when logged in", () => {
     console.log(`Created user: ${JSON.stringify(userId)}`);
     await waitForLoad(browser);
     await waitForImages(browser);
-    await browser.pause(2000); // Wait a second for the back-end data to load
+    await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
     await browser["screenshot"]("launchpad-login");
   });
 
@@ -35,7 +35,7 @@ describe("View launchpad when logged in", () => {
     await browser.url("/launchpad/");
     await waitForLoad(browser);
     await waitForImages(browser);
-    await browser.pause(2000); // Wait a second for the back-end data to load
+    await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
     await browser["screenshot"]("launchpad-while-logged-in");
   });
 });
