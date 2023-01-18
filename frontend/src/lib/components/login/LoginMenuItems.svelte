@@ -10,14 +10,6 @@
 
 <div class="menu-items">
   <MenuItem
-    href="https://internetcomputer.org"
-    rel="noopener noreferrer"
-    target="_blank"
-  >
-    <span>internetcomputer.org <IconNorthEast /></span>
-  </MenuItem>
-
-  <MenuItem
     href="https://internetcomputer.org/nns"
     rel="noopener noreferrer"
     target="_blank"
