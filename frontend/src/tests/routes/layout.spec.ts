@@ -15,7 +15,7 @@ import {
 } from "../mocks/auth.store.mock";
 
 jest.mock("$lib/services/worker-auth.services", () => ({
-  initWorker: jest.fn(() =>
+  initAuthWorker: jest.fn(() =>
     Promise.resolve({
       syncAuthIdle: () => {
         // Do nothing
