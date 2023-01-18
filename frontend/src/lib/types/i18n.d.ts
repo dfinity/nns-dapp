@@ -803,6 +803,10 @@ interface I18nSns_status_description {
   5: string;
 }
 
+interface I18nMetrics {
+  tvl: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1033,6 +1037,7 @@ interface I18n {
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
   sns_status_description: I18nSns_status_description;
+  metrics: I18nMetrics;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

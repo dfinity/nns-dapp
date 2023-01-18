@@ -1,14 +1,30 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconGitHub } from "@dfinity/gix-components";
+  import { BREAKPOINT_LARGE, IconGitHub } from "@dfinity/gix-components";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   export let presentation: "footer" | "menu" = "footer";
+
+  let innerWidth = 0;
+  let displayTvl = false;
+
+  // See comment in <LoginHeader />
+  $: displayTvl =
+    innerWidth > 0 && innerWidth <= BREAKPOINT_LARGE && presentation === "menu";
 </script>
+
+<svelte:window bind:innerWidth />
 
 <footer
   class:footer={presentation === "footer"}
   class:menu={presentation === "menu"}
 >
+  {#if displayTvl}
+    <div class="metrics">
+      <MenuMetrics />
+    </div>
+  {/if}
+
   <span class="copyright">{$i18n.auth.copyright}</span>
 
   <a
@@ -40,6 +56,12 @@
       vertical-align: bottom;
       margin-right: var(--padding);
     }
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: var(--menu-select-color);
+    }
   }
 
   .footer {
@@ -66,14 +88,18 @@
     flex-direction: column-reverse;
 
     .copyright {
-      padding: var(--padding) var(--padding-4x);
+      padding: var(--padding) var(--padding-3x);
       font-size: var(--font-size-small);
       @include text.truncate;
     }
 
     a {
-      padding: var(--padding-6x) var(--padding-4x) var(--padding);
+      padding: var(--padding-6x) var(--padding-3x) var(--padding);
       font-size: var(--font-size-small);
     }
+  }
+
+  .metrics {
+    padding: 0 var(--padding);
   }
 </style>
