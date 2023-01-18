@@ -1,7 +1,6 @@
-import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
-import type { BinanceAvgPrice } from "$lib/types/binance";
+import { governanceMetrics } from "$lib/rest/governance-metrics.rest";
 
-describe("Binance Rest API", () => {
+describe("Governance metrics", () => {
   beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
@@ -11,28 +10,29 @@ describe("Binance Rest API", () => {
     jest.resetAllMocks();
   });
 
-  it("should return an average price", async () => {
-    const data: BinanceAvgPrice = { mins: 5, price: "5.43853359" };
+  it("should return metrics as text", async () => {
+    const text = `# HELP governance_stable_memory_size_bytes Size of the stable memory allocated by this canister measured in bytes.
+# TYPE governance_stable_memory_size_bytes gauge
+governance_stable_memory_size_bytes 503906304 1674031880551`;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve(data),
+        text: () => Promise.resolve(text),
         ok: true,
         status: 200,
       })
     );
 
-    const rate = await exchangeRateICPToUsd();
+    const metrics = await governanceMetrics();
 
-    expect(rate.mins).toEqual(data.mins);
-    expect(rate.price).toEqual(data.price);
+    expect(metrics).toEqual(text);
 
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it("should return null if return code invalid", async () => {
+  it("should return null if return code is invalid", async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
     global.fetch = jest.fn(() =>
@@ -42,9 +42,9 @@ describe("Binance Rest API", () => {
       })
     );
 
-    const rate = await exchangeRateICPToUsd();
+    const metrics = await governanceMetrics();
 
-    expect(rate).toBeNull();
+    expect(metrics).toBeNull();
 
     expect(fetch).toHaveBeenCalledTimes(1);
   });
@@ -54,9 +54,9 @@ describe("Binance Rest API", () => {
     // @ts-ignore mock fetch
     global.fetch = jest.fn(() => Promise.reject("An API error"));
 
-    const rate = await exchangeRateICPToUsd();
+    const metrics = await governanceMetrics();
 
-    expect(rate).toBeNull();
+    expect(metrics).toBeNull();
 
     expect(fetch).toHaveBeenCalledTimes(1);
   });
