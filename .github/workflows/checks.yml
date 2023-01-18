@@ -1,19 +1,14 @@
 name: CI Checks
-
 on:
   push:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-
   formatting:
     runs-on: ubuntu-20.04
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,7 +25,6 @@ jobs:
                   git diff
                   exit 1
           }
-
   cargo-tests:
     needs: formatting
     runs-on: ${{ matrix.os }}
@@ -38,10 +32,8 @@ jobs:
       matrix:
         rust: ["1.63.0"]
         os: [ubuntu-20.04]
-
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/cache@v3
         with:
           path: |
@@ -49,24 +41,20 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
-
       - name: Install Rust
         run: |
           rustup update ${{ matrix.rust }} --no-self-update
           rustup default ${{ matrix.rust }}
           rustup target add wasm32-unknown-unknown
           rustup component add clippy
-
       - name: Lint rust code
         run: ./scripts/lint-rs
-
       - name: Run Tests
         shell: bash
         run: |
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
-
   svelte-tests:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -75,33 +63,25 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
-
       - name: Compile typescript
         run: npm run build
         working-directory: ./frontend
-
       # Temporarily disabled:
       #- name: Run linter
       #  run: npm run check
-
       - name: Test
         run: npm run test
         working-directory: ./frontend
-
   svelte-lint:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -110,29 +90,22 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
-
       - name: Compile typescript
         run: npm run build
         working-directory: ./frontend
-
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
-
   e2e-lint:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -141,41 +114,32 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./e2e-tests
-
       - name: Run e2e linter
         run: npm run lint
         working-directory: ./e2e-tests
-
-
-
   shell-checks:
     needs: formatting
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      env:
-        SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
-
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
-       - name: Checks workflow passes
-         run: echo OK
+      - name: Checks workflow passes
+        run: echo OK
