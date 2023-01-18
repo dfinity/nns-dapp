@@ -21,17 +21,17 @@
       }
     | undefined;
 
-  onMount(async () => (worker = await initMetricsWorker()));
+  onMount(async () => {
+    worker = await initMetricsWorker();
+
+    worker?.startMetricsTimer({
+      callback: syncMetrics,
+    });
+  });
   onDestroy(() => worker?.stopMetricsTimer());
 
   const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
     metricsStore.set(data);
-
-  $: worker,
-    (() =>
-      worker?.startMetricsTimer({
-        callback: syncMetrics,
-      }))();
 
   let totalNeurons: number | undefined;
   $: totalNeurons =
