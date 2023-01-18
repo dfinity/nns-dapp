@@ -11,10 +11,6 @@
 
 <header>
   <div class="start">
-    <ExternalLink href="https://internetcomputer.org"
-      >internetcomputer.org</ExternalLink
-    >
-
     <MenuButton />
 
     <div class="tvl"><TotalValueLocked /></div>

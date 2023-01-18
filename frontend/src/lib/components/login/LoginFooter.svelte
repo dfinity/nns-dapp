@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconGitHub } from "@dfinity/gix-components";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   export let presentation: "footer" | "menu" = "footer";
 </script>
@@ -9,6 +10,10 @@
   class:footer={presentation === "footer"}
   class:menu={presentation === "menu"}
 >
+  <div class="metrics">
+    <MenuMetrics />
+  </div>
+
   <span class="copyright">{$i18n.auth.copyright}</span>
 
   <a
@@ -56,6 +61,12 @@
       @include fonts.small;
 
       z-index: var(--z-index);
+    }
+  }
+
+  .metrics {
+    @include media.min-width(large) {
+      display: none;
     }
   }
 

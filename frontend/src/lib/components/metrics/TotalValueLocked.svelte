@@ -10,6 +10,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
 
+  export let layout: "inline" | "stacked" = "inline";
+
   let worker:
     | {
         startMetricsTimer: (params: { callback: MetricsCallback }) => void;
@@ -48,7 +50,11 @@
 </script>
 
 {#if total > 0}
-  <div class="tvl" transition:fade={{ duration: 125 }}>
+  <div
+    class="tvl"
+    transition:fade={{ duration: 125 }}
+    class:stacked={layout === "stacked"}
+  >
     <span>{$i18n.metrics.tvl}</span>
     <span data-tid="tvl-metric" class="total">{format(total)}</span>
   </div>
@@ -60,12 +66,6 @@
 
   .tvl {
     display: inline-block;
-
-    max-width: 110px;
-
-    @include media.min-width(xlarge) {
-      max-width: inherit;
-    }
 
     text-align: center;
 
@@ -79,6 +79,20 @@
     border-radius: var(--border-radius);
 
     padding: var(--padding) var(--padding-2x);
+
+    &.stacked {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: var(--padding-0_5x);
+
+      background: rgba(var(--focus-background-rgb), 0.8);
+      color: var(--text2-color);
+
+      .total {
+        color: var(--text-color);
+        @include fonts.h5(false);
+      }
+    }
   }
 
   .total {
