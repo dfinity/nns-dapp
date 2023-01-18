@@ -5,13 +5,13 @@
     type MetricsCallback,
     initMetricsWorker,
   } from "$lib/services/$public/worker-metrics.services";
-  import type { MetricsSync } from "$lib/types/metrics";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
   import { nonNullish } from "$lib/utils/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
 
@@ -44,12 +44,12 @@
     ((totalNeurons ?? 0) / E8S_PER_ICP) *
     Number($metricsStore?.avgPrice?.price ?? "0");
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  const format = (n: number): string => formatter.format(n);
+  const format = (n: number): string =>
+    formatNumber(n, {
+      minFraction: 0,
+      maxFraction: 0,
+      maximumSignificantDigits: 7,
+    });
 </script>
 
 {#if nonNullish(total) && total > 0}
@@ -59,7 +59,7 @@
     class:stacked={layout === "stacked"}
   >
     <span>{$i18n.metrics.tvl}</span>
-    <span data-tid="tvl-metric" class="total">{format(total)}</span>
+    <span data-tid="tvl-metric" class="total">${format(total)}</span>
   </div>
 {/if}
 

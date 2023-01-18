@@ -53,7 +53,7 @@ describe("TotalValueLocked", () => {
     });
 
     await waitFor(() =>
-      expect(getByTestId("tvl-metric")?.textContent).toEqual("$442,469,723.94")
+      expect(getByTestId("tvl-metric")?.textContent).toEqual("$442’469’700")
     );
   });
 
