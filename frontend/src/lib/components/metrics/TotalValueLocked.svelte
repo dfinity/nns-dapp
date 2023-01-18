@@ -36,6 +36,17 @@
   let total: number | undefined;
   $: total =
     ((totalNeurons ?? 0) / 1_000_00_000) * (metricsSync?.avgPrice?.price ?? 0);
+
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+
+    // These options are needed to round to whole numbers if that's what you want.
+    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+  });
+
+  const format = (n: number): string => formatter.format(n)
 </script>
 
 <p>ICP to USD: {metricsSync?.avgPrice?.price}</p>
@@ -48,4 +59,4 @@
     ?.totalNotDissolvingNeurons}
 </p>
 <p>Divider constant: {1_000_00_000}</p>
-<p>TVL in USD: {total}</p>
+<p>TVL in USD: {format(total)}</p>
