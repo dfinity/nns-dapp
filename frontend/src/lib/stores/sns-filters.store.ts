@@ -5,7 +5,7 @@ import type {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
 export interface ProjectFiltersStoreData {
   topics: Filter<SnsNervousSystemFunction>[];
@@ -17,10 +17,24 @@ interface SnsFiltersStoreData {
   [rootCanisterId: string]: ProjectFiltersStoreData;
 }
 
+interface ProjectFiltersStore extends Readable<SnsFiltersStoreData> {
+  setDecisionStatus: (data: {
+    rootCanisterId: Principal;
+    decisionStatus: Filter<SnsProposalDecisionStatus>[];
+  }) => void;
+  setCheckDecisionStatus: (data: {
+    rootCanisterId: Principal;
+    checkedDecisionStatus: SnsProposalDecisionStatus[];
+  }) => void;
+  reset: () => void;
+}
+
 /**
  * A store that contains the filters of the SNS proposals for each project.
+ *
+ * TODO: persist to localstorage
  */
-export const initSnsFiltersStore = () => {
+export const initSnsFiltersStore = (): ProjectFiltersStore => {
   const { subscribe, set, update } = writable<SnsFiltersStoreData>({});
 
   return {
@@ -50,7 +64,7 @@ export const initSnsFiltersStore = () => {
       });
     },
 
-    checkDecisionStatus({
+    setCheckDecisionStatus({
       rootCanisterId,
       checkedDecisionStatus,
     }: {

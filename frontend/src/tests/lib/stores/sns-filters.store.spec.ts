@@ -35,7 +35,7 @@ describe("sns-filters store", () => {
     expect(projectStore2.decisionStatus).toEqual(decisionStatus);
   });
 
-  it("checkDecisionStatus should check filters in different projects", () => {
+  it("setCheckDecisionStatus should check filters in different projects", () => {
     const rootCanisterId = mockPrincipal;
     const rootCanisterId2 = Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai");
     const decisionStatus = [
@@ -61,7 +61,7 @@ describe("sns-filters store", () => {
     ).toEqual(0);
 
     const statuses = decisionStatus.map(({ value }) => value);
-    snsFiltesStore.checkDecisionStatus({
+    snsFiltesStore.setCheckDecisionStatus({
       rootCanisterId,
       checkedDecisionStatus: statuses,
     });
@@ -80,7 +80,7 @@ describe("sns-filters store", () => {
       projectStore3.decisionStatus.filter(({ checked }) => checked).length
     ).toEqual(0);
 
-    snsFiltesStore.checkDecisionStatus({
+    snsFiltesStore.setCheckDecisionStatus({
       rootCanisterId: rootCanisterId2,
       checkedDecisionStatus: [
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -98,7 +98,7 @@ describe("sns-filters store", () => {
     ).toEqual(statuses.length);
 
     // Uncheck from Project 2
-    snsFiltesStore.checkDecisionStatus({
+    snsFiltesStore.setCheckDecisionStatus({
       rootCanisterId,
       checkedDecisionStatus: [
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,

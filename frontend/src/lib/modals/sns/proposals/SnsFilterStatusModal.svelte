@@ -23,7 +23,7 @@
   const dispatch = createEventDispatcher();
   let filter: () => void;
   $: filter = () => {
-    snsFiltesStore.checkDecisionStatus({
+    snsFiltesStore.setCheckDecisionStatus({
       checkedDecisionStatus: selectedFilters,
       rootCanisterId,
     });
@@ -35,7 +35,9 @@
   }: CustomEvent<{
     filter: Filter<SnsProposalDecisionStatus> | undefined;
   }>) => {
-    if (filter === undefined) return;
+    if (filter === undefined) {
+      return;
+    }
     selectedFilters = [
       ...selectedFilters.filter((status) => status !== filter?.value),
       // Toggle the checked value
