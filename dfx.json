@@ -17,7 +17,16 @@
           "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -56,7 +65,16 @@
           "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small13": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small14": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small07": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small08": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -264,6 +282,132 @@
       },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
+    },
+    "small01": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small01.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small02": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small02.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small03": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small03.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small04": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small04.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small05": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small05.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small07": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small07.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small08": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small08.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small10": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small10.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small15": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://small15.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": false,
+          "ENABLE_SNS_VOTING": false
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"
+      ],
+      "type": "persistent"
     }
   },
   "defaults": {
