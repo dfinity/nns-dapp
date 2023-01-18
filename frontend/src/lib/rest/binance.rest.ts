@@ -15,6 +15,7 @@ export const exchangeRateICPToUsd =
       const response = await fetch(
         "https://api.binance.com/api/v3/avgPrice?symbol=ICPUSDT"
       );
+
       if (!response.ok) {
         // We silence any error here - if no result is found, no informative information shall be displayed
         console.error("Error fetching symbol average price", response);
