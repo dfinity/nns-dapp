@@ -61,5 +61,5 @@
 <p>Divider constant: {1_000_00_000}</p>
 
 {#if total > 0}
-  <p data-tid="tvl-metrics">TVL in USD: {format(total)}</p>
+  <p data-tid="tvl-metric">TVL in USD: {format(total)}</p>
 {/if}
