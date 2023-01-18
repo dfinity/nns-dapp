@@ -6,6 +6,7 @@
   } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
 </script>
 
 <header>
@@ -15,6 +16,8 @@
     >
 
     <MenuButton />
+
+    <TotalValueLocked />
   </div>
 
   <img
@@ -108,7 +111,10 @@
 
   .start,
   .end {
-    padding-top: var(--padding-2x);
+    height: 100%;
+    display: flex;
+    align-items: center;
+
     flex: 2;
 
     :global(a),
@@ -117,8 +123,6 @@
     }
 
     @include media.min-width(large) {
-      padding-top: calc(4.5 * var(--padding));
-
       :global(a) {
         display: inline-block;
       }
@@ -141,5 +145,9 @@
     @include media.min-width(xlarge) {
       gap: var(--padding-4x);
     }
+  }
+
+  .start {
+    gap: var(--padding-4x);
   }
 </style>
