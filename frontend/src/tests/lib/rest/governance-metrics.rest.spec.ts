@@ -1,4 +1,5 @@
 import { governanceMetrics } from "$lib/rest/governance-metrics.rest";
+import { governanceMetricsText } from "../../mocks/metrics.mock";
 
 describe("Governance metrics", () => {
   beforeAll(() =>
@@ -11,15 +12,11 @@ describe("Governance metrics", () => {
   });
 
   it("should return metrics as text", async () => {
-    const text = `# HELP governance_stable_memory_size_bytes Size of the stable memory allocated by this canister measured in bytes.
-# TYPE governance_stable_memory_size_bytes gauge
-governance_stable_memory_size_bytes 503906304 1674031880551`;
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        text: () => Promise.resolve(text),
+        text: () => Promise.resolve(governanceMetricsText),
         ok: true,
         status: 200,
       })
@@ -27,7 +24,7 @@ governance_stable_memory_size_bytes 503906304 1674031880551`;
 
     const metrics = await governanceMetrics();
 
-    expect(metrics).toEqual(text);
+    expect(metrics).toEqual(governanceMetricsText);
 
     expect(fetch).toHaveBeenCalledTimes(1);
   });
