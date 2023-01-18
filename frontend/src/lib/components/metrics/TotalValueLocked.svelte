@@ -60,6 +60,13 @@
 
   .tvl {
     display: inline-block;
+
+    max-width: 110px;
+
+    @include media.min-width(xlarge) {
+      max-width: inherit;
+    }
+
     text-align: center;
 
     gap: var(--padding-0_5x);

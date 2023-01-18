@@ -17,7 +17,7 @@
 
     <MenuButton />
 
-    <TotalValueLocked />
+    <div class="tvl"><TotalValueLocked /></div>
   </div>
 
   <img
@@ -148,6 +148,18 @@
   }
 
   .start {
-    gap: var(--padding-4x);
+    gap: var(--padding-2x);
+
+    @include media.min-width(xlarge) {
+      gap: var(--padding-4x);
+    }
+  }
+
+  .tvl {
+    display: none;
+
+    @include media.min-width(large) {
+      display: block;
+    }
   }
 </style>
