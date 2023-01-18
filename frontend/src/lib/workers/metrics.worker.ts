@@ -1,6 +1,8 @@
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
 import { exchangeRateICPToUsd } from "$lib/rest/binance.api";
+import { dissolvingTotalNeuronsCount } from "$lib/rest/dashboard.api";
 import type { BinanceAvgPrice } from "$lib/types/binance";
+import type { StakingMetrics } from "$lib/types/dashboard";
 import type {
   PostMessage,
   PostMessageDataRequest,
@@ -42,16 +44,24 @@ const stopMetricsTimer = async () => {
 };
 
 const syncMetrics = async () => {
-  const [avgPrice] = await Promise.all([exchangeRateICPToUsd()]);
-  emitCanister({ avgPrice });
+  const [avgPrice, dissolvingTotalNeurons, notDissolvingTotalNeurons] =
+    await Promise.all([
+      exchangeRateICPToUsd(),
+      dissolvingTotalNeuronsCount(true),
+      dissolvingTotalNeuronsCount(false),
+    ]);
+
+  emitCanister({ avgPrice, dissolvingTotalNeurons, notDissolvingTotalNeurons });
 };
 
-const emitCanister = ({ avgPrice }: { avgPrice: BinanceAvgPrice | null }) =>
+const emitCanister = (metrics: {
+  avgPrice: BinanceAvgPrice | null;
+  dissolvingTotalNeurons: StakingMetrics | null;
+  notDissolvingTotalNeurons: StakingMetrics | null;
+}) =>
   postMessage({
     msg: "nnsSyncMetrics",
     data: {
-      metrics: {
-        avgPrice,
-      },
+      metrics,
     },
   });
