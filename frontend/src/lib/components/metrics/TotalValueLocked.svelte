@@ -8,6 +8,7 @@
   import type { MetricsSync } from "$lib/types/metrics";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
+  import { fade } from "svelte/transition";
 
   let worker:
     | {
@@ -47,7 +48,7 @@
 </script>
 
 {#if total > 0}
-  <div class="tvl">
+  <div class="tvl" transition:fade={{ duration: 125 }}>
     <span>{$i18n.metrics.tvl}</span>
     <span data-tid="tvl-metric" class="total">{format(total)}</span>
   </div>
