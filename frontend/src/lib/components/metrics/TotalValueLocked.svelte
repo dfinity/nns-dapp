@@ -34,7 +34,8 @@
     (metricsSync?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
 
   let total: number | undefined;
-  $: total = totalNeurons ?? 0;
+  $: total =
+    ((totalNeurons ?? 0) / 1_000_00_000) * (metricsSync?.avgPrice?.price ?? 0);
 </script>
 
 <p>ICP to USD: {metricsSync?.avgPrice?.price}</p>
@@ -46,4 +47,5 @@
   Total not dissolving neurons: {metricsSync?.dissolvingNeurons
     ?.totalNotDissolvingNeurons}
 </p>
+<p>Divider constant: {1_000_00_000}</p>
 <p>TVL in USD: {total}</p>
