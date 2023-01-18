@@ -80,6 +80,7 @@
 
     border-radius: var(--border-radius);
 
+    width: 100%;
     padding: var(--padding) var(--padding-2x);
 
     &.stacked {
