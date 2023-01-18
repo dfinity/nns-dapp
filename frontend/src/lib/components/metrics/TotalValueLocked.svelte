@@ -9,6 +9,7 @@
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
+  import { nonNullish } from "$lib/utils/utils";
 
   export let layout: "inline" | "stacked" = "inline";
 
@@ -39,7 +40,8 @@
 
   let total: number | undefined;
   $: total =
-    ((totalNeurons ?? 0) / 1_000_00_000) * (metricsSync?.avgPrice?.price ?? 0);
+    ((totalNeurons ?? 0) / 1_000_00_000) *
+    Number(metricsSync?.avgPrice?.price ?? "0");
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -49,7 +51,7 @@
   const format = (n: number): string => formatter.format(n);
 </script>
 
-{#if total > 0}
+{#if nonNullish(total) && total > 0}
   <div
     class="tvl"
     transition:fade={{ duration: 125 }}
