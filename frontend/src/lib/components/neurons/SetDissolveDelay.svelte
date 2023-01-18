@@ -79,6 +79,8 @@
       // clear the error
       inputError = undefined;
     }
+
+    delayInSeconds = daysToSeconds(delayInDays);
   };
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
