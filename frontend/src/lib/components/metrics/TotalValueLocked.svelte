@@ -29,19 +29,21 @@
       }))();
 
   let totalNeurons: number | undefined;
-  $: totalNeurons = canisterSync?.dissolvingTotalNeurons?.data?.[0]?.samples[0]
-    ?.value + canisterSync?.notDissolvingTotalNeurons?.data?.[0]?.samples[0]?.value;
+  $: totalNeurons =
+    canisterSync?.dissolvingTotalNeurons?.data?.[0]?.samples[0]?.value +
+    canisterSync?.notDissolvingTotalNeurons?.data?.[0]?.samples[0]?.value;
 
   let total: number | undefined;
-  $: total = (totalNeurons ?? 0) * (canisterSync?.avgPrice?.price ?? 0);
+  $: total = totalNeurons ?? 0;
 </script>
 
 <p>ICP to USD: {canisterSync?.avgPrice?.price}</p>
 <p>
-  Total dissolving neurons: {canisterSync?.dissolvingTotalNeurons?.data?.[0]?.samples[0]
-    ?.value}
+  Total dissolving neurons: {canisterSync?.dissolvingTotalNeurons?.data?.[0]
+    ?.samples[0]?.value}
 </p>
 <p>
-  Total not dissolving neurons: {canisterSync?.notDissolvingTotalNeurons?.data?.[0]?.samples[0]?.value}
+  Total not dissolving neurons: {canisterSync?.notDissolvingTotalNeurons
+    ?.data?.[0]?.samples[0]?.value}
 </p>
 <p>TVL in USD: {total}</p>
