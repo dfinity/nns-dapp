@@ -7,6 +7,7 @@
   } from "$lib/services/$public/worker-metrics.services";
   import type { MetricsSync } from "$lib/types/metrics";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
+  import { i18n } from "$lib/stores/i18n";
 
   let worker:
     | {
@@ -47,7 +48,7 @@
 
 {#if total > 0}
   <div class="tvl">
-    <span>Total Value Locked</span>
+    <span>{$i18n.metrics.tvl}</span>
     <span data-tid="tvl-metric" class="total">{format(total)}</span>
   </div>
 {/if}
