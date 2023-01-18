@@ -15,7 +15,7 @@ onmessage = async ({
 
   switch (msg) {
     case "nnsStopMetricsTimer":
-      await stopMetricsTimer();
+      stopMetricsTimer();
       return;
     case "nnsStartMetricsTimer":
       await startMetricsTimer();
@@ -26,6 +26,11 @@ onmessage = async ({
 let timer: NodeJS.Timeout | undefined = undefined;
 
 const startMetricsTimer = async () => {
+  // This worker has already been started
+  if (timer !== undefined) {
+    return;
+  }
+
   const sync = async () => await syncMetrics();
 
   // We sync now but also schedule the update afterwards
@@ -34,8 +39,8 @@ const startMetricsTimer = async () => {
   timer = setInterval(sync, SYNC_METRICS_TIMER_INTERVAL);
 };
 
-const stopMetricsTimer = async () => {
-  if (!timer) {
+const stopMetricsTimer = () => {
+  if (timer === undefined) {
     return;
   }
 
@@ -43,13 +48,24 @@ const stopMetricsTimer = async () => {
   timer = undefined;
 };
 
+let syncInProgress = false;
+
 const syncMetrics = async () => {
+  // Avoid to duplicate the sync if already in progress and not yet finished
+  if (syncInProgress) {
+    return;
+  }
+
+  syncInProgress = true;
+
   const [avgPrice, dissolvingNeurons] = await Promise.all([
     exchangeRateICPToUsd(),
     totalDissolvingNeurons(),
   ]);
 
   emitCanister({ avgPrice, dissolvingNeurons });
+
+  syncInProgress = false;
 };
 
 const emitCanister = (metrics: {
