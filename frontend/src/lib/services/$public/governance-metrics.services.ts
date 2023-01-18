@@ -3,6 +3,8 @@ import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 
 const GOVERNANCE_DISSOLVING_NEURONS_E8S_COUNT_KEY =
   "governance_dissolving_neurons_e8s_count";
+const GOVERNANCE_NOT_DISSOLVING_NEURONS_E8S_COUNT_KEY =
+  "governance_not_dissolving_neurons_e8s_count";
 
 export const totalDissolvingNeurons =
   async (): Promise<DissolvingNeurons | null> => {
@@ -13,16 +15,21 @@ export const totalDissolvingNeurons =
     }
 
     const splits = metrics.replaceAll(/[\n\r]/g, " ").split(" ");
-    const index = splits.findIndex(
-      (text: string) => text === GOVERNANCE_DISSOLVING_NEURONS_E8S_COUNT_KEY
-    );
 
-    if (index === -1) {
-      return null;
+    const findValue = (key: string): string | undefined => {
+      const index = splits.findIndex(
+        (text: string) => text === key
+      );
+
+      if (index === -1) {
+        return undefined;
+      }
+
+      return splits[index + 1];
     }
 
-    const totalDissolvingNeurons = splits[index + 1];
-    const totalNotDissolvingNeurons = splits[index + 2];
+    const totalDissolvingNeurons = findValue(GOVERNANCE_DISSOLVING_NEURONS_E8S_COUNT_KEY);
+    const totalNotDissolvingNeurons = findValue(GOVERNANCE_NOT_DISSOLVING_NEURONS_E8S_COUNT_KEY);
 
     const valid = (metric: string | undefined): boolean =>
       metric !== undefined && !isNaN(Number(metric));
