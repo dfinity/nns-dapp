@@ -98,4 +98,8 @@
       font-size: var(--font-size-small);
     }
   }
+
+  .metrics {
+    padding: 0 var(--padding);
+  }
 </style>
