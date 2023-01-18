@@ -1,18 +1,29 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconGitHub } from "@dfinity/gix-components";
+  import { BREAKPOINT_LARGE, IconGitHub } from "@dfinity/gix-components";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   export let presentation: "footer" | "menu" = "footer";
+
+  let innerWidth = 0;
+  let displayTvl = false;
+
+  // See comment in <LoginHeader />
+  $: displayTvl =
+    innerWidth > 0 && innerWidth <= BREAKPOINT_LARGE && presentation === "menu";
 </script>
+
+<svelte:window bind:innerWidth />
 
 <footer
   class:footer={presentation === "footer"}
   class:menu={presentation === "menu"}
 >
-  <div class="metrics">
-    <MenuMetrics />
-  </div>
+  {#if displayTvl}
+    <div class="metrics">
+      <MenuMetrics />
+    </div>
+  {/if}
 
   <span class="copyright">{$i18n.auth.copyright}</span>
 
@@ -67,12 +78,6 @@
       @include fonts.small;
 
       z-index: var(--z-index);
-    }
-  }
-
-  .metrics {
-    @include media.min-width(large) {
-      display: none;
     }
   }
 

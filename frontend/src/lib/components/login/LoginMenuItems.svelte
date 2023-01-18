@@ -65,4 +65,9 @@
       margin: 0 var(--padding);
     }
   }
+
+  .menu-items,
+  .theme {
+    z-index: var(--z-index);
+  }
 </style>
