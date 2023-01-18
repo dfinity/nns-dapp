@@ -21,7 +21,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
     const chrome = {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: headless?["headless", "disable-gpu"]:[],
+        args: headless ? ["headless", "disable-gpu"] : [],
       },
       acceptInsecureCerts: true,
     };
@@ -38,7 +38,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
       maxInstances: 5,
       browserName: "firefox",
       "moz:firefoxOptions": {
-        args: headless?["-headless"]:[],
+        args: headless ? ["-headless"] : [],
         binary: firefoxPath,
       },
     };
