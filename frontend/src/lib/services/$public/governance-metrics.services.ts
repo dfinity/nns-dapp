@@ -1,11 +1,11 @@
 import { governanceMetrics } from "$lib/rest/governance-metrics.rest";
-import type { GovernanceMetrics } from "$lib/types/governance-metrics";
+import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 
 const GOVERNANCE_DISSOLVING_NEURONS_E8S_COUNT_KEY =
   "governance_dissolving_neurons_e8s_count";
 
 export const totalDissolvingNeurons =
-  async (): Promise<GovernanceMetrics | null> => {
+  async (): Promise<DissolvingNeurons | null> => {
     const metrics = await governanceMetrics();
 
     if (metrics === null) {

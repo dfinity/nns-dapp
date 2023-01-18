@@ -4,7 +4,7 @@
   import {
     type MetricsCallback,
     initMetricsWorker,
-  } from "$lib/services/$public/metrics-worker.services";
+  } from "$lib/services/$public/worker-metrics.services";
   import type { MetricsSync } from "$lib/types/metrics";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
 
@@ -59,4 +59,7 @@
     ?.totalNotDissolvingNeurons}
 </p>
 <p>Divider constant: {1_000_00_000}</p>
-<p>TVL in USD: {format(total)}</p>
+
+{#if total > 0}
+  <p data-tid="tvl-metrics">TVL in USD: {format(total)}</p>
+{/if}

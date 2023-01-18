@@ -2,7 +2,7 @@ import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
 import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
 import { totalDissolvingNeurons } from "$lib/services/$public/governance-metrics.services";
 import type { BinanceAvgPrice } from "$lib/types/binance";
-import type { GovernanceMetrics } from "$lib/types/governance-metrics";
+import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 import type {
   PostMessage,
   PostMessageDataRequest,
@@ -54,7 +54,7 @@ const syncMetrics = async () => {
 
 const emitCanister = (metrics: {
   avgPrice: BinanceAvgPrice | null;
-  dissolvingNeurons: GovernanceMetrics | null;
+  dissolvingNeurons: DissolvingNeurons | null;
 }) =>
   postMessage({
     msg: "nnsSyncMetrics",
