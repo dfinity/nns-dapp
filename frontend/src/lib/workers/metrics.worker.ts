@@ -1,5 +1,5 @@
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
-import { exchangeRateICPToUsd } from "$lib/rest/binance.api";
+import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
 import { totalDissolvingNeurons } from "$lib/services/$public/governance-metrics.services";
 import type { BinanceAvgPrice } from "$lib/types/binance";
 import type { GovernanceMetrics } from "$lib/types/governance-metrics";
