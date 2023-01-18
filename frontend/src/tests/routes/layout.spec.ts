@@ -14,7 +14,7 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
 
-jest.mock("$lib/services/worker.services", () => ({
+jest.mock("$lib/services/worker-auth.services", () => ({
   initWorker: jest.fn(() =>
     Promise.resolve({
       syncAuthIdle: () => {
