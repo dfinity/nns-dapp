@@ -58,7 +58,7 @@ governance_dissolving_neurons_e8s_count
 
   it("should return null if only dissolving number is found", async () => {
     const text = `${governanceMetricsText}
-governance_dissolving_neurons_e8s_count 8147494574194015
+governance_dissolving_neurons_e8s_count 8147494574194015 1674059025086
 # HELP governance_dissolving_neurons_count Total number of dissolving neurons, grouped by dissolve delay (in years)`;
 
     const metricsRestSpy = jest
@@ -73,8 +73,8 @@ governance_dissolving_neurons_e8s_count 8147494574194015
 
   it("should return null if only not dissolving number is found", async () => {
     const text = `${governanceMetricsText}
-governance_dissolving_neurons_e8s_count test 1674031880551
-# HELP governance_dissolving_neurons_count Total number of dissolving neurons, grouped by dissolve delay (in years)`;
+governance_not_dissolving_neurons_e8s_count 18188426841529904 1674059025086
+# HELP governance_not_dissolving_neurons_count Total number of not dissolving neurons, grouped by dissolve delay (in years)`;
 
     const metricsRestSpy = jest
       .spyOn(rest, "governanceMetrics")
@@ -91,8 +91,10 @@ governance_dissolving_neurons_e8s_count test 1674031880551
     const totalNotDissolving = 1674031880551;
 
     const text = `${governanceMetricsText}
-governance_dissolving_neurons_e8s_count ${totalDissolving} ${totalNotDissolving}
-# HELP governance_dissolving_neurons_count Total number of dissolving neurons, grouped by dissolve delay (in years)`;
+governance_dissolving_neurons_e8s_count ${totalDissolving} 1674059025086
+# HELP governance_dissolving_neurons_count Total number of dissolving neurons, grouped by dissolve delay (in years)
+governance_not_dissolving_neurons_e8s_count ${totalNotDissolving} 1674059025086
+# HELP governance_not_dissolving_neurons_count Total number of not dissolving neurons, grouped by dissolve delay (in years)`;
 
     const metricsRestSpy = jest
       .spyOn(rest, "governanceMetrics")
