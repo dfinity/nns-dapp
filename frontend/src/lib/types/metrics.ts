@@ -1,5 +1,5 @@
 import type { BinanceAvgPrice } from "$lib/types/binance";
 
-export interface DashboardSync {
+export interface MetricsSync {
   avgPrice: BinanceAvgPrice | null;
 }

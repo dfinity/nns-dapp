@@ -1,4 +1,4 @@
-import { SYNC_DASHBOARD_TIMER_INTERVAL } from "$lib/constants/dashboard.constants";
+import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
 import { exchangeRateICPToUsd } from "$lib/rest/binance.api";
 import type { BinanceAvgPrice } from "$lib/types/binance";
 import type {
@@ -12,27 +12,27 @@ onmessage = async ({
   const { msg } = data;
 
   switch (msg) {
-    case "nnsStopDashboardTimer":
-      await stopDashboardTimer();
+    case "nnsStopMetricsTimer":
+      await stopMetricsTimer();
       return;
-    case "nnsStartDashboardTimer":
-      await startDashboardTimer();
+    case "nnsStartMetricsTimer":
+      await startMetricsTimer();
       return;
   }
 };
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
-const startDashboardTimer = async () => {
-  const sync = async () => await syncDashboard();
+const startMetricsTimer = async () => {
+  const sync = async () => await syncMetrics();
 
   // We sync now but also schedule the update afterwards
   await sync();
 
-  timer = setInterval(sync, SYNC_DASHBOARD_TIMER_INTERVAL);
+  timer = setInterval(sync, SYNC_METRICS_TIMER_INTERVAL);
 };
 
-const stopDashboardTimer = async () => {
+const stopMetricsTimer = async () => {
   if (!timer) {
     return;
   }
@@ -41,16 +41,16 @@ const stopDashboardTimer = async () => {
   timer = undefined;
 };
 
-const syncDashboard = async () => {
+const syncMetrics = async () => {
   const [avgPrice] = await Promise.all([exchangeRateICPToUsd()]);
   emitCanister({ avgPrice });
 };
 
 const emitCanister = ({ avgPrice }: { avgPrice: BinanceAvgPrice | null }) =>
   postMessage({
-    msg: "nnsSyncDashboard",
+    msg: "nnsSyncMetrics",
     data: {
-      dashboard: {
+      metrics: {
         avgPrice,
       },
     },

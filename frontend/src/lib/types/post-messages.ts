@@ -1,19 +1,19 @@
-import type { DashboardSync } from "$lib/types/dashboard";
+import type { MetricsSync } from "$lib/types/metrics";
 
 export type PostMessageRequest =
   | "nnsStartIdleTimer"
   | "nnsStopIdleTimer"
-  | "nnsStartDashboardTimer"
-  | "nnsStopDashboardTimer";
+  | "nnsStartMetricsTimer"
+  | "nnsStopMetricsTimer";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PostMessageDataRequest {}
 
 export interface PostMessageDataResponse {
-  dashboard?: DashboardSync;
+  metrics?: MetricsSync;
 }
 
-export type PostMessageResponse = "nnsSignOut" | "nnsSyncDashboard";
+export type PostMessageResponse = "nnsSignOut" | "nnsSyncMetrics";
 
 export interface PostMessage<T extends PostMessageDataResponse> {
   msg: PostMessageRequest | PostMessageResponse;
