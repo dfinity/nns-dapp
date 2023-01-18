@@ -44,19 +44,21 @@
   const calculateVotingPower = (delayInSeconds: number) =>
     isNullish(snsParameters)
       ? 0n
-      : snsNeuronVotingPower({
-          newDissolveDelayInSeconds: BigInt(delayInSeconds),
-          neuron,
-          snsParameters,
-        });
+      : BigInt(
+          snsNeuronVotingPower({
+            newDissolveDelayInSeconds: BigInt(delayInSeconds),
+            neuron,
+            snsParameters,
+          })
+        );
   let maxSnsDelayInSeconds: number | undefined;
   $: maxSnsDelayInSeconds = isNullish(snsParameters)
     ? undefined
     : Number(fromDefinedNullable(snsParameters?.max_dissolve_delay_seconds));
 
-  let minSnsDissolveDelaySeconds: number | undefined;
+  let minSnsDissolveDelaySeconds: number;
   $: minSnsDissolveDelaySeconds = isNullish(snsParameters)
-    ? undefined
+    ? 0
     : Number(
         fromDefinedNullable(
           snsParameters?.neuron_minimum_dissolve_delay_to_vote_seconds
@@ -67,9 +69,9 @@
   $: minDissolveDelayDescription = isNullish(snsParameters)
     ? ""
     : replacePlaceholders($i18n.sns_neurons.dissolve_delay_description, {
-        $duration: secondsToDissolveDelayDuration(
+        $duration: `${secondsToDissolveDelayDuration(
           BigInt(minSnsDissolveDelaySeconds)
-        ),
+        )}`,
       });
 </script>
 

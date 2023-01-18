@@ -39,9 +39,6 @@
 
   let delayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
 
-  let minDelayInSeconds: number | undefined;
-  $: minDelayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
-
   $: if ($snsOnlyProjectStore !== undefined) {
     loadSnsParameters($snsOnlyProjectStore);
   }
@@ -88,7 +85,6 @@
       {rootCanisterId}
       {neuron}
       {token}
-      {minDelayInSeconds}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
