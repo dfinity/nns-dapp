@@ -10,6 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
   import { nonNullish } from "$lib/utils/utils";
+  import { metricsStore } from "$lib/stores/metrics.store";
 
   export let layout: "inline" | "stacked" = "inline";
 
@@ -23,9 +24,8 @@
   onMount(async () => (worker = await initMetricsWorker()));
   onDestroy(() => worker?.stopMetricsTimer());
 
-  let metricsSync: MetricsSync | undefined = undefined;
   const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
-    (metricsSync = data);
+    metricsStore.set(data);
 
   $: worker,
     (() =>
@@ -35,13 +35,13 @@
 
   let totalNeurons: number | undefined;
   $: totalNeurons =
-    (metricsSync?.dissolvingNeurons?.totalDissolvingNeurons ?? 0) +
-    (metricsSync?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
+    ($metricsStore?.dissolvingNeurons?.totalDissolvingNeurons ?? 0) +
+    ($metricsStore?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
 
   let total: number | undefined;
   $: total =
     ((totalNeurons ?? 0) / 1_000_00_000) *
-    Number(metricsSync?.avgPrice?.price ?? "0");
+    Number($metricsStore?.avgPrice?.price ?? "0");
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -72,6 +72,7 @@
     text-align: center;
 
     gap: var(--padding-0_5x);
+    z-index: var(--z-index);
 
     @include fonts.small;
 

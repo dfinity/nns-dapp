@@ -4,6 +4,7 @@
 
 import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
+import { metricsStore } from "$lib/stores/metrics.store";
 import type { BinanceAvgPrice } from "$lib/types/binance";
 import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 import { render, waitFor } from "@testing-library/svelte";
@@ -24,6 +25,8 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
 }));
 
 describe("TotalValueLocked", () => {
+  beforeEach(() => metricsStore.set(undefined));
+
   afterEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
