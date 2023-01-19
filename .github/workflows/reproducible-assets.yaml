@@ -87,5 +87,6 @@ jobs:
           path: hashes
       - name: Print hashes
         run: |
-          ls hashes
-          cat hashes/*.txt
+          echo Hashes:
+          grep -r . hashes/
+          (( $(cat hashes/*.txt | sort | uniq | wc -l) == 1 ))
