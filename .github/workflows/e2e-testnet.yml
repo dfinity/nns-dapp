@@ -64,7 +64,7 @@ jobs:
           # ND canister ID
           ND_CANISTER_ID="${{ github.event.inputs.nns_dapp_canister_id }}"
           ND_CANISTER_ID="${ND_CANISTER_ID:-$(yq .on.workflow_dispatch.inputs.nns_dapp_canister_id.default .github/workflows/e2e-testnet.yml)}" # Used on push; should match the default for manual triggers.
-          echo ND_NETWORK="$ND_NETWORK" | tee /dev/stderr >> $GITHUB_ENV
+          echo ND_CANISTER_ID="$ND_CANISTER_ID" | tee /dev/stderr >> $GITHUB_ENV
           # II canister ID
           II_CANISTER_ID="${{ github.event.inputs.ii_canister_id }}"
           II_CANISTER_ID="${II_CANISTER_ID:-$(yq .on.workflow_dispatch.inputs.ii_canister_id.default .github/workflows/e2e-testnet.yml)}" # Used on push; should match the default for manual triggers.
