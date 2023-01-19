@@ -33,7 +33,7 @@ jobs:
         run: |
           export DFX_NETWORK=mainnet
           . config.sh
-          build-assets.sh
+          ./build-assets.sh
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
         with:
