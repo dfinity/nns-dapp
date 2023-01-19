@@ -20,9 +20,16 @@ jobs:
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+      - uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
       - name: Checkout
         uses: actions/checkout@v3
+      # Helps with debugging
+      - name: Show versions
+        run: |
+          echo bash --version
+          bash --version
+          echo docker --version
+          docker --version
       - name: Build
         run: ./scripts/docker-build
