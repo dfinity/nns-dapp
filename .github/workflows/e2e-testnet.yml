@@ -1,4 +1,4 @@
-name: testnet
+name: Testnet e2e
 on:
   # Pushing one of these branches will trigger a build.
   #
