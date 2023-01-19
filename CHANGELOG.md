@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXX
+* Split layout and new token selector for "Accounts" and "Neurons".
+* Display TVL (total value locked) in USD.
+* Remove badge "new" next to menu entry "Launchpad".
+* Fixes and UI improvements.
+
 ## Proposal 101945
 * Increase sns neuron stake.
 * Split sns neuron.
