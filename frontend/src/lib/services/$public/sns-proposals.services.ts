@@ -71,6 +71,7 @@ export const loadProposal = async ({
   silentUpdateErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
+  // TODO: where store?
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse
   ) => {
