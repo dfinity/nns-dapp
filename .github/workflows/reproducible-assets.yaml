@@ -71,7 +71,7 @@ jobs:
         run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=foo$RANDOM" >> $GITHUB_OUTPUT
   compare_hashes:
     runs-on: ubuntu-latest
-    needs: native_asset_build
+    needs: [ native_asset_build ]
     steps:
       - name: Get hashes
         run: echo ${{toJSON(needs)}}
