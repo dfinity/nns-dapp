@@ -75,7 +75,6 @@ jobs:
         run: ./build-config.sh >> $GITHUB_ENV
       - name: Generate .env configuration for e2e-tests
         run: |
-          export DFX_NETWORK="${{ github.event.inputs.dfx_testnet }}"
           export ENV_OUTPUT_FILE=./e2e-tests/.env
           ./config.sh
           cat "$ENV_OUTPUT_FILE"
