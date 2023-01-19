@@ -114,11 +114,18 @@ const updateCSP = (indexHtml) => {
     );
   }
 
+  const enableSnsCacheCanister = process.env.FEATURE_FLAGS.ENABLE_SNS_CACHING;
+  // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
+  const cachingCanisterUrl =
+    "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.dfinity.network";
+
   const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/;
+        img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/ ${
+          enableSnsCacheCanister ? cachingCanisterUrl : ""
+        };
         child-src 'self';
         manifest-src 'self';
         script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
@@ -142,6 +149,10 @@ const cspConnectSrc = () => {
     process.env.VITE_GOVERNANCE_CANISTER_URL,
     process.env.VITE_LEDGER_CANISTER_URL,
   ];
+
+  if (enableSnsCacheCanister) {
+    src.push(cachingCanisterUrl);
+  }
 
   return src
     .filter((url) => url !== undefined)
