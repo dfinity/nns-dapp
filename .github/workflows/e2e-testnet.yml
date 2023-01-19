@@ -89,7 +89,11 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          if npm run test -- --spec specs/home.e2e.ts | tee -a wdio.log ; then
+            echo "E2E_RESULT=success" | tee /dev/stderr >> $GITHUB_ENV
+          else
+            echo "E2E_RESULT=fail" | tee /dev/stderr >> $GITHUB_ENV
+          fi
       - name: Archive wdio logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -102,3 +106,5 @@ jobs:
         with:
           name: e2e-screenshots
           path: screenshots/**/*.png
+      - name: E2e exit code OK
+        run: [[ "$E2E_RESULT" == "success" ]]
