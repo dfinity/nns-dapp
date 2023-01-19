@@ -6,8 +6,10 @@ import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHot
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
@@ -15,7 +17,11 @@ import {
 } from "../../../mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import {
+  buildMockSnsParametersStore,
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../../mocks/sns-neurons.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -26,7 +32,10 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 describe("SnsNeuronHotkeysCard", () => {
   const addHotkeyPermissions = (key) => ({
     principal: [Principal.fromText(key)] as [Principal],
-    permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+    permission_type: Int32Array.from([
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+      ...HOTKEY_PERMISSIONS,
+    ]),
   });
   const hotkeys = [
     "djzvl-qx6kb-xyrob-rl5ki-elr7y-ywu43-l54d7-ukgzw-qadse-j6oml-5qe",
@@ -34,9 +43,13 @@ describe("SnsNeuronHotkeysCard", () => {
   ];
   const controlledNeuron: SnsNeuron = {
     ...mockSnsNeuron,
-    permissions: [...hotkeys, mockIdentity.getPrincipal().toText()].map(
-      addHotkeyPermissions
-    ),
+    permissions: [
+      ...[...hotkeys].map(addHotkeyPermissions),
+      {
+        principal: [mockIdentity.getPrincipal()],
+        permission_type: Int32Array.from(enumValues(SnsNeuronPermissionType)),
+      },
+    ],
   };
 
   const unControlledNeuron: SnsNeuron = {
@@ -50,13 +63,26 @@ describe("SnsNeuronHotkeysCard", () => {
       reload,
       Component: SnsNeuronHotkeysCard,
       neuron,
+      props: {
+        parameters: {
+          ...snsNervousSystemParametersMock,
+          neuron_grantable_permissions: [
+            {
+              permissions: Int32Array.from(HOTKEY_PERMISSIONS),
+            },
+          ],
+        },
+      },
     });
 
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+    jest
+      .spyOn(snsParametersStore, "subscribe")
+      .mockImplementation(buildMockSnsParametersStore());
+  });
 
   afterEach(() => jest.clearAllMocks());
 
@@ -91,7 +117,31 @@ describe("SnsNeuronHotkeysCard", () => {
     const removeButtons = queryAllByTestId("remove-hotkey-button");
     fireEvent.click(removeButtons[0]);
 
-    expect(removeHotkey).toBeCalled();
     await waitFor(() => expect(reload).toBeCalledWith());
+    expect(removeHotkey).toBeCalled();
+  });
+
+  it("shows confirmation modal if hotkey is the current user", async () => {
+    const hotkeyNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      permissions: [mockIdentity.getPrincipal().toText()].map(
+        addHotkeyPermissions
+      ),
+    };
+    const { queryAllByTestId, queryByTestId, container } =
+      renderCard(hotkeyNeuron);
+
+    const removeButtons = queryAllByTestId("remove-hotkey-button");
+    await fireEvent.click(removeButtons[0]);
+
+    await waitFor(() =>
+      expect(
+        queryByTestId("remove-current-user-hotkey-confirmation")
+      ).toBeInTheDocument()
+    );
+    const confirmButton = queryByTestId("confirm-yes");
+    confirmButton && fireEvent.click(confirmButton);
+
+    await waitFor(() => expect(removeHotkey).toBeCalled());
   });
 });

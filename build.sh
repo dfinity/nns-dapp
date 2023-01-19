@@ -124,5 +124,7 @@ fi
 echo Optimising wasm
 cd "$TOPLEVEL"
 ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
+gzip -f -n nns-dapp.wasm
+mv nns-dapp.wasm.gz nns-dapp.wasm
 ls -sh ./nns-dapp.wasm
 sha256sum ./nns-dapp.wasm

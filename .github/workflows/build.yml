@@ -3,7 +3,6 @@
 # we have end-to-end tests working.
 # https://dfinity.atlassian.net/browse/L2-191
 name: Native build
-
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -11,23 +10,20 @@ name: Native build
 # date before merge. It's also nice to have CI running on branches without PRs.
 on:
   push:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 env:
-      NNS_CACHING_KEY: dv-0004
-
+  NNS_CACHING_KEY: dv-0004
 jobs:
   build:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
-
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
       # "restore-keys"-style matching). Because (in case of an exact match)
@@ -40,19 +36,16 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-
       # Cache the ic-cdk-optimizer
       - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/ic-cdk-optimizer
           key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
-
       - name: Install Software
         run: |
           ./scripts/setup --profile ~/.bashrc
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-
       # Helps with debugging
       - name: Versions
         run: |
@@ -63,29 +56,32 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
-
-      - name: Start replica
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from Mon Jan 16 10:10:47
+          ref: 'e1d7dd4c10fb8a731a534ae2ef4b08474fea5f6b'
+      - name: Add SNS scripts to the path
         run: |
-          dfx start --background --clean
-
-      #   run: sha256sum target/ic/*.wasm
-      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
-      - name: Deploy NNS canisters
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install SNS script dependencies
         run: |
-          dfx nns install
-
-      - name: Deploy NNS Dapp
+          dfx-sns-demo-install
+      - name: Deploy NNS and SNS canisters
         run: |
-          ./deploy.sh --nns-dapp local
-          cp nns-dapp.wasm nns-dapp_local.wasm
-
+          # Note: This deploys standard NNS canisters but with:
+          # - The current code for the nns-dapp
+          # - The II version specified in dfx.json
+          # - Functional SNS canisters
+          ./scripts/dfx-nns-deploy-custom --features sns
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
           retention-days: 3
-
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -99,15 +95,9 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
-
-      - name: Create initial state
-        run: |
-          ./deploy.sh --populate local
-
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
@@ -116,45 +106,40 @@ jobs:
           rm -rf screenshots
           set -o pipefail
           npm run test | tee -a wdio.log
-
       - name: Stop replica
         run: dfx stop
-
       - name: Archive wdio logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: wdio-logs
           path: e2e-tests/wdio.log
-
-# Disable screenshot saving until screenshots are stable.
-#      - name: Commit screenshots
-#        if: ${{ github.ref != 'refs/heads/main' }}
-#        uses: EndBug/add-and-commit@v9.1.1
-#        with:
-#          add: e2e-tests/screenshots
-#          author_name: Screenshot Committer
-#          author_email: "<nobody@example.com>"
-#          message: "Update screenshots"
-#          # do not pull: if this branch is behind, then we might as well let
-#          # the pushing fail
-#          pull: "NO-PULL"
-#
+          # Disable screenshot saving until screenshots are stable.
+          #      - name: Commit screenshots
+          #        if: ${{ github.ref != 'refs/heads/main' }}
+          #        uses: EndBug/add-and-commit@v9.1.1
+          #        with:
+          #          add: e2e-tests/screenshots
+          #          author_name: Screenshot Committer
+          #          author_email: "<nobody@example.com>"
+          #          message: "Update screenshots"
+          #          # do not pull: if this branch is behind, then we might as well let
+          #          # the pushing fail
+          #          pull: "NO-PULL"
+          #
       - name: Archive screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
           path: screenshots/**/*.png
-
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
-
   build-pass:
     needs: ["build"]
     runs-on: ubuntu-20.04
     steps:
-       - name: Build workflow passes
-         run: echo OK
+      - name: Build workflow passes
+        run: echo OK

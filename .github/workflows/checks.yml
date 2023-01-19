@@ -1,70 +1,30 @@
 name: CI Checks
-
 on:
   push:
-    branches:
-      - main
-  pull_request:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-
   formatting:
     runs-on: ubuntu-20.04
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: Install rust formatter
+        run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
+      - name: Format
+        run: ./scripts/fmt
+      - name: Check formatted
         run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
-
-      - name: Format dfx.json
-        run: cat <<<$(jq . dfx.json) > dfx.json
-
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v9.1.1
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
-
+          test -z "$(git status --porcelain)" || {
+                  echo "FIX: Please run ./scripts/fmt"
+                  git diff
+                  exit 1
+          }
   cargo-tests:
     needs: formatting
     runs-on: ${{ matrix.os }}
@@ -72,10 +32,8 @@ jobs:
       matrix:
         rust: ["1.63.0"]
         os: [ubuntu-20.04]
-
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/cache@v3
         with:
           path: |
@@ -83,24 +41,20 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
-
       - name: Install Rust
         run: |
           rustup update ${{ matrix.rust }} --no-self-update
           rustup default ${{ matrix.rust }}
           rustup target add wasm32-unknown-unknown
           rustup component add clippy
-
       - name: Lint rust code
         run: ./scripts/lint-rs
-
       - name: Run Tests
         shell: bash
         run: |
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
-
   svelte-tests:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -109,33 +63,25 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
-
       - name: Compile typescript
         run: npm run build
         working-directory: ./frontend
-
       # Temporarily disabled:
       #- name: Run linter
       #  run: npm run check
-
       - name: Test
         run: npm run test
         working-directory: ./frontend
-
   svelte-lint:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -144,29 +90,22 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./frontend
-
       - name: Compile typescript
         run: npm run build
         working-directory: ./frontend
-
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
-
   e2e-lint:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -175,41 +114,32 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./e2e-tests
-
       - name: Run e2e linter
         run: npm run lint
         working-directory: ./e2e-tests
-
-
-
   shell-checks:
     needs: formatting
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      env:
-        SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
-
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     runs-on: ubuntu-20.04
     steps:
-       - name: Checks workflow passes
-         run: echo OK
+      - name: Checks workflow passes
+        run: echo OK

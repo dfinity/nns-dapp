@@ -3,11 +3,13 @@ import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
+  NervousSystemParameters,
+  SnsListProposalsParams,
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronPermissionType,
 } from "@dfinity/sns";
-import type { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance";
+import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
 export const addNeuronPermissions = async ({
@@ -88,6 +90,36 @@ export const disburse = async ({
   });
 
   logWithTimestamp(`Disburse sns neuron complete.`);
+};
+
+export const splitNeuron = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+  amount,
+  memo,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  amount: E8s;
+  memo: bigint;
+}): Promise<void> => {
+  logWithTimestamp(`Split sns neuron call...`);
+
+  const { splitNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await splitNeuron({
+    neuronId,
+    amount,
+    memo,
+  });
+
+  logWithTimestamp(`Split sns neuron complete.`);
 };
 
 export const startDissolving = async ({
@@ -379,4 +411,29 @@ export const autoStakeMaturity = async ({
   logWithTimestamp(
     `${autoStake ? "Enable" : "Disable"} auto stake maturity complete.`
   );
+};
+
+export const queryProposals = async ({
+  rootCanisterId,
+  identity,
+  certified,
+  params,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  params: SnsListProposalsParams;
+}) => {
+  logWithTimestamp(`Getting proposals call...`);
+
+  const { listProposals } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const proposals = await listProposals(params);
+
+  logWithTimestamp(`Getting proposals call complete.`);
+  return proposals;
 };

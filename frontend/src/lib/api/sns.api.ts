@@ -271,7 +271,7 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
-  // If the client disconnects after the tranfer, the participation will still be notified.
+  // If the client disconnects after the transfer, the participation will still be notified.
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
   await nnsDapp.addPendingNotifySwap({
     swap_canister_id: swapCanisterId,
@@ -404,4 +404,38 @@ export const stakeNeuron = async ({
     `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
   );
   return newNeuronId;
+};
+
+export const increaseStakeNeuron = async ({
+  neuronId,
+  stakeE8s,
+  rootCanisterId,
+  identity,
+  source,
+}: {
+  neuronId: SnsNeuronId;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: SnsAccount;
+}): Promise<void> => {
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
+
+  const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await increaseStakeNeuronApi({
+    stakeE8s,
+    source,
+    neuronId,
+  });
+
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
 };

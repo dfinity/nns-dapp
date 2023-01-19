@@ -10,8 +10,7 @@
   import type { SvelteComponent } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { ENABLE_SNS, IS_TESTNET } from "$lib/constants/environment.constants";
-  import BadgeNew from "$lib/components/ui/BadgeNew.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
@@ -21,14 +20,8 @@
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
-
-  const isSelectedPath = ({
-    paths,
-    currentPath,
-  }: {
-    currentPath: AppPath | null;
-    paths: (AppPath | null)[];
-  }): boolean => currentPath !== null && paths.includes(currentPath);
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   let routes: {
     context: string;
@@ -70,6 +63,16 @@
       icon: IconUsers,
     },
     {
+      context: "launchpad",
+      href: `${AppPath.Launchpad}`,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Launchpad, AppPath.Project],
+      }),
+      label: "launchpad",
+      icon: IconRocketLaunch,
+    },
+    {
       context: "canisters",
       href: $canistersPathStore,
       selected: isSelectedPath({
@@ -79,22 +82,6 @@
       label: "canisters",
       icon: IconExplore,
     },
-    // Launchpad should not be visible on mainnet
-    ...(ENABLE_SNS
-      ? [
-          {
-            context: "launchpad",
-            href: `${AppPath.Launchpad}`,
-            selected: isSelectedPath({
-              currentPath: $pageStore.path,
-              paths: [AppPath.Launchpad, AppPath.Project],
-            }),
-            label: "launchpad",
-            icon: IconRocketLaunch,
-            statusIcon: BadgeNew,
-          },
-        ]
-      : []),
   ];
 </script>
 
@@ -111,3 +98,5 @@
 {#if IS_TESTNET}
   <GetTokens />
 {/if}
+
+<MenuMetrics />

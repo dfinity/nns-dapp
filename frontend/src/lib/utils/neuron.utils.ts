@@ -16,7 +16,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -318,7 +318,7 @@ export const isNeuronControllable = ({
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
@@ -330,7 +330,7 @@ export const isNeuronControlledByHardwareWallet = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean => {
   if (neuron.fullNeuron?.controller !== undefined) {
     const account = getAccountByPrincipal({
@@ -446,7 +446,7 @@ const isMergeableNeuron = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
@@ -458,7 +458,7 @@ const getMergeableNeuronMessageKey = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
@@ -494,7 +494,7 @@ export const mapMergeableNeurons = ({
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
@@ -742,26 +742,8 @@ export const votedNeuronDetails = ({
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
 
-/**
- * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
- */
-export const minMaturityMerge = (fee: number): number => fee;
-
 export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
-
-/**
- * @deprecated ultimately "stake maturity" will replace "merge maturity" on hardware wallet too
- */
-export const hasEnoughMaturityToMerge = ({
-  neuron: { fullNeuron },
-  fee,
-}: {
-  neuron: NeuronInfo;
-  fee: number;
-}): boolean =>
-  fullNeuron !== undefined &&
-  fullNeuron.maturityE8sEquivalent > minMaturityMerge(fee);
 
 export const minNeuronSplittable = (fee: number): number =>
   2 * E8S_PER_ICP + fee;

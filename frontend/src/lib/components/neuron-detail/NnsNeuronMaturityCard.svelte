@@ -9,13 +9,11 @@
     KeyValuePairInfo,
   } from "@dfinity/gix-components";
   import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
-  import MergeMaturityButton from "./actions/MergeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
   import {
     isNeuronControllable,
     formattedStakedMaturity,
-    isNeuronControlledByHardwareWallet,
     formattedTotalMaturity,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -29,15 +27,6 @@
     identity: $authStore.identity,
     accounts: $accountsStore,
   });
-
-  let controlledByHardwareWallet: boolean;
-  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
-    neuron,
-    accounts: $accountsStore,
-  });
-
-  let stakeMaturityEnabled: boolean;
-  $: stakeMaturityEnabled = !controlledByHardwareWallet;
 </script>
 
 <CardInfo>
@@ -45,18 +34,15 @@
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
     <svelte:fragment slot="info"
       ><Html
-        text={stakeMaturityEnabled
-          ? $i18n.neuron_detail.stake_maturity_tooltip
-          : $i18n.neuron_detail.merge_maturity_tooltip}
+        text={$i18n.neuron_detail.stake_maturity_tooltip}
       /></svelte:fragment
     >
     <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePairInfo>
 
-  {#if stakeMaturityEnabled && neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
+  {#if neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
-
       <span slot="value" class="staked-maturity"
         >{formattedStakedMaturity(neuron)}</span
       >
@@ -65,18 +51,11 @@
 
   {#if isControllable}
     <div class="actions">
-      {#if stakeMaturityEnabled}
-        <NnsStakeMaturityButton {neuron} />
-      {:else}
-        <MergeMaturityButton {neuron} />
-      {/if}
-
+      <NnsStakeMaturityButton {neuron} />
       <SpawnNeuronButton {neuron} />
     </div>
 
-    {#if stakeMaturityEnabled}
-      <NnsAutoStakeMaturity {neuron} />
-    {/if}
+    <NnsAutoStakeMaturity {neuron} />
   {/if}
 </CardInfo>
 

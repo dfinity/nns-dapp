@@ -5,6 +5,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
@@ -13,9 +14,13 @@ import { loadAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsAccounts = async (
-  rootCanisterId: Principal
-): Promise<void> => {
+export const loadSnsAccounts = async ({
+  rootCanisterId,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
@@ -42,16 +47,18 @@ export const loadSnsAccounts = async (
           fallbackErrorLabelKey: "error.sns_accounts_load",
         })
       );
+
+      handleError?.();
     },
     logMessage: "Syncing Sns Accounts",
   });
 };
 
-export const syncSnsAccounts = async (rootCanisterId: Principal) => {
-  await Promise.all([
-    loadSnsAccounts(rootCanisterId),
-    loadSnsTransactionFee(rootCanisterId),
-  ]);
+export const syncSnsAccounts = async (params: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}) => {
+  await Promise.all([loadSnsAccounts(params), loadSnsTransactionFee(params)]);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,16 +72,17 @@ export const snsTransferTokens = async ({
   rootCanisterId,
   source,
   destinationAddress,
-  e8s,
+  amount,
   loadTransactions,
 }: {
   rootCanisterId: Principal;
   source: Account;
   destinationAddress: string;
-  e8s: bigint;
+  amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   try {
+    const e8s = numberToE8s(amount);
     const identity: Identity = await getSnsAccountIdentity(source);
     const to = decodeSnsAccount(destinationAddress);
 
@@ -87,7 +95,7 @@ export const snsTransferTokens = async ({
     });
 
     await Promise.all([
-      loadSnsAccounts(rootCanisterId),
+      loadSnsAccounts({ rootCanisterId }),
       loadTransactions
         ? loadAccountTransactions({ account: source, rootCanisterId })
         : Promise.resolve(),

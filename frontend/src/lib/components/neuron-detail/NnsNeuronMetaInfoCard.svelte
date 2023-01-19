@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import SplitNeuronButton from "./actions/SplitNeuronButton.svelte";
+  import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import {
     ageMultiplier,
     dissolveDelayMultiplier,
@@ -24,6 +24,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { onIntersection } from "$lib/directives/intersection.directives";
 
   export let neuron: NeuronInfo;
 
@@ -51,12 +52,14 @@
 
 <div class="content-cell-details">
   <KeyValuePair>
-    <NnsNeuronCardTitle
-      tagName="h3"
-      {neuron}
+    <div
       slot="key"
+      data-tid="neuron-id-title"
+      use:onIntersection
       on:nnsIntersecting={updateLayoutTitle}
-    />
+    >
+      <NnsNeuronCardTitle tagName="h3" {neuron} />
+    </div>
     <NeuronStateInfo state={neuron.state} slot="value" />
   </KeyValuePair>
 
@@ -96,7 +99,7 @@
 
 <div class="buttons">
   {#if isControlledByUser}
-    <SplitNeuronButton {neuron} />
+    <SplitNnsNeuronButton {neuron} />
   {/if}
 </div>
 

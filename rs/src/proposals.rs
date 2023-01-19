@@ -68,13 +68,38 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
 
 // Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
 // Types used to decode arg's payload of nns_function type 4 for II upgrades
-pub type UserNumber = u64;
+pub type AnchorNumber = u64;
 #[derive(CandidType, Serialize, Deserialize)]
-struct InternetIdentityInit {
-    pub assigned_user_number_range: Option<(UserNumber, UserNumber)>,
-    pub archive_module_hash: Option<[u8; 32]>,
+pub struct InternetIdentityInit {
+    pub assigned_user_number_range: Option<(AnchorNumber, AnchorNumber)>,
+    pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
-    pub layout_migration_batch_size: Option<u32>,
+    pub upgrade_persistent_state: Option<bool>,
+}
+/// Configuration parameters of the archive to be used on the next deployment.
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct ArchiveConfig {
+    // Wasm module hash that is allowed to be deployed to the archive canister.
+    pub module_hash: [u8; 32],
+    // Buffered archive entries limit. If reached, II will stop accepting new anchor operations
+    // until the buffered operations are acknowledged by the archive.
+    pub entries_buffer_limit: u64,
+    // Polling interval at which the archive should fetch buffered archive entries from II (in nanoseconds).
+    pub polling_interval_ns: u64,
+    // Max number of archive entries to be fetched in a single call.
+    pub entries_fetch_limit: u16,
+    // How the entries get transferred to the archive.
+    // This is opt, so that the config parameter can be removed after switching from push to pull.
+    // Defaults to Push (legacy mode).
+    pub archive_integration: Option<ArchiveIntegration>,
+}
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub enum ArchiveIntegration {
+    #[serde(rename = "push")]
+    Push,
+    #[serde(rename = "pull")]
+    Pull,
 }
 
 fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {

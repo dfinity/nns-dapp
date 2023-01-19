@@ -11,9 +11,11 @@ import {
   getNeuronBalance,
   increaseDissolveDelay,
   nervousSystemParameters,
+  queryProposals,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
+  splitNeuron,
   stakeMaturity,
   startDissolving,
   stopDissolving,
@@ -42,6 +44,7 @@ import {
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
 } from "../../mocks/sns-projects.mock";
+import { mockSnsProposal } from "../../mocks/sns-proposals.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -59,9 +62,11 @@ jest.mock("$lib/api/agent.api", () => {
 
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
+  const proposals = [mockSnsProposal];
   const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
+  const splitNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
@@ -71,6 +76,7 @@ describe("sns-api", () => {
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
   const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -107,6 +113,7 @@ describe("sns-api", () => {
         addNeuronPermissions: addNeuronPermissionsSpy,
         removeNeuronPermissions: removeNeuronPermissionsSpy,
         disburse: disburseSpy,
+        splitNeuron: splitNeuronSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
         increaseDissolveDelay: increaseDissolveDelaySpy,
@@ -118,6 +125,7 @@ describe("sns-api", () => {
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
         autoStakeMaturity: autoStakeMaturitySpy,
+        listProposals: listProposalsSpy,
       })
     );
   });
@@ -159,6 +167,18 @@ describe("sns-api", () => {
     });
 
     expect(disburseSpy).toBeCalled();
+  });
+
+  it("should splitNeuron", async () => {
+    await splitNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      amount: 0n,
+      memo: 0n,
+    });
+
+    expect(splitNeuronSpy).toBeCalled();
   });
 
   it("should startDissolving", async () => {
@@ -281,5 +301,17 @@ describe("sns-api", () => {
 
     expect(nervousSystemParametersSpy).toBeCalled();
     expect(res).toEqual(snsNervousSystemParametersMock);
+  });
+
+  it("should get proposals", async () => {
+    const res = await queryProposals({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      params: {},
+    });
+
+    expect(listProposalsSpy).toBeCalled();
+    expect(res).toEqual(proposals);
   });
 });

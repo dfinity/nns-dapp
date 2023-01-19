@@ -76,6 +76,16 @@ export const formattedTransactionFeeICP = (fee: number | bigint): string =>
     }).toE8s(),
   });
 
+// To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
+// e.g. not 0.00010000 but 0.0001
+export const formattedTransactionFee = (fee: TokenAmount): string =>
+  formatToken({
+    value: TokenAmount.fromE8s({
+      amount: fee.toE8s(),
+      token: fee.token,
+    }).toE8s(),
+  });
+
 /**
  * Calculates the maximum amount for a transaction.
  *
@@ -123,5 +133,17 @@ export const convertTCyclesToIcpNumber = ({
   exchangeRate: bigint;
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
+/**
+ * Returns the number of E8s for the given amount.
+ *
+ * E8s have a precision of 8 decimals. An error is thrown if the amount has more than 8 decimals.
+ *
+ * @param {number} amount
+ * @returns {bigint}
+ * @throws {Error} If the amount has more than 8 decimals.
+ */
 export const numberToE8s = (amount: number): bigint =>
-  BigInt(Math.floor(amount * E8S_PER_ICP));
+  TokenAmount.fromNumber({
+    amount,
+    token: ICPToken,
+  }).toE8s();

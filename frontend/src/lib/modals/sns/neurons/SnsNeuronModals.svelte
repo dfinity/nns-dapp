@@ -6,7 +6,7 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import type { Token } from "@dfinity/nns";
+  import type { E8s, Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
@@ -23,6 +23,11 @@
   } from "$lib/types/sns-neuron-detail.modal";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
   import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
+  import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 
   // Modal events
 
@@ -53,6 +58,14 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
+
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters = nonNullish(rootCanisterId)
+    ? $snsParametersStore?.[rootCanisterId.toText()]?.parameters
+    : undefined;
+
+  let transactionFee: E8s | undefined;
+  $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
 </script>
 
 <svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
@@ -71,7 +84,7 @@
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if nonNullish(rootCanisterId)}
+  {#if nonNullish(rootCanisterId) && nonNullish(token)}
     {#if type === "increase-dissolve-delay"}
       <IncreaseSnsDissolveDelayModal
         {rootCanisterId}
@@ -113,6 +126,30 @@
           {neuronId}
           {neuron}
           {rootCanisterId}
+        />
+      {/if}
+
+      {#if nonNullish(parameters) && nonNullish(transactionFee)}
+        {#if type === "split-neuron"}
+          <SplitSnsNeuronModal
+            {rootCanisterId}
+            {neuron}
+            {token}
+            {parameters}
+            {transactionFee}
+            {reloadNeuron}
+            on:nnsClose={close}
+          />
+        {/if}
+      {/if}
+
+      {#if type === "increase-stake"}
+        <SnsIncreaseStakeNeuronModal
+          {rootCanisterId}
+          {token}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
         />
       {/if}
     {/if}

@@ -1,5 +1,33 @@
 # Changelog
 
+## Proposal 101945
+* Increase sns neuron stake.
+* Split sns neuron.
+* Permission update for sns hotkeys.
+* UX changes:
+  * Theme switcher on login screen.
+  * Improve proposal payment and summary rendering.
+* Bugfixes.
+
+## Proposal 99659
+* Fix disburse button in SNS neurons
+* Fix rounding error in sns transactions
+
+## Proposal 98559
+* Gzip wasm for proposal payload
+* Staking sns neuron.
+* Main “Login” page.
+* Update main menu entries.
+* Dependencies upgrade.
+* Minor bugfixes and UI improvements.
+
+## Proposal 98082
+* Enable stake maturity for HW.
+* Hide vote pane from detail page if proposal reward status has settled.
+* Update tcycles fee description.
+* Keep track of http agent (optimisation).
+* Label updates and bugfixes.
+
 ## Proposal 95968
 * fix sns minimum dissolve delay description calculation
 * fix sns hotkeys permissions
