@@ -14,6 +14,7 @@ import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
 function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
   const browsers = process.env.WDIO_BROWSER ?? "all";
   const headless = (process.env.WDIO_VIEW ?? "headless") === "headless";
+  const in_docker = fs.existsSync("/.dockerenv"); 
   const useChrome = ["all", "chrome"].includes(browsers);
   const useFirefox = ["all", "firefox"].includes(browsers);
   const capabilities: Capabilities.RemoteCapabilities = [];
@@ -21,7 +22,9 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
     const chrome = {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: headless ? ["headless", "disable-gpu"] : [],
+        args: [
+        ].concat(in_docker ? ['--no-sandbox'] : [])
+         .concat(headless ? ["headless", "disable-gpu"] : [])
       },
       acceptInsecureCerts: true,
     };
