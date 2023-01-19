@@ -89,7 +89,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          if npm run test -- --spec specs/home.e2e.ts | tee -a wdio.log ; then
+          if SCREENSHOT=1 WDIO_BROWSER=chrome npm run test -- --spec specs/home.e2e.ts | tee -a wdio.log ; then
             echo "E2E_RESULT=success" | tee /dev/stderr >> $GITHUB_ENV
           else
             echo "E2E_RESULT=fail" | tee /dev/stderr >> $GITHUB_ENV
