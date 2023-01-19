@@ -59,12 +59,14 @@ jobs:
           *)
             ./build-assets.sh ;;
           esac
+          mkdir -p builds
+          cp assets.tar.xz "builds/assets_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: nns-dapp-assets_${{ matrix.os }}_${{ matrix.time }}
-          path: assets.tar.xz
+          name: builds
+          path: builds/*.tar.xz
           retention-days: 1
       - name: 'Output the hash'
         run: |
