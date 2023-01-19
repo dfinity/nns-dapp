@@ -73,7 +73,7 @@ jobs:
       - name: Check network
         run: |
           RAW_URL="$(jq -r '.networks[env.DFX_NETWORK].config.HOST | sub(env.DFX_NETWORK; "\(env.ND_CANISTER_ID).raw.\(env.DFX_NETWORK)")' dfx.json)"
-          curl -X HEAD --fail -v "$RAW_URL"
+          curl --fail -v "$RAW_URL" > "/dev/null"
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
       - name: Generate .env configuration for e2e-tests
