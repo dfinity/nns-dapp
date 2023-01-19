@@ -3,7 +3,7 @@
  */
 
 import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
-import { projectsStore } from "$lib/stores/projects.store";
+import { projectsStore } from "$lib/derived/projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -80,6 +80,7 @@ describe("SnsTransactionCard", () => {
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
     const stakeNeuronTransaction = createSnstransactionWithId(toGov, from);
+    stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
       stakeNeuronTransaction,

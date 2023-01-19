@@ -20,7 +20,7 @@
     type CanisterDetailsContext,
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
-  import { debugSelectedCanisterStore } from "$lib/stores/debug.store";
+  import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 
   import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
@@ -30,7 +30,7 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";

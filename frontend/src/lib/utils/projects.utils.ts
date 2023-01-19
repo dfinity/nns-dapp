@@ -1,5 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { SnsFullProject } from "$lib/stores/projects.store";
+import type { SnsFullProject } from "$lib/derived/projects.derived";
 import type {
   SnsSummary,
   SnsSummarySwap,
@@ -19,7 +19,7 @@ export const filterProjectsStatus = ({
 }: {
   swapLifecycle: SnsSwapLifecycle;
   projects: SnsFullProject[] | undefined;
-}) =>
+}): SnsFullProject[] | undefined =>
   projects?.filter(
     ({
       summary: {
@@ -30,7 +30,7 @@ export const filterProjectsStatus = ({
 
 export const filterCommittedProjects = (
   projects: SnsFullProject[] | undefined
-) =>
+): SnsFullProject[] | undefined =>
   filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Committed,
     projects,

@@ -10,7 +10,6 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
   import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
-  import { numberToE8s } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
 
@@ -37,7 +36,7 @@
     const { success } = await snsTransferTokens({
       source: sourceAccount,
       destinationAddress,
-      e8s: numberToE8s(amount),
+      amount,
       loadTransactions,
       rootCanisterId: $snsProjectIdSelectedStore,
     });

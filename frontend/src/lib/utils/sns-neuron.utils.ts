@@ -1,10 +1,20 @@
-import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  MANAGE_HOTKEY_PERMISSIONS,
+  MAX_NEURONS_SUBACCOUNTS,
+} from "$lib/constants/sns-neurons.constants";
+import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { votingPower } from "$lib/utils/neuron.utils";
+import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import {
+  neuronSubaccount,
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+} from "@dfinity/sns";
 import type {
   NervousSystemFunction,
   NervousSystemParameters,
@@ -38,7 +48,11 @@ export const getSnsNeuronState = ({
       : NeuronState.Locked;
   }
   if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    return NeuronState.Dissolving;
+    // In case `nowInSeconds` ever changes and doesn't return an integer we use Math.floor
+    return dissolveState.WhenDissolvedTimestampSeconds <
+      BigInt(Math.floor(nowInSeconds()))
+      ? NeuronState.Dissolved
+      : NeuronState.Dissolving;
   }
   return NeuronState.Unspecified;
 };
@@ -118,18 +132,73 @@ export const getSnsNeuronIdAsHexString = ({
 export const subaccountToHexString = (subaccount: Uint8Array): string =>
   bytesToHexString(Array.from(subaccount));
 
+/**
+ * Find the first not existed memo (index based).
+ * This approach works because sns neurons are not deleted.
+ *
+ * @param {Object} params
+ * @param {Identity} params.identity
+ * @param {SnsNeuron[]} params.neurons
+ */
+export const nextMemo = ({
+  identity,
+  neurons,
+}: {
+  identity: Identity;
+  neurons: SnsNeuron[];
+}): bigint => {
+  const controller = identity.getPrincipal();
+  for (let index = 0; index < MAX_NEURONS_SUBACCOUNTS; index++) {
+    const subaccount = neuronSubaccount({
+      controller,
+      index,
+    });
+    if (
+      getSnsNeuronByHexId({
+        neuronIdHex: subaccountToHexString(subaccount),
+        neurons,
+      }) === undefined
+    ) {
+      return BigInt(index);
+    }
+  }
+
+  throw new NextMemoNotFoundError();
+};
+
+/**
+ * Users are able to manage hotkeys when both:
+ * - User’s principal has the `ManageVotingPermission` or `ManagePrincipals` permission.
+ * - Both `Vote` and `SubmitProposal` are in `neuron_grantable_permissions` parameter
+ *
+ * @param {Object} params
+ * @param {SnsNeuron} params.neuron
+ * @param {Identity | undefined | null} params.identity
+ * @param {NervousSystemParameters} params.parameters
+ */
 export const canIdentityManageHotkeys = ({
   neuron,
   identity,
+  parameters,
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
-}): boolean =>
-  hasPermissions({
+  parameters: NervousSystemParameters;
+}): boolean => {
+  const { neuron_grantable_permissions } =
+    mapNervousSystemParameters(parameters);
+  const grantableSet = new Set(neuron_grantable_permissions);
+  const hotkeyPermissionsGrantable = HOTKEY_PERMISSIONS.every((permission) =>
+    grantableSet.has(permission)
+  );
+  const identityAllowedToManageHotkeys = hasPermissions({
     neuron,
     identity,
-    permissions: HOTKEY_PERMISSIONS,
+    permissions: MANAGE_HOTKEY_PERMISSIONS,
+    options: { anyPermission: true },
   });
+  return identityAllowedToManageHotkeys && hotkeyPermissionsGrantable;
+};
 
 export const hasPermissionToDisburse = ({
   neuron,
@@ -187,17 +256,40 @@ export const hasPermissionToStakeMaturity = ({
     ],
   });
 
-/*
+export const hasPermissionToSplit = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
+  });
+
+/**
  * Returns true if the neuron contains provided permissions
+ * By default neuron should have all of `permissions`. This can be changed w/ `options.any` flag.
+ *
+ * @param {Object} param
+ * @param {SnsNeuron} param.neuron
+ * @param {Identity | undefined | null} param.identity
+ * @param {SnsNeuronPermissionType[]} param.permissions
+ * @param {Object} param.options Additional options
+ * @param {boolean} param.options.any At least one of provided permissions should be in principals list
  */
 export const hasPermissions = ({
   neuron: { id, permissions: neuronPermissions },
   identity,
   permissions,
+  options,
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
   permissions: SnsNeuronPermissionType[];
+  options?: { anyPermission: boolean };
 }): boolean => {
   const neuronId = fromNullable(id);
   const principalAsText = identity?.getPrincipal().toText();
@@ -212,30 +304,65 @@ export const hasPermissions = ({
     )?.permission_type ?? []
   );
 
+  if (options?.anyPermission) {
+    return Boolean(
+      permissions.find((permission: SnsNeuronPermissionType) =>
+        principalPermissions.includes(permission)
+      )
+    );
+  }
+
   const notFound = (permission: SnsNeuronPermissionType) =>
     !principalPermissions.includes(permission);
-
   return !permissions.some(notFound);
 };
 
+const comparePermissions = ({
+  a,
+  b,
+}: {
+  a: SnsNeuronPermissionType[];
+  b: SnsNeuronPermissionType[];
+}): boolean => {
+  const bSet = new Set(b);
+  return a.length === b.length && a.every((permission) => bSet.has(permission));
+};
+
 /**
- * Returns the principals that have ONLY the hotkey permissions.
+ * Returns the principals that have ONLY the hotkey permissions:
+ * - Both `Vote` and `SubmitProposal`
+ * - `ManageVotingPermission` or/and `ManagePrincipals`
  *
- * If a neuron has more than those two permissions, it is not a hotkey.
+ * If a neuron has more than those permission combinations, it is not a hotkey.
  *
  * @param {SnsNeuron}
  * @returns {string[]} principals that are hotkeys
  */
-export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] =>
-  permissions
-    .filter(
-      ({ permission_type }) =>
-        permission_type.every(
-          (p) => HOTKEY_PERMISSIONS.find((key) => key === p) !== undefined
-        ) && permission_type.length === HOTKEY_PERMISSIONS.length
-    )
+export const getSnsNeuronHotkeys = ({ permissions }: SnsNeuron): string[] => {
+  // only those combinations define a hotkey
+  const hotkeyPermissions = [
+    HOTKEY_PERMISSIONS,
+    // for CF neuron as an exception
+    [
+      ...HOTKEY_PERMISSIONS,
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_VOTING_PERMISSION,
+    ],
+  ];
+  return permissions
+    .filter(({ permission_type }) => {
+      const neuronPermissions = Array.from(permission_type);
+      return (
+        hotkeyPermissions.find((aHotkeyPermissions) =>
+          comparePermissions({
+            a: neuronPermissions,
+            b: aHotkeyPermissions,
+          })
+        ) !== undefined
+      );
+    })
     .map(({ principal }) => fromNullable(principal)?.toText())
     .filter(nonNullish);
+};
 
 export const isUserHotkey = ({
   neuron,
@@ -266,6 +393,39 @@ export const isSnsNeuron = (
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
   neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+
+/*
+- The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
+- The parent's stake minus amount to split is more than the minimum stake (thus the parent neuron will have at least the minimum stake)
+ */
+export const minNeuronSplittable = ({
+  fee,
+  neuronMinimumStake,
+}: {
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): bigint => 2n * neuronMinimumStake + fee;
+
+export const isEnoughAmountToSplit = ({
+  amount,
+  fee,
+  neuronMinimumStake,
+}: {
+  amount: E8s;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean => amount >= neuronMinimumStake + fee;
+
+export const neuronCanBeSplit = ({
+  neuron,
+  fee,
+  neuronMinimumStake,
+}: {
+  neuron: SnsNeuron;
+  fee: E8s;
+  neuronMinimumStake: E8s;
+}): boolean =>
+  getSnsNeuronStake(neuron) >= minNeuronSplittable({ fee, neuronMinimumStake });
 
 /**
  * Has the neuron the auto stake maturity feature turned on?
@@ -486,14 +646,20 @@ export const snsNeuronVotingPower = ({
   const {
     voting_power_percentage_multiplier,
     aging_since_timestamp_seconds,
-    maturity_e8s_equivalent,
+    staked_maturity_e8s_equivalent,
   } = neuron;
   const dissolveDelay =
     dissolveDelayInSeconds < maxDissolveDelaySeconds
       ? dissolveDelayInSeconds
       : maxDissolveDelaySeconds;
   const stakeE8s = BigInt(
-    Math.max(Number(getSnsNeuronStake(neuron) + maturity_e8s_equivalent), 0)
+    Math.max(
+      Number(
+        getSnsNeuronStake(neuron) +
+          (fromNullable(staked_maturity_e8s_equivalent) ?? BigInt(0))
+      ),
+      0
+    )
   );
   const ageSeconds = BigInt(
     Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)

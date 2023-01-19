@@ -3,7 +3,7 @@
  */
 
 import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
-import { mergeMaturity, stakeMaturity } from "$lib/services/neurons.services";
+import { stakeMaturity } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -109,7 +109,7 @@ describe("NnsStakeMaturityModal", () => {
         )
     );
 
-    it("should call mergeMaturity service on confirm click for HW", async () => {
+    it("should call stakeMaturity service on confirm click for HW", async () => {
       const renderResult: RenderResult<SvelteComponent> =
         await renderNnsStakeMaturityModal(neuronHW);
 
@@ -125,7 +125,7 @@ describe("NnsStakeMaturityModal", () => {
       expect(confirmButton).toBeInTheDocument();
       confirmButton && (await fireEvent.click(confirmButton));
 
-      expect(mergeMaturity).toBeCalled();
+      expect(stakeMaturity).toBeCalled();
     });
   });
 });

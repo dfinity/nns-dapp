@@ -1,3 +1,5 @@
+@use "@dfinity/gix-components/styles/mixins/media";
+
 @mixin maturity-card-info {
   h3 {
     line-height: var(--line-height-standard);
@@ -12,5 +14,20 @@
 
   .staked-maturity {
     margin: var(--padding-0_5x) 0 0;
+  }
+}
+
+@mixin neuron-card-content {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+
+  gap: var(--padding-0_5x);
+  padding-bottom: var(--padding);
+
+  @include media.min-width(medium) {
   }
 }

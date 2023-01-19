@@ -20,11 +20,9 @@
     display: flex;
     flex-direction: column;
   }
-
   h1 {
     line-height: var(--line-height-standard);
   }
-
   p {
     margin-bottom: var(--padding-3x);
   }

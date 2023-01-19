@@ -1,7 +1,5 @@
 # clap - a BASH argument parser
-# This parser aims to have similar parsing semantics as Rust's clap parser, so that it can
-# be used to experiment with commands that are later implemented in rust.  But if the implementation
-# doesn't look anything like clap it's not just you; this has a way to go.
+# This parser aims to have similar parsing semantics as Rust's clap parser; if it doesn't look anything like clap it's not just you.
 
 clap_usage=""
 clap_flags=""

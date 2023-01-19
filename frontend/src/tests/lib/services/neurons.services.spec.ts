@@ -18,6 +18,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte/internal";
 import { get } from "svelte/store";
@@ -32,6 +33,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
@@ -509,6 +511,32 @@ describe("neurons-services", () => {
       expect(toastsShow).toHaveBeenCalled();
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
+
+    it("should not toggle auto stake maturity if hw version is lower than candid parser version", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
+      resetIdentity();
+    });
   });
 
   describe("disburse", () => {
@@ -628,6 +656,39 @@ describe("neurons-services", () => {
 
       const { success } = await services.stakeMaturity({
         neuronId: controlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+
+      resetIdentity();
+    });
+
+    it("should not stake maturity if lower HW version than required", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+
+      const { success } = await services.stakeMaturity({
+        neuronId: neuron.neuronId,
         percentageToStake: 50,
       });
 
@@ -1010,7 +1071,9 @@ describe("neurons-services", () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
       const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
-      const amountWithFee = amount + transactionFee;
+      // To avoid rounding errors, we round the amount with the fee to the nearest 8 decimals
+      const amountWithFee =
+        Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
       await services.splitNeuron({
         neuronId: controlledNeuron.neuronId,
         amount,

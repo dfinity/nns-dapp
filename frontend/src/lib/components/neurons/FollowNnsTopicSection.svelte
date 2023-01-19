@@ -5,7 +5,7 @@
   import { removeFollowee } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { knownNeuronsStore } from "$lib/stores/knownNeurons.store";
+  import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
   import { followeesByTopic } from "$lib/utils/neuron.utils";
   import FollowTopicSection from "./FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";

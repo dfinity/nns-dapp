@@ -7,11 +7,11 @@
     isNnsProjectStore,
     snsProjectIdSelectedStore,
   } from "$lib/derived/selected-project.derived";
-  import NeuronsTitle from "$lib/components/neurons/NeuronsTitle.svelte";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 </script>
 
 <main>
-  <NeuronsTitle />
+  <SummaryUniverse />
 
   {#if $isNnsProjectStore}
     <NnsNeurons />

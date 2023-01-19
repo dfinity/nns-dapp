@@ -25,19 +25,10 @@ dfx start --clean --background
 
 ### Download and install NNS canisters
 
-Install dfx version `0.12.0-snsdemo.4` and set it in `dfx.json`.
+From the root directory.
 
 ```bash
-dfx nns install
-```
-
-### Deploy NNS Dapp
-
-Install NNS Dapp in the local replica.
-
-```bash
-# in root folder
-./deploy.sh --nns-dapp local
+./scripts/dfx-nns-deploy-custom
 ```
 
 ### Setup e2e tests
@@ -117,7 +108,7 @@ Build the environment file for that testnet:
 
 ```bash
 # In root folder
-DFX_NETWORK=staging ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
+DFX_NETWORK=small12 ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
 ```
 
 Run the test:

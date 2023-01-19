@@ -76,7 +76,7 @@ describe("sns-accounts-services", () => {
         return expect(store[mockPrincipal.toText()]).toBeUndefined();
       });
       const transactionsStore = get(snsTransactionsStore);
-      return expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
+      expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });
@@ -128,7 +128,7 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
-        e8s: BigInt(10_000_000),
+        amount: 1,
         loadTransactions: false,
       });
 
@@ -146,7 +146,7 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
-        e8s: BigInt(10_000_000),
+        amount: 1,
         loadTransactions: true,
       });
 
@@ -166,7 +166,7 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
-        e8s: BigInt(10_000_000),
+        amount: 1,
         loadTransactions: false,
       });
 

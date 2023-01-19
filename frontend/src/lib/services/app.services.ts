@@ -1,4 +1,3 @@
-import { ENABLE_SNS } from "$lib/constants/environment.constants";
 import { loadSnsSwapCommitmentsProxy } from "$lib/proxy/sns.services.proxy";
 import { loadMainTransactionFee } from "$lib/services/transaction-fees.services";
 import { syncAccounts } from "./accounts.services";
@@ -13,10 +12,7 @@ export const initAppPrivateData = (): Promise<
     loadMainTransactionFee(),
   ];
 
-  // Sns in an initiative currently under development and not proposed on mainnet yet
-  const initSns: Promise<void>[] = ENABLE_SNS
-    ? [loadSnsSwapCommitmentsProxy()]
-    : [];
+  const initSns: Promise<void>[] = [loadSnsSwapCommitmentsProxy()];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.

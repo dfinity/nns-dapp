@@ -1,16 +1,31 @@
 <script lang="ts">
-  import { ExternalLink, MenuButton } from "@dfinity/gix-components";
+  import {
+    BREAKPOINT_LARGE,
+    ExternalLink,
+    MenuButton,
+    ThemeToggle,
+  } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
+
+  let innerWidth = 0;
+  let displayTvl = false;
+
+  // We have to use JS to activate the TVL metrics in the header or menu to avoid to make calls twice
+  // Easier than introducing stores and logic at this point since this can only happen on the login screen.
+  $: displayTvl = innerWidth > BREAKPOINT_LARGE;
 </script>
+
+<svelte:window bind:innerWidth />
 
 <header>
   <div class="start">
-    <ExternalLink href="https://internetcomputer.org"
-      >internetcomputer.org</ExternalLink
-    >
-
     <MenuButton />
+
+    {#if displayTvl}
+      <div class="tvl"><TotalValueLocked /></div>
+    {/if}
   </div>
 
   <img
@@ -28,6 +43,7 @@
     <ExternalLink href="https://dashboard.internetcomputer.org/governance"
       >{$i18n.auth.voting_rewards}</ExternalLink
     >
+    <ThemeToggle />
   </div>
 </header>
 
@@ -92,24 +108,41 @@
     height: var(--padding-6x);
 
     @include media.min-width(large) {
+      padding-top: var(--padding);
+    }
+
+    @include media.min-width(xlarge) {
+      padding-top: 0;
       height: var(--padding-8x);
     }
   }
 
   .start,
   .end {
-    padding-top: var(--padding-2x);
+    height: 100%;
+    display: flex;
+    align-items: center;
+
     flex: 2;
 
-    :global(a) {
+    :global(a),
+    :global(.theme-toggle) {
       display: none;
     }
 
     @include media.min-width(large) {
-      padding-top: calc(4.5 * var(--padding));
-
       :global(a) {
         display: inline-block;
+
+        &:active,
+        &:focus,
+        &:hover {
+          color: var(--menu-select-color);
+        }
+      }
+
+      :global(.theme-toggle) {
+        display: flex;
       }
 
       :global(button) {
@@ -120,7 +153,19 @@
 
   .end {
     display: flex;
-    gap: var(--padding-4x);
+    gap: var(--padding-2x);
     justify-content: flex-end;
+
+    @include media.min-width(xlarge) {
+      gap: var(--padding-4x);
+    }
+  }
+
+  .start {
+    gap: var(--padding-2x);
+
+    @include media.min-width(xlarge) {
+      gap: var(--padding-4x);
+    }
   }
 </style>

@@ -193,6 +193,7 @@ describe("sns-transaction utils", () => {
         toGovernance,
         from
       );
+      stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
       const data = mapSnsTransaction({
         transaction: stakeNeuronTransaction,
         account: mockSnsMainAccount,
@@ -202,6 +203,28 @@ describe("sns-transaction utils", () => {
       expect(data.isSend).toBe(true);
       expect(data.isReceive).toBe(false);
       expect(data.type).toBe(AccountTransactionType.StakeNeuron);
+    });
+
+    it("maps top up neuron transaction", () => {
+      const governanceCanisterId = principal(2);
+      const toGovernance = {
+        owner: governanceCanisterId,
+        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+      };
+      const topUpNeuronTransaction = createSnstransactionWithId(
+        toGovernance,
+        from
+      );
+      topUpNeuronTransaction.transaction.transfer[0].memo = [];
+      const data = mapSnsTransaction({
+        transaction: topUpNeuronTransaction,
+        account: mockSnsMainAccount,
+        toSelfTransaction: false,
+        governanceCanisterId,
+      });
+      expect(data.isSend).toBe(true);
+      expect(data.isReceive).toBe(false);
+      expect(data.type).toBe(AccountTransactionType.TopUpNeuron);
     });
 
     it("maps received transaction", () => {
