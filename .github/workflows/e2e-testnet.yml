@@ -30,6 +30,9 @@ on:
         required: true
         default: 'qhbym-qaaaa-aaaaa-aaafq-cai'
         type: string
+defaults:
+  run:
+    shell: bash -x
 jobs:
   testnet:
     runs-on: ubuntu-20.04
