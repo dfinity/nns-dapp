@@ -16,6 +16,7 @@ jobs:
           if command -v brew ; then
             brew install bash
             brew install jq
+            brew install coreutils
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
