@@ -71,4 +71,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: native_asset_build
     steps:
-      run: echo ${{toJSON(needs.native_asset_build.outputs)}}
+      - name: Get hashes
+        run: echo ${{toJSON(needs.native_asset_build.outputs)}}
