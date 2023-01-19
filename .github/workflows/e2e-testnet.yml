@@ -50,7 +50,6 @@ jobs:
         run: |
           DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Get input vars
-        run: ""
         run: |
           # Note: If this is run via workflow_dispatch, defaults are populated as specified in the yaml above.
           #       Otherwise the defaults are not set by gh, so we set them.
