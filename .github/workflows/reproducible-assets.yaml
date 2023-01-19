@@ -86,5 +86,5 @@ jobs:
       - name: Print hashes
         run: |
           echo Hashes:
-          grep -r . hashes/ | awk -F: '{printf "%s: %s\n", $2, $1}'
+          grep -r . hashes/ | awk -F: '{printf "%s: %s\n", $2, $1}' | sort
           (( $(cat hashes/*.txt | sort | uniq | wc -l) == 1 ))
