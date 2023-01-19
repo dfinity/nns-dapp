@@ -61,6 +61,7 @@ jobs:
           esac
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: nns-dapp-assets_${{ matrix.os }}_${{ matrix.time }}
           path: assets.tar.xz
