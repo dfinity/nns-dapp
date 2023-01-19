@@ -1,0 +1,38 @@
+name: Reproducible Assets
+
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  docker_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, ubuntu-20.04, macos-11, macos-12 ]
+    steps:
+      - name: Unbork mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+            echo "/usr/local/bin" >> $GITHUB_PATH
+            echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          fi
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Helps with debugging
+      - name: Show versions
+        run: |
+          echo bash --version
+          bash --version
+      - name: Build
+        run: |
+          export DFX_NETWORK=mainnet
+          . config.sh
+          build-assets.sh
+      - name: 'Upload assets'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp-assets-${{ matrix.os }}
+          path: assets.tar.xz
+          retention-days: 3
