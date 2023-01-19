@@ -75,6 +75,10 @@ jobs:
           jq '.["nns-dapp"][ env.DFX_NETWORK ] = (env.ND_CANISTER_ID)' canister_ids.json | sponge canister_ids.json
           jq '.["internet_identity"][ env.DFX_NETWORK ] = (env.II_CANISTER_ID)' canister_ids.json | sponge canister_ids.json
           cat canister_ids.json
+      - name: Check network
+        run: |
+          RAW_URL="$(jq -r '.networks[env.DFX_NETWORK].config.HOST | sub(env.DFX_NETWORK; "raw.\(env.DFX_NETWORK)")' dfx.json)"
+          curl -X HEAD --fail -v "$RAW_URL"
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
       - name: Generate .env configuration for e2e-tests
