@@ -17,7 +17,9 @@
     lastProposalId,
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
-  onMount(() => {
+  import { loadSnsFilters } from "$lib/services/sns-filters.services";
+
+  onMount(async () => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
     if (!ENABLE_SNS_VOTING) {
       goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
@@ -32,6 +34,7 @@
         await Promise.all([
           loadSnsProposals({ rootCanisterId: selectedProjectCanisterId }),
           loadSnsNervousSystemFunctions(selectedProjectCanisterId),
+          loadSnsFilters(selectedProjectCanisterId),
         ]);
       }
     }
