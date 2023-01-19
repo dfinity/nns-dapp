@@ -68,10 +68,24 @@ jobs:
       #      - name: 'Output the hash'
       #        run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=$(sha256sum assets.tar.xz)" >> $GITHUB_OUTPUT
       - name: 'Toy output'
-        run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=foo$RANDOM" >> $GITHUB_OUTPUT
+        run: |
+          mkdir -p hashes
+          echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=foo$RANDOM" > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
+      - name: 'Upload hashes'
+        uses: actions/upload-artifact@v3
+        with:
+          name: hashes
+          path: hashes/*.txt
   compare_hashes:
     runs-on: ubuntu-latest
-    needs: [ native_asset_build ]
+    needs: [native_asset_build]
     steps:
       - name: Get hashes
-        run: echo ${{toJSON(needs.native_asset_build)}}
+        uses: actions/download-artifact@v3
+        with:
+          name: hashes
+          path: hashes
+      - name: Print hashes
+        run: |
+          ls hashes
+          cat hashes/*.txt
