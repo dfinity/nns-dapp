@@ -107,4 +107,9 @@ jobs:
           name: e2e-screenshots
           path: screenshots/**/*.png
       - name: E2e exit code OK
-        run: [[ "$E2E_RESULT" == "success" ]]
+        run: |
+          if [[ "$E2E_RESULT" == "success" ]]
+          then echo "Congratulations!  E2e tests succeeded."
+          else echo "Commiserations!  E2e tests failed."
+               exit 1
+          fi
