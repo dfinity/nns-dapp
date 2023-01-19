@@ -757,5 +757,8 @@
     "3": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
     "4": "The proposal was adopted and successfully executed.",
     "5": "The proposal was adopted, but execution failed."
+  },
+  "metrics": {
+    "tvl": "Total Value Locked"
   }
 }

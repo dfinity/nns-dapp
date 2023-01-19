@@ -3,7 +3,7 @@
  */
 
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
-import { initWorker } from "$lib/services/worker.services";
+import { initAuthWorker } from "$lib/services/worker-auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
 import { toastsStore } from "@dfinity/gix-components";
@@ -14,8 +14,8 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "../mocks/auth.store.mock";
 
-jest.mock("$lib/services/worker.services", () => ({
-  initWorker: jest.fn(() =>
+jest.mock("$lib/services/worker-auth.services", () => ({
+  initAuthWorker: jest.fn(() =>
     Promise.resolve({
       syncAuthIdle: () => {
         // Do nothing
@@ -61,7 +61,7 @@ describe("Layout", () => {
       identity: mockIdentity,
     });
 
-    expect(initWorker).toHaveBeenCalled();
+    expect(initAuthWorker).toHaveBeenCalled();
   });
 
   it("should reset toasts on sign in", () => {
