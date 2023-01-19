@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - reproducible
+    tags:
+      - release-candidate
+  workflow_dispatch:
+    inputs:
 jobs:
   docker_build:
     runs-on: ${{ matrix.os }}
