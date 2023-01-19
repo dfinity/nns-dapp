@@ -18,7 +18,7 @@ on:
       dfx_testnet:
         description: 'dfx testnet name'
         required: true
-        default: 'staging'
+        default: 'small12'
         type: string
       nns_dapp_canister_id:
         description: 'nns-dapp canister ID'
