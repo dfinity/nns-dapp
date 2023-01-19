@@ -21,7 +21,7 @@
 >
   {#if displayTvl}
     <div class="metrics">
-      <MenuMetrics />
+      <MenuMetrics sticky={false} />
     </div>
   {/if}
 
