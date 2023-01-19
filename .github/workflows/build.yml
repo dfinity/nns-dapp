@@ -1,3 +1,4 @@
+break
 # A Native build
 # XXX: This makes some of 'checks.yml' redundant. This will be fixed as soon as
 # we have end-to-end tests working.

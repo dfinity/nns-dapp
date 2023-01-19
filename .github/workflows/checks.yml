@@ -1,3 +1,4 @@
+break
 name: CI Checks
 on:
   push:
