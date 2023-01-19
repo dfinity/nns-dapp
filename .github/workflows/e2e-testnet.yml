@@ -56,18 +56,19 @@ jobs:
         run: |
           # Note: If this is run via workflow_dispatch, defaults are populated as specified in the yaml above.
           #       Otherwise the defaults are not set by gh, so we set them.
+          set -x
           # Network name
           DFX_NETWORK="${{ github.event.inputs.dfx_testnet }}"
           DFX_NETWORK="${DFX_NETWORK:-$(yq .on.workflow_dispatch.inputs.dfx_testnet.default .github/workflows/e2e-testnet.yml)}"
-          echo DFX_NETWORK="$DFX_NETWORK" >> $GITHUB_ENV
+          echo DFX_NETWORK="$DFX_NETWORK" | tee /dev/stderr >> $GITHUB_ENV
           # ND canister ID
           ND_CANISTER_ID="${{ github.event.inputs.nns_dapp_canister_id }}"
           ND_CANISTER_ID="${ND_CANISTER_ID:-$(yq .on.workflow_dispatch.inputs.nns_dapp_canister_id.default .github/workflows/e2e-testnet.yml)}" # Used on push; should match the default for manual triggers.
-          echo ND_NETWORK="$ND_NETWORK" >> $GITHUB_ENV
+          echo ND_NETWORK="$ND_NETWORK" | tee /dev/stderr >> $GITHUB_ENV
           # II canister ID
           II_CANISTER_ID="${{ github.event.inputs.ii_canister_id }}"
           II_CANISTER_ID="${II_CANISTER_ID:-$(yq .on.workflow_dispatch.inputs.ii_canister_id.default .github/workflows/e2e-testnet.yml)}" # Used on push; should match the default for manual triggers.
-          echo II_CANISTER_ID="$II_CANISTER_ID" >> $GITHUB_ENV
+          echo II_CANISTER_ID="$II_CANISTER_ID" | tee /dev/stderr >> $GITHUB_ENV
       - name: Set canister IDs
         run: |
           jq . canister_ids.json >/dev/null 2>/dev/null || echo '{}' > canister_ids.json
