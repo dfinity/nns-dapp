@@ -15,16 +15,20 @@ jobs:
         run: |
           if command -v brew ; then
             brew install bash
+            brew install jq
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
       - name: Checkout
         uses: actions/checkout@v3
-      # Helps with debugging
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Show versions
         run: |
-          echo bash --version
-          bash --version
+          for exec in bash dfx jq npm node ; do
+            echo $exec --version
+            "$exec" --version
+          done
       - name: Build
         run: |
           export DFX_NETWORK=mainnet
