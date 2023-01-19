@@ -1,6 +1,12 @@
 name: testnet
-
 on:
+  # Pushing one of these branches will trigger a build.
+  #
+  # One branch name is already defined, you can use that or add your own branch here during development.
+  # Please remove additional branch names before merging to the default branch.
+  push:
+    branches:
+      - e2e-testnet
   # Manual trigger, can be run:
   # - From the "Actions" tab in the github UI.
   # - From the cli with:
@@ -24,8 +30,6 @@ on:
         required: true
         default: 'qhbym-qaaaa-aaaaa-aaafq-cai'
         type: string
-
-
 jobs:
   testnet:
     runs-on: ubuntu-20.04
@@ -59,7 +63,6 @@ jobs:
           export ENV_OUTPUT_FILE=./e2e-tests/.env
           ./config.sh
           cat "$ENV_OUTPUT_FILE"
-
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
@@ -68,14 +71,12 @@ jobs:
           rm -rf screenshots
           set -o pipefail
           npm run test | tee -a wdio.log
-
       - name: Archive wdio logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: wdio-logs
           path: e2e-tests/wdio.log
-
       - name: Archive screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
