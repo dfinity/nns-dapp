@@ -1,0 +1,19 @@
+name: Test reproducibility
+
+on:
+  push:
+    branches:
+      - reproducible
+jobs:
+  docker_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+             #os: [ ubuntu-22.04, ubuntu-20.04, macos-11, macos-12 ]
+        os: [ macos-12 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: ./scripts/docker-build
