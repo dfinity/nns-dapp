@@ -7,6 +7,22 @@ on:
   push:
     branches:
       - e2e-testnet
+    inputs:
+      dfx_testnet:
+        description: 'dfx testnet name'
+        required: true
+        default: 'staging'
+        type: string
+      nns_dapp_canister_id:
+        description: 'nns-dapp canister ID'
+        required: true
+        default: 'qvhpv-4qaaa-aaaaa-aaagq-cai'
+        type: string
+      ii_canister_id:
+        description: 'nns-dapp canister ID'
+        required: true
+        default: 'qhbym-qaaaa-aaaaa-aaafq-cai'
+        type: string
   # Manual trigger, can be run:
   # - From the "Actions" tab in the github UI.
   # - From the cli with:
