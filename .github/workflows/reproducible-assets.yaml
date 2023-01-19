@@ -65,10 +65,10 @@ jobs:
       #          name: nns-dapp-assets_${{ matrix.os }}_${{ matrix.time }}
       #          path: assets.tar.xz
       #          retention-days: 3
+      #      - name: 'Output the hash'
+      #        run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=$(sha256sum assets.tar.xz)" >> $GITHUB_OUTPUT
       - name: 'Toy output'
-        run: echo foo $RANDOM > assets.tar.xz
-      - name: 'Output the hash'
-        run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=$(sha256sum assets.tar.xz)" >> $GITHUB_OUTPUT
+        run: echo "assets_sha256_${{ matrix.os }}_${{ matrix.time }}=foo$RANDOM" >> $GITHUB_OUTPUT
   compare_hashes:
     runs-on: ubuntu-latest
     needs: native_asset_build
