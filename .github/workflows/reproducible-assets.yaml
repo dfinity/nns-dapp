@@ -74,4 +74,4 @@ jobs:
     needs: [ native_asset_build ]
     steps:
       - name: Get hashes
-        run: echo ${{toJSON(needs)}}
+        run: echo ${{toJSON(needs.native_asset_build)}}
