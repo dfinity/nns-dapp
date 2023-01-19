@@ -4,12 +4,13 @@ on:
   push:
   workflow_dispatch:
 jobs:
-  docker_build:
+  native_asset_build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ ubuntu-22.04, ubuntu-20.04, macos-11, macos-12 ]
+        time: [  now, future ]
     steps:
       - name: Unbork mac
         run: |
@@ -20,6 +21,20 @@ jobs:
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
+      - name: Install dependencies
+        run: |
+                case "$(uname)" in
+                Linux)
+                        sudo apt install faketime
+                        ;;
+                Darwin)
+                        brew install libfaketime
+                        ;;
+                *)
+                        echo Unsupported OS: $(uname)
+                        exit 1
+                        ;;
+                esac
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -30,14 +45,24 @@ jobs:
             echo $exec --version
             "$exec" --version
           done
+      - name: Get dependencies
+        run: |
+          # Note: This is to make network access unnecessary during the time-shifted build.
+          cd frontend
+          npm ci
       - name: Build
         run: |
           export DFX_NETWORK=mainnet
           . config.sh
-          ./build-assets.sh
+          case "${{ matrix.time }}" in
+          future)
+            faketime -f "+5.5y 7m 9s" bash ./build-assets.sh ;;
+          *)
+            ./build-assets.sh ;;
+          esac
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
         with:
-          name: nns-dapp-assets-${{ matrix.os }}
+          name: nns-dapp-assets_${{ matrix.os }}_${{ matrix.time }}
           path: assets.tar.xz
           retention-days: 3
