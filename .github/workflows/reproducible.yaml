@@ -10,8 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-             #os: [ ubuntu-22.04, ubuntu-20.04, macos-11, macos-12 ]
-        os: [ macos-12 ]
+        os: [ ubuntu-22.04, ubuntu-20.04, macos-11, macos-12 ]
     steps:
       - name: Unbork mac
         run: |
@@ -33,3 +32,15 @@ jobs:
           docker --version
       - name: Build
         run: ./scripts/docker-build
+      - name: 'Upload nns-dapp wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp-mainnet-wasm-${{ matrix.os }}
+          path: nns-dapp.wasm
+          retention-days: 3
+      - name: 'Upload assets'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp-assets-${{ matrix.os }}
+          path: assets.tar.xz
+          retention-days: 3
