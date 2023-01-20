@@ -114,7 +114,8 @@ const updateCSP = (indexHtml) => {
     );
   }
 
-  const enableSnsCacheCanister = process.env.FEATURE_FLAGS.ENABLE_SNS_CACHING;
+  // Caching canister enabled ONLY in small12 for now
+  const enableSnsCacheCanister = process.env.VITE_DFX_NETWORK === "small12";
   // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
   const cachingCanisterUrl =
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.dfinity.network";
