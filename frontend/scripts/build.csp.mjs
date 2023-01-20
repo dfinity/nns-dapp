@@ -8,6 +8,9 @@ import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
+// Caching canister enabled ONLY in small12 for now
+const enableSnsCacheCanister = process.env.VITE_DFX_NETWORK === "small12";
+
 const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
@@ -114,8 +117,6 @@ const updateCSP = (indexHtml) => {
     );
   }
 
-  // Caching canister enabled ONLY in small12 for now
-  const enableSnsCacheCanister = process.env.VITE_DFX_NETWORK === "small12";
   // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
   const cachingCanisterUrl =
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.dfinity.network";
