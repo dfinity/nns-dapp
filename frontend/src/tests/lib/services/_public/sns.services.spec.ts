@@ -47,7 +47,7 @@ describe("SNS public services", () => {
     });
 
     it("should not call api if nervous functions are in the store and certified", async () => {
-      snsFunctionsStore.setFunctions({
+      snsFunctionsStore.setProjectFunctions({
         rootCanisterId: mockPrincipal,
         nsFunctions: [nervousSystemFunctionMock],
         certified: true,

@@ -32,6 +32,7 @@ type ListSnsCanisterIds = {
   index: string;
 };
 
+// TODO: Create types with script https://dfinity.atlassian.net/browse/GIX-1249
 export type CachedSns = {
   index: number;
   canister_ids: CanisterIds;
@@ -257,10 +258,9 @@ export const querySnsProjects = async (): Promise<CachedSns[]> => {
   if (!response.ok) {
     throw new Error("Error loading SNS projects from caching canister");
   }
-  const data: CachedSnsDto[] = await response.json();
   try {
-    const converted = convertDtoData(data);
-    return converted;
+    const data: CachedSnsDto[] = await response.json();
+    return convertDtoData(data);
   } catch (err) {
     console.error("Error converting data", err);
     throw new Error("Error converting data from caching canister");

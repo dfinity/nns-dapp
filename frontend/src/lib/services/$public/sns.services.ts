@@ -38,26 +38,29 @@ export const loadSnsProjects = async (): Promise<void> => {
       })),
     ];
     snsQueryStore.setData(snsQueryStoreData);
-    cachedSnses.forEach((sns) => {
-      const rootCanisterId = Principal.fromText(
-        sns.canister_ids.root_canister_id
-      );
-      snsFunctionsStore.setFunctions({
-        rootCanisterId,
+    snsFunctionsStore.setProjectsFunctions(
+      cachedSnses.map((sns) => ({
+        rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
         nsFunctions: sns.parameters.functions,
         certified: true,
-      });
-      if (sns.icrc1_fee) {
-        transactionsFeesStore.setFee({
-          rootCanisterId,
-          fee: sns.icrc1_fee,
+      }))
+    );
+    transactionsFeesStore.setFees(
+      cachedSnses
+        .filter(({ icrc1_fee }) => icrc1_fee !== undefined)
+        .map((sns) => ({
+          rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
+          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
+          fee: sns.icrc1_fee as bigint,
           certified: true,
-        });
-      }
-    });
+        }))
+    );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     // If caching canister fails, fallback to the old way
+    // TODO: Agree on whether we want to fallback or not.
+    // If the error is due to overload of the system, we might not want the fallback.
+    // This is useful if the error comes from the caching canister only.
     await loadSnsSummaries();
   }
 };
@@ -159,7 +162,7 @@ export const loadSnsNervousSystemFunctions = async (
         }
         return nsFunction;
       });
-      snsFunctionsStore.setFunctions({
+      snsFunctionsStore.setProjectFunctions({
         rootCanisterId,
         nsFunctions: snsNervousSystemFunctions,
         certified,
