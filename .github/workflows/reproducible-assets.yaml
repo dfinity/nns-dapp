@@ -55,9 +55,9 @@ jobs:
           . config.sh
           case "${{ matrix.time }}" in
           future)
-            faketime -f "+5.5y 7m 9s" bash ./build-assets.sh ;;
+            faketime -f "+5.5y 7m 9s" bash ./build-frontend.sh ;;
           *)
-            ./build-assets.sh ;;
+            ./build-frontend.sh ;;
           esac
           mkdir -p builds
           cp assets.tar.xz "builds/assets_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
