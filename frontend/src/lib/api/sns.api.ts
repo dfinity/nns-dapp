@@ -280,11 +280,13 @@ export const participateInSnsSwap = async ({
     buyer_sub_account: toNullable(fromSubAccount),
   });
 
+  const createdAt = BigInt(nowInNanoSeconds());
   // Send amount to the ledger
   await nnsLedger.transfer({
     amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
+    createdAt,
   });
 
   // Notify participation
