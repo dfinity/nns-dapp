@@ -1,8 +1,9 @@
-import type { AccountsStore } from "$lib/stores/accounts.store";
-import type { SnsAccountsStore } from "$lib/stores/sns-accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
-import { checkAccountId } from "@dfinity/nns";
+import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
 import { isNnsProject } from "./projects.utils";
@@ -17,7 +18,7 @@ export const getAccountByPrincipal = ({
   accounts: { main, hardwareWallets },
 }: {
   principal: string;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): Account | undefined => {
   if (main?.principal?.toText() === principal) {
     return main;
@@ -100,7 +101,7 @@ export const getAccountByRootCanister = ({
 }: {
   identifier: string | undefined;
   nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStore;
+  snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account | undefined => {
   if (identifier === undefined) {
@@ -126,7 +127,7 @@ export const getAccountsByRootCanister = ({
   rootCanisterId,
 }: {
   nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStore;
+  snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account[] | undefined => {
   if (isNnsProject(rootCanisterId)) {
@@ -168,3 +169,14 @@ export const accountName = ({
   mainName: string;
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
+
+export const sumAccounts = (
+  accounts: AccountsStoreData | undefined
+): TokenAmount | undefined =>
+  accounts?.main?.balance !== undefined
+    ? sumTokenAmounts(
+        accounts?.main?.balance,
+        ...(accounts?.subAccounts || []).map(({ balance }) => balance),
+        ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
+      )
+    : undefined;

@@ -19,7 +19,7 @@
   let proposer: NeuronId | undefined;
   let type: string | undefined;
 
-  $: ({ status, id, title, color, topic, proposer, type, statusString } =
+  $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
   const showProposal = async () =>

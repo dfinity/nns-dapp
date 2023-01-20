@@ -6,7 +6,7 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { type NeuronId, type NeuronInfo, NeuronState } from "@dfinity/nns";
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
   import { createEventDispatcher } from "svelte";

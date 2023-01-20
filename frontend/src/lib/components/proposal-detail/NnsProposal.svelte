@@ -33,7 +33,7 @@
     </div>
   </div>
 {:else}
-  <div class="content-grid">
+  <div class="content-grid" data-tid="proposal-details-grid">
     <div class="content-a">
       <div class="skeleton">
         <SkeletonDetails />

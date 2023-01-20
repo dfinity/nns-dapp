@@ -6,7 +6,7 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { Principal } from "@dfinity/principal";
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { createEventDispatcher } from "svelte";
 
   export let canisterId: Principal;

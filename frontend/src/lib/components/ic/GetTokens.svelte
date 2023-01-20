@@ -140,6 +140,8 @@
     span {
       margin: 0 var(--padding) 0 var(--padding-2x);
     }
+
+    z-index: var(--z-index);
   }
 
   form {

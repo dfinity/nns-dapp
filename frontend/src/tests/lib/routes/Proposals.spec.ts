@@ -6,12 +6,12 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.store";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
 import Proposals from "$lib/routes/Proposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, waitFor } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/dom";
+import { fireEvent, render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
@@ -55,18 +55,16 @@ describe("Proposals", () => {
 
   it("should render NnsProposals by default", () => {
     const { queryByTestId } = render(Proposals);
-    expect(queryByTestId("nns-proposal-filters")).toBeInTheDocument();
+    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
   });
 
-  it("should render dropdown to select project", () => {
-    const { queryByTestId } = render(Proposals);
-    expect(queryByTestId("select-project-dropdown")).toBeInTheDocument();
-  });
-
-  it("should render project page when a project is selected in the dropdown", async () => {
+  it("should render project page when a project is selected", async () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
     const { queryByTestId } = render(Proposals);
 
-    expect(queryByTestId("nns-proposal-filters")).toBeInTheDocument();
+    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
 
     const selectElement = queryByTestId(
       "select-project-dropdown"
@@ -79,14 +77,14 @@ describe("Proposals", () => {
       });
 
     await waitFor(() =>
-      expect(queryByTestId("sns-proposals-page")).toBeInTheDocument()
+      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
     );
   });
 
   it("should be able to go back to nns after going to a project", async () => {
     const { queryByTestId } = render(Proposals);
 
-    expect(queryByTestId("nns-proposal-filters")).toBeInTheDocument();
+    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
 
     const selectElement = queryByTestId(
       "select-project-dropdown"
@@ -99,7 +97,7 @@ describe("Proposals", () => {
       });
 
     await waitFor(() =>
-      expect(queryByTestId("sns-proposals-page")).toBeInTheDocument()
+      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
     );
 
     selectElement &&
@@ -107,7 +105,7 @@ describe("Proposals", () => {
         target: { value: OWN_CANISTER_ID.toText() },
       });
     await waitFor(() =>
-      expect(queryByTestId("nns-proposal-filters")).toBeInTheDocument()
+      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
     );
   });
 });

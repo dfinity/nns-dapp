@@ -9,6 +9,9 @@ import type {
 } from "@dfinity/sns";
 import type { PngDataUrl } from "./assets";
 
+export type RootCanisterId = Principal;
+export type RootCanisterIdText = string;
+
 /**
  * Metadata are full optional in Candid files but mandatory currently in NNS-dapp
  */
@@ -41,7 +44,7 @@ export interface SnsSummarySwap {
 }
 
 export interface SnsSummary {
-  rootCanisterId: Principal;
+  rootCanisterId: RootCanisterId;
   // Used to calculate the account for the participation.
   swapCanisterId: Principal;
   // Used to show destination when staking sns neurons.
@@ -68,6 +71,6 @@ export interface SnsSummary {
 }
 
 export interface SnsSwapCommitment {
-  rootCanisterId: Principal;
+  rootCanisterId: RootCanisterId;
   myCommitment: SnsSwapBuyerState | undefined;
 }

@@ -8,7 +8,7 @@ import {
 import {
   projectsStore,
   type SnsFullProject,
-} from "$lib/derived/projects.store";
+} from "$lib/derived/projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";

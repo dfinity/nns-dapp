@@ -34,7 +34,7 @@ describe("landing page", () => {
     await browser.$("header").waitForExist({ timeout: 20_000 });
 
     await browser
-      .$('[data-tid="accounts-summary"]')
+      .$('[data-tid="projects-summary"]')
       .waitForExist({ timeout: 30_000 });
 
     await waitForImages(browser);

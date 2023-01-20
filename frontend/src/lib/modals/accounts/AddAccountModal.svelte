@@ -17,7 +17,7 @@
     AccountType,
   } from "$lib/types/add-account.context";
   import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
-  import { debugAddAccountStore } from "$lib/derived/debug.store";
+  import { debugAddAccountStore } from "$lib/derived/debug.derived";
 
   const subAccountSteps: WizardSteps = [
     {

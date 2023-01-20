@@ -5,7 +5,7 @@ import type {
 } from "$lib/types/post-messages";
 import { logout } from "./auth.services";
 
-export const initWorker = async () => {
+export const initAuthWorker = async () => {
   const AuthWorker = await import("$lib/workers/auth.worker?worker");
   const authWorker: Worker = new AuthWorker.default();
 

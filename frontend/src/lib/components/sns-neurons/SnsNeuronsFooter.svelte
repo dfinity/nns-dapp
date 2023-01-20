@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";

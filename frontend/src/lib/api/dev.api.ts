@@ -144,7 +144,7 @@ export const makeSnsDummyProposals = async ({
     host: HOST,
   });
 
-  const canister = await SnsGovernanceCanister.create({
+  const canister = SnsGovernanceCanister.create({
     agent,
     canisterId: canisterIds.governanceCanisterId,
   });

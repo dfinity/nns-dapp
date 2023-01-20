@@ -6,7 +6,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import {
   projectsStore,
   type SnsFullProject,
-} from "$lib/derived/projects.store";
+} from "$lib/derived/projects.derived";
 import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -69,7 +69,7 @@
 </script>
 
 <main>
-  <Summary selectProjects={false}>
+  <Summary displayProjects={false}>
     <PrincipalText slot="details" inline />
   </Summary>
 

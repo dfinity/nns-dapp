@@ -7,7 +7,7 @@
   import {
     activePadProjectsStore,
     type SnsFullProject,
-  } from "$lib/derived/projects.store";
+  } from "$lib/derived/projects.derived";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { Html } from "@dfinity/gix-components";

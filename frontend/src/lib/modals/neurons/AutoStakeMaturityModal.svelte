@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import { Html } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 

@@ -1,5 +1,4 @@
 name: Nightly Publication
-
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -7,11 +6,9 @@ on:
     branches:
       # Commit to the nightly branch and push to test.
       - nightly
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   update-ii:
     runs-on: ubuntu-20.04
@@ -57,11 +54,9 @@ jobs:
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
-
   nightly-passes:
     needs: ["update-ii", "update-chromedriver"]
     runs-on: ubuntu-20.04
     steps:
-       - name: Nightly workflow passes
-         run: echo OK
-
+      - name: Nightly workflow passes
+        run: echo OK

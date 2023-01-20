@@ -9,6 +9,7 @@
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
 
   // Neurons are fetch on page load. No need to do it in the route.
 
@@ -54,15 +55,5 @@
 </div>
 
 {#if !isLoading && $sortedNeuronStore.length === 0}
-  <p class="description empty">{$i18n.neurons.text}</p>
+  <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
 {/if}
-
-<style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  .empty {
-    @include media.min-width(medium) {
-      max-width: 75%;
-    }
-  }
-</style>

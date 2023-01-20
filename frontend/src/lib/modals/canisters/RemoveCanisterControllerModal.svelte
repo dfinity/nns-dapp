@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ConfirmationModal from "$lib/modals/ConfirmationModal.svelte";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import { toastsError } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";

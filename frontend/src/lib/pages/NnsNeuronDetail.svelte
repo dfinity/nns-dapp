@@ -5,7 +5,6 @@
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
   import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
   import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
-  import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -32,6 +31,7 @@
   import { setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -128,6 +128,8 @@
   <main class="legacy">
     <section data-tid="neuron-detail">
       {#if neuron && !inVotingProcess}
+        <Summary displayProjects={false} />
+
         <NnsNeuronMetaInfoCard {neuron} />
         <NnsNeuronInfoStake {neuron} />
         <NnsNeuronMaturityCard {neuron} />

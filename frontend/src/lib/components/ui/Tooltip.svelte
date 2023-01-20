@@ -8,6 +8,7 @@
   export let text = "";
   export let noWrap = false;
   export let top = false;
+  export let containerSelector = "main";
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
   let target: HTMLDivElement | undefined = undefined;
@@ -16,7 +17,7 @@
 
   const setPosition = debounce(() => {
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
-    const main: HTMLElement | null = document.querySelector("main");
+    const main: HTMLElement | null = document.querySelector(containerSelector);
 
     if (
       destroyed ||
@@ -47,8 +48,8 @@
     const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
     const spaceRight = innerWidth - scrollbarWidth - targetCenter;
 
-    const overflowLeft = tooltipWidth / 2 - spaceLeft;
-    const overflowRight = tooltipWidth / 2 - spaceRight;
+    const overflowLeft = spaceLeft > 0 ? tooltipWidth / 2 - spaceLeft : 0;
+    const overflowRight = spaceRight > 0 ? tooltipWidth / 2 - spaceRight : 0;
 
     const { left: mainLeft, right: mainRight } = main.getBoundingClientRect();
 

@@ -3,7 +3,7 @@
   import Proposals from "$lib/components/launchpad/Proposals.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { committedProjectsStore } from "$lib/derived/projects.store";
+  import { committedProjectsStore } from "$lib/derived/projects.derived";
 
   let showCommitted = false;
   $: showCommitted = ($committedProjectsStore?.length ?? []) > 0;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import NnsProposalCard from "./NnsProposalCard.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import ProposalsFilters from "./ProposalsFilters.svelte";
+  import NnsProposalsFilters from "./NnsProposalsFilters.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import NoProposals from "./NoProposals.svelte";
   import LoadingProposals from "./LoadingProposals.svelte";
@@ -14,7 +14,7 @@
   export let loadingAnimation: "spinner" | "skeleton" | undefined;
 </script>
 
-<ProposalsFilters />
+<NnsProposalsFilters />
 
 <ListLoader loading={loadingAnimation === "spinner"}>
   <InfiniteScroll

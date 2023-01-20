@@ -1,4 +1,4 @@
-import type { SnsFullProject } from "$lib/derived/projects.store";
+import type { SnsFullProject } from "$lib/derived/projects.derived";
 import type {
   SnsSummary,
   SnsSummaryMetadata,

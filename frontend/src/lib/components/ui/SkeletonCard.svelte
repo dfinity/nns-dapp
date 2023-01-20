@@ -6,7 +6,7 @@
   import type { CardType } from "$lib/types/card";
   import Separator from "$lib/components/ui/Separator.svelte";
 
-  export let size: "medium" | "large" = "medium";
+  export let size: "small" | "medium" | "large" = "small";
   export let cardType: CardType = "card";
   export let separator = false;
 
@@ -26,9 +26,13 @@
   <div class="content">
     <SkeletonText />
     <SkeletonText />
+
+    {#if ["large", "medium"].includes(size)}
+      <SkeletonText />
+      <SkeletonText />
+    {/if}
+
     {#if size === "large"}
-      <SkeletonText />
-      <SkeletonText />
       <SkeletonText />
       <SkeletonText />
     {/if}

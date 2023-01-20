@@ -1,3 +1,4 @@
+import type { RootCanisterIdText } from "$lib/types/sns";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetMetadataResponse,
@@ -6,7 +7,7 @@ import type {
   SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 
-export type QueryRootCanisterId = string;
+export type QueryRootCanisterId = RootCanisterIdText;
 
 export type QuerySns = {
   rootCanisterId: QueryRootCanisterId;

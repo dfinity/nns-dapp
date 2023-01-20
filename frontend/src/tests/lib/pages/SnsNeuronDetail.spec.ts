@@ -98,6 +98,14 @@ describe("SnsNeuronDetail", () => {
       await waitFor(() => expect(getSnsNeuron).toBeCalled());
     });
 
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsNeuronDetail, props);
+
+      const titleRow = getByTestId("projects-summary");
+
+      expect(titleRow).not.toBeNull();
+    });
+
     it("should not load parameters and fee when available", async () => {
       render(SnsNeuronDetail, props);
 
