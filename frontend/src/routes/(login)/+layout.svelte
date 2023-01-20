@@ -11,8 +11,6 @@
   import { isNullish } from "$lib/utils/utils";
 
   onMount(async () => await initAppAuth());
-
-  $: console.log("Nav", $navigating);
 </script>
 
 <!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
