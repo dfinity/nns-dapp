@@ -951,6 +951,7 @@ interface I18nNns_functions {
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
+  InsertSnsWasmUpgradePathEntries: string;
 }
 
 interface I18nNns_functions_description {
@@ -991,6 +992,7 @@ interface I18nNns_functions_description {
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
+  InsertSnsWasmUpgradePathEntries: string;
 }
 
 interface I18n {
