@@ -119,7 +119,7 @@ const updateCSP = (indexHtml) => {
 
   // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
   const cachingCanisterUrl =
-    "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.dfinity.network";
+    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network";
 
   const csp = `<meta
         http-equiv="Content-Security-Policy"

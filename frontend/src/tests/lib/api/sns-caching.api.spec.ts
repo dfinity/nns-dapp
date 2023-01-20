@@ -18,7 +18,7 @@ describe("sns-caching api", () => {
       global.fetch = mockFetch;
       await querySnsProjects();
       expect(mockFetch).toHaveBeenCalledWith(
-        `https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.dfinity.network/v1/sns/list/latest/slow.json`
+        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/latest/slow.json`
       );
     });
 
