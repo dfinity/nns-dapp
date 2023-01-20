@@ -87,6 +87,7 @@ describe("sns-ledger api", () => {
         rootCanisterId: rootCanisterIdMock,
         to: { owner: mockIdentity.getPrincipal() },
         e8s: BigInt(10_000_000),
+        createdAt: BigInt(123456),
       });
 
       expect(transferSpy).toBeCalled();

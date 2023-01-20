@@ -79,6 +79,25 @@ describe("ledger-api", () => {
         memo,
       });
     });
+
+    it("should call ledger to send ICP with createdAt", async () => {
+      const memo = BigInt(444555);
+      const createdAt = BigInt(123456);
+      await sendICP({
+        identity: mockIdentity,
+        to: accountIdentifier,
+        amount,
+        memo,
+        createdAt,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: AccountIdentifier.fromHex(accountIdentifier),
+        amount: amount.toE8s(),
+        memo,
+        createdAt,
+      });
+    });
   });
 
   describe("transactionFee", () => {
