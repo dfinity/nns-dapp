@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 103049
 * Split layout and new token selector for "Accounts" and "Neurons".
 * Display TVL (total value locked) in USD.
 * Remove badge "new" next to menu entry "Launchpad".
