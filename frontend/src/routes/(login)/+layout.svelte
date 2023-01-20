@@ -7,33 +7,40 @@
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
+  import { navigating } from "$app/stores";
+  import { isNullish } from "$lib/utils/utils";
 
   onMount(async () => await initAppAuth());
+
+  $: console.log("Nav", $navigating);
 </script>
 
-<Layout layout="stretch">
-  <Banner />
+<!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
+{#if isNullish($navigating)}
+  <Layout layout="stretch">
+    <Banner />
 
-  <LoginMenuItems slot="menu-items" />
+    <LoginMenuItems slot="menu-items" />
 
-  <div class="content">
-    <ContentBackdrop />
+    <div class="content">
+      <ContentBackdrop />
 
-    <div class="scroll-container">
-      <main data-tid="auth-page">
-        <LoginHeader />
+      <div class="scroll-container">
+        <main data-tid="auth-page">
+          <LoginHeader />
 
-        <article>
-          <LoginBackground />
+          <article>
+            <LoginBackground />
 
-          <slot />
-        </article>
+            <slot />
+          </article>
 
-        <LoginFooter />
-      </main>
+          <LoginFooter />
+        </main>
+      </div>
     </div>
-  </div>
-</Layout>
+  </Layout>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
