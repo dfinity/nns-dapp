@@ -37,7 +37,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   ENABLE_SNS_VOTING: true,
   ENABLE_SNS_CACHING: true,
   CACHING_CANISTER_URL:
-    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.dfinity.network",
+    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
 }));
 
