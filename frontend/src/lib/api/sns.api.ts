@@ -6,6 +6,7 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
+import { nowInNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
@@ -394,10 +395,12 @@ export const stakeNeuron = async ({
     certified: true,
   });
 
+  const createdAt = BigInt(nowInNanoSeconds());
   const newNeuronId = await stakeNeuronApi({
     stakeE8s,
     source,
     controller,
+    createdAt,
   });
 
   logWithTimestamp(

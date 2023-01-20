@@ -22,6 +22,7 @@ import {
   getAccountByPrincipal,
   getAccountFromStore,
 } from "$lib/utils/accounts.utils";
+import { nowInNanoSeconds } from "$lib/utils/date.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -90,11 +91,14 @@ export const transferICP = async ({
 
     const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
+    const createdAt = BigInt(nowInNanoSeconds());
+
     await sendICP({
       identity,
       to,
       fromSubAccount: subAccount,
       amount: tokenAmount,
+      createdAt,
     });
 
     await syncAccounts();

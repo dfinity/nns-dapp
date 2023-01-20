@@ -82,6 +82,7 @@ export const transfer = async ({
   rootCanisterId,
   memo,
   fromSubAccount,
+  createdAt,
 }: {
   identity: Identity;
   to: SnsAccount;
@@ -89,6 +90,7 @@ export const transfer = async ({
   rootCanisterId: Principal;
   memo?: Uint8Array;
   fromSubAccount?: SubAccountArray;
+  createdAt?: bigint;
 }): Promise<void> => {
   const { transfer: transferApi } = await wrapper({
     identity,
@@ -102,6 +104,7 @@ export const transfer = async ({
       owner: to.owner,
       subaccount: toNullable(to.subaccount),
     },
+    created_at_time: createdAt,
     memo,
     from_subaccount:
       fromSubAccount !== undefined

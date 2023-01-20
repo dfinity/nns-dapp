@@ -16,6 +16,7 @@ import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
  * @param {string} params.to send ICP to destination address - an account identifier
  * @param {ICP} params.amount the amount to be transferred in ICP
  * @param {number[] | undefined} params.fromSubAccount the optional subaccount that would be the source of the transaction
+ * @param {bigint | undefined} params.createdAt the optional timestamp of the transaction. Used to avoid deduplication.
  */
 export const sendICP = async ({
   identity,
@@ -23,12 +24,14 @@ export const sendICP = async ({
   amount,
   fromSubAccount,
   memo,
+  createdAt,
 }: {
   identity: Identity;
   to: string;
   amount: TokenAmount;
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
+  createdAt?: bigint;
 }): Promise<BlockHeight> => {
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
@@ -38,6 +41,7 @@ export const sendICP = async ({
     amount: amount.toE8s(),
     fromSubAccount,
     memo,
+    createdAt,
   });
   logWithTimestamp(`Sending icp complete.`);
   return response;

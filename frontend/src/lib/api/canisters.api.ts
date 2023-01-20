@@ -17,6 +17,7 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { nowInNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, PollingLimitExceededError } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -185,6 +186,7 @@ export const createCanister = async ({
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
+  const createdAt = BigInt(nowInNanoSeconds());
   // Transfer the funds
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
@@ -192,6 +194,7 @@ export const createCanister = async ({
     to: recipient.toHex(),
     amount,
     fromSubAccount,
+    createdAt,
   });
 
   // If this fails or the client loses connection, nns dapp backend polls the transactions
@@ -272,12 +275,14 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
+  const createdAt = BigInt(nowInNanoSeconds());
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
     fromSubAccount,
+    createdAt,
   });
 
   // If this fails or the client loses connection
