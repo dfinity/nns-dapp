@@ -63,7 +63,7 @@ describe("FollowSnsNeuronsModal", () => {
       ...nervousSystemFunctionMock,
       id: BigInt(2),
     };
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId,
       nsFunctions: [function0, function1, function2],
       certified: true,

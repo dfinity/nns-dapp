@@ -1,3 +1,4 @@
+import { querySnsProjects } from "$lib/api/sns-caching.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
@@ -6,12 +7,63 @@ import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
+
+export const loadSnsProjects = async (): Promise<void> => {
+  try {
+    const cachedSnses = await querySnsProjects();
+    const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
+      cachedSnses.map((sns) => ({
+        rootCanisterId: sns.canister_ids.root_canister_id,
+        certified: true,
+        metadata: sns.meta,
+        token: sns.icrc1_metadata,
+      })),
+      cachedSnses.map((sns) => ({
+        rootCanisterId: sns.canister_ids.root_canister_id,
+        certified: true,
+        swapCanisterId: Principal.fromText(sns.canister_ids.swap_canister_id),
+        governanceCanisterId: Principal.fromText(
+          sns.canister_ids.governance_canister_id
+        ),
+        swap: toNullable(sns.swap_state.swap),
+        derived: toNullable(sns.swap_state.derived),
+      })),
+    ];
+    snsQueryStore.setData(snsQueryStoreData);
+    snsFunctionsStore.setProjectsFunctions(
+      cachedSnses.map((sns) => ({
+        rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
+        nsFunctions: sns.parameters.functions,
+        certified: true,
+      }))
+    );
+    transactionsFeesStore.setFees(
+      cachedSnses
+        .filter(({ icrc1_fee }) => icrc1_fee !== undefined)
+        .map((sns) => ({
+          rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
+          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
+          fee: sns.icrc1_fee as bigint,
+          certified: true,
+        }))
+    );
+    // TODO: PENDING to be implemented, load SNS parameters.
+  } catch (err) {
+    // If caching canister fails, fallback to the old way
+    // TODO: Agree on whether we want to fallback or not.
+    // If the error is due to overload of the system, we might not want the fallback.
+    // This is useful if the error comes from the caching canister only.
+    await loadSnsSummaries();
+  }
+};
 
 export const loadSnsSummaries = (): Promise<void> => {
   snsQueryStore.setLoadingState();
@@ -110,7 +162,7 @@ export const loadSnsNervousSystemFunctions = async (
         }
         return nsFunction;
       });
-      snsFunctionsStore.setFunctions({
+      snsFunctionsStore.setProjectFunctions({
         rootCanisterId,
         nsFunctions: snsNervousSystemFunctions,
         certified,
