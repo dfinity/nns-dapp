@@ -316,7 +316,8 @@ export const keyOfOptional = <T>({
 export const isPngAsset = (
   asset: string | undefined | PngDataUrl
 ): asset is PngDataUrl =>
-  nonNullish(asset) && asset.startsWith("data:image/png;base64,");
+  nonNullish(asset) &&
+  (asset.startsWith("data:image/png;base64,") || asset.endsWith(".png"));
 
 /**
  * Takes an object and tries to parse inner string as JSON.

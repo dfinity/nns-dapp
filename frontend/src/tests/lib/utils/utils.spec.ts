@@ -436,8 +436,10 @@ describe("utils", () => {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
       const png2 =
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const pngFile = "file.png";
       expect(isPngAsset(png1)).toBe(true);
       expect(isPngAsset(png2)).toBe(true);
+      expect(isPngAsset(pngFile)).toBe(true);
     });
 
     it("returns false for non png assets", () => {
@@ -447,9 +449,11 @@ describe("utils", () => {
         "data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
       const pngFake =
         "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5Edata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const svgFile = "file.svg";
       expect(isPngAsset(svg1)).toBe(false);
       expect(isPngAsset(jpg1)).toBe(false);
       expect(isPngAsset(pngFake)).toBe(false);
+      expect(isPngAsset(svgFile)).toBe(false);
     });
   });
 
