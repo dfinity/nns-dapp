@@ -13,7 +13,7 @@
     SelectedSnsProposalStore,
   } from "$lib/types/sns-selected-proposal.context";
   import { SELECTED_SNS_PROPOSAL_CONTEXT_KEY } from "$lib/types/sns-selected-proposal.context";
-  import { loadProposal } from "$lib/services/$public/sns-proposals.services";
+  import { loadSnsProposal } from "$lib/services/$public/sns-proposals.services";
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { stringifyJson } from "$lib/utils/utils.js";
@@ -78,7 +78,7 @@
 
     console.log("lol", proposalId, rootCanisterId);
 
-    await loadProposal({
+    await loadSnsProposal({
       rootCanisterId,
       proposalId,
       setProposal: (proposalData: SnsProposalData) => {

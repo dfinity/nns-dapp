@@ -216,7 +216,7 @@ export const loadProposalsByTopic = async ({
 };
 
 /**
- * Get from store or query a proposal and apply the result to the callback (`setProposal`).
+ * Query a proposal and apply the result to the callback (`setProposal`).
  * The function propagate error to the toast and call an optional callback in case of error.
  */
 export const loadProposal = async ({

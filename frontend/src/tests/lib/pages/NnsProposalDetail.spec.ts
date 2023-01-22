@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
+import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
@@ -23,7 +23,7 @@ import {
 } from "../../mocks/proposals.store.mock";
 import { silentConsoleErrors } from "../../utils/utils.test-utils";
 
-describe("ProposalDetail", () => {
+describe("NnsProposalDetail", () => {
   jest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
@@ -66,7 +66,7 @@ describe("ProposalDetail", () => {
       identity: undefined,
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
+    const { queryByTestId } = render(NnsProposalDetail, props);
     await waitFor(() =>
       expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
     );
@@ -77,7 +77,7 @@ describe("ProposalDetail", () => {
       identity: mockIdentity,
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
+    const { queryByTestId } = render(NnsProposalDetail, props);
     await waitFor(() =>
       expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
     );
