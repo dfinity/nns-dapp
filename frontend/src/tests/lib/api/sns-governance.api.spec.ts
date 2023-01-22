@@ -10,7 +10,7 @@ import {
   getNervousSystemFunctions,
   getNeuronBalance,
   increaseDissolveDelay,
-  nervousSystemParameters,
+  nervousSystemParameters, queryProposal,
   queryProposals,
   refreshNeuron,
   removeNeuronPermissions,
@@ -77,6 +77,7 @@ describe("sns-api", () => {
   const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
+  const getProposalSpy = jest.fn().mockResolvedValue(mockSnsProposal);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -126,6 +127,7 @@ describe("sns-api", () => {
         stakeMaturity: stakeMaturitySpy,
         autoStakeMaturity: autoStakeMaturitySpy,
         listProposals: listProposalsSpy,
+        getProposal: getProposalSpy,
       })
     );
   });
@@ -313,5 +315,17 @@ describe("sns-api", () => {
 
     expect(listProposalsSpy).toBeCalled();
     expect(res).toEqual(proposals);
+  });
+
+  it("should get single proposal", async () => {
+    const res = await queryProposal({
+      identity: mockIdentity,
+      proposalId: 0n,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(getProposalSpy).toBeCalled();
+    expect(res).toEqual(mockSnsProposal);
   });
 });
