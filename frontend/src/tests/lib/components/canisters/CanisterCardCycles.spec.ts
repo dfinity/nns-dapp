@@ -7,6 +7,8 @@ import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.sve
 import type { CyclesCallback } from "$lib/services/worker-cycles.services";
 import type { CanisterSync } from "$lib/types/canister";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { mockCanister } from "../../../mocks/canisters.mock";
 import en from "../../../mocks/i18n.mock";
 
@@ -26,28 +28,27 @@ jest.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("CanisterCardCycles", () => {
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
   });
 
   const props = { props: { canister: mockCanister } };
 
+  const mock: CanisterSync = {
+    id: mockCanister.canister_id.toText(),
+    sync: "synced",
+    data: {
+      cycles: 246913400000000n,
+      memorySize: 1287500n,
+      status: 2,
+    } as CanisterDetails,
+  };
+
   it("should render canister cycles information", async () => {
     const { getByTestId } = render(CanisterCardCycles, props);
 
-    // Wait for initialization of the callback
-    await waitFor(() => expect(cyclesCallback).not.toBeUndefined());
-
-    const mock: CanisterSync = {
-      id: mockCanister.canister_id.toText(),
-      sync: "synced",
-      data: {
-        cycles: 246913400000000n,
-        memorySize: 1287500n,
-        status: 2,
-      } as CanisterDetails,
-    };
+    await tick();
 
     cyclesCallback?.({
       canister: mock,
@@ -64,7 +65,60 @@ describe("CanisterCardCycles", () => {
     expect(getByTestId("canister-memory")?.textContent).toEqual("1.29mb");
   });
 
-  // TODO: should not render if not same canister id
-  // TODO: should render skeleton on load and syncing
-  // TODO: should not render if error
+  it("should not render canister cycles information if different canister", async () => {
+    const { getByTestId } = render(CanisterCardCycles, props);
+
+    await tick();
+
+    cyclesCallback?.({
+      canister: {
+        ...mock,
+        id: mockPrincipal.toText(),
+      },
+    });
+
+    expect(() => getByTestId("canister-cycles")).toThrow();
+  });
+
+  it("should not render any information if canister cycles sync on error", async () => {
+    const { container } = render(CanisterCardCycles, props);
+
+    await tick();
+
+    cyclesCallback?.({
+      canister: {
+        ...mock,
+        sync: "error",
+      },
+    });
+
+    await waitFor(() =>
+      expect(container.querySelectorAll("p").length).toEqual(0)
+    );
+  });
+
+  it("should render skeleton while syncing", async () => {
+    const { getAllByTestId } = render(CanisterCardCycles, props);
+
+    await tick();
+
+    cyclesCallback?.({
+      canister: {
+        ...mock,
+        sync: "syncing",
+      },
+    });
+
+    await waitFor(() =>
+      expect(getAllByTestId("skeleton-text").length).toEqual(3)
+    );
+  });
+
+  it("should render skeleton while initializing", async () => {
+    const { getAllByTestId } = render(CanisterCardCycles, props);
+
+    await waitFor(() =>
+      expect(getAllByTestId("skeleton-text").length).toEqual(3)
+    );
+  });
 });
