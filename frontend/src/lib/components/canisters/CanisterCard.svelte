@@ -22,19 +22,9 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
-  @use "@dfinity/gix-components/styles/mixins/fonts";
-  @use "@dfinity/gix-components/styles/mixins/media";
 
   .title {
     @include card.stacked-title;
     @include card.title;
-  }
-
-  span.value {
-    @include fonts.h2(true);
-
-    @include media.min-width(medium) {
-      @include fonts.h1(true);
-    }
   }
 </style>

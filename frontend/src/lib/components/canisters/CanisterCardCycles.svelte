@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { onDestroy } from "svelte/internal";
   import type { CanisterSync } from "$lib/types/canister";
-  import { type PostMessageDataResponse } from "$lib/types/post-messages";
+  import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { SkeletonText } from "@dfinity/gix-components";
   import { formatNumber } from "$lib/utils/format.utils";
