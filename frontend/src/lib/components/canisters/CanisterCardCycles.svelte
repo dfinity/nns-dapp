@@ -11,6 +11,8 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { SkeletonText } from "@dfinity/gix-components";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
+  import CanisterStatus from "$lib/components/canisters/CanisterStatus.svelte";
 
   export let canister: CanisterDetails;
 
@@ -46,11 +48,13 @@
   <p><SkeletonText /></p>
 {:else if nonNullish(canisterSync) && canisterSync.sync === "synced" && nonNullish(canisterSync.data)}
   <p class="info">
-    <span class="value">{canisterSync.data.cycles}</span>
-    <span class="label">Cycles</span>
+    <span class="value">{formatCyclesToTCycles(canisterSync.data.cycles)}</span>
+    <span class="label">TCycles</span>
   </p>
-  <p class="info">{canisterSync.data.status}</p>
-  <p class="info">
+  <p class="info description">
+    <CanisterStatus status={canisterSync.data.status} />
+  </p>
+  <p class="info description">
     {formatNumber(Number(canisterSync.data.memorySize) / 1000000)}mb
   </p>
 {/if}

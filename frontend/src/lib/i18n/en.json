@@ -380,7 +380,10 @@
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
-    "add_controller": "Add Controller"
+    "add_controller": "Add Controller",
+    "status_stopped": "Stopped",
+    "status_stopping": "Stopping",
+    "status_running": "Running"
   },
   "transaction_names": {
     "receive": "Received $tokenSymbol",
