@@ -56,8 +56,6 @@ describe("transactionFee-services", () => {
 
   describe("loadSnsTransactionFee", () => {
     describe("success", () => {
-      afterAll(() => jest.clearAllMocks());
-
       let spyTransactionFeeApi;
       beforeEach(() => {
         spyTransactionFeeApi = jest
@@ -67,9 +65,10 @@ describe("transactionFee-services", () => {
         jest.spyOn(console, "error").mockImplementation(() => undefined);
       });
 
-      afterEach(() =>
-        transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S))
-      );
+      afterEach(() => {
+        transactionsFeesStore.reset();
+        jest.clearAllMocks();
+      });
 
       it("set transaction fee of the sns project to the ledger canister value", async () => {
         await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });
@@ -79,7 +78,28 @@ describe("transactionFee-services", () => {
         const feesStore = get(transactionsFeesStore);
         const { fee: actualFee } = feesStore.projects[mockPrincipal.toText()];
         expect(actualFee).toEqual(fee);
-        expect(spyTransactionFeeApi).toBeCalled();
+      });
+
+      it("it should not call api if the fee is in the store is certified", async () => {
+        transactionsFeesStore.setFee({
+          rootCanisterId: mockPrincipal,
+          fee: BigInt(10_000),
+          certified: true,
+        });
+        await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });
+
+        expect(spyTransactionFeeApi).not.toHaveBeenCalled();
+      });
+
+      it("it should call api if the fee is in the store is not certified", async () => {
+        transactionsFeesStore.setFee({
+          rootCanisterId: mockPrincipal,
+          fee: BigInt(10_000),
+          certified: false,
+        });
+        await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });
+
+        expect(spyTransactionFeeApi).toHaveBeenCalled();
       });
     });
 

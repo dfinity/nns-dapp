@@ -1,13 +1,16 @@
 <script lang="ts">
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import { layoutMenuOpen } from "@dfinity/gix-components";
+  import { ENABLE_TVL } from "$lib/constants/environment.constants";
 
   export let sticky = true;
 </script>
 
-<div class:open={$layoutMenuOpen} class:sticky>
-  <TotalValueLocked layout="stacked" />
-</div>
+{#if ENABLE_TVL}
+  <div class:open={$layoutMenuOpen} class:sticky>
+    <TotalValueLocked layout="stacked" />
+  </div>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
