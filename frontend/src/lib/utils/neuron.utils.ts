@@ -441,17 +441,8 @@ export const isSpawning = (neuron: NeuronInfo): boolean =>
   neuron.state === NeuronState.Spawning;
 
 // Tested with `mapMergeableNeurons`
-const isMergeableNeuron = ({
-  neuron,
-  accounts,
-}: {
-  neuron: NeuronInfo;
-  accounts: AccountsStoreData;
-}): boolean =>
-  !hasJoinedCommunityFund(neuron) &&
-  !isSpawning(neuron) &&
-  // Merging hardware wallet neurons is not yet supported
-  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
+const isMergeableNeuron = (neuron: NeuronInfo): boolean =>
+  !hasJoinedCommunityFund(neuron) && !isSpawning(neuron);
 
 const getMergeableNeuronMessageKey = ({
   neuron,
@@ -465,9 +456,6 @@ const getMergeableNeuronMessageKey = ({
   }
   if (isSpawning(neuron)) {
     return "neurons.cannot_merge_neuron_spawning";
-  }
-  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
-    return "neurons.cannot_merge_hardware_wallet";
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
@@ -504,7 +492,7 @@ export const mapMergeableNeurons = ({
       selected: selectedNeurons
         .map(({ neuronId }) => neuronId)
         .includes(neuron.neuronId),
-      mergeable: isMergeableNeuron({ neuron, accounts }),
+      mergeable: isMergeableNeuron(neuron),
       messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
     }))
     // Then we calculate the neuron with the current selection

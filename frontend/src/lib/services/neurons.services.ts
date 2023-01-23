@@ -28,6 +28,7 @@ import {
 } from "$lib/constants/neurons.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -60,6 +61,7 @@ import {
   isEnoughToStakeNeuron,
   isHotKeyControllable,
   isIdentityController,
+  isNeuronControlledByHardwareWallet,
   userAuthorizedNeuron,
   validTopUpAmount,
 } from "$lib/utils/neuron.utils";
@@ -409,9 +411,17 @@ export const mergeNeurons = async ({
         translate({ labelKey: messageKey ?? "error.governance_error" })
       );
     }
+
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       targetNeuronId
     );
+    const accounts = get(accountsStore);
+    if (isNeuronControlledByHardwareWallet({ neuron: neuron2, accounts })) {
+      await assertLedgerVersion({
+        identity,
+        minVersion: CANDID_PARSER_VERSION,
+      });
+    }
 
     await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
     success = true;
