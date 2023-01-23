@@ -597,3 +597,14 @@ export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
     ({ neuronIds, successfullyVotedNeuronIds }) =>
       neuronIds.length > successfullyVotedNeuronIds.length
   ) !== undefined;
+
+/** Url parameter value to proposalId (bigint) */
+export const mapProposalId = (
+  proposalIdText: string | undefined | null = undefined
+): bigint | undefined => {
+  try {
+    return proposalIdText ? BigInt(proposalIdText) : undefined;
+  } catch (_err: unknown) {
+    return undefined;
+  }
+};

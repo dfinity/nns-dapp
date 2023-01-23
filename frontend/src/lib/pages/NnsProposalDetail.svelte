@@ -15,19 +15,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
+  import { mapProposalId } from "$lib/utils/proposals.utils";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
-
-  const mapProposalId = (
-    proposalIdText: string | undefined | null = undefined
-  ): ProposalId | undefined => {
-    try {
-      return proposalIdText ? BigInt(proposalIdText) : undefined;
-    } catch (_err: unknown) {
-      return undefined;
-    }
-  };
 
   let proposalId: ProposalId | undefined;
   $: proposalId = mapProposalId(proposalIdText);

@@ -16,11 +16,12 @@
   import { loadSnsProposal } from "$lib/services/$public/sns-proposals.services";
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import { stringifyJson } from "$lib/utils/utils.js";
+  import { stringifyJson } from "$lib/utils/utils";
   import { writable } from "svelte/store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
+  import { mapProposalId } from "$lib/utils/proposals.utils";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -32,16 +33,6 @@
       });
     }
   });
-
-  const mapProposalId = (
-    proposalIdText: string | undefined | null = undefined
-  ): bigint | undefined => {
-    try {
-      return proposalIdText ? BigInt(proposalIdText) : undefined;
-    } catch (_err: unknown) {
-      return undefined;
-    }
-  };
 
   let proposalId: bigint | undefined;
   $: proposalId = mapProposalId(proposalIdText);
@@ -75,8 +66,6 @@
       }
       goBack();
     };
-
-    console.log("lol", proposalId, rootCanisterId);
 
     await loadSnsProposal({
       rootCanisterId,
