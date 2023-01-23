@@ -42,24 +42,34 @@
       data?.id === canister.canister_id.toText() ? data : undefined);
 </script>
 
-{#if isNullish(canisterSync) || canisterSync?.sync === "syncing"}
-  <p><SkeletonText /></p>
-  <p><SkeletonText /></p>
-  <p><SkeletonText /></p>
-{:else if nonNullish(canisterSync) && canisterSync.sync === "synced" && nonNullish(canisterSync.data)}
-  <p class="info">
-    <span class="value">{formatCyclesToTCycles(canisterSync.data.cycles)}</span>
-    <span class="label">TCycles</span>
-  </p>
-  <p class="info description">
-    <CanisterStatus status={canisterSync.data.status} />
-  </p>
-  <p class="info description">
-    {formatNumber(Number(canisterSync.data.memorySize) / 1000000)}mb
-  </p>
-{/if}
+<div>
+  {#if isNullish(canisterSync) || canisterSync?.sync === "syncing"}
+    <p><SkeletonText /></p>
+    <p><SkeletonText /></p>
+    <p><SkeletonText /></p>
+  {:else if canisterSync.sync === "synced" && nonNullish(canisterSync.data)}
+    <p class="info">
+      <span class="value"
+        >{formatCyclesToTCycles(canisterSync.data.cycles)}</span
+      >
+      <span class="label">TCycles</span>
+    </p>
+    <p class="info description">
+      <CanisterStatus status={canisterSync.data.status} />
+    </p>
+    <p class="info description">
+      {formatNumber(Number(canisterSync.data.memorySize) / 1000000)}mb
+    </p>
+  {/if}
+</div>
 
 <style lang="scss">
+  div {
+    display: flex;
+    flex-direction: column;
+    height: var(--padding-8x);
+  }
+
   p {
     margin: 0 0 var(--padding-0_5x);
     line-height: var(--line-height-standard);
