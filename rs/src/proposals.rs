@@ -6,7 +6,7 @@ use crate::proposals::def::{
     CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
     RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest, InsertUpgradePathEntriesRequest,
     UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
     UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest, UpdateSubnetPayload,
     UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
@@ -197,6 +197,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
         35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
         36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
+        37 => identity::<InsertUpgradePathEntriesRequest>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -542,6 +543,10 @@ mod def {
     // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
     pub type RetireReplicaVersionPayload =
         registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
+
+    // NNS function 37 - InsertUpgradePathEntriesRequest
+    // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
+    pub type InsertUpgradePathEntriesRequest = ic_sns_wasm::pb::v1::InsertUpgradePathEntriesRequest;
 }
 
 #[cfg(test)]
