@@ -39,13 +39,23 @@ const loadIdentity = async (): Promise<Identity | undefined> => {
 };
 
 const startCyclesTimer = async ({
-  data: { canisterIds },
+  data: { canisterId },
 }: {
   data: PostMessageDataRequest;
 }) => {
+  // This worker has already been started
+  if (timer !== undefined) {
+    return;
+  }
+
   const identity: Identity | undefined = await loadIdentity();
 
-  const sync = async () => await syncCanisters({ identity, canisterIds });
+  if (!identity) {
+    // We do nothing if no identity
+    return;
+  }
+
+  const sync = async () => await syncCanister({ identity, canisterId });
 
   // We sync the cycles now but also schedule the update afterwards
   await sync();
@@ -62,52 +72,42 @@ const stopCyclesTimer = async () => {
   timer = undefined;
 };
 
-const syncCanisters = async ({
+let syncInProgress = false;
+
+const syncCanister = async ({
   identity,
-  canisterIds,
+  canisterId,
 }: {
-  identity: Identity | undefined;
-  canisterIds: string[];
+  identity: Identity;
+  canisterId: string;
 }) => {
-  if (!identity) {
-    // We do nothing if no identity
+  // Avoid to duplicate the sync if already in progress and not yet finished
+  if (syncInProgress) {
     return;
   }
 
-  await syncNnsCanisters({ identity, canisterIds });
-};
+  syncInProgress = true;
 
-const syncNnsCanisters = async ({
-  identity,
-  canisterIds,
-}: {
-  identity: Identity;
-  canisterIds: string[];
-}) => {
-  await Promise.allSettled(
-    canisterIds.map(async (canisterId: string) => {
-      try {
-        const canisterInfo: CanisterDetails = await queryCanisterDetails({
-          canisterId,
-          identity,
-        });
+  try {
+    const canisterInfo: CanisterDetails = await queryCanisterDetails({
+      canisterId,
+      identity,
+    });
 
-        await syncCanister({
-          canisterInfo,
-          canisterId,
-        });
-      } catch (err: unknown) {
-        console.error(err);
+    syncCanisterData({
+      canisterInfo,
+      canisterId,
+    });
+  } catch (err: unknown) {
+    console.error(err);
 
-        emitCanister({
-          id: canisterId,
-          sync: "error",
-        });
+    emitCanister({
+      id: canisterId,
+      sync: "error",
+    });
+  }
 
-        throw err;
-      }
-    })
-  );
+  syncInProgress = false;
 };
 
 // Update ui with one canister information
@@ -119,7 +119,7 @@ const emitCanister = (canister: CanisterSync) =>
     },
   });
 
-const syncCanister = async ({
+const syncCanisterData = ({
   canisterId,
   canisterInfo,
 }: {

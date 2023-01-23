@@ -26,16 +26,16 @@ export const initCyclesWorker = async () => {
   return {
     startCyclesTimer: ({
       callback,
-      canisterIds,
+      canisterId,
     }: {
-      canisterIds: string[];
+      canisterId: string;
       callback: CyclesCallback;
     }) => {
       cyclesCallback = callback;
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { canisterIds },
+        data: { canisterId },
       });
     },
     stopCyclesTimer: () => {

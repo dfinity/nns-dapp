@@ -10,7 +10,7 @@ export type PostMessageRequest =
   | "nnsStopCyclesTimer";
 
 export interface PostMessageDataRequest {
-  canisterIds: string[];
+  canisterId: string;
 }
 
 export interface PostMessageDataResponse {

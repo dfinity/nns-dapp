@@ -21,7 +21,7 @@
   let worker:
     | {
         startCyclesTimer: (params: {
-          canisterIds: string[];
+          canisterId: string;
           callback: CyclesCallback;
         }) => void;
         stopCyclesTimer: () => void;
@@ -32,7 +32,7 @@
     worker = await initCyclesWorker();
 
     worker.startCyclesTimer({
-      canisterIds: [canister.canister_id.toText()],
+      canisterId: canister.canister_id.toText(),
       callback: syncCanister,
     });
   });
