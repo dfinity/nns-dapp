@@ -20,7 +20,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { nonNullish } from "$lib/utils/utils";
-  import { snsOnlyProjectStore, snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
 
   let loading = true;
 

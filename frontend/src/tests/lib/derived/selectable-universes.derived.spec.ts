@@ -1,4 +1,7 @@
-import { CKBTC_LEDGER_CANISTER_ID, OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID,
+} from "$lib/constants/canister-ids.constants";
 import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { selectableUniverses } from "$lib/derived/selectable-universes.derived";
 import { get } from "svelte/store";
@@ -26,11 +29,11 @@ describe("selectable universes derived stores", () => {
 
     afterAll(jest.clearAllMocks);
 
-    it("should return Nns and another project", () => {
+    it("should return Nns, ckBTC and another project", () => {
       const store = get(selectableUniverses);
       expect(store.length).toEqual(3);
-      expect(store[1].summary).not.toBeUndefined();
-      expect(store[1].canisterId).toEqual(
+      expect(store[2].summary).not.toBeUndefined();
+      expect(store[2].canisterId).toEqual(
         mockSnsFullProject.rootCanisterId.toText()
       );
     });

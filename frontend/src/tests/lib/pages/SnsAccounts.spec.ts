@@ -4,6 +4,7 @@
 
 import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -19,7 +20,6 @@ import {
   mockSnsFullProject,
   mockSummary,
 } from "../../mocks/sns-projects.mock";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

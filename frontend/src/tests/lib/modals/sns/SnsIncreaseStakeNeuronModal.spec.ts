@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -31,7 +32,6 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "../../../utils/neurons-modal.test-utils";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

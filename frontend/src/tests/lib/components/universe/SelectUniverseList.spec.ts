@@ -42,9 +42,9 @@ describe("SelectUniverseList", () => {
 
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList);
-    // +1 for Internet Computer - NNS
+    // +1 for Internet Computer / NNS and +1 for ckBTC
     expect(getAllByTestId("select-universe-card").length).toEqual(
-      projects.length + 1
+      projects.length + 2
     );
   });
 

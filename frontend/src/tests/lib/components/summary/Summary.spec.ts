@@ -3,11 +3,11 @@
  */
 
 import Summary from "$lib/components/summary/Summary.svelte";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { render } from "@testing-library/svelte";
 import { mockStoreSubscribe } from "../../../mocks/commont.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("Summary", () => {
   it("should render a logo", () => {

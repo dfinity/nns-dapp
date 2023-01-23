@@ -1,9 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+  snsOnlyProjectStore,
+  snsProjectSelectedStore,
+} from "$lib/derived/sns/sns-selected-project.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
@@ -12,7 +14,6 @@ import { get } from "svelte/store";
 import { mockSnsSwapCommitment } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 import { mockSnsCanisterIdText } from "../../../mocks/sns.api.mock";
-import { snsOnlyProjectStore, snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("selected sns project derived stores", () => {
   describe("snsOnlyProjectStore", () => {

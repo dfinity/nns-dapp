@@ -25,9 +25,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
   LEDGER_CANISTER_ID: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
   GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   CYCLES_MINTING_CANISTER_ID: Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai"),
-  CKBTC_LEDGER_CANISTER_ID: Principal.fromText(
-    "mc6ru-gyaaa-aaaar-qaaaq-cai"
-  )
+  CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
 }));
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({

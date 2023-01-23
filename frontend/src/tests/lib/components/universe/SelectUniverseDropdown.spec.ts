@@ -3,6 +3,8 @@
  */
 import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
+import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -15,10 +17,10 @@ import {
   mockSnsSubAccount,
 } from "../../../mocks/sns-accounts.mock";
 import {
+  mockProjectSubscribe,
   mockSnsFullProject,
   mockTokenStore,
 } from "../../../mocks/sns-projects.mock";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("SelectUniverseDropdown", () => {
   jest
@@ -28,6 +30,10 @@ describe("SelectUniverseDropdown", () => {
   jest
     .spyOn(snsTokenSymbolSelectedStore, "subscribe")
     .mockImplementation(mockTokenStore);
+
+  jest
+    .spyOn(committedProjectsStore, "subscribe")
+    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeAll(() => {
     page.mock({
@@ -45,7 +51,7 @@ describe("SelectUniverseDropdown", () => {
     expect(card.getAttribute("role")).toEqual("button");
   });
 
-  it("should logo of universe", async () => {
+  it("should render logo of universe", async () => {
     const { getByTestId } = render(SelectUniverseDropdown);
     await waitFor(() =>
       expect(getByTestId("logo")?.getAttribute("src")).toEqual(

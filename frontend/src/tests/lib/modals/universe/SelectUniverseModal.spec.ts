@@ -44,7 +44,7 @@ describe("SelectUniverseModal", () => {
     });
 
     const cards = getAllByTestId("select-universe-card");
-    cards && (await fireEvent.click(cards[1]));
+    cards && (await fireEvent.click(cards[2]));
 
     const { universe } = get(pageStore);
     expect(universe).toEqual(mockSnsFullProject.rootCanisterId.toText());

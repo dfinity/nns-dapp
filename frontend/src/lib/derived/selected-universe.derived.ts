@@ -1,6 +1,12 @@
-import { OWN_CANISTER_ID, OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { NNS_UNIVERSE, selectableUniverses } from "$lib/derived/selectable-universes.derived";
+import {
+  NNS_UNIVERSE,
+  selectableUniverses,
+} from "$lib/derived/selectable-universes.derived";
 import type { Universe } from "$lib/types/universe";
 import { isNnsProject } from "$lib/utils/projects.utils";
 import { Principal } from "@dfinity/principal";
