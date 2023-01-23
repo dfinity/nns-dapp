@@ -1,10 +1,8 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { Card, SkeletonText } from "@dfinity/gix-components";
+  import { Card } from "@dfinity/gix-components";
   import CanisterCardTitle from "./CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "./CanisterCardSubTitle.svelte";
-  import { formatNumber } from "$lib/utils/format.utils";
-  import { nonNullish } from "$lib/utils/utils";
   import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 
   export let canister: CanisterDetails;
