@@ -3,7 +3,6 @@ export const HOST = import.meta.env.VITE_HOST as string;
 export const DEV = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean =
   import.meta.env.VITE_FETCH_ROOT_KEY === "true";
-export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
 // TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
 // Local development needs `.raw` to avoid CORS issues for now.
