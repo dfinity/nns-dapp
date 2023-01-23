@@ -48,17 +48,17 @@
     <p><SkeletonText /></p>
     <p><SkeletonText /></p>
   {:else if canisterSync.sync === "synced" && nonNullish(canisterSync.data)}
-    <p class="info">
+    <p class="info" data-tid="canister-cycles">
       <span class="value"
         >{formatCyclesToTCycles(canisterSync.data.cycles)}</span
       >
       <span class="label">TCycles</span>
     </p>
-    <p class="info description">
+    <p class="info description" data-tid="canister-status">
       <CanisterStatus status={canisterSync.data.status} />
     </p>
-    <p class="info description">
-      {formatNumber(Number(canisterSync.data.memorySize) / 1000000)}mb
+    <p class="info description" data-tid="canister-memory">
+      {formatNumber(Number(canisterSync.data.memorySize) / 1_000_000)}mb
     </p>
   {/if}
 </div>
