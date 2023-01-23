@@ -809,6 +809,7 @@ interface I18nMetrics {
 
 interface I18nCkbtc {
   title: string;
+  ckBTC: string;
   logo: string;
 }
 
