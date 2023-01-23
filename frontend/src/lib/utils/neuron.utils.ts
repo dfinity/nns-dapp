@@ -495,16 +495,14 @@ export const mapMergeableNeurons = ({
 }): MergeableNeuron[] =>
   neurons
     // First we consider the neuron on itself
-    .map((neuron: NeuronInfo) => {
-      return {
-        neuron,
-        selected: selectedNeurons
-          .map(({ neuronId }) => neuronId)
-          .includes(neuron.neuronId),
-        mergeable: isMergeableNeuron({ neuron, accounts }),
-        messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
-      };
-    })
+    .map((neuron: NeuronInfo) => ({
+      neuron,
+      selected: selectedNeurons
+        .map(({ neuronId }) => neuronId)
+        .includes(neuron.neuronId),
+      mergeable: isMergeableNeuron({ neuron, accounts }),
+      messageKey: getMergeableNeuronMessageKey({ neuron, accounts }),
+    }))
     // Then we calculate the neuron with the current selection
     .map(({ mergeable, selected, messageKey, neuron }: MergeableNeuron) => {
       // If not mergeable by itself or already selected, we keep the data.
