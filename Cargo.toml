@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "rs"
+    "rs/backend"
 ]
 
 [profile.release]
