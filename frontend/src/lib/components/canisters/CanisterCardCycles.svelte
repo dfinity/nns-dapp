@@ -11,8 +11,10 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { SkeletonText } from "@dfinity/gix-components";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
-  import CanisterStatus from "$lib/components/canisters/CanisterStatus.svelte";
+  import {
+    canisterStatusToText,
+    formatCyclesToTCycles,
+  } from "$lib/utils/canisters.utils";
 
   export let canister: CanisterDetails;
 
@@ -55,7 +57,7 @@
       <span class="label">TCycles</span>
     </p>
     <p class="info description" data-tid="canister-status">
-      <CanisterStatus status={canisterSync.data.status} />
+      {canisterStatusToText(canisterSync.data.status)}
     </p>
     <p class="info description" data-tid="canister-memory">
       {formatNumber(Number(canisterSync.data.memorySize) / 1_000_000)}mb
