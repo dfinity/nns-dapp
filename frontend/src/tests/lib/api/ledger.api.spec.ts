@@ -19,9 +19,12 @@ describe("ledger-api", () => {
       token: ICPToken,
     });
 
+    const now = Date.now();
+    const nowInNanoSeconds = BigInt(now * 1_000_000);
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
+      jest.useFakeTimers().setSystemTime(now);
 
       jest
         .spyOn(LedgerCanister, "create")
@@ -30,7 +33,10 @@ describe("ledger-api", () => {
       spyTransfer = jest.spyOn(ledgerMock, "transfer");
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => {
+      jest.clearAllMocks();
+      jest.clearAllTimers();
+    });
 
     it("should call ledger to send ICP", async () => {
       await sendICP({
@@ -42,6 +48,7 @@ describe("ledger-api", () => {
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
+        createdAt: BigInt(nowInNanoSeconds),
       });
     });
 
@@ -61,6 +68,7 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         fromSubAccount,
+        createdAt: BigInt(nowInNanoSeconds),
       });
     });
 
@@ -77,6 +85,7 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         memo,
+        createdAt: BigInt(nowInNanoSeconds),
       });
     });
 

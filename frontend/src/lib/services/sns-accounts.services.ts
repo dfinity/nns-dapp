@@ -3,7 +3,6 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import { nowInNanoSeconds } from "$lib/utils/date.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
@@ -86,7 +85,6 @@ export const snsTransferTokens = async ({
     const e8s = numberToE8s(amount);
     const identity: Identity = await getSnsAccountIdentity(source);
     const to = decodeSnsAccount(destinationAddress);
-    const createdAt = BigInt(nowInNanoSeconds());
 
     await transfer({
       identity,
@@ -94,7 +92,6 @@ export const snsTransferTokens = async ({
       fromSubAccount: source.subAccount,
       e8s,
       rootCanisterId,
-      createdAt,
     });
 
     await Promise.all([

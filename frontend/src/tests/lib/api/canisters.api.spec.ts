@@ -45,7 +45,10 @@ describe("canisters-api", () => {
     jest.useFakeTimers().setSystemTime(now);
   });
 
-  afterAll(() => jest.resetAllMocks());
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.clearAllTimers();
+  });
 
   beforeEach(() => {
     jest

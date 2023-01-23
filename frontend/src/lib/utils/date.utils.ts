@@ -109,4 +109,4 @@ export const secondsToTime = (seconds: number): string => {
 };
 
 export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
-export const nowInNanoSeconds = (): number => nowInSeconds() * 1e9;
+export const nowInNanoSeconds = (): number => Date.now() * 1e6;
