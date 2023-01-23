@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNnsProjectStore } from "$lib/derived/selected-project.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import NnsWallet from "$lib/pages/NnsWallet.svelte";
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -10,7 +10,7 @@
   layoutTitleStore.set($i18n.wallet.title);
 </script>
 
-{#if $isNnsProjectStore}
+{#if $isNnsUniverseStore}
   <NnsWallet {accountIdentifier} />
 {:else}
   <SnsWallet {accountIdentifier} />

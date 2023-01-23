@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNnsProjectStore } from "$lib/derived/selected-project.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
   import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -10,7 +10,7 @@
   layoutTitleStore.set($i18n.neuron_detail.title);
 </script>
 
-{#if $isNnsProjectStore}
+{#if $isNnsUniverseStore}
   <NnsNeuronDetail neuronIdText={neuronId} />
 {:else}
   <SnsNeuronDetail {neuronId} />

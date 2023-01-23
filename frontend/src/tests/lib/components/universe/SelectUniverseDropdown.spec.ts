@@ -3,7 +3,6 @@
  */
 import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -19,6 +18,7 @@ import {
   mockSnsFullProject,
   mockTokenStore,
 } from "../../../mocks/sns-projects.mock";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("SelectUniverseDropdown", () => {
   jest

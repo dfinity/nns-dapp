@@ -3,7 +3,7 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -42,7 +42,7 @@ describe("ProposalDetail", () => {
   describe("SnsProposalDetail", () => {
     beforeAll(() => {
       jest
-        .spyOn(snsProjectIdSelectedStore, "subscribe")
+        .spyOn(selectedUniverseIdStore, "subscribe")
         .mockImplementation((run: Subscriber<Principal>): (() => void) => {
           run(mockPrincipal);
           return () => undefined;

@@ -4,7 +4,6 @@
 
 import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
 import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState, TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -15,6 +14,7 @@ import {
   mockNeuron,
 } from "../../../mocks/neurons.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("SnsNeuron footer", () => {
   beforeEach(() => {

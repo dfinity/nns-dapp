@@ -4,26 +4,26 @@
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
   import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
   import {
-    isNnsProjectStore,
-    snsProjectIdSelectedStore,
-  } from "$lib/derived/selected-project.derived";
+    isNnsUniverseStore,
+    selectedUniverseIdStore,
+  } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 </script>
 
 <main>
   <SummaryUniverse />
 
-  {#if $isNnsProjectStore}
+  {#if $isNnsUniverseStore}
     <NnsNeurons />
-  {:else if $snsProjectIdSelectedStore !== undefined}
+  {:else if $selectedUniverseIdStore !== undefined}
     <SnsNeurons />
   {/if}
 </main>
 
-{#if $isNnsProjectStore}
+{#if $isNnsUniverseStore}
   <NnsNeuronsFooter />
   <!-- Staking SNS Neurons has not yet been reviewed by security -->
-{:else if $snsProjectIdSelectedStore !== undefined}
+{:else if $selectedUniverseIdStore !== undefined}
   <SnsNeuronsFooter />
 {/if}
 

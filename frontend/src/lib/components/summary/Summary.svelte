@@ -1,7 +1,7 @@
 <script lang="ts">
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let displayProjects = true;
 

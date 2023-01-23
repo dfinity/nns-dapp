@@ -1,16 +1,18 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Card } from "@dfinity/gix-components";
-  import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
-  import type { SnsSummary } from "$lib/types/sns";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import type { Universe } from "$lib/types/universe";
+  import { isNullish } from "$lib/utils/utils";
+  import { isCkBTCProject } from "$lib/utils/projects.utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
-  export let summary: SnsSummary | undefined = undefined;
+  export let universe: Universe;
 
   let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
@@ -30,6 +32,9 @@
     currentPath: $pageStore.path,
     paths: [AppPath.Accounts, AppPath.Wallet],
   });
+
+  let ckBTC = false;
+  $: ckBTC = isNullish(universe.summary) && isCkBTCProject(universe.canisterId);
 </script>
 
 <Card
@@ -41,15 +46,20 @@
   testId="select-universe-card"
 >
   <div class="container" class:selected>
-    <ProjectLogo size="big" {summary} framed={true} />
+    <UniverseLogo size="big" {universe} framed={true} />
 
     <div
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
+      <span class="name"
+        >{universe.summary?.metadata.name ??
+          (ckBTC ? $i18n.ckbtc.title : $i18n.core.ic)}</span
+      >
       {#if displayProjectAccountsBalance}
-        <ProjectAccountsBalance rootCanisterId={summary?.rootCanisterId} />
+        <ProjectAccountsBalance
+          rootCanisterId={universe.summary?.rootCanisterId}
+        />
       {/if}
     </div>
   </div>

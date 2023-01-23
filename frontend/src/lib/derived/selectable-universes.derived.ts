@@ -1,25 +1,28 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID,
+} from "$lib/constants/canister-ids.constants";
 import {
   committedProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/projects.derived";
-import type { SnsSummary } from "$lib/types/sns";
+import type { Universe } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
 
-export interface SelectableProject {
-  canisterId: string;
-  summary?: SnsSummary;
-}
-
-const NNS_PROJECT: SelectableProject = {
+export const NNS_UNIVERSE: Universe = {
   canisterId: OWN_CANISTER_ID.toText(),
 };
 
-export const selectableProjects = derived<
+export const CKBTC_UNIVERSE: Universe = {
+  canisterId: CKBTC_LEDGER_CANISTER_ID.toText(),
+};
+
+export const selectableUniverses = derived<
   Readable<SnsFullProject[] | undefined>,
-  SelectableProject[]
+  Universe[]
 >(committedProjectsStore, (projects: SnsFullProject[] | undefined) => [
-  NNS_PROJECT,
+  NNS_UNIVERSE,
+  CKBTC_UNIVERSE,
   ...(projects?.map(({ rootCanisterId, summary }) => ({
     canisterId: rootCanisterId.toText(),
     summary,

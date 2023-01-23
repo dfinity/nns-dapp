@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
@@ -27,6 +26,7 @@ import {
 } from "../../mocks/sns-neurons.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

@@ -63,7 +63,7 @@ describe("SelectUniverseList", () => {
     const { component, getAllByTestId } = render(SelectUniverseList);
 
     const onSelect = jest.fn();
-    component.$on("nnsSelectProject", onSelect);
+    component.$on("nnsSelectUniverse", onSelect);
 
     const cards = getAllByTestId("select-universe-card");
     cards && (await fireEvent.click(cards[0]));

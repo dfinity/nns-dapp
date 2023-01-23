@@ -5,12 +5,12 @@
 import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
 import { mockStoreSubscribe } from "../../../mocks/commont.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { mockSnsCanisterIdText } from "../../../mocks/sns.api.mock";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
 describe("SummaryLogo", () => {
   describe("nns", () => {

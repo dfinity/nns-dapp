@@ -12,3 +12,10 @@ export const GOVERNANCE_CANISTER_ID = Principal.fromText(
 export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
   import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID as string
 );
+
+export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
+  "ml52i-qqaaa-aaaar-qaaba-cai"
+);
+export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
+  "mc6ru-gyaaa-aaaar-qaaaq-cai"
+);

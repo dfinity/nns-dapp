@@ -2,9 +2,9 @@
   import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
   import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
   import {
-    isNnsProjectStore,
-    snsProjectIdSelectedStore,
-  } from "$lib/derived/selected-project.derived";
+    isNnsUniverseStore,
+    selectedUniverseIdStore,
+  } from "$lib/derived/selected-universe.derived";
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import type { AppPath } from "$lib/constants/routes.constants";
 
@@ -13,9 +13,9 @@
 </script>
 
 <main>
-  {#if $isNnsProjectStore || !ENABLE_SNS_VOTING}
+  {#if $isNnsUniverseStore || !ENABLE_SNS_VOTING}
     <NnsProposalDetail {referrerPath} {proposalIdText} />
-  {:else if $snsProjectIdSelectedStore !== undefined && ENABLE_SNS_VOTING}
+  {:else if $selectedUniverseIdStore !== undefined && ENABLE_SNS_VOTING}
     <SnsProposalDetail {proposalIdText} />
   {/if}
 </main>

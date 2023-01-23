@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID,
+} from "$lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "$lib/derived/projects.derived";
 import type {
   SnsSummary,
@@ -223,3 +226,7 @@ export const validParticipation = ({
 
 export const isNnsProject = (canisterId: Principal): boolean =>
   canisterId.toText() === OWN_CANISTER_ID.toText();
+
+export const isCkBTCProject = (canisterId: Principal | string): boolean =>
+  (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
+  CKBTC_LEDGER_CANISTER_ID.toText();
