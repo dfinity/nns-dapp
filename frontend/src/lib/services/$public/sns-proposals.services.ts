@@ -49,7 +49,7 @@ export const loadSnsProposals = async ({
 };
 
 /**
- * Get from store or query a proposal and apply the result to the callback (`setProposal`).
+ * Query a proposal and apply the result to the callback (`setProposal`).
  * The function propagate error to the toast and call an optional callback in case of error.
  */
 export const loadSnsProposal = async ({
@@ -71,7 +71,6 @@ export const loadSnsProposal = async ({
   silentUpdateErrorMessages?: boolean;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
-  // TODO: where store?
   const catchError: QueryAndUpdateOnError<Error | unknown> = (
     erroneusResponse
   ) => {
