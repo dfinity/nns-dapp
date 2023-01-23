@@ -1,7 +1,7 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import { nowInNanoSeconds } from "$lib/utils/date.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
@@ -105,7 +105,7 @@ export const transfer = async ({
       owner: to.owner,
       subaccount: toNullable(to.subaccount),
     },
-    created_at_time: createdAt ?? BigInt(nowInNanoSeconds()),
+    created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
     memo,
     from_subaccount:
       fromSubAccount !== undefined

@@ -15,7 +15,7 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { nowInNanoSeconds } from "$lib/utils/date.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
@@ -251,7 +251,7 @@ describe("canisters-api", () => {
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
-        createdAt: BigInt(nowInNanoSeconds()),
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -348,7 +348,7 @@ describe("canisters-api", () => {
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
-        createdAt: BigInt(nowInNanoSeconds()),
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();

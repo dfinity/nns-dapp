@@ -20,7 +20,7 @@ describe("ledger-api", () => {
     });
 
     const now = Date.now();
-    const nowInNanoSeconds = BigInt(now * 1_000_000);
+    const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
@@ -48,7 +48,7 @@ describe("ledger-api", () => {
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
-        createdAt: BigInt(nowInNanoSeconds),
+        createdAt: nowInBigIntNanoSeconds,
       });
     });
 
@@ -68,7 +68,7 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         fromSubAccount,
-        createdAt: BigInt(nowInNanoSeconds),
+        createdAt: nowInBigIntNanoSeconds,
       });
     });
 
@@ -85,7 +85,7 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         memo,
-        createdAt: BigInt(nowInNanoSeconds),
+        createdAt: nowInBigIntNanoSeconds,
       });
     });
 

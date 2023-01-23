@@ -17,7 +17,7 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
-import { nowInNanoSeconds } from "$lib/utils/date.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, PollingLimitExceededError } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -186,7 +186,7 @@ export const createCanister = async ({
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
-  const createdAt = BigInt(nowInNanoSeconds());
+  const createdAt = nowInBigIntNanoSeconds();
   // Transfer the funds
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
@@ -275,7 +275,7 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
-  const createdAt = BigInt(nowInNanoSeconds());
+  const createdAt = nowInBigIntNanoSeconds();
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,

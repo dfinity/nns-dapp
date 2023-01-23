@@ -4,7 +4,7 @@ import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { nowInNanoSeconds } from "$lib/utils/date.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type {
@@ -375,7 +375,7 @@ export const stakeNeuron = async ({
     identity: ledgerCanisterIdentity,
   });
 
-  const createdAt = BigInt(nowInNanoSeconds());
+  const createdAt = nowInBigIntNanoSeconds();
   const response = await canister.stakeNeuron({
     stake: stake,
     principal: controller,
