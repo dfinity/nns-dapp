@@ -29,15 +29,20 @@
       }
     | undefined;
 
-  onMount(async () => {
+  onDestroy(() => worker?.stopCyclesTimer());
+
+  const initWorker = async () => {
+    worker?.stopCyclesTimer();
+
     worker = await initCyclesWorker();
 
     worker.startCyclesTimer({
       canisterId: canister.canister_id.toText(),
       callback: syncCanisterCallback,
     });
-  });
-  onDestroy(() => worker?.stopCyclesTimer());
+  };
+
+  $: canister, (async () => await initWorker())();
 
   let canisterSync: CanisterSync | undefined = undefined;
   // Multiple workers that sync canister information can be appended to a view.
