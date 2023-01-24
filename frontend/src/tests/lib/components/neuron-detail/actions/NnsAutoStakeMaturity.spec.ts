@@ -4,7 +4,7 @@
 
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
@@ -66,6 +66,33 @@ describe("NnsAutoStakeMaturity", () => {
 
   it("renders unchecked if auto stake is undefined", () =>
     testCheckBox(undefined));
+
+  it("renders a disabled checkbox if neuron is not controllable", async () => {
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: "not-user",
+        autoStakeMaturity: true,
+      },
+    };
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsAutoStakeMaturity,
+      },
+    });
+
+    const inputElement = queryByTestId("checkbox") as HTMLInputElement;
+
+    expect(inputElement.checked).toBeTruthy();
+    expect(inputElement.disabled).toBeTruthy();
+
+    inputElement && (await fireEvent.click(inputElement));
+
+    const modal = queryByTestId("auto-stake-confirm-modal");
+    waitFor(() => expect(modal).not.toBeInTheDocument());
+  });
 
   const toggleAutoStake = async ({
     neuronAutoStakeMaturity,
