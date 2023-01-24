@@ -10,6 +10,9 @@
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
   export let currentStep: WizardStep;
+  export let validateAmount: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
 </script>
 
 <TransactionModal
@@ -19,6 +22,7 @@
   bind:currentStep
   {token}
   {transactionFee}
+  {validateAmount}
   destinationAddress={governanceCanisterId.toText()}
 >
   <slot name="title" slot="title" />

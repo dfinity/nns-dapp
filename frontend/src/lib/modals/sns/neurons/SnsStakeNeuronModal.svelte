@@ -10,6 +10,10 @@
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -30,6 +34,31 @@
     currentStep?.name === "Form"
       ? stakeNeuronText
       : $i18n.accounts.review_transaction;
+
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
+  let minimumStake: number | undefined;
+  $: minimumStake =
+    parameters !== undefined
+      ? Number(
+          mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
+        ) / E8S_PER_ICP
+      : undefined;
+  let checkMinimumStake: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
+  $: checkMinimumStake = (amount: number | undefined) => {
+    if (amount && minimumStake && amount < minimumStake) {
+      return replacePlaceholders(
+        $i18n.error.amount_not_enough_stake_sns_neuron,
+        {
+          $amount: String(minimumStake),
+          $token: token.symbol,
+        }
+      );
+    }
+    return undefined;
+  };
 
   const dispatcher = createEventDispatcher();
   const stake = async ({ detail }: CustomEvent<NewTransaction>) => {
@@ -67,6 +96,7 @@
   {token}
   {transactionFee}
   {governanceCanisterId}
+  validateAmount={checkMinimumStake}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
