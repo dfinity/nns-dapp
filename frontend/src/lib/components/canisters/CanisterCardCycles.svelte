@@ -63,7 +63,7 @@
       {canisterStatusToText(canisterSync.data.status)}
     </p>
     <p class="info description" data-tid="canister-memory">
-      {formatNumber(Number(canisterSync.data.memorySize) / 1_000_000)}mb
+      {formatNumber(Number(canisterSync.data.memorySize) / 1_000_000)}MB
     </p>
   {/if}
 </div>
