@@ -33,13 +33,15 @@
 
     worker.startCyclesTimer({
       canisterId: canister.canister_id.toText(),
-      callback: syncCanister,
+      callback: syncCanisterCallback,
     });
   });
   onDestroy(() => worker?.stopCyclesTimer());
 
   let canisterSync: CanisterSync | undefined = undefined;
-  const syncCanister = ({ canister: data }: PostMessageDataResponse) =>
+  // Multiple workers that sync canister information can be appended to a view.
+  // postMessage being broadcasted, we filter the information that matches this canister.
+  const syncCanisterCallback = ({ canister: data }: PostMessageDataResponse) =>
     (canisterSync =
       data?.id === canister.canister_id.toText() ? data : undefined);
 </script>
