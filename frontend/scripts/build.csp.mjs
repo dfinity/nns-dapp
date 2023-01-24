@@ -11,6 +11,10 @@ dotenv.config();
 // Caching canister enabled ONLY in small12 for now
 const enableSnsCacheCanister = process.env.VITE_DFX_NETWORK === "small12";
 
+// TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
+const cachingCanisterUrl =
+  "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network";
+
 const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
@@ -103,6 +107,7 @@ const extractStartScript = (htmlFile) => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
+
 const updateCSP = (indexHtml) => {
   const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
@@ -116,10 +121,6 @@ const updateCSP = (indexHtml) => {
       `'sha256-${createHash("sha256").update(content).digest("base64")}'`
     );
   }
-
-  // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
-  const cachingCanisterUrl =
-    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network";
 
   const csp = `<meta
         http-equiv="Content-Security-Policy"
