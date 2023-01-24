@@ -19,7 +19,7 @@
   $: canisterId = universe.canisterId;
 
   let ckBTC = false;
-  $: ckBTC = isNullish(summary) && isUniverseCkBTC(canisterId);
+  $: ckBTC = isUniverseCkBTC(canisterId);
 
   // TODO: use ckBTC logo provided by ledger
   let logo: string;

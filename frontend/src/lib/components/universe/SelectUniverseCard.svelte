@@ -34,8 +34,7 @@
   });
 
   let ckBTC = false;
-  $: ckBTC =
-    isNullish(universe.summary) && isUniverseCkBTC(universe.canisterId);
+  $: ckBTC = isUniverseCkBTC(universe.canisterId);
 </script>
 
 <Card
