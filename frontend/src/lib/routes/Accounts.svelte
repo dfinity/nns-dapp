@@ -12,7 +12,8 @@
     committedProjectsStore,
     type SnsFullProject,
   } from "$lib/derived/projects.derived";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let projectIdSelected = $selectedUniverseIdStore;
@@ -46,14 +47,14 @@
 <main>
   {#if $isNnsUniverseStore}
     <NnsAccounts />
-  {:else if $selectedUniverseIdStore !== undefined}
+  {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccounts />
   {/if}
 </main>
 
 {#if $isNnsUniverseStore}
   <NnsAccountsFooter />
-{:else}
+{:else if nonNullish($snsProjectSelectedStore)}
   <SnsAccountsFooter />
 {/if}
 
