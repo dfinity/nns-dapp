@@ -14,6 +14,7 @@ export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
 );
 export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
+// TODO: environment variables for ckBTC canister IDs
 export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
   "ml52i-qqaaa-aaaar-qaaba-cai"
 );

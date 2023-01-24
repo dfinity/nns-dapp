@@ -3,6 +3,7 @@
  */
 
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
 import { committedProjectsStore } from "$lib/derived/projects.derived";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render } from "@testing-library/svelte";
@@ -32,8 +33,9 @@ describe("SelectUniverseList", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe(projects));
 
-  beforeAll(() => {
+  beforeEach(() => {
     page.mock({
+      routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
   });
@@ -69,5 +71,18 @@ describe("SelectUniverseList", () => {
     cards && (await fireEvent.click(cards[0]));
 
     expect(onSelect).toHaveBeenCalled();
+  });
+
+  it("should not render ckBTC universe cards if route not accounts", () => {
+    page.mock({
+      routeId: AppPath.Neurons,
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getAllByTestId } = render(SelectUniverseList);
+    // +1 for Internet Computer / NNS
+    expect(getAllByTestId("select-universe-card").length).toEqual(
+      projects.length + 1
+    );
   });
 });
