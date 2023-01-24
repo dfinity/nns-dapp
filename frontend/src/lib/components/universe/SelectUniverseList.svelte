@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectableUniverses } from "$lib/derived/selectable-universes.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import { createEventDispatcher } from "svelte";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
@@ -12,7 +12,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-{#each $selectableUniverses as universe (universe.canisterId)}
+{#each $selectableUniversesStore as universe (universe.canisterId)}
   <SelectUniverseCard
     {universe}
     {role}

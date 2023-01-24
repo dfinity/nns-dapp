@@ -7,7 +7,7 @@ import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
-  selectableUniverses,
+  selectableUniversesStore,
 } from "$lib/derived/selectable-universes.derived";
 import type { Universe } from "$lib/types/universe";
 import { isNnsProject } from "$lib/utils/projects.utils";
@@ -57,7 +57,7 @@ export const isNnsUniverseStore = derived(
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
-  [selectedUniverseIdStore, selectableUniverses],
+  [selectedUniverseIdStore, selectableUniversesStore],
   ([$selectedUniverseIdStore, $selectableUniverses]) =>
     $selectableUniverses?.find(
       ({ canisterId }) => canisterId === $selectedUniverseIdStore.toText()

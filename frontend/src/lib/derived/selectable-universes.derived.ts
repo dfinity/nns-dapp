@@ -18,7 +18,7 @@ export const CKBTC_UNIVERSE: Universe = {
   canisterId: CKBTC_LEDGER_CANISTER_ID.toText(),
 };
 
-export const selectableUniverses = derived<
+export const selectableUniversesStore = derived<
   Readable<SnsFullProject[] | undefined>,
   Universe[]
 >(committedProjectsStore, (projects: SnsFullProject[] | undefined) => [
