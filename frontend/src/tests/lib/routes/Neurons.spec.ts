@@ -3,7 +3,8 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { AppPath } from "$lib/constants/routes.constants";
+import { projectsStore } from "$lib/derived/projects.derived";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -41,12 +42,15 @@ describe("Neurons", () => {
   );
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(projectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
     // Reset to default value
-    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT },
+      routeId: AppPath.Neurons,
+    });
   });
 
   it("should render NnsNeurons by default", () => {
