@@ -15,6 +15,7 @@
     canisterStatusToText,
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
+  import { i18n } from "$lib/stores/i18n";
 
   export let canister: CanisterDetails;
 
@@ -56,7 +57,7 @@
       <span class="value"
         >{formatCyclesToTCycles(canisterSync.data.cycles)}</span
       >
-      <span class="label">TCycles</span>
+      <span class="label">{$i18n.canister_detail.t_cycles}</span>
     </p>
     <p class="info description" data-tid="canister-status">
       {canisterStatusToText(canisterSync.data.status)}
