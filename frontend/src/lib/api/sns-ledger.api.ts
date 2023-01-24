@@ -5,9 +5,9 @@ import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
+import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { encodeSnsAccount, type SnsAccount } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
@@ -41,7 +41,7 @@ export const getSnsAccounts = async ({
   }
 
   const mainAccount: Account = {
-    identifier: encodeSnsAccount(snsMainAccount),
+    identifier: encodeIcrcAccount(snsMainAccount),
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
@@ -86,7 +86,7 @@ export const transfer = async ({
   createdAt,
 }: {
   identity: Identity;
-  to: SnsAccount;
+  to: IcrcAccount;
   e8s: bigint;
   rootCanisterId: Principal;
   memo?: Uint8Array;
