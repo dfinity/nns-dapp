@@ -1,8 +1,11 @@
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStore } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
+import { i18n } from "$lib/stores/i18n";
+import { get } from "svelte/store";
 import { formatNumber } from "./format.utils";
 
 export const getCanisterFromStore = ({
@@ -54,3 +57,16 @@ export const isUserController = ({
   controller: string;
   authStore: AuthStore;
 }): boolean => controller === authStore.identity?.getPrincipal().toText();
+
+export const canisterStatusToText = (status: CanisterStatus): string => {
+  const i18nObj = get(i18n);
+
+  switch (status) {
+    case CanisterStatus.Stopped:
+      return i18nObj.canister_detail.status_stopped;
+    case CanisterStatus.Stopping:
+      return i18nObj.canister_detail.status_stopping;
+    default:
+      return i18nObj.canister_detail.status_running;
+  }
+};

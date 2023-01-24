@@ -1,21 +1,31 @@
+import type { CanisterSync } from "$lib/types/canister";
 import type { MetricsSync } from "$lib/types/metrics";
 
 export type PostMessageRequest =
   | "nnsStartIdleTimer"
   | "nnsStopIdleTimer"
   | "nnsStartMetricsTimer"
-  | "nnsStopMetricsTimer";
+  | "nnsStopMetricsTimer"
+  | "nnsStartCyclesTimer"
+  | "nnsStopCyclesTimer";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PostMessageDataRequest {}
+export interface PostMessageDataRequest {
+  canisterId: string;
+}
 
 export interface PostMessageDataResponse {
   metrics?: MetricsSync;
+  canister?: CanisterSync;
 }
 
-export type PostMessageResponse = "nnsSignOut" | "nnsSyncMetrics";
+export type PostMessageResponse =
+  | "nnsSignOut"
+  | "nnsSyncMetrics"
+  | "nnsSyncCanister";
 
-export interface PostMessage<T extends PostMessageDataResponse> {
+export interface PostMessage<
+  T extends PostMessageDataResponse | PostMessageDataRequest
+> {
   msg: PostMessageRequest | PostMessageResponse;
   data: T;
 }

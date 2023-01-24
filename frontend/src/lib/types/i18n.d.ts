@@ -395,6 +395,9 @@ interface I18nCanister_detail {
   edit_controller: string;
   new_controller: string;
   add_controller: string;
+  status_stopped: string;
+  status_stopping: string;
+  status_running: string;
 }
 
 interface I18nTransaction_names {
