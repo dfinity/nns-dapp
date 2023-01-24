@@ -399,13 +399,13 @@ export const mergeNeurons = async ({
 }): Promise<NeuronId | undefined> => {
   let success = false;
   try {
-    const { neuron: neuron1 } = await getIdentityAndNeuronHelper(
+    const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
       sourceNeuronId
     );
-    const { neuron: neuron2 } = await getIdentityAndNeuronHelper(
+    const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
       targetNeuronId
     );
-    const { isValid, messageKey } = canBeMerged([neuron1, neuron2]);
+    const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
     if (!isValid) {
       throw new CannotBeMerged(
         translate({ labelKey: messageKey ?? "error.governance_error" })
@@ -416,7 +416,9 @@ export const mergeNeurons = async ({
       targetNeuronId
     );
     const accounts = get(accountsStore);
-    if (isNeuronControlledByHardwareWallet({ neuron: neuron2, accounts })) {
+    if (
+      isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
+    ) {
       await assertLedgerVersion({
         identity,
         minVersion: CANDID_PARSER_VERSION,

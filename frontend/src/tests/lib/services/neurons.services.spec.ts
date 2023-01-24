@@ -772,7 +772,7 @@ describe("neurons-services", () => {
       accountsStore.reset();
     });
 
-    it("should update neuron", async () => {
+    it("should merge neurons", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await mergeNeurons({
         sourceNeuronId: neurons[0].neuronId,
@@ -782,7 +782,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).toHaveBeenCalled();
     });
 
-    it("should not update neuron if no identity", async () => {
+    it("should not merge neurons if no identity", async () => {
       setNoIdentity();
 
       await mergeNeurons({
@@ -796,7 +796,7 @@ describe("neurons-services", () => {
       resetIdentity();
     });
 
-    it("should not update neuron if different controllers", async () => {
+    it("should not merge neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
         neuronId: BigInt(5555),
@@ -819,7 +819,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
 
-    it("should not update neuron if lower HW version than required", async () => {
+    it("should not merge neurons if lower HW version than required", async () => {
       const version: ResponseVersion = {
         testMode: false,
         major: 1,
