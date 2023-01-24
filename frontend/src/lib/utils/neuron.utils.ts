@@ -450,8 +450,7 @@ const isMergeableNeuron = ({
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
-  // Merging hardware wallet neurons is not yet supported
-  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
+  isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
@@ -465,9 +464,6 @@ const getMergeableNeuronMessageKey = ({
   }
   if (isSpawning(neuron)) {
     return "neurons.cannot_merge_neuron_spawning";
-  }
-  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
-    return "neurons.cannot_merge_hardware_wallet";
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
