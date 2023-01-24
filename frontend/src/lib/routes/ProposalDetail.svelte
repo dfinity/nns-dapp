@@ -7,6 +7,8 @@
   } from "$lib/derived/selected-universe.derived";
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import type { AppPath } from "$lib/constants/routes.constants";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { nonNullish } from "$lib/utils/utils";
 
   export let referrerPath: AppPath | undefined = undefined;
   export let proposalIdText: string | null | undefined;
@@ -15,7 +17,7 @@
 <main>
   {#if $isNnsUniverseStore || !ENABLE_SNS_VOTING}
     <NnsProposalDetail {referrerPath} {proposalIdText} />
-  {:else if $selectedUniverseIdStore !== undefined && ENABLE_SNS_VOTING}
+  {:else if nonNullish($snsProjectSelectedStore) && ENABLE_SNS_VOTING}
     <SnsProposalDetail {proposalIdText} />
   {/if}
 </main>

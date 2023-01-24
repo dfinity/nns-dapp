@@ -8,6 +8,8 @@
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
+  import { nonNullish } from "$lib/utils/utils";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 </script>
 
 <main>
@@ -15,7 +17,7 @@
 
   {#if $isNnsUniverseStore}
     <NnsNeurons />
-  {:else if $selectedUniverseIdStore !== undefined}
+  {:else if nonNullish($snsProjectSelectedStore)}
     <SnsNeurons />
   {/if}
 </main>
@@ -23,7 +25,7 @@
 {#if $isNnsUniverseStore}
   <NnsNeuronsFooter />
   <!-- Staking SNS Neurons has not yet been reviewed by security -->
-{:else if $selectedUniverseIdStore !== undefined}
+{:else if nonNullish($snsProjectSelectedStore)}
   <SnsNeuronsFooter />
 {/if}
 
