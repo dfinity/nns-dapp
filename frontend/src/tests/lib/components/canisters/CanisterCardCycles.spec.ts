@@ -56,7 +56,7 @@ describe("CanisterCardCycles", () => {
 
     await waitFor(() =>
       expect(getByTestId("canister-cycles")?.textContent).toEqual(
-        "246.913 TCycles"
+        "246.913 T Cycles"
       )
     );
     expect(getByTestId("canister-status")?.textContent).toEqual(
