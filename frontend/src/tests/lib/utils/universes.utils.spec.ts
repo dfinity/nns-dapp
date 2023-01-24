@@ -2,10 +2,49 @@ import {
   CKBTC_LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
-import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+import { AppPath } from "$lib/constants/routes.constants";
+import {
+  isUniverseCkBTC,
+  isUniverseNns,
+  pathSupportsCkBTC,
+} from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
 
 describe("universes-utils", () => {
+  describe("pathSupportsCkBTC", () => {
+    it("should support ckBTC", () => {
+      expect(
+        pathSupportsCkBTC({
+          universe: "not used here",
+          path: AppPath.Accounts,
+        })
+      ).toBeTruthy();
+
+      expect(
+        pathSupportsCkBTC({
+          universe: "not used here",
+          path: AppPath.Wallet,
+        })
+      ).toBeTruthy();
+    });
+
+    it("should not support ckBTC", () => {
+      expect(
+        pathSupportsCkBTC({
+          universe: "not used here",
+          path: AppPath.Neurons,
+        })
+      ).toBeFalsy();
+
+      expect(
+        pathSupportsCkBTC({
+          universe: "not used here",
+          path: AppPath.Proposal,
+        })
+      ).toBeFalsy();
+    });
+  });
+
   describe("isUniverseNns", () => {
     it("returns true if nns dapp principal", () => {
       expect(isUniverseNns(OWN_CANISTER_ID)).toBeTruthy();
