@@ -2,12 +2,12 @@ use dfn_core::CanisterId;
 use dfn_protobuf::{protobuf, ToProto};
 use ic_ledger_core::block::EncodedBlock;
 use ic_nns_constants::LEDGER_CANISTER_ID;
-use ledger_canister::protobuf::get_blocks_response::GetBlocksContent;
-use ledger_canister::protobuf::{
+use icp_ledger::protobuf::get_blocks_response::GetBlocksContent;
+use icp_ledger::protobuf::{
     ArchiveIndexResponse as ArchiveIndexResponsePb, GetBlocksResponse as GetBlocksResponsePb,
     TipOfChainRequest as TipOfChainRequestPb, TipOfChainResponse as TipOfChainResponsePb,
 };
-use ledger_canister::{AccountBalanceArgs, BlockIndex, GetBlocksArgs, SendArgs, Tokens};
+use icp_ledger::{AccountBalanceArgs, BlockIndex, GetBlocksArgs, SendArgs, Tokens};
 
 pub async fn send(request: SendArgs) -> Result<BlockIndex, String> {
     dfn_core::call(LEDGER_CANISTER_ID, "send_pb", protobuf, request.into_proto())
@@ -16,7 +16,7 @@ pub async fn send(request: SendArgs) -> Result<BlockIndex, String> {
 }
 
 pub async fn account_balance(request: AccountBalanceArgs) -> Result<Tokens, String> {
-    let tokens: ledger_canister::protobuf::Tokens =
+    let tokens: icp_ledger::protobuf::Tokens =
         dfn_core::call(LEDGER_CANISTER_ID, "account_balance_pb", protobuf, request.into_proto())
             .await
             .map_err(|e| e.1)?;

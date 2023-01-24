@@ -3165,15 +3165,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "intmap"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b357564d111300f8a33b79e06795235529a627a1f7078d2b1db7f7dcdf032874"
-dependencies = [
- "serde",
-]
-
-[[package]]
 name = "ipnet"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3258,36 +3249,6 @@ name = "leb128"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "884e2677b40cc8c339eaefcb701c32ef1fd2493d71118dc0ca4b6a736c93bd67"
-
-[[package]]
-name = "ledger-canister"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909#8b674edbb228acfc19923d5c914807166edcd909"
-dependencies = [
- "async-trait",
- "candid",
- "ciborium",
- "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "dfn_http_metrics 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "dfn_protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-canister-log",
- "ic-cdk",
- "ic-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-ledger-canister-core 0.1.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-ledger-core 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "ic-metrics-encoder 1.0.0",
- "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "intmap",
- "lazy_static",
- "num-traits",
- "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
- "serde",
- "serde_bytes",
- "serde_cbor",
-]
 
 [[package]]
 name = "lexical-core"
@@ -3463,10 +3424,10 @@ dependencies = [
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
  "ic-sns-swap",
  "ic-sns-wasm",
+ "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
  "idl2json",
  "itertools",
  "lazy_static",
- "ledger-canister",
  "lzma-rs",
  "maplit",
  "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=8b674edbb228acfc19923d5c914807166edcd909)",
