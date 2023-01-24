@@ -1,17 +1,4 @@
-use crate::proposals::def::{
-    AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed, AddNodeOperatorPayload,
-    AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest, AddWasmRequestTrimmed,
-    BlessReplicaVersionPayload, ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed,
-    ChangeSubnetMembershipPayload, ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload,
-    CreateSubnetPayload, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveFirewallRulesPayload,
-    RemoveNodeOperatorsPayload, RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload,
-    RemoveNodesPayload, RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest, InsertUpgradePathEntriesRequest,
-    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
-    UpdateNodeRewardsTableProposalPayload, UpdateSnsSubnetListRequest, UpdateSubnetPayload,
-    UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
-    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
-};
+use crate::proposals::def::*;
 use candid::parser::types::{IDLType, PrimType};
 use candid::parser::value::IDLValue;
 use candid::{CandidType, Decode, Deserialize};
@@ -197,7 +184,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         34 => identity::<UpdateSnsSubnetListRequest>(payload_bytes),
         35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
         36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
-        37 => identity::<InsertUpgradePathEntriesRequest>(payload_bytes),
+        37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -213,6 +200,7 @@ mod def {
     use ic_crypto_sha::Sha256;
     use ic_ic00_types::CanisterInstallMode;
     use ic_nervous_system_common::MethodAuthzChange;
+    use ic_sns_wasm::pb::v1::{SnsUpgrade, SnsVersion};
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
@@ -547,6 +535,59 @@ mod def {
     // NNS function 37 - InsertUpgradePathEntriesRequest
     // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
     pub type InsertUpgradePathEntriesRequest = ic_sns_wasm::pb::v1::InsertUpgradePathEntriesRequest;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SnsVersionHumanReadable {
+        pub root_wasm_hash: String,
+        pub governance_wasm_hash: String,
+        pub ledger_wasm_hash: String,
+        pub swap_wasm_hash: String,
+        pub archive_wasm_hash: String,
+        pub index_wasm_hash: String,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SnsUpgradeHumanReadable {
+        pub current_version: Option<SnsVersionHumanReadable>,
+        pub next_version: Option<SnsVersionHumanReadable>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct InsertUpgradePathEntriesRequestHumanReadable {
+        pub upgrade_path: Vec<SnsUpgradeHumanReadable>,
+        pub sns_governance_canister_id: Option<PrincipalId>,
+    }
+
+    impl From<SnsVersion> for SnsVersionHumanReadable {
+        fn from(payload: SnsVersion) -> Self {
+            SnsVersionHumanReadable {
+                root_wasm_hash: calculate_hash_string(&payload.root_wasm_hash),
+                governance_wasm_hash: calculate_hash_string(&payload.governance_wasm_hash),
+                ledger_wasm_hash: calculate_hash_string(&payload.ledger_wasm_hash),
+                swap_wasm_hash: calculate_hash_string(&payload.swap_wasm_hash),
+                archive_wasm_hash: calculate_hash_string(&payload.archive_wasm_hash),
+                index_wasm_hash: calculate_hash_string(&payload.index_wasm_hash),
+            }
+        }
+    }
+
+    impl From<SnsUpgrade> for SnsUpgradeHumanReadable {
+        fn from(payload: SnsUpgrade) -> Self {
+            SnsUpgradeHumanReadable {
+                current_version: payload.current_version.map(|v| v.into()),
+                next_version: payload.next_version.map(|v| v.into()),
+            }
+        }
+    }
+
+    impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHumanReadable {
+        fn from(payload: InsertUpgradePathEntriesRequest) -> Self {
+            InsertUpgradePathEntriesRequestHumanReadable {
+                upgrade_path: payload.upgrade_path.into_iter().map(|u| u.into()).collect(),
+                sns_governance_canister_id: payload.sns_governance_canister_id,
+            }
+        }
+    }
 }
 
 #[cfg(test)]
