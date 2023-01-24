@@ -63,7 +63,9 @@
       }
     },
     "nns-sns-wasm": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
@@ -107,37 +109,49 @@
       }
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_archive": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-archive.did",
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
     },
     "sns_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-index.did",
       "wasm": "target/ic/ic-icrc1-index.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
@@ -158,7 +172,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["https://ic0.app/"],
+      "providers": [
+        "https://ic0.app/"
+      ],
       "type": "persistent"
     },
     "staging": {
@@ -172,7 +188,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "testnet": {
@@ -186,7 +204,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small14": {
@@ -200,7 +220,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:a4ff:fe4f:a75e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:a4ff:fe4f:a75e]:8080"
+      ],
       "type": "persistent"
     },
     "small13": {
@@ -214,7 +236,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
+      ],
       "type": "persistent"
     },
     "small12": {
@@ -228,7 +252,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
+      ],
       "type": "persistent"
     },
     "small11": {
@@ -242,7 +268,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
       "type": "persistent"
     },
     "large02": {
@@ -279,7 +307,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"
+      ],
       "type": "persistent"
     },
     "small06": {
@@ -293,7 +323,9 @@
           "ENABLE_CKBTC_LEDGER": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
       "type": "persistent"
     },
     "local": {
@@ -573,7 +605,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"
+      ],
       "type": "persistent"
     },
     "small02": {
@@ -585,7 +619,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"
+      ],
       "type": "persistent"
     },
     "small03": {
@@ -597,7 +633,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"
+      ],
       "type": "persistent"
     },
     "small04": {
@@ -609,7 +647,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"
+      ],
       "type": "persistent"
     },
     "small05": {
@@ -621,7 +661,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"
+      ],
       "type": "persistent"
     },
     "small07": {
@@ -633,7 +675,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"
+      ],
       "type": "persistent"
     },
     "small08": {
@@ -645,7 +689,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"
+      ],
       "type": "persistent"
     },
     "small10": {
@@ -657,7 +703,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"
+      ],
       "type": "persistent"
     },
     "small15": {
@@ -669,7 +717,9 @@
           "ENABLE_SNS_VOTING": true
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"
+      ],
       "type": "persistent"
     }
   },
