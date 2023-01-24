@@ -1,8 +1,6 @@
 <script lang="ts">
   import Proposals from "$lib/pages/NnsProposals.svelte";
-  import {
-    isNnsUniverseStore,
-  } from "$lib/derived/selected-universe.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
