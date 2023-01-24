@@ -62,7 +62,31 @@ describe("CanisterCardCycles", () => {
     expect(getByTestId("canister-status")?.textContent).toEqual(
       en.canister_detail.status_running
     );
-    expect(getByTestId("canister-memory")?.textContent).toEqual("1.29mb");
+    expect(getByTestId("canister-memory")?.textContent).toEqual("1.29 MB");
+  });
+
+  it("should render a hint if canister cycles are zero", async () => {
+    const { getByTestId } = render(CanisterCardCycles, props);
+
+    await tick();
+
+    cyclesCallback?.({
+      canister: {
+        ...mock,
+        cyclesStatus: "empty",
+        data: {
+          ...mock.data,
+          cycles: 0n,
+        },
+      },
+    });
+
+    await waitFor(() => {
+      const cycles = getByTestId("canister-cycles");
+
+      expect(cycles?.textContent).toEqual("0.000 T Cycles");
+      expect(cycles?.classList.contains("empty")).toBeTruthy();
+    });
   });
 
   it("should not render canister cycles information if different canister", async () => {

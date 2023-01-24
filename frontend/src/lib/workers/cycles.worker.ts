@@ -129,6 +129,7 @@ const syncCanisterData = ({
   const canister: CanisterSync = {
     id: canisterId,
     sync: "synced",
+    cyclesStatus: canisterInfo.cycles > 0 ? "ok" : "empty",
     data: canisterInfo,
   };
 

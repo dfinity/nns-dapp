@@ -53,16 +53,16 @@
     <p><SkeletonText /></p>
     <p><SkeletonText /></p>
   {:else if canisterSync.sync === "synced" && nonNullish(canisterSync.data)}
-    <p class="info" data-tid="canister-cycles">
+    <p class={`${canisterSync.cyclesStatus ?? ""}`} data-tid="canister-cycles">
       <span class="value"
         >{formatCyclesToTCycles(canisterSync.data.cycles)}</span
       >
       <span class="label">{$i18n.canister_detail.t_cycles}</span>
     </p>
-    <p class="info description" data-tid="canister-status">
+    <p data-tid="canister-status">
       {canisterStatusToText(canisterSync.data.status)}
     </p>
-    <p class="info description" data-tid="canister-memory">
+    <p data-tid="canister-memory">
       {formatNumber(Number(canisterSync.data.memorySize) / 1_000_000)} MB
     </p>
   {/if}
@@ -79,5 +79,9 @@
     margin: 0 0 var(--padding-0_5x);
     line-height: var(--line-height-standard);
     --skeleton-text-line-height: 0.65;
+  }
+
+  .empty span {
+    color: var(--negative-emphasis);
   }
 </style>
