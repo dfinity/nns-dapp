@@ -1,7 +1,9 @@
 import {
+  CKBTC_LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
@@ -21,13 +23,26 @@ import { derived, type Readable } from "svelte/store";
 export const selectedUniverseIdStore: Readable<Principal> = derived(
   pageStore,
   ({ universe }) => {
-    if (![null, undefined, OWN_CANISTER_ID_TEXT].includes(universe)) {
+    if (
+      ![
+        null,
+        undefined,
+        OWN_CANISTER_ID_TEXT,
+        CKBTC_LEDGER_CANISTER_ID.toText(),
+      ].includes(universe)
+    ) {
       try {
         return Principal.fromText(universe);
       } catch (error: unknown) {
-        // Ignore error as we redirect to default Nns
+        // Ignore error as we redirect to default Nns or ckBTC
       }
     }
+
+    // TODO: once ckBTC enabled any checks in this function relying on CKBTC_LEDGER_CANISTER_ID shall be removed and we can just parse the principal as above
+    if (ENABLE_CKBTC_LEDGER && CKBTC_LEDGER_CANISTER_ID.toText() === universe) {
+      return CKBTC_LEDGER_CANISTER_ID;
+    }
+
     // Consider NNS as default project
     return OWN_CANISTER_ID;
   }
