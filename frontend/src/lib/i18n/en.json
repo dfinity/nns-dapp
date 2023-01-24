@@ -762,5 +762,10 @@
   },
   "metrics": {
     "tvl": "Total Value Locked"
+  },
+  "ckbtc": {
+    "title": "Chain-key Bitcoin",
+    "ckBTC": "ckBTC",
+    "logo": "Chain-key Bitcoin (ckBTC) logo"
   }
 }

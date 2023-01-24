@@ -19,15 +19,17 @@ interface FEATURE_FLAGS {
   ENABLE_SNS_2: boolean;
   ENABLE_SNS_VOTING: boolean;
   ENABLE_SNS_CACHING: boolean;
+  ENABLE_CKBTC_LEDGER: boolean;
 }
 
 export const {
   ENABLE_SNS_2,
   ENABLE_SNS_VOTING,
   ENABLE_SNS_CACHING,
+  ENABLE_CKBTC_LEDGER,
 }: FEATURE_FLAGS = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false,"ENABLE_SNS_VOTING": false, "ENABLE_SNS_CACHING": false}'
+    '{"ENABLE_SNS_2":false,"ENABLE_SNS_VOTING": false, "ENABLE_SNS_CACHING": false, "ENABLE_CKBTC_LEDGER": false}'
 );
 
 export const IS_TESTNET: boolean =

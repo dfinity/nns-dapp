@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
@@ -12,6 +11,7 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let loading = false;
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(

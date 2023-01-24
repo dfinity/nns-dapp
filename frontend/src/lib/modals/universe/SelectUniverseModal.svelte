@@ -22,6 +22,6 @@
 
   <SelectUniverseList
     role="button"
-    on:nnsSelectProject={({ detail }) => select(detail)}
+    on:nnsSelectUniverse={({ detail }) => select(detail)}
   />
 </Modal>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -13,7 +13,7 @@
   let modal: "topics" | "rewards" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
-  $: rootCanisterId = $snsProjectIdSelectedStore;
+  $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltesStore[rootCanisterId.toText()];
 

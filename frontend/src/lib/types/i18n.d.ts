@@ -809,6 +809,12 @@ interface I18nMetrics {
   tvl: string;
 }
 
+interface I18nCkbtc {
+  title: string;
+  ckBTC: string;
+  logo: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1042,6 +1048,7 @@ interface I18n {
   sns_status: I18nSns_status;
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
+  ckbtc: I18nCkbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
