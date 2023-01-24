@@ -8,8 +8,7 @@ import {
   type SnsFullProject,
 } from "$lib/derived/projects.derived";
 import type { Universe } from "$lib/types/universe";
-import { isCkBTCProject } from "$lib/utils/projects.utils";
-import { pathSupportsCkBTC } from "$lib/utils/universe.utils";
+import { isUniverseCkBTC, pathSupportsCkBTC } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
 
 export const NNS_UNIVERSE: Universe = {
@@ -37,6 +36,6 @@ export const selectableUniversesStore = derived<
   Universe[]
 >([universesStore, pageStore], ([universes, page]: [Universe[], Page]) =>
   universes.filter(
-    ({ canisterId }) => pathSupportsCkBTC(page) || !isCkBTCProject(canisterId)
+    ({ canisterId }) => pathSupportsCkBTC(page) || !isUniverseCkBTC(canisterId)
   )
 );

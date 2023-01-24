@@ -4,9 +4,9 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
-  import { isCkBTCProject } from "$lib/utils/projects.utils";
   import { isNullish } from "$lib/utils/utils";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
 
   export let universe: Universe;
   export let size: "big" | "small" = "small";
@@ -19,7 +19,7 @@
   $: canisterId = universe.canisterId;
 
   let ckBTC = false;
-  $: ckBTC = isNullish(summary) && isCkBTCProject(canisterId);
+  $: ckBTC = isNullish(summary) && isUniverseCkBTC(canisterId);
 
   let logo: string;
   $: logo = summary?.metadata.logo ?? (ckBTC ? CKBTC_LOGO : IC_LOGO);

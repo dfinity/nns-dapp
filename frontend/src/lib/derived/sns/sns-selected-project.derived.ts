@@ -3,7 +3,7 @@ import {
   type SnsFullProject,
 } from "$lib/derived/projects.derived";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-import { isCkBTCProject, isNnsProject } from "$lib/utils/projects.utils";
+import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
 
@@ -14,8 +14,8 @@ export const snsOnlyProjectStore = derived<
   Readable<Principal>,
   Principal | undefined
 >(selectedUniverseIdStore, ($selectedUniverseIdStore: Principal) =>
-  isNnsProject($selectedUniverseIdStore) ||
-  isCkBTCProject($selectedUniverseIdStore)
+  isUniverseNns($selectedUniverseIdStore) ||
+  isUniverseCkBTC($selectedUniverseIdStore)
     ? undefined
     : $selectedUniverseIdStore
 );

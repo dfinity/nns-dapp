@@ -9,8 +9,11 @@ import {
   selectableUniversesStore,
 } from "$lib/derived/selectable-universes.derived";
 import type { Universe } from "$lib/types/universe";
-import { isCkBTCProject, isNnsProject } from "$lib/utils/projects.utils";
-import { pathSupportsCkBTC } from "$lib/utils/universe.utils";
+import {
+  isUniverseCkBTC,
+  isUniverseNns,
+  pathSupportsCkBTC,
+} from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
 
@@ -45,7 +48,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
     return canisterId;
   }
 
-  return isCkBTCProject(canisterId) ? OWN_CANISTER_ID : canisterId;
+  return isUniverseCkBTC(canisterId) ? OWN_CANISTER_ID : canisterId;
 });
 
 /**
@@ -53,7 +56,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
  */
 export const isNnsUniverseStore = derived(
   selectedUniverseIdStore,
-  ($selectedProjectId: Principal) => isNnsProject($selectedProjectId)
+  ($selectedProjectId: Principal) => isUniverseNns($selectedProjectId)
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(

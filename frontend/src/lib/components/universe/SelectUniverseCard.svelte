@@ -8,7 +8,7 @@
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
   import { isNullish } from "$lib/utils/utils";
-  import { isCkBTCProject } from "$lib/utils/projects.utils";
+  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -34,7 +34,8 @@
   });
 
   let ckBTC = false;
-  $: ckBTC = isNullish(universe.summary) && isCkBTCProject(universe.canisterId);
+  $: ckBTC =
+    isNullish(universe.summary) && isUniverseCkBTC(universe.canisterId);
 </script>
 
 <Card

@@ -11,10 +11,10 @@ import {
   filterCommittedProjects,
   filterProjectsStatus,
   hasUserParticipatedToSwap,
-  isNnsProject,
   projectRemainingAmount,
   validParticipation,
 } from "$lib/utils/projects.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -800,11 +800,11 @@ describe("project-utils", () => {
 
   describe("isNnsProject", () => {
     it("returns true if nns dapp principal", () => {
-      expect(isNnsProject(OWN_CANISTER_ID)).toBeTruthy();
+      expect(isUniverseNns(OWN_CANISTER_ID)).toBeTruthy();
     });
 
     it("returns true if nns dapp principal", () => {
-      expect(isNnsProject(Principal.from("aaaaa-aa"))).toBeFalsy();
+      expect(isUniverseNns(Principal.from("aaaaa-aa"))).toBeFalsy();
     });
   });
 });
