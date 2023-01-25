@@ -145,7 +145,7 @@ jobs:
   checks-pass:
     if: ${{ always() }}
     #needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
-    needs: ["formatting"]
+    needs: ["malign"]
     runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
