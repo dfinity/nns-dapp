@@ -1,12 +1,10 @@
+import { getIcrcMainAccount } from "$lib/api/icrc-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
-import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
-import { TokenAmount } from "@dfinity/nns";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
@@ -22,35 +20,22 @@ export const getSnsAccounts = async ({
 }): Promise<Account[]> => {
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
+
   const { balance, ledgerMetadata } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
   });
 
-  const snsMainAccount = { owner: identity.getPrincipal() };
-  const [mainBalanceE8s, metadata] = await Promise.all([
-    balance(snsMainAccount),
-    ledgerMetadata({}),
-  ]);
-
-  const projectToken = mapOptionalToken(metadata);
-
-  if (projectToken === undefined) {
-    throw new LedgerErrorKey("error.sns_token_load");
-  }
-
-  const mainAccount: Account = {
-    identifier: encodeIcrcAccount(snsMainAccount),
-    principal: identity.getPrincipal(),
-    balance: TokenAmount.fromE8s({
-      amount: mainBalanceE8s,
-      token: projectToken,
-    }),
-    type: "main",
-  };
+  const mainAccount = await getIcrcMainAccount({
+    identity,
+    certified,
+    balance,
+    metadata: ledgerMetadata,
+  });
 
   logWithTimestamp("Getting sns accounts: done");
+
   return [mainAccount];
 };
 

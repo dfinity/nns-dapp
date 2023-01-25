@@ -1,5 +1,5 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
-import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
+import { projectsAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";

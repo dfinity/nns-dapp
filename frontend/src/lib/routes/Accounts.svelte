@@ -14,9 +14,11 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
+  import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.service";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
-  let projectIdSelected = $selectedUniverseIdStore;
+  let selectedUniverseId = $selectedUniverseIdStore;
 
   let loadSnsAccountsBalancesRequested = false;
 
@@ -37,11 +39,24 @@
 
     await uncertifiedLoadSnsAccountsBalances({
       rootCanisterIds: projects.map(({ rootCanisterId }) => rootCanisterId),
-      excludeRootCanisterIds: [projectIdSelected.toText()],
+      excludeRootCanisterIds: [selectedUniverseId.toText()],
     });
   };
 
-  $: (async () => await loadSnsAccountsBalances($snsProjectsCommittedStore))();
+  const loadCkBTCAccountsBalances = async () => {
+    // We load the accounts balance of ckBTC only if not already triggered by current view
+    if (isUniverseCkBTC(selectedUniverseId)) {
+      return;
+    }
+
+    await uncertifiedLoadCkBTCAccountsBalance();
+  };
+
+  $: (async () =>
+    await Promise.allSettled([
+      loadSnsAccountsBalances($snsProjectsCommittedStore),
+      loadCkBTCAccountsBalances(),
+    ]))();
 </script>
 
 <main>

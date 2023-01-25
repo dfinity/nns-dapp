@@ -249,7 +249,7 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": true
         }
       },
       "providers": [

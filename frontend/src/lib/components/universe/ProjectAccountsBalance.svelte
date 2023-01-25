@@ -4,7 +4,7 @@
   import { SkeletonText } from "@dfinity/gix-components";
   import type { RootCanisterId } from "$lib/types/sns";
   import type { TokenAmount } from "@dfinity/nns";
-  import { projectsAccountsBalance } from "$lib/derived/projects-accounts-balance.derived";
+  import { projectsAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   export let rootCanisterId: RootCanisterId | undefined;

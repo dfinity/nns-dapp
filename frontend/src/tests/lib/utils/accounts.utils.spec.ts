@@ -12,6 +12,7 @@ import {
   isAccountHardwareWallet,
   mainAccount,
   sumAccounts,
+  sumNnsAccounts,
 } from "$lib/utils/accounts.utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
@@ -329,7 +330,7 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("sumAccounts", () => {
+  describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
         mockMainAccount.balance.toE8s() +
@@ -337,7 +338,7 @@ describe("accounts-utils", () => {
         mockHardwareWalletAccount.balance.toE8s();
 
       expect(
-        sumAccounts({
+        sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [mockHardwareWalletAccount],
@@ -348,7 +349,7 @@ describe("accounts-utils", () => {
         mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
 
       expect(
-        sumAccounts({
+        sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [],
@@ -358,7 +359,7 @@ describe("accounts-utils", () => {
       totalBalance = mockMainAccount.balance.toE8s();
 
       expect(
-        sumAccounts({
+        sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [],
           hardwareWallets: [],
@@ -368,12 +369,33 @@ describe("accounts-utils", () => {
 
     it("should sum ICP", () => {
       expect(
-        sumAccounts({
+        sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [],
           hardwareWallets: [],
         }).token.name
       ).toEqual(en.core.ic);
+    });
+  });
+
+  describe("sumAccounts", () => {
+    it("should sum accounts balance", () => {
+      let totalBalance =
+        mockSnsMainAccount.balance.toE8s() + mockSnsSubAccount.balance.toE8s();
+
+      expect(
+        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).toE8s()
+      ).toEqual(totalBalance);
+
+      totalBalance = mockSnsMainAccount.balance.toE8s();
+
+      expect(sumAccounts([mockSnsMainAccount]).toE8s()).toEqual(totalBalance);
+    });
+
+    it("should sum ICP", () => {
+      expect(
+        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).token.name
+      ).toEqual(mockSnsMainAccount.balance.token.name);
     });
   });
 });

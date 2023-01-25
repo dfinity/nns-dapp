@@ -170,7 +170,7 @@ export const accountName = ({
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
-export const sumAccounts = (
+export const sumNnsAccounts = (
   accounts: AccountsStoreData | undefined
 ): TokenAmount | undefined =>
   accounts?.main?.balance !== undefined
@@ -180,3 +180,10 @@ export const sumAccounts = (
         ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
       )
     : undefined;
+
+export const sumAccounts = (
+  accounts: Account[] | undefined
+): TokenAmount | undefined =>
+  accounts === undefined
+    ? undefined
+    : sumTokenAmounts(...accounts.map(({ balance }) => balance));
