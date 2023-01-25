@@ -137,6 +137,11 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+  malign:
+    name: ShellCheck
+    runs-on: ubuntu-20.04
+    steps:
+      - run: true
   checks-pass:
     if: ${{ always() }}
     #needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
@@ -145,4 +150,7 @@ jobs:
     steps:
       - name: Checks workflow passes
         run: |
-                echo ${{ toJson(needs) }}
+                if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+                then echo "You shall not pass:  Some required tests did not succeed"
+                else echo "Congratulations, young Frodo."
+                fi
