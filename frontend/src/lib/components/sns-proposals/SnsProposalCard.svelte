@@ -13,12 +13,21 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { Vote } from "@dfinity/nns";
+  import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import { isDefined } from "$lib/utils/utils";
+  import { busy, startBusy } from "@dfinity/gix-components";
+  import { stopBusy } from "$lib/stores/busy.store";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let hidden = false;
 
   let statusString: string;
+  let status: SnsProposalDecisionStatus;
   let id: SnsProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
@@ -40,6 +49,7 @@
     topic,
     proposer,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
+    status,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
   const showProposal = async () =>
@@ -49,6 +59,24 @@
         proposalId: `${id?.id}`,
       })
     );
+
+  // DEMO VOTING
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
+
+  let demoVoteEnable = false;
+  $: demoVoteEnable =
+    signedIn &&
+    status === SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
+
+  const vote = async (vote: Vote) => {
+    startBusy({ initiator: "load-sns-accounts" });
+    await registerVoteDemo({ proposal: proposalData, vote: Vote.Yes });
+    stopBusy("load-sns-accounts");
+  };
+
+  $: isDefined(id) &&
+    console.log(`Proposal(${id.id}) ballots`, proposalData.ballots);
 </script>
 
 <ProposalCard
@@ -61,4 +89,29 @@
   {topic}
   proposer={proposerString}
   {deadlineTimestampSeconds}
-/>
+  >{#if demoVoteEnable}
+    <div class="demo-vote">
+      <button
+        class="secondary"
+        disabled={$busy}
+        on:click|preventDefault|stopPropagation={() => vote(Vote.Yes)}
+        >Vote Yes</button
+      >
+      <button
+        class="secondary"
+        disabled={$busy}
+        on:click|preventDefault|stopPropagation={() => vote(Vote.No)}
+        >Vote No</button
+      >
+    </div>
+  {/if}</ProposalCard
+>
+
+<style lang="scss">
+  .demo-vote {
+    margin-top: var(--padding-2x);
+    display: flex;
+    justify-content: start;
+    gap: var(--padding);
+  }
+</style>

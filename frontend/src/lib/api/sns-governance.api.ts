@@ -1,6 +1,7 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
+import type { Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
   NervousSystemParameters,
@@ -8,6 +9,7 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronPermissionType,
+  SnsProposalId,
 } from "@dfinity/sns";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
@@ -380,6 +382,36 @@ export const stakeMaturity = async ({
   });
 
   logWithTimestamp(`Stake maturity: complete`);
+};
+
+export const registerVote = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  proposalId,
+  vote,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  proposalId: SnsProposalId;
+  vote: Vote;
+}): Promise<void> => {
+  logWithTimestamp(`Register vote: call...`);
+
+  const { registerVote: registerVoteApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await registerVoteApi({
+    neuronId,
+    proposalId,
+    vote,
+  });
+
+  logWithTimestamp(`Register vote: complete`);
 };
 
 export const autoStakeMaturity = async ({
