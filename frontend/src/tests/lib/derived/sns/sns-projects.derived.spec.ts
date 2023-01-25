@@ -1,16 +1,16 @@
 import {
-  activePadProjectsStore,
-  committedProjectsStore,
-  projectsStore,
-} from "$lib/derived/projects.derived";
+  snsProjectsActivePadStore,
+  snsProjectsCommittedStore,
+  snsProjectsStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+} from "../../../mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("projects.derived", () => {
   describe("projectsDerived", () => {
@@ -35,7 +35,7 @@ describe("projects.derived", () => {
           lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed],
         })
       );
-      const projects = get(projectsStore);
+      const projects = get(snsProjectsStore);
       expect(projects).toHaveLength(2);
     });
   });
@@ -59,7 +59,7 @@ describe("projects.derived", () => {
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
-      const open = get(activePadProjectsStore);
+      const open = get(snsProjectsActivePadStore);
       expect(open?.length).toEqual(1);
 
       snsQueryStore.setData(
@@ -67,13 +67,13 @@ describe("projects.derived", () => {
           lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed],
         })
       );
-      const open2 = get(activePadProjectsStore);
+      const open2 = get(snsProjectsActivePadStore);
       expect(open2?.length).toEqual(2);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Unspecified] })
       );
-      const noOpen = get(activePadProjectsStore);
+      const noOpen = get(snsProjectsActivePadStore);
       expect(noOpen?.length).toEqual(0);
     });
 
@@ -82,13 +82,13 @@ describe("projects.derived", () => {
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Committed] })
       );
 
-      const committed = get(committedProjectsStore);
+      const committed = get(snsProjectsCommittedStore);
       expect(committed?.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
-      const noCommitted = get(committedProjectsStore);
+      const noCommitted = get(snsProjectsCommittedStore);
       expect(noCommitted?.length).toEqual(0);
     });
   });

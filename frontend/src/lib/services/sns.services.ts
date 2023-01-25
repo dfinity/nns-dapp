@@ -6,9 +6,9 @@ import {
   querySnsSwapState,
 } from "$lib/api/sns.api";
 import {
-  projectsStore,
+  snsProjectsStore,
   type SnsFullProject,
-} from "$lib/derived/projects.derived";
+} from "$lib/derived/sns/sns-projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -181,7 +181,7 @@ export const getSwapAccount = async (
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
-  get(projectsStore)?.find(
+  get(snsProjectsStore)?.find(
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 

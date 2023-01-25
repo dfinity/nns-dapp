@@ -5,9 +5,9 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
-  committedProjectsStore,
-  projectsStore,
-} from "$lib/derived/projects.derived";
+  snsProjectsCommittedStore,
+  snsProjectsStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
@@ -46,11 +46,11 @@ describe("Accounts", () => {
   });
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   jest
-    .spyOn(projectsStore, "subscribe")
+    .spyOn(snsProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
