@@ -5,6 +5,7 @@ import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svel
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
@@ -14,10 +15,17 @@ import {
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSummary } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSummary,
+} from "../../../mocks/sns-projects.mock";
 
 describe("SelectUniverseCard", () => {
-  const props = { summary: undefined, selected: false };
+  const props = { universe: NNS_UNIVERSE, selected: false };
+  const mockSnsUniverse = {
+    summary: mockSummary,
+    canisterId: mockSnsFullProject.rootCanisterId.toText(),
+  };
 
   describe("selected", () => {
     it("display a selected card", () => {
@@ -102,7 +110,7 @@ describe("SelectUniverseCard", () => {
   describe("sns", () => {
     it("should display logo", () => {
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: mockSummary, selected: false },
+        props: { universe: mockSnsUniverse, selected: false },
       });
       expect(getByTestId("logo")).not.toBeNull();
       expect(getByTestId("logo").getAttribute("src")).toEqual(
@@ -112,7 +120,7 @@ describe("SelectUniverseCard", () => {
 
     it("should display name", () => {
       const { getByText } = render(SelectUniverseCard, {
-        props: { summary: mockSummary, selected: false },
+        props: { universe: mockSnsUniverse, selected: false },
       });
       expect(getByText(mockSummary.metadata.name)).toBeInTheDocument();
     });
@@ -137,7 +145,7 @@ describe("SelectUniverseCard", () => {
       });
 
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: undefined, selected: true },
+        props: { universe: NNS_UNIVERSE, selected: true },
       });
       expect(getByTestId("token-value")).not.toBeNull();
     });
@@ -149,7 +157,7 @@ describe("SelectUniverseCard", () => {
       });
 
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: undefined, selected: false },
+        props: { universe: NNS_UNIVERSE, selected: false },
       });
       expect(getByTestId("token-value")).not.toBeNull();
     });
@@ -161,7 +169,7 @@ describe("SelectUniverseCard", () => {
       });
 
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: mockSummary, selected: true },
+        props: { universe: mockSnsUniverse, selected: true },
       });
       expect(() => getByTestId("token-value")).toThrow();
     });
@@ -174,7 +182,7 @@ describe("SelectUniverseCard", () => {
 
       // Mock contains only Nns balance
       const { getByTestId } = render(SelectUniverseCard, {
-        props: { summary: mockSummary, selected: false },
+        props: { universe: mockSnsUniverse, selected: false },
       });
       expect(() => getByTestId("token-value")).toThrow();
     });

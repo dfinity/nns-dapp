@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { selectableProjects } from "$lib/derived/selectable-projects.derived";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import { createEventDispatcher } from "svelte";
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   export let role: "link" | "button" = "link";
 
   let selectedCanisterId: string;
-  $: selectedCanisterId = $snsProjectIdSelectedStore.toText();
+  $: selectedCanisterId = $selectedUniverseIdStore.toText();
 
   const dispatch = createEventDispatcher();
 </script>
 
-{#each $selectableProjects as { canisterId, summary } (canisterId)}
+{#each $selectableUniversesStore as universe (universe.canisterId)}
   <SelectUniverseCard
-    {summary}
+    {universe}
     {role}
-    selected={canisterId === selectedCanisterId}
-    on:click={() => dispatch("nnsSelectProject", canisterId)}
+    selected={universe.canisterId === selectedCanisterId}
+    on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
   />
 {/each}

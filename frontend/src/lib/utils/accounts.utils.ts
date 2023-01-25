@@ -3,10 +3,10 @@ import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { decodeSnsAccount } from "@dfinity/sns";
-import { isNnsProject } from "./projects.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -108,7 +108,7 @@ export const getAccountByRootCanister = ({
     return undefined;
   }
 
-  if (isNnsProject(rootCanisterId)) {
+  if (isUniverseNns(rootCanisterId)) {
     return getAccountFromStore({
       identifier,
       accounts: nnsAccounts,
@@ -130,7 +130,7 @@ export const getAccountsByRootCanister = ({
   snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account[] | undefined => {
-  if (isNnsProject(rootCanisterId)) {
+  if (isUniverseNns(rootCanisterId)) {
     return nnsAccounts;
   }
 

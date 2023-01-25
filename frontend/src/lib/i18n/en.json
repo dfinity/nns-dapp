@@ -235,7 +235,7 @@
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "ICP Stake",
-    "staked": "Staked",
+    "staked": "Of which staked",
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
@@ -257,7 +257,6 @@
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
-    "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
@@ -380,7 +379,10 @@
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
-    "add_controller": "Add Controller"
+    "add_controller": "Add Controller",
+    "status_stopped": "Stopped",
+    "status_stopping": "Stopping",
+    "status_running": "Running"
   },
   "transaction_names": {
     "receive": "Received $tokenSymbol",
@@ -760,5 +762,10 @@
   },
   "metrics": {
     "tvl": "Total Value Locked"
+  },
+  "ckbtc": {
+    "title": "Chain-key Bitcoin",
+    "ckBTC": "ckBTC",
+    "logo": "Chain-key Bitcoin (ckBTC) logo"
   }
 }

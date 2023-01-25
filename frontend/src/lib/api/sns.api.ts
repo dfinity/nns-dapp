@@ -6,6 +6,7 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
@@ -279,11 +280,13 @@ export const participateInSnsSwap = async ({
     buyer_sub_account: toNullable(fromSubAccount),
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   // Send amount to the ledger
   await nnsLedger.transfer({
     amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
+    createdAt,
   });
 
   // Notify participation
@@ -394,10 +397,12 @@ export const stakeNeuron = async ({
     certified: true,
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   const newNeuronId = await stakeNeuronApi({
     stakeE8s,
     source,
     controller,
+    createdAt,
   });
 
   logWithTimestamp(

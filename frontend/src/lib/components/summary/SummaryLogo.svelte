@@ -1,12 +1,13 @@
 <script lang="ts">
-  import type { SnsSummary } from "$lib/types/sns";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
-  import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
+  import type { Universe } from "$lib/types/universe";
+  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 
   export let displayProjects = true;
 
-  let summary: SnsSummary | undefined;
-  $: summary = displayProjects ? $snsProjectSelectedStore?.summary : undefined;
+  let universe: Universe;
+  $: universe = displayProjects ? $selectedUniverseStore : NNS_UNIVERSE;
 </script>
 
-<ProjectLogo {summary} framed />
+<UniverseLogo {universe} framed />
