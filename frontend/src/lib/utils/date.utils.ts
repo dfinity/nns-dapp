@@ -80,7 +80,6 @@ export const daysToDuration = (days: number): string => {
 
   return periods
     .filter(({ amount }) => amount > 0)
-    .slice(0, 2)
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${

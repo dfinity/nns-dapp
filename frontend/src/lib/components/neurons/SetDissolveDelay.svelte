@@ -11,9 +11,7 @@
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState, TokenAmount } from "@dfinity/nns";
-  import Hash from "$lib/components/ui/Hash.svelte";
 
-  export let neuronIdText: string;
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
   export let neuronStake: TokenAmount;
@@ -89,7 +87,7 @@
 <div class="wrapper">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
-    <Hash id="neuron-id" tagName="p" testId="neuron-id" text={neuronIdText} />
+    <slot name="neuron-id" />
   </div>
 
   <div>

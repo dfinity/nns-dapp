@@ -34,7 +34,6 @@
   bind:delayInSeconds
   on:nnsCancel
   on:nnsConfirmDelay
-  neuronIdText={`${neuron.neuronId}`}
   neuronState={neuron.state}
   neuronDissolveDelaySeconds={neuron.dissolveDelaySeconds}
   {neuronStake}
@@ -45,4 +44,6 @@
   {confirmButtonText}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
-/>
+>
+  <p slot="neuron-id" class="value">{neuron.neuronId}</p>
+</SetDissolveDelay>

@@ -18,6 +18,7 @@
   import { TokenAmount } from "@dfinity/nns";
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+  import Hash from "$lib/components/ui/Hash.svelte";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -45,12 +46,15 @@
     isNullish(snsParameters)
       ? 0n
       : BigInt(
-          snsNeuronVotingPower({
-            newDissolveDelayInSeconds: BigInt(delayInSeconds),
-            neuron,
-            snsParameters,
-          })
+          Math.round(
+            snsNeuronVotingPower({
+              newDissolveDelayInSeconds: BigInt(delayInSeconds),
+              neuron,
+              snsParameters,
+            })
+          )
         );
+
   let maxSnsDelayInSeconds: number | undefined;
   $: maxSnsDelayInSeconds = isNullish(snsParameters)
     ? undefined
@@ -79,7 +83,6 @@
   bind:delayInSeconds
   on:nnsCancel
   on:nnsConfirmDelay
-  neuronIdText={getSnsNeuronIdAsHexString(neuron)}
   {neuronState}
   {neuronDissolveDelaySeconds}
   {neuronStake}
@@ -90,4 +93,12 @@
   {confirmButtonText}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
-/>
+>
+  <Hash
+    slot="neuron-id"
+    id="neuron-id"
+    tagName="p"
+    testId="neuron-id"
+    text={getSnsNeuronIdAsHexString(neuron)}
+  />
+</SetDissolveDelay>
