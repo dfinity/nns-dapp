@@ -43,7 +43,7 @@ cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 # brew install xz
 cd "$tarball_dir"
 
-"$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
+"$tar" cJv --mtime='2021-05-07 17:00Z' --sort=name --owner=0 --group=0 --numeric-owner --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime--exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
 
 cd "$TOPLEVEL"
 
