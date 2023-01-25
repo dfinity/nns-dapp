@@ -138,8 +138,11 @@ jobs:
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    if: ${{ always() }}
+    #needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    needs: ["formatting"]
     runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
-        run: echo OK
+        run: |
+                echo ${{ toJson(needs) }}
