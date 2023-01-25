@@ -150,7 +150,7 @@ jobs:
     steps:
       - name: Checks workflow passes
         run: |
-                if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
-                then echo "You shall not pass:  Some required tests did not succeed"
-                else echo "Congratulations, young Frodo."
-                fi
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+          else echo "Congratulations, young Frodo."
+          fi
