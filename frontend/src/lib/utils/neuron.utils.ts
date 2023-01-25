@@ -16,7 +16,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -318,7 +318,7 @@ export const isNeuronControllable = ({
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
@@ -330,7 +330,7 @@ export const isNeuronControlledByHardwareWallet = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean => {
   if (neuron.fullNeuron?.controller !== undefined) {
     const account = getAccountByPrincipal({
@@ -446,28 +446,24 @@ const isMergeableNeuron = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
-  // Merging hardware wallet neurons is not yet supported
-  isNeuronControllableByUser({ neuron, mainAccount: accounts.main });
+  isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
   neuron,
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
   }
   if (isSpawning(neuron)) {
     return "neurons.cannot_merge_neuron_spawning";
-  }
-  if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
-    return "neurons.cannot_merge_hardware_wallet";
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
@@ -494,7 +490,7 @@ export const mapMergeableNeurons = ({
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons

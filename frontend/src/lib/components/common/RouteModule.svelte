@@ -23,7 +23,7 @@
       case AppPath.Wallet:
         return (await import("../../routes/Wallet.svelte")).default;
       case AppPath.Proposal:
-        return (await import("../../pages/ProposalDetail.svelte")).default;
+        return (await import("../../routes/ProposalDetail.svelte")).default;
       case AppPath.Canister:
         return (await import("../../pages/CanisterDetail.svelte")).default;
       case AppPath.Launchpad:

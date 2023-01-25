@@ -5,6 +5,7 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
 import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
+import { loadSnsFilters } from "$lib/services/sns-filters.services";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
@@ -21,6 +22,12 @@ jest.mock("$lib/services/$public/sns.services", () => {
 jest.mock("$lib/services/$public/sns-proposals.services", () => {
   return {
     loadSnsProposals: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/sns-filters.services", () => {
+  return {
+    loadSnsFilters: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -50,6 +57,7 @@ describe("SnsProposals", () => {
 
         expect(loadSnsNervousSystemFunctions).toBeCalled();
         expect(loadSnsProposals).toBeCalled();
+        expect(loadSnsFilters).toBeCalled();
       });
 
       it("should render a spinner while searching proposals", async () => {

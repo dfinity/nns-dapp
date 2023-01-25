@@ -2,7 +2,7 @@
   import { accountsStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { nonNullish } from "$lib/utils/utils";
 

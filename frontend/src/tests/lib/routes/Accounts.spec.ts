@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import {
-  OWN_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+  committedProjectsStore,
+  projectsStore,
+} from "$lib/derived/projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
+import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -30,6 +32,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/sns-accounts-balance.services", () => {
+  return {
+    uncertifiedLoadSnsAccountsBalances: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Accounts", () => {
   beforeAll(() => {
     jest
@@ -41,13 +49,20 @@ describe("Accounts", () => {
     .spyOn(committedProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
+  jest
+    .spyOn(projectsStore, "subscribe")
+    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
   beforeEach(() => {
     jest
       .spyOn(snsSelectedTransactionFeeStore, "subscribe")
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
 
     // Reset to default value
-    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT },
+      routeId: AppPath.Accounts,
+    });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -59,63 +74,6 @@ describe("Accounts", () => {
   it("should render NnsAccounts by default", () => {
     const { queryByTestId } = render(Accounts);
     expect(queryByTestId("accounts-body")).toBeInTheDocument();
-  });
-
-  it("should render dropdown to select project", () => {
-    const { queryByTestId } = render(Accounts);
-    expect(queryByTestId("select-project-dropdown")).toBeInTheDocument();
-  });
-
-  it("should render sns accounts when a project is selected in the dropdown", async () => {
-    const { queryByTestId } = render(Accounts);
-
-    expect(queryByTestId("accounts-body")).toBeInTheDocument();
-
-    const selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
-
-    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: projectCanisterId },
-      });
-
-    await waitFor(() =>
-      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
-    );
-  });
-
-  it("should be able to go back to nns after going to a project", async () => {
-    const { queryByTestId } = render(Accounts);
-
-    expect(queryByTestId("accounts-body")).toBeInTheDocument();
-
-    let selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
-
-    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: projectCanisterId },
-      });
-
-    await waitFor(() =>
-      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
-    );
-
-    selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
-
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: OWN_CANISTER_ID.toText() },
-      });
-    await waitFor(() =>
-      expect(queryByTestId("accounts-body")).toBeInTheDocument()
-    );
   });
 
   it("should open nns transaction modal", async () => {
@@ -144,7 +102,25 @@ describe("Accounts", () => {
     });
   });
 
+  it("should render sns accounts when a project is selected", async () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { queryByTestId } = render(Accounts);
+
+    expect(queryByTestId("sns-accounts-body")).toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
+    );
+  });
+
   it("should open sns transaction modal", async () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
     transactionsFeesStore.setFee({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
       fee: BigInt(10_000),
@@ -152,17 +128,7 @@ describe("Accounts", () => {
     });
     const { queryByTestId, getByTestId } = render(Accounts);
 
-    expect(queryByTestId("accounts-body")).toBeInTheDocument();
-
-    const selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
-
-    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: projectCanisterId },
-      });
+    expect(queryByTestId("sns-accounts-body")).toBeInTheDocument();
 
     await waitFor(() =>
       expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
@@ -174,5 +140,13 @@ describe("Accounts", () => {
     await waitFor(() => {
       expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
+  });
+
+  it("should load Sns accounts balances", async () => {
+    render(Accounts);
+
+    await waitFor(() =>
+      expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled()
+    );
   });
 });

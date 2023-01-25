@@ -3,7 +3,7 @@
  */
 
 import { authStore } from "$lib/stores/auth.store";
-import CanisterPage from "$routes/(app)/canister/+page.svelte";
+import CanisterPage from "$routes/(app)/(nns)/canister/+page.svelte";
 import { render } from "@testing-library/svelte";
 import {
   authStoreMock,

@@ -1,20 +1,32 @@
 <script lang="ts">
   import {
+    BREAKPOINT_LARGE,
     ExternalLink,
     MenuButton,
     ThemeToggle,
   } from "@dfinity/gix-components";
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
+  import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
+  import { ENABLE_TVL } from "$lib/constants/environment.constants";
+
+  let innerWidth = 0;
+  let displayTvl = false;
+
+  // We have to use JS to activate the TVL metrics in the header or menu to avoid to make calls twice
+  // Easier than introducing stores and logic at this point since this can only happen on the login screen.
+  $: displayTvl = innerWidth > BREAKPOINT_LARGE && ENABLE_TVL;
 </script>
+
+<svelte:window bind:innerWidth />
 
 <header>
   <div class="start">
-    <ExternalLink href="https://internetcomputer.org"
-      >internetcomputer.org</ExternalLink
-    >
-
     <MenuButton />
+
+    {#if displayTvl}
+      <div class="tvl"><TotalValueLocked /></div>
+    {/if}
   </div>
 
   <img
@@ -108,7 +120,10 @@
 
   .start,
   .end {
-    padding-top: var(--padding-2x);
+    height: 100%;
+    display: flex;
+    align-items: center;
+
     flex: 2;
 
     :global(a),
@@ -117,10 +132,14 @@
     }
 
     @include media.min-width(large) {
-      padding-top: calc(4.5 * var(--padding));
-
       :global(a) {
         display: inline-block;
+
+        &:active,
+        &:focus,
+        &:hover {
+          color: var(--menu-select-color);
+        }
       }
 
       :global(.theme-toggle) {
@@ -137,6 +156,14 @@
     display: flex;
     gap: var(--padding-2x);
     justify-content: flex-end;
+
+    @include media.min-width(xlarge) {
+      gap: var(--padding-4x);
+    }
+  }
+
+  .start {
+    gap: var(--padding-2x);
 
     @include media.min-width(xlarge) {
       gap: var(--padding-4x);

@@ -2,15 +2,13 @@
 name: Tag main as tip
 on:
   pull_request:
-    branches:    
+    branches:
       - main
     types:
       - closed
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   tag_tip:
     if: github.event.pull_request.merged
@@ -21,10 +19,9 @@ jobs:
         run: |
           git tag -f tip
           git push origin tags/tip -f
-
   tag_pass:
     needs: ["tag_tip"]
     runs-on: ubuntu-20.04
     steps:
-       - name: Tag workflow passes
-         run: echo OK
+      - name: Tag workflow passes
+        run: echo OK

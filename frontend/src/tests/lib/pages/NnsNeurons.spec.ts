@@ -8,6 +8,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
@@ -56,6 +57,8 @@ describe("NnsNeurons", () => {
         );
     });
 
+    afterEach(() => jest.resetAllMocks());
+
     it("should render spawning neurons as disabled", () => {
       const { queryAllByTestId } = render(NnsNeurons);
 
@@ -77,6 +80,20 @@ describe("NnsNeurons", () => {
       await waitFor(() =>
         expect(container.querySelector('article[role="link"]')).not.toBeNull()
       );
+    });
+  });
+
+  describe("no neurons", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(neuronsStore, "subscribe")
+        .mockImplementation(buildMockNeuronsStoreSubscribe([]));
+    });
+
+    it("should render an empty message", () => {
+      const { getByText } = render(NnsNeurons);
+
+      expect(getByText(en.neurons.text)).toBeInTheDocument();
     });
   });
 });

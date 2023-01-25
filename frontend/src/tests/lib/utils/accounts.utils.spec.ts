@@ -11,6 +11,7 @@ import {
   invalidAddress,
   isAccountHardwareWallet,
   mainAccount,
+  sumAccounts,
 } from "$lib/utils/accounts.utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -24,6 +25,7 @@ import {
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -324,6 +326,54 @@ describe("accounts-utils", () => {
           mainName: "main",
         })
       ).toBe("");
+    });
+  });
+
+  describe("sumAccounts", () => {
+    it("should sum accounts balance", () => {
+      let totalBalance =
+        mockMainAccount.balance.toE8s() +
+        mockSubAccount.balance.toE8s() +
+        mockHardwareWalletAccount.balance.toE8s();
+
+      expect(
+        sumAccounts({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+          hardwareWallets: [mockHardwareWalletAccount],
+        }).toE8s()
+      ).toEqual(totalBalance);
+
+      totalBalance =
+        mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
+
+      expect(
+        sumAccounts({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+          hardwareWallets: [],
+        }).toE8s()
+      ).toEqual(totalBalance);
+
+      totalBalance = mockMainAccount.balance.toE8s();
+
+      expect(
+        sumAccounts({
+          main: mockMainAccount,
+          subAccounts: [],
+          hardwareWallets: [],
+        }).toE8s()
+      ).toEqual(totalBalance);
+    });
+
+    it("should sum ICP", () => {
+      expect(
+        sumAccounts({
+          main: mockMainAccount,
+          subAccounts: [],
+          hardwareWallets: [],
+        }).token.name
+      ).toEqual(en.core.ic);
     });
   });
 });

@@ -34,6 +34,7 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
+  import Summary from "$lib/components/summary/Summary.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -149,6 +150,8 @@
         <SkeletonCard cardType="info" separator />
         <SkeletonCard cardType="info" separator />
       {:else}
+        <Summary />
+
         {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
           <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
         {:else}

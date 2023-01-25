@@ -68,6 +68,17 @@ describe("ProjectCard", () => {
       ).toBeInTheDocument();
     });
 
+    it("should be highlighted", () => {
+      const { container } = render(ProjectCard, {
+        props: {
+          project: mockSnsFullProject,
+        },
+      });
+
+      const article = container.querySelector("article.highlighted");
+      expect(article).not.toBeNull();
+    });
+
     it("should display a spinner when the swapCommitment is not loaded", () => {
       const { getByTestId } = render(ProjectCard, {
         props: {

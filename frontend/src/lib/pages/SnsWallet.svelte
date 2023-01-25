@@ -3,7 +3,6 @@
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
@@ -12,12 +11,14 @@
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
-  import Footer from "$lib/components/common/Footer.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
+  import Summary from "$lib/components/summary/Summary.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let showNewTransactionModal = false;
 
@@ -64,6 +65,8 @@
   <main class="legacy" data-tid="sns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
+        <Summary />
+
         <WalletSummary />
 
         <Separator />

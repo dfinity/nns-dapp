@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+export DFX_NETWORK="$1"
+IC_REPO_DIR="${IC_REPO_DIR:-$HOME/dfn/ic}"
+
+if [[ "${DFX_NETWORK}" == "--all" ]]; then
+  # shellcheck disable="SC2010"
+  ls "$IC_REPO_DIR/testnet/env/" | grep -E '^(small|medium|large)' | xargs -I {} "$0" {}
+else
+  DFX_NETWORK_PROVIDERS="$(cd "$IC_REPO_DIR/testnet/env/$DFX_NETWORK/" && ./hosts --nns-nodes | awk '{printf "http://[%s]:8080\n", $2}' | jq --raw-input --slurp 'split("\n") | map(select(. != ""))')"
+  export DFX_NETWORK_PROVIDERS
+  jq '. * {"canisters": { "nns-sns-wasm": {remote: {id: {(env.DFX_NETWORK): .canisters["nns-sns-wasm"].remote.id.testnet}}}}} * {"canisters": { "nns-governance": {remote: {id: {(env.DFX_NETWORK): .canisters["nns-governance"].remote.id.testnet}}}}} * {networks: { (env.DFX_NETWORK): (.networks.testnet * {config: {HOST: "https://\(env.DFX_NETWORK).dfinity.network"}, providers: (env.DFX_NETWORK_PROVIDERS| fromjson)}) }}' dfx.json | sponge dfx.json
+fi

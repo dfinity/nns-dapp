@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";

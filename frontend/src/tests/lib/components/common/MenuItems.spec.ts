@@ -12,6 +12,19 @@ import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
+jest.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: jest.fn(() =>
+    Promise.resolve({
+      startMetricsTimer: () => {
+        // Do nothing
+      },
+      stopMetricsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("MenuItems", () => {
   const shouldRenderMenuItem = ({
     context,

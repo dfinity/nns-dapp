@@ -8,7 +8,7 @@
     proposalsFiltersStore,
     proposalsStore,
   } from "$lib/stores/proposals.store";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
+  import type { Unsubscriber } from "svelte/store";
   import { debounce } from "$lib/utils/utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import {

@@ -76,7 +76,7 @@ describe("sns-accounts-services", () => {
         return expect(store[mockPrincipal.toText()]).toBeUndefined();
       });
       const transactionsStore = get(snsTransactionsStore);
-      return expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
+      expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });

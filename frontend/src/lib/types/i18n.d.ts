@@ -25,7 +25,6 @@ interface I18nCore {
   log: string;
   principal_id: string;
   copy: string;
-  nns: string;
   ic: string;
   previous: string;
   next: string;
@@ -43,6 +42,7 @@ interface I18nError {
   neuron_load: string;
   sns_neurons_load: string;
   sns_accounts_load: string;
+  sns_accounts_balance_load: string;
   sns_token_load: string;
   list_proposals: string;
   list_canisters: string;
@@ -149,7 +149,6 @@ interface I18nAuth {
 }
 
 interface I18nAccounts {
-  total: string;
   main: string;
   balance: string;
   new_transaction: string;
@@ -268,7 +267,6 @@ interface I18nNeurons {
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
-  cannot_merge_hardware_wallet: string;
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
@@ -397,6 +395,9 @@ interface I18nCanister_detail {
   edit_controller: string;
   new_controller: string;
   add_controller: string;
+  status_stopped: string;
+  status_stopping: string;
+  status_running: string;
 }
 
 interface I18nTransaction_names {
@@ -624,6 +625,7 @@ interface I18nSns_neuron_detail {
 }
 
 interface I18nSns_neurons {
+  text: string;
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
@@ -766,6 +768,11 @@ interface I18nAuth_sns {
   text: string;
 }
 
+interface I18nUniverse {
+  select_token: string;
+  select: string;
+}
+
 interface I18nSns_rewards_status {
   0: string;
   1: string;
@@ -796,6 +803,16 @@ interface I18nSns_status_description {
   3: string;
   4: string;
   5: string;
+}
+
+interface I18nMetrics {
+  tvl: string;
+}
+
+interface I18nCkbtc {
+  title: string;
+  ckBTC: string;
+  logo: string;
 }
 
 interface I18nNeuron_state {
@@ -942,6 +959,7 @@ interface I18nNns_functions {
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
+  InsertSnsWasmUpgradePathEntries: string;
 }
 
 interface I18nNns_functions_description {
@@ -982,6 +1000,7 @@ interface I18nNns_functions_description {
   UpdateSnsWasmSnsSubnetIds: string;
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
+  InsertSnsWasmUpgradePathEntries: string;
 }
 
 interface I18n {
@@ -1023,10 +1042,13 @@ interface I18n {
   auth_proposals: I18nAuth_proposals;
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
+  universe: I18nUniverse;
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
   sns_status_description: I18nSns_status_description;
+  metrics: I18nMetrics;
+  ckbtc: I18nCkbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

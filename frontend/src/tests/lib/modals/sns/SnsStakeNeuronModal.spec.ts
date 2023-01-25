@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
@@ -58,7 +58,7 @@ describe("SnsStakeNeuronModal", () => {
       .spyOn(snsSelectedTransactionFeeStore, "subscribe")
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
     jest
-      .spyOn(snsProjectIdSelectedStore, "subscribe")
+      .spyOn(selectedUniverseIdStore, "subscribe")
       .mockImplementation((run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
