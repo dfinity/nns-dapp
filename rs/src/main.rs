@@ -12,7 +12,7 @@ use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_base_types::PrincipalId;
-use ledger_canister::{AccountIdentifier, BlockIndex};
+use icp_ledger::{AccountIdentifier, BlockIndex};
 
 mod accounts_store;
 mod assets;
