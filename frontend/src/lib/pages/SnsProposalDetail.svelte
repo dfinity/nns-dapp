@@ -16,12 +16,13 @@
   import { loadSnsProposal } from "$lib/services/$public/sns-proposals.services";
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import { stringifyJson } from "$lib/utils/utils";
+  import { nonNullish, stringifyJson } from "$lib/utils/utils";
   import { writable } from "svelte/store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import { mapProposalId } from "$lib/utils/proposals.utils";
+  import { toastsShow } from "$lib/stores/toasts.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -60,10 +61,28 @@
     proposalId: bigint;
     rootCanisterId: Principal;
   }) => {
-    const onError = (certified: boolean) => {
-      if (certified) {
+    const handleError = ({
+      certified,
+      error,
+    }: {
+      certified: boolean;
+      error: unknown;
+    }) => {
+      // ignore "query" errors
+      if (!certified) {
         return;
       }
+
+      if (nonNullish(error)) {
+        toastsShow({
+          labelKey: "error.proposal_not_found",
+          level: "error",
+          detail: `id: "${proposalId}"${
+            error === undefined ? "" : `. ${error}`
+          }`,
+        });
+      }
+
       goBack();
     };
 
@@ -83,8 +102,7 @@
           proposal: proposalData,
         }));
       },
-      handleError: onError,
-      silentUpdateErrorMessages: true,
+      handleError,
     });
   };
 

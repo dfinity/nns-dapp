@@ -10,7 +10,6 @@ import {
 } from "$lib/services/$public/sns-proposals.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import * as toastsFunctions from "$lib/stores/toasts.store";
 import { AnonymousIdentity } from "@dfinity/agent";
 import type { SnsProposalData } from "@dfinity/sns";
 import { SnsGovernanceError } from "@dfinity/sns";
@@ -162,6 +161,7 @@ describe("sns-proposals services", () => {
           rootCanisterId: mockPrincipal,
           proposalId,
           setProposal: jest.fn(),
+          handleError: jest.fn(),
         });
 
         await waitFor(() =>
@@ -181,6 +181,7 @@ describe("sns-proposals services", () => {
           rootCanisterId: mockPrincipal,
           proposalId,
           setProposal: setProposalSpy,
+          handleError: jest.fn(),
         });
         await waitFor(() =>
           expect(setProposalSpy).toHaveBeenCalledWith(mockSnsProposal)
@@ -205,6 +206,7 @@ describe("sns-proposals services", () => {
           rootCanisterId: mockPrincipal,
           proposalId,
           setProposal: jest.fn(),
+          handleError: jest.fn(),
         });
         expect(queryProposalSpy).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -227,7 +229,7 @@ describe("sns-proposals services", () => {
       afterEach(() => jest.clearAllMocks());
 
       it("should show error message in toast details", async () => {
-        const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
+        const handleErrorSpy = jest.fn();
         authStoreMock.next({
           identity: mockIdentity,
         });
@@ -235,12 +237,15 @@ describe("sns-proposals services", () => {
           rootCanisterId: mockPrincipal,
           proposalId,
           setProposal: jest.fn(),
+          handleError: handleErrorSpy,
         });
-        expect(toastsShow).toBeCalled();
-        expect(toastsShow).toBeCalledWith(
+        expect(handleErrorSpy).toBeCalled();
+        expect(handleErrorSpy).toBeCalledWith(
           expect.objectContaining({
-            labelKey: "error.proposal_not_found",
-            detail: expect.stringContaining("test-message"),
+            certified: true,
+            error: expect.objectContaining({
+              message: "test-message",
+            }),
           })
         );
       });

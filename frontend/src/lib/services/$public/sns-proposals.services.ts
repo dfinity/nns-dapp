@@ -1,8 +1,7 @@
 import { queryProposal, queryProposals } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import { errorToString } from "$lib/utils/error.utils";
+import { toastsError } from "$lib/stores/toasts.store";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
 import {
@@ -57,61 +56,31 @@ export const loadSnsProposal = async ({
   proposalId,
   setProposal,
   handleError,
-  callback,
-  silentErrorMessages,
-  silentUpdateErrorMessages,
   strategy = "query_and_update",
 }: {
   rootCanisterId: Principal;
   proposalId: bigint;
   setProposal: (proposal: SnsProposalData) => void;
-  handleError?: (certified: boolean) => void;
-  callback?: (certified: boolean) => void;
-  silentErrorMessages?: boolean;
-  silentUpdateErrorMessages?: boolean;
+  handleError: ({ certified: boolean, error: unknown }) => void;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
-  const catchError: QueryAndUpdateOnError<Error | unknown> = (
-    erroneusResponse
-  ) => {
-    console.error(erroneusResponse);
-
-    const skipUpdateErrorHandling =
-      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
-
-    if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
-      const details = errorToString(erroneusResponse?.error);
-      toastsShow({
-        labelKey: "error.proposal_not_found",
-        level: "error",
-        detail: `id: "${proposalId}"${
-          details === undefined ? "" : `. ${details}`
-        }`,
-      });
-    }
-
-    handleError?.(erroneusResponse.certified);
-  };
-
   try {
     return await getProposal({
       rootCanisterId,
       proposalId,
       onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError({ certified, error: undefined });
+          handleError({ certified, error: undefined });
           return;
         }
 
         setProposal(proposal);
-
-        callback?.(certified);
       },
-      onError: catchError,
+      onError: handleError,
       strategy,
     });
   } catch (error: unknown) {
-    catchError({ certified: true, error });
+    handleError({ certified: true, error });
   }
 };
 
