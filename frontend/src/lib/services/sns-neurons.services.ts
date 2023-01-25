@@ -43,13 +43,10 @@ import {
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import {
-  decodeSnsAccount,
-  type SnsNeuron,
-  type SnsNeuronId,
-} from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
@@ -509,7 +506,7 @@ export const increaseStakeNeuron = async ({
       rootCanisterId,
       stakeE8s,
       identity,
-      source: decodeSnsAccount(account.identifier),
+      source: decodeIcrcAccount(account.identifier),
     });
     await loadSnsAccounts({ rootCanisterId });
 
@@ -544,7 +541,7 @@ export const stakeNeuron = async ({
       rootCanisterId,
       stakeE8s,
       identity,
-      source: decodeSnsAccount(account.identifier),
+      source: decodeIcrcAccount(account.identifier),
     });
     await Promise.all([
       loadSnsAccounts({ rootCanisterId }),
