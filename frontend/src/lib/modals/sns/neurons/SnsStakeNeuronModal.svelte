@@ -2,7 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Token, TokenAmount } from "@dfinity/nns";
@@ -14,6 +17,7 @@
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { nonNullish } from "$lib/utils/utils";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -44,11 +48,13 @@
           mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
         ) / E8S_PER_ICP
       : undefined;
-  let checkMinimumStake: (
-    amount: number | undefined
-  ) => string | undefined = () => undefined;
+  let checkMinimumStake: ValidateAmountFn = () => undefined;
   $: checkMinimumStake = (amount: number | undefined) => {
-    if (amount && minimumStake && amount < minimumStake) {
+    if (
+      nonNullish(amount) &&
+      nonNullish(minimumStake) &&
+      amount < minimumStake
+    ) {
       return replacePlaceholders(
         $i18n.error.amount_not_enough_stake_sns_neuron,
         {
