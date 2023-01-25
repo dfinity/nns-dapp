@@ -19,6 +19,7 @@
   export let minDelayInSeconds = 0;
   export let minProjectDelayInSeconds: number;
   export let maxDelayInSeconds = 0;
+  // sns and nns calculates voting power differently
   export let calculateVotingPower: (delayInSeconds: number) => bigint;
   export let minDissolveDelayDescription = "";
   export let confirmButtonText: string;
