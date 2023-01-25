@@ -16,7 +16,7 @@ export interface AccountsStore extends Readable<AccountsStoreData> {
 /**
  * A store that contains the account information.
  */
-const initAccountsStore = (): AccountsStore => {
+export const initAccountsStore = (): AccountsStore => {
   const initialAccounts: AccountsStoreData = {
     main: undefined,
     subAccounts: undefined,
