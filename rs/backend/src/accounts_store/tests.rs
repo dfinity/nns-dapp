@@ -1,5 +1,5 @@
 use super::*;
-use ledger_canister::Tokens;
+use icp_ledger::Tokens;
 use std::str::FromStr;
 
 const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";

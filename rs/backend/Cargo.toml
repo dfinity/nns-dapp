@@ -1,0 +1,58 @@
+[package]
+name = "nns-dapp"
+version = "2.0.13"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+base64 = "0.13.0"
+candid = "0.8.1"
+futures = "0.3.21"
+itertools = "0.10.5"
+lazy_static = "1.4.0"
+serde = "1.0.136"
+serde_bytes = "0.11.5"
+serde_cbor = "0.11.2"
+serde_json = "1.0.81"
+sha2 = "0.10.6"
+lzma-rs = "0.2.0"
+tar = "0.4.37"
+hex = "0.4.3"
+
+# chrono 0.4.19 has vulnerabilities fixed in 0.4.20
+# but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
+# The Replica returned an error: code 5, message: "Wasm module of canister vo5te-2aaaa-aaaaa-aaazq-cai is not valid: Wasm module has an invalid import section. Module imports function '__wbindgen_describe' from '__wbindgen_placeholder__' that is not exported by the runtime."
+# 0.4.19 works and satisfies ic. 
+chrono = "=0.4.19"
+
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+dfn_json = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+dfn_macro = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
+ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "8b674edbb228acfc19923d5c914807166edcd909" }
+# Registry canister deploy as of 2022-11-23, ahead of Blessed Replica Version
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "0a729806f2fbc717f2183b07efac19f24f32e717" }
+idl2json = { git = "https://github.com/dfinity/idl2json", rev="c983dea6fc5666912218e7babf2b6b2f8b5648a4" }
+
+[dev-dependencies]
+maplit = "1.0.2"
+
+[features]
+mock_conversion_rate = []

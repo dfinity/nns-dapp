@@ -21,7 +21,10 @@
     participateInSwap,
   } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -112,7 +115,7 @@
   };
 
   // Used for form inline validation
-  let validateAmount: (amount: number | undefined) => string | undefined;
+  let validateAmount: ValidateAmountFn;
   $: validateAmount = (amount: number | undefined) => {
     if (
       swapCommitment !== undefined &&

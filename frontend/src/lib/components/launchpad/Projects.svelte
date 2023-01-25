@@ -5,9 +5,9 @@
   import { isNullish } from "$lib/utils/utils";
   import { snsQueryStore, snsSummariesStore } from "$lib/stores/sns.store";
   import {
-    activePadProjectsStore,
+    snsProjectsActivePadStore,
     type SnsFullProject,
-  } from "$lib/derived/projects.derived";
+  } from "$lib/derived/sns/sns-projects.derived";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { Html } from "@dfinity/gix-components";
@@ -17,7 +17,7 @@
   let projects: SnsFullProject[] | undefined;
   $: projects = filterProjectsStatus({
     swapLifecycle: status,
-    projects: $activePadProjectsStore,
+    projects: $snsProjectsActivePadStore,
   });
 
   let loading = false;

@@ -1,13 +1,14 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import type { SnsAccount, SnsTransactionWithId } from "@dfinity/sns";
+import type { SnsTransactionWithId } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 interface GetTransactionsParams {
   identity: Identity;
-  account: SnsAccount;
+  account: IcrcAccount;
   start?: bigint;
   maxResults: bigint;
   rootCanisterId: Principal;
