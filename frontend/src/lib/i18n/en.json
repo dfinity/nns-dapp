@@ -105,6 +105,7 @@
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
+    "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -235,7 +236,7 @@
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "ICP Stake",
-    "staked": "Staked",
+    "staked": "Of which staked",
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
@@ -260,7 +261,6 @@
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
-    "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
@@ -383,7 +383,10 @@
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
-    "add_controller": "Add Controller"
+    "add_controller": "Add Controller",
+    "status_stopped": "Stopped",
+    "status_stopping": "Stopping",
+    "status_running": "Running"
   },
   "transaction_names": {
     "receive": "Received $tokenSymbol",
@@ -760,5 +763,13 @@
     "3": "The proposal has been adopted. Either execution has not yet started, or it has started but the outcome is not yet known.",
     "4": "The proposal was adopted and successfully executed.",
     "5": "The proposal was adopted, but execution failed."
+  },
+  "metrics": {
+    "tvl": "Total Value Locked"
+  },
+  "ckbtc": {
+    "title": "Chain-key Bitcoin",
+    "ckBTC": "ckBTC",
+    "logo": "Chain-key Bitcoin (ckBTC) logo"
   }
 }

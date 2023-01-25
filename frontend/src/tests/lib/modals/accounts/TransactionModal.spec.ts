@@ -9,6 +9,7 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
+import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -42,7 +43,7 @@ describe("TransactionModal", () => {
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
-    validateAmount?: (amount: number | undefined) => string | undefined;
+    validateAmount?: ValidateAmountFn;
   }) =>
     renderModal({
       component: TransactionModal,

@@ -23,6 +23,17 @@ describe("format.utils", () => {
     expect(
       formatNumber(0.123456789, { minFraction: 3, maxFraction: 3 })
     ).toEqual("0.123");
+
+    expect(
+      formatNumber(1360290803.9988282, { minFraction: 0, maxFraction: 0 })
+    ).toEqual("1’360’290’804");
+    expect(
+      formatNumber(1360290803.9988282, {
+        minFraction: 0,
+        maxFraction: 0,
+        maximumSignificantDigits: 7,
+      })
+    ).toEqual("1’360’291’000");
   });
 
   it("should format percentage", () => {

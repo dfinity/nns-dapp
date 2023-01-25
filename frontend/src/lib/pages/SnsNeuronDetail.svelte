@@ -112,19 +112,10 @@
         neuron: null,
       });
 
-      const shouldLoadParameters = isNullish(
-        $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters
-      );
-      const loadTransactionFee = isNullish(
-        $snsSelectedTransactionFeeStore?.toE8s()
-      );
-
       await Promise.all([
         loadNeuron(),
-        shouldLoadParameters ? loadSnsParameters(rootCanisterId) : undefined,
-        loadTransactionFee
-          ? loadSnsTransactionFee({ rootCanisterId })
-          : undefined,
+        loadSnsParameters(rootCanisterId),
+        loadSnsTransactionFee({ rootCanisterId }),
       ]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo

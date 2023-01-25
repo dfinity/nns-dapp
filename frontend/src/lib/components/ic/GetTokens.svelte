@@ -8,7 +8,7 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
@@ -30,7 +30,7 @@
 
     transferring = true;
 
-    const selectedProjectId = get(snsProjectIdSelectedStore);
+    const selectedProjectId = get(selectedUniverseIdStore);
 
     try {
       if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
@@ -140,6 +140,8 @@
     span {
       margin: 0 var(--padding) 0 var(--padding-2x);
     }
+
+    z-index: var(--z-index);
   }
 
   form {

@@ -2,8 +2,8 @@ import type { Account } from "$lib/types/account";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
+import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
-import type { Readable } from "svelte/types/runtime/store";
 
 interface SnsAccount {
   accounts: Account[];

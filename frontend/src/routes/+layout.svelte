@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStore } from "$lib/stores/auth.store";
-  import { initWorker } from "$lib/services/worker.services";
+  import { initAuthWorker } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsReset } from "$lib/stores/toasts.store";
 
@@ -36,7 +36,7 @@
   };
 
   onMount(async () => {
-    worker = await initWorker();
+    worker = await initAuthWorker();
     await syncAuth($authStore);
   });
 
@@ -50,5 +50,6 @@
 <style lang="scss" global>
   @import "@dfinity/gix-components/styles/global.scss";
   @import "../lib/themes/legacy";
+  @import "../lib/themes/global";
   @import "../lib/themes/variables";
 </style>

@@ -7,6 +7,19 @@ import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 import LayoutTest from "./LayoutTest.svelte";
 
+jest.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: jest.fn(() =>
+    Promise.resolve({
+      startMetricsTimer: () => {
+        // Do nothing
+      },
+      stopMetricsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("Layout", () => {
   describe("Main layout", () => {
     beforeAll(() => layoutTitleStore.set("the header"));

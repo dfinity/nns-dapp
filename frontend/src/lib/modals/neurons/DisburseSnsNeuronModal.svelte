@@ -4,7 +4,6 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import type { SnsNeuron } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import {
@@ -27,6 +26,7 @@
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { goto } from "$app/navigation";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

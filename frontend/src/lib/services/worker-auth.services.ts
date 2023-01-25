@@ -1,14 +1,17 @@
 import type { AuthStore } from "$lib/stores/auth.store";
-import type { PostMessageEventData } from "$lib/types/post-messages";
+import type {
+  PostMessage,
+  PostMessageDataResponse,
+} from "$lib/types/post-messages";
 import { logout } from "./auth.services";
 
-export const initWorker = async () => {
+export const initAuthWorker = async () => {
   const AuthWorker = await import("$lib/workers/auth.worker?worker");
   const authWorker: Worker = new AuthWorker.default();
 
   authWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessageEventData>) => {
+  }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
     const { msg } = data;
 
     switch (msg) {

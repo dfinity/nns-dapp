@@ -12,11 +12,11 @@
   import type { Token } from "@dfinity/nns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;

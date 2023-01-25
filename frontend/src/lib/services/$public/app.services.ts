@@ -1,5 +1,12 @@
 import { browser } from "$app/environment";
-import { loadSnsSummaries } from "$lib/services/$public/sns.services";
+import {
+  CACHING_CANISTER_URL,
+  ENABLE_SNS_CACHING,
+} from "$lib/constants/environment.constants";
+import {
+  loadSnsProjects,
+  loadSnsSummaries,
+} from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
@@ -14,7 +21,11 @@ export const initAppPublicData = (): Promise<
 > => {
   const initNns: Promise<void>[] = [];
 
-  const initSns: Promise<void>[] = [loadSnsSummaries()];
+  const initSns: Promise<void>[] = [
+    ENABLE_SNS_CACHING && CACHING_CANISTER_URL !== undefined
+      ? loadSnsProjects()
+      : loadSnsSummaries(),
+  ];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.

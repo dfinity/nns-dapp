@@ -21,6 +21,7 @@
   import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   let routes: {
     context: string;
@@ -97,3 +98,5 @@
 {#if IS_TESTNET}
   <GetTokens />
 {/if}
+
+<MenuMetrics />

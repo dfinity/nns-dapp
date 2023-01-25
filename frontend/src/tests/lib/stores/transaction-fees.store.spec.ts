@@ -3,6 +3,7 @@ import {
   mainTransactionFeeStore,
   transactionsFeesStore,
 } from "$lib/stores/transaction-fees.store";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
@@ -50,5 +51,29 @@ describe("transactionsFeesStore", () => {
 
     expect(fee1).not.toEqual(fee2);
     expect(fee2).toEqual(expectedFee);
+  });
+
+  it("should set fee of multiple sns projects", () => {
+    const rootCanister2 = Principal.fromText("aaaaa-aa");
+    const expectedFee1 = BigInt(40_000);
+    const expectedFee2 = BigInt(50_000);
+    transactionsFeesStore.setFees([
+      {
+        rootCanisterId: mockPrincipal,
+        fee: expectedFee1,
+        certified: true,
+      },
+      {
+        rootCanisterId: rootCanister2,
+        fee: expectedFee2,
+        certified: true,
+      },
+    ]);
+    const store1 = get(transactionsFeesStore);
+    const { fee: fee1 } = store1.projects[mockPrincipal.toText()];
+    const { fee: fee2 } = store1.projects[rootCanister2.toText()];
+
+    expect(fee1).toEqual(expectedFee1);
+    expect(fee2).toEqual(expectedFee2);
   });
 });

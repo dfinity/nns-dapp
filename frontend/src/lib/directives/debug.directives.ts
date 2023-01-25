@@ -135,7 +135,6 @@ const addHotkeyFromPrompt = async (neuronIdString: string | null) => {
 const removeFolloweesDecentralizedSale = async () => {
   try {
     const { neurons } = get(neuronsStore);
-    console.log(neurons);
     if (neurons !== undefined) {
       await Promise.all(
         neurons.map((neuron) => {

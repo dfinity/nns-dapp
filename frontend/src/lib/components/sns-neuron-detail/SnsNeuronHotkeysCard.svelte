@@ -13,7 +13,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
@@ -85,7 +85,7 @@
     const { success } = await removeHotkey({
       neuronId,
       hotkey,
-      rootCanisterId: $snsProjectIdSelectedStore,
+      rootCanisterId: $selectedUniverseIdStore,
     });
     // If the user removes itself from the hotkeys, it has no more access to the detail page.
     if (currentIdentityString === hotkey && success) {

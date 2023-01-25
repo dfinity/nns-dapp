@@ -9,6 +9,7 @@
   import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import FiltersWrapper from "./FiltersWrapper.svelte";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -43,7 +44,7 @@
   ).length;
 </script>
 
-<div class="filters" data-tid="nns-proposal-filters">
+<FiltersWrapper>
   <FiltersButton
     testId="filters-by-topics"
     totalFilters={totalFiltersTopic}
@@ -88,40 +89,9 @@
       text="block">{$i18n.voting.hide_unavailable_proposals}</Checkbox
     >
   </SignedInOnly>
-</div>
+</FiltersWrapper>
 
 <NnsProposalsFilterModal
   props={modalFilters}
   on:nnsClose={() => (modalFilters = undefined)}
 />
-
-<style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0 0 var(--padding-3x);
-
-    --checkbox-flex-direction: row-reverse;
-    --checkbox-font-size: var(--font-size-small);
-
-    :global(button) {
-      margin: var(--padding) var(--padding) 0 0;
-
-      @include media.min-width(large) {
-        margin: 0 var(--padding) 0 0;
-      }
-    }
-
-    > :global(div.checkbox) {
-      width: fit-content;
-      padding: var(--padding) calc(0.75 * var(--padding));
-      margin: var(--padding) 0 0;
-    }
-  }
-
-  :global(section > div.checkbox) {
-    margin: 0 0 var(--padding);
-  }
-</style>

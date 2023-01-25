@@ -7,8 +7,8 @@ import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { loadAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
@@ -84,7 +84,7 @@ export const snsTransferTokens = async ({
   try {
     const e8s = numberToE8s(amount);
     const identity: Identity = await getSnsAccountIdentity(source);
-    const to = decodeSnsAccount(destinationAddress);
+    const to = decodeIcrcAccount(destinationAddress);
 
     await transfer({
       identity,
