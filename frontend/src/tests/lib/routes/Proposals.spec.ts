@@ -6,7 +6,11 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { AppPath } from "$lib/constants/routes.constants";
+import {
+  committedProjectsStore,
+  projectsStore,
+} from "$lib/derived/projects.derived";
 import Proposals from "$lib/routes/Proposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -20,7 +24,6 @@ import {
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {
-    loadSnsSummaries: jest.fn().mockResolvedValue(undefined),
     loadSnsNervousSystemFunctions: jest.fn().mockResolvedValue(undefined),
   };
 });
@@ -58,54 +61,64 @@ describe("Proposals", () => {
     expect(queryByTestId("proposals-filters")).toBeInTheDocument();
   });
 
-  it("should render project page when a project is selected", async () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+  describe("sns", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(projectsStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     });
-    const { queryByTestId } = render(Proposals);
 
-    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
-
-    const selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
-
-    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: projectCanisterId },
+    it("should render project page when a project is selected", async () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Proposals,
       });
 
-    await waitFor(() =>
-      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
-    );
-  });
+      const { queryByTestId } = render(Proposals);
 
-  it("should be able to go back to nns after going to a project", async () => {
-    const { queryByTestId } = render(Proposals);
+      expect(queryByTestId("proposals-filters")).toBeInTheDocument();
 
-    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
+      const selectElement = queryByTestId(
+        "select-project-dropdown"
+      ) as HTMLSelectElement | null;
 
-    const selectElement = queryByTestId(
-      "select-project-dropdown"
-    ) as HTMLSelectElement | null;
+      const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+      selectElement &&
+        fireEvent.change(selectElement, {
+          target: { value: projectCanisterId },
+        });
 
-    const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: projectCanisterId },
-      });
+      await waitFor(() =>
+        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+      );
+    });
 
-    await waitFor(() =>
-      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
-    );
+    it("should be able to go back to nns after going to a project", async () => {
+      const { queryByTestId } = render(Proposals);
 
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: OWN_CANISTER_ID.toText() },
-      });
-    await waitFor(() =>
-      expect(queryByTestId("proposals-filters")).toBeInTheDocument()
-    );
+      expect(queryByTestId("proposals-filters")).toBeInTheDocument();
+
+      const selectElement = queryByTestId(
+        "select-project-dropdown"
+      ) as HTMLSelectElement | null;
+
+      const projectCanisterId = mockSnsFullProject.rootCanisterId.toText();
+      selectElement &&
+        fireEvent.change(selectElement, {
+          target: { value: projectCanisterId },
+        });
+
+      await waitFor(() =>
+        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+      );
+
+      selectElement &&
+        fireEvent.change(selectElement, {
+          target: { value: OWN_CANISTER_ID.toText() },
+        });
+      await waitFor(() =>
+        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+      );
+    });
   });
 });

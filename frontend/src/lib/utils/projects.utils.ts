@@ -1,4 +1,3 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { SnsFullProject } from "$lib/derived/projects.derived";
 import type {
   SnsSummary,
@@ -6,7 +5,6 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
@@ -220,6 +218,3 @@ export const validParticipation = ({
   }
   return { valid: true };
 };
-
-export const isNnsProject = (canisterId: Principal): boolean =>
-  canisterId.toText() === OWN_CANISTER_ID.toText();

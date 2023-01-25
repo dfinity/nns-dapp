@@ -9,9 +9,9 @@
     stopDissolving,
   } from "$lib/services/sns-neurons.services";
   import type { Principal } from "@dfinity/principal";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { keyOf } from "$lib/utils/utils";
   import { createEventDispatcher } from "svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let neuronId: SnsNeuronId;
   export let neuronState: NeuronState;

@@ -3,7 +3,6 @@
   import { onDestroy, setContext } from "svelte/internal";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
@@ -19,6 +18,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let showNewTransactionModal = false;
 
