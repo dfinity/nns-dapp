@@ -4,9 +4,9 @@ import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
 
 /*
  * Returns the principal's main or hardware account
@@ -43,7 +43,7 @@ export const invalidAddress = (address: string | undefined): boolean => {
     try {
       // TODO: Find a better solution to check if the address is valid for SNS as well.
       // It might also be an SNS address
-      decodeSnsAccount(address);
+      decodeIcrcAccount(address);
       return false;
     } catch {
       _;

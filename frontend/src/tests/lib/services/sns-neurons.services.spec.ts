@@ -27,9 +27,9 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import {
-  decodeSnsAccount,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
@@ -622,7 +622,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
-      const identifier = decodeSnsAccount(account.identifier);
+      const identifier = decodeIcrcAccount(account.identifier);
 
       const { success } = await increaseStakeNeuron({
         rootCanisterId,
