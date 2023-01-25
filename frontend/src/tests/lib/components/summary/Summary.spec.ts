@@ -3,7 +3,7 @@
  */
 
 import Summary from "$lib/components/summary/Summary.svelte";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { render } from "@testing-library/svelte";
 import { mockStoreSubscribe } from "../../../mocks/commont.mock";
 import en from "../../../mocks/i18n.mock";

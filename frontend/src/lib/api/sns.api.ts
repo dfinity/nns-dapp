@@ -6,13 +6,14 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
-  SnsAccount,
   SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
@@ -279,11 +280,13 @@ export const participateInSnsSwap = async ({
     buyer_sub_account: toNullable(fromSubAccount),
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   // Send amount to the ledger
   await nnsLedger.transfer({
     amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
+    createdAt,
   });
 
   // Notify participation
@@ -382,7 +385,7 @@ export const stakeNeuron = async ({
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;
-  source: SnsAccount;
+  source: IcrcAccount;
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(
     `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
@@ -394,10 +397,12 @@ export const stakeNeuron = async ({
     certified: true,
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   const newNeuronId = await stakeNeuronApi({
     stakeE8s,
     source,
     controller,
+    createdAt,
   });
 
   logWithTimestamp(
@@ -417,7 +422,7 @@ export const increaseStakeNeuron = async ({
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;
-  source: SnsAccount;
+  source: IcrcAccount;
 }): Promise<void> => {
   logWithTimestamp(
     `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`

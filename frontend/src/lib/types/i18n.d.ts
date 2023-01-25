@@ -109,6 +109,7 @@ interface I18nError {
   transaction_fee_not_found: string;
   fetch_transactions: string;
   transaction_data: string;
+  amount_not_enough_stake_sns_neuron: string;
   canister_invalid_transaction: string;
 }
 
@@ -267,7 +268,6 @@ interface I18nNeurons {
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
-  cannot_merge_hardware_wallet: string;
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
@@ -396,6 +396,9 @@ interface I18nCanister_detail {
   edit_controller: string;
   new_controller: string;
   add_controller: string;
+  status_stopped: string;
+  status_stopping: string;
+  status_running: string;
 }
 
 interface I18nTransaction_names {
@@ -807,6 +810,12 @@ interface I18nMetrics {
   tvl: string;
 }
 
+interface I18nCkbtc {
+  title: string;
+  ckBTC: string;
+  logo: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1040,6 +1049,7 @@ interface I18n {
   sns_status: I18nSns_status;
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
+  ckbtc: I18nCkbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
-} from "$lib/derived/sorted-sns-neurons.derived";
+} from "$lib/derived/sns/sns-sorted-neurons.derived";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";

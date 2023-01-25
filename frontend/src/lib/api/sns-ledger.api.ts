@@ -1,12 +1,13 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
+import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { encodeSnsAccount, type SnsAccount } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
@@ -40,7 +41,7 @@ export const getSnsAccounts = async ({
   }
 
   const mainAccount: Account = {
-    identifier: encodeSnsAccount(snsMainAccount),
+    identifier: encodeIcrcAccount(snsMainAccount),
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
@@ -49,7 +50,7 @@ export const getSnsAccounts = async ({
     type: "main",
   };
 
-  logWithTimestamp("Getting sns neuron: done");
+  logWithTimestamp("Getting sns accounts: done");
   return [mainAccount];
 };
 
@@ -82,13 +83,15 @@ export const transfer = async ({
   rootCanisterId,
   memo,
   fromSubAccount,
+  createdAt,
 }: {
   identity: Identity;
-  to: SnsAccount;
+  to: IcrcAccount;
   e8s: bigint;
   rootCanisterId: Principal;
   memo?: Uint8Array;
   fromSubAccount?: SubAccountArray;
+  createdAt?: bigint;
 }): Promise<void> => {
   const { transfer: transferApi } = await wrapper({
     identity,
@@ -102,6 +105,7 @@ export const transfer = async ({
       owner: to.owner,
       subaccount: toNullable(to.subaccount),
     },
+    created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
     memo,
     from_subaccount:
       fromSubAccount !== undefined

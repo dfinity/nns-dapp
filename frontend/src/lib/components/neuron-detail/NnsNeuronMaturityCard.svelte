@@ -54,9 +54,9 @@
       <NnsStakeMaturityButton {neuron} />
       <SpawnNeuronButton {neuron} />
     </div>
-
-    <NnsAutoStakeMaturity {neuron} />
   {/if}
+
+  <NnsAutoStakeMaturity {neuron} />
 </CardInfo>
 
 <Separator />

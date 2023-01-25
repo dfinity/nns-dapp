@@ -12,15 +12,17 @@ import type {
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
+import {
+  IcrcMetadataResponseEntries,
+  type IcrcTokenMetadataResponse,
+} from "@dfinity/ledger";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsParams } from "@dfinity/sns";
-import {
-  SnsMetadataResponseEntries,
-  type SnsGetMetadataResponse,
-  type SnsSwap,
-  type SnsSwapDerivedState,
-  type SnsTokenMetadataResponse,
+import type {
+  SnsGetMetadataResponse,
+  SnsParams,
+  SnsSwap,
+  SnsSwapDerivedState,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { isPngAsset } from "./utils";
@@ -100,15 +102,15 @@ const mapOptionalMetadata = ({
  * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
  */
 export const mapOptionalToken = (
-  response: SnsTokenMetadataResponse
+  response: IcrcTokenMetadataResponse
 ): SnsTokenMetadata | undefined => {
   const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
     (acc, [key, value]) => {
       switch (key) {
-        case SnsMetadataResponseEntries.SYMBOL:
+        case IcrcMetadataResponseEntries.SYMBOL:
           acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
           break;
-        case SnsMetadataResponseEntries.NAME:
+        case IcrcMetadataResponseEntries.NAME:
           acc = { ...acc, ...("Text" in value && { name: value.Text }) };
       }
 

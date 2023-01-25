@@ -3,7 +3,8 @@
  */
 
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render } from "@testing-library/svelte";
 import {
@@ -29,11 +30,12 @@ describe("SelectUniverseList", () => {
   ];
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe(projects));
 
-  beforeAll(() => {
+  beforeEach(() => {
     page.mock({
+      routeId: AppPath.Accounts,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
   });
@@ -42,9 +44,9 @@ describe("SelectUniverseList", () => {
 
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList);
-    // +1 for Internet Computer - NNS
+    // +1 for Internet Computer / NNS and +1 for ckBTC
     expect(getAllByTestId("select-universe-card").length).toEqual(
-      projects.length + 1
+      projects.length + 2
     );
   });
 
@@ -63,11 +65,24 @@ describe("SelectUniverseList", () => {
     const { component, getAllByTestId } = render(SelectUniverseList);
 
     const onSelect = jest.fn();
-    component.$on("nnsSelectProject", onSelect);
+    component.$on("nnsSelectUniverse", onSelect);
 
     const cards = getAllByTestId("select-universe-card");
     cards && (await fireEvent.click(cards[0]));
 
     expect(onSelect).toHaveBeenCalled();
+  });
+
+  it("should not render ckBTC universe cards if route not accounts", () => {
+    page.mock({
+      routeId: AppPath.Neurons,
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getAllByTestId } = render(SelectUniverseList);
+    // +1 for Internet Computer / NNS
+    expect(getAllByTestId("select-universe-card").length).toEqual(
+      projects.length + 1
+    );
   });
 });
