@@ -137,14 +137,9 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
-  malign:
-    runs-on: ubuntu-20.04
-    steps:
-      - run: false
   checks-pass:
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     if: ${{ always() }}
-    #needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
-    needs: ["malign"]
     runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
