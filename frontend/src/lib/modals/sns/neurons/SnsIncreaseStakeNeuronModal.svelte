@@ -4,7 +4,6 @@
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { createEventDispatcher, onMount } from "svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -16,6 +15,7 @@
   import type { SnsNeuronId } from "@dfinity/sns";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;

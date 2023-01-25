@@ -56,7 +56,9 @@
     <div class="actions" data-tid="stake-maturity-actions">
       <SnsStakeMaturityButton />
     </div>
+  {/if}
 
+  {#if ENABLE_SNS_2}
     <SnsAutoStakeMaturity />
   {/if}
 </CardInfo>

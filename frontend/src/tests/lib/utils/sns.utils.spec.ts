@@ -5,9 +5,9 @@ import {
   mapAndSortSnsQueryToSummaries,
   mapOptionalToken,
 } from "$lib/utils/sns.utils";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries } from "@dfinity/sns";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -133,7 +133,7 @@ describe("sns-utils", () => {
         metadata: [
           {
             ...mockQueryMetadata,
-            token: [[SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
+            token: [[IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
           },
         ],
         swaps: [

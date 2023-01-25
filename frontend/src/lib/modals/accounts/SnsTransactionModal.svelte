@@ -9,7 +9,7 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-  import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
 
@@ -38,7 +38,7 @@
       destinationAddress,
       amount,
       loadTransactions,
-      rootCanisterId: $snsProjectIdSelectedStore,
+      rootCanisterId: $selectedUniverseIdStore,
     });
 
     stopBusy("accounts");
@@ -52,7 +52,7 @@
 
 {#if $snsSelectedTransactionFeeStore !== undefined}
   <TransactionModal
-    rootCanisterId={$snsProjectIdSelectedStore}
+    rootCanisterId={$selectedUniverseIdStore}
     on:nnsSubmit={transfer}
     on:nnsClose
     bind:currentStep

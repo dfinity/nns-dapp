@@ -1,10 +1,10 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetMetadataResponse,
   SnsSwap,
   SnsSwapDerivedState,
-  SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 
 export type QueryRootCanisterId = RootCanisterIdText;
@@ -16,7 +16,7 @@ export type QuerySns = {
 
 export type QuerySnsMetadata = QuerySns & {
   metadata: SnsGetMetadataResponse;
-  token: SnsTokenMetadataResponse;
+  token: IcrcTokenMetadataResponse;
 };
 
 export type QuerySnsSwapState = QuerySns & {

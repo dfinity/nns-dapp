@@ -1,6 +1,6 @@
 <script lang="ts">
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
 
@@ -21,7 +21,7 @@
 <svelte:window bind:innerWidth />
 
 <SelectUniverseCard
-  summary={$snsProjectSelectedStore?.summary}
+  universe={$selectedUniverseStore}
   selected={true}
   role="dropdown"
   on:click={() => (showProjectPicker = true)}

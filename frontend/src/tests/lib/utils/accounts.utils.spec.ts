@@ -14,9 +14,9 @@ import {
   sumAccounts,
 } from "$lib/utils/accounts.utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { encodeSnsAccount } from "@dfinity/sns";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
@@ -78,7 +78,7 @@ describe("accounts-utils", () => {
         owner: new AnonymousIdentity().getPrincipal(),
         subaccount: subaccount,
       };
-      const subaccountString = encodeSnsAccount(account);
+      const subaccountString = encodeIcrcAccount(account);
       expect(invalidAddress(subaccountString)).toBeFalsy();
     });
   });
