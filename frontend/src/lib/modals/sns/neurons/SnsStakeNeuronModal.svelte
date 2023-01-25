@@ -2,7 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Token, TokenAmount } from "@dfinity/nns";
@@ -10,6 +13,11 @@
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { nonNullish } from "$lib/utils/utils";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -30,6 +38,33 @@
     currentStep?.name === "Form"
       ? stakeNeuronText
       : $i18n.accounts.review_transaction;
+
+  let parameters: NervousSystemParameters | undefined;
+  $: parameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
+  let minimumStake: number | undefined;
+  $: minimumStake =
+    parameters !== undefined
+      ? Number(
+          mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
+        ) / E8S_PER_ICP
+      : undefined;
+  let checkMinimumStake: ValidateAmountFn = () => undefined;
+  $: checkMinimumStake = (amount: number | undefined) => {
+    if (
+      nonNullish(amount) &&
+      nonNullish(minimumStake) &&
+      amount < minimumStake
+    ) {
+      return replacePlaceholders(
+        $i18n.error.amount_not_enough_stake_sns_neuron,
+        {
+          $amount: String(minimumStake),
+          $token: token.symbol,
+        }
+      );
+    }
+    return undefined;
+  };
 
   const dispatcher = createEventDispatcher();
   const stake = async ({ detail }: CustomEvent<NewTransaction>) => {
@@ -67,6 +102,7 @@
   {token}
   {transactionFee}
   {governanceCanisterId}
+  validateAmount={checkMinimumStake}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
