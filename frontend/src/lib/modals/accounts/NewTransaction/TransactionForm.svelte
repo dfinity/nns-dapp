@@ -102,13 +102,13 @@
   <div class="select-account">
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.accounts.source}</span>
-      {#if selectedAccount !== undefined}
-        <AmountDisplay
-          slot="value"
-          singleLine
-          amount={selectedAccount?.balance}
-        />
-      {/if}
+      <!-- svelte:fragment needed to avoid warnings -->
+      <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
+      <svelte:fragment slot="value">
+        {#if selectedAccount !== undefined}
+          <AmountDisplay singleLine amount={selectedAccount?.balance} />
+        {/if}
+      </svelte:fragment>
     </KeyValuePair>
 
     {#if canSelectSource}

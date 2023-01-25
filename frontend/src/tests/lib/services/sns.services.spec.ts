@@ -3,15 +3,20 @@ import * as api from "$lib/api/sns.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { syncAccounts } from "$lib/services/accounts.services";
 import * as services from "$lib/services/sns.services";
-import { snsQueryStore } from "$lib/stores/sns.store";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  mockSnsSwapCommitment,
+  principal,
+} from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const { participateInSwap, getSwapAccount } = services;
+const { participateInSwap, getSwapAccount, loadSnsSwapCommitments } = services;
 
 let testGetIdentityReturn = Promise.resolve(mockIdentity);
 const setNoAccountIdentity = () =>
@@ -264,6 +269,55 @@ describe("sns-services", () => {
     it("should return the swap canister account identifier", async () => {
       const account = await getSwapAccount(mockPrincipal);
       expect(account).toBeInstanceOf(AccountIdentifier);
+    });
+  });
+
+  describe("loadSnsSwapCommitments", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      snsQueryStore.reset();
+    });
+    it("should call api to get commitments and load them in store", async () => {
+      const commitment1 = mockSnsSwapCommitment(principal(0));
+      const commitment2 = mockSnsSwapCommitment(principal(1));
+      const commitments = [commitment1, commitment2];
+      const spy = jest
+        .spyOn(api, "querySnsSwapCommitments")
+        .mockImplementation(() => Promise.resolve(commitments));
+      await loadSnsSwapCommitments();
+      expect(spy).toBeCalled();
+
+      const store = get(snsSwapCommitmentsStore);
+      expect(store).toHaveLength(commitments.length);
+    });
+
+    it("should not call api if they are loaded in store", async () => {
+      const [metadatas, swaps] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
+      });
+      snsQueryStore.setData([metadatas, swaps]);
+      const commitment1 = mockSnsSwapCommitment(
+        Principal.fromText(metadatas[0].rootCanisterId)
+      );
+      const commitment2 = mockSnsSwapCommitment(
+        Principal.fromText(metadatas[1].rootCanisterId)
+      );
+      const commitments = [commitment1, commitment2];
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment1,
+        certified: true,
+      });
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment2,
+        certified: true,
+      });
+      const spy = jest
+        .spyOn(api, "querySnsSwapCommitments")
+        .mockImplementation(() => Promise.resolve(commitments));
+      await loadSnsSwapCommitments();
+      expect(spy).not.toBeCalled();
     });
   });
 });
