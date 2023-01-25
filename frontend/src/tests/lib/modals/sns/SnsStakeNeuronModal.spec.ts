@@ -2,15 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { NervousSystemParameters } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import {
@@ -19,8 +22,12 @@ import {
 } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
+import { snsNervousSystemParametersMock } from "../../../mocks/sns-neurons.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
-import { enterAmount } from "../../../utils/neurons-modal.test-utils";
+import {
+  AMOUNT_INPUT_SELECTOR,
+  enterAmount,
+} from "../../../utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -58,13 +65,15 @@ describe("SnsStakeNeuronModal", () => {
       .spyOn(snsSelectedTransactionFeeStore, "subscribe")
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
     jest
-      .spyOn(snsProjectIdSelectedStore, "subscribe")
+      .spyOn(selectedUniverseIdStore, "subscribe")
       .mockImplementation((run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
       });
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
+
+    snsParametersStore.reset();
   });
 
   it("should stake a new sns neuron", async () => {
@@ -78,5 +87,33 @@ describe("SnsStakeNeuronModal", () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => expect(stakeNeuron).toBeCalled());
+  });
+
+  it("should show error if amount is less than minimum stake in parameter", async () => {
+    const minimumAmount = 1;
+    const snsParameters: NervousSystemParameters = {
+      ...snsNervousSystemParametersMock,
+      neuron_minimum_stake_e8s: [BigInt(minimumAmount * E8S_PER_ICP)],
+    };
+    snsParametersStore.setParameters({
+      rootCanisterId: mockPrincipal,
+      parameters: snsParameters,
+      certified: true,
+    });
+    const { getByTestId, container } = await renderTransactionModal();
+
+    await waitFor(() =>
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+    );
+    const nextButton = getByTestId("transaction-button-next");
+    expect(nextButton?.hasAttribute("disabled")).toBeTruthy();
+
+    // Enter amount
+    const input = container.querySelector(AMOUNT_INPUT_SELECTOR);
+    input && fireEvent.input(input, { target: { value: minimumAmount / 2 } });
+    await waitFor(() =>
+      expect(getByTestId("input-error-message")).toBeInTheDocument()
+    );
+    expect(nextButton?.hasAttribute("disabled")).toBeTruthy();
   });
 });

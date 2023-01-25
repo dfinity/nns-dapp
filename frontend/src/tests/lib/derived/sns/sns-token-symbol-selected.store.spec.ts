@@ -6,7 +6,8 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
@@ -25,7 +26,7 @@ describe("currentSnsTokenLabelStore", () => {
     page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
-      (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
+      (metadata) => metadata[0] === IcrcMetadataResponseEntries.SYMBOL
     );
     const symbol =
       symbolResponse !== undefined && "Text" in symbolResponse[1]

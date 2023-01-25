@@ -3,15 +3,11 @@
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
-  } from "$lib/derived/sorted-sns-neurons.derived";
+  } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import {
-    snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/selected-project.derived";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Unsubscriber } from "svelte/store";
   import { onDestroy } from "svelte";
@@ -24,6 +20,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { nonNullish } from "$lib/utils/utils";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
 
   let loading = true;
 

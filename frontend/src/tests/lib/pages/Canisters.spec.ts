@@ -22,6 +22,19 @@ jest.mock("$lib/services/canisters.services", () => {
   };
 });
 
+jest.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: jest.fn(() =>
+    Promise.resolve({
+      startCyclesTimer: () => {
+        // Do nothing
+      },
+      stopCyclesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("Canisters", () => {
   let authStoreMock: jest.SpyInstance;
 

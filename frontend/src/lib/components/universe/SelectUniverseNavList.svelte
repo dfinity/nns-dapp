@@ -5,6 +5,6 @@
 </script>
 
 <SelectUniverseList
-  on:nnsSelectProject={async ({ detail }) =>
+  on:nnsSelectUniverse={async ({ detail }) =>
     await goto(buildSwitchUniverseUrl(detail))}
 />
