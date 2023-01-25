@@ -2,8 +2,8 @@ use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCani
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
-use ledger_canister::AccountIdentifier;
-use ledger_canister::{BlockIndex, Memo};
+use icp_ledger::AccountIdentifier;
+use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
 

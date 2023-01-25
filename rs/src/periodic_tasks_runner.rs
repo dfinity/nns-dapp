@@ -11,7 +11,7 @@ use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
 use ic_sns_swap::pb::v1::RefreshBuyerTokensRequest;
-use ledger_canister::{
+use icp_ledger::{
     AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
 
