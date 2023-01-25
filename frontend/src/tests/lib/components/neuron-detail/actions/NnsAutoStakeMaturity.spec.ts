@@ -67,6 +67,28 @@ describe("NnsAutoStakeMaturity", () => {
   it("renders unchecked if auto stake is undefined", () =>
     testCheckBox(undefined));
 
+  it("renders a disabled checkbox if neuron is not controllable", async () => {
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: "not-user",
+        autoStakeMaturity: true,
+      },
+    };
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NnsAutoStakeMaturity,
+      },
+    });
+
+    const inputElement = queryByTestId("checkbox") as HTMLInputElement;
+
+    expect(inputElement.checked).toBeTruthy();
+    expect(inputElement.disabled).toBeTruthy();
+  });
+
   const toggleAutoStake = async ({
     neuronAutoStakeMaturity,
   }: {

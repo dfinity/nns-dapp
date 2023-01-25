@@ -235,7 +235,7 @@
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "ICP Stake",
-    "staked": "Staked",
+    "staked": "Of which staked",
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
