@@ -1,8 +1,8 @@
+import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";

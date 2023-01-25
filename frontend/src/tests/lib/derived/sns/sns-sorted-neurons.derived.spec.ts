@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import {
-  sortedSnsCFNeuronsStore,
   snsSortedNeuronStore,
+  sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
 } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";

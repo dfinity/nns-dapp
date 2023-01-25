@@ -3,8 +3,8 @@ import {
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
 import {
