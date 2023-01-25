@@ -1,8 +1,8 @@
-import {
-  projectsStore,
-  type SnsFullProject,
-} from "$lib/derived/projects.derived";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+import {
+  snsProjectsStore,
+  type SnsFullProject,
+} from "$lib/derived/sns/sns-projects.derived";
 import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
@@ -22,7 +22,7 @@ export const snsOnlyProjectStore = derived<
 
 export const snsProjectSelectedStore: Readable<SnsFullProject | undefined> =
   derived(
-    [selectedUniverseIdStore, projectsStore],
+    [selectedUniverseIdStore, snsProjectsStore],
     ([$selectedUniverseIdStore, $projectsStore]) =>
       $projectsStore?.find(
         ({ rootCanisterId }) =>

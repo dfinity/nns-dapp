@@ -24,7 +24,7 @@ export interface SnsFullProject {
  *
  * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
-export const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
+export const snsProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     summaries?.map((summary) => {
@@ -43,16 +43,16 @@ export const projectsStore: Readable<SnsFullProject[] | undefined> = derived(
     })
 );
 
-export const activePadProjectsStore = derived<
+export const snsProjectsActivePadStore = derived<
   Readable<SnsFullProject[] | undefined>,
   SnsFullProject[] | undefined
->(projectsStore, (projects: SnsFullProject[] | undefined) =>
+>(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
   filterActiveProjects(projects)
 );
 
-export const committedProjectsStore = derived<
+export const snsProjectsCommittedStore = derived<
   Readable<SnsFullProject[] | undefined>,
   SnsFullProject[] | undefined
->(projectsStore, (projects: SnsFullProject[] | undefined) =>
+>(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
   filterCommittedProjects(projects)
 );
