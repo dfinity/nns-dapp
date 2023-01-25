@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import Launchpad from "$lib/pages/Launchpad.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
@@ -44,7 +44,7 @@ describe("Launchpad", () => {
 
   it("should render titles", () => {
     jest
-      .spyOn(committedProjectsStore, "subscribe")
+      .spyOn(snsProjectsCommittedStore, "subscribe")
       .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     const { getByText } = render(Launchpad);
 
@@ -56,7 +56,7 @@ describe("Launchpad", () => {
 
   it("should not render committed project title if no committed projects", () => {
     jest
-      .spyOn(committedProjectsStore, "subscribe")
+      .spyOn(snsProjectsCommittedStore, "subscribe")
       .mockImplementation(mockProjectSubscribe([]));
 
     const { queryByText } = render(Launchpad);

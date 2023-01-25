@@ -3,22 +3,22 @@
  */
 import {
   sortedSnsCFNeuronsStore,
-  sortedSnsNeuronStore,
+  snsSortedNeuronStore,
   sortedSnsUserNeuronsStore,
-} from "$lib/derived/sorted-sns-neurons.derived";
+} from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import { createMockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
 describe("sortedSnsNeuronStore", () => {
   afterEach(() => snsNeuronsStore.reset());
   it("returns an empty array if no neurons", () => {
-    expect(get(sortedSnsNeuronStore).length).toBe(0);
+    expect(get(snsSortedNeuronStore).length).toBe(0);
   });
 
   it("should sort neurons by createdTimestampSeconds", async () => {
@@ -54,7 +54,7 @@ describe("sortedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(sortedSnsNeuronStore)).toEqual([
+      expect(get(snsSortedNeuronStore)).toEqual([
         neurons[1],
         neurons[2],
         neurons[0],
@@ -96,7 +96,7 @@ describe("sortedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(sortedSnsNeuronStore)).toEqual([neurons[1], neurons[2]])
+      expect(get(snsSortedNeuronStore)).toEqual([neurons[1], neurons[2]])
     );
   });
 
@@ -162,7 +162,7 @@ describe("sortedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(sortedSnsNeuronStore)).toEqual([
+      expect(get(snsSortedNeuronStore)).toEqual([
         neurons1[1],
         neurons1[2],
         neurons1[0],
@@ -172,7 +172,7 @@ describe("sortedSnsNeuronStore", () => {
     page.mock({ data: { universe: principal2.toText() } });
 
     await waitFor(() =>
-      expect(get(sortedSnsNeuronStore)).toEqual([
+      expect(get(snsSortedNeuronStore)).toEqual([
         neurons2[2],
         neurons2[0],
         neurons2[1],

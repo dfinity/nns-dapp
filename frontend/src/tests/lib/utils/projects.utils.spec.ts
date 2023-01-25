@@ -1,4 +1,4 @@
-import type { SnsFullProject } from "$lib/derived/projects.derived";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
