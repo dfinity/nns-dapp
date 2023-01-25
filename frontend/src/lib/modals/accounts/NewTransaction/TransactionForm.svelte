@@ -100,16 +100,16 @@
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
-    {#if selectedAccount !== undefined}
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.source}</span>
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.accounts.source}</span>
+      {#if selectedAccount !== undefined}
         <AmountDisplay
           slot="value"
           singleLine
           amount={selectedAccount?.balance}
         />
-      </KeyValuePair>
-    {/if}
+      {/if}
+    </KeyValuePair>
 
     {#if canSelectSource}
       <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
