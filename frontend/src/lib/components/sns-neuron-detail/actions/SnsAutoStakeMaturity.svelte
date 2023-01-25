@@ -25,12 +25,12 @@
   $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
 
   let disabled: boolean;
-  $: disabled = isNullish(neuron)
-    ? true
-    : !hasPermissionToStakeMaturity({
-        neuron,
-        identity: $authStore.identity,
-      });
+  $: disabled =
+    isNullish(neuron) ||
+    !hasPermissionToStakeMaturity({
+      neuron,
+      identity: $authStore.identity,
+    });
 </script>
 
 <AutoStakeMaturity
