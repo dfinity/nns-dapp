@@ -138,10 +138,9 @@ jobs:
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   malign:
-    name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-      - run: true
+      - run: false
   checks-pass:
     if: ${{ always() }}
     #needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
