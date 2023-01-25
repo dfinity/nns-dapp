@@ -50,7 +50,7 @@ export const getSnsAccounts = async ({
     type: "main",
   };
 
-  logWithTimestamp("Getting sns neuron: done");
+  logWithTimestamp("Getting sns accounts: done");
   return [mainAccount];
 };
 
