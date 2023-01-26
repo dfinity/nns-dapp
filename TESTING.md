@@ -45,12 +45,11 @@ Found in `frontend/src/tests/utils`.
 
 ## Canister Test
 
-Tests are found in `rs/src/accounts_store/tests.rs`.
+Tests are found in `rs/backend/src/accounts_store/tests.rs`.
 
 ### Running Tests
 
 ```bash
-$ cd rs
 $ cargo test
 ```
 
