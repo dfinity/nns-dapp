@@ -4,6 +4,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { onMount } from "svelte";
+  import { loadSnsSwapCommitments } from "$lib/services/sns.services";
+
+  onMount(() => {
+    loadSnsSwapCommitments();
+  });
 
   let showCommitted = false;
   $: showCommitted = ($snsProjectsCommittedStore?.length ?? []) > 0;

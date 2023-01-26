@@ -100,16 +100,16 @@
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
-    {#if selectedAccount !== undefined}
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.source}</span>
-        <AmountDisplay
-          slot="value"
-          singleLine
-          amount={selectedAccount?.balance}
-        />
-      </KeyValuePair>
-    {/if}
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.accounts.source}</span>
+      <!-- svelte:fragment needed to avoid warnings -->
+      <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
+      <svelte:fragment slot="value">
+        {#if selectedAccount !== undefined}
+          <AmountDisplay singleLine amount={selectedAccount?.balance} />
+        {/if}
+      </svelte:fragment>
+    </KeyValuePair>
 
     {#if canSelectSource}
       <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
