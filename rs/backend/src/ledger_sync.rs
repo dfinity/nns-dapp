@@ -51,12 +51,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             let blocks_count = blocks.len() as u32;
             for (block_height, block) in blocks.into_iter() {
                 let transaction = block.transaction().into_owned();
-                let result =
-                    store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp());
-
-                if let Err(err) = result {
-                    return Err(err);
-                }
+                store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp())?;
             }
             store.mark_ledger_sync_complete();
 
