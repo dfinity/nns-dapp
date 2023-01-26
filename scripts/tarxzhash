@@ -34,8 +34,8 @@ function do_hash {
 
   echo "tmpdir = $tmpdir"
 
-  cp "$tar_xz_file" $tmpdir
-  pushd $tmpdir >/dev/null
+  cp "$tar_xz_file" "$tmpdir"
+  pushd "$tmpdir" >/dev/null
 
   tar_file="${file_base}.tar"
   tar_xz_file="${tar_file}.xz"
@@ -56,7 +56,7 @@ function do_hash {
   find . -type f | LC_ALL=C sort >"../$content_file"
 
   # SHA256 each individual file.
-  cat "../$content_file" | xargs sha256sum >"../$hashfile"
+  xargs sha256sum <"../$content_file" >"../$hashfile"
   popd >/dev/null
 
   # SHA256 the collection of all hashes of all files.
@@ -65,5 +65,5 @@ function do_hash {
 }
 
 for file in "$@"; do
-  do_hash $file
+  do_hash "$file"
 done
