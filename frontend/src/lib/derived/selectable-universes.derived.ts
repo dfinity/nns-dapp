@@ -2,6 +2,7 @@ import {
   CKBTC_LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
+import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   snsProjectsCommittedStore,
@@ -24,7 +25,7 @@ const universesStore = derived<
   Universe[]
 >(snsProjectsCommittedStore, (projects: SnsFullProject[] | undefined) => [
   NNS_UNIVERSE,
-  CKBTC_UNIVERSE,
+  ...(ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
   ...(projects?.map(({ rootCanisterId, summary }) => ({
     canisterId: rootCanisterId.toText(),
     summary,
