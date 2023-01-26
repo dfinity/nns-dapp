@@ -2,7 +2,7 @@ name: 'Needed jobs succeeded'
 description: Checks that the jobs needed by the current job succeeded.
 inputs:
   needs:
-    description: "JSON describing the needed jobs; this can be obtained with '${{ toJson(needs) }}'."
+    description: "JSON describing the needed jobs; this can be obtained with '\${{ toJson(needs) }}'."
     required: true
 runs:
   using: "composite"
