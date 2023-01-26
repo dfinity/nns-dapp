@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "rs/backend"
+    "rs/sns_cache"
 ]
 
 [profile.release]
