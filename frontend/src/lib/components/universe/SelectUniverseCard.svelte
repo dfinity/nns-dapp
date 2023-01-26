@@ -2,12 +2,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { Card } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
-  import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
+  import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { isNullish } from "$lib/utils/utils";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
 
   export let selected: boolean;
@@ -57,7 +56,7 @@
           (ckBTC ? $i18n.ckbtc.title : $i18n.core.ic)}</span
       >
       {#if displayProjectAccountsBalance}
-        <ProjectAccountsBalance
+        <UniverseAccountsBalance
           rootCanisterId={universe.summary?.rootCanisterId}
         />
       {/if}

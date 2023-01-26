@@ -13,10 +13,15 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 To run the dapp against canisters deployed locally on a simulated IC network, proceed as following:
 
-- Deploy the Nns, and optionally Sns, backend canisters locally. The [snsdemo](https://github.com/dfinity/snsdemo) provides command lines and an handy tutorial to achieve such goal
-- Once deployed, the canister IDs should be collected the "local" network of `dfx.json` should be updated accordingly
-- Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file
+- Deploy the Nns backend canisters locally with `dfx nns install`
+- Once deployed, the canister IDs should be collected and the "local" network of `canister_ids.json` (**TODO**) should be updated accordingly manually
+- Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file (**TODO**)
 - Start `npm run dev` in the `./frontend/` folder to serve the application
+
+**TODO**
+
+- we need to provide a sample of `canister_ids.json` in the repo or automate the task with a script
+- fix `DFX_NETWORK=local ./config.sh` that does not output the canister ID in `VITE_OWN_CANISTER_ID` and `VITE_OWN_CANISTER_URL` of the `.env` file 
 
 ## Testnet
 

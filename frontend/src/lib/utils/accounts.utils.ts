@@ -7,6 +7,7 @@ import { isUniverseNns } from "$lib/utils/universe.utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { isNullish } from "$lib/utils/utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -184,6 +185,6 @@ export const sumNnsAccounts = (
 export const sumAccounts = (
   accounts: Account[] | undefined
 ): TokenAmount | undefined =>
-  accounts === undefined
+  isNullish(accounts) || accounts.length === 0
     ? undefined
     : sumTokenAmounts(...accounts.map(({ balance }) => balance));

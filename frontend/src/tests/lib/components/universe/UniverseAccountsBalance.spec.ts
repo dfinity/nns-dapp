@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
+import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -18,7 +18,7 @@ import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
 
-describe("ProjectAccountsBalance", () => {
+describe("UniverseAccountsBalance", () => {
   describe("no balance", () => {
     it("should render skeleton while loading", () => {
       const { container } = render(ProjectAccountsBalance, {
