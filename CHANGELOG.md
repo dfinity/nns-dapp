@@ -1,5 +1,14 @@
 # Changelog
 
+## Proposal XXX
+* Auto-stake for non-controlled neurons.
+* Enable Merge HW controlled neurons.
+* Add “created at” parameter in transactions.
+* Poll and display canister status (cycles, memory and status).
+* Use new library dfinity/ledger.
+* Update proposal rendering (new types).
+* Minor fixes and improvements.
+
 ## Proposal 101945
 * Increase sns neuron stake.
 * Split sns neuron.
