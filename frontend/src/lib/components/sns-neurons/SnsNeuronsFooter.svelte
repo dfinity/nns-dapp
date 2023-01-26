@@ -3,8 +3,8 @@
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
-  import { snsSelectedProjectNewTxData } from "$lib/derived/selected-project-new-tx-data.derived";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   type ModalKey = "stake-neuron";
   let showModal: ModalKey | undefined = undefined;

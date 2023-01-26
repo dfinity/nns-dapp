@@ -6,6 +6,19 @@ import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mockCanister } from "../../../mocks/canisters.mock";
 
+jest.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: jest.fn(() =>
+    Promise.resolve({
+      startCyclesTimer: () => {
+        // Do nothing
+      },
+      stopCyclesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("CanisterCard", () => {
   it("renders a Card", () => {
     const { queryByTestId } = render(CanisterCard, {

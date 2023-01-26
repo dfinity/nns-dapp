@@ -53,8 +53,8 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 # timestamps being older)
 COPY Cargo.lock .
 COPY Cargo.toml .
-COPY rs/Cargo.toml rs/Cargo.toml
-RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
+COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
+RUN mkdir -p rs/backend/src && touch rs/backend/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src
 
 # Install dfx
 COPY dfx.json dfx.json

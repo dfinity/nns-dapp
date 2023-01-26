@@ -3,7 +3,7 @@
  */
 
 import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
-import { projectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -46,7 +46,7 @@ describe("SnsTransactionCard", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(projectsStore, "subscribe")
+      .spyOn(snsProjectsStore, "subscribe")
       .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
   });
 

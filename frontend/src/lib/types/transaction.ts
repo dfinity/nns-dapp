@@ -5,3 +5,7 @@ export type NewTransaction = {
   destinationAddress: string;
   amount: number;
 };
+
+export type ValidateAmountFn = (
+  amount: number | undefined
+) => string | undefined;

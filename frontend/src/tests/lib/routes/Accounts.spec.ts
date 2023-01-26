@@ -3,7 +3,11 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { AppPath } from "$lib/constants/routes.constants";
+import {
+  snsProjectsCommittedStore,
+  snsProjectsStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
@@ -42,7 +46,11 @@ describe("Accounts", () => {
   });
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
+    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+  jest
+    .spyOn(snsProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
@@ -51,7 +59,10 @@ describe("Accounts", () => {
       .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
 
     // Reset to default value
-    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT },
+      routeId: AppPath.Accounts,
+    });
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockSnsFullProject.rootCanisterId,

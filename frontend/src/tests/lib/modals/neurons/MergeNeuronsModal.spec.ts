@@ -182,7 +182,6 @@ describe("MergeNeuronsModal", () => {
     });
   });
 
-  // Merging of neurons controlled via hardware wallet is not yet supported.
   describe("when mergeable neurons by hardware wallet", () => {
     const controller = mockHardwareWalletAccount.principal?.toText() as string;
     const mergeableNeuron1 = {
@@ -196,7 +195,7 @@ describe("MergeNeuronsModal", () => {
       fullNeuron: { ...mockFullNeuron, controller },
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
-    it("does not allow user to select neurons", async () => {
+    it("allows user to select neurons", async () => {
       const { queryAllByTestId } = await renderMergeModal(mergeableNeurons, [
         mockHardwareWalletAccount,
       ]);
@@ -213,11 +212,10 @@ describe("MergeNeuronsModal", () => {
       // Elements might change after every click
       [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
 
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      expect(neuronElement1.classList.contains("selected")).toBe(true);
     });
   });
 
-  // Merging of neurons controlled via hardware wallet is not yet supported.
   describe("when neurons from main user and hardware wallet", () => {
     const neuronHW = {
       ...mockNeuron,
@@ -236,6 +234,7 @@ describe("MergeNeuronsModal", () => {
       },
     };
     const neurons = [neuronMain, neuronHW];
+
     it("does not allow to select two neurons with different controller", async () => {
       const { queryAllByTestId } = await renderMergeModal(neurons, [
         mockHardwareWalletAccount,

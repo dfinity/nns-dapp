@@ -47,7 +47,7 @@
     },
     "nns-dapp": {
       "type": "custom",
-      "candid": "rs/nns-dapp.did",
+      "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
       "build": "./build.sh"
     },
@@ -167,7 +167,9 @@
         "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
-          "ENABLE_SNS_VOTING": false
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_CACHING": false,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -178,10 +180,12 @@
     "staging": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://nnsdapp.dfinity.network",
+        "HOST": "https://nnsdapp.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
-          "ENABLE_SNS_VOTING": false
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_CACHING": false,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -192,10 +196,12 @@
     "testnet": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://nnsdapp.dfinity.network",
+        "HOST": "https://nnsdapp.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -206,10 +212,12 @@
     "small14": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small14.dfinity.network",
+        "HOST": "https://small14.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -220,10 +228,12 @@
     "small13": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small13.dfinity.network",
+        "HOST": "https://small13.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -234,10 +244,12 @@
     "small12": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small12.dfinity.network",
+        "HOST": "https://small12.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -248,10 +260,12 @@
     "small11": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small11.dfinity.network",
+        "HOST": "https://small11.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -262,10 +276,12 @@
     "large02": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://large02.dfinity.network",
+        "HOST": "https://large02.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -283,10 +299,12 @@
     "small09": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small09.dfinity.network",
+        "HOST": "https://small09.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -297,10 +315,12 @@
     "small06": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small06.dfinity.network",
+        "HOST": "https://small06.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
@@ -314,7 +334,9 @@
         "HOST": "http://localhost:8080",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_CACHING": true,
+          "ENABLE_CKBTC_LEDGER": true
         }
       },
       "bind": "127.0.0.1:8080",
@@ -323,7 +345,7 @@
     "large01": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://large01.dfinity.network",
+        "HOST": "https://large01.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -344,7 +366,7 @@
     "large03": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://large03.dfinity.network",
+        "HOST": "https://large03.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -365,7 +387,7 @@
     "large04": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://large04.dfinity.network",
+        "HOST": "https://large04.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -386,7 +408,7 @@
     "large05": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://large05.dfinity.network",
+        "HOST": "https://large05.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -407,7 +429,7 @@
     "medium01": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium01.dfinity.network",
+        "HOST": "https://medium01.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -424,7 +446,7 @@
     "medium02": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium02.dfinity.network",
+        "HOST": "https://medium02.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -441,7 +463,7 @@
     "medium03": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium03.dfinity.network",
+        "HOST": "https://medium03.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -458,7 +480,7 @@
     "medium04": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium04.dfinity.network",
+        "HOST": "https://medium04.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -475,7 +497,7 @@
     "medium05": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium05.dfinity.network",
+        "HOST": "https://medium05.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -492,7 +514,7 @@
     "medium06": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium06.dfinity.network",
+        "HOST": "https://medium06.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -509,7 +531,7 @@
     "medium07": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium07.dfinity.network",
+        "HOST": "https://medium07.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -526,7 +548,7 @@
     "medium08": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium08.dfinity.network",
+        "HOST": "https://medium08.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -543,7 +565,7 @@
     "medium09": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium09.dfinity.network",
+        "HOST": "https://medium09.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -560,7 +582,7 @@
     "medium10": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://medium10.dfinity.network",
+        "HOST": "https://medium10.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -577,7 +599,7 @@
     "small01": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small01.dfinity.network",
+        "HOST": "https://small01.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -591,7 +613,7 @@
     "small02": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small02.dfinity.network",
+        "HOST": "https://small02.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -605,7 +627,7 @@
     "small03": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small03.dfinity.network",
+        "HOST": "https://small03.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -619,7 +641,7 @@
     "small04": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small04.dfinity.network",
+        "HOST": "https://small04.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -633,7 +655,7 @@
     "small05": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small05.dfinity.network",
+        "HOST": "https://small05.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -647,7 +669,7 @@
     "small07": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small07.dfinity.network",
+        "HOST": "https://small07.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -661,7 +683,7 @@
     "small08": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small08.dfinity.network",
+        "HOST": "https://small08.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -675,7 +697,7 @@
     "small10": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small10.dfinity.network",
+        "HOST": "https://small10.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
@@ -689,7 +711,7 @@
     "small15": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://small15.dfinity.network",
+        "HOST": "https://small15.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true
