@@ -43,7 +43,19 @@ cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 # brew install xz
 cd "$tarball_dir"
 
-"$tar" cJv --mtime='2021-05-07 17:00Z' --sort=name --owner=0 --group=0 --numeric-owner --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
+# --mtime, --sort, --owner, --group, --numeric-owner and --pax-option are all
+# there to get a tarball that's reproducible across different platforms.
+# See https://reproducible-builds.org/docs/archives/
+"$tar" cJv \
+    --mtime='2021-05-07 17:00Z' \
+    --sort=name \
+    --owner=0 \
+    --group=0 \
+    --numeric-owner \
+    --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+    --exclude .last_build_id \
+    -f "$TOPLEVEL/assets.tar.xz" \
+    .
 
 cd "$TOPLEVEL"
 
