@@ -6,6 +6,7 @@ import { configure } from "@testing-library/svelte";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { ENABLE_CKBTC_LEDGER } from "./src/lib/constants/environment.constants";
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
@@ -37,6 +38,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   ENABLE_SNS_2: true,
   ENABLE_SNS_VOTING: true,
   ENABLE_SNS_CACHING: true,
+  ENABLE_CKBTC_LEDGER: true,
   CACHING_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
