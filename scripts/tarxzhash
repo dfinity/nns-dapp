@@ -12,8 +12,7 @@ set -euo pipefail
 
 # Do we want to keep the temp directory with extracted/generated files?
 keep=false
-if [ "$1" == "-k" ]
-then
+if [ "$1" == "-k" ]; then
   shift
   keep=true
 fi
@@ -21,8 +20,7 @@ fi
 function do_hash {
   tar_xz_file=$1
 
-  if [ "$tar_xz_file" == "${tar_xz_file%.tar.xz}" ]
-  then
+  if [ "$tar_xz_file" == "${tar_xz_file%.tar.xz}" ]; then
     echo "Parameter should end with '.tar.xz'."
     exit 1
   fi
@@ -30,15 +28,14 @@ function do_hash {
   file_base=$(basename "${tar_xz_file%.tar.xz}")
 
   tmpdir=$(mktemp -d -t "nns-dapp-$file_base" 2>/dev/null)
-  if [ "$keep" == "false" ]
-  then
+  if [ "$keep" == "false" ]; then
     trap 'rm -rf -- "$tmpdir"' EXIT
   fi
 
   echo "tmpdir = $tmpdir"
 
   cp "$tar_xz_file" $tmpdir
-  pushd $tmpdir > /dev/null
+  pushd $tmpdir >/dev/null
 
   tar_file="${file_base}.tar"
   tar_xz_file="${tar_file}.xz"
@@ -54,21 +51,19 @@ function do_hash {
 
   # List the contents in deterministic order.
   mkdir content
-  pushd content > /dev/null
+  pushd content >/dev/null
   tar xf "../$tar_file"
-  find . -type f | LC_ALL=C sort > "../$content_file"
+  find . -type f | LC_ALL=C sort >"../$content_file"
 
   # SHA256 each individual file.
-  cat "../$content_file" | xargs sha256sum > "../$hashfile"
-  popd > /dev/null
+  cat "../$content_file" | xargs sha256sum >"../$hashfile"
+  popd >/dev/null
 
   # SHA256 the collection of all hashes of all files.
   sha256sum "$hashfile"
-  popd > /dev/null
+  popd >/dev/null
 }
 
-
-for file in "$@"
-do
+for file in "$@"; do
   do_hash $file
 done
