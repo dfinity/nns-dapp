@@ -94,3 +94,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'
