@@ -6,7 +6,6 @@ import { configure } from "@testing-library/svelte";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
-import { ENABLE_CKBTC_LEDGER } from "./src/lib/constants/environment.constants";
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
