@@ -52,7 +52,8 @@ cd "$tarball_dir"
     --owner=0 \
     --group=0 \
     --numeric-owner \
-    --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+    #--pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+    --format=ustar \
     --exclude .last_build_id \
     -f "$TOPLEVEL/assets.tar.xz" \
     .
