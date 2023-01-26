@@ -45,7 +45,7 @@ import { queryAndUpdate } from "./utils.services";
  * Therefore, this can be called before the projects are loaded.
  */
 export const loadSnsSwapCommitments = async (): Promise<void> => {
-  const commtimentsCanisterIds = new Set(
+  const commitmentsCanisterIds = new Set(
     (get(snsSwapCommitmentsStore) ?? [])
       .filter(({ certified }) => certified)
       .map(({ swapCommitment: { rootCanisterId } }) => rootCanisterId.toText())
@@ -57,9 +57,9 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
   );
   // Skip if we have commitments for all projects.
   if (
-    commtimentsCanisterIds.size > 0 &&
-    commtimentsCanisterIds.size >= snsProjectsCanisterIds.size &&
-    [...snsProjectsCanisterIds].every((id) => commtimentsCanisterIds.has(id))
+    commitmentsCanisterIds.size > 0 &&
+    commitmentsCanisterIds.size >= snsProjectsCanisterIds.size &&
+    [...snsProjectsCanisterIds].every((id) => commitmentsCanisterIds.has(id))
   ) {
     return;
   }
