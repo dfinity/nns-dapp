@@ -3,6 +3,7 @@
   import { Checkbox } from "@dfinity/gix-components";
 
   export let hasAutoStakeOn: boolean;
+  export let disabled = false;
 </script>
 
 <div class="auto-stake">
@@ -11,6 +12,7 @@
     inputId="auto-stake-maturity-checkbox"
     checked={hasAutoStakeOn}
     on:nnsChange
+    {disabled}
   >
     <span>{$i18n.neuron_detail.auto_stake_maturity}</span>
   </Checkbox>

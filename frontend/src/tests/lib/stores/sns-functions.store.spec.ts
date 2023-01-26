@@ -12,7 +12,7 @@ describe("sns functions store", () => {
   });
 
   it("should set functions for one project", () => {
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId: mockPrincipal,
       nsFunctions: [nervousSystemFunctionMock],
       certified: true,
@@ -24,7 +24,7 @@ describe("sns functions store", () => {
   });
 
   it("should set functions for more than one project", () => {
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId: mockPrincipal,
       nsFunctions: [nervousSystemFunctionMock],
       certified: true,
@@ -35,7 +35,7 @@ describe("sns functions store", () => {
     ]);
 
     const rootCanister2 = Principal.from("aaaaa-aa");
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId: rootCanister2,
       nsFunctions: [nervousSystemFunctionMock],
       certified: true,
@@ -46,8 +46,31 @@ describe("sns functions store", () => {
     ]);
   });
 
+  it("should set functions for more than one project at once", () => {
+    const rootCanister2 = Principal.from("aaaaa-aa");
+    snsFunctionsStore.setProjectsFunctions([
+      {
+        rootCanisterId: mockPrincipal,
+        nsFunctions: [nervousSystemFunctionMock],
+        certified: true,
+      },
+      {
+        rootCanisterId: rootCanister2,
+        nsFunctions: [nervousSystemFunctionMock],
+        certified: true,
+      },
+    ]);
+    const store = get(snsFunctionsStore);
+    expect(store[mockPrincipal.toText()]?.nsFunctions).toEqual([
+      nervousSystemFunctionMock,
+    ]);
+    expect(store[rootCanister2.toText()]?.nsFunctions).toEqual([
+      nervousSystemFunctionMock,
+    ]);
+  });
+
   it("should reset functions for more than one project", () => {
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId: mockPrincipal,
       nsFunctions: [nervousSystemFunctionMock],
       certified: true,
@@ -57,7 +80,7 @@ describe("sns functions store", () => {
       nervousSystemFunctionMock,
     ]);
 
-    snsFunctionsStore.setFunctions({
+    snsFunctionsStore.setProjectFunctions({
       rootCanisterId: mockPrincipal,
       nsFunctions: [],
       certified: true,

@@ -1,4 +1,4 @@
-import type { SnsFullProject } from "$lib/derived/projects.derived";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -7,17 +7,19 @@ import type {
   SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
+import {
+  IcrcMetadataResponseEntries,
+  type IcrcTokenMetadataResponse,
+} from "@dfinity/ledger";
 import type { Token } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
-  SnsMetadataResponseEntries,
   SnsSwapLifecycle,
   type SnsGetMetadataResponse,
   type SnsParams,
   type SnsSwap,
   type SnsSwapBuyerState,
   type SnsSwapDerivedState,
-  type SnsTokenMetadataResponse,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
 import type { Subscriber } from "svelte/store";
@@ -226,11 +228,11 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   description: ["Web3 for the win"],
 };
 
-export const mockQueryTokenResponse: SnsTokenMetadataResponse = [
-  [SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
-  [SnsMetadataResponseEntries.NAME, { Text: "Tetris" }],
-  [SnsMetadataResponseEntries.SYMBOL, { Text: "TET" }],
-  [SnsMetadataResponseEntries.FEE, { Nat: BigInt(1000) }],
+export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
+  [IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
+  [IcrcMetadataResponseEntries.NAME, { Text: "Tetris" }],
+  [IcrcMetadataResponseEntries.SYMBOL, { Text: "TET" }],
+  [IcrcMetadataResponseEntries.FEE, { Nat: BigInt(1000) }],
 ];
 
 export const mockQueryMetadata: QuerySnsMetadata = {
