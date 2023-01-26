@@ -101,7 +101,7 @@ jobs:
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
-          npm ci
+          npm install
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
