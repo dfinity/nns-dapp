@@ -6,11 +6,11 @@ set -euxo pipefail
 ##########################
 print_help() {
 	cat <<-EOF
-	Compiles a wasm to Rust and applies any saved manual changes.
+	Compiles a did file to Rust and applies any saved manual changes.
 
 	Usage: $(basename "$0") <canister_name>
 	takes inputs:
-	  <canister_name>.wasm
+	  <canister_name>.did
 	  <canister_name>.patch (optional)
 	creates:
 	  <canister_name>.rs
