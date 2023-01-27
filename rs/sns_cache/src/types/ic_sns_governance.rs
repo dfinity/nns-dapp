@@ -1,3 +1,4 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(non_camel_case_types)]
 
 use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
