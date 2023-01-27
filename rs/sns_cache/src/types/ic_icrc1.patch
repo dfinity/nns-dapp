@@ -1,0 +1,44 @@
+diff --git a/rs/sns_cache/src/types/ic_icrc1.rs b/rs/sns_cache/src/types/ic_icrc1.rs
+index b9e92dcd..7a829286 100644
+--- a/rs/sns_cache/src/types/ic_icrc1.rs
++++ b/rs/sns_cache/src/types/ic_icrc1.rs
+@@ -1,6 +1,6 @@
+ #![allow(non_camel_case_types)]
+ 
+-use crate::types::{CandidType, Deserialize, Serialize};
++use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+ use ic_cdk::api::call::CallResult;
+ // This is an experimental feature to generate Rust binding from Candid.
+ // You may want to manually adjust some of the types.
+@@ -10,7 +10,7 @@ use ic_cdk::api::call::CallResult;
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub enum Value { Int(candid::Int), Nat(candid::Nat), Blob(Vec<u8>), Text(String) }
+ 
+-pub type Subaccount = Vec<u8>;
++type Subaccount = Vec<u8>;
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
+ 
+@@ -35,11 +35,11 @@ pub struct InitArgs {
+   pub  token_name: String,
+ }
+ 
+-pub type Tokens = candid::Nat;
++type Tokens = candid::Nat;
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct icrc1_supported_standards_ret0_inner { url: String, name: String }
+ 
+-pub type Timestamp = u64;
++type Timestamp = u64;
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct TransferArg {
+   pub  to: Account,
+@@ -50,7 +50,7 @@ pub struct TransferArg {
+   pub  amount: Tokens,
+ }
+ 
+-pub type BlockIndex = candid::Nat;
++type BlockIndex = candid::Nat;
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub enum TransferError {
+   GenericError{ message: String, error_code: candid::Nat },
