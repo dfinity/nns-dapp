@@ -35,7 +35,7 @@ print_help() {
 # Get working dir and args
 ##########################
 cd "$(dirname "$0")"
-canister_name="$1"
+canister_name="$(basename "${1%.did}")"
 
 {
   cat <<-EOF
