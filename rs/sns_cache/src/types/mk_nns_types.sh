@@ -25,5 +25,5 @@ for CANISTER in sns_ledger sns_governance sns_root sns_swap sns_wasm ; do
      cd "$GIT_ROOT"
      cp "$(jq '.canisters[env.CANISTER].candid' dfx.json)" "$DID_FILE"
   )
-  ./did2rs.sh "ic_${canister}"
+  ./did2rs.sh "ic_${CANISTER}"
 done
