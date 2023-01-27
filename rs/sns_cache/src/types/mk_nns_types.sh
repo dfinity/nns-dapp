@@ -7,6 +7,8 @@ set -euxo pipefail
 print_help() {
 	cat <<-EOF
 	Gets all the sns did files, as specified in dfx.json, and builds the corresponding Rust types.
+
+	To update a type, remove the .did file and rerun.
 	EOF
 }
 [[ "${1:-}" != "--help" ]] || {
@@ -18,7 +20,7 @@ cd "$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 for canister in sns_ledger sns_governance sns_root sns_swap sns_wasm ; do
   export canister
-  (
+  test -f "ic_${canister}.did" || (
      cd "$GIT_ROOT"
      cat "$(jq '.canisters[env.canister].candid' dfx.json)"
   ) > "ic_${canister}.did"
