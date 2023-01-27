@@ -2,7 +2,7 @@ pub mod ic_sns_governance;
 pub mod ic_sns_root;
 pub mod ic_sns_wasm;
 pub mod ic_sns_swap;
-pub mod ic_icrc1;
+pub mod ic_sns_ledger;
 
 use std::collections::BTreeMap;
 
@@ -14,7 +14,7 @@ use ic_cdk::{
         Principal,
     },
 };
-pub use ic_icrc1::{Tokens as SnsTokens, Value as Icrc1Value};
+pub use ic_sns_ledger::{Tokens as SnsTokens, Value as Icrc1Value};
 pub use ic_sns_governance::{
     GetMetadataResponse, ListNervousSystemFunctionsResponse,
 };
