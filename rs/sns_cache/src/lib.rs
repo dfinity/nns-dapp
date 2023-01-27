@@ -2,7 +2,7 @@
 pub mod assets;
 mod conversion;
 mod state;
-mod types;
+pub mod types;
 mod upstream;
 
 use assets::{insert_favicon, HttpRequest};

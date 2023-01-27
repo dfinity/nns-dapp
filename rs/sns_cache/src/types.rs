@@ -1,3 +1,9 @@
+pub mod ic_sns_governance;
+pub mod ic_sns_root;
+pub mod ic_sns_wasm;
+pub mod ic_sns_swap;
+pub mod ic_icrc1;
+
 use std::collections::BTreeMap;
 
 use candid::Nat;
@@ -8,22 +14,22 @@ use ic_cdk::{
         Principal,
     },
 };
-pub use ic_icrc1::endpoints::{NumTokens as SnsTokens, Value as Icrc1Value};
+pub use ic_icrc1::{Tokens as SnsTokens, Value as Icrc1Value};
 pub use ic_sns_governance::{
     GetMetadataResponse, ListNervousSystemFunctionsResponse,
 };
-pub use ic_sns_root::pb::v1::ListSnsCanistersResponse;
-pub use ic_sns_swap::pb::v1::GetStateResponse;
-pub use ic_sns_wasm::pb::v1::{
-    DeployedSns, ListDeployedSnsesRequest, ListDeployedSnsesResponse, SnsCanisterIds,
+pub use ic_sns_root::ListSnsCanistersResponse;
+pub use ic_sns_swap::GetStateResponse;
+pub use ic_sns_wasm::{
+    DeployedSns, ListDeployedSnsesResponse, SnsCanisterIds,
 };
 use serde::Serialize;
 
 pub mod slow;
-pub mod ic_sns_governance;
 
-#[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
-pub type GetMetadataRequest{}
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct EmptyRecord{}
+
 
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
 pub struct SnsCache {

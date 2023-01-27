@@ -24,10 +24,3 @@ anyhow = "1.0.68"
 
 # TODO: Get these from the newer locations.
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
-
-
-# These should be one entry here for each of sns_root, sns_ledger and so on.
-ic-sns-wasm = { path = "/home/max/dfn/ic/branches/nns-serde/rs/nns/sns-wasm" }
-ic-sns-swap = { path = "/home/max/dfn/ic/branches/nns-serde/rs/sns/swap" }
-ic-sns-root = { path = "/home/max/dfn/ic/branches/nns-serde/rs/sns/root" }
-ic-icrc1 = { path = "/home/max/dfn/ic/branches/nns-serde/rs/rosetta-api/icrc1" }

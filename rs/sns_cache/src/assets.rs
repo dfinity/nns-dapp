@@ -111,10 +111,8 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 /// iFrame policies, etc.).
 /// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
-    vec![("Access-Control-Allow-Origin".to_string(), "foo".to_string()),
-    ("X-Content-Type-Options".to_string(), "nosniff".to_string()), ("X-Access-Control-Allow-Origin".to_string(), "safsdfhkgasjfd".to_string())]
-/*
-    ("X-Frame-Options".to_string(), "DENY".to_string()),
+    vec![
+        ("X-Frame-Options".to_string(), "DENY".to_string()),
         ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
         (
             "Strict-Transport-Security".to_string(),
@@ -123,7 +121,7 @@ fn security_headers() -> Vec<HeaderField> {
         // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment
         // same-origin is still ok from a security perspective
         ("Referrer-Policy".to_string(), "same-origin".to_string()),
-    ]*/
+    ]
 }
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {

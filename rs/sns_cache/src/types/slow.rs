@@ -2,13 +2,9 @@ use crate::Icrc1Value;
 use candid::CandidType;
 use candid::Nat;
 use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
-use ic_sns_root::pb::v1::ListSnsCanistersResponse;
-use ic_sns_swap::pb::v1::DerivedState;
-use ic_sns_swap::pb::v1::GetStateResponse;
-use ic_sns_swap::pb::v1::Init;
-use ic_sns_swap::pb::v1::Params;
-use ic_sns_swap::pb::v1::Swap;
-use ic_sns_wasm::pb::v1::DeployedSns;
+use crate::types::ic_sns_root::ListSnsCanistersResponse;
+use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Swap};
+use crate::types::ic_sns_wasm::DeployedSns;
 use serde::{Deserialize, Serialize};
 
 use super::UpstreamData;

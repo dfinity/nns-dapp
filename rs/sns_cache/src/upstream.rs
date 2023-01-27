@@ -3,12 +3,10 @@ use std::str::FromStr;
 
 use crate::convert_canister_id;
 use crate::state::{State, STATE};
-use crate::types::Icrc1Value;
-use crate::types::{self, GetStateResponse, ListDeployedSnsesRequest, SnsTokens};
-use crate::types::{CanisterStatusQuery, UpstreamData};
+use crate::types::{self, GetStateResponse, SnsTokens, EmptyRecord, Icrc1Value, CanisterStatusQuery, UpstreamData};
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
-use ic_sns_wasm::pb::v1::DeployedSns;
+use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
@@ -43,13 +41,13 @@ pub async fn update_cache() {
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     ic_cdk::println!("Asking for more SNSs");
     let result: Result<
-        (ic_sns_wasm::pb::v1::ListDeployedSnsesResponse,),
+        (ListDeployedSnsesResponse,),
         (RejectionCode, std::string::String),
     > = ic_cdk::api::call::call(
         CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai")
             .expect("I don't believe it's not a valid canister ID??!"),
         "list_deployed_snses",
-        (ListDeployedSnsesRequest {},),
+        (EmptyRecord {},),
     )
     .await;
     ic_cdk::println!("Asked for more SNSs");
@@ -92,7 +90,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let meta: types::GetMetadataResponse = ic_cdk::api::call::call(
         governance_canister_id,
         "get_metadata",
-        (types::GetMetadataRequest {},),
+        (types::EmptyRecord{},),
     )
     .await
     .map(|response: (_,)| response.0)
