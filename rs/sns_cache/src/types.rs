@@ -15,6 +15,6 @@ use serde::Serialize;
 /// A named empty record.
 ///
 /// Many candid interfaces take an empty record as their argument.
-/// Anonymous empty records are not handles correctly by didc, so we name them 'EmptyRecord'.
+/// Anonymous empty records are not handled correctly by didc, so we name them 'EmptyRecord'.
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct EmptyRecord {}
