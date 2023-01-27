@@ -9,6 +9,8 @@ print_help() {
 	Gets all the sns did files, as specified in dfx.json, and builds the corresponding Rust types.
 
 	To update a type, remove the .did file and rerun.
+
+	To modify the compiled rust, edit the rust file, commit it and run ./mkpatch.sh CANISTER_NAME
 	EOF
 }
 [[ "${1:-}" != "--help" ]] || {
