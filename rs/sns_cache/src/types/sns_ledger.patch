@@ -1,7 +1,7 @@
-diff --git a/rs/sns_cache/src/types/ic_icrc1.rs b/rs/sns_cache/src/types/ic_icrc1.rs
+diff --git a/rs/sns_cache/src/types/sns_ledger.rs b/rs/sns_cache/src/types/sns_ledger.rs
 index b9e92dcd..7a829286 100644
---- a/rs/sns_cache/src/types/ic_icrc1.rs
-+++ b/rs/sns_cache/src/types/ic_icrc1.rs
+--- a/rs/sns_cache/src/types/sns_ledger.rs
++++ b/rs/sns_cache/src/types/sns_ledger.rs
 @@ -1,6 +1,6 @@
  #![allow(non_camel_case_types)]
  
