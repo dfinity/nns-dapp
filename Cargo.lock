@@ -4440,19 +4440,14 @@ checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
 name = "sns_cache"
 version = "2.0.13"
 dependencies = [
- "anyhow",
- "base64 0.13.0",
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-certified-map 0.1.0",
- "lazy_static",
  "serde",
  "serde_bytes",
  "serde_cbor",
  "serde_derive",
  "serde_json",
- "sha2 0.10.6",
 ]
 
 [[package]]
