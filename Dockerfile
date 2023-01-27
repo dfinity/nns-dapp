@@ -10,7 +10,7 @@
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
-ARG rust_version=1.63.0
+ARG rust_version=1.64.0
 ENV NODE_VERSION=16.17.1
 
 ENV TZ=UTC
@@ -54,7 +54,8 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
-RUN mkdir -p rs/backend/src && touch rs/backend/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src
+COPY rs/sns_cache/Cargo.toml rs/sns_cache/Cargo.toml
+RUN mkdir -p rs/backend/src rs/sns_cache/src && touch rs/backend/src/lib.rs && touch rs/sns_cache/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src rs/sns_cache/src
 
 # Install dfx
 COPY dfx.json dfx.json
