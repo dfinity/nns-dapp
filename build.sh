@@ -66,7 +66,7 @@ set -x
 ###############
 echo Compiling rust package
 if [[ $DFX_NETWORK != "mainnet" ]]; then
-  "$TOPLEVEL/build-rs.sh" --features mock_conversion_rate
+  "$TOPLEVEL/build-rs.sh" nns-dapp --features mock_conversion_rate
 else
-  "$TOPLEVEL/build-rs.sh"
+  "$TOPLEVEL/build-rs.sh" nns-dapp
 fi
