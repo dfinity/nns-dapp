@@ -1,13 +1,13 @@
 #![allow(non_camel_case_types)]
 
-use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Init {
   pub  sns_root_canister_id: String,
   pub  fallback_controller_principal_ids: Vec<String>,
@@ -169,13 +169,13 @@ pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct NeuronBasketConstructionParameters {
   pub  dissolve_delay_interval_seconds: u64,
   pub  count: u64,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Params {
   pub  min_participant_icp_e8s: u64,
   pub  neuron_basket_construction_parameters: Option<
@@ -204,7 +204,7 @@ pub struct Swap {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: u64 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

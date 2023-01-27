@@ -1,6 +1,6 @@
 #![allow(non_camel_case_types)]
 
-use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
