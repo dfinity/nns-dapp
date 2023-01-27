@@ -27,9 +27,12 @@ use serde::Serialize;
 
 pub mod slow;
 
+/// A named empty record.
+///
+/// Many candid interfaces take an empty record as their argument.
+/// Anonymous empty records are not handled correctly by didc, so we name them 'EmptyRecord'.
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct EmptyRecord{}
-
 
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
 pub struct SnsCache {
