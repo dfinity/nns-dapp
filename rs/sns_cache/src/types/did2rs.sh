@@ -20,7 +20,7 @@ print_help() {
 	  - Commit the modified file.
 	  - Remove any existing patchfile.
 	  - Make a clean build (this will undo your changes)
-	  - Run: git diff \$CANISTER_NAME.rs > \CANISTER_NAME.patch
+	  - Run: git diff -R \$CANISTER_NAME.rs > \CANISTER_NAME.patch
 	  - Check out the rust file to recover your changes.
 	  - Now, rebuilding should create a file with your changes.
 
@@ -51,6 +51,6 @@ if test -f "${PATCHFILE}" ; then
 	(
 		GIT_ROOT="$(git rev-parse --show-toplevel)"
 		cd "$GIT_ROOT"
-		patch -R -p1 < "${PATCHFILE}"
+		patch -p1 < "${PATCHFILE}"
 	)
 fi
