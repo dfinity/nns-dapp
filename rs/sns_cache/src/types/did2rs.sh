@@ -5,7 +5,7 @@ set -euxo pipefail
 # Hjelpe meg!
 ##########################
 print_help() {
-	cat <<-EOF
+  cat <<-EOF
 	Compiles a did file to Rust and applies any saved manual changes.
 
 	Usage: $(basename "$0") <canister_name>
@@ -27,8 +27,8 @@ print_help() {
 	EOF
 }
 [[ "${1:-}" != "--help" ]] || {
-	print_help
-	exit 0
+  print_help
+  exit 0
 }
 
 ##########################
@@ -47,10 +47,10 @@ canister_name="$(basename "${1%.did}")"
   didc bind "${canister_name}.did" --target rs | sed -E 's/^(struct|enum|type) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
 } >"${canister_name}.rs"
 PATCHFILE="$(realpath "${canister_name}.patch")"
-if test -f "${PATCHFILE}" ; then
-	(
-		GIT_ROOT="$(git rev-parse --show-toplevel)"
-		cd "$GIT_ROOT"
-		patch -p1 < "${PATCHFILE}"
-	)
+if test -f "${PATCHFILE}"; then
+  (
+    GIT_ROOT="$(git rev-parse --show-toplevel)"
+    cd "$GIT_ROOT"
+    patch -p1 <"${PATCHFILE}"
+  )
 fi
