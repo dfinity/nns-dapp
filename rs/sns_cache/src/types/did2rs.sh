@@ -44,7 +44,7 @@ canister_name="$(basename "${1%.did}")"
 	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 	use ic_cdk::api::call::CallResult;
 	EOF
-  didc bind "${canister_name}.did" --target rs | sed -E 's/^(struct|enum) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
+  didc bind "${canister_name}.did" --target rs | sed -E 's/^(struct|enum|type) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
 } >"${canister_name}.rs"
 PATCHFILE="$(realpath "${canister_name}.patch")"
 if test -f "${PATCHFILE}" ; then
