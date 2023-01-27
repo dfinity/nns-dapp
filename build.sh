@@ -62,23 +62,11 @@ set -x
 "$TOPLEVEL/build-frontend.sh"
 
 ###############
-# cargo build # (output: target/release/.../nns-dapp.wasm)
+# backend # (output: nns-dapp.wasm)
 ###############
 echo Compiling rust package
-cargo_args=(--target wasm32-unknown-unknown --release --package nns-dapp)
 if [[ $DFX_NETWORK != "mainnet" ]]; then
-  cargo_args+=(--features mock_conversion_rate)
+  "$TOPLEVEL/build-rs.sh" nns-dapp --features mock_conversion_rate
+else
+  "$TOPLEVEL/build-rs.sh" nns-dapp
 fi
-
-(cd "$TOPLEVEL" && cargo build "${cargo_args[@]}")
-
-####################
-# ic-cdk-optimizer # (output: nns-dapp.wasm)
-####################
-echo Optimising wasm
-cd "$TOPLEVEL"
-ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
-gzip -f -n nns-dapp.wasm
-mv nns-dapp.wasm.gz nns-dapp.wasm
-ls -sh ./nns-dapp.wasm
-sha256sum ./nns-dapp.wasm
