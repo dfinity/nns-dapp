@@ -18,11 +18,12 @@ print_help() {
 
 cd "$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
-for canister in sns_ledger sns_governance sns_root sns_swap sns_wasm ; do
-  export canister
-  test -f "ic_${canister}.did" || (
+for CANISTER in sns_ledger sns_governance sns_root sns_swap sns_wasm ; do
+  export CANISTER
+  DID_FILE="$PWD/ic_${CANISTER}.did"
+  test -f "${DID_FILE}" || (
      cd "$GIT_ROOT"
-     cat "$(jq '.canisters[env.canister].candid' dfx.json)"
-  ) > "ic_${canister}.did"
+     cp "$(jq '.canisters[env.CANISTER].candid' dfx.json)" "$DID_FILE"
+  )
   ./wasm2types.sh "${canister}"
 done
