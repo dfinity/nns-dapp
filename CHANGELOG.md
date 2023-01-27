@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 104287
 * Auto-stake for non-controlled neurons.
 * Enable Merge HW controlled neurons.
 * Add "created at" parameter in transactions.
