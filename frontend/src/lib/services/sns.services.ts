@@ -9,7 +9,11 @@ import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import {
+  snsQueryStore,
+  snsSummariesStore,
+  snsSwapCommitmentsStore,
+} from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -30,9 +34,35 @@ import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsSwapCommitments = (): Promise<void> => {
-  snsSwapCommitmentsStore.setLoadingState();
-
+/**
+ * Loads the user commitments for all projects.
+ *
+ * If the commitments are already loaded, it will not reload them.
+ *
+ * We rely that the projects are already loaded to skip loading the commitments.
+ * If commitments is 0, it will load them always.
+ *
+ * Therefore, this can be called before the projects are loaded.
+ */
+export const loadSnsSwapCommitments = async (): Promise<void> => {
+  const commitmentsCanisterIds = new Set(
+    (get(snsSwapCommitmentsStore) ?? [])
+      .filter(({ certified }) => certified)
+      .map(({ swapCommitment: { rootCanisterId } }) => rootCanisterId.toText())
+  );
+  const snsProjectsCanisterIds = new Set(
+    (get(snsSummariesStore) ?? []).map(({ rootCanisterId }) =>
+      rootCanisterId.toText()
+    )
+  );
+  // Skip if we have commitments for all projects.
+  if (
+    commitmentsCanisterIds.size > 0 &&
+    commitmentsCanisterIds.size >= snsProjectsCanisterIds.size &&
+    [...snsProjectsCanisterIds].every((id) => commitmentsCanisterIds.has(id))
+  ) {
+    return;
+  }
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
@@ -52,7 +82,7 @@ export const loadSnsSwapCommitments = (): Promise<void> => {
       }
 
       // hide unproven data
-      snsSwapCommitmentsStore.setLoadingState();
+      snsSwapCommitmentsStore.reset();
 
       toastsError(
         toToastError({
@@ -112,7 +142,7 @@ export const loadSnsSwapCommitment = async ({
   onError,
 }: {
   rootCanisterId: string;
-  onError: () => void;
+  onError?: () => void;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
     request: ({ certified, identity }) =>
@@ -137,7 +167,7 @@ export const loadSnsSwapCommitment = async ({
         })
       );
 
-      onError();
+      onError?.();
     },
     logMessage: "Syncing Sns swap commitment",
   });

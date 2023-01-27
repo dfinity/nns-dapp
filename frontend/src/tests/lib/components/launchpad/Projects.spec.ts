@@ -12,12 +12,6 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
-
 describe("Projects", () => {
   beforeEach(() => {
     snsQueryStore.reset();
