@@ -18,7 +18,7 @@ if [ "$1" == "-k" ]; then
 fi
 
 function do_hash {
-  tar_xz_file=$1
+  tar_xz_file="$1"
 
   if [ "$tar_xz_file" == "${tar_xz_file%.tar.xz}" ]; then
     echo "Parameter should end with '.tar.xz'."
