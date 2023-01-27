@@ -10,7 +10,7 @@ use ic_cdk::api::call::CallResult;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Value { Int(candid::Int), Nat(candid::Nat), Blob(Vec<u8>), Text(String) }
 
-type Subaccount = Vec<u8>;
+pub type Subaccount = Vec<u8>;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
 
@@ -35,11 +35,11 @@ pub struct InitArgs {
   pub  token_name: String,
 }
 
-type Tokens = candid::Nat;
+pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct icrc1_supported_standards_ret0_inner { url: String, name: String }
 
-type Timestamp = u64;
+pub type Timestamp = u64;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransferArg {
   pub  to: Account,
@@ -50,7 +50,7 @@ pub struct TransferArg {
   pub  amount: Tokens,
 }
 
-type BlockIndex = candid::Nat;
+pub type BlockIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum TransferError {
   GenericError{ message: String, error_code: candid::Nat },

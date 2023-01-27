@@ -202,10 +202,10 @@ pub struct Swap {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DerivedState { sns_tokens_per_icp: f32, buyer_total_icp_e8s: u64 }
+pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: u64 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct GetStateResponse { swap: Option<Swap>, derived: Option<DerivedState> }
+pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct OpenRequest {
