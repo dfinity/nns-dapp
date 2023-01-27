@@ -499,15 +499,12 @@ impl AccountsStore {
     }
 
     fn remove_last_pending_transaction(&mut self) {
-        match self
+        if let Some((k, _)) = self
             .pending_transactions
             .iter()
             .max_by(|(_, (_, timestamp1)), (_, (_, timestamp2))| timestamp1.cmp(timestamp2))
         {
-            Some((k, _)) => {
-                self.remove_pending_transaction(*k);
-            }
-            None => (),
+            self.remove_pending_transaction(*k);
         }
     }
 

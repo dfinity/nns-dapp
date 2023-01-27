@@ -27,12 +27,7 @@ ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "7676e7f"}
 
 
 # These should be one entry here for each of sns_root, sns_ledger and so on.
-# TODO: Derive these types from candid in the did file.
-#ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "226ab04e0984367da356bbe27c90447863d33a27" }
-#ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "226ab04e0984367da356bbe27c90447863d33a27" }
-#ic-sns-root = { git = "https://github.com/dfinity/ic", rev = "226ab04e0984367da356bbe27c90447863d33a27" }
 ic-sns-wasm = { path = "/home/max/dfn/ic/branches/nns-serde/rs/nns/sns-wasm" }
 ic-sns-swap = { path = "/home/max/dfn/ic/branches/nns-serde/rs/sns/swap" }
 ic-sns-root = { path = "/home/max/dfn/ic/branches/nns-serde/rs/sns/root" }
-# ic-sns-governance = { path = "/home/max/dfn/ic/branches/nns-serde/rs/sns/governance" }
 ic-icrc1 = { path = "/home/max/dfn/ic/branches/nns-serde/rs/rosetta-api/icrc1" }
