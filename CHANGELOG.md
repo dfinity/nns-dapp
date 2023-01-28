@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXXXXX
+* Fix bug encoding and decoding ICRC-1 subaccounts
+
+
 ## Proposal 101945
 * Increase sns neuron stake.
 * Split sns neuron.
