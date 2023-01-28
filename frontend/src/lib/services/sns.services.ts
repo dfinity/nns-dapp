@@ -66,6 +66,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
+    cacheKey: "snsSwapCommitments",
     onLoad: ({ response: swapCommitments, certified }) => {
       for (const swapCommitment of swapCommitments) {
         snsSwapCommitmentsStore.setSwapCommitment({

@@ -1,6 +1,7 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { cachingCallsStore } from "$lib/stores/caching-calling.store";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -113,6 +114,7 @@ export const initDebugStore = () =>
       snsProjectsStore,
       snsFunctionsStore,
       transactionsFeesStore,
+      cachingCallsStore,
     ],
     ([
       $busyStore,
@@ -139,6 +141,7 @@ export const initDebugStore = () =>
       $projectsStore,
       $snsFunctionsStore,
       $transactionsFeesStore,
+      $cachingCallsStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -164,5 +167,6 @@ export const initDebugStore = () =>
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,
       transactionsFees: $transactionsFeesStore,
+      cachingCallsStore: $cachingCallsStore,
     })
   );
