@@ -4,16 +4,19 @@
   import { i18n } from "$lib/stores/i18n";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { onMount } from "svelte";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { nonNullish } from "$lib/utils/utils";
+  import { isSignedIn } from "$lib/utils/auth.utils";
 
-  onMount(() => {
-    if (nonNullish($authStore.identity)) {
-      loadSnsSwapCommitments();
+  const loadSnsSale = async () => {
+    if (!isSignedIn($authStore.identity)) {
+      return;
     }
-  });
+
+    await loadSnsSwapCommitments();
+  };
+
+  $: $authStore.identity, (async () => await loadSnsSale())();
 
   let showCommitted = false;
   $: showCommitted = ($snsProjectsCommittedStore?.length ?? []) > 0;
