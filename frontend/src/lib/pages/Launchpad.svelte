@@ -6,9 +6,13 @@
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { onMount } from "svelte";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { nonNullish } from "$lib/utils/utils";
 
   onMount(() => {
-    loadSnsSwapCommitments();
+    if (nonNullish($authStore.identity)) {
+      loadSnsSwapCommitments();
+    }
   });
 
   let showCommitted = false;
