@@ -37,7 +37,7 @@ dfx deploy ckbtc_test_ledger --argument "(record {
         controller_id = principal \"$PRINCIPAL\";
         cycles_for_archive_creation = opt 4_000_000_000_000;
     };
-})"  --mode=reinstall
+})" --mode=reinstall
 
 # Example to mint ckBTC
 
