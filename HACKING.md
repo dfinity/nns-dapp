@@ -60,7 +60,7 @@ ckBTC deployment and development in NNS-dapp are in progress.
 
 To deploy a local Bitcoin network, the [documentation](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development) on the IC website can be followed.
 
-As ckBTC is not yet implemented in our pipeline, enabling it in `dfx.json` has bot be yet configured - i.e. needs to be manually configured:
+As ckBTC is not yet implemented in our pipeline, enabling it in `dfx.json` has not yet be done neither - i.e. it needs to be manually configured for testing / development purpose:
 
 Add following in `defaults` of [dfx.json](./dfx.json).
 
