@@ -3,11 +3,17 @@
  */
 
 import Summary from "$lib/components/summary/Summary.svelte";
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
 import { mockStoreSubscribe } from "../../../mocks/commont.mock";
 import en from "../../../mocks/i18n.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../../../mocks/sns-projects.mock";
 
 describe("Summary", () => {
   it("should render a logo", () => {
@@ -43,11 +49,16 @@ describe("Summary", () => {
   });
 
   describe("sns", () => {
-    beforeAll(() =>
+    beforeAll(() => {
       jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject))
-    );
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      });
+    });
 
     afterAll(() => jest.clearAllMocks());
 
