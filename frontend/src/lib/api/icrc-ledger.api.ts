@@ -24,8 +24,6 @@ export const getIcrcMainAccount = async ({
 }): Promise<Account> => {
   const mainAccountIdentifier = { owner: identity.getPrincipal() };
 
-  console.log(identity.getPrincipal().toText())
-
   const [mainBalanceE8s, metadata] = await Promise.all([
     balance({ ...mainAccountIdentifier, certified }),
     ledgerMetadata({ certified }),

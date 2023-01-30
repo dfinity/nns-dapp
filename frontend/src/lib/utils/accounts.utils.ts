@@ -4,10 +4,10 @@ import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
+import { isNullish } from "$lib/utils/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "$lib/utils/utils";
 
 /*
  * Returns the principal's main or hardware account

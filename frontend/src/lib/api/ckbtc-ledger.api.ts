@@ -28,8 +28,6 @@ export const getCkBTCAccounts = async ({
     metadata,
   });
 
-  console.log(mainAccount)
-
   logWithTimestamp("Getting ckBTC accounts: done");
 
   return [mainAccount];

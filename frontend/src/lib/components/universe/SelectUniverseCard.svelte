@@ -56,9 +56,7 @@
           (ckBTC ? $i18n.ckbtc.title : $i18n.core.ic)}</span
       >
       {#if displayProjectAccountsBalance}
-        <UniverseAccountsBalance
-          rootCanisterId={universe.summary?.rootCanisterId}
-        />
+        <UniverseAccountsBalance {universe} />
       {/if}
     </div>
   </div>

@@ -2,17 +2,14 @@
   import { nonNullish } from "$lib/utils/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import type { RootCanisterId } from "$lib/types/sns";
   import type { TokenAmount } from "@dfinity/nns";
   import { projectsAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { Universe } from "$lib/types/universe";
 
-  export let rootCanisterId: RootCanisterId | undefined;
+  export let universe: Universe;
 
   let balance: TokenAmount | undefined;
-  $: balance =
-    $projectsAccountsBalance[(rootCanisterId ?? OWN_CANISTER_ID).toText()]
-      ?.balance;
+  $: balance = $projectsAccountsBalance[universe.canisterId]?.balance;
 </script>
 
 <div class="amount">
