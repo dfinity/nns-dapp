@@ -536,12 +536,21 @@ export const stakeNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
+
+    const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
+      ?.fee;
+
+    if (!fee) {
+      throw new Error("error.transaction_fee_not_found");
+    }
+
     await stakeNeuronApi({
       controller: identity.getPrincipal(),
       rootCanisterId,
       stakeE8s,
       identity,
       source: decodeIcrcAccount(account.identifier),
+      fee,
     });
     await Promise.all([
       loadSnsAccounts({ rootCanisterId }),

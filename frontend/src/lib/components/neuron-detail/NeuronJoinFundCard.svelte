@@ -23,9 +23,9 @@
       <h3 slot="key">{$i18n.neurons.community_fund_title}</h3>
 
       <svelte:fragment slot="info"
-        ><div class="info">
-          <Html text={$i18n.neuron_detail.community_fund_more_info} />
-        </div></svelte:fragment
+        ><Html
+          text={$i18n.neuron_detail.community_fund_more_info}
+        /></svelte:fragment
       >
     </KeyValuePairInfo>
 
@@ -45,15 +45,5 @@
   .join {
     --checkbox-label-order: 1;
     --checkbox-padding: var(--padding) 0;
-  }
-
-  .info {
-    // For the link inside "i18n.neuron_detail.community_fund_more_info"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
-    }
   }
 </style>
