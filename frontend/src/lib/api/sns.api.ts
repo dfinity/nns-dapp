@@ -374,18 +374,28 @@ export const querySnsNeuron = async ({
   return neuron;
 };
 
+/**
+ * Stake SNS neuron.
+ *
+ * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
+ *
+ * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
+ */
 export const stakeNeuron = async ({
   controller,
   stakeE8s,
   rootCanisterId,
   identity,
   source,
+  fee,
 }: {
   controller: Principal;
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;
   source: IcrcAccount;
+  fee: bigint;
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(
     `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
@@ -403,6 +413,7 @@ export const stakeNeuron = async ({
     source,
     controller,
     createdAt,
+    fee,
   });
 
   logWithTimestamp(
