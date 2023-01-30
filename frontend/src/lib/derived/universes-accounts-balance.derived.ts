@@ -14,19 +14,19 @@ import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { derived } from "svelte/store";
 
-export interface ProjectAccountsBalance {
+export interface UniverseAccountsBalance {
   balance: TokenAmount | undefined;
   certified: boolean;
 }
 
-export type ProjectAccountsBalanceReadableStore = Record<
+export type UniversesAccountsBalanceReadableStore = Record<
   RootCanisterIdText,
-  ProjectAccountsBalance
+  UniverseAccountsBalance
 >;
 
-export const projectsAccountsBalance = derived<
+export const universesAccountsBalance = derived<
   [AccountsStore, SnsAccountsStore, CkBTCAccountsStore],
-  ProjectAccountsBalanceReadableStore
+  UniversesAccountsBalanceReadableStore
 >(
   [accountsStore, snsAccountsStore, ckBTCAccountsStore],
   ([$accountsStore, $snsAccountsStore, $ckBTCAccountsStore]) => ({
