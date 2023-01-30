@@ -22,10 +22,10 @@ cd "$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 for CANISTER in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
   export CANISTER
-  DID_FILE="$PWD/ic_${CANISTER}.did"
-  test -f "${DID_FILE}" || (
+  DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+  test -f "${DID_PATH}" || (
     cd "$GIT_ROOT"
-    cp "$(jq '.canisters[env.CANISTER].candid' dfx.json)" "$DID_FILE"
+    cp "$(jq '.canisters[env.CANISTER].candid' dfx.json)" "$DID_PATH"
   )
-  ./did2rs.sh "ic_${CANISTER}"
+  ./did2rs.sh "${CANISTER}"
 done

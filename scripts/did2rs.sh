@@ -37,9 +37,9 @@ print_help() {
 CANISTER_NAME="$(basename "${1%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/${CANISTER_NAME}.rs"
-PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/${CANISTER_NAME}.patch"
-DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.rs"
+RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.rs"
+PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.patch"
+DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
 
 cd "$GIT_ROOT"
 
