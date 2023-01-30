@@ -4,7 +4,6 @@ import {
 } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { sortedSnsUserNeuronsStore } from "$lib/derived/sorted-sns-neurons.derived";
 import {
   getSnsNeuronIdentity,
   syncSnsNeurons,
@@ -30,6 +29,7 @@ import type {
 import { fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
+import {sortedSnsUserNeuronsStore} from "$lib/derived/sns/sns-sorted-neurons.derived";
 
 export const registerVote = async ({
   rootCanisterId,
