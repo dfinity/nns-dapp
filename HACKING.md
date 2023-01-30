@@ -20,8 +20,8 @@ To run the dapp against canisters deployed locally on a simulated IC network, pr
 
 **TODO**
 
-- we need to provide a sample of `canister_ids.json` in the repo or automate the task with a script
-- fix `DFX_NETWORK=local ./config.sh` that does not output the canister ID in `VITE_OWN_CANISTER_ID` and `VITE_OWN_CANISTER_URL` of the `.env` file 
+- we need to provide a sample of `canister_ids.json` in the repo or automate the task with a script because currently without it, the all setup isn't developer friendly
+- fix `DFX_NETWORK=local ./config.sh` that does not output the canister ID in `VITE_OWN_CANISTER_ID` and `VITE_OWN_CANISTER_URL` of the `.env` file - i.e. makes unable to work locally
 
 ## Testnet
 
