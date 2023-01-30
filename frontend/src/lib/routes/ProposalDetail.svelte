@@ -6,9 +6,14 @@
   import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { nonNullish } from "$lib/utils/utils";
+  import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
+  import { listNeurons } from "$lib/services/neurons.services";
 
   export let referrerPath: AppPath | undefined = undefined;
   export let proposalIdText: string | null | undefined;
+
+  $: $isLoggedInStore,
+    (async () => $isLoggedInStore && (await listNeurons()))();
 </script>
 
 <main>

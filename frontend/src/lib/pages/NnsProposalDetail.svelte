@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import { loadProposal } from "$lib/services/$public/proposals.services";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { ProposalId, ProposalInfo } from "@dfinity/nns";
@@ -21,11 +21,8 @@
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
 
-  onMount(() => {
-    if ($isLoggedInStore) {
-      listNeurons();
-    }
-  });
+  $: $isLoggedInStore,
+    (async () => $isLoggedInStore && (await listNeurons()))();
 
   const mapProposalId = (
     proposalIdText: string | undefined | null = undefined
