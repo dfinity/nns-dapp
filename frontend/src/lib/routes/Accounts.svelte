@@ -9,9 +9,9 @@
   import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
   import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import {
-    committedProjectsStore,
+    snsProjectsCommittedStore,
     type SnsFullProject,
-  } from "$lib/derived/projects.derived";
+  } from "$lib/derived/sns/sns-projects.derived";
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
@@ -41,7 +41,7 @@
     });
   };
 
-  $: (async () => await loadSnsAccountsBalances($committedProjectsStore))();
+  $: (async () => await loadSnsAccountsBalances($snsProjectsCommittedStore))();
 </script>
 
 <main>

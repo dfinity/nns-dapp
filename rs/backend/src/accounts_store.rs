@@ -14,9 +14,9 @@ use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
+use icp_ledger::Operation::{self, Burn, Mint, Transfer};
+use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
-use ledger_canister::Operation::{self, Burn, Mint, Transfer};
-use ledger_canister::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::min;
@@ -499,15 +499,12 @@ impl AccountsStore {
     }
 
     fn remove_last_pending_transaction(&mut self) {
-        match self
+        if let Some((k, _)) = self
             .pending_transactions
             .iter()
             .max_by(|(_, (_, timestamp1)), (_, (_, timestamp2))| timestamp1.cmp(timestamp2))
         {
-            Some((k, _)) => {
-                self.remove_pending_transaction(*k);
-            }
-            None => (),
+            self.remove_pending_transaction(*k);
         }
     }
 

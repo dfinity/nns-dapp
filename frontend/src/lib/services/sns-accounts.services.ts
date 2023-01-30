@@ -2,13 +2,15 @@ import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
+import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { loadAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
@@ -84,7 +86,14 @@ export const snsTransferTokens = async ({
   try {
     const e8s = numberToE8s(amount);
     const identity: Identity = await getSnsAccountIdentity(source);
-    const to = decodeSnsAccount(destinationAddress);
+    const to = decodeIcrcAccount(destinationAddress);
+
+    const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
+      ?.fee;
+
+    if (!fee) {
+      throw new Error("error.transaction_fee_not_found");
+    }
 
     await transfer({
       identity,
@@ -92,6 +101,7 @@ export const snsTransferTokens = async ({
       fromSubAccount: source.subAccount,
       e8s,
       rootCanisterId,
+      fee,
     });
 
     await Promise.all([

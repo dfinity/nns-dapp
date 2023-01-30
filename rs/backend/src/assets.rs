@@ -244,7 +244,7 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
 
 // used both in init and post_upgrade
 pub fn init_assets() {
-    let compressed = include_bytes!("../../assets.tar.xz").to_vec();
+    let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());

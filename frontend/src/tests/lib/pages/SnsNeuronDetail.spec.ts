@@ -78,19 +78,24 @@ describe("SnsNeuronDetail", () => {
 
   afterEach(() => {
     validNeuron = true;
+    jest.clearAllMocks();
   });
 
+  const props = {
+    neuronId: getSnsNeuronIdAsHexString(mockSnsNeuron),
+  };
+
   describe("when neuron and projects are valid and present", () => {
-    beforeEach(() =>
+    beforeEach(() => {
       page.mock({
         data: { universe: rootCanisterIdMock.toText() },
         routeId: AppPath.Neuron,
-      })
-    );
+      });
+    });
 
-    const props = {
-      neuronId: getSnsNeuronIdAsHexString(mockSnsNeuron),
-    };
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
 
     it("should get neuron", async () => {
       render(SnsNeuronDetail, props);
@@ -106,57 +111,55 @@ describe("SnsNeuronDetail", () => {
       expect(titleRow).not.toBeNull();
     });
 
-    it("should not load parameters and fee when available", async () => {
+    it("should load parameters and fee", async () => {
       render(SnsNeuronDetail, props);
 
-      await waitFor(() => expect(loadSnsParameters).not.toBeCalled());
-      await waitFor(() => expect(loadSnsTransactionFee).not.toBeCalled());
+      await waitFor(() => expect(loadSnsParameters).toBeCalled());
+      await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
+    });
+  });
+
+  describe("when stores are empty", () => {
+    beforeAll(() => {
+      // empty stores
+      jest
+        .spyOn(snsParametersStore, "subscribe")
+        .mockImplementation(buildMockSnsParametersStore(true));
+      jest
+        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe(true));
     });
 
-    describe("", () => {
-      beforeAll(() => {
-        // empty stores
-        jest
-          .spyOn(snsParametersStore, "subscribe")
-          .mockImplementation(buildMockSnsParametersStore(true));
-        jest
-          .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-          .mockImplementation(
-            mockSnsSelectedTransactionFeeStoreSubscribe(true)
-          );
-      });
-
-      afterAll(() => {
-        // restore stores
-        mockParametersStore();
-        mockFeeStore();
-      });
-
-      it("should load parameters and fee if not available", async () => {
-        render(SnsNeuronDetail, props);
-
-        await waitFor(() => expect(loadSnsParameters).toBeCalled());
-        await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
-      });
+    afterAll(() => {
+      // restore stores
+      mockParametersStore();
+      mockFeeStore();
     });
 
-    it("should render main information card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
+    it("should load parameters and fee if not available", async () => {
+      render(SnsNeuronDetail, props);
 
-      expect(queryByTestId("sns-neuron-card-title")).toBeInTheDocument();
+      await waitFor(() => expect(loadSnsParameters).toBeCalled());
+      await waitFor(() => expect(loadSnsTransactionFee).toBeCalled());
     });
+  });
 
-    it("should render hotkeys card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
+  it("should render main information card", async () => {
+    const { queryByTestId } = render(SnsNeuronDetail, props);
 
-      expect(queryByTestId("sns-hotkeys-card")).toBeInTheDocument();
-    });
+    expect(queryByTestId("sns-neuron-card-title")).toBeInTheDocument();
+  });
 
-    it("should render following card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
+  it("should render hotkeys card", async () => {
+    const { queryByTestId } = render(SnsNeuronDetail, props);
 
-      expect(queryByTestId("sns-neuron-following")).toBeInTheDocument();
-    });
+    expect(queryByTestId("sns-hotkeys-card")).toBeInTheDocument();
+  });
+
+  it("should render following card", async () => {
+    const { queryByTestId } = render(SnsNeuronDetail, props);
+
+    expect(queryByTestId("sns-neuron-following")).toBeInTheDocument();
   });
 
   describe("when project is an invalid canister id", () => {
