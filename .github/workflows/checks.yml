@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: ["1.63.0"]
+        rust: ["1.64.0"]
         os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v3
@@ -139,7 +139,13 @@ jobs:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
-        run: echo OK
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

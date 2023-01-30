@@ -1,0 +1,55 @@
+name: Reproducible
+on:
+  push:
+    branches:
+      # This is the recommended development branch for this workflow; pushing it will trigger a build.
+      - reproducible
+    tags:
+      # The tag used when preparing a release.
+      - release-candidate
+  schedule:
+    # Nightly test.
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+jobs:
+  docker_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04, macos-11, macos-12]
+    steps:
+      - name: Unbork mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+            brew install coreutils
+            echo "/usr/local/bin" >> $GITHUB_PATH
+            echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          fi
+      - uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Helps with debugging
+      - name: Show versions
+        run: |
+          echo bash --version
+          bash --version
+          echo docker --version
+          docker --version
+      - name: Build
+        run: ./scripts/docker-build
+      - name: 'Upload nns-dapp wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp-mainnet-wasm-${{ matrix.os }}
+          path: nns-dapp.wasm
+          retention-days: 3
+      - name: 'Upload assets'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp-assets-${{ matrix.os }}
+          path: assets.tar.xz
+          retention-days: 3

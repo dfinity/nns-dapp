@@ -25,12 +25,6 @@ jest.mock("$lib/services/sns.services", () => {
   };
 });
 
-jest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
-
 describe("ProjectDetail", () => {
   describe("present project in store", () => {
     page.mock({ data: { universe: null } });
