@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXXX
+## Proposal 104642
 * Fix bug encoding and decoding ICRC-1 subaccounts
 
 
