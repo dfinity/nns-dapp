@@ -62,6 +62,10 @@ function do_hash {
   # SHA256 the collection of all hashes of all files.
   sha256sum "$hashfile"
   popd >/dev/null
+
+  if [ "$keep" == "false" ]; then
+    rm -rf -- "$tmpdir"
+  fi
 }
 
 for file in "$@"; do
