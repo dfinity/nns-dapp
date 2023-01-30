@@ -5,10 +5,8 @@
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
-  import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { goToWallet } from "$lib/utils/navigation.accounts.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
@@ -25,14 +23,6 @@
   );
 
   onDestroy(unsubscribe);
-
-  const goToDetails = async ({ identifier }: Account) =>
-    await goto(
-      buildWalletUrl({
-        universe: $pageStore.universe,
-        account: identifier,
-      })
-    );
 </script>
 
 <div class="card-grid" data-tid="sns-accounts-body">
@@ -42,7 +32,7 @@
     {#each $snsProjectAccountsStore ?? [] as account}
       <AccountCard
         role="link"
-        on:click={() => goToDetails(account)}
+        on:click={() => goToWallet({ account, universe: $pageStore.universe })}
         hash
         {account}>{account.name ?? $i18n.accounts.main}</AccountCard
       >

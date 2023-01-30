@@ -3,12 +3,10 @@
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import type { Account } from "$lib/types/account";
-  import { goto } from "$app/navigation";
-  import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { goToWallet } from "$lib/utils/navigation.accounts.utils";
 
   let loading = false;
 
@@ -23,14 +21,6 @@
     await loadCkBTCAccounts({});
     loading = false;
   });
-
-  const goToDetails = async ({ identifier }: Account) =>
-    await goto(
-      buildWalletUrl({
-        universe: $pageStore.universe,
-        account: identifier,
-      })
-    );
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
@@ -40,7 +30,7 @@
     {#each $ckBTCAccountsStore.accounts ?? [] as account}
       <AccountCard
         role="link"
-        on:click={() => goToDetails(account)}
+        on:click={() => goToWallet({ account, universe: $pageStore.universe })}
         hash
         {account}>{account.name ?? $i18n.accounts.main}</AccountCard
       >

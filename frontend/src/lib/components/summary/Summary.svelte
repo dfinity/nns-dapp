@@ -1,8 +1,5 @@
 <script lang="ts">
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseName from "$lib/components/universe/UniverseName.svelte";
 
