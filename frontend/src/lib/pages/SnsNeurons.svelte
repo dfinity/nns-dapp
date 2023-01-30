@@ -3,7 +3,7 @@
   import {
     sortedSnsCFNeuronsStore,
     sortedSnsUserNeuronsStore,
-  } from "$lib/derived/sorted-sns-neurons.derived";
+  } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { i18n } from "$lib/stores/i18n";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";

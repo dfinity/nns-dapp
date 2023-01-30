@@ -11,7 +11,12 @@ import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
 
 describe("sns-parameters-services", () => {
   describe("loadSnsParameters", () => {
-    it("should call api.nervousSystemParameters and load neurons in store", async () => {
+    afterEach(() => {
+      snsParametersStore.reset();
+      jest.clearAllMocks();
+    });
+
+    it("should call api.nervousSystemParameters and load parameters in store", async () => {
       const spyQuery = jest
         .spyOn(governanceApi, "nervousSystemParameters")
         .mockImplementation(() =>
@@ -25,6 +30,22 @@ describe("sns-parameters-services", () => {
         snsNervousSystemParametersMock
       );
       expect(spyQuery).toBeCalled();
+    });
+
+    it("should not call api.nervousSystemParameters if parameters are in the store and certified", async () => {
+      snsParametersStore.setParameters({
+        rootCanisterId: mockPrincipal,
+        parameters: snsNervousSystemParametersMock,
+        certified: true,
+      });
+      const spyQuery = jest
+        .spyOn(governanceApi, "nervousSystemParameters")
+        .mockImplementation(() =>
+          Promise.resolve(snsNervousSystemParametersMock)
+        );
+
+      await services.loadSnsParameters(mockPrincipal);
+      expect(spyQuery).not.toBeCalled();
     });
   });
 });

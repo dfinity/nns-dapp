@@ -28,7 +28,7 @@ export const loadSnsTransactionFee = async ({
 }) => {
   const storeData = get(transactionsFeesStore);
   // Avoid loading the same data multiple times if the data loaded is certified
-  if (storeData.projects[rootCanisterId.toString()]?.certified) {
+  if (storeData.projects[rootCanisterId.toText()]?.certified) {
     return;
   }
   return queryAndUpdate<bigint, unknown>({
