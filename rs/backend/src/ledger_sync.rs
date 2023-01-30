@@ -3,9 +3,9 @@ use crate::state::STATE;
 use dfn_core::CanisterId;
 use ic_ledger_core::block::BlockType;
 use ic_nns_constants::LEDGER_CANISTER_ID;
+use icp_ledger::protobuf::ArchiveIndexEntry;
+use icp_ledger::{Block, BlockIndex};
 use lazy_static::lazy_static;
-use ledger_canister::protobuf::ArchiveIndexEntry;
-use ledger_canister::{Block, BlockIndex};
 use std::cmp::{max, min};
 use std::ops::RangeInclusive;
 use std::sync::Mutex;
@@ -51,12 +51,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
             let blocks_count = blocks.len() as u32;
             for (block_height, block) in blocks.into_iter() {
                 let transaction = block.transaction().into_owned();
-                let result =
-                    store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp());
-
-                if let Err(err) = result {
-                    return Err(err);
-                }
+                store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp())?;
             }
             store.mark_ledger_sync_complete();
 

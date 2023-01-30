@@ -262,6 +262,7 @@ describe("sns-api", () => {
         owner: mockPrincipal,
       },
       controller: mockPrincipal,
+      fee: BigInt(10000),
     });
 
     expect(neuronId).toEqual(mockSnsNeuron.id);
