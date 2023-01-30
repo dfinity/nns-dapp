@@ -6,7 +6,7 @@
     getAccountByRootCanister,
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
-  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Principal } from "@dfinity/principal";
 
@@ -34,16 +34,9 @@
 </script>
 
 {#if selectableAccounts.length === 0}
-  <Dropdown
-    name="account"
-    disabled
-    selectedValue="no-accounts"
-    testId="select-account-dropdown"
-  >
-    <DropdownItem value="no-accounts">
-      {$i18n.accounts.no_account_select}
-    </DropdownItem>
-  </Dropdown>
+  <div class="select">
+    <Spinner size="small" inline />
+  </div>
 {:else}
   <Dropdown
     name="account"
@@ -57,3 +50,18 @@
     {/each}
   </Dropdown>
 {/if}
+
+<style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/form";
+  .select {
+    @include form.input;
+
+    position: relative;
+    box-sizing: border-box;
+
+    padding: var(--padding-2x);
+    border-radius: var(--border-radius);
+
+    width: var(--dropdown-width, auto);
+  }
+</style>

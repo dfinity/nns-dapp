@@ -5,12 +5,14 @@ import {
 } from "$lib/constants/sns.constants";
 import { nonNullish } from "$lib/utils/utils";
 import type {
+  IcrcMetadataResponseEntries,
+  IcrcTokenMetadataResponse,
+} from "@dfinity/ledger";
+import type {
   SnsGetMetadataResponse,
-  SnsMetadataResponseEntries,
   SnsNervousSystemFunction,
   SnsSwap,
   SnsSwapDerivedState,
-  SnsTokenMetadataResponse,
 } from "@dfinity/sns";
 import type {
   FunctionType,
@@ -53,7 +55,7 @@ export type CachedSns = {
     swap: SnsSwap;
     derived: SnsSwapDerivedState;
   };
-  icrc1_metadata: SnsTokenMetadataResponse;
+  icrc1_metadata: IcrcTokenMetadataResponse;
   icrc1_fee?: bigint;
 };
 
@@ -104,7 +106,7 @@ type CachedSnsSwapDerivedDto = {
 };
 
 type CachedSnsTokenMetadataDto = [
-  string | SnsMetadataResponseEntries,
+  string | IcrcMetadataResponseEntries,
   (
     | { Int: [number] }
     | { Nat: [number] }
@@ -215,7 +217,7 @@ const convertDerived = ({
 
 const convertIcrc1Metadata = (
   icrc1Metadata: CachedSnsTokenMetadataDto
-): SnsTokenMetadataResponse => {
+): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
     if ("Int" in value) {
       return [key, { Int: BigInt(value.Int[0]) }];

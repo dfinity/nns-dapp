@@ -8,9 +8,9 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
-  committedProjectsStore,
-  projectsStore,
-} from "$lib/derived/projects.derived";
+  snsProjectsCommittedStore,
+  snsProjectsStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import Proposals from "$lib/routes/Proposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -48,7 +48,7 @@ describe("Proposals", () => {
   );
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe("Proposals", () => {
   describe("sns", () => {
     beforeAll(() => {
       jest
-        .spyOn(projectsStore, "subscribe")
+        .spyOn(snsProjectsStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     });
 

@@ -10,10 +10,10 @@ import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
-  SnsAccount,
   SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
@@ -374,18 +374,28 @@ export const querySnsNeuron = async ({
   return neuron;
 };
 
+/**
+ * Stake SNS neuron.
+ *
+ * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
+ *
+ * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
+ */
 export const stakeNeuron = async ({
   controller,
   stakeE8s,
   rootCanisterId,
   identity,
   source,
+  fee,
 }: {
   controller: Principal;
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;
-  source: SnsAccount;
+  source: IcrcAccount;
+  fee: bigint;
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(
     `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
@@ -403,6 +413,7 @@ export const stakeNeuron = async ({
     source,
     controller,
     createdAt,
+    fee,
   });
 
   logWithTimestamp(
@@ -422,7 +433,7 @@ export const increaseStakeNeuron = async ({
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;
-  source: SnsAccount;
+  source: IcrcAccount;
 }): Promise<void> => {
   logWithTimestamp(
     `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`

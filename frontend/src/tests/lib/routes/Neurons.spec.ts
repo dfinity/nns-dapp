@@ -4,7 +4,7 @@
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { projectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -42,7 +42,7 @@ describe("Neurons", () => {
   );
 
   jest
-    .spyOn(projectsStore, "subscribe")
+    .spyOn(snsProjectsStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeEach(() => {

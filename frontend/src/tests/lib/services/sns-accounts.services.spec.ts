@@ -119,7 +119,17 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
+
+    afterEach(() => {
+      transactionsFeesStore.reset();
+    });
+
     it("should call sns transfer tokens", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
         .spyOn(ledgerApi, "transfer")
         .mockResolvedValue(undefined);
@@ -138,6 +148,11 @@ describe("sns-accounts-services", () => {
     });
 
     it("should load transactions if flag is passed", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
         .spyOn(ledgerApi, "transfer")
         .mockResolvedValue(undefined);
@@ -157,6 +172,11 @@ describe("sns-accounts-services", () => {
     });
 
     it("should show toast and return success false if transfer fails", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
         .spyOn(ledgerApi, "transfer")
         .mockRejectedValue(new Error("test error"));
@@ -172,6 +192,27 @@ describe("sns-accounts-services", () => {
 
       expect(success).toBe(false);
       expect(spyTransfer).toBeCalled();
+      expect(spyAccounts).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
+    });
+
+    it("should show toast and return success false if there is no transaction fee", async () => {
+      transactionsFeesStore.reset();
+      const spyTransfer = jest
+        .spyOn(ledgerApi, "transfer")
+        .mockRejectedValue(new Error("test error"));
+      const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+
+      const { success } = await services.snsTransferTokens({
+        rootCanisterId: mockPrincipal,
+        source: mockSnsMainAccount,
+        destinationAddress: "aaaaa-aa",
+        amount: 1,
+        loadTransactions: false,
+      });
+
+      expect(success).toBe(false);
+      expect(spyTransfer).not.toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
     });

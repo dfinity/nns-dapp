@@ -9,31 +9,51 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import { fireEvent, render } from "@testing-library/svelte";
 import {
-  mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "../../../mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
 
 describe("SelectAccountDropdown", () => {
+  describe("no accounts", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+    afterEach(() => {
+      accountsStore.reset();
+    });
+
+    const props = { rootCanisterId: OWN_CANISTER_ID };
+    it("should render spinner", () => {
+      accountsStore.reset();
+      const { getByTestId } = render(SelectAccountDropdown, { props });
+
+      expect(getByTestId("spinner")).toBeInTheDocument();
+    });
+  });
+
   describe("nns accounts", () => {
     const mockSubAccount2 = {
       ...mockSubAccount,
       identifier: "test-identifier",
     };
-    const subaccounts = [mockSubAccount, mockSubAccount2];
+    const subAccounts = [mockSubAccount, mockSubAccount2];
     const hardwareWallets = [mockHardwareWalletAccount];
 
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
-      );
+    beforeEach(() => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts,
+        hardwareWallets,
+        certified: true,
+      });
+    });
+
+    afterEach(() => {
+      accountsStore.reset();
+    });
 
     const props = { rootCanisterId: OWN_CANISTER_ID };
     it("should render accounts as options", () => {
@@ -41,7 +61,7 @@ describe("SelectAccountDropdown", () => {
 
       // main + subaccounts + hardware wallets
       expect(container.querySelectorAll("option").length).toBe(
-        1 + subaccounts.length + hardwareWallets.length
+        1 + subAccounts.length + hardwareWallets.length
       );
     });
 
@@ -63,7 +83,7 @@ describe("SelectAccountDropdown", () => {
 
       // main + subaccounts
       expect(container.querySelectorAll("option").length).toBe(
-        1 + subaccounts.length
+        1 + subAccounts.length
       );
     });
 
@@ -76,18 +96,26 @@ describe("SelectAccountDropdown", () => {
 
       selectElement &&
         fireEvent.change(selectElement, {
-          target: { value: subaccounts[0].identifier },
+          target: { value: subAccounts[0].identifier },
         });
 
       selectElement &&
-        expect(selectElement.value).toBe(subaccounts[0].identifier);
+        expect(selectElement.value).toBe(subAccounts[0].identifier);
     });
   });
 
   describe("sns accounts", () => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    beforeEach(() => {
+      snsAccountsStore.setAccounts({
+        rootCanisterId: mockPrincipal,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
+    });
+
+    afterEach(() => {
+      snsAccountsStore.reset();
+    });
 
     it("should select main as default", () => {
       const { container } = render(SelectAccountDropdown, {

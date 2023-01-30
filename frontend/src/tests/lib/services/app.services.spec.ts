@@ -3,17 +3,10 @@
  */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
-import { loadSnsSwapCommitments } from "$lib/services/sns.services";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { mockAccountDetails } from "../../mocks/accounts.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
-
-jest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
@@ -63,11 +56,5 @@ describe("app-services", () => {
     await expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
       numberOfCalls
     );
-  });
-
-  it("should init Sns", async () => {
-    await initAppPrivateData();
-
-    await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
   });
 });

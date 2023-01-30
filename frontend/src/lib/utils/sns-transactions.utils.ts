@@ -1,13 +1,10 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import {
-  encodeSnsAccount,
-  type SnsTransaction,
-  type SnsTransactionWithId,
-} from "@dfinity/sns";
+import type { SnsTransaction, SnsTransactionWithId } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import type { SnsTransactionsStore } from "../stores/sns-transactions.store";
 import {
@@ -152,14 +149,14 @@ const getTransactionInformation = (
   return {
     from:
       "from" in data
-        ? encodeSnsAccount({
+        ? encodeIcrcAccount({
             owner: data.from.owner,
             subaccount: fromNullable(data.from.subaccount),
           })
         : undefined,
     to:
       "to" in data
-        ? encodeSnsAccount({
+        ? encodeIcrcAccount({
             owner: data.to.owner,
             subaccount: fromNullable(data.to.subaccount),
           })
