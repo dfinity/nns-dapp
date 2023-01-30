@@ -590,7 +590,17 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
+    afterEach(() => {
+      transactionsFeesStore.reset();
+      jest.clearAllMocks();
+    });
+
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyStake = jest
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -608,6 +618,22 @@ describe("sns-neurons-services", () => {
       expect(spyStake).toBeCalled();
       expect(spyQuery).toBeCalled();
       expect(loadSnsAccounts).toBeCalled();
+    });
+
+    it("should not call sns api stakeNeuron if fee is not present", async () => {
+      transactionsFeesStore.reset();
+      const spyStake = jest
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBeFalsy();
+      expect(spyStake).not.toBeCalled();
     });
   });
 

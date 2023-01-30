@@ -1,4 +1,4 @@
-import { querySnsProjects } from "$lib/api/sns-caching.api";
+import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
@@ -57,10 +57,10 @@ export const loadSnsProjects = async (): Promise<void> => {
     );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
-    // If caching canister fails, fallback to the old way
+    // If aggregator canister fails, fallback to the old way
     // TODO: Agree on whether we want to fallback or not.
     // If the error is due to overload of the system, we might not want the fallback.
-    // This is useful if the error comes from the caching canister only.
+    // This is useful if the error comes from the aggregator canister only.
     await loadSnsSummaries();
   }
 };
