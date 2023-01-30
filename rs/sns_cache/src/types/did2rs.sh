@@ -64,7 +64,7 @@ canister_name="$(basename "${1%.did}")"
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
-  #     in a form that the Candid macro cannot handle.  Using a named type works around the limit sof the macro.
+  #     in a form that the Candid macro cannot handle.  Using a named type works around the limit of the macro.
   #   - We need a few but not all of the types to have the Default macro
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
