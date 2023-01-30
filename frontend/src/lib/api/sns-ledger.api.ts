@@ -61,6 +61,14 @@ export const transactionFee = async ({
   return fee;
 };
 
+/**
+ * Transfer SNS tokens from one account to another.
+ *
+ * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
+ *
+ * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
+ */
 export const transfer = async ({
   identity,
   to,
@@ -69,6 +77,7 @@ export const transfer = async ({
   memo,
   fromSubAccount,
   createdAt,
+  fee,
 }: {
   identity: Identity;
   to: IcrcAccount;
@@ -77,6 +86,7 @@ export const transfer = async ({
   memo?: Uint8Array;
   fromSubAccount?: SubAccountArray;
   createdAt?: bigint;
+  fee: bigint;
 }): Promise<void> => {
   const { transfer: transferApi } = await wrapper({
     identity,
@@ -91,6 +101,7 @@ export const transfer = async ({
       subaccount: toNullable(to.subaccount),
     },
     created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
+    fee,
     memo,
     from_subaccount:
       fromSubAccount !== undefined
