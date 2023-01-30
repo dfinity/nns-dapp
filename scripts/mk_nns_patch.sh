@@ -35,11 +35,11 @@ DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
 cd "$GIT_ROOT"
 
 rm -f "${PATCH_PATH}"
-./did2rs.sh "$CANISTER_NAME"
+scripts/did2rs.sh "$CANISTER_NAME"
 git diff -R "${RUST_PATH}" >"${PATCH_PATH}"
 if test -s "${PATCH_PATH}"; then
   git add "${PATCH_PATH}"
 else
   rm -f "${PATCH_PATH}"
 fi
-./did2rs.sh "$CANISTER_NAME"
+scripts/did2rs.sh "$CANISTER_NAME"
