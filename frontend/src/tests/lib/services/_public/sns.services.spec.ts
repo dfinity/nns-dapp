@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as cachingApi from "$lib/api/sns-caching.api";
+import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
 import {
   loadSnsNervousSystemFunctions,
@@ -15,7 +15,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { cachingSnsMock } from "../../../mocks/sns-caching.mock";
+import { aggregatorSnsMock } from "../../../mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
@@ -80,12 +80,12 @@ describe("SNS public services", () => {
     });
     it("loads sns stores with data", async () => {
       const spyQuerySnsProjects = jest
-        .spyOn(cachingApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([cachingSnsMock]));
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
 
       await loadSnsProjects();
 
-      const rootCanisterId = cachingSnsMock.canister_ids.root_canister_id;
+      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
       expect(spyQuerySnsProjects).toBeCalled();
 
       const queryStore = get(snsQueryStore);
