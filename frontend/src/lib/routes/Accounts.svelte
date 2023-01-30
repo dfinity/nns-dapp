@@ -24,6 +24,7 @@
   let selectedUniverseId = $selectedUniverseIdStore;
 
   let loadSnsAccountsBalancesRequested = false;
+  let loadCkBTCAccountsBalancesRequested = false;
 
   const loadSnsAccountsBalances = async (
     projects: SnsFullProject[] | undefined
@@ -53,6 +54,13 @@
     if (isUniverseCkBTC(selectedUniverseId)) {
       return;
     }
+
+    // We trigger the loading of the ckBTC Accounts Balances only once
+    if (loadCkBTCAccountsBalancesRequested) {
+      return;
+    }
+
+    loadCkBTCAccountsBalancesRequested = true;
 
     await uncertifiedLoadCkBTCAccountsBalance();
   };
