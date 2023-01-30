@@ -47,7 +47,9 @@
   };
 
   const loadCkBTCAccountsBalances = async () => {
-    // We load the accounts balance of ckBTC only if not already triggered by current view
+    // We load the accounts balance of ckBTC only if the current <Accounts /> is loaded in a view where ckBTC is not the selected universe
+    // - if user is navigating to route/accounts with Nns or Sns universe, then we load the balance
+    // - if user is navigating to route/accounts with ckBTC universe, then we do not load the balance here but let the main <CkBTCACcounts /> load the accounts with query+update
     if (isUniverseCkBTC(selectedUniverseId)) {
       return;
     }
