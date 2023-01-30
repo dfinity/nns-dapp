@@ -55,7 +55,7 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src rs/sns_cache/src && touch rs/backend/src/lib.rs && touch rs/sns_cache/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src rs/sns_cache/src
+RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src rs/sns_aggregator/src
 
 # Install dfx
 COPY dfx.json dfx.json
