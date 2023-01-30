@@ -16,7 +16,7 @@
   import { isNullish, nonNullish } from "$lib/utils/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
-  import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.service";
+  import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 

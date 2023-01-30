@@ -3,6 +3,7 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -23,6 +24,7 @@ import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
+  mockSummary,
 } from "../../mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
@@ -35,6 +37,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 jest.mock("$lib/services/sns-accounts-balance.services", () => {
   return {
     uncertifiedLoadSnsAccountsBalances: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-accounts-balance.services", () => {
+  return {
+    uncertifiedLoadCkBTCAccountsBalance: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -74,6 +82,23 @@ describe("Accounts", () => {
   it("should render NnsAccounts by default", () => {
     const { queryByTestId } = render(Accounts);
     expect(queryByTestId("accounts-body")).toBeInTheDocument();
+  });
+
+  it("should render nns name", () => {
+    const { getByTestId } = render(Accounts);
+
+    const titleRow = getByTestId("projects-summary");
+
+    expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
+  });
+
+  it("should render icp project logo", () => {
+    const { getByTestId } = render(Accounts);
+
+    const logo = getByTestId("project-logo");
+    const img = logo.querySelector('[data-tid="logo"]');
+
+    expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
   });
 
   it("should open nns transaction modal", async () => {
@@ -147,6 +172,47 @@ describe("Accounts", () => {
 
     await waitFor(() =>
       expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled()
+    );
+  });
+
+  it("should render sns project name", () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const titleRow = getByTestId("projects-summary");
+
+    expect(
+      titleRow?.textContent?.includes(mockSummary.metadata.name)
+    ).toBeTruthy();
+  });
+
+  it("should render sns project logo", () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const logo = getByTestId("project-logo");
+    const img = logo.querySelector('[data-tid="logo"]');
+
+    expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
+  });
+
+  it("should render project title", async () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getByText } = render(Accounts);
+
+    await waitFor(() =>
+      expect(
+        getByText(mockSnsFullProject.summary.metadata.name)
+      ).toBeInTheDocument()
     );
   });
 });
