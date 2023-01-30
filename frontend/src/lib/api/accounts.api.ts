@@ -5,6 +5,7 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { ICP_TOKEN_METADATA } from "$lib/constants/accounts.constants";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account, AccountType } from "$lib/types/account";
@@ -64,6 +65,7 @@ export const loadAccounts = async ({
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),
       ...("principal" in account && { principal: account.principal }),
+      token: ICP_TOKEN_METADATA,
     });
 
   const [main, subAccounts, hardwareWallets] = await Promise.all([

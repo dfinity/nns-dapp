@@ -1,6 +1,7 @@
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { mapIcrcTokenMetadata } from "$lib/utils/icrc.utils";
+import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
@@ -29,9 +30,9 @@ export const getIcrcMainAccount = async ({
     ledgerMetadata({ certified }),
   ]);
 
-  const projectToken = mapOptionalToken(metadata);
+  const token = mapIcrcTokenMetadata(metadata);
 
-  if (projectToken === undefined) {
+  if (isNullish(token)) {
     throw new LedgerErrorKey("error.icrc_token_load");
   }
 
@@ -40,8 +41,9 @@ export const getIcrcMainAccount = async ({
     principal: identity.getPrincipal(),
     balance: TokenAmount.fromE8s({
       amount: mainBalanceE8s,
-      token: projectToken,
+      token,
     }),
     type: "main",
+    token,
   };
 };

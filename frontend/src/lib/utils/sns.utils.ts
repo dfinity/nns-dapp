@@ -5,17 +5,14 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type {
   QuerySns,
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
-import {
-  IcrcMetadataResponseEntries,
-  type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+import type { TokenMetadata } from "$lib/types/token";
+import { mapIcrcTokenMetadata } from "$lib/utils/icrc.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -33,7 +30,7 @@ type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
-  token?: SnsTokenMetadata;
+  token?: TokenMetadata;
   swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
@@ -99,34 +96,6 @@ const mapOptionalMetadata = ({
 };
 
 /**
- * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
- */
-export const mapOptionalToken = (
-  response: IcrcTokenMetadataResponse
-): SnsTokenMetadata | undefined => {
-  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
-    (acc, [key, value]) => {
-      switch (key) {
-        case IcrcMetadataResponseEntries.SYMBOL:
-          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
-          break;
-        case IcrcMetadataResponseEntries.NAME:
-          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
-      }
-
-      return acc;
-    },
-    {}
-  );
-
-  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
-    return undefined;
-  }
-
-  return nullishToken as SnsTokenMetadata;
-};
-
-/**
  * Maps the properties of the SnsSwap type to the properties of the SnsSummarySwap type.
  * For now, the only property is extracted from candid optional type is `params`.
  */
@@ -176,7 +145,7 @@ export const mapAndSortSnsQueryToSummaries = ({
         ...rest,
         rootCanisterId,
         metadata: mapOptionalMetadata(metadata),
-        token: mapOptionalToken(token),
+        token: mapIcrcTokenMetadata(token),
         swapCanisterId: swapState?.swapCanisterId,
         governanceCanisterId: swapState?.governanceCanisterId,
         swap: mapOptionalSwap(swapData),

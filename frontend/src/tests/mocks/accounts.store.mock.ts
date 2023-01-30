@@ -3,6 +3,7 @@ import type {
   HardwareWalletAccountDetails,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { ICP_TOKEN_METADATA } from "$lib/constants/accounts.constants";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -18,6 +19,7 @@ export const mockMainAccount: Account = {
   }) as TokenAmount,
   principal: Principal.fromText("aaaaa-aa"),
   type: "main",
+  token: ICP_TOKEN_METADATA,
 };
 
 export const mockSubAccount: Account = {
@@ -33,6 +35,7 @@ export const mockSubAccount: Account = {
   ],
   name: "test subaccount",
   type: "subAccount",
+  token: ICP_TOKEN_METADATA,
 };
 
 export const mockHardwareWalletAccount: Account = {
@@ -47,6 +50,7 @@ export const mockHardwareWalletAccount: Account = {
   ),
   name: "hardware wallet account test",
   type: "hardwareWallet",
+  token: ICP_TOKEN_METADATA,
 };
 
 export const mockAccountDetails: AccountDetails = {

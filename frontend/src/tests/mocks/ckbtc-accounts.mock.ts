@@ -3,17 +3,20 @@ import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import { mockPrincipal } from "./auth.store.mock";
 
+const token = {
+  name: "Test account",
+  symbol: "ckBTC",
+};
+
 export const mockCkBTCMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
   balance: TokenAmount.fromString({
     amount: "4445566.987",
-    token: {
-      name: "Test account",
-      symbol: "ckBTC",
-    },
+    token,
   }) as TokenAmount,
   principal: mockPrincipal,
   type: "main",
+  token,
 };

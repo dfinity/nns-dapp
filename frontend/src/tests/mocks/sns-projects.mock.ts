@@ -4,9 +4,9 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
+import type { TokenMetadata } from "$lib/types/token";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
@@ -128,7 +128,7 @@ export const mockMetadata: SnsSummaryMetadata = {
     "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
 };
 
-export const mockToken: SnsTokenMetadata = {
+export const mockToken: TokenMetadata = {
   name: "Tetris",
   symbol: "TET",
 };

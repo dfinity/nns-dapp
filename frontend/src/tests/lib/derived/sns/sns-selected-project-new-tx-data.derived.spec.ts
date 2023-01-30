@@ -5,7 +5,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { mapIcrcTokenMetadata } from "$lib/utils/icrc.utils";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -49,7 +49,7 @@ describe("selected-project-new-transaction-data derived store", () => {
         certified: true,
       });
 
-      const token = mapOptionalToken(tokenData);
+      const token = mapIcrcTokenMetadata(tokenData);
       const storeData = get(snsSelectedProjectNewTxData);
       expect(storeData.rootCanisterId.toText()).toEqual(rootCanisterIdText);
       expect(storeData.token).toEqual(token);

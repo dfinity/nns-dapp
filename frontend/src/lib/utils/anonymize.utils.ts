@@ -9,8 +9,8 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
+import type { TokenMetadata } from "$lib/types/token";
 import {
   TokenAmount,
   type Ballot,
@@ -116,7 +116,8 @@ export const anonymizeAccount = async (
     return account as undefined | null;
   }
 
-  const { identifier, principal, balance, name, type, subAccount } = account;
+  const { identifier, principal, balance, name, type, subAccount, token } =
+    account;
 
   return {
     identifier: await cutAndAnonymize(identifier),
@@ -125,6 +126,7 @@ export const anonymizeAccount = async (
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),
+    token,
   };
 };
 
@@ -451,7 +453,7 @@ type AnonymizedSnsSummary = {
   rootCanisterId?: string;
   swapCanisterId?: string;
   metadata: SnsSummaryMetadata;
-  token: SnsTokenMetadata;
+  token: TokenMetadata;
   swap: SnsSummarySwap;
   derived: SnsSwapDerivedState;
 };

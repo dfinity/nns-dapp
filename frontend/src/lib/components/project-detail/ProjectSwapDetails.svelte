@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import type { SnsSummary, SnsTokenMetadata } from "$lib/types/sns";
+  import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -11,13 +11,14 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsParams } from "@dfinity/sns";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
+  import type { TokenMetadata } from "$lib/types/token";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
   let params: SnsParams;
-  let token: SnsTokenMetadata;
+  let token: TokenMetadata;
   // type safety validation is done in ProjectDetail component
   $: ({
     swap: { params },

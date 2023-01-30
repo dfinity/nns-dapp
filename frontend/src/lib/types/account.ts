@@ -1,8 +1,10 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { TokenMetadata } from "$lib/types/token";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 
 export type AccountType = "main" | "subAccount" | "hardwareWallet";
+
 export interface Account {
   identifier: string;
   // Main and HardwareWallet accounts have Principal
@@ -12,4 +14,5 @@ export interface Account {
   name?: string;
   subAccount?: SubAccountArray;
   type: AccountType;
+  token: TokenMetadata;
 }

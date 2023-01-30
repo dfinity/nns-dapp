@@ -1,3 +1,4 @@
+import type { TokenMetadata } from "$lib/types/token";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
@@ -20,15 +21,6 @@ export interface SnsSummaryMetadata {
   logo: string;
   name: string;
   description: string;
-}
-
-/**
- * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.
- * That's why we have to map the data as well.
- */
-export interface SnsTokenMetadata {
-  name: string;
-  symbol: string;
 }
 
 export interface SnsSummarySwap {
@@ -58,7 +50,7 @@ export interface SnsSummary {
   /**
    * The token metadata of the Sns project (name of the token and symbol)
    */
-  token: SnsTokenMetadata;
+  token: TokenMetadata;
 
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)
