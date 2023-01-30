@@ -32,7 +32,7 @@ export const getIcrcMainAccount = async ({
   const projectToken = mapOptionalToken(metadata);
 
   if (projectToken === undefined) {
-    throw new LedgerErrorKey("error.sns_token_load");
+    throw new LedgerErrorKey("error.icrc_token_load");
   }
 
   return {
