@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 ###############
 # Hjelpe meg!
@@ -12,7 +12,7 @@ print_help() {
 	    $(basename "$0") <canister_name> [cargo_flags]
 	EOF
 }
-[[ "${1:-}" == "--help" ]] || {
+[[ "${1:-}" != "--help" ]] || {
   print_help
   exit 0
 }

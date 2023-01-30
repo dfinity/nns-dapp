@@ -1,8 +1,9 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 3efa3526..b9e92dcd 100644
+index de877575..72fe139e 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -1,6 +1,6 @@
+@@ -2,7 +2,7 @@
+ #![allow(clippy::all)]
  #![allow(non_camel_case_types)]
  
 -use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};

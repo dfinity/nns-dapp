@@ -1,8 +1,9 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 457d905f..9aec1c8e 100644
+index caf728e4..739c2846 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -1,13 +1,13 @@
+@@ -2,14 +2,14 @@
+ #![allow(clippy::all)]
  #![allow(non_camel_case_types)]
  
 -use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
@@ -18,7 +19,7 @@ index 457d905f..9aec1c8e 100644
  pub struct Init {
    pub  sns_root_canister_id: String,
    pub  fallback_controller_principal_ids: Vec<String>,
-@@ -169,13 +169,13 @@ pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
+@@ -171,13 +171,13 @@ pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
  
@@ -34,7 +35,7 @@ index 457d905f..9aec1c8e 100644
  pub struct Params {
    pub  min_participant_icp_e8s: u64,
    pub  neuron_basket_construction_parameters: Option<
-@@ -202,10 +202,10 @@ pub struct Swap {
+@@ -204,10 +204,10 @@ pub struct Swap {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
