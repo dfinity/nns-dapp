@@ -245,4 +245,31 @@ describe("Accounts", () => {
       ).toBeInTheDocument()
     );
   });
+
+  it("should render ckBTC name", () => {
+    page.mock({
+      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const titleRow = getByTestId("projects-summary");
+
+    expect(titleRow?.textContent?.includes(en.ckbtc.title)).toBeTruthy();
+  });
+
+  it("should render icp project logo", () => {
+    page.mock({
+      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const logo = getByTestId("project-logo");
+    const img = logo.querySelector('[data-tid="logo"]');
+
+    expect(img?.getAttribute("alt") ?? "").toEqual(en.ckbtc.logo);
+  });
 });
