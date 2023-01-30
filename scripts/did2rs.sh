@@ -8,12 +8,12 @@ print_help() {
   cat <<-EOF
 	Compiles a did file to Rust and applies any saved manual changes.
 
-	Usage: $(basename "$0") <canister_name>
+	Usage: $(basename "$0") <CANISTER_NAME>
 	takes inputs:
-	  <canister_name>.did
-	  <canister_name>.patch (optional)
+	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
+	  rs/sns_cache/src/types/<CANISTER_NAME>.patch (optional)
 	creates:
-	  <canister_name>.rs
+	  rs/sns_cache/src/types/<CANISTER_NAME>.rs
 
 	Hint: To create a patchfile:
 	  - Customise the built rust file to your heart's content.
@@ -34,9 +34,18 @@ print_help() {
 ##########################
 # Get working dir and args
 ##########################
-cd "$(dirname "$0")"
-canister_name="$(basename "${1%.did}")"
+CANISTER_NAME="$(basename "${1%.did}")"
+GIT_ROOT="$(git rev-parse --show-toplevel)"
 
+RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/${CANISTER_NAME}.rs"
+PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/${CANISTER_NAME}.patch"
+DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.rs"
+
+cd "$GIT_ROOT"
+
+##########################
+# Translate candid to Rust
+##########################
 {
   # Here we write the first few lines of the Rust file.
   #
@@ -68,13 +77,10 @@ canister_name="$(basename "${1%.did}")"
   #   - We need a few but not all of the types to have the Default macro
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
-  didc bind "${canister_name}.did" --target rs | sed -E 's/^(struct|enum|type) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
-} >"${canister_name}.rs"
-PATCHFILE="$(realpath "${canister_name}.patch")"
-if test -f "${PATCHFILE}"; then
+  didc bind "${DID_PATH}" --target rs | sed -E 's/^(struct|enum|type) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
+} >"${RUST_PATH}"
+if test -f "${PATCH_PATH}"; then
   (
-    GIT_ROOT="$(git rev-parse --show-toplevel)"
-    cd "$GIT_ROOT"
-    patch -p1 <"${PATCHFILE}"
+    patch -p1 <"${PATCH_PATH}"
   )
 fi
