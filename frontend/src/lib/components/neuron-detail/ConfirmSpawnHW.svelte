@@ -84,13 +84,5 @@
       align-items: stretch;
       gap: var(--padding-3x);
     }
-
-    // For the link inside "i18n.neuron_detail.spawn_neuron_explanation_hw"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
-    }
   }
 </style>

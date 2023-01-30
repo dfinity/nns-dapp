@@ -89,7 +89,13 @@ jobs:
         run: echo TODO
   docker-build-passes:
     needs: ["assets", "docker-build"]
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - name: Docker Build workflow passes
-        run: echo OK
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

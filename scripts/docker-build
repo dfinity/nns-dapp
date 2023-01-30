@@ -49,7 +49,7 @@ DOCKER_BUILDKIT=1 docker build \
   --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
   -t "$image_name" \
   -o "$OUTDIR" . \
-  "${@}"
+  "${@+${@}}"
 set +x
 
 for file in "${assets[@]}"; do
