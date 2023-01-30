@@ -20,7 +20,6 @@
   let ckBTC = false;
   $: ckBTC = isUniverseCkBTC(canisterId);
 
-  // TODO: use ckBTC logo provided by ledger
   let logo: string;
   $: logo = summary?.metadata.logo ?? (ckBTC ? CKBTC_LOGO : IC_LOGO);
 
