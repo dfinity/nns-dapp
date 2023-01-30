@@ -103,3 +103,9 @@ Likewise, as the configuration is not yet automated, there are no `.env` variabl
 ### Index
 
 The index canister does not exist yet on mainnet but, will be proposed soon. Same pattern will apply.
+
+### Feature flag
+
+Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` per default neither. 
+
+Therefore this flag should also be set manually to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
