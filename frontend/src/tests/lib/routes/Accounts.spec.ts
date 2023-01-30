@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
@@ -11,6 +14,7 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
+import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -31,6 +35,11 @@ import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transac
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+jest.mock("$lib/services/ckbtc-accounts.services", () => {
+  return {
+    loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -172,6 +181,27 @@ describe("Accounts", () => {
 
     await waitFor(() =>
       expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled()
+    );
+  });
+
+  it("should load ckBTC accounts balances", async () => {
+    render(Accounts);
+
+    await waitFor(() =>
+      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
+    );
+  });
+
+  it("should not load ckBTC accounts balances", async () => {
+    page.mock({
+      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    render(Accounts);
+
+    await waitFor(() =>
+      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
     );
   });
 
