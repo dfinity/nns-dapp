@@ -16,7 +16,7 @@ use std::str::FromStr;
 #[derive(Default)]
 pub struct State {
     /// Data collected about SNSs, dumped as received from upstream.
-    pub sns_cache: RefCell<SnsCache>,
+    pub sns_aggregator: RefCell<SnsCache>,
     /// Pre-signed data that can be served as high performance certified query calls.
     ///
     /// - /sns/list/latest/slow.json
@@ -48,8 +48,8 @@ impl State {
         // Updates the max index, if needed
         {
             STATE.with(|state| {
-                if state.sns_cache.borrow().max_index < index {
-                    state.sns_cache.borrow_mut().max_index = index;
+                if state.sns_aggregator.borrow().max_index < index {
+                    state.sns_aggregator.borrow_mut().max_index = index;
                 }
             });
         }
@@ -75,12 +75,12 @@ impl State {
         }
         const PAGE_SIZE: u64 = 10;
         // If this is in the last N, update latest.
-        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.sns_cache.borrow().max_index)
+        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.sns_aggregator.borrow().max_index)
         {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
-                    .sns_cache
+                    .sns_aggregator
                     .borrow()
                     .upstream_data
                     .values()
@@ -99,7 +99,7 @@ impl State {
         // Add this to the list of values from upstream
         STATE.with(|state| {
             state
-                .sns_cache
+                .sns_aggregator
                 .borrow_mut()
                 .upstream_data
                 .insert(root_canister_id, upstream_data);

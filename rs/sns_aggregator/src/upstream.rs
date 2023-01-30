@@ -12,8 +12,8 @@ use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 pub async fn update_cache() {
     ic_cdk::println!("Heartbeat");
     let sns_maybe = STATE.with(|state| {
-        state.sns_cache.borrow_mut().last_partial_update = time();
-        state.sns_cache.borrow_mut().sns_to_get.pop()
+        state.sns_aggregator.borrow_mut().last_partial_update = time();
+        state.sns_aggregator.borrow_mut().sns_to_get.pop()
     });
     ic_cdk::println!("Maybe have SNSs");
     let result = if let Some((index, sns)) = sns_maybe {
@@ -22,7 +22,7 @@ pub async fn update_cache() {
     } else {
         // Timestamp start of cycle
         STATE.with(|state| {
-            state.sns_cache.borrow_mut().last_update = time();
+            state.sns_aggregator.borrow_mut().last_update = time();
         });
         ic_cdk::println!("Need to get more SNSs");
         set_list_of_sns_to_get().await
@@ -64,7 +64,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
             );
             let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
             STATE.with(|state| {
-                state.sns_cache.borrow_mut().sns_to_get = instances;
+                state.sns_aggregator.borrow_mut().sns_to_get = instances;
             });
             Ok(())
         }

@@ -29,10 +29,10 @@ pub enum FunctionType {
 ```
 The compile error is:
 ```
-+ cargo build --target wasm32-unknown-unknown --release -p sns_cache --color always
-   Compiling sns_cache v0.1.2 (/home/max/dfn/sns-cache/branches/didc-types/src/sns_cache)
++ cargo build --target wasm32-unknown-unknown --release -p sns_aggregator --color always
+   Compiling sns_aggregator v0.1.2 (/home/max/dfn/sns-cache/branches/didc-types/src/sns_aggregator)
 error[E0532]: expected unit struct, unit variant or constant, found struct variant `FunctionType::NativeNervousSystemFunction`
-  --> src/sns_cache/src/types/ic_sns_governance2.rs:15:10
+  --> src/sns_aggregator/src/types/ic_sns_governance2.rs:15:10
    |
 15 | #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
    |          ^^^^^^^^^^ help: use struct pattern syntax instead: `FunctionType::NativeNervousSystemFunction {}`
@@ -43,7 +43,7 @@ error[E0532]: expected unit struct, unit variant or constant, found struct varia
    = note: this error originates in the derive macro `CandidType` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 For more information about this error, try `rustc --explain E0532`.
-error: could not compile `sns_cache` due to previous error
+error: could not compile `sns_aggregator` due to previous error
 ```
 
 *Patch*

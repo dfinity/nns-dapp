@@ -1,7 +1,7 @@
-diff --git b/rs/sns_cache/src/types/ic_sns_governance.rs a/rs/sns_cache/src/types/ic_sns_governance.rs
+diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 index 7a908d05..9b82a065 100644
---- b/rs/sns_cache/src/types/ic_sns_governance.rs
-+++ a/rs/sns_cache/src/types/ic_sns_governance.rs
+--- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
++++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -7,6 +7,7 @@ use ic_cdk::api::call::CallResult;
  // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
  // use ic_cdk::api::call::CallResult;
