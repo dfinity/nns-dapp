@@ -8,12 +8,12 @@ print_help() {
   cat <<-EOF
     Makes a patch file for a rust file gfrom local customizations.
 
-	Usage: $(basename "$0") <canister_name>
+	Usage: $(basename "$0") <CANISTER_NAME>
 	takes inputs:
-	  <canister_name>.did
-	  <canister_name>.rs (must be committed as it will be changed)
+	  <CANISTER_NAME>.did
+	  <CANISTER_NAME>.rs (must be committed as it will be changed)
 	creates:
-	  <canister_name>.patch
+	  <CANISTER_NAME>.patch
 
 	EOF
 }
@@ -25,15 +25,21 @@ print_help() {
 ##########################
 # Get working dir and args
 ##########################
-cd "$(dirname "$0")"
-canister_name="$(basename "${1%.did}")"
+GIT_ROOT="$(git rev-parse --show-toplevel)"
+CANISTER_NAME="$1"
 
-rm -f "${canister_name}.patch"
-./did2rs.sh "$canister_name"
-git diff -R "${canister_name}.rs" >"${canister_name}.patch"
-if test -s "${canister_name}.patch"; then
-  git add "${canister_name}.patch"
+RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.rs"
+PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.patch"
+DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+
+cd "$GIT_ROOT"
+
+rm -f "${PATCH_PATH}"
+./did2rs.sh "$CANISTER_NAME"
+git diff -R "${RUST_PATH}" >"${PATCH_PATH}"
+if test -s "${PATCH_PATH}"; then
+  git add "${PATCH_PATH}"
 else
-  rm -f "${canister_name}.patch"
+  rm -f "${PATCH_PATH}"
 fi
-./did2rs.sh "$canister_name"
+./did2rs.sh "$CANISTER_NAME"
