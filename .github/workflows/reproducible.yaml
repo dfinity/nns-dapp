@@ -53,3 +53,29 @@ jobs:
           name: nns-dapp-assets-${{ matrix.os }}
           path: assets.tar.xz
           retention-days: 3
+      - name: 'Output the wasm hash'
+        run: |
+          mkdir -p hashes
+          sha256sum nns-dapp.wasm > "hashes/nns-dapp-wasm_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
+      - name: 'Output the assets hash'
+        run: |
+          sha256sum assets.tar.xz > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
+      - name: 'Upload hashes'
+        uses: actions/upload-artifact@v3
+        with:
+          name: hashes
+          path: hashes/*.txt
+  compare_hashes:
+    runs-on: ubuntu-latest
+    needs: [native_asset_build]
+    steps:
+      - name: Get hashes
+        uses: actions/download-artifact@v3
+        with:
+          name: hashes
+          path: hashes
+      - name: Print hashes
+        run: |
+          echo Hashes:
+          grep -r . hashes/ | awk -F: '{printf "%s: %s\n", $2, $1}' | sort
+          (( $(cat hashes/*.txt | sort | uniq | wc -l) == 2 ))
