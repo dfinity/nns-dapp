@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal 104642
+* Fix bug encoding and decoding ICRC-1 subaccounts
+
 ## Proposal 104287
 * Auto-stake for non-controlled neurons.
 * Enable Merge HW controlled neurons.
