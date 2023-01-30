@@ -71,12 +71,9 @@
 
   const vote = async (vote: Vote) => {
     startBusy({ initiator: "load-sns-accounts" });
-    await registerVoteDemo({ proposal: proposalData, vote: Vote.Yes });
+    await registerVoteDemo({ proposal: proposalData, vote });
     stopBusy("load-sns-accounts");
   };
-
-  $: isDefined(id) &&
-    console.log(`Proposal(${id.id}) ballots`, proposalData.ballots);
 </script>
 
 <ProposalCard

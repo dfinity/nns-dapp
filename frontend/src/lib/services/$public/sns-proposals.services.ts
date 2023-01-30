@@ -1,20 +1,35 @@
-import {queryProposals, registerVote as registerVoteApi,} from "$lib/api/sns-governance.api";
-import {DEFAULT_SNS_PROPOSALS_PAGE_SIZE} from "$lib/constants/sns-proposals.constants";
-import {snsOnlyProjectStore} from "$lib/derived/sns/sns-selected-project.derived";
-import {sortedSnsUserNeuronsStore} from "$lib/derived/sorted-sns-neurons.derived";
-import {getSnsNeuronIdentity, syncSnsNeurons,} from "$lib/services/sns-neurons.services";
-import {authStore} from "$lib/stores/auth.store";
-import {snsProposalsStore} from "$lib/stores/sns-proposals.store";
-import {toastsError, toastsSuccess} from "$lib/stores/toasts.store";
-import {getSnsNeuronState, hasPermissionToVote, subaccountToHexString} from "$lib/utils/sns-neuron.utils";
-import {isNullish} from "$lib/utils/utils";
-import type {Vote} from "@dfinity/nns";
-import {NeuronState} from "@dfinity/nns";
-import type {Principal} from "@dfinity/principal";
-import type {SnsNeuron, SnsNeuronId, SnsProposalData, SnsProposalId,} from "@dfinity/sns";
-import {fromDefinedNullable} from "@dfinity/utils";
-import {get} from "svelte/store";
-import {queryAndUpdate} from "../utils.services";
+import {
+  queryProposals,
+  registerVote as registerVoteApi,
+} from "$lib/api/sns-governance.api";
+import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+import { sortedSnsUserNeuronsStore } from "$lib/derived/sorted-sns-neurons.derived";
+import {
+  getSnsNeuronIdentity,
+  syncSnsNeurons,
+} from "$lib/services/sns-neurons.services";
+import { authStore } from "$lib/stores/auth.store";
+import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  getSnsNeuronState,
+  hasPermissionToVote,
+  subaccountToHexString,
+} from "$lib/utils/sns-neuron.utils";
+import { isNullish } from "$lib/utils/utils";
+import type { Vote } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import type {
+  SnsNeuron,
+  SnsNeuronId,
+  SnsProposalData,
+  SnsProposalId,
+} from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
+import { get } from "svelte/store";
+import { queryAndUpdate } from "../utils.services";
 
 export const registerVote = async ({
   rootCanisterId,
@@ -80,9 +95,10 @@ export const registerVoteDemo = async ({
     await syncSnsNeurons(rootCanisterId);
 
     const neurons = get(sortedSnsUserNeuronsStore);
-    const votableNeurons = neurons.filter((neuron) =>
-      getSnsNeuronState(neuron) !== NeuronState.Dissolved &&
-      hasPermissionToVote({ neuron, identity: get(authStore).identity })
+    const votableNeurons = neurons.filter(
+      (neuron) =>
+        getSnsNeuronState(neuron) !== NeuronState.Dissolved &&
+        hasPermissionToVote({ neuron, identity: get(authStore).identity })
     );
 
     if (votableNeurons.length === 0) {
