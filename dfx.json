@@ -155,16 +155,6 @@
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
-    },
-    "ckbtc_test_minter": {
-      "type": "custom",
-      "candid": "tmp/minter.did",
-      "wasm": "tmp/ckbtc_minter.wasm"
-    },
-    "ckbtc_test_ledger": {
-      "type": "custom",
-      "candid": "tmp/ledger.did",
-      "wasm": "tmp/ledger_canister.wasm"
     }
   },
   "networks": {
@@ -750,12 +740,6 @@
         "IC_COMMIT": "3f343ec219808f5be1e9daa878c1da624b4f8d37"
       },
       "packtool": ""
-    },
-    "bitcoin": {
-      "enabled": true,
-      "nodes": [
-        "127.0.0.1:18444"
-      ]
     }
   },
   "version": 1

@@ -49,3 +49,57 @@ The `dfx` version installed locally should match the one defined in [dfx.json](h
 
 [canister_ids.json]: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json
 [package.json]: https://github.com/dfinity/nns-dapp/blob/main/frontend/package.json
+
+## ckBTC deployment
+
+> Last update: 2023, Jan. 30
+
+ckBTC deployment and development in NNS-dapp are in progress.
+
+### Bitcoin network
+
+To deploy a local Bitcoin network, the [documentation](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development) on the IC website can be followed.
+
+As ckBTC is not yet implemented in our pipeline, enabling it in `dfx.json` has bot be yet configured - i.e. needs to be manually configured:
+
+Add following in `defaults` of [dfx.json](./dfx.json).
+
+```
+"bitcoin": {
+  "enabled": true,
+  "nodes": [
+    "127.0.0.1:18444"
+  ]
+}
+```
+
+### Ledger and minter
+
+Deploying ckBTC ledger and minter are as well not yet automated.
+
+To deploy these locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc).
+
+However, this scripts requires downloading these canisters WASM and did files locally first and configuring these manually in [dfx.json](./dfx.json).
+
+e.g. in `canisters`:
+
+```
+"ckbtc_test_minter": {
+  "type": "custom",
+  "candid": "tmp/minter.did",
+  "wasm": "tmp/ckbtc_minter.wasm"
+},
+"ckbtc_test_ledger": {
+  "type": "custom",
+  "candid": "tmp/ledger.did",
+  "wasm": "tmp/ledger_canister.wasm"
+}
+```
+
+Once canisters deployed, their respective IDs shall be collected and updated in [canister-ids.constants.ts](./frontend/src/lib/constants/canister-ids.constants.ts).
+
+Likewise, as the configuration is not yet automated, there are no `.env` variable that are yet generated.
+
+### Index
+
+The index canister does not exist yet on mainnet but, will be proposed soon. Same pattern will apply.
