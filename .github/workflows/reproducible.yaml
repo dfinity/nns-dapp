@@ -67,7 +67,7 @@ jobs:
           path: hashes/*.txt
   compare_hashes:
     runs-on: ubuntu-latest
-    needs: [native_asset_build]
+    needs: [docker_build]
     steps:
       - name: Get hashes
         uses: actions/download-artifact@v3
