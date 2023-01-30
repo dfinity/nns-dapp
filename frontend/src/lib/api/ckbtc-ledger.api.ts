@@ -33,7 +33,7 @@ export const getCkBTCAccounts = async ({
   return [mainAccount];
 };
 
-export const ckBTCCanister = async ({
+const ckBTCCanister = async ({
   identity,
 }: {
   identity: Identity;
