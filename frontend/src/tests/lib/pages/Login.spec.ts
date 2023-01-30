@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { page } from "$app/stores";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Login from "$lib/pages/Login.svelte";
