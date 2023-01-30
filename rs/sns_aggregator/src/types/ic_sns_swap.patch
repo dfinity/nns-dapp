@@ -1,7 +1,7 @@
-diff --git b/rs/sns_cache/src/types/ic_sns_swap.rs a/rs/sns_cache/src/types/ic_sns_swap.rs
+diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 index caf728e4..739c2846 100644
---- b/rs/sns_cache/src/types/ic_sns_swap.rs
-+++ a/rs/sns_cache/src/types/ic_sns_swap.rs
+--- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
++++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -2,14 +2,14 @@
  #![allow(clippy::all)]
  #![allow(non_camel_case_types)]

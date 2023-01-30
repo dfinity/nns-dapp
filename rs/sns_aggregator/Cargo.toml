@@ -1,5 +1,5 @@
 [package]
-name = "sns_cache"
+name = "sns_aggregator"
 version.workspace = true
 edition = "2021"
 

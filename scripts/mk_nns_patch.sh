@@ -28,8 +28,8 @@ print_help() {
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 CANISTER_NAME="$1"
 
-RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.rs"
-PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.patch"
+RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
+PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
 
 cd "$GIT_ROOT"
 

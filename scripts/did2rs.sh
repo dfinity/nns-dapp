@@ -11,9 +11,9 @@ print_help() {
 	Usage: $(basename "$0") <CANISTER_NAME>
 	takes inputs:
 	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
-	  rs/sns_cache/src/types/<CANISTER_NAME>.patch (optional)
+	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
 	creates:
-	  rs/sns_cache/src/types/<CANISTER_NAME>.rs
+	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
 
 	Hint: To create a patchfile:
 	  - Customise the built rust file to your heart's content.
@@ -37,8 +37,8 @@ print_help() {
 CANISTER_NAME="$(basename "${1%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-RUST_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.rs"
-PATCH_PATH="${GIT_ROOT}/rs/sns_cache/src/types/ic_${CANISTER_NAME}.patch"
+RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
+PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
 DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
 
 cd "$GIT_ROOT"

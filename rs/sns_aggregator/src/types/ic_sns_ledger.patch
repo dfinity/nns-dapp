@@ -1,7 +1,7 @@
-diff --git b/rs/sns_cache/src/types/ic_sns_ledger.rs a/rs/sns_cache/src/types/ic_sns_ledger.rs
+diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 index de877575..72fe139e 100644
---- b/rs/sns_cache/src/types/ic_sns_ledger.rs
-+++ a/rs/sns_cache/src/types/ic_sns_ledger.rs
+--- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
++++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 @@ -2,7 +2,7 @@
  #![allow(clippy::all)]
  #![allow(non_camel_case_types)]
