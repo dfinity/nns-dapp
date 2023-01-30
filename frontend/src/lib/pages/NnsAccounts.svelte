@@ -5,7 +5,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import { accountsStore } from "$lib/stores/accounts.store";
 
   const cardClick = async (identifier: string) =>
@@ -16,8 +15,6 @@
       })
     );
 </script>
-
-<SummaryUniverse />
 
 <div class="card-grid" data-tid="accounts-body">
   {#if $accountsStore?.main?.identifier}

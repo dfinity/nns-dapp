@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { Card } from "@dfinity/gix-components";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
@@ -7,7 +6,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
+  import UniverseName from "$lib/components/universe/UniverseName.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -31,9 +30,6 @@
     currentPath: $pageStore.path,
     paths: [AppPath.Accounts, AppPath.Wallet],
   });
-
-  let ckBTC = false;
-  $: ckBTC = isUniverseCkBTC(universe.canisterId);
 </script>
 
 <Card
@@ -51,10 +47,7 @@
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name"
-        >{universe.summary?.metadata.name ??
-          (ckBTC ? $i18n.ckbtc.title : $i18n.core.ic)}</span
-      >
+      <span class="name"><UniverseName {universe} /></span>
       {#if displayProjectAccountsBalance}
         <UniverseAccountsBalance {universe} />
       {/if}

@@ -10,7 +10,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let loading = false;
@@ -35,8 +34,6 @@
       })
     );
 </script>
-
-<SummaryUniverse />
 
 <div class="card-grid" data-tid="sns-accounts-body">
   {#if loading}

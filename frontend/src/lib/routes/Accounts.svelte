@@ -2,6 +2,7 @@
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
   import {
+    isCkBTCUniverseStore,
     isNnsUniverseStore,
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
@@ -16,6 +17,8 @@
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.service";
+  import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -60,8 +63,12 @@
 </script>
 
 <main>
+  <SummaryUniverse />
+
   {#if $isNnsUniverseStore}
     <NnsAccounts />
+  {:else if $isCkBTCUniverseStore}
+    <CkBTCAccounts />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccounts />
   {/if}

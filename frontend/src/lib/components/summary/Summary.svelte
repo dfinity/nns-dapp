@@ -2,13 +2,11 @@
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import UniverseName from "$lib/components/universe/UniverseName.svelte";
 
-  export let displayProjects = true;
-
-  let text = $i18n.core.ic;
-  $: text = displayProjects
-    ? $snsProjectSelectedStore?.summary.metadata.name ?? $i18n.core.ic
-    : $i18n.core.ic;
+  export let displayUniverse = true;
 
   let twoLines = true;
   $: twoLines = $$slots.details !== undefined;
@@ -16,9 +14,9 @@
 
 <div class="summary" data-tid="projects-summary">
   <h1 class="title">
-    <span>{text}</span>
+    <span><UniverseName universe={$selectedUniverseStore} /></span>
 
-    <SummaryLogo {displayProjects} />
+    <SummaryLogo {displayUniverse} />
   </h1>
 
   {#if twoLines}

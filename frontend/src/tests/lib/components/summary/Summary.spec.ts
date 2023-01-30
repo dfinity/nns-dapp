@@ -17,7 +17,7 @@ describe("Summary", () => {
 
   it("should render internet computer if none", () => {
     const { container } = render(Summary, {
-      props: { displayProjects: false },
+      props: { displayUniverse: false },
     });
     expect(
       container?.querySelector("h1")?.textContent?.includes(en.core.ic)
