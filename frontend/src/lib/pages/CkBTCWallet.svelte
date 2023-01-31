@@ -32,9 +32,7 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
-  let requestLoadAccounts = false;
-
-  const loadAccount = async () => {
+  const loadAccount = async (): Promise<{state: 'loaded' | 'not_found' | 'unknown'}> => {
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
@@ -45,13 +43,11 @@
 
     // We found an account in store for the provided account identifier, all data are set
     if (nonNullish($selectedAccountStore.account)) {
-      return;
+      return {state: 'loaded'};
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    // or
-    // We loaded once the accounts and, it loaded no accounts. In any case, we do not want to load again
-    if ($ckBTCAccountsStore.accounts.length > 0 || requestLoadAccounts) {
+    if ($ckBTCAccountsStore.accounts.length > 0) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
@@ -59,14 +55,28 @@
       });
 
       await goBack();
+      return {state: 'not_found'};
+    }
+
+    return {state: 'unknown'};
+  }
+
+  const loadData = async () => {
+    const {state} = await loadAccount();
+
+    // The account was loaded or was not found even though accounts are already loaded in store
+    if (state !== 'unknown') {
       return;
     }
 
-    // Maybe the accounts are just not loaded yet, so we try to load
+    // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
     await loadCkBTCAccounts({});
+
+    // And finally try to set the account again
+    await loadAccount();
   }
 
-  $: accountIdentifier, $ckBTCAccountsStore.accounts, (async () => loadAccount())();
+  $: accountIdentifier, (async () => await loadData())();
 </script>
 
 <Island>
