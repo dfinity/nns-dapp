@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { isCkBTCUniverseStore, isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
+  import {
+    isCkBTCUniverseStore,
+    isNnsUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import NnsWallet from "$lib/pages/NnsWallet.svelte";
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";

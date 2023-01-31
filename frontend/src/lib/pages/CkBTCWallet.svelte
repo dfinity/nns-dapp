@@ -1,10 +1,14 @@
 <script lang="ts">
-  import { Island } from "@dfinity/gix-components";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { writable } from "svelte/store";
-  import { WALLET_CONTEXT_KEY, type WalletContext, type WalletStore } from "$lib/types/wallet.context";
+  import {
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+    type WalletStore,
+  } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
   import { findAccount } from "$lib/utils/accounts.utils";
@@ -32,7 +36,9 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
-  const loadAccount = async (): Promise<{state: 'loaded' | 'not_found' | 'unknown'}> => {
+  const loadAccount = async (): Promise<{
+    state: "loaded" | "not_found" | "unknown";
+  }> => {
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
@@ -43,7 +49,7 @@
 
     // We found an account in store for the provided account identifier, all data are set
     if (nonNullish($selectedAccountStore.account)) {
-      return {state: 'loaded'};
+      return { state: "loaded" };
     }
 
     // Accounts are loaded in store but no account identifier is matching
@@ -55,17 +61,20 @@
       });
 
       await goBack();
-      return {state: 'not_found'};
+      return { state: "not_found" };
     }
 
-    return {state: 'unknown'};
-  }
+    return { state: "unknown" };
+  };
+
+  let loaded = false;
 
   const loadData = async () => {
-    const {state} = await loadAccount();
+    const { state } = await loadAccount();
 
     // The account was loaded or was not found even though accounts are already loaded in store
-    if (state !== 'unknown') {
+    if (state !== "unknown") {
+      loaded = true;
       return;
     }
 
@@ -74,7 +83,9 @@
 
     // And finally try to set the account again
     await loadAccount();
-  }
+
+    loaded = true;
+  };
 
   $: accountIdentifier, (async () => await loadData())();
 </script>
@@ -82,11 +93,15 @@
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      <Summary />
+      {#if loaded}
+        <Summary />
 
-      <WalletSummary />
+        <WalletSummary />
 
-      <Separator />
+        <Separator />
+      {:else}
+        <Spinner />
+      {/if}
     </section>
   </main>
 </Island>

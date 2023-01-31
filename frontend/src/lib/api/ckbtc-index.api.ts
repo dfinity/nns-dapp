@@ -13,7 +13,10 @@ import { IcrcIndexCanister } from "@dfinity/ledger";
 export const getCkBTCTransactions = async ({
   identity,
   ...rest
-}: Omit<GetTransactionsParams, 'getTransactions'>): Promise<GetTransactionsResponse> => {
+}: Omit<
+  GetTransactionsParams,
+  "getTransactions"
+>): Promise<GetTransactionsResponse> => {
   logWithTimestamp("Getting ckBTC accounts transactions: call...");
 
   const {

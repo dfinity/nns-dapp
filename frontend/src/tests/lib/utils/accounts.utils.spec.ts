@@ -3,9 +3,9 @@ import {
   accountName,
   assertEnoughAccountFunds,
   emptyAddress,
+  findAccount,
   getAccountByPrincipal,
   getAccountByRootCanister,
-  findAccount,
   getAccountsByRootCanister,
   getPrincipalFromString,
   invalidAddress,
@@ -130,15 +130,11 @@ describe("accounts-utils", () => {
     const accounts = [mockMainAccount, mockSubAccount];
 
     it("should not return an account if no identifier is provided", () => {
-      expect(
-        findAccount({ identifier: undefined, accounts })
-      ).toBeUndefined();
+      expect(findAccount({ identifier: undefined, accounts })).toBeUndefined();
     });
 
     it("should find no account if not matches", () => {
-      expect(
-        findAccount({ identifier: "aaa", accounts })
-      ).toBeUndefined();
+      expect(findAccount({ identifier: "aaa", accounts })).toBeUndefined();
     });
 
     it("should return corresponding account", () => {
