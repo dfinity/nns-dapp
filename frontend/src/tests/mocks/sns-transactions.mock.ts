@@ -1,6 +1,6 @@
 import type { SnsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { Principal } from "@dfinity/principal";
-import type { SnsTransaction, SnsTransactionWithId } from "@dfinity/sns";
+import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Subscriber } from "svelte/store";
 
 const fakeAccount = {
@@ -8,7 +8,7 @@ const fakeAccount = {
   subaccount: [] as [],
 };
 
-const mockSnsTransaction: SnsTransaction = {
+const mockSnsTransaction: IcrcTransaction = {
   kind: "transfer",
   timestamp: BigInt(12354),
   burn: [],
@@ -25,7 +25,7 @@ const mockSnsTransaction: SnsTransaction = {
   ],
 };
 
-export const mockSnsTransactionWithId: SnsTransactionWithId = {
+export const mockSnsTransactionWithId: IcrcTransactionWithId = {
   id: BigInt(123),
   transaction: mockSnsTransaction,
 };
@@ -38,7 +38,7 @@ interface SnsCandidAccount {
 export const createSnstransactionWithId = (
   to: SnsCandidAccount,
   from: SnsCandidAccount
-): SnsTransactionWithId => ({
+): IcrcTransactionWithId => ({
   id: BigInt(123),
   transaction: {
     kind: "transfer",
