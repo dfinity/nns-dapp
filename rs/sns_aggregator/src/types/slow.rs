@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
-
 pub struct SlowSnsData {
     /// Index in the nns-sns-wasms canister
     pub index: u64,
