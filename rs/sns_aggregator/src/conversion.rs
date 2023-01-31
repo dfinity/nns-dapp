@@ -1,6 +1,6 @@
-// ic_cdk and dfinity core have different CanisterId types so we need to convert.  Genius.
-//
-// We use a macro rather than importing PrincipalId from the core types as the core types may differ between sns canisters.
+/// `ic_cdk` and `dfinity core` have different CanisterId types so we need to convert.  Genius.
+///
+/// We use a macro rather than importing PrincipalId from the core types as the core types may differ between SNS canisters.
 #[macro_export]
 macro_rules! convert_canister_id {
     ($x:expr) => {{
