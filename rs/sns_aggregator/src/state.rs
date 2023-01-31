@@ -6,7 +6,7 @@ use crate::types::slow::LOGO_FMT;
 use crate::types::state::UpstreamData;
 use crate::{
     assets::{AssetHashes, Assets},
-    types::SnsCache,
+    types::state::SnsCache,
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use std::cell::RefCell;

@@ -3,7 +3,8 @@ use std::str::FromStr;
 
 use crate::convert_canister_id;
 use crate::state::{State, STATE};
-use crate::types::{self, GetStateResponse, SnsTokens, EmptyRecord, Icrc1Value, CanisterStatusQuery, UpstreamData};
+use crate::types::{self, GetStateResponse, SnsTokens, EmptyRecord, Icrc1Value};
+use crate::types::state::UpstreamData;
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
@@ -81,7 +82,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let list_sns_canisters: types::ListSnsCanistersResponse = ic_cdk::api::call::call(
         root_canister_id,
         "list_sns_canisters",
-        (types::ListSnsCanistersRequest {},),
+        (types::EmptyRecord {},),
     )
     .await
     .map(|response: (_,)| response.0)
@@ -106,7 +107,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     .expect("Failed to get SNS parameters");
 
     let swap_state: GetStateResponse =
-        ic_cdk::api::call::call(swap_canister_id, "get_state", (CanisterStatusQuery {},))
+        ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
             .await
             .map(|response: (_,)| response.0)
             .expect("Failed to get swap state");

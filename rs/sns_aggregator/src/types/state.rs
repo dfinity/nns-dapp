@@ -58,8 +58,6 @@ pub struct UpstreamData {
     pub icrc1_fee: Nat,
 }
 
-#[derive(Clone, Debug, CandidType, Deserialize, Serialize)]
-pub struct CanisterStatusQuery {}
 
 // TODO: Derive from Candid
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
@@ -85,9 +83,6 @@ pub enum CanisterStatusType {
     #[serde(rename = "stopped")]
     Stopped,
 }
-
-#[derive(Clone, Debug, CandidType, Deserialize, Serialize)]
-pub struct ListSnsCanistersRequest {}
 
 // Struct used for encoding/decoding
 /// `(record {

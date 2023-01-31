@@ -5,9 +5,8 @@ use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunc
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Swap};
 use crate::types::ic_sns_wasm::DeployedSns;
+use crate::types::state::UpstreamData;
 use serde::{Deserialize, Serialize};
-
-use super::UpstreamData;
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
