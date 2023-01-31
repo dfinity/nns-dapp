@@ -3,7 +3,7 @@ use crate::convert_canister_id;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
-use crate::types::UpstreamData;
+use crate::types::state::UpstreamData;
 use crate::{
     assets::{AssetHashes, Assets},
     types::SnsCache,

@@ -3,7 +3,8 @@ pub mod ic_sns_ledger;
 pub mod ic_sns_root;
 pub mod ic_sns_swap;
 pub mod ic_sns_wasm;
-pub mod other;
+pub mod slow;
+pub mod state;
 
 pub use ic_cdk::export::candid::{CandidType, Deserialize};
 pub use ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
