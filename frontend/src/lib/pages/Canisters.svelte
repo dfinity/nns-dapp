@@ -69,12 +69,12 @@
 </script>
 
 <main>
-  <Summary displayProjects={false}>
+  <Summary displayUniverse={false}>
     <PrincipalText slot="details" inline />
   </Summary>
 
   <div class="card-grid">
-    {#each $canistersStore.canisters ?? [] as canister}
+    {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
       <CanisterCard
         role="link"
         ariaLabel={$i18n.canisters.aria_label_canister_card}

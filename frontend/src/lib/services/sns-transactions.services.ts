@@ -5,8 +5,8 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { getOldestTxIdFromStore } from "$lib/utils/sns-transactions.utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { getSnsAccountIdentity } from "./sns-accounts.services";
 
@@ -21,7 +21,7 @@ export const loadAccountTransactions = async ({
 }) => {
   try {
     const identity = await getSnsAccountIdentity(account);
-    const snsAccount = decodeSnsAccount(account.identifier);
+    const snsAccount = decodeIcrcAccount(account.identifier);
     const maxResults = DEFAULT_SNS_TRANSACTION_PAGE_LIMIT;
     const { transactions, oldestTxId } = await getTransactions({
       identity,

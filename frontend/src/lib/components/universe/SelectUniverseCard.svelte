@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { Card } from "@dfinity/gix-components";
-  import ProjectLogo from "$lib/components/universe/ProjectLogo.svelte";
-  import type { SnsSummary } from "$lib/types/sns";
-  import ProjectAccountsBalance from "$lib/components/universe/ProjectAccountsBalance.svelte";
+  import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
+  import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import type { Universe } from "$lib/types/universe";
+  import UniverseName from "$lib/components/universe/UniverseName.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
-  export let summary: SnsSummary | undefined = undefined;
+  export let universe: Universe;
 
   let theme: "transparent" | "framed" | "highlighted" | undefined =
     "transparent";
@@ -41,15 +41,15 @@
   testId="select-universe-card"
 >
   <div class="container" class:selected>
-    <ProjectLogo size="big" {summary} framed={true} />
+    <UniverseLogo size="big" {universe} framed={true} />
 
     <div
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name">{summary?.metadata.name ?? $i18n.core.ic}</span>
+      <span class="name"><UniverseName {universe} /></span>
       {#if displayProjectAccountsBalance}
-        <ProjectAccountsBalance rootCanisterId={summary?.rootCanisterId} />
+        <UniverseAccountsBalance {universe} />
       {/if}
     </div>
   </div>

@@ -6,8 +6,9 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
@@ -27,7 +28,7 @@ describe("snsSelectedTransactionFeeStore", () => {
     page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
-      (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
+      (metadata) => metadata[0] === IcrcMetadataResponseEntries.SYMBOL
     );
     const symbol =
       symbolResponse !== undefined && "Text" in symbolResponse[1]

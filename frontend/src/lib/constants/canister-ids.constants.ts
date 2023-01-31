@@ -12,3 +12,12 @@ export const GOVERNANCE_CANISTER_ID = Principal.fromText(
 export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
   import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID as string
 );
+export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
+
+// TODO: environment variables for ckBTC canister IDs
+export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
+  "q3fc5-haaaa-aaaaa-aaahq-cai"
+);
+export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
+  "q4eej-kyaaa-aaaaa-aaaha-cai"
+);

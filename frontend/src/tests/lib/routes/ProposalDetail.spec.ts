@@ -3,28 +3,31 @@
  */
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { snsProjectIdSelectedStore } from "$lib/derived/selected-project.derived";
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/types/runtime/store";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../../mocks/sns-projects.mock";
 
 describe("ProposalDetail", () => {
   beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-  });
 
-  beforeEach(() => {
     // Reset to default value
-    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+      },
+      routeId: AppPath.Proposal,
+    });
   });
 
   afterAll(jest.clearAllMocks);
@@ -42,11 +45,13 @@ describe("ProposalDetail", () => {
   describe("SnsProposalDetail", () => {
     beforeAll(() => {
       jest
-        .spyOn(snsProjectIdSelectedStore, "subscribe")
-        .mockImplementation((run: Subscriber<Principal>): (() => void) => {
-          run(mockPrincipal);
-          return () => undefined;
-        });
+        .spyOn(snsProjectsStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Proposal,
+      });
     });
 
     it("should render SnsProposalDetail when project provided", () => {

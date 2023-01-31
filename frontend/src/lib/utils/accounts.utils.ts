@@ -3,10 +3,11 @@ import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
+import { isNullish } from "$lib/utils/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
-import { isNnsProject } from "./projects.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -43,7 +44,7 @@ export const invalidAddress = (address: string | undefined): boolean => {
     try {
       // TODO: Find a better solution to check if the address is valid for SNS as well.
       // It might also be an SNS address
-      decodeSnsAccount(address);
+      decodeIcrcAccount(address);
       return false;
     } catch {
       _;
@@ -108,7 +109,7 @@ export const getAccountByRootCanister = ({
     return undefined;
   }
 
-  if (isNnsProject(rootCanisterId)) {
+  if (isUniverseNns(rootCanisterId)) {
     return getAccountFromStore({
       identifier,
       accounts: nnsAccounts,
@@ -130,7 +131,7 @@ export const getAccountsByRootCanister = ({
   snsAccounts: SnsAccountsStoreData;
   rootCanisterId: Principal;
 }): Account[] | undefined => {
-  if (isNnsProject(rootCanisterId)) {
+  if (isUniverseNns(rootCanisterId)) {
     return nnsAccounts;
   }
 
@@ -170,7 +171,7 @@ export const accountName = ({
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
-export const sumAccounts = (
+export const sumNnsAccounts = (
   accounts: AccountsStoreData | undefined
 ): TokenAmount | undefined =>
   accounts?.main?.balance !== undefined
@@ -180,3 +181,10 @@ export const sumAccounts = (
         ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
       )
     : undefined;
+
+export const sumAccounts = (
+  accounts: Account[] | undefined
+): TokenAmount | undefined =>
+  isNullish(accounts) || accounts.length === 0
+    ? undefined
+    : sumTokenAmounts(...accounts.map(({ balance }) => balance));

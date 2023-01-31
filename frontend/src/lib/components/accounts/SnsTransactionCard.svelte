@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { projectsStore } from "$lib/derived/projects.derived";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import type { Account } from "$lib/types/account";
   import { mapSnsTransaction } from "$lib/utils/sns-transactions.utils";
   import type { Transaction } from "$lib/utils/transactions.utils";
@@ -13,7 +13,7 @@
   export let rootCanisterId: Principal;
 
   let governanceCanisterId: Principal | undefined;
-  $: governanceCanisterId = $projectsStore?.find(
+  $: governanceCanisterId = $snsProjectsStore?.find(
     ({ rootCanisterId: currentId }) =>
       currentId.toText() === rootCanisterId.toText()
   )?.summary.governanceCanisterId;

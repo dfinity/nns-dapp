@@ -2,13 +2,20 @@
  * @jest-environment jsdom
  */
 
+import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
-import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
+import {
+  loadSnsNervousSystemFunctions,
+  loadSnsProjects,
+} from "$lib/services/$public/sns.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import { aggregatorSnsMock } from "../../../mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
@@ -40,7 +47,7 @@ describe("SNS public services", () => {
     });
 
     it("should not call api if nervous functions are in the store and certified", async () => {
-      snsFunctionsStore.setFunctions({
+      snsFunctionsStore.setProjectFunctions({
         rootCanisterId: mockPrincipal,
         nsFunctions: [nervousSystemFunctionMock],
         certified: true,
@@ -62,6 +69,32 @@ describe("SNS public services", () => {
       await loadSnsNervousSystemFunctions(mockPrincipal);
 
       await waitFor(() => expect(toastsError).toBeCalled());
+    });
+  });
+
+  describe("loadSnsProjects", () => {
+    afterEach(() => {
+      snsQueryStore.reset();
+      snsFunctionsStore.reset();
+      transactionsFeesStore.reset();
+    });
+    it("loads sns stores with data", async () => {
+      const spyQuerySnsProjects = jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+
+      await loadSnsProjects();
+
+      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
+      expect(spyQuerySnsProjects).toBeCalled();
+
+      const queryStore = get(snsQueryStore);
+      expect(queryStore.metadata.length).toBeGreaterThan(0);
+      expect(queryStore.swaps.length).toBeGreaterThan(0);
+      const functionsStore = get(snsFunctionsStore);
+      expect(functionsStore[rootCanisterId]).not.toBeUndefined();
+      const feesStore = get(transactionsFeesStore);
+      expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
     });
   });
 });

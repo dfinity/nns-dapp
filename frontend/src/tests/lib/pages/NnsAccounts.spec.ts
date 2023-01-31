@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import {
   accountsStore,
@@ -17,23 +16,12 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
-import en from "../../mocks/i18n.mock";
 
 describe("NnsAccounts", () => {
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {
     let accountsStoreMock: jest.SpyInstance;
-
-    it("should render title", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
-      const { getByTestId } = render(NnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
-    });
 
     it("should render a main card", () => {
       accountsStoreMock = jest
@@ -117,23 +105,6 @@ describe("NnsAccounts", () => {
     );
 
     afterAll(jest.clearAllMocks);
-
-    it("should render nns name", () => {
-      const { getByTestId } = render(NnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
-    });
-
-    it("should render icp project logo", () => {
-      const { getByTestId } = render(NnsAccounts);
-
-      const logo = getByTestId("project-logo");
-      const img = logo.querySelector('[data-tid="logo"]');
-
-      expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
-    });
 
     it("should contain a tooltip", () => {
       const { container } = render(NnsAccounts);

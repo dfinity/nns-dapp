@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { committedProjectsStore } from "$lib/derived/projects.derived";
-import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -18,7 +18,6 @@ import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSummary,
 } from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
@@ -29,7 +28,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 
 describe("SnsAccounts", () => {
   describe("when there are accounts in the store", () => {
-    beforeEach(() => {
+    beforeAll(() => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
@@ -39,7 +38,7 @@ describe("SnsAccounts", () => {
         .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
       jest
-        .spyOn(committedProjectsStore, "subscribe")
+        .spyOn(snsProjectsCommittedStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
       page.mock({ data: { universe: mockPrincipal.toText() } });
@@ -92,43 +91,6 @@ describe("SnsAccounts", () => {
       expect(
         container.querySelector(".tooltip-wrapper")
       ).not.toBeInTheDocument();
-    });
-  });
-
-  describe("meta project", () => {
-    beforeAll(() =>
-      page.mock({
-        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-      })
-    );
-
-    it("should render project title", async () => {
-      const { getByText } = render(SnsAccounts);
-
-      await waitFor(() =>
-        expect(
-          getByText(mockSnsFullProject.summary.metadata.name)
-        ).toBeInTheDocument()
-      );
-    });
-
-    it("should render sns project name", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      expect(
-        titleRow?.textContent?.includes(mockSummary.metadata.name)
-      ).toBeTruthy();
-    });
-
-    it("should render sns project logo", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const logo = getByTestId("project-logo");
-      const img = logo.querySelector('[data-tid="logo"]');
-
-      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
     });
   });
 });

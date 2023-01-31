@@ -4,12 +4,14 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
+  import type { ValidateAmountFn } from "$lib/types/transaction";
 
   export let token: Token;
   export let rootCanisterId: Principal;
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
   export let currentStep: WizardStep;
+  export let validateAmount: ValidateAmountFn = () => undefined;
 </script>
 
 <TransactionModal
@@ -19,6 +21,7 @@
   bind:currentStep
   {token}
   {transactionFee}
+  {validateAmount}
   destinationAddress={governanceCanisterId.toText()}
 >
   <slot name="title" slot="title" />

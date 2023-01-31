@@ -37,9 +37,9 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
-    "sns_accounts_load": "An error occurred while loading the accounts.",
+    "accounts_load": "An error occurred while loading the accounts.",
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
-    "sns_token_load": "An error occurred while loading the project token.",
+    "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -105,6 +105,7 @@
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
+    "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
@@ -235,7 +236,7 @@
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "ICP Stake",
-    "staked": "Staked",
+    "staked": "Of which staked",
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
@@ -257,7 +258,6 @@
     "cannot_merge_neuron_community": "Neurons that joined the Community Fund can't be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
-    "cannot_merge_hardware_wallet": "Merging of neurons controlled via hardware wallet is not yet supported.",
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
@@ -380,7 +380,10 @@
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
-    "add_controller": "Add Controller"
+    "add_controller": "Add Controller",
+    "status_stopped": "Stopped",
+    "status_stopping": "Stopping",
+    "status_running": "Running"
   },
   "transaction_names": {
     "receive": "Received $tokenSymbol",
@@ -760,5 +763,10 @@
   },
   "metrics": {
     "tvl": "Total Value Locked"
+  },
+  "ckbtc": {
+    "title": "ckBTC",
+    "ckBTC": "ckBTC",
+    "logo": "Chain-key Bitcoin (ckBTC) logo"
   }
 }

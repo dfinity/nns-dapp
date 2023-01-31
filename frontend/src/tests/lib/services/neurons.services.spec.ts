@@ -10,6 +10,7 @@ import {
 } from "$lib/services/accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
@@ -768,9 +769,10 @@ describe("neurons-services", () => {
     afterEach(() => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
+      accountsStore.reset();
     });
 
-    it("should update neuron", async () => {
+    it("should merge neurons", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await mergeNeurons({
         sourceNeuronId: neurons[0].neuronId,
@@ -780,7 +782,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).toHaveBeenCalled();
     });
 
-    it("should not update neuron if no identity", async () => {
+    it("should not merge neurons if no identity", async () => {
       setNoIdentity();
 
       await mergeNeurons({
@@ -793,7 +795,8 @@ describe("neurons-services", () => {
 
       resetIdentity();
     });
-    it("should not update neuron if different controllers", async () => {
+
+    it("should not merge neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
         neuronId: BigInt(5555),
@@ -814,6 +817,52 @@ describe("neurons-services", () => {
 
       expect(toastsShow).toHaveBeenCalled();
       expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+
+    it("should not merge neurons if lower HW version than required", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const hwAccount = {
+        ...mockHardwareWalletAccount,
+        principal: smallerVersionIdentity.getPrincipal(),
+      };
+      accountsStore.set({
+        main: mockMainAccount,
+        hardwareWallets: [hwAccount],
+      });
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(5556),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      await mergeNeurons({
+        sourceNeuronId: neuron1.neuronId,
+        targetNeuronId: neuron2.neuronId,
+      });
+
+      expect(toastsShow).toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+      resetIdentity();
     });
   });
 

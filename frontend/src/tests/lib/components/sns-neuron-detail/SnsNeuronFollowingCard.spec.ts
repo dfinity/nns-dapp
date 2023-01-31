@@ -103,7 +103,7 @@ describe("SnsNeuronFollowingCard", () => {
 
     it("renders followees and their topics", () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
-      snsFunctionsStore.setFunctions({
+      snsFunctionsStore.setProjectFunctions({
         rootCanisterId: rootCanisterIdMock,
         nsFunctions: [function0, function1, function2],
         certified: true,

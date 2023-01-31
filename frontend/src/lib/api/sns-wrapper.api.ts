@@ -1,5 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
-import { HOST, WASM_CANISTER_ID } from "$lib/constants/environment.constants";
+import { WASM_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,

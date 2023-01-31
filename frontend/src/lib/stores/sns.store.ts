@@ -228,10 +228,6 @@ const initSnsSwapCommitmentsStore = () => {
     reset() {
       set(undefined);
     },
-
-    setLoadingState() {
-      set(null);
-    },
   };
 };
 

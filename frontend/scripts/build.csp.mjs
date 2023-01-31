@@ -8,6 +8,13 @@ import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
+// Aggregator canister enabled ONLY in small12 for now
+const enableSnsAggregatorCanister = process.env.VITE_DFX_NETWORK === "small12";
+
+// TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
+const aggregatorCanisterUrl =
+  "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network";
+
 const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
@@ -100,6 +107,7 @@ const extractStartScript = (htmlFile) => {
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
  */
+
 const updateCSP = (indexHtml) => {
   const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
 
@@ -118,7 +126,9 @@ const updateCSP = (indexHtml) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/;
+        img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/ ${
+          enableSnsAggregatorCanister ? aggregatorCanisterUrl : ""
+        };
         child-src 'self';
         manifest-src 'self';
         script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
@@ -142,6 +152,10 @@ const cspConnectSrc = () => {
     process.env.VITE_GOVERNANCE_CANISTER_URL,
     process.env.VITE_LEDGER_CANISTER_URL,
   ];
+
+  if (enableSnsAggregatorCanister) {
+    src.push(aggregatorCanisterUrl);
+  }
 
   return src
     .filter((url) => url !== undefined)
