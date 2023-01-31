@@ -62,14 +62,20 @@ impl Asset {
     }
 }
 
+/// A database of assets indexed by the path to the actual file, e.g.
+/// `/index.html` is a key but `/` is not, although getting the latter
+/// will also return the former.
 #[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
+    /// Adds an asset to the assets database.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);
     }
 
+    /// Gets an asset, using the actual asset path, e.g.
+    /// `/foo/index.html` not `/foo/`.
     pub fn get(&self, path: &str) -> Option<&Asset> {
         self.0.get(path)
     }
