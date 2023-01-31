@@ -4,9 +4,8 @@
 
 DIR=tmp
 
-if [ ! -d "$DIR" ]
-then
-     mkdir "$DIR"
+if [ ! -d "$DIR" ]; then
+  mkdir "$DIR"
 fi
 
 IC_COMMIT="fcef36254e620a39d6e801155c9af11ef612559a"
