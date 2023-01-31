@@ -20,6 +20,10 @@
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
+  import type { Account } from "$lib/types/account";
+  import { goto } from "$app/navigation";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -76,17 +80,25 @@
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances(),
     ]))();
+
+  const goToWallet = async ({ identifier }: Account) =>
+    await goto(
+      buildWalletUrl({
+        universe: $pageStore.universe,
+        account: identifier,
+      })
+    );
 </script>
 
 <main>
   <SummaryUniverse />
 
   {#if $isNnsUniverseStore}
-    <NnsAccounts />
+    <NnsAccounts {goToWallet} />
   {:else if $isCkBTCUniverseStore}
-    <CkBTCAccounts />
+    <CkBTCAccounts {goToWallet} />
   {:else if nonNullish($snsProjectSelectedStore)}
-    <SnsAccounts />
+    <SnsAccounts {goToWallet} />
   {/if}
 </main>
 
