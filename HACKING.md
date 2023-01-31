@@ -51,6 +51,8 @@ If you wish to run the e2e tests against your local server, configure the URL as
 VITE_OWN_CANISTER_URL=http://localhost:5173/
 ```
 
+In addition, the II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
+
 ## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
