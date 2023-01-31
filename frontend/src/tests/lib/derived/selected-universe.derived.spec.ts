@@ -2,10 +2,13 @@
  * @jest-environment jsdom
  */
 import {
+  CKBTC_LEDGER_CANISTER_ID,
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import {
+  isCkBTCUniverseStore,
   isNnsUniverseStore,
   selectedUniverseIdStore,
 } from "$lib/derived/selected-universe.derived";
@@ -28,6 +31,28 @@ describe("selected universe derived stores", () => {
     it("should be false if an sns project is selected", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
       const $store = get(isNnsUniverseStore);
+
+      expect($store).toBe(false);
+    });
+  });
+
+  describe("isCkBTCUniverseStore", () => {
+    beforeEach(() => {
+      page.mock({
+        data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+        routeId: AppPath.Accounts,
+      });
+    });
+
+    it("should be ckBTC universe", () => {
+      const $store = get(isCkBTCUniverseStore);
+
+      expect($store).toEqual(true);
+    });
+
+    it("should not be ckBTC universe", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+      const $store = get(isCkBTCUniverseStore);
 
       expect($store).toBe(false);
     });
