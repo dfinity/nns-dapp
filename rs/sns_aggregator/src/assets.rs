@@ -136,6 +136,7 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     )
 }
 
+/// Computes the sha256 of some given bytes.
 pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
     let mut hasher = Sha256::new();
     hasher.update(value.as_ref());
