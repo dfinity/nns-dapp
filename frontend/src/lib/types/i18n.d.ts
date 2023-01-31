@@ -905,7 +905,7 @@ interface I18nActions {
   SetDefaultFollowees: string;
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
-  OpenSnsTokenSwap: string;
+  OpenSnsDecentralizationSale: string;
 }
 
 interface I18nActions_description {
@@ -919,7 +919,7 @@ interface I18nActions_description {
   SetDefaultFollowees: string;
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
-  OpenSnsTokenSwap: string;
+  OpenSnsDecentralizationSale: string;
 }
 
 interface I18nNns_functions {
