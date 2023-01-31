@@ -61,7 +61,6 @@ class Cache {
     certified: boolean;
   }): NeuronInfo[] | undefined {
     const neuronIds = this.data.list[principal.toText()];
-    const nowSeconds = nowInSeconds();
     if (
       neuronIds?.ids !== undefined &&
       (neuronIds.certified === certified || neuronIds.certified)
@@ -70,15 +69,37 @@ class Cache {
         .map((neuronId) => this.data.neurons[String(neuronId)])
         .filter(nonNullish)
         .filter(({ certified: c }) => c === certified || c)
-        .filter(
-          ({ timestampSeconds }) =>
-            this.cacheExpirationSeconds > nowSeconds - timestampSeconds
-        )
+        .filter(({ timestampSeconds }) => !this.isExpired(timestampSeconds))
         .map(({ neuron }) => neuron);
       if (neurons.length === neuronIds.ids.length) {
         return neurons;
       }
     }
+  }
+
+  setList({
+    principal,
+    ids,
+    certified,
+  }: {
+    principal: Principal;
+    ids: NeuronId[];
+    certified: boolean;
+  }) {
+    this.data.list[principal.toText()] = {
+      ids,
+      timestampSeconds: nowInSeconds(),
+      certified,
+    };
+  }
+
+  setNeuron({ neuron, certified }: { neuron: NeuronInfo; certified: boolean }) {
+    const timestampSeconds = nowInSeconds();
+    this.data.neurons[String(neuron.neuronId)] = {
+      neuron,
+      timestampSeconds,
+      certified,
+    };
   }
 
   setNeurons({
@@ -90,19 +111,10 @@ class Cache {
     principal: Principal;
     certified: boolean;
   }) {
-    const timestampSeconds = nowInSeconds();
     const neuronIds = neurons.map(({ neuronId }) => neuronId);
-    this.data.list[principal.toText()] = {
-      ids: neuronIds,
-      timestampSeconds,
-      certified,
-    };
+    this.setList({ principal, ids: neuronIds, certified });
     neurons.forEach((neuron) => {
-      this.data.neurons[String(neuron.neuronId)] = {
-        neuron,
-        timestampSeconds,
-        certified,
-      };
+      this.setNeuron({ neuron, certified });
     });
   }
 
@@ -111,6 +123,10 @@ class Cache {
       neurons: {},
       list: {},
     };
+  }
+
+  private isExpired(timestampSeconds: number): boolean {
+    return this.cacheExpirationSeconds < nowInSeconds() - timestampSeconds;
   }
 }
 
