@@ -19,6 +19,7 @@
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
+  import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -48,6 +49,11 @@
   };
 
   const loadCkBTCAccountsBalances = async () => {
+    // ckBTC is not enabled, information shall and cannot be fetched
+    if (!ENABLE_CKBTC_LEDGER) {
+      return;
+    }
+
     // We load the accounts balance of ckBTC only if the current <Accounts /> is loaded in a view where ckBTC is not the selected universe
     // - if user is navigating to route/accounts with Nns or Sns universe, then we load the balance
     // - if user is navigating to route/accounts with ckBTC universe, then we do not load the balance here but let the main <CkBTCACcounts /> load the accounts with query+update
