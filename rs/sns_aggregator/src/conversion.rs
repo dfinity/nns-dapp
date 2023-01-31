@@ -4,10 +4,7 @@
 #[macro_export]
 macro_rules! convert_canister_id {
     ($x:expr) => {{
-        CanisterId::from_str(
-            &$x.expect(concat!("Missing canister ", stringify!($x)))
-                .to_string(),
-        )
-        .expect("Dfn and cdk disagree on canister types")
+        CanisterId::from_str(&$x.expect(concat!("Missing canister ", stringify!($x))).to_string())
+            .expect("Dfn and cdk disagree on canister types")
     }};
 }

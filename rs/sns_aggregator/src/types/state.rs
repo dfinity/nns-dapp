@@ -1,24 +1,14 @@
-use std::collections::BTreeMap;
-use ic_cdk::{
-    api::management_canister::provisional::CanisterId,
-    export::{
-        Principal,
-    },
-};
-use super::{CandidType, Deserialize};
+use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use super::ic_sns_ledger::{Tokens as SnsTokens, Value as Icrc1Value};
-use super::ic_sns_governance::{
-    GetMetadataResponse, ListNervousSystemFunctionsResponse,
-};
 use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::GetStateResponse;
-use super::ic_sns_wasm::{
-    DeployedSns, ListDeployedSnsesResponse, SnsCanisterIds,
-};
+use super::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse, SnsCanisterIds};
+use super::{CandidType, Deserialize};
+use ic_cdk::{api::management_canister::provisional::CanisterId, export::Principal};
+use std::collections::BTreeMap;
 
-use serde::Serialize;
 use candid::Nat;
-
+use serde::Serialize;
 
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
 pub struct SnsCache {
@@ -57,7 +47,6 @@ pub struct UpstreamData {
     /// The ledger fee, presumably a transaction fee.
     pub icrc1_fee: Nat,
 }
-
 
 // TODO: Derive from Candid
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]

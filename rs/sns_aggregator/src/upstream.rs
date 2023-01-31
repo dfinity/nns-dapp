@@ -3,11 +3,11 @@ use std::str::FromStr;
 
 use crate::convert_canister_id;
 use crate::state::{State, STATE};
-use crate::types::{self, GetStateResponse, SnsTokens, EmptyRecord, Icrc1Value};
+use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 use crate::types::state::UpstreamData;
+use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
-use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
@@ -41,12 +41,8 @@ pub async fn update_cache() {
 /// Note: We can improve on this by filtering out SNSs that have become const.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     ic_cdk::println!("Asking for more SNSs");
-    let result: Result<
-        (ListDeployedSnsesResponse,),
-        (RejectionCode, std::string::String),
-    > = ic_cdk::api::call::call(
-        CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai")
-            .expect("I don't believe it's not a valid canister ID??!"),
+    let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> = ic_cdk::api::call::call(
+        CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!"),
         "list_deployed_snses",
         (EmptyRecord {},),
     )
@@ -79,38 +75,28 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let governance_canister_id = convert_canister_id!(&sns_canister_ids.governance_canister_id);
     let ledger_canister_id = convert_canister_id!(&sns_canister_ids.ledger_canister_id);
 
-    let list_sns_canisters: types::ListSnsCanistersResponse = ic_cdk::api::call::call(
-        root_canister_id,
-        "list_sns_canisters",
-        (types::EmptyRecord {},),
-    )
-    .await
-    .map(|response: (_,)| response.0)
-    .expect("Failed to list SNS canisters");
-
-    let meta: types::GetMetadataResponse = ic_cdk::api::call::call(
-        governance_canister_id,
-        "get_metadata",
-        (types::EmptyRecord{},),
-    )
-    .await
-    .map(|response: (_,)| response.0)
-    .expect("Failed to get SNS metadata");
-
-    let parameters: types::ListNervousSystemFunctionsResponse = ic_cdk::api::call::call(
-        governance_canister_id,
-        "list_nervous_system_functions",
-        ((),),
-    )
-    .await
-    .map(|response: (_,)| response.0)
-    .expect("Failed to get SNS parameters");
-
-    let swap_state: GetStateResponse =
-        ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
+    let list_sns_canisters: types::ListSnsCanistersResponse =
+        ic_cdk::api::call::call(root_canister_id, "list_sns_canisters", (types::EmptyRecord {},))
             .await
             .map(|response: (_,)| response.0)
-            .expect("Failed to get swap state");
+            .expect("Failed to list SNS canisters");
+
+    let meta: types::GetMetadataResponse =
+        ic_cdk::api::call::call(governance_canister_id, "get_metadata", (types::EmptyRecord {},))
+            .await
+            .map(|response: (_,)| response.0)
+            .expect("Failed to get SNS metadata");
+
+    let parameters: types::ListNervousSystemFunctionsResponse =
+        ic_cdk::api::call::call(governance_canister_id, "list_nervous_system_functions", ((),))
+            .await
+            .map(|response: (_,)| response.0)
+            .expect("Failed to get SNS parameters");
+
+    let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
+        .await
+        .map(|response: (_,)| response.0)
+        .expect("Failed to get swap state");
 
     let icrc1_metadata: Vec<(String, Icrc1Value)> =
         ic_cdk::api::call::call(ledger_canister_id, "icrc1_metadata", ((),))

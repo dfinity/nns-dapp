@@ -1,11 +1,11 @@
-use crate::Icrc1Value;
-use candid::CandidType;
-use candid::Nat;
 use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Swap};
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::state::UpstreamData;
+use crate::Icrc1Value;
+use candid::CandidType;
+use candid::Nat;
 use serde::{Deserialize, Serialize};
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
@@ -76,12 +76,7 @@ pub const LOGO_PREFIX: &str = "data:image/png;base64,";
 /// Get the logo as binary from base64.
 /// TODO: Maybe support more image types?
 pub fn logo_binary(data_url: &str) -> Vec<u8> {
-    base64::decode(
-        data_url
-            .strip_prefix(LOGO_PREFIX)
-            .expect("Unsupported URL prefix"),
-    )
-    .unwrap_or_default()
+    base64::decode(data_url.strip_prefix(LOGO_PREFIX).expect("Unsupported URL prefix")).unwrap_or_default()
 }
 
 #[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]

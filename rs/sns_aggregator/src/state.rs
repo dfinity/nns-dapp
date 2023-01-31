@@ -75,8 +75,7 @@ impl State {
         }
         const PAGE_SIZE: u64 = 10;
         // If this is in the last N, update latest.
-        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.sns_aggregator.borrow().max_index)
-        {
+        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.sns_aggregator.borrow().max_index) {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s

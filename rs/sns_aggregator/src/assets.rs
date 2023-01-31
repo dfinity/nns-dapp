@@ -49,17 +49,11 @@ pub struct Asset {
 
 impl Asset {
     pub fn new(bytes: Vec<u8>) -> Self {
-        Self {
-            headers: vec![],
-            bytes,
-        }
+        Self { headers: vec![], bytes }
     }
 
     pub fn new_stable(bytes: Vec<u8>) -> Self {
-        Self {
-            headers: vec![],
-            bytes,
-        }
+        Self { headers: vec![], bytes }
     }
 
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
@@ -85,25 +79,22 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
     }
-    request_path
-        .split('.')
-        .last()
-        .and_then(|suffix| match suffix {
-            "css" => Some("text/css"),
-            "html" => Some("text/html"),
-            "xml" => Some("application/xml"),
-            "js" => Some("application/javascript"),
-            "json" => Some("application/json"),
-            "svg" => Some("image/svg+xml"),
-            "png" => Some("image/png"),
-            "jpeg" => Some("image/jpeg"),
-            "jpg" => Some("image/jpeg"),
-            "ico" => Some("image/x-icon"),
-            "ttf" => Some("font/ttf"),
-            "woff2" => Some("font/woff2"),
-            "txt" => Some("text/plain"),
-            _ => None,
-        })
+    request_path.split('.').last().and_then(|suffix| match suffix {
+        "css" => Some("text/css"),
+        "html" => Some("text/html"),
+        "xml" => Some("application/xml"),
+        "js" => Some("application/javascript"),
+        "json" => Some("application/json"),
+        "svg" => Some("image/svg+xml"),
+        "png" => Some("image/png"),
+        "jpeg" => Some("image/jpeg"),
+        "jpg" => Some("image/jpeg"),
+        "ico" => Some("image/x-icon"),
+        "ttf" => Some("font/ttf"),
+        "woff2" => Some("font/woff2"),
+        "txt" => Some("text/plain"),
+        _ => None,
+    })
 }
 
 /// List of recommended security headers as per https://owasp.org/www-project-secure-headers/
@@ -191,8 +182,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     let request_path = parts.next().expect("No path");
     STATE.with(|state| {
         let mut headers = security_headers();
-        let certificate_header =
-            make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
+        let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
         headers.push(certificate_header);
 
         match state.assets.borrow().get(&request_path) {
