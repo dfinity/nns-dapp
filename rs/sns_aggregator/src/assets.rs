@@ -217,7 +217,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
     })
 }
 
-/// Inserts a favicon into the certifgied assets, if there is not one already.
+/// Inserts a favicon into the certified assets, if there is not one already.
 pub fn insert_favicon() {
     STATE.with(|state| {
         // Ensure that there is a favicon, or else we get log spam about bad requests.
