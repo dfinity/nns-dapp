@@ -1,46 +1,37 @@
+import type {
+  GetTransactionsParams,
+  GetTransactionsResponse,
+} from "$lib/api/icrc-index.api";
+import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
-import type { IcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import type { SnsTransactionWithId } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
-interface GetTransactionsParams {
-  identity: Identity;
-  account: IcrcAccount;
-  start?: bigint;
-  maxResults: bigint;
+interface GetSnsTransactionsParams
+  extends Omit<GetTransactionsParams, "getTransactions"> {
   rootCanisterId: Principal;
 }
 
-interface GetTransactionsResponse {
-  oldestTxId?: bigint;
-  transactions: SnsTransactionWithId[];
-}
-
-export const getTransactions = async ({
+export const getSnsTransactions = async ({
   identity,
-  account,
-  start,
-  maxResults,
   rootCanisterId,
-}: GetTransactionsParams): Promise<GetTransactionsResponse> => {
+  ...rest
+}: GetSnsTransactionsParams): Promise<GetTransactionsResponse> => {
   logWithTimestamp("Getting sns accounts transactions: call...");
-  const { getTransactions: getTransactionsApi } = await wrapper({
+
+  const { getTransactions } = await wrapper({
     identity,
     certified: true,
     rootCanisterId: rootCanisterId.toText(),
   });
-  const { oldest_tx_id, transactions } = await getTransactionsApi({
-    max_results: maxResults,
-    start,
-    account,
+
+  const results = await getIcrcTransactions({
+    identity,
+    ...rest,
+    getTransactions,
   });
 
   logWithTimestamp("Getting sns account transactions: done");
-  return {
-    oldestTxId: fromNullable(oldest_tx_id),
-    transactions,
-  };
+
+  return results;
 };

@@ -1,4 +1,4 @@
-import { getTransactions } from "$lib/api/sns-index.api";
+import { getSnsTransactions } from "$lib/api/sns-index.api";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
@@ -18,7 +18,7 @@ jest.mock("$lib/api/sns-wrapper.api", () => {
 describe("sns-index api", () => {
   describe("getTransactions", () => {
     it("returns the transactions from the api", async () => {
-      const result = await getTransactions({
+      const result = await getSnsTransactions({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
         account: {

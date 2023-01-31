@@ -21,7 +21,7 @@ describe("sns-transactions-services", () => {
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockSnsTransactionWithId],
@@ -64,7 +64,7 @@ describe("sns-transactions-services", () => {
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockSnsTransactionWithId],
@@ -98,7 +98,7 @@ describe("sns-transactions-services", () => {
 
     it("uses store oldest transaction to set the start", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockSnsTransactionWithId],

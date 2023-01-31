@@ -1,4 +1,4 @@
-import { getTransactions } from "$lib/api/sns-index.api";
+import { getSnsTransactions } from "$lib/api/sns-index.api";
 import { DEFAULT_SNS_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -23,7 +23,7 @@ export const loadAccountTransactions = async ({
     const identity = await getSnsAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
     const maxResults = DEFAULT_SNS_TRANSACTION_PAGE_LIMIT;
-    const { transactions, oldestTxId } = await getTransactions({
+    const { transactions, oldestTxId } = await getSnsTransactions({
       identity,
       account: snsAccount,
       maxResults: BigInt(maxResults),
