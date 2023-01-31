@@ -7,9 +7,9 @@ dfx canister create ckbtc_test_ledger
 dfx canister create ckbtc_test_minter
 
 MINTERID="$(dfx canister id ckbtc_test_minter)"
-echo $MINTERID
+echo "$MINTERID"
 LEDGERID="$(dfx canister id ckbtc_test_ledger)"
-echo $LEDGERID
+echo "$LEDGERID"
 
 echo "Step 2: deploying minter canister..."
 dfx deploy ckbtc_test_minter --argument "(record {
