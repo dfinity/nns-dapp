@@ -132,7 +132,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
-          path: screenshots/**/*.png
+          path: e2e-tests/screenshots/**/*.png
           retention-days: 7
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
