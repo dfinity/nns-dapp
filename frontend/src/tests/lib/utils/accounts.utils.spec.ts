@@ -5,7 +5,7 @@ import {
   emptyAddress,
   getAccountByPrincipal,
   getAccountByRootCanister,
-  getAccountFromStore,
+  findAccount,
   getAccountsByRootCanister,
   getPrincipalFromString,
   invalidAddress,
@@ -126,30 +126,30 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("getAccountFromStore", () => {
+  describe("findAccount", () => {
     const accounts = [mockMainAccount, mockSubAccount];
 
     it("should not return an account if no identifier is provided", () => {
       expect(
-        getAccountFromStore({ identifier: undefined, accounts })
+        findAccount({ identifier: undefined, accounts })
       ).toBeUndefined();
     });
 
     it("should find no account if not matches", () => {
       expect(
-        getAccountFromStore({ identifier: "aaa", accounts })
+        findAccount({ identifier: "aaa", accounts })
       ).toBeUndefined();
     });
 
     it("should return corresponding account", () => {
       expect(
-        getAccountFromStore({
+        findAccount({
           identifier: mockMainAccount.identifier,
           accounts,
         })
       ).toEqual(mockMainAccount);
       expect(
-        getAccountFromStore({
+        findAccount({
           identifier: mockSubAccount.identifier,
           accounts,
         })
