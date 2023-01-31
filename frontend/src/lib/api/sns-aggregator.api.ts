@@ -1,7 +1,7 @@
-import { CACHING_CANISTER_URL } from "$lib/constants/environment.constants";
+import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
 import {
-  CACHING_CANISTER_DATA_PATH,
-  CACHING_CANISTER_VERSION,
+  AGGREGATOR_CANISTER_PATH,
+  AGGREGATOR_CANISTER_VERSION,
 } from "$lib/constants/sns.constants";
 import { nonNullish } from "$lib/utils/utils";
 import type {
@@ -20,8 +20,8 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_governance";
 import { toNullable } from "@dfinity/utils";
 
-const cachingCanisterLogoPath = (rootCanisterId: string) =>
-  `${CACHING_CANISTER_URL}/${CACHING_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
+const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
+  `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
 
 type CanisterIds = {
   root_canister_id: string;
@@ -145,7 +145,7 @@ const convertMeta = (
   url: toNullable(url),
   name: toNullable(name),
   description: toNullable(description),
-  logo: toNullable(cachingCanisterLogoPath(rootCanisterId)),
+  logo: toNullable(aggregatorCanisterLogoPath(rootCanisterId)),
 });
 
 const convertNervousFuncttion = ({
@@ -260,16 +260,16 @@ const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
 
 export const querySnsProjects = async (): Promise<CachedSns[]> => {
   const response = await fetch(
-    `${CACHING_CANISTER_URL}/${CACHING_CANISTER_VERSION}${CACHING_CANISTER_DATA_PATH}`
+    `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${AGGREGATOR_CANISTER_PATH}`
   );
   if (!response.ok) {
-    throw new Error("Error loading SNS projects from caching canister");
+    throw new Error("Error loading SNS projects from aggregator canister");
   }
   try {
     const data: CachedSnsDto[] = await response.json();
     return convertDtoData(data);
   } catch (err) {
     console.error("Error converting data", err);
-    throw new Error("Error converting data from caching canister");
+    throw new Error("Error converting data from aggregator canister");
   }
 };

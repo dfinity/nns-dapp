@@ -1,8 +1,8 @@
-import { querySnsProjects } from "$lib/api/sns-caching.api";
-import { cachingSnsMock } from "../../mocks/sns-caching.mock";
-import cachedSnses from "../../mocks/sns-caching.mock.json";
+import { querySnsProjects } from "$lib/api/sns-aggregator.api";
+import { aggregatorSnsMock } from "../../mocks/sns-aggregator.mock";
+import aggregatedSnses from "../../mocks/sns-aggregator.mock.json";
 
-describe("sns-caching api", () => {
+describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
     afterEach(() => {
       jest.resetAllMocks();
@@ -12,7 +12,7 @@ describe("sns-caching api", () => {
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(cachedSnses),
+          json: () => Promise.resolve(aggregatedSnses),
         })
       );
       global.fetch = mockFetch;
@@ -27,13 +27,13 @@ describe("sns-caching api", () => {
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(cachedSnses),
+          json: () => Promise.resolve(aggregatedSnses),
         })
       );
       global.fetch = mockFetch;
       const snses = await querySnsProjects();
-      const sns = snses.find(({ index }) => index === cachingSnsMock.index);
-      expect(sns).toEqual(cachingSnsMock);
+      const sns = snses.find(({ index }) => index === aggregatorSnsMock.index);
+      expect(sns).toEqual(aggregatorSnsMock);
     });
   });
 });
