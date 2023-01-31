@@ -1,4 +1,5 @@
 //! Entry points for the caching canister.
+#![warn(missing_docs)]
 pub mod assets;
 mod conversion;
 mod state;
