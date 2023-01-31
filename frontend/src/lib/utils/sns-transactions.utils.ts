@@ -4,7 +4,7 @@ import type { Account } from "$lib/types/account";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SnsTransaction, SnsTransactionWithId } from "@dfinity/sns";
+import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { fromNullable } from "@dfinity/utils";
 import type { SnsTransactionsStore } from "../stores/sns-transactions.store";
 import {
@@ -16,7 +16,7 @@ import {
 
 export interface SnsTransactionData {
   toSelfTransaction: boolean;
-  transaction: SnsTransactionWithId;
+  transaction: IcrcTransactionWithId;
 }
 
 /**
@@ -99,7 +99,7 @@ const getSnsTransactionType = ({
   transaction,
   governanceCanisterId,
 }: {
-  transaction: SnsTransaction;
+  transaction: IcrcTransaction;
   governanceCanisterId?: Principal;
 }): AccountTransactionType => {
   if (fromNullable(transaction.burn) !== undefined) {
@@ -134,7 +134,7 @@ interface TransactionInfo {
 }
 
 const getTransactionInformation = (
-  transaction: SnsTransaction
+  transaction: IcrcTransaction
 ): TransactionInfo | undefined => {
   const data =
     fromNullable(transaction.burn) ??
@@ -174,7 +174,7 @@ export const mapSnsTransaction = ({
   toSelfTransaction,
   governanceCanisterId,
 }: {
-  transaction: SnsTransactionWithId;
+  transaction: IcrcTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;

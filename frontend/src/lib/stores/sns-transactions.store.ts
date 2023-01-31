@@ -1,13 +1,13 @@
 import { removeKeys } from "$lib/utils/utils";
+import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import type { SnsTransactionWithId } from "@dfinity/sns";
 import { writable } from "svelte/store";
 
 export interface SnsTransactions {
   // Each SNS Account is an entry in this Store.
   // We use the account string representation as the key to identify the transactions.
   [accountIdentifier: string]: {
-    transactions: SnsTransactionWithId[];
+    transactions: IcrcTransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
   };
@@ -41,7 +41,7 @@ const initSnsTransactionsStore = () => {
     }: {
       accountIdentifier: string;
       rootCanisterId: Principal;
-      transactions: SnsTransactionWithId[];
+      transactions: IcrcTransactionWithId[];
       oldestTxId?: bigint;
       completed: boolean;
     }) {

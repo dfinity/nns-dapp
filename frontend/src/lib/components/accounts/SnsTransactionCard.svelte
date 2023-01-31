@@ -4,10 +4,10 @@
   import { mapSnsTransaction } from "$lib/utils/sns-transactions.utils";
   import type { Transaction } from "$lib/utils/transactions.utils";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsTransactionWithId } from "@dfinity/sns";
+  import type { IcrcTransactionWithId } from "@dfinity/ledger";
   import TransactionCard from "./TransactionCard.svelte";
 
-  export let transactionWithId: SnsTransactionWithId;
+  export let transactionWithId: IcrcTransactionWithId;
   export let account: Account;
   export let toSelfTransaction: boolean;
   export let rootCanisterId: Principal;
