@@ -59,6 +59,14 @@ export const isNnsUniverseStore = derived(
   ($selectedProjectId: Principal) => isUniverseNns($selectedProjectId)
 );
 
+/**
+ * Is the selected universe ckBTC?
+ */
+export const isCkBTCUniverseStore = derived(
+  selectedUniverseIdStore,
+  ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
+);
+
 export const selectedUniverseStore: Readable<Universe> = derived(
   [selectedUniverseIdStore, selectableUniversesStore],
   ([$selectedUniverseIdStore, $selectableUniverses]) =>
