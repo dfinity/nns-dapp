@@ -11,6 +11,7 @@ import type {
   SnsSwapCommitment,
   SnsTokenMetadata,
 } from "$lib/types/sns";
+import type { IcrcTransaction } from "@dfinity/ledger";
 import {
   TokenAmount,
   type Ballot,
@@ -25,7 +26,6 @@ import type {
   SnsNeuron,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
-  SnsTransaction,
   SnsTransferableAmount,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
@@ -306,8 +306,8 @@ const anonymizeTransfer = async (
 };
 
 const anonymizeSnsTransaction = async (
-  tx: SnsTransaction
-): Promise<{ [key in keyof Required<SnsTransaction>]: unknown }> => {
+  tx: IcrcTransaction
+): Promise<{ [key in keyof Required<IcrcTransaction>]: unknown }> => {
   return {
     timestamp: tx.timestamp,
     kind: tx.kind,

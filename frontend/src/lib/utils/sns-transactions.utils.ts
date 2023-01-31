@@ -1,10 +1,10 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { fromNullable } from "@dfinity/utils";
 import type { SnsTransactionsStore } from "../stores/sns-transactions.store";
 import {
