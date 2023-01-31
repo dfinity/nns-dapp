@@ -1,6 +1,6 @@
 import type { SnsTransactionsStore } from "$lib/stores/sns-transactions.store";
-import { Principal } from "@dfinity/principal";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
+import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 
 const fakeAccount = {
