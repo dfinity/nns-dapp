@@ -46,7 +46,7 @@ export const loadSnsAccounts = async ({
       toastsError(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.sns_accounts_load",
+          fallbackErrorLabelKey: "error.accounts_load",
         })
       );
 
