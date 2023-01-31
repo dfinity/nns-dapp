@@ -91,7 +91,7 @@
 </script>
 
 <Island>
-  <main class="legacy" data-tid="sns-wallet">
+  <main class="legacy" data-tid="ckbtc-wallet">
     <section>
       {#if loaded}
         <Summary />

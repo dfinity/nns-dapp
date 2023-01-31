@@ -37,6 +37,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
+
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
     loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
