@@ -24,6 +24,9 @@
     filteredProposals,
   } from "$lib/derived/proposals.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
@@ -124,6 +127,12 @@
   );
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
+  $: $isLoggedInStore,
+    (() => {
+      if ($isLoggedInStore) {
+        listNeurons({ useCache: true });
+      }
+    })();
 
   onDestroy(unsubscribe);
 

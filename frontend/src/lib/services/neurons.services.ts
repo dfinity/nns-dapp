@@ -1,3 +1,4 @@
+import { NnsNeuronsApiService } from "$lib/api-services/nns-neurons.api-services";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import {
   addHotkey as addHotkeyApi,
@@ -10,10 +11,8 @@ import {
   mergeMaturity as mergeMaturityApi,
   mergeNeurons as mergeNeuronsApi,
   queryNeuron,
-  queryNeurons,
   removeHotkey as removeHotkeyApi,
   setFollowees,
-  spawnNeuron as spawnNeuronApi,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
   stakeNeuron as stakeNeuronApi,
@@ -253,17 +252,25 @@ export const stakeNeuron = async ({
  * @param {Object} params
  * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
+ * TODO: remove useCache flag once the NnsNeurons Api Service manages all actions and knows when and how to use the cache
+ * @param {boolean} params.useCache pass the useCache flag to the NnsNeurons Api Service
  */
 export const listNeurons = async ({
   callback,
   strategy = "query_and_update",
+  useCache = false,
 }: {
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
+  useCache?: boolean;
 } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy,
-    request: ({ certified, identity }) => queryNeurons({ certified, identity }),
+    request: (params) =>
+      // TODO: remove useCache flag once the NnsNeurons Api Service manages all actions and knows when and how to use the cache
+      useCache
+        ? NnsNeuronsApiService.getNeurons(params)
+        : NnsNeuronsApiService.queryNeurons(params),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });
 
@@ -686,7 +693,7 @@ export const spawnNeuron = async ({
       neuronId
     );
 
-    const newNeuronId = await spawnNeuronApi({
+    const newNeuronId = await NnsNeuronsApiService.spawnNeuron({
       neuronId,
       percentageToSpawn,
       identity,
