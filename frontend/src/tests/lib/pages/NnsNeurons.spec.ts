@@ -3,6 +3,7 @@
  */
 
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
+import { listNeurons } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
@@ -58,6 +59,12 @@ describe("NnsNeurons", () => {
     });
 
     afterEach(() => jest.resetAllMocks());
+
+    it("should load neurons", async () => {
+      render(NnsNeurons);
+
+      await waitFor(() => expect(listNeurons).toBeCalled());
+    });
 
     it("should render spawning neurons as disabled", () => {
       const { queryAllByTestId } = render(NnsNeurons);

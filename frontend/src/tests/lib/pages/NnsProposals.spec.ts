@@ -4,6 +4,7 @@
 
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
+import { listNeurons } from "$lib/services/neurons.services";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { neuronsStore, type NeuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -34,6 +35,12 @@ import {
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "../../mocks/proposals.store.mock";
+
+jest.mock("$lib/services/neurons.services", () => {
+  return {
+    listNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("NnsProposals", () => {
   const nothingFound = (
@@ -77,6 +84,12 @@ describe("NnsProposals", () => {
           .spyOn(GovernanceCanister, "create")
           .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
       );
+
+      it("should load neurons", async () => {
+        render(NnsProposals);
+
+        await waitFor(() => expect(listNeurons).toBeCalled());
+      });
 
       it("should render filters", () => {
         const { getByText } = render(NnsProposals);
@@ -209,6 +222,12 @@ describe("NnsProposals", () => {
           .spyOn(GovernanceCanister, "create")
           .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
       );
+
+      it("should not load neurons", () => {
+        render(NnsProposals);
+
+        waitFor(() => expect(listNeurons).not.toBeCalled());
+      });
 
       it("should render proposals", () => {
         mockLoadProposals();

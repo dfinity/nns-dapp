@@ -1,5 +1,5 @@
-import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { cachingCallsStore } from "$lib/stores/caching-calling.store";
+import { ResponseCache } from "$lib/utils/cache.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import {
@@ -26,54 +26,6 @@ export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
 
 export type QueryAndUpdateIdentity = "authorized" | "anonymous" | "current";
 
-type CachedData<R> = QueryAndUpdateResponseData<R> & {
-  timestampMilliseconds: number;
-};
-class Cache<T> {
-  private certifiedData: CachedData<T> | undefined;
-  private uncertifiedData: CachedData<T> | undefined;
-
-  constructor(private cacheExpirationMilliseconds: number) {}
-
-  getCertifiedData(): T | undefined {
-    const diff = Date.now() - (this.certifiedData?.timestampMilliseconds ?? 0);
-    if (diff > this.cacheExpirationMilliseconds) {
-      this.certifiedData = undefined;
-      return;
-    }
-    return this.certifiedData?.response;
-  }
-
-  getUncertifiedData(): T | undefined {
-    const diff =
-      Date.now() - (this.uncertifiedData?.timestampMilliseconds ?? 0);
-    if (diff > this.cacheExpirationMilliseconds) {
-      this.uncertifiedData = undefined;
-      return;
-    }
-    return this.uncertifiedData?.response;
-  }
-
-  set(value: QueryAndUpdateResponseData<T>): void {
-    const data = {
-      ...value,
-      timestampMilliseconds: Date.now(),
-    };
-    if (value.certified) {
-      this.certifiedData = data;
-    } else {
-      this.uncertifiedData = data;
-    }
-  }
-
-  reset(certified: boolean): void {
-    if (certified) {
-      this.certifiedData = undefined;
-    }
-    this.uncertifiedData = undefined;
-  }
-}
-
 let lastIndex = 0;
 
 type QueryAndUpdate<R, E> = {
@@ -83,7 +35,7 @@ type QueryAndUpdate<R, E> = {
   onError?: QueryAndUpdateOnError<E>;
   strategy?: QueryAndUpdateStrategy;
   identityType?: QueryAndUpdateIdentity;
-  forceFetch?: boolean;
+  resetCache?: boolean;
 };
 
 type Calls<R, E> = {
@@ -106,8 +58,7 @@ type Calls<R, E> = {
  * @returns {(QueryAndUpdate<R, E>) => void} queryAndUpdate call
  */
 export const createCachedQueryAndUpdate = <R, E>() => {
-  const FIVE_MINUTES = SECONDS_IN_MINUTE * 1000 * 5;
-  const cache = new Cache<R>(FIVE_MINUTES);
+  const cache = new ResponseCache<R>();
   const calls: Calls<R, E> = {
     query_and_update: {
       onLoadListeners: [],
@@ -129,10 +80,10 @@ export const createCachedQueryAndUpdate = <R, E>() => {
     strategy = "query_and_update",
     logMessage,
     identityType = "authorized",
-    forceFetch,
+    resetCache,
   }: QueryAndUpdate<R, E>): Promise<void> => {
     // We only return cache data if the fetch is not forced
-    if (!forceFetch) {
+    if (!resetCache) {
       const certifiedData = cache.getCertifiedData();
       // Return certified data if available
       if (certifiedData !== undefined) {
@@ -161,21 +112,41 @@ export const createCachedQueryAndUpdate = <R, E>() => {
     if (strategyCalls.onLoadListeners.length === 1) {
       await queryAndUpdate({
         request,
-        onLoad: (responseData: { certified: boolean; response: R }) => {
-          cache.set(responseData);
+        onLoad: ({
+          certified,
+          response,
+        }: {
+          certified: boolean;
+          response: R;
+        }) => {
+          cache.set({ certified, response });
           strategyCalls.onLoadListeners.forEach((listener) =>
-            listener(responseData)
+            listener({ certified, response })
           );
-          strategyCalls.onLoadListeners = [];
-          strategyCalls.onErrorListeners = [];
+          // Reset the listeners when we get the response from the "most certified" call of the strategy
+          if (
+            (strategy === "query_and_update" && certified) ||
+            strategy === "query" ||
+            (strategy === "update" && certified)
+          ) {
+            strategyCalls.onLoadListeners = [];
+            strategyCalls.onErrorListeners = [];
+          }
         },
         onError: ({ error, certified }: { certified: boolean; error: E }) => {
           cache.reset(certified);
           strategyCalls.onErrorListeners.forEach((listener) =>
             listener({ error, certified })
           );
-          strategyCalls.onLoadListeners = [];
-          strategyCalls.onErrorListeners = [];
+          // Reset the listeners when we get the response from the "most certified" call of the strategy
+          if (
+            (strategy === "query_and_update" && certified) ||
+            strategy === "query" ||
+            (strategy === "update" && certified)
+          ) {
+            strategyCalls.onLoadListeners = [];
+            strategyCalls.onErrorListeners = [];
+          }
         },
         strategy,
         logMessage,
@@ -184,28 +155,6 @@ export const createCachedQueryAndUpdate = <R, E>() => {
     }
   };
 };
-
-// OPTION 3: Global cache used in all queryAndUpdate calls
-//
-// The main problem with this is that the "cacheKey" used in queryAndUpdate is not related to the type in the cache.
-// Also that the cache is typed with casting or not typed at all.
-//
-// OPTION 3.1 Typed cache.
-//
-// This would mean to have to cast when writing to the cache and reading from it.
-// enum CacheKey {
-//   SnsSwapCommitments = "SnsSwapCommitment",
-// }
-// type GlobalCache = {
-//   [CacheKey.SnsSwapCommitments]: SnsSwapCommitment[] | undefined;
-// };
-// const globalCache: GlobalCache = {
-//   [CacheKey.SnsSwapCommitments]: undefined,
-// };
-// OPTION 3.2 Un-typed cache.
-//
-// type Cache: any: = {};
-//
 
 /**
  * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).

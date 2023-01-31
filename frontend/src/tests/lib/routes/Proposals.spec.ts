@@ -40,6 +40,12 @@ jest.mock("$lib/services/$public/sns-proposals.services", () => {
   };
 });
 
+jest.mock("$lib/services/neurons.services", () => {
+  return {
+    listNeurons: jest.fn(),
+  };
+});
+
 describe("Proposals", () => {
   beforeAll(() =>
     jest

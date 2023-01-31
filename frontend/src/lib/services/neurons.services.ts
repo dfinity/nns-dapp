@@ -251,63 +251,6 @@ export const stakeNeuron = async ({
   }
 };
 
-// OPTION 1: Caching Layer
-// enum Query {
-//   Neurons = "neurons",
-//   Neuron = "neuron",
-// }
-//
-// CHUNKING IS BROKEN WITH THIS APPROACH
-//
-// OPTION 1.1: Fetch per query
-// const CachingLayer = {
-//   queryNeurons(params: { certified: boolean; identity: Identity }) {
-//     if (cache.neurons) {
-//       return cache.neurons;
-//     }
-//     return queryNeurons(params)
-//   },
-//   queryNeuron(params: { neuronId: NeuronId; identity: Identity, certified: boolean }) {
-//     if (cache.neurons) {
-//       return cache.neurons.find((n) => n.id === neuronId);
-//     }
-//     return queryNeuron(params);
-//   },
-//  // OPTION 1.2: Generic fetch
-//   // fetch<R, T>({ key, params }: { key: Query; params: T }): Promise<R & NeuronInfo & NeuronInfo[]> {
-//   //   switch (key) {
-//   //     case Query.Neurons:
-//   //       return queryNeurons(params);
-//   //     case Query.Neuron:
-//   //       return queryNeuron(params);
-//   //     default:
-//   //       throw new Error("Unknown key");
-//   //   }
-//   // },
-// };
-
-// OPTION 2: Cache service
-/**
- * This idea could be good to just avoid calling the service altogether.
- *
- * But services do more than just load data.
- *
- * It would also be harder to add the force fetch option.
- */
-// const cache = (fn: (...args: any[]) => void) => {
-//   const called: { [key: string]: boolean } = {};
-//   return (...args: any[]) => {
-//     const key = JSON.stringify(args);
-//     if (called[key]) {
-//       return;
-//     }
-//     called[key] = true;
-//     return fn(...args);
-//   };
-// };
-// const cachedListNeurons = cache(listNeurons);
-// cachedListNeurons({});
-
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
@@ -315,22 +258,22 @@ export const stakeNeuron = async ({
  * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
-const queryAndUpdateNeurons = createCachedQueryAndUpdate<
+const queryAndUpdateNeuronsWithCache = createCachedQueryAndUpdate<
   NeuronInfo[],
   unknown
 >();
 export const listNeurons = async ({
   callback,
   strategy = "query_and_update",
-  forceFetch,
+  resetCache = true,
 }: {
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
-  forceFetch?: boolean;
+  resetCache?: boolean;
 } = {}): Promise<void> => {
-  return queryAndUpdateNeurons({
+  return queryAndUpdateNeuronsWithCache({
     strategy,
-    forceFetch,
+    resetCache,
     request: ({ certified, identity }) => queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });

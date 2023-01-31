@@ -14,15 +14,11 @@
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { authStore } from "$lib/stores/auth.store";
   import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
   import { listNeurons } from "$lib/services/neurons.services";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
-
-  $: $isLoggedInStore,
-    (async () => $isLoggedInStore && (await listNeurons()))();
 
   const mapProposalId = (
     proposalIdText: string | undefined | null = undefined
@@ -88,7 +84,7 @@
     });
   };
 
-  $: $authStore.identity,
+  $: $isLoggedInStore,
     proposalId,
     (async () => {
       if (proposalId === undefined) {
@@ -103,6 +99,9 @@
       });
 
       await findProposal();
+      if ($isLoggedInStore) {
+        await listNeurons({ resetCache: false });
+      }
     })();
 
   // END: loading and navigation

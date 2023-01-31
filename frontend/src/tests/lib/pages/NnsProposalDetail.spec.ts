@@ -3,6 +3,7 @@
  */
 
 import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
+import { listNeurons } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
@@ -22,6 +23,12 @@ import {
   mockProposals,
 } from "../../mocks/proposals.store.mock";
 import { silentConsoleErrors } from "../../utils/utils.test-utils";
+
+jest.mock("$lib/services/neurons.services", () => {
+  return {
+    listNeurons: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("ProposalDetail", () => {
   jest
@@ -57,29 +64,51 @@ describe("ProposalDetail", () => {
       .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const props = {
     proposalIdText: `${mockProposals[0].id}`,
   };
 
-  it("should render proposal detail if not signed in", async () => {
-    authStoreMock.next({
-      identity: undefined,
+  describe("signed in", () => {
+    beforeEach(() => {
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
-    await waitFor(() =>
-      expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
-    );
+    it("should render proposal detail", async () => {
+      const { queryByTestId } = render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      );
+    });
+
+    it("should load neurons", async () => {
+      render(ProposalDetail, props);
+      await waitFor(() => expect(listNeurons).toBeCalled());
+    });
   });
 
-  it("should render proposal detail if signed in", async () => {
-    authStoreMock.next({
-      identity: mockIdentity,
+  describe("signed not in", () => {
+    beforeEach(() => {
+      authStoreMock.next({
+        identity: undefined,
+      });
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
-    await waitFor(() =>
-      expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
-    );
+    it("should render proposal detail", async () => {
+      const { queryByTestId } = render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      );
+    });
+
+    it("should not load neurons", async () => {
+      render(ProposalDetail, props);
+      await waitFor(() => expect(listNeurons).not.toBeCalled());
+    });
   });
 });

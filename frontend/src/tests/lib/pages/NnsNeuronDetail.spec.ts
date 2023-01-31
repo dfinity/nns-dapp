@@ -4,6 +4,7 @@
 
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import { listNeurons } from "$lib/services/neurons.services";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -21,8 +22,7 @@ jest.mock("$lib/services/known-neurons.services", () => {
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
-    ...(jest.requireActual("$lib/services/neurons.services") as object),
-    loadNeuron: jest.fn(),
+    listNeurons: jest.fn(),
   };
 });
 
@@ -49,6 +49,12 @@ describe("NeuronDetail", () => {
     const { container } = render(NnsNeuronDetail, props);
 
     expect(querySkeleton(container)).not.toBeNull();
+  });
+
+  it("should load neurons in store", async () => {
+    render(NnsNeuronDetail, props);
+
+    await waitFor(() => expect(listNeurons).toBeCalled());
   });
 
   const testTitle = async ({

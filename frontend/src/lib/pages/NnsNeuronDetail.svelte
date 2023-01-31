@@ -32,8 +32,22 @@
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { isNullish } from "$lib/utils/utils";
 
   export let neuronIdText: string | undefined | null;
+
+  $: neuronIdText,
+    (async () => {
+      if (isNullish(neuronIdText)) {
+        await goBack(false);
+        return;
+      }
+
+      // TODO: Load only the selected neuron and load it in a context store
+      // Same pattern than in the other detail pages
+      await listNeurons({ resetCache: false });
+    })();
 
   const mapNeuronId = (
     neuronIdText: string | undefined | null

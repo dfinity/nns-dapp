@@ -13,8 +13,7 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
 
-  $: $isLoggedInStore,
-    (async () => $isLoggedInStore && (await listNeurons()))();
+  $: $isLoggedInStore, (async () => await listNeurons({ resetCache: false }))();
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;

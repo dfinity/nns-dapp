@@ -34,6 +34,12 @@ jest.mock("$lib/services/sns-parameters.services", () => {
   };
 });
 
+jest.mock("$lib/services/neurons.services", () => {
+  return {
+    listNeurons: jest.fn(),
+  };
+});
+
 describe("Neurons", () => {
   beforeAll(() =>
     jest
