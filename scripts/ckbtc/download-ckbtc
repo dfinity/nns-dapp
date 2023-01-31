@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Download
+
+DIR=tmp
+
+if [ ! -d "$DIR" ]
+then
+     mkdir "$DIR"
+fi
+
+IC_COMMIT="fcef36254e620a39d6e801155c9af11ef612559a"
+
+curl -sSL https://download.dfinity.systems/ic/$IC_COMMIT/canisters/ic-ckbtc-minter.wasm.gz -o "$DIR"/ckbtc_minter.wasm.gz
+gunzip "$DIR"/ckbtc_minter.wasm.gz
+
+curl -sSL https://download.dfinity.systems/ic/$IC_COMMIT/canisters/ic-icrc1-ledger.wasm.gz -o "$DIR"/ledger_canister.wasm.gz
+gunzip "$DIR"/ledger_canister.wasm.gz
+
+curl -sSL https://download.dfinity.systems/ic/$IC_COMMIT/canisters/ic-icrc1-index.wasm.gz -o "$DIR"/index_canister.wasm.gz
+gunzip "$DIR"/index_canister.wasm.gz
+
+curl -sSL https://raw.githubusercontent.com/dfinity/ic/$IC_COMMIT/rs/bitcoin/ckbtc/minter/ckbtc_minter.did -o "$DIR"/minter.did
+
+curl -sSL https://raw.githubusercontent.com/dfinity/ic/$IC_COMMIT/rs/rosetta-api/icrc1/ledger/icrc1.did -o "$DIR"/ledger.did
+
+curl -sSL https://raw.githubusercontent.com/dfinity/ic/$IC_COMMIT/rs/rosetta-api/icrc1/index/index.did -o "$DIR"/index.did

@@ -103,6 +103,11 @@ e.g. in `canisters`:
   "type": "custom",
   "candid": "tmp/ledger.did",
   "wasm": "tmp/ledger_canister.wasm"
+},
+"ckbtc_test_index": {
+  "type": "custom",
+  "candid": "tmp/index.did",
+  "wasm": "tmp/index_canister.wasm"
 }
 ```
 
