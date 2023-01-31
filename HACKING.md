@@ -43,6 +43,14 @@ e2e tests also need a `.env` configuration. Such file can also be generated with
 
 e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
 
+### Running against local server
+
+If you wish to run the e2e tests against your local server, configure the URL as following in `.env` file of the test:
+
+```
+VITE_OWN_CANISTER_URL=http://localhost:5173/
+```
+
 ## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
