@@ -119,8 +119,16 @@ install_coreutils_darwin() {
 install_coreutils_linux() {
   echo "Installing coreutils..."
   # Coreutils is included in build-essential, but you almost certainly need the other packages as well.
-  sudo apt-get install -yy build-essential g++
+  sudo apt-get install -yy build-essential
 }
+
+install_gpp_darwin() {
+  brew install g++
+}
+install_gpp_linux() {
+  sudo apt-get install -yy g++
+}
+
 
 install_moreutils_darwin() {
   echo "Installing moreutils..."
@@ -282,6 +290,7 @@ command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
+command -v g++ || "install_gpp_$OS"
 command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
