@@ -155,6 +155,14 @@
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
+    },
+    "sns_aggregator": {
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
+      "candid": "rs/sns_aggregator/sns_aggregator.did",
+      "wasm": "sns_aggregator.wasm",
+      "type": "custom"
     }
   },
   "networks": {
