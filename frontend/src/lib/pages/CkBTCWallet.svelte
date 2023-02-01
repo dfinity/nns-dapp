@@ -105,7 +105,9 @@
 
         <Separator />
 
-        <CkBTCTransactionsList account={$selectedAccountStore.account} />
+        {#if nonNullish($selectedAccountStore.account)}
+          <CkBTCTransactionsList account={$selectedAccountStore.account} />
+        {/if}
       {:else}
         <Spinner />
       {/if}
