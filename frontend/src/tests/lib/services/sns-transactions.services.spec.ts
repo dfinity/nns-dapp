@@ -3,7 +3,7 @@
  */
 
 import * as indexApi from "$lib/api/sns-index.api";
-import { DEFAULT_SNS_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
@@ -42,7 +42,7 @@ describe("sns-transactions-services", () => {
         expect(spyGetTransactions).toBeCalledWith({
           identity: mockIdentity,
           account: snsAccount,
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
           rootCanisterId,
           start,
         })
@@ -83,7 +83,7 @@ describe("sns-transactions-services", () => {
         expect(spyGetTransactions).toBeCalledWith({
           identity: mockIdentity,
           account: snsAccount,
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
           rootCanisterId,
         })
       );
@@ -123,7 +123,7 @@ describe("sns-transactions-services", () => {
           account: {
             owner: mockSnsMainAccount.principal,
           },
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
           rootCanisterId,
           // TODO: It should be oldestTxId but there is a bug in the Index canister that doesn't return proper oldestTxId
           // Instead, we need to calculate the oldest by checking the transactions.

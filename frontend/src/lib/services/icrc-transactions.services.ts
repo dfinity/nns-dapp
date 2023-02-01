@@ -2,7 +2,7 @@ import type {
   GetTransactionsParams,
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
-import { DEFAULT_SNS_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getSnsAccountIdentity } from "$lib/services/sns-accounts.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -40,7 +40,7 @@ export const loadIcrcAccountTransactions = async ({
   try {
     const identity = await getSnsAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
-    const maxResults = DEFAULT_SNS_TRANSACTION_PAGE_LIMIT;
+    const maxResults = DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT;
     const { transactions, oldestTxId } = await getTransactions({
       identity,
       account: snsAccount,
