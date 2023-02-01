@@ -67,7 +67,6 @@ impl Asset {
 /// will also return the former.
 #[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
-
 impl Assets {
     /// Adds an asset to the assets database.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
