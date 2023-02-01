@@ -1,5 +1,5 @@
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -28,7 +28,7 @@ describe("selectable universes derived stores", () => {
     expect(store[0].summary).toBeUndefined();
     expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
     expect(store[1].summary).toBeUndefined();
-    expect(store[1].canisterId).toEqual(CKBTC_LEDGER_CANISTER_ID.toText());
+    expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
   });
 
   it("should not return ckBTC if path is not Account", () => {
@@ -40,7 +40,9 @@ describe("selectable universes derived stores", () => {
     const store = get(selectableUniversesStore);
     // 1 length = only NNS
     expect(store.length).toEqual(1);
-    expect(store[0].canisterId).not.toEqual(CKBTC_LEDGER_CANISTER_ID.toText());
+    expect(store[0].canisterId).not.toEqual(
+      CKBTC_UNIVERSE_CANISTER_ID.toText()
+    );
   });
 
   describe("with projects", () => {

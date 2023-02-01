@@ -37,7 +37,7 @@ export interface IcrcTransactionsStore
     completed: boolean;
   }) => void;
   reset: () => void;
-  resetUniverse: (canisterId: UniverseCanisterIdText) => void;
+  resetUniverse: (canisterId: UniverseCanisterId) => void;
 }
 
 /**
@@ -101,11 +101,11 @@ const initSnsTransactionsStore = (): IcrcTransactionsStore => {
       set({});
     },
 
-    resetUniverse(canisterId: UniverseCanisterIdText) {
+    resetUniverse(canisterId: UniverseCanisterId) {
       update((currentState: IcrcTransactionsStoreData) =>
         removeKeys({
           obj: currentState,
-          keysToRemove: [canisterId],
+          keysToRemove: [canisterId.toText()],
         })
       );
     },

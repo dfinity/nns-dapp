@@ -41,7 +41,7 @@ export const loadSnsAccounts = async ({
 
       // hide unproven data
       snsAccountsStore.resetProject(rootCanisterId);
-      icrcTransactionsStore.resetUniverse(rootCanisterId.toText());
+      icrcTransactionsStore.resetUniverse(rootCanisterId);
 
       toastsError(
         toToastError({

@@ -4,7 +4,7 @@
   import { loadCkBTCAccountNextTransactions } from "$lib/services/ckbtc-transactions.services";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-  import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
@@ -28,14 +28,14 @@
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
     store: $icrcTransactionsStore,
-    canisterId: CKBTC_INDEX_CANISTER_ID,
+    canisterId: CKBTC_UNIVERSE_CANISTER_ID,
     account,
   });
 
   let completed: boolean;
   $: completed = isIcrcTransactionsCompleted({
     store: $icrcTransactionsStore,
-    canisterId: CKBTC_INDEX_CANISTER_ID,
+    canisterId: CKBTC_UNIVERSE_CANISTER_ID,
     account,
   });
 </script>

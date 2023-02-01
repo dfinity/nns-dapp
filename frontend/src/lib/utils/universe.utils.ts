@@ -1,5 +1,5 @@
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -18,4 +18,4 @@ export const isUniverseNns = (canisterId: Principal): boolean =>
 
 export const isUniverseCkBTC = (canisterId: Principal | string): boolean =>
   (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
-  CKBTC_LEDGER_CANISTER_ID.toText();
+  CKBTC_UNIVERSE_CANISTER_ID.toText();
