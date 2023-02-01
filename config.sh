@@ -25,6 +25,12 @@ ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
 
+# Gets the default URL for a canister based on its ID.
+canister_url_from_id() {
+  : "If we have a canister ID, insert it into HOST as a subdomain."
+  test -z "${1:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${1}.,g"; }
+}
+
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
@@ -38,10 +44,7 @@ local_deployment_data="$(
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(
-    set -euo pipefail
-    id="$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
-    : "If we have a canister ID, insert it into HOST as a subdomain."
-    test -z "${id:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
+    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
   )"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
@@ -54,6 +57,14 @@ local_deployment_data="$(
   test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
+  : "Try to find the SNS aggregator URL"
+  : "- may be deployed locally"
+  SNS_AGGREGATOR_URL="$(
+    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
+  )"
+  export SNS_AGGREGATOR_URL
+  test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -62,6 +73,7 @@ local_deployment_data="$(
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
+    SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'
@@ -99,6 +111,7 @@ fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
+aggregatorCanisterUrl=$(echo "$json" | jq -r ".SNS_AGGREGATOR_URL")
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -112,12 +125,16 @@ VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
-VITE_IDENTITY_SERVICE_URL=$identityServiceUrl" | tee "$ENV_FILE"
+VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
+VITE_AGGREGATOR_CANISTER_URL=$aggregatorCanisterUrl" | tee "$ENV_FILE"
 
 echo "Config has been defined in '${ENV_FILE}'" >&2
 
 IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
+
+SNS_AGGREGATOR_URL="$aggregatorCanisterUrl"
+export SNS_AGGREGATOR_URL
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
