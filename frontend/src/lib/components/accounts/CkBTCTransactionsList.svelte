@@ -2,7 +2,7 @@
   import type { Account } from "$lib/types/account";
   import { onMount } from "svelte";
   import { loadCkBTCAccountNextTransactions } from "$lib/services/ckbtc-transactions.services";
-  import { IcrcTransactionData } from "$lib/types/transaction";
+  import type { IcrcTransactionData } from "$lib/types/transaction";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import {
@@ -40,4 +40,10 @@
   });
 </script>
 
-<IcrcTransactionsList {account} {transactions} {loading} {completed} />
+<IcrcTransactionsList
+  on:nnsIntersect={loadTransactions}
+  {account}
+  {transactions}
+  {loading}
+  {completed}
+/>

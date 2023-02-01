@@ -59,6 +59,7 @@
 </script>
 
 <IcrcTransactionsList
+  on:nnsIntersect={loadMore}
   {account}
   {transactions}
   {loading}
