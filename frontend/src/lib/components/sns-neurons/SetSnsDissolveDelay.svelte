@@ -44,16 +44,12 @@
 
   const calculateVotingPower = (delayInSeconds: number) =>
     isNullish(snsParameters)
-      ? 0n
-      : BigInt(
-          Math.round(
-            snsNeuronVotingPower({
-              newDissolveDelayInSeconds: BigInt(delayInSeconds),
-              neuron,
-              snsParameters,
-            })
-          )
-        );
+      ? 0
+      : snsNeuronVotingPower({
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          neuron,
+          snsParameters,
+        });
 
   let maxSnsDelayInSeconds: number | undefined;
   $: maxSnsDelayInSeconds = isNullish(snsParameters)

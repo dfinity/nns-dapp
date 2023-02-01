@@ -24,10 +24,12 @@
     token: ICPToken,
   });
   const calculateVotingPower = (delayInSeconds: number) =>
-    neuronVotingPower({
-      neuron,
-      newDissolveDelayInSeconds: BigInt(delayInSeconds),
-    });
+    Number(
+      neuronVotingPower({
+        neuron,
+        newDissolveDelayInSeconds: BigInt(delayInSeconds),
+      })
+    );
 </script>
 
 <SetDissolveDelay

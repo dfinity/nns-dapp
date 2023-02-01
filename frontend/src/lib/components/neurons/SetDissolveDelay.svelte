@@ -20,7 +20,7 @@
   export let minProjectDelayInSeconds: number;
   export let maxDelayInSeconds = 0;
   // sns and nns calculates voting power differently
-  export let calculateVotingPower: (delayInSeconds: number) => bigint;
+  export let calculateVotingPower: (delayInSeconds: number) => number;
   export let minDissolveDelayDescription = "";
   export let confirmButtonText: string;
   export let cancelButtonText: string;
@@ -36,7 +36,7 @@
   let maxDelayInDays = 0;
   $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
 
-  let votingPower: bigint;
+  let votingPower: number;
   $: votingPower = calculateVotingPower(delayInSeconds);
 
   let inputError: string | undefined;
@@ -47,7 +47,7 @@
     delayInDays <= minDelayInDays ||
     delayInDays > maxDelayInDays;
 
-  const checkMinMax = () => {
+  const updateDelays = () => {
     if (delayInDays < minDelayInDays) {
       delayInDays = minDelayInDays;
     }
@@ -63,11 +63,11 @@
       minDelayInDays + 1,
       secondsToDays(minProjectDelayInSeconds)
     );
-    checkMinMax();
+    updateDelays();
   };
   const setMax = () => {
     delayInDays = maxDelayInDays;
-    checkMinMax();
+    updateDelays();
   };
   const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
@@ -138,7 +138,7 @@
         min={0}
         max={maxDelayInDays}
         bind:value={delayInDays}
-        handleInput={checkMinMax}
+        handleInput={updateDelays}
       />
       <div class="details">
         <div>
