@@ -8,7 +8,7 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { getOldestTxIdFromStore } from "$lib/utils/sns-transactions.utils";
+import { getOldestTxIdFromStore } from "$lib/utils/icrc-transactions.utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/types/runtime/store";
@@ -72,7 +72,7 @@ export const loadIcrcAccountNextTransactions = async ({
   const store = get(icrcTransactionsStore);
   const currentOldestTxId = getOldestTxIdFromStore({
     account,
-    rootCanisterId: canisterId,
+    canisterId: canisterId,
     store,
   });
   return loadAccountTransactions({

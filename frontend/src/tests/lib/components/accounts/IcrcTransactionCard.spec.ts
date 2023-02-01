@@ -30,7 +30,7 @@ describe("IcrcTransactionCard", () => {
         account,
         transactionWithId,
         toSelfTransaction: false,
-        governanceCanisterId
+        governanceCanisterId,
       },
     });
 

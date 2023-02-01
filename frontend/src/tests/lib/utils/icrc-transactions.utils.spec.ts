@@ -1,5 +1,7 @@
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { AccountTransactionType } from "$lib/types/transaction";
 import {
+  getOldestTxIdFromStore,
   mapIcrcTransaction,
   sortTransactions,
 } from "$lib/utils/icrc-transactions.utils";
@@ -160,6 +162,61 @@ describe("icrc-transaction utils", () => {
       expect(data.isSend).toBe(true);
       const txData = transactionFromMainToSubaccount.transaction.transfer[0];
       expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
+    });
+  });
+
+  describe("getOldestTransactionId", () => {
+    const recentTx = {
+      id: BigInt(1234),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(3000),
+      },
+    };
+    const secondTx = {
+      id: BigInt(1235),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(2000),
+      },
+    };
+    const oldestTx = {
+      id: BigInt(1236),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(1000),
+      },
+    };
+
+    it("returns the id of the oldest tx", () => {
+      const rootCanisterId = mockSnsMainAccount.principal;
+      const transactions = [secondTx, oldestTx, recentTx];
+      const store: IcrcTransactionsStoreData = {
+        [rootCanisterId.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions,
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      expect(
+        getOldestTxIdFromStore({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsMainAccount,
+        })
+      ).toBe(oldestTx.id);
+    });
+
+    it("returns undefined if no data is found", () => {
+      expect(
+        getOldestTxIdFromStore({
+          store: {},
+          canisterId: mockSnsMainAccount.principal,
+          account: mockSnsMainAccount,
+        })
+      ).toBeUndefined();
     });
   });
 });

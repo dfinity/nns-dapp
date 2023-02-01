@@ -21,32 +21,3 @@ export const isSnsTransactionsCompleted = ({
   account: Account;
 }): boolean =>
   Boolean(store[rootCanisterId.toText()]?.[account.identifier].completed);
-
-// TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
-// It seems that the `Index` canister has a bug.
-/**
- * Returns the oldest transaction id of an SNS account.
- *
- * @param params
- * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
- * @param {IcrcTransactionsStoreData} params.store
- * @returns {bigint}
- */
-export const getOldestTxIdFromStore = ({
-  store,
-  rootCanisterId,
-  account,
-}: {
-  store: IcrcTransactionsStoreData;
-  rootCanisterId: Principal;
-  account: Account;
-}): bigint | undefined => {
-  const accountData = store[rootCanisterId.toText()]?.[account.identifier];
-  if (accountData === undefined) {
-    return;
-  }
-  return accountData.transactions.sort((a, b) =>
-    Number(a.transaction.timestamp - b.transaction.timestamp)
-  )[0].id;
-};
