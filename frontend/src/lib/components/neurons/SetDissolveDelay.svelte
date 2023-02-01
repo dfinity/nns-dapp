@@ -83,7 +83,7 @@
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
-<div class="wrapper">
+<div class="wrapper" data-tid="set-dissolve-delay">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
     <slot name="neuron-id" />

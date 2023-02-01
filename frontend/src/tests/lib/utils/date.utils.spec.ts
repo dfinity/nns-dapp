@@ -44,31 +44,31 @@ describe("daysToDuration", () => {
   const parseDaysToDuration = (days: number) =>
     Array.from(daysToDuration(days).match(/\d+/g)?.map(Number) ?? []);
 
-  it.only("should return 1 year", () => {
+  it("should return 1 year", () => {
     expect(parseDaysToDuration(364)).toEqual([364]);
     expect(parseDaysToDuration(365)).toEqual([1]);
     expect(parseDaysToDuration(366)).toEqual([1, 1]);
   });
 
-  it.only("should return 2 years", () => {
+  it("should return 2 years", () => {
     expect(parseDaysToDuration(729)).toEqual([1, 364]);
     expect(parseDaysToDuration(730)).toEqual([2]);
     expect(parseDaysToDuration(731)).toEqual([2, 1]);
   });
 
-  it.only("should return 3 years", () => {
+  it("should return 3 years", () => {
     expect(parseDaysToDuration(1094)).toEqual([2, 364]);
     expect(parseDaysToDuration(1095)).toEqual([3]);
     expect(parseDaysToDuration(1096)).toEqual([3, 1]);
   });
 
-  it.only("should return a leap-year", () => {
+  it("should return a leap-year", () => {
     expect(parseDaysToDuration(1460)).toEqual([3, 365]);
     expect(parseDaysToDuration(1461)).toEqual([4]);
     expect(parseDaysToDuration(1462)).toEqual([4, 1]);
   });
 
-  it.only("should return 5+ years", () => {
+  it("should return 5+ years", () => {
     expect(parseDaysToDuration(1825)).toEqual([4, 364]);
     expect(parseDaysToDuration(1826)).toEqual([5]);
     expect(parseDaysToDuration(1827)).toEqual([5, 1]);

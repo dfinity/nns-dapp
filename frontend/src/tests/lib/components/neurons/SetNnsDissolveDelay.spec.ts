@@ -8,13 +8,12 @@ import { mockNeuron } from "../../../mocks/neurons.mock";
 describe("SetNnsDissolveDelay", () => {
   // Tested in CreateNeuronModal.spec.ts
   it("is not tested in isolation", () => {
-    render(SetNnsDissolveDelay, {
+    const { getByTestId } = render(SetNnsDissolveDelay, {
       props: {
         neuron: mockNeuron,
-        cancelButtonText: "Cancel",
-        confirmButtonText: "Set Dissolve",
+        delayInSeconds: 0,
       },
     });
-    expect(true).toBeTruthy();
+    expect(getByTestId("set-dissolve-delay")).toBeInTheDocument();
   });
 });
