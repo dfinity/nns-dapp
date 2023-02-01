@@ -8,6 +8,7 @@ import type {
   Transaction,
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
@@ -23,21 +24,21 @@ import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
  *
  * @param params
  * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
+ * @param {UniverseCanisterId} params.canisterId
  * @param {IcrcTransactionsStoreData} params.store
  * @returns {SnsTransactionWithId[]}
  */
 export const getSortedTransactionsFromStore = ({
   store,
-  rootCanisterId,
+  canisterId,
   account,
 }: {
   store: IcrcTransactionsStoreData;
-  rootCanisterId: Principal;
+  canisterId: UniverseCanisterId;
   account: Account;
 }): IcrcTransactionData[] =>
   mapToSelfTransaction(
-    store[rootCanisterId.toText()]?.[account.identifier].transactions ?? []
+    store[canisterId.toText()]?.[account.identifier].transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
@@ -190,3 +191,22 @@ export const getOldestTxIdFromStore = ({
     Number(a.transaction.timestamp - b.transaction.timestamp)
   )[0].id;
 };
+/**
+ * Returns whether all transactions of an SNS account have been loaded.
+ *
+ * @param params
+ * @param {Account} params.account
+ * @param {UniverseCanisterId} params.canisterId
+ * @param {IcrcTransactionsStoreData} params.store
+ * @returns {boolean}
+ */
+export const isIcrcTransactionsCompleted = ({
+  store,
+  canisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  canisterId: UniverseCanisterId;
+  account: Account;
+}): boolean =>
+  Boolean(store[canisterId.toText()]?.[account.identifier].completed);

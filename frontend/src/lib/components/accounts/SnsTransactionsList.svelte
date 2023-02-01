@@ -6,9 +6,11 @@
   import { onMount } from "svelte";
   import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import type { IcrcTransactionData } from "$lib/types/transaction";
-  import { isSnsTransactionsCompleted } from "$lib/utils/sns-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
-  import { getSortedTransactionsFromStore } from "$lib/utils/icrc-transactions.utils";
+  import {
+    getSortedTransactionsFromStore,
+    isIcrcTransactionsCompleted,
+  } from "$lib/utils/icrc-transactions.utils";
 
   export let account: Account;
   export let rootCanisterId: Principal;
@@ -38,14 +40,14 @@
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
     store: $icrcTransactionsStore,
-    rootCanisterId,
+    canisterId: rootCanisterId,
     account,
   });
 
   let completed: boolean;
-  $: completed = isSnsTransactionsCompleted({
+  $: completed = isIcrcTransactionsCompleted({
     store: $icrcTransactionsStore,
-    rootCanisterId,
+    canisterId: rootCanisterId,
     account,
   });
 

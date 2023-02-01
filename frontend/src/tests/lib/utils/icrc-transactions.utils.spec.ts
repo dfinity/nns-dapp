@@ -3,6 +3,7 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
+  isIcrcTransactionsCompleted,
   mapIcrcTransaction,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
@@ -60,7 +61,7 @@ describe("icrc-transaction utils", () => {
       };
       const data = getSortedTransactionsFromStore({
         store,
-        rootCanisterId: mockPrincipal,
+        canisterId: mockPrincipal,
         account: mockSnsMainAccount,
       });
       expect(data[0]).toEqual({
@@ -89,7 +90,7 @@ describe("icrc-transaction utils", () => {
       };
       const data = getSortedTransactionsFromStore({
         store,
-        rootCanisterId: mockPrincipal,
+        canisterId: mockPrincipal,
         account: mockSnsMainAccount,
       });
       expect(data[0]).toEqual({
@@ -243,6 +244,40 @@ describe("icrc-transaction utils", () => {
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();
+    });
+  });
+
+  describe("isTransactionsCompleted", () => {
+    it("returns the value in store", () => {
+      const rootCanisterId = mockSnsMainAccount.principal;
+      const store: IcrcTransactionsStoreData = {
+        [rootCanisterId.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions: [transactionFromMainToSubaccount],
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+          [mockSnsSubAccount.identifier]: {
+            transactions: [transactionFromMainToSubaccount],
+            completed: true,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      expect(
+        isIcrcTransactionsCompleted({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsMainAccount,
+        })
+      ).toBe(false);
+      expect(
+        isIcrcTransactionsCompleted({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsSubAccount,
+        })
+      ).toBe(true);
     });
   });
 });
