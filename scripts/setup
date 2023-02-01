@@ -119,7 +119,7 @@ install_coreutils_darwin() {
 install_coreutils_linux() {
   echo "Installing coreutils..."
   # Coreutils is included in build-essential, but you almost certainly need the other packages as well.
-  sudo apt-get install -yy build-essential
+  sudo apt-get install -yy build-essential g++
 }
 
 install_moreutils_darwin() {
@@ -240,8 +240,8 @@ install_sns_darwin() {
 install_curl_linux() {
   sudo apt-get install -yy curl
 }
-install_sns_darwin() {
-  bew install curl
+install_curl_darwin() {
+  brew install curl
 }
 
 install_idl2json() {
