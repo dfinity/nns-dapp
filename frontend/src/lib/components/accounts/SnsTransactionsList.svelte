@@ -1,10 +1,13 @@
 <script lang="ts">
   import { loadAccountNextTransactions } from "$lib/services/sns-transactions.services";
-  import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+  import {
+    snsTransactionsStore,
+    SnsTransactionsStoreData,
+  } from "$lib/stores/sns-transactions.store";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
-  import { sortTransactions } from "$lib/utils/icrc-transactions.utils";
+  import { getSortedTransactionsFromStore } from "$lib/utils/icrc-transactions.utils";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
@@ -39,10 +42,11 @@
   };
 
   let transactions: IcrcTransactionData[];
-  $: transactions = sortTransactions(
-    $snsTransactionsStore[rootCanisterId.toText()]?.[account.identifier]
-      ?.transactions
-  );
+  $: transactions = getSortedTransactionsFromStore({
+    store: $snsTransactionsStore,
+    rootCanisterId,
+    account,
+  });
 
   let completed: boolean;
   $: completed = isSnsTransactionsCompleted({

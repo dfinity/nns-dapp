@@ -1,4 +1,5 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type {
@@ -20,15 +21,25 @@ import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
  * A duplicated transaction is normally one made to itself.
  * The data of the duplicated transaction is the same in both transactions. No need to show it twice.
  *
- * @param IcrcTransactionWithId[] | undefined the transactions to sort
+ * @param params
+ * @param {Account} params.account
+ * @param {Principal} params.rootCanisterId
+ * @param {SnsTransactionsStore} params.store
  * @returns {SnsTransactionWithId[]}
  */
-export const sortTransactions = (
-  transactions: IcrcTransactionWithId[] | undefined
-): IcrcTransactionData[] =>
-  mapToSelfTransaction(transactions ?? []).sort(
-    ({ transaction: txA }, { transaction: txB }) =>
-      Number(txB.transaction.timestamp - txA.transaction.timestamp)
+export const getSortedTransactionsFromStore = ({
+  store,
+  rootCanisterId,
+  account,
+}: {
+  store: SnsTransactionsStoreData;
+  rootCanisterId: Principal;
+  account: Account;
+}): IcrcTransactionData[] =>
+  mapToSelfTransaction(
+    store[rootCanisterId.toText()]?.[account.identifier].transactions ?? []
+  ).sort(({ transaction: txA }, { transaction: txB }) =>
+    Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
 
 const getIcrcTransactionType = ({
