@@ -20,6 +20,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
+  import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -103,6 +104,8 @@
         <WalletSummary />
 
         <Separator />
+
+        <CkBTCTransactionsList account={$selectedAccountStore.account} />
       {:else}
         <Spinner />
       {/if}
