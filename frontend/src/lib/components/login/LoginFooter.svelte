@@ -33,7 +33,7 @@
 
   <a
     class="ic"
-    href="https://internetcomputer.org/nns"
+    href="https://internetcomputer.org"
     rel="noopener noreferrer"
     target="_blank"
     alt={$i18n.auth.internetcomputer_dot_org_link}
