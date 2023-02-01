@@ -8,11 +8,9 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { mockIcrcTransactionWithId } from "../../../mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
-import {
-  mockSnsTransactionsStoreSubscribe,
-  mockSnsTransactionWithId,
-} from "../../../mocks/sns-transactions.mock";
+import { mockSnsTransactionsStoreSubscribe } from "../../../mocks/sns-transactions.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => {
   // To test loading state as well
@@ -71,7 +69,7 @@ describe("SnsTransactionList", () => {
     const store = {
       [mockPrincipal.toText()]: {
         [mockMainAccount.identifier]: {
-          transactions: [mockSnsTransactionWithId],
+          transactions: [mockIcrcTransactionWithId],
           completed: false,
           oldestTxId: BigInt(0),
         },

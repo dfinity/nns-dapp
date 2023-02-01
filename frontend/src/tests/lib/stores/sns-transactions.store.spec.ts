@@ -2,11 +2,11 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../../mocks/sns-accounts.mock";
-import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("SNS Transactions store", () => {
   describe("snsTransactionsStore", () => {
@@ -14,7 +14,7 @@ describe("SNS Transactions store", () => {
     it("should set transactions for a project and account when it doesn't exist", () => {
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -24,13 +24,13 @@ describe("SNS Transactions store", () => {
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
     });
 
     it("should add transactions for a project and a different account", () => {
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -38,7 +38,7 @@ describe("SNS Transactions store", () => {
 
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsSubAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -48,24 +48,24 @@ describe("SNS Transactions store", () => {
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsSubAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
     });
 
     it("should not add duplicated transactions", () => {
       const tx1 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(1),
       };
       const tx2 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(2),
       };
       const tx3 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(3),
       };
       icrcTransactionsStore.addTransactions({
@@ -92,15 +92,15 @@ describe("SNS Transactions store", () => {
 
     it("should not change txOldestId if not oldest", () => {
       const tx1 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(1),
       };
       const tx2 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(2),
       };
       const tx3 = {
-        ...mockSnsTransactionWithId,
+        ...mockIcrcTransactionWithId,
         id: BigInt(3),
       };
       const oldestTxId = BigInt(1);
@@ -129,7 +129,7 @@ describe("SNS Transactions store", () => {
     it("should reset accounts for a project", () => {
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -139,7 +139,7 @@ describe("SNS Transactions store", () => {
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
 
       icrcTransactionsStore.resetUniverse(mockPrincipal);
       const accountsInStore2 = get(icrcTransactionsStore);
@@ -151,7 +151,7 @@ describe("SNS Transactions store", () => {
 
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -160,11 +160,11 @@ describe("SNS Transactions store", () => {
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
 
       icrcTransactionsStore.addTransactions({
         canisterId: principal2,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
@@ -174,11 +174,11 @@ describe("SNS Transactions store", () => {
         accountsInStore2[mockPrincipal.toText()]?.[
           mockSnsMainAccount.identifier
         ]?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
       expect(
         accountsInStore2[principal2.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
-      ).toEqual([mockSnsTransactionWithId]);
+      ).toEqual([mockIcrcTransactionWithId]);
     });
   });
 });
