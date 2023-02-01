@@ -129,7 +129,6 @@ install_gpp_linux() {
   sudo apt-get install -yy g++
 }
 
-
 install_moreutils_darwin() {
   echo "Installing moreutils..."
   brew install moreutils
