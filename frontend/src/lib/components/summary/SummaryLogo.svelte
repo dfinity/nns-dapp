@@ -4,10 +4,10 @@
   import type { Universe } from "$lib/types/universe";
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 
-  export let displayProjects = true;
+  export let displayUniverse = true;
 
   let universe: Universe;
-  $: universe = displayProjects ? $selectedUniverseStore : NNS_UNIVERSE;
+  $: universe = displayUniverse ? $selectedUniverseStore : NNS_UNIVERSE;
 </script>
 
 <UniverseLogo {universe} framed />

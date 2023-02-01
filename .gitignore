@@ -112,3 +112,5 @@ node_modules/
 web-assets/
 
 **/*.rs.bk
+
+tmp
