@@ -12,7 +12,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 
@@ -224,13 +224,6 @@ describe("sns-accounts-services", () => {
       expect(spyTransfer).not.toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
-    });
-  });
-
-  describe("getSnsAccountIdentity", () => {
-    it("returns identity", async () => {
-      const identity = await services.getSnsAccountIdentity(mockSnsMainAccount);
-      expect(identity).toEqual(mockIdentity);
     });
   });
 });

@@ -3,7 +3,7 @@ import type {
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import { getSnsAccountIdentity } from "$lib/services/sns-accounts.services";
+import { getIcrcAccountIdentity } from "$lib/services/icrc-accounts.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -42,7 +42,7 @@ export const loadIcrcAccountTransactions = async ({
   getTransactions,
 }: LoadIcrcAccountTransactionsParams) => {
   try {
-    const identity = await getSnsAccountIdentity(account);
+    const identity = await getIcrcAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
     const maxResults = DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT;
     const { transactions, oldestTxId } = await getTransactions({
@@ -76,7 +76,7 @@ export const loadIcrcAccountNextTransactions = async ({
   const store = get(icrcTransactionsStore);
   const currentOldestTxId = getOldestTxIdFromStore({
     account,
-    canisterId: canisterId,
+    canisterId,
     store,
   });
   return loadAccountTransactions({
