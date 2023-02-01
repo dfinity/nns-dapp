@@ -8,7 +8,7 @@
   import { transactionName } from "$lib/utils/transactions.utils";
   import { KeyValuePair, IconNorthEast } from "@dfinity/gix-components";
   import type { Transaction } from "$lib/types/transaction";
-  import { AccountTransactionType } from "$lib/types/transaction";
+  import type { AccountTransactionType } from "$lib/types/transaction";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;

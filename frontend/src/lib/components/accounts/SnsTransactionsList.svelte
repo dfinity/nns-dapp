@@ -2,7 +2,6 @@
   import { loadAccountNextTransactions } from "$lib/services/sns-transactions.services";
   import {
     snsTransactionsStore,
-    SnsTransactionsStoreData,
   } from "$lib/stores/sns-transactions.store";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
