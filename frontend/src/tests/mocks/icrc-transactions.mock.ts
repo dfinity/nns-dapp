@@ -1,5 +1,7 @@
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
+import type { Subscriber } from "svelte/store";
 
 export interface IcrcCandidAccount {
   owner: Principal;
@@ -55,3 +57,11 @@ export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
   id: BigInt(123),
   transaction: mockIcrcTransaction,
 };
+
+export const mockIcrcTransactionsStoreSubscribe =
+  (store: IcrcTransactionsStoreData) =>
+  (run: Subscriber<IcrcTransactionsStoreData>): (() => void) => {
+    run(store);
+
+    return () => undefined;
+  };
