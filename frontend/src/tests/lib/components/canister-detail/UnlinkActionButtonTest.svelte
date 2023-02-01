@@ -1,9 +1,9 @@
 <script lang="ts">
   import { mockCanister } from "../../../mocks/canisters.mock";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
-  import DetachActionButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
+  import UnlinkCanisterButton from "$lib/components/canister-detail/UnlinkCanisterButton.svelte";
 </script>
 
-<DetachActionButton canisterId={mockCanister.canister_id} />
+<UnlinkCanisterButton canisterId={mockCanister.canister_id} />
 
 <CanisterDetailModals />
