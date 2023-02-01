@@ -151,7 +151,7 @@ install_npm_linux() {
 
 install_rust() {
   echo "Installing rust"
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   append_to_profile 'export CARGO_BUILD_JOBS=2'
 }
 
@@ -190,12 +190,12 @@ is_docker_installed() {
   ((major_version >= 10))
 }
 install_docker() {
-	if [[ "${INTERACTIVE:-}" == "true" ]] ; then
-  while ! command -v docker; do
-    echo "Please install docker from: https://docs.docker.com/get-docker/"
-    read -rp "Press enter when docker has been installed...  "
-  done
-	fi
+  if [[ "${INTERACTIVE:-}" == "true" ]]; then
+    while ! command -v docker; do
+      echo "Please install docker from: https://docs.docker.com/get-docker/"
+      read -rp "Press enter when docker has been installed...  "
+    done
+  fi
 }
 
 install_wget_darwin() {
@@ -237,6 +237,13 @@ install_sns_darwin() {
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
+install_curl_linux() {
+  sudo apt-get install -yy curl
+}
+install_sns_darwin() {
+  bew install curl
+}
+
 install_idl2json() {
   (
     set -euo pipefail # These are not inherited in a subsell.
@@ -263,6 +270,7 @@ sudo echo I have superpowers || {
 install_rosetta_maybe
 install_brew_maybe
 command -v wget || "install_wget_$OS"
+command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
