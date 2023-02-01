@@ -1,4 +1,4 @@
-import type { SnsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
@@ -59,8 +59,8 @@ export const createSnstransactionWithId = (
 });
 
 export const mockSnsTransactionsStoreSubscribe =
-  (store: SnsTransactionsStore) =>
-  (run: Subscriber<SnsTransactionsStore>): (() => void) => {
+  (store: SnsTransactionsStoreData) =>
+  (run: Subscriber<SnsTransactionsStoreData>): (() => void) => {
     run(store);
 
     return () => undefined;

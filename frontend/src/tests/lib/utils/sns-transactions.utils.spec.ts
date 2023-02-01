@@ -1,4 +1,4 @@
-import type { SnsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
@@ -50,7 +50,7 @@ describe("sns-transaction utils", () => {
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
       const transactions = [secondTx, oldestTx, recentTx];
-      const store: SnsTransactionsStore = {
+      const store: SnsTransactionsStoreData = {
         [mockPrincipal.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,
@@ -79,7 +79,7 @@ describe("sns-transaction utils", () => {
     });
 
     it("should set selfTransaction to true", () => {
-      const store: SnsTransactionsStore = {
+      const store: SnsTransactionsStoreData = {
         [mockSnsMainAccount.principal.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions: [selfTransaction, selfTransaction],
@@ -108,7 +108,7 @@ describe("sns-transaction utils", () => {
   describe("isTransactionsCompleted", () => {
     it("returns the value in store", () => {
       const rootCanisterId = mockSnsMainAccount.principal;
-      const store: SnsTransactionsStore = {
+      const store: SnsTransactionsStoreData = {
         [rootCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
@@ -143,7 +143,7 @@ describe("sns-transaction utils", () => {
     it("returns the id of the oldest tx", () => {
       const rootCanisterId = mockSnsMainAccount.principal;
       const transactions = [secondTx, oldestTx, recentTx];
-      const store: SnsTransactionsStore = {
+      const store: SnsTransactionsStoreData = {
         [rootCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,

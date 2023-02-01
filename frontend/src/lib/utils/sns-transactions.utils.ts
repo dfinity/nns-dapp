@@ -6,7 +6,7 @@ import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
-import type { SnsTransactionsStore } from "../stores/sns-transactions.store";
+import type { SnsTransactionsStoreData } from "../stores/sns-transactions.store";
 import {
   AccountTransactionType,
   mapToSelfTransaction,
@@ -28,7 +28,7 @@ export interface SnsTransactionData {
  * @param params
  * @param {Account} params.account
  * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
+ * @param {SnsTransactionsStoreData} params.store
  * @returns {SnsTransactionWithId[]}
  */
 export const getSortedTransactionsFromStore = ({
@@ -36,7 +36,7 @@ export const getSortedTransactionsFromStore = ({
   rootCanisterId,
   account,
 }: {
-  store: SnsTransactionsStore;
+  store: SnsTransactionsStoreData;
   rootCanisterId: Principal;
   account: Account;
 }): SnsTransactionData[] =>
@@ -52,7 +52,7 @@ export const getSortedTransactionsFromStore = ({
  * @param params
  * @param {Account} params.account
  * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
+ * @param {SnsTransactionsStoreData} params.store
  * @returns {boolean}
  */
 export const isTransactionsCompleted = ({
@@ -60,7 +60,7 @@ export const isTransactionsCompleted = ({
   rootCanisterId,
   account,
 }: {
-  store: SnsTransactionsStore;
+  store: SnsTransactionsStoreData;
   rootCanisterId: Principal;
   account: Account;
 }): boolean =>
@@ -74,7 +74,7 @@ export const isTransactionsCompleted = ({
  * @param params
  * @param {Account} params.account
  * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
+ * @param {SnsTransactionsStoreData} params.store
  * @returns {bigint}
  */
 export const getOldestTxIdFromStore = ({
@@ -82,7 +82,7 @@ export const getOldestTxIdFromStore = ({
   rootCanisterId,
   account,
 }: {
-  store: SnsTransactionsStore;
+  store: SnsTransactionsStoreData;
   rootCanisterId: Principal;
   account: Account;
 }): bigint | undefined => {

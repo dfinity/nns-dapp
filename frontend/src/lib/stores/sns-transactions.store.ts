@@ -1,7 +1,8 @@
+import type { RootCanisterIdText } from "$lib/types/sns";
 import { removeKeys } from "$lib/utils/utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
 export interface SnsTransactions {
   // Each SNS Account is an entry in this Store.
@@ -13,10 +14,24 @@ export interface SnsTransactions {
   };
 }
 
-export interface SnsTransactionsStore {
-  // Each SNS Project is an entry in this Store.
-  // We use the root canister id and then the account identifier as the key to identify the transactions.
-  [rootCanisterId: string]: SnsTransactions;
+// Each SNS Project is an entry in this Store.
+// We use the root canister id and then the account identifier as the key to identify the transactions.
+export type SnsTransactionsStoreData = Record<
+  RootCanisterIdText,
+  SnsTransactions
+>;
+
+export interface SnsTransactionsStore
+  extends Readable<SnsTransactionsStoreData> {
+  addTransactions: (data: {
+    accountIdentifier: string;
+    rootCanisterId: Principal;
+    transactions: IcrcTransactionWithId[];
+    oldestTxId?: bigint;
+    completed: boolean;
+  }) => void;
+  reset: () => void;
+  resetProject: (rootCanisterId: Principal) => void;
 }
 
 /**
@@ -26,8 +41,8 @@ export interface SnsTransactionsStore {
  * - reset: reset the store to an empty state.
  * - resetProject: removed the transactions for a specific project.
  */
-const initSnsTransactionsStore = () => {
-  const { subscribe, update, set } = writable<SnsTransactionsStore>({});
+const initSnsTransactionsStore = (): SnsTransactionsStore => {
+  const { subscribe, update, set } = writable<SnsTransactionsStoreData>({});
 
   return {
     subscribe,
@@ -45,7 +60,7 @@ const initSnsTransactionsStore = () => {
       oldestTxId?: bigint;
       completed: boolean;
     }) {
-      update((currentState: SnsTransactionsStore) => {
+      update((currentState: SnsTransactionsStoreData) => {
         const projectState = currentState[rootCanisterId.toText()];
         const accountState = projectState?.[accountIdentifier];
         const uniquePreviousTransactions = (
@@ -81,7 +96,7 @@ const initSnsTransactionsStore = () => {
     },
 
     resetProject(rootCanisterId: Principal) {
-      update((currentState: SnsTransactionsStore) =>
+      update((currentState: SnsTransactionsStoreData) =>
         removeKeys({
           obj: currentState,
           keysToRemove: [rootCanisterId.toText()],

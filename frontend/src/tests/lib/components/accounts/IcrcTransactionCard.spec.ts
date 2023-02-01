@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
+import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
@@ -19,13 +19,13 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
-describe("SnsTransactionCard", () => {
+describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (
     account,
     transactionWithId,
     rootCanisterId = mockSnsFullProject.rootCanisterId
   ) =>
-    render(SnsTransactionCard, {
+    render(IcrcTransactionCard, {
       props: {
         account,
         transactionWithId,

@@ -11,8 +11,9 @@
   } from "$lib/utils/sns-transactions.utils";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import SnsTransactionCard from "./SnsTransactionCard.svelte";
+  import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 
   export let account: Account;
   export let rootCanisterId: Principal;
@@ -52,6 +53,12 @@
     rootCanisterId,
     account,
   });
+
+  let governanceCanisterId: Principal | undefined;
+  $: governanceCanisterId = $snsProjectsStore?.find(
+    ({ rootCanisterId: currentId }) =>
+      currentId.toText() === rootCanisterId.toText()
+  )?.summary.governanceCanisterId;
 </script>
 
 <div data-tid="sns-transactions-list">
@@ -63,11 +70,11 @@
   {:else}
     <InfiniteScroll on:nnsIntersect={loadMore} disabled={loading || completed}>
       {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
-        <SnsTransactionCard
+        <IcrcTransactionCard
           transactionWithId={transaction}
           {toSelfTransaction}
           {account}
-          {rootCanisterId}
+          {governanceCanisterId}
         />
       {/each}
     </InfiniteScroll>
