@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
       # "restore-keys"-style matching). Because (in case of an exact match)
@@ -46,6 +44,8 @@ jobs:
         run: |
           ./scripts/setup --profile ~/.bashrc
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: set-env
+        run: ./build-config.sh >> $GITHUB_ENV
       # Helps with debugging
       - name: Versions
         run: |

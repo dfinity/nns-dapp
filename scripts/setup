@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-. <(./build-config.sh)
 
 help_text() {
   cat <<-EOF
@@ -102,6 +101,13 @@ install_brew_maybe() {
   }
 }
 
+install_apt_maybe() {
+  [[ "$OS" != "linux" ]] || {
+    # If apt is not installed yet, we cannot help, however it may not be set up yet.
+    apt-get update || sudo apt-get update
+  }
+}
+
 install_coreutils_darwin() {
   echo "Installing coreutils..."
   brew install coreutils
@@ -143,6 +149,15 @@ install_rust() {
   echo "Installing rust"
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   append_to_profile 'export CARGO_BUILD_JOBS=2'
+}
+
+install_sudo_darwin() {
+  echo "Installing sudo"
+  brew install sudo
+}
+install_sudo_linux() {
+  echo "Installing sudo - must be running as a superuser already."
+  apt-get install sudo
 }
 
 install_xz_darwin() {
@@ -233,6 +248,8 @@ install_idl2json() {
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
+install_apt_maybe
+command -v sudo || "install_sudo_$OS"
 sudo echo I have superpowers || {
   echo "Sorry, you will need admin priveleges on this machine to install software."
   exit 1
@@ -247,6 +264,7 @@ command -v jq || "install_jq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
+. <(./build-config.sh)
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
