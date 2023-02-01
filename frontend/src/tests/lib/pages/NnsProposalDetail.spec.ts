@@ -4,15 +4,14 @@
 
 import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { listNeurons } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
+import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
 import {
-  authStoreMock,
   mockAuthStoreSubscribe,
-  mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
@@ -44,10 +43,6 @@ describe("ProposalDetail", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-
-    jest
       .spyOn(proposalsStore, "subscribe")
       .mockImplementation(mockEmptyProposalsStoreSubscribe);
 
@@ -74,9 +69,9 @@ describe("ProposalDetail", () => {
 
   describe("signed in", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     it("should render proposal detail", async () => {
@@ -92,11 +87,15 @@ describe("ProposalDetail", () => {
     });
   });
 
-  describe("signed not in", () => {
+  describe("not signed in", () => {
     beforeEach(() => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation((run: Subscriber<AuthStore>): (() => void) => {
+          run({ identity: undefined });
+
+          return () => undefined;
+        });
     });
 
     it("should render proposal detail", async () => {

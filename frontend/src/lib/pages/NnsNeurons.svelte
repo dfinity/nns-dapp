@@ -11,9 +11,9 @@
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
+  import { isSignedInStore } from "$lib/derived/is-signed-in.derived";
 
-  $: $isLoggedInStore, (async () => await listNeurons({ resetCache: false }))();
+  $: $isSignedInStore, (async () => await listNeurons({ resetCache: false }))();
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;

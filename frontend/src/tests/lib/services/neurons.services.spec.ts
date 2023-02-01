@@ -316,7 +316,7 @@ describe("neurons-services", () => {
       jest.clearAllMocks();
     });
     it("should list neurons", async () => {
-      await listNeurons();
+      await listNeurons({ resetCache: true });
 
       expect(spyQueryNeurons).toHaveBeenCalled();
 
@@ -327,7 +327,7 @@ describe("neurons-services", () => {
     it("should not list neurons if no identity", async () => {
       setNoIdentity();
 
-      const call = async () => await listNeurons();
+      const call = async () => await listNeurons({ resetCache: true });
 
       await expect(call).rejects.toThrow(mockIdentityErrorMsg);
 

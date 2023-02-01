@@ -154,7 +154,7 @@ const removeFolloweesDecentralizedSale = async () => {
           );
         })
       );
-      await listNeurons();
+      await listNeurons({ resetCache: true });
     }
 
     toastsSuccess({

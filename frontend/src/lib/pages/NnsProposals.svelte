@@ -24,7 +24,7 @@
     filteredProposals,
   } from "$lib/derived/proposals.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
+  import { isSignedInStore } from "$lib/derived/is-signed-in.derived";
   import { listNeurons } from "$lib/services/neurons.services";
 
   export let referrerPath: AppPath | undefined = undefined;
@@ -126,9 +126,9 @@
   );
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
-  $: $isLoggedInStore,
-    (async () =>
-      $isLoggedInStore && (await listNeurons({ resetCache: false })))();
+  $: if ($isSignedInStore) {
+    listNeurons({ resetCache: false });
+  }
 
   onDestroy(unsubscribe);
 

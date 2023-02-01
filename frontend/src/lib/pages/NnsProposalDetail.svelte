@@ -14,8 +14,9 @@
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
+  import { isSignedInStore } from "$lib/derived/is-signed-in.derived";
   import { listNeurons } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
@@ -84,7 +85,7 @@
     });
   };
 
-  $: $isLoggedInStore,
+  $: $isSignedInStore,
     proposalId,
     (async () => {
       if (proposalId === undefined) {
@@ -98,9 +99,9 @@
         proposal: undefined,
       });
 
-      await findProposal();
-      if ($isLoggedInStore) {
-        await listNeurons({ resetCache: false });
+      findProposal();
+      if ($isSignedInStore) {
+        listNeurons({ resetCache: false });
       }
     })();
 

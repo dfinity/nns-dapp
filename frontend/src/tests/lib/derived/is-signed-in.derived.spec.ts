@@ -1,9 +1,9 @@
-import { isLoggedInStore } from "$lib/derived/is-logged-in.derived";
+import { isSignedInStore } from "$lib/derived/is-signed-in.derived";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { get, type Subscriber } from "svelte/store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 
-describe("is-logged-in derived store", () => {
+describe("is-signed-in derived store", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -12,7 +12,7 @@ describe("is-logged-in derived store", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-    const isLoggedIn = get(isLoggedInStore);
+    const isLoggedIn = get(isSignedInStore);
     expect(isLoggedIn).toBeTruthy();
   });
 
@@ -24,7 +24,7 @@ describe("is-logged-in derived store", () => {
 
         return () => undefined;
       });
-    const isLoggedIn = get(isLoggedInStore);
+    const isLoggedIn = get(isSignedInStore);
     expect(isLoggedIn).toBeFalsy();
   });
 });

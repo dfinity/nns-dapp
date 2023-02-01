@@ -265,12 +265,12 @@ const queryAndUpdateNeuronsWithCache = createCachedQueryAndUpdate<
 export const listNeurons = async ({
   callback,
   strategy = "query_and_update",
-  resetCache = true,
+  resetCache,
 }: {
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
   resetCache?: boolean;
-} = {}): Promise<void> => {
+}): Promise<void> => {
   return queryAndUpdateNeuronsWithCache({
     strategy,
     resetCache,
@@ -439,7 +439,7 @@ export const mergeNeurons = async ({
     await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
     success = true;
 
-    await listNeurons();
+    await listNeurons({ resetCache: true });
 
     return targetNeuronId;
   } catch (err) {
@@ -593,7 +593,7 @@ export const splitNeuron = async ({
 
     await splitNeuronApi({ neuronId, identity, amount: amountE8s });
 
-    await listNeurons();
+    await listNeurons({ resetCache: true });
 
     return neuronId;
   } catch (err) {
@@ -616,7 +616,7 @@ export const disburse = async ({
 
     await disburseApi({ neuronId, toAccountId, identity });
 
-    await Promise.all([syncAccounts(), listNeurons()]);
+    await Promise.all([syncAccounts(), listNeurons({ resetCache: true })]);
 
     return { success: true };
   } catch (err) {
@@ -703,7 +703,7 @@ export const spawnNeuron = async ({
       identity,
     });
 
-    await listNeurons();
+    await listNeurons({ resetCache: true });
 
     return newNeuronId;
   } catch (err) {

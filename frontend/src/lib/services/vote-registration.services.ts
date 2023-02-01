@@ -382,6 +382,7 @@ const updateAfterVoteRegistration = async (
   return Promise.all([
     listNeurons({
       strategy: "update",
+      resetCache: true,
     }),
     reloadProposal(),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
