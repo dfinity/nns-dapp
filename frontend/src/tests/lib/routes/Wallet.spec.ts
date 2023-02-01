@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -27,6 +27,12 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
     loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-transactions.services", () => {
+  return {
+    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -74,7 +80,7 @@ describe("Wallet", () => {
 
   it("should render ckBTC wallet", () => {
     page.mock({
-      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
     });
 

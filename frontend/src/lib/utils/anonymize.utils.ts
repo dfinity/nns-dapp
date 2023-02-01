@@ -2,7 +2,7 @@ import type {
   CanisterDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { SnsTransactions } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type {
   SnsSummary,
@@ -318,9 +318,9 @@ const anonymizeSnsTransaction = async (
 };
 
 export const anonymizeTransactionStore = async (
-  store: SnsTransactions
+  store: IcrcTransactions
 ): Promise<
-  undefined | { [key in keyof Required<SnsTransactions>]: unknown }
+  undefined | { [key in keyof Required<IcrcTransactions>]: unknown }
 > => {
   const anonymizedStore: SnsTypeStore<unknown> = {};
   for (const [key, value] of Object.entries(store)) {

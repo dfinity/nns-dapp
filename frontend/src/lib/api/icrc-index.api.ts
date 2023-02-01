@@ -4,6 +4,7 @@ import type {
   IcrcAccount,
   IcrcGetTransactions,
 } from "@dfinity/ledger";
+import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 
 export interface GetTransactionsParams {
@@ -11,6 +12,7 @@ export interface GetTransactionsParams {
   account: IcrcAccount;
   start?: bigint;
   maxResults: bigint;
+  canisterId: Principal;
   getTransactions: (
     params: GetAccountTransactionsParams
   ) => Promise<IcrcGetTransactions>;
@@ -26,7 +28,10 @@ export const getTransactions = async ({
   start,
   account,
   getTransactions: getTransactionsApi,
-}: GetTransactionsParams): Promise<GetTransactionsResponse> => {
+}: Omit<
+  GetTransactionsParams,
+  "canisterId"
+>): Promise<GetTransactionsResponse> => {
   const { oldest_tx_id, ...rest } = await getTransactionsApi({
     max_results,
     start,

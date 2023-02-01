@@ -1,23 +1,20 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import type {
+  IcrcTransactionData,
+  IcrcTransactionInfo,
+  Transaction,
+} from "$lib/types/transaction";
+import { AccountTransactionType } from "$lib/types/transaction";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
-import type { SnsTransactionsStore } from "../stores/sns-transactions.store";
-import {
-  AccountTransactionType,
-  mapToSelfTransaction,
-  showTransactionFee,
-  type Transaction,
-} from "./transactions.utils";
-
-export interface SnsTransactionData {
-  toSelfTransaction: boolean;
-  transaction: IcrcTransactionWithId;
-}
+import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
 
 /**
  * Returns transactions of an SNS account sorted by date (newest first).
@@ -27,75 +24,26 @@ export interface SnsTransactionData {
  *
  * @param params
  * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
+ * @param {UniverseCanisterId} params.canisterId
+ * @param {IcrcTransactionsStoreData} params.store
  * @returns {SnsTransactionWithId[]}
  */
 export const getSortedTransactionsFromStore = ({
   store,
-  rootCanisterId,
+  canisterId,
   account,
 }: {
-  store: SnsTransactionsStore;
-  rootCanisterId: Principal;
+  store: IcrcTransactionsStoreData;
+  canisterId: UniverseCanisterId;
   account: Account;
-}): SnsTransactionData[] =>
+}): IcrcTransactionData[] =>
   mapToSelfTransaction(
-    store[rootCanisterId.toText()]?.[account.identifier].transactions ?? []
+    store[canisterId.toText()]?.[account.identifier].transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
 
-/**
- * Returns whether all transactions of an SNS account have been loaded.
- *
- * @param params
- * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
- * @returns {boolean}
- */
-export const isTransactionsCompleted = ({
-  store,
-  rootCanisterId,
-  account,
-}: {
-  store: SnsTransactionsStore;
-  rootCanisterId: Principal;
-  account: Account;
-}): boolean =>
-  Boolean(store[rootCanisterId.toText()]?.[account.identifier].completed);
-
-// TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
-// It seems that the `Index` canister has a bug.
-/**
- * Returns the oldest transaction id of an SNS account.
- *
- * @param params
- * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
- * @returns {bigint}
- */
-export const getOldestTxIdFromStore = ({
-  store,
-  rootCanisterId,
-  account,
-}: {
-  store: SnsTransactionsStore;
-  rootCanisterId: Principal;
-  account: Account;
-}): bigint | undefined => {
-  const accountData = store[rootCanisterId.toText()]?.[account.identifier];
-  if (accountData === undefined) {
-    return;
-  }
-  return accountData.transactions.sort((a, b) =>
-    Number(a.transaction.timestamp - b.transaction.timestamp)
-  )[0].id;
-};
-
-const getSnsTransactionType = ({
+const getIcrcTransactionType = ({
   transaction,
   governanceCanisterId,
 }: {
@@ -124,18 +72,9 @@ const getSnsTransactionType = ({
   throw new Error(`Unknown transaction type ${transaction.kind}`);
 };
 
-interface TransactionInfo {
-  to?: string;
-  from?: string;
-  memo?: Uint8Array;
-  created_at_time?: bigint;
-  amount: bigint;
-  fee?: bigint;
-}
-
 const getTransactionInformation = (
   transaction: IcrcTransaction
-): TransactionInfo | undefined => {
+): IcrcTransactionInfo | undefined => {
   const data =
     fromNullable(transaction.burn) ??
     fromNullable(transaction.mint) ??
@@ -168,7 +107,7 @@ const getTransactionInformation = (
   };
 };
 
-export const mapSnsTransaction = ({
+export const mapIcrcTransaction = ({
   transaction,
   account,
   toSelfTransaction,
@@ -180,7 +119,7 @@ export const mapSnsTransaction = ({
   governanceCanisterId?: Principal;
 }): Transaction | undefined => {
   try {
-    const type = getSnsTransactionType({
+    const type = getIcrcTransactionType({
       transaction: transaction.transaction,
       governanceCanisterId,
     });
@@ -223,3 +162,51 @@ export const mapSnsTransaction = ({
     });
   }
 };
+
+// TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
+// It seems that the `Index` canister has a bug.
+/**
+ * Returns the oldest transaction id of an Icrc account.
+ *
+ * @param params
+ * @param {Account} params.account
+ * @param {Principal} params.rootCanisterId
+ * @param {IcrcTransactionsStoreData} params.store
+ * @returns {bigint}
+ */
+export const getOldestTxIdFromStore = ({
+  store,
+  canisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  canisterId: Principal;
+  account: Account;
+}): bigint | undefined => {
+  const accountData = store[canisterId.toText()]?.[account.identifier];
+  if (accountData === undefined) {
+    return;
+  }
+  return accountData.transactions.sort((a, b) =>
+    Number(a.transaction.timestamp - b.transaction.timestamp)
+  )[0].id;
+};
+/**
+ * Returns whether all transactions of an SNS account have been loaded.
+ *
+ * @param params
+ * @param {Account} params.account
+ * @param {UniverseCanisterId} params.canisterId
+ * @param {IcrcTransactionsStoreData} params.store
+ * @returns {boolean}
+ */
+export const isIcrcTransactionsCompleted = ({
+  store,
+  canisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  canisterId: UniverseCanisterId;
+  account: Account;
+}): boolean =>
+  Boolean(store[canisterId.toText()]?.[account.identifier].completed);

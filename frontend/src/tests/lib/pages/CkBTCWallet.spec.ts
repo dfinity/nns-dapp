@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
@@ -18,6 +18,12 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-transactions.services", () => {
+  return {
+    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("CkBTCWallet", () => {
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,
@@ -28,7 +34,7 @@ describe("CkBTCWallet", () => {
       ckBTCAccountsStore.reset();
 
       page.mock({
-        data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
     });
@@ -54,7 +60,7 @@ describe("CkBTCWallet", () => {
       });
 
       page.mock({
-        data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
     });
