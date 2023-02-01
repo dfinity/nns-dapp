@@ -4,16 +4,14 @@
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
-  import {
-    getSortedTransactionsFromStore,
-    isTransactionsCompleted,
-    type SnsTransactionData,
-  } from "$lib/utils/sns-transactions.utils";
+  import { sortTransactions } from "$lib/utils/icrc-transactions.utils";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+  import type { IcrcTransactionData } from "$lib/types/transaction";
+  import { isSnsTransactionsCompleted } from "$lib/utils/sns-transactions.utils";
 
   export let account: Account;
   export let rootCanisterId: Principal;
@@ -40,15 +38,14 @@
     loading = false;
   };
 
-  let transactions: SnsTransactionData[];
-  $: transactions = getSortedTransactionsFromStore({
-    store: $snsTransactionsStore,
-    rootCanisterId,
-    account,
-  });
+  let transactions: IcrcTransactionData[];
+  $: transactions = sortTransactions(
+    $snsTransactionsStore[rootCanisterId.toText()]?.[account.identifier]
+      ?.transactions
+  );
 
   let completed: boolean;
-  $: completed = isTransactionsCompleted({
+  $: completed = isSnsTransactionsCompleted({
     store: $snsTransactionsStore,
     rootCanisterId,
     account,

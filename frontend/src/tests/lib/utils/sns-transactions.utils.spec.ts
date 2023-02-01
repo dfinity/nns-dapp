@@ -1,20 +1,16 @@
 import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
 import {
   getOldestTxIdFromStore,
-  getSortedTransactionsFromStore,
-  isTransactionsCompleted,
-  mapSnsTransaction,
+  isSnsTransactionsCompleted,
 } from "$lib/utils/sns-transactions.utils";
-import { AccountTransactionType } from "$lib/utils/transactions.utils";
-import { mockPrincipal } from "../..//mocks/auth.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { createIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../..//mocks/sns-accounts.mock";
-import { principal } from "../../mocks/sns-projects.mock";
-import { createSnstransactionWithId } from "../../mocks/sns-transactions.mock";
+} from "../../mocks/sns-accounts.mock";
 
-describe("sns-transaction utils", () => {
+describe("sns-transactions.utils", () => {
   const to = {
     owner: mockPrincipal,
     subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
@@ -23,87 +19,7 @@ describe("sns-transaction utils", () => {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
-  const transactionFromMainToSubaccount = createSnstransactionWithId(to, from);
-  const recentTx = {
-    id: BigInt(1234),
-    transaction: {
-      ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(3000),
-    },
-  };
-  const secondTx = {
-    id: BigInt(1235),
-    transaction: {
-      ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(2000),
-    },
-  };
-  const oldestTx = {
-    id: BigInt(1236),
-    transaction: {
-      ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(1000),
-    },
-  };
-  const selfTransaction = createSnstransactionWithId(to, to);
-
-  describe("getSortedTransactionsFromStore", () => {
-    it("should return transactions sorted by date", () => {
-      const transactions = [secondTx, oldestTx, recentTx];
-      const store: SnsTransactionsStoreData = {
-        [mockPrincipal.toText()]: {
-          [mockSnsMainAccount.identifier]: {
-            transactions,
-            completed: false,
-            oldestTxId: BigInt(1234),
-          },
-        },
-      };
-      const data = getSortedTransactionsFromStore({
-        store,
-        rootCanisterId: mockPrincipal,
-        account: mockSnsMainAccount,
-      });
-      expect(data[0]).toEqual({
-        toSelfTransaction: false,
-        transaction: recentTx,
-      });
-      expect(data[1]).toEqual({
-        toSelfTransaction: false,
-        transaction: secondTx,
-      });
-      expect(data[2]).toEqual({
-        toSelfTransaction: false,
-        transaction: oldestTx,
-      });
-    });
-
-    it("should set selfTransaction to true", () => {
-      const store: SnsTransactionsStoreData = {
-        [mockSnsMainAccount.principal.toText()]: {
-          [mockSnsMainAccount.identifier]: {
-            transactions: [selfTransaction, selfTransaction],
-            completed: false,
-            oldestTxId: BigInt(1234),
-          },
-        },
-      };
-      const data = getSortedTransactionsFromStore({
-        store,
-        rootCanisterId: mockPrincipal,
-        account: mockSnsMainAccount,
-      });
-      expect(data[0]).toEqual({
-        toSelfTransaction: true,
-        transaction: selfTransaction,
-      });
-      // Only the first one should be set to true
-      expect(data[1]).toEqual({
-        toSelfTransaction: false,
-        transaction: selfTransaction,
-      });
-    });
-  });
+  const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
 
   describe("isTransactionsCompleted", () => {
     it("returns the value in store", () => {
@@ -123,14 +39,14 @@ describe("sns-transaction utils", () => {
         },
       };
       expect(
-        isTransactionsCompleted({
+        isSnsTransactionsCompleted({
           store,
           rootCanisterId,
           account: mockSnsMainAccount,
         })
       ).toBe(false);
       expect(
-        isTransactionsCompleted({
+        isSnsTransactionsCompleted({
           store,
           rootCanisterId,
           account: mockSnsSubAccount,
@@ -140,6 +56,28 @@ describe("sns-transaction utils", () => {
   });
 
   describe("getOldestTransactionId", () => {
+    const recentTx = {
+      id: BigInt(1234),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(3000),
+      },
+    };
+    const secondTx = {
+      id: BigInt(1235),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(2000),
+      },
+    };
+    const oldestTx = {
+      id: BigInt(1236),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(1000),
+      },
+    };
+
     it("returns the id of the oldest tx", () => {
       const rootCanisterId = mockSnsMainAccount.principal;
       const transactions = [secondTx, oldestTx, recentTx];
@@ -169,93 +107,6 @@ describe("sns-transaction utils", () => {
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();
-    });
-  });
-
-  describe("mapSnsTransaction", () => {
-    it("maps sent transaction", () => {
-      const data = mapSnsTransaction({
-        transaction: transactionFromMainToSubaccount,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
-      });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
-    });
-
-    it("maps stake neuron transaction", () => {
-      const governanceCanisterId = principal(2);
-      const toGovernance = {
-        owner: governanceCanisterId,
-        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
-      };
-      const stakeNeuronTransaction = createSnstransactionWithId(
-        toGovernance,
-        from
-      );
-      stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
-      const data = mapSnsTransaction({
-        transaction: stakeNeuronTransaction,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
-        governanceCanisterId,
-      });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.StakeNeuron);
-    });
-
-    it("maps top up neuron transaction", () => {
-      const governanceCanisterId = principal(2);
-      const toGovernance = {
-        owner: governanceCanisterId,
-        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
-      };
-      const topUpNeuronTransaction = createSnstransactionWithId(
-        toGovernance,
-        from
-      );
-      topUpNeuronTransaction.transaction.transfer[0].memo = [];
-      const data = mapSnsTransaction({
-        transaction: topUpNeuronTransaction,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
-        governanceCanisterId,
-      });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.TopUpNeuron);
-    });
-
-    it("maps received transaction", () => {
-      const data = mapSnsTransaction({
-        transaction: transactionFromMainToSubaccount,
-        account: mockSnsSubAccount,
-        toSelfTransaction: false,
-      });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(true);
-    });
-
-    it("maps self transaction", () => {
-      const data = mapSnsTransaction({
-        transaction: selfTransaction,
-        account: mockSnsSubAccount,
-        toSelfTransaction: true,
-      });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(true);
-    });
-
-    it("adds fee to sent transactions", () => {
-      const data = mapSnsTransaction({
-        transaction: transactionFromMainToSubaccount,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
-      });
-      expect(data.isSend).toBe(true);
-      const txData = transactionFromMainToSubaccount.transaction.transfer[0];
-      expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
     });
   });
 });

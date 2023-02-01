@@ -9,6 +9,7 @@ import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { createIcrcTransactionWithId } from "../../../mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -17,7 +18,6 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
-import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
 describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (
@@ -42,7 +42,7 @@ describe("IcrcTransactionCard", () => {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
-  const transactionFromMainToSubaccount = createSnstransactionWithId(to, from);
+  const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
 
   beforeEach(() => {
     jest
@@ -79,7 +79,7 @@ describe("IcrcTransactionCard", () => {
       owner: mockSnsFullProject.summary.governanceCanisterId,
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
-    const stakeNeuronTransaction = createSnstransactionWithId(toGov, from);
+    const stakeNeuronTransaction = createIcrcTransactionWithId(toGov, from);
     stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
