@@ -4,6 +4,7 @@ import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
+import { isNullish } from "$lib/utils/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -170,7 +171,7 @@ export const accountName = ({
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
-export const sumAccounts = (
+export const sumNnsAccounts = (
   accounts: AccountsStoreData | undefined
 ): TokenAmount | undefined =>
   accounts?.main?.balance !== undefined
@@ -180,3 +181,10 @@ export const sumAccounts = (
         ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
       )
     : undefined;
+
+export const sumAccounts = (
+  accounts: Account[] | undefined
+): TokenAmount | undefined =>
+  isNullish(accounts) || accounts.length === 0
+    ? undefined
+    : sumTokenAmounts(...accounts.map(({ balance }) => balance));

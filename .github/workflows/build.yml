@@ -105,7 +105,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          SCREENSHOT=1 npm run test | tee -a wdio.log
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
@@ -132,14 +132,21 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
-          path: screenshots/**/*.png
+          path: e2e-tests/screenshots/**/*.png
+          retention-days: 7
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
   build-pass:
     needs: ["build"]
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - name: Build workflow passes
-        run: echo OK
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

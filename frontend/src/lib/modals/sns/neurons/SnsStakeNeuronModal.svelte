@@ -93,7 +93,6 @@
   };
 </script>
 
-<!-- TODO: Fetch SNS params and use minimum neuron stake for validation -->
 <SnsTransactionModal
   {rootCanisterId}
   on:nnsSubmit={stake}

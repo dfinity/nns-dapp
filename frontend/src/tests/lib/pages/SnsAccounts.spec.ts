@@ -18,7 +18,6 @@ import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSummary,
 } from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
@@ -29,7 +28,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 
 describe("SnsAccounts", () => {
   describe("when there are accounts in the store", () => {
-    beforeEach(() => {
+    beforeAll(() => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
@@ -92,43 +91,6 @@ describe("SnsAccounts", () => {
       expect(
         container.querySelector(".tooltip-wrapper")
       ).not.toBeInTheDocument();
-    });
-  });
-
-  describe("meta project", () => {
-    beforeAll(() =>
-      page.mock({
-        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-      })
-    );
-
-    it("should render project title", async () => {
-      const { getByText } = render(SnsAccounts);
-
-      await waitFor(() =>
-        expect(
-          getByText(mockSnsFullProject.summary.metadata.name)
-        ).toBeInTheDocument()
-      );
-    });
-
-    it("should render sns project name", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      expect(
-        titleRow?.textContent?.includes(mockSummary.metadata.name)
-      ).toBeTruthy();
-    });
-
-    it("should render sns project logo", async () => {
-      const { getByTestId } = render(SnsAccounts);
-
-      const logo = getByTestId("project-logo");
-      const img = logo.querySelector('[data-tid="logo"]');
-
-      expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
     });
   });
 });
