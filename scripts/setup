@@ -30,6 +30,7 @@ ksh) DEFAULT_USER_PROFILE="$HOME/.kshrc" ;;
   DEFAULT_USER_PROFILE="$HOME/.profile" ;;
 esac
 USER_PROFILE=""
+INTERACTIVE="true"
 
 while (($# > 0)); do
   arg="$1"
@@ -42,6 +43,9 @@ while (($# > 0)); do
   --profile)
     USER_PROFILE="$1"
     shift 1
+    ;;
+  --noninteractive)
+    INTERACTIVE="false"
     ;;
   *)
     echo "Unsupported argument: $arg" >&2
@@ -115,7 +119,7 @@ install_coreutils_darwin() {
 install_coreutils_linux() {
   echo "Installing coreutils..."
   # Coreutils is included in build-essential, but you almost certainly need the other packages as well.
-  sudo apt-get install build-essential
+  sudo apt-get install -yy build-essential
 }
 
 install_moreutils_darwin() {
@@ -124,7 +128,7 @@ install_moreutils_darwin() {
 }
 install_moreutils_linux() {
   echo "Installing moreutils..."
-  sudo apt-get install moreutils
+  sudo apt-get install -yy moreutils
 }
 
 install_jq_darwin() {
@@ -133,7 +137,7 @@ install_jq_darwin() {
 }
 install_jq_linux() {
   echo "Installing jq..."
-  sudo apt-get install jq
+  sudo apt-get install -yy jq
 }
 
 install_npm_darwin() {
@@ -142,7 +146,7 @@ install_npm_darwin() {
 }
 install_npm_linux() {
   echo "Installing npm"
-  sudo apt-get install nodejs
+  sudo apt-get install -yy nodejs
 }
 
 install_rust() {
@@ -157,21 +161,21 @@ install_sudo_darwin() {
 }
 install_sudo_linux() {
   echo "Installing sudo - must be running as a superuser already."
-  apt-get install sudo
+  apt-get install -yy sudo
 }
 
 install_xz_darwin() {
   brew install xz
 }
 install_xz_linux() {
-  sudo apt-get install xz-utils
+  sudo apt-get install -yy xz-utils
 }
 
 install_tar_darwin() {
   brew install gnu-tar
 }
 install_tar_linux() {
-  sudo apt-get install tar
+  sudo apt-get install -yy tar
 }
 
 install_ic_cdk_optimizer() {
@@ -186,24 +190,26 @@ is_docker_installed() {
   ((major_version >= 10))
 }
 install_docker() {
+	if [[ "${INTERACTIVE:-}" == "true" ]] ; then
   while ! command -v docker; do
     echo "Please install docker from: https://docs.docker.com/get-docker/"
     read -rp "Press enter when docker has been installed...  "
   done
+	fi
 }
 
 install_wget_darwin() {
   brew install wget
 }
 install_wget_linux() {
-  sudo apt-get install wget
+  sudo apt-get install -yy wget
 }
 
 install_cmake_darwin() {
   brew install cmake
 }
 install_cmake_linux() {
-  sudo apt-get install cmake
+  sudo apt-get install -yy cmake
 }
 
 # Note: There is an open ticket to factor out all definitions of IC_ADMIN.

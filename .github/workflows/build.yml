@@ -42,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
       - name: Install Software
         run: |
-          ./scripts/setup --profile ~/.bashrc
+          ./scripts/setup --profile ~/.bashrc --noninteractive
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
