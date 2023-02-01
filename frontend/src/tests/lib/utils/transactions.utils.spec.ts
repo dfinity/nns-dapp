@@ -1,8 +1,8 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { AccountTransactionType } from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
-  AccountTransactionType,
   mapNnsTransaction,
   mapToSelfTransaction,
   showTransactionFee,

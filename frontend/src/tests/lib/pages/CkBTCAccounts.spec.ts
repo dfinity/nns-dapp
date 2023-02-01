@@ -16,6 +16,10 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
 });
 
 describe("CkBTCAccounts", () => {
+  const goToWallet = async () => {
+    // Do nothing
+  };
+
   describe("when there are accounts in the store", () => {
     beforeAll(() => {
       ckBTCAccountsStore.set({
@@ -25,13 +29,13 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should not load ckBTC accounts", () => {
-      render(CkBTCAccounts);
+      render(CkBTCAccounts, { props: { goToWallet } });
 
       expect(loadCkBTCAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = render(CkBTCAccounts);
+      const { getByText } = render(CkBTCAccounts, { props: { goToWallet } });
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
@@ -39,7 +43,9 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(CkBTCAccounts);
+      const { getAllByTestId } = render(CkBTCAccounts, {
+        props: { goToWallet },
+      });
 
       await waitFor(() =>
         expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
@@ -53,13 +59,13 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should call load ckBTC accounts", () => {
-      render(CkBTCAccounts);
+      render(CkBTCAccounts, { props: { goToWallet } });
 
       expect(loadCkBTCAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {
-      const { container } = render(CkBTCAccounts);
+      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
       expect(
         container.querySelector('[data-tid="skeleton-card"]')
       ).not.toBeNull();
