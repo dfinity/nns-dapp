@@ -17,7 +17,7 @@ import {
 jest.mock("$lib/services/sns-transactions.services", () => {
   // To test loading state as well
   return {
-    loadAccountNextTransactions: jest.fn().mockImplementation(
+    loadSnsAccountNextTransactions: jest.fn().mockImplementation(
       () =>
         new Promise((resolve) => {
           setTimeout(() => {

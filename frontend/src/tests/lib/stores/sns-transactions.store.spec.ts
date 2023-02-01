@@ -141,7 +141,7 @@ describe("SNS Transactions store", () => {
           ?.transactions
       ).toEqual([mockSnsTransactionWithId]);
 
-      icrcTransactionsStore.resetUniverse(mockPrincipal.toText());
+      icrcTransactionsStore.resetUniverse(mockPrincipal);
       const accountsInStore2 = get(icrcTransactionsStore);
       expect(accountsInStore2[mockPrincipal.toText()]).toBeUndefined();
     });

@@ -24,7 +24,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 
 jest.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
