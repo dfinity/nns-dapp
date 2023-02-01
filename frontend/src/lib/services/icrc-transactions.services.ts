@@ -11,7 +11,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import { getOldestTxIdFromStore } from "$lib/utils/icrc-transactions.utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import { get } from "svelte/types/runtime/store";
+import { get } from "svelte/store";
 
 export interface LoadIcrcAccountTransactionsParams {
   account: Account;
