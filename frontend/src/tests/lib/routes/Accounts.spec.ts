@@ -3,7 +3,7 @@
  */
 
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
@@ -37,6 +37,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
+
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
     loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
@@ -194,7 +195,7 @@ describe("Accounts", () => {
 
   it("should not load ckBTC accounts balances", async () => {
     page.mock({
-      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
 
@@ -248,7 +249,7 @@ describe("Accounts", () => {
 
   it("should render ckBTC name", () => {
     page.mock({
-      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
 
@@ -261,7 +262,7 @@ describe("Accounts", () => {
 
   it("should render icp project logo", () => {
     page.mock({
-      data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
 

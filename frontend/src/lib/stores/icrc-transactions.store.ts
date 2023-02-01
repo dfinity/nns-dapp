@@ -1,22 +1,43 @@
+import type {
+  UniverseCanisterId,
+  UniverseCanisterIdText,
+} from "$lib/types/universe";
 import { removeKeys } from "$lib/utils/utils";
+import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
-import type { SnsTransactionWithId } from "@dfinity/sns";
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
-export interface SnsTransactions {
-  // Each SNS Account is an entry in this Store.
-  // We use the account string representation as the key to identify the transactions.
-  [accountIdentifier: string]: {
-    transactions: SnsTransactionWithId[];
+export type IcrcAccountIdentifier = string;
+
+// Each Icrc Account - Sns or ckBTC - is an entry in this store.
+// We use the account string representation as the key to identify the transactions.
+export type IcrcTransactions = Record<
+  IcrcAccountIdentifier,
+  {
+    transactions: IcrcTransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
-  };
-}
+  }
+>;
 
-export interface SnsTransactionsStore {
-  // Each SNS Project is an entry in this Store.
-  // We use the root canister id and then the account identifier as the key to identify the transactions.
-  [rootCanisterId: string]: SnsTransactions;
+// Each universe - except Nns - is an entry in this store.
+// We use the root canister id and then the account identifier as the key to identify the transactions.
+export type IcrcTransactionsStoreData = Record<
+  UniverseCanisterIdText,
+  IcrcTransactions
+>;
+
+export interface IcrcTransactionsStore
+  extends Readable<IcrcTransactionsStoreData> {
+  addTransactions: (data: {
+    accountIdentifier: string;
+    canisterId: UniverseCanisterId;
+    transactions: IcrcTransactionWithId[];
+    oldestTxId?: bigint;
+    completed: boolean;
+  }) => void;
+  reset: () => void;
+  resetUniverse: (canisterId: UniverseCanisterId) => void;
 }
 
 /**
@@ -26,27 +47,27 @@ export interface SnsTransactionsStore {
  * - reset: reset the store to an empty state.
  * - resetProject: removed the transactions for a specific project.
  */
-const initSnsTransactionsStore = () => {
-  const { subscribe, update, set } = writable<SnsTransactionsStore>({});
+const initSnsTransactionsStore = (): IcrcTransactionsStore => {
+  const { subscribe, update, set } = writable<IcrcTransactionsStoreData>({});
 
   return {
     subscribe,
 
     addTransactions({
       accountIdentifier,
-      rootCanisterId,
+      canisterId,
       transactions,
       oldestTxId,
       completed,
     }: {
       accountIdentifier: string;
-      rootCanisterId: Principal;
-      transactions: SnsTransactionWithId[];
+      canisterId: Principal;
+      transactions: IcrcTransactionWithId[];
       oldestTxId?: bigint;
       completed: boolean;
     }) {
-      update((currentState: SnsTransactionsStore) => {
-        const projectState = currentState[rootCanisterId.toText()];
+      update((currentState: IcrcTransactionsStoreData) => {
+        const projectState = currentState[canisterId.toText()];
         const accountState = projectState?.[accountIdentifier];
         const uniquePreviousTransactions = (
           accountState?.transactions ?? []
@@ -63,7 +84,7 @@ const initSnsTransactionsStore = () => {
             : accountState?.oldestTxId;
         return {
           ...currentState,
-          [rootCanisterId.toText()]: {
+          [canisterId.toText()]: {
             ...projectState,
             [accountIdentifier]: {
               transactions: [...uniquePreviousTransactions, ...transactions],
@@ -80,15 +101,15 @@ const initSnsTransactionsStore = () => {
       set({});
     },
 
-    resetProject(rootCanisterId: Principal) {
-      update((currentState: SnsTransactionsStore) =>
+    resetUniverse(canisterId: UniverseCanisterId) {
+      update((currentState: IcrcTransactionsStoreData) =>
         removeKeys({
           obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
+          keysToRemove: [canisterId.toText()],
         })
       );
     },
   };
 };
 
-export const snsTransactionsStore = initSnsTransactionsStore();
+export const icrcTransactionsStore = initSnsTransactionsStore();

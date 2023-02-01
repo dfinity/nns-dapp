@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
@@ -39,7 +39,7 @@ describe("selected universe derived stores", () => {
   describe("isCkBTCUniverseStore", () => {
     beforeEach(() => {
       page.mock({
-        data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
     });

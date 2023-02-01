@@ -1,5 +1,5 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import * as services from "$lib/services/ckbtc-accounts-balance.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
@@ -33,7 +33,7 @@ describe("ckbtc-accounts-balance.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + ckBTC
     expect(Object.keys(store)).toHaveLength(2);
-    expect(store[CKBTC_LEDGER_CANISTER_ID.toText()].balance.toE8s()).toEqual(
+    expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].balance.toE8s()).toEqual(
       mockCkBTCMainAccount.balance.toE8s()
     );
     expect(spyQuery).toBeCalled();

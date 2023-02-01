@@ -1,5 +1,5 @@
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
@@ -34,7 +34,7 @@ export const universesAccountsBalance = derived<
       balance: sumNnsAccounts($accountsStore),
       certified: $accountsStore.certified ?? false,
     },
-    [CKBTC_LEDGER_CANISTER_ID.toText()]: {
+    [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
       balance: sumAccounts($ckBTCAccountsStore.accounts),
       certified: $ckBTCAccountsStore.certified,
     },
