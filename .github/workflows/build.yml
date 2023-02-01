@@ -76,6 +76,7 @@ jobs:
           # - The II version specified in dfx.json
           # - Functional SNS canisters
           ./scripts/dfx-nns-deploy-custom --features sns
+          ./deploy.sh --sns-aggregator local
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:

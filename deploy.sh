@@ -69,6 +69,9 @@ help_text() {
 	--sns-wasm
 	  Create or update an SNS wasm canister.
 
+	--sns-aggregator
+	  Create or update an SNS aggregator canister.
+
 	--sns
 	  Create an SNS canister set.
 
@@ -101,6 +104,7 @@ DEPLOY_NNS_BACKEND="false"
 DEPLOY_II="false"
 DEPLOY_SNS="false"
 DEPLOY_SNS_WASM_CANISTER=""
+DEPLOY_SNS_AGGREGATOR=""
 DEPLOY_NNS_DAPP="false"
 POPULATE="false"
 OPEN_NNS_DAPP="false"
@@ -138,6 +142,10 @@ while (($# > 0)); do
   --sns-wasm)
     GUESS="false"
     DEPLOY_SNS_WASM_CANISTER="true"
+    ;;
+  --sns-aggregator)
+    GUESS="false"
+    DEPLOY_SNS_AGGREGATOR="true"
     ;;
   --sns)
     GUESS="false"
@@ -325,9 +333,19 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probably don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
+  # If the sns canister is to be used, we need to know the canister ID.  However the canister should be created after the nns-dapp,
+  # e.g. here, to avoid changing canister IDs.
+  [[ "${DEPLOY_SNS_AGGREGATOR:-}" != "true" ]] || dfx canister --network "$DFX_NETWORK" canister id sns_aggregator || dfx canister --network "$DFX_NETWORK" create sns_aggregator --no-wallet || {
+      echo "WARNING: Failed to create sns_aggregator.  Performance may be degraded."
+  } >&2
   dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
   OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Deployed to: $OWN_CANISTER_URL"
+fi
+
+if [[ "$DEPLOY_SNS_AGGREGATOR" == "true" ]]; then
+  dfx canister --network "$DFX_NETWORK" canister id sns_aggregator || dfx canister --network "$DFX_NETWORK" create sns_aggregator --no-wallet
+  dfx deploy --network "$DFX_NETWORK" sns_aggregator --no-wallet
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
