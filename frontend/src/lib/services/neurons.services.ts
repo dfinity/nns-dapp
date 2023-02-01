@@ -251,6 +251,10 @@ export const stakeNeuron = async ({
   }
 };
 
+const queryAndUpdateNeuronsWithCache = createCachedQueryAndUpdate<
+  NeuronInfo[],
+  unknown // Error type
+>();
 /**
  * This gets all neurons linked to the current user's principal, even those with a stake of 0. And adds them to the store
  *
@@ -258,10 +262,6 @@ export const stakeNeuron = async ({
  * @param {skipCheck} params.skipCheck it true, the neurons' balance won't be checked and those that are not synced won't be refreshed. It avoids possible infinite loops.
  * @param {callback} params.callback an optional callback that can be called when the data are successfully loaded (certified or not). Useful for example to close synchronously a busy spinner once all data have been fetched.
  */
-const queryAndUpdateNeuronsWithCache = createCachedQueryAndUpdate<
-  NeuronInfo[],
-  unknown
->();
 export const listNeurons = async ({
   callback,
   strategy = "query_and_update",
