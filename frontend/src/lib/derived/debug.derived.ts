@@ -31,8 +31,9 @@ import {
   type Writable,
 } from "svelte/store";
 
+// TODO(dskloetd): Rename to createReadableStore.
 const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
-  derived(store, (store) => store);
+  { subscribe: store.subscribe };
 
 let addAccountStore: Readable<AddAccountStore>;
 export const debugAddAccountStore = (store: Writable<AddAccountStore>) =>
