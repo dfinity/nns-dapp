@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import {
-    BREAKPOINT_LARGE,
+    BREAKPOINT_EXTRA_LARGE,
     IconGitHub,
     IconNorthEast,
   } from "@dfinity/gix-components";
@@ -14,7 +14,9 @@
 
   // See comment in <LoginHeader />
   $: displayTvl =
-    innerWidth > 0 && innerWidth <= BREAKPOINT_LARGE && presentation === "menu";
+    innerWidth > 0 &&
+    innerWidth <= BREAKPOINT_EXTRA_LARGE &&
+    presentation === "menu";
 </script>
 
 <svelte:window bind:innerWidth />
@@ -89,7 +91,7 @@
   .footer {
     display: none;
 
-    @include media.min-width(large) {
+    @include media.min-width(xlarge) {
       display: flex;
       justify-content: space-between;
 
