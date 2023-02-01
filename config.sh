@@ -111,7 +111,7 @@ fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
-aggregatorCanisterUrl=$(echo "$json" | jq -r ".SNS_AGGREGATOR_URL")
+aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -126,14 +126,14 @@ VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
-VITE_AGGREGATOR_CANISTER_URL=$aggregatorCanisterUrl" | tee "$ENV_FILE"
+VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}" | tee "$ENV_FILE"
 
 echo "Config has been defined in '${ENV_FILE}'" >&2
 
 IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
 
-SNS_AGGREGATOR_URL="$aggregatorCanisterUrl"
+SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
 export SNS_AGGREGATOR_URL
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
