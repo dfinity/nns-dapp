@@ -18,6 +18,10 @@ import {
 } from "../../mocks/accounts.store.mock";
 
 describe("NnsAccounts", () => {
+  const goToWallet = async () => {
+    // Do nothing
+  };
+
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {
@@ -27,7 +31,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const article = container.querySelector("article");
       expect(article).not.toBeNull();
@@ -37,7 +41,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const cardTitleRow = container.querySelector(
         'article > div[data-tid="token-value-label"]'
@@ -52,7 +56,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { getByText } = render(NnsAccounts);
+      const { getByText } = render(NnsAccounts, { props: { goToWallet } });
       getByText(mockMainAccount.identifier);
     });
 
@@ -60,7 +64,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
 
@@ -74,7 +78,7 @@ describe("NnsAccounts", () => {
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         );
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
 
@@ -86,7 +90,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      render(NnsAccounts);
+      render(NnsAccounts, { props: { goToWallet } });
 
       expect(accountsStoreMock).toHaveBeenCalled();
     });
@@ -107,7 +111,7 @@ describe("NnsAccounts", () => {
     afterAll(jest.clearAllMocks);
 
     it("should contain a tooltip", () => {
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
     });
@@ -130,7 +134,7 @@ describe("NnsAccounts", () => {
         );
     });
     it("should not render a token amount component nor zero", () => {
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       // The tooltip wraps the total amount
       expect(

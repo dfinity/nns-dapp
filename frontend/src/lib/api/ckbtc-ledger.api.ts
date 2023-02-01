@@ -19,7 +19,7 @@ export const getCkBTCAccounts = async ({
 
   const {
     canister: { metadata, balance },
-  } = await ckBTCCanister({ identity });
+  } = await ckBTCLedgerCanister({ identity });
 
   const mainAccount = await getIcrcMainAccount({
     identity,
@@ -33,7 +33,7 @@ export const getCkBTCAccounts = async ({
   return [mainAccount];
 };
 
-const ckBTCCanister = async ({
+const ckBTCLedgerCanister = async ({
   identity,
 }: {
   identity: Identity;

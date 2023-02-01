@@ -21,3 +21,7 @@ export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
   "q4eej-kyaaa-aaaaa-aaaha-cai"
 );
+export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
+  "si2b5-pyaaa-aaaaa-aaaja-cai"
+);
+export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;
