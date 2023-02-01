@@ -11,6 +11,7 @@ import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -180,6 +181,51 @@ describe("IncreaseSnsDissolveDelayModal", () => {
         expect.objectContaining({
           dissolveDelaySeconds,
         })
+      )
+    );
+  });
+
+  it("should be able to set minimum by clicking on min button", async () => {
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    await waitFor(() =>
+      expect(queryByTestId("min-button")).toBeInTheDocument()
+    );
+
+    const minButton = queryByTestId("min-button");
+    const inputElement = queryByTestId("input-ui-element");
+
+    const minValue = fromDefinedNullable(
+      snsNervousSystemParametersMock.neuron_minimum_dissolve_delay_to_vote_seconds
+    );
+
+    await fireEvent.click(minButton);
+
+    await waitFor(() =>
+      expect((inputElement as HTMLInputElement).value).toEqual(
+        `${secondsToDays(Number(minValue))}`
+      )
+    );
+  });
+
+  it("should be able to set maximum by clicking on max button", async () => {
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    await waitFor(() =>
+      expect(queryByTestId("max-button")).toBeInTheDocument()
+    );
+
+    const maxValue = fromDefinedNullable(
+      snsNervousSystemParametersMock.max_dissolve_delay_seconds
+    );
+    const maxButton = queryByTestId("max-button");
+    const inputElement = queryByTestId("input-ui-element");
+
+    await fireEvent.click(maxButton);
+
+    await waitFor(() =>
+      expect((inputElement as HTMLInputElement).value).toEqual(
+        `${secondsToDays(Number(maxValue))}`
       )
     );
   });

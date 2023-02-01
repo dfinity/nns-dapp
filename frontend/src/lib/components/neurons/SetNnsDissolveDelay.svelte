@@ -44,6 +44,6 @@
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
 >
   <p slot="neuron-id" class="value">{neuron.neuronId}</p>
-  <svelte:fragment slot="cancel"><slot name="cancel" /></svelte:fragment>
-  <svelte:fragment slot="confirm"><slot name="confirm" /></svelte:fragment>
+  <slot name="cancel" slot="cancel" />
+  <slot name="confirm" slot="confirm" />
 </SetDissolveDelay>

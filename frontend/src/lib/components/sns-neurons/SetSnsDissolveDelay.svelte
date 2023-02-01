@@ -93,6 +93,6 @@
     testId="neuron-id"
     text={getSnsNeuronIdAsHexString(neuron)}
   />
-  <svelte:fragment slot="cancel"><slot name="cancel" /></svelte:fragment>
-  <svelte:fragment slot="confirm"><slot name="confirm" /></svelte:fragment>
+  <slot name="cancel" slot="cancel" />
+  <slot name="confirm" slot="confirm" />
 </SetDissolveDelay>
