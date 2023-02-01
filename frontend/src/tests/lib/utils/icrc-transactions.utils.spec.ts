@@ -2,8 +2,8 @@ import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.st
 import { AccountTransactionType } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
+  getSortedTransactionsFromStore,
   mapIcrcTransaction,
-  sortTransactions,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
 import {
@@ -49,7 +49,20 @@ describe("icrc-transaction utils", () => {
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
       const transactions = [secondTx, oldestTx, recentTx];
-      const data = sortTransactions(transactions);
+      const store: IcrcTransactionsStoreData = {
+        [mockPrincipal.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions,
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      const data = getSortedTransactionsFromStore({
+        store,
+        rootCanisterId: mockPrincipal,
+        account: mockSnsMainAccount,
+      });
       expect(data[0]).toEqual({
         toSelfTransaction: false,
         transaction: recentTx,
@@ -65,7 +78,20 @@ describe("icrc-transaction utils", () => {
     });
 
     it("should set selfTransaction to true", () => {
-      const data = sortTransactions([selfTransaction, selfTransaction]);
+      const store: IcrcTransactionsStoreData = {
+        [mockSnsMainAccount.principal.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions: [selfTransaction, selfTransaction],
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      const data = getSortedTransactionsFromStore({
+        store,
+        rootCanisterId: mockPrincipal,
+        account: mockSnsMainAccount,
+      });
       expect(data[0]).toEqual({
         toSelfTransaction: true,
         transaction: selfTransaction,

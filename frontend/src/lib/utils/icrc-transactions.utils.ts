@@ -21,15 +21,25 @@ import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
  * A duplicated transaction is normally one made to itself.
  * The data of the duplicated transaction is the same in both transactions. No need to show it twice.
  *
- * @param IcrcTransactionWithId[] | undefined the transactions to sort
+ * @param params
+ * @param {Account} params.account
+ * @param {Principal} params.rootCanisterId
+ * @param {IcrcTransactionsStoreData} params.store
  * @returns {SnsTransactionWithId[]}
  */
-export const sortTransactions = (
-  transactions: IcrcTransactionWithId[] | undefined
-): IcrcTransactionData[] =>
-  mapToSelfTransaction(transactions ?? []).sort(
-    ({ transaction: txA }, { transaction: txB }) =>
-      Number(txB.transaction.timestamp - txA.transaction.timestamp)
+export const getSortedTransactionsFromStore = ({
+  store,
+  rootCanisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  rootCanisterId: Principal;
+  account: Account;
+}): IcrcTransactionData[] =>
+  mapToSelfTransaction(
+    store[rootCanisterId.toText()]?.[account.identifier].transactions ?? []
+  ).sort(({ transaction: txA }, { transaction: txB }) =>
+    Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
 
 const getIcrcTransactionType = ({
