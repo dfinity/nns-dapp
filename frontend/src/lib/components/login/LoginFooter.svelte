@@ -1,6 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { BREAKPOINT_LARGE, IconGitHub } from "@dfinity/gix-components";
+  import {
+    BREAKPOINT_LARGE,
+    IconGitHub,
+    IconNorthEast,
+  } from "@dfinity/gix-components";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
   export let presentation: "footer" | "menu" = "footer";
@@ -25,7 +29,14 @@
     </div>
   {/if}
 
-  <span class="copyright">{$i18n.auth.copyright}</span>
+  <a
+    class="ic"
+    href="https://internetcomputer.org/nns"
+    rel="noopener noreferrer"
+    target="_blank"
+    alt={$i18n.auth.internetcomputer_dot_org_link}
+    ><span>internetcomputer.org</span> <IconNorthEast /></a
+  >
 
   <a
     class="github"
@@ -54,7 +65,18 @@
 
     :global(svg) {
       vertical-align: bottom;
-      margin-right: var(--padding);
+    }
+
+    &.ic {
+      :global(svg) {
+        margin-left: var(--padding);
+      }
+    }
+
+    &.github {
+      :global(svg) {
+        margin-right: var(--padding);
+      }
     }
 
     &:active,
@@ -85,9 +107,9 @@
     position: relative;
 
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
 
-    .copyright {
+    .github {
       padding: var(--padding) var(--padding-3x);
       font-size: var(--font-size-small);
       @include text.truncate;

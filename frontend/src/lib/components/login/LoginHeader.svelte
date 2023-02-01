@@ -38,8 +38,8 @@
   />
 
   <div class="end">
-    <ExternalLink href="https://internetcomputer.org/nns"
-      >{$i18n.auth.about}</ExternalLink
+    <ExternalLink href="https://dashboard.internetcomputer.org/"
+      >{$i18n.auth.dashboard}</ExternalLink
     >
     <ExternalLink href="https://dashboard.internetcomputer.org/governance"
       >{$i18n.auth.voting_rewards}</ExternalLink
