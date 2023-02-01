@@ -16,7 +16,7 @@ import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => ({
-  loadAccountTransactions: jest.fn(),
+  loadSnsAccountTransactions: jest.fn(),
 }));
 
 describe("sns-accounts-services", () => {

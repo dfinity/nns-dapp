@@ -6,7 +6,6 @@ import { configure } from "@testing-library/svelte";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "./src/lib/constants/canister-ids.constants";
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
@@ -30,7 +29,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
   CKBTC_MINTER_CANISTER_ID: Principal.fromText("q3fc5-haaaa-aaaaa-aaahq-cai"),
   CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
   CKBTC_INDEX_CANISTER_ID: Principal.fromText("si2b5-pyaaa-aaaaa-aaaja-cai"),
-  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai")
+  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
 }));
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({

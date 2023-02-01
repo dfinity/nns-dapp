@@ -27,9 +27,9 @@ describe("sns-transactions-services", () => {
           transactions: [mockSnsTransactionWithId],
         });
       const start = BigInt(1234);
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       await services.loadSnsAccountTransactions({
-        canisterId: rootCanisterId,
+        canisterId,
         account: mockSnsMainAccount,
         start,
       });
@@ -43,16 +43,15 @@ describe("sns-transactions-services", () => {
           identity: mockIdentity,
           account: snsAccount,
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          canisterId,
           start,
         })
       );
 
       const storeData = get(icrcTransactionsStore);
       expect(
-        storeData[rootCanisterId.toText()]?.[
-          mockSnsMainAccount.principal.toText()
-        ].transactions[0]
+        storeData[canisterId.toText()]?.[mockSnsMainAccount.principal.toText()]
+          .transactions[0]
       ).toEqual(mockSnsTransactionWithId);
     });
   });
@@ -69,9 +68,9 @@ describe("sns-transactions-services", () => {
           oldestTxId: BigInt(1234),
           transactions: [mockSnsTransactionWithId],
         });
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       await services.loadSnsAccountNextTransactions({
-        canisterId: rootCanisterId,
+        canisterId,
         account: mockSnsMainAccount,
       });
 
@@ -84,15 +83,14 @@ describe("sns-transactions-services", () => {
           identity: mockIdentity,
           account: snsAccount,
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          canisterId,
         })
       );
 
       const storeData = get(icrcTransactionsStore);
       expect(
-        storeData[rootCanisterId.toText()]?.[
-          mockSnsMainAccount.principal.toText()
-        ].transactions[0]
+        storeData[canisterId.toText()]?.[mockSnsMainAccount.principal.toText()]
+          .transactions[0]
       ).toEqual(mockSnsTransactionWithId);
     });
 
@@ -103,17 +101,17 @@ describe("sns-transactions-services", () => {
           oldestTxId: BigInt(1234),
           transactions: [mockSnsTransactionWithId],
         });
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       const oldestTxId = BigInt(1234);
       icrcTransactionsStore.addTransactions({
-        canisterId: rootCanisterId,
+        canisterId,
         accountIdentifier: mockSnsMainAccount.identifier,
         transactions: [mockSnsTransactionWithId],
         oldestTxId,
         completed: false,
       });
       await services.loadSnsAccountNextTransactions({
-        canisterId: rootCanisterId,
+        canisterId,
         account: mockSnsMainAccount,
       });
 
@@ -124,7 +122,7 @@ describe("sns-transactions-services", () => {
             owner: mockSnsMainAccount.principal,
           },
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          canisterId,
           // TODO: It should be oldestTxId but there is a bug in the Index canister that doesn't return proper oldestTxId
           // Instead, we need to calculate the oldest by checking the transactions.
           start: mockSnsTransactionWithId.id,

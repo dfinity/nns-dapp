@@ -18,6 +18,12 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-transactions.services", () => {
+  return {
+    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("CkBTCWallet", () => {
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,
