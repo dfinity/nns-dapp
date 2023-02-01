@@ -22,8 +22,6 @@
   // sns and nns calculates voting power differently
   export let calculateVotingPower: (delayInSeconds: number) => number;
   export let minDissolveDelayDescription = "";
-  export let confirmButtonText: string;
-  export let cancelButtonText: string;
 
   const dispatch = createEventDispatcher();
 
@@ -161,16 +159,14 @@
 
   <div class="toolbar">
     <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
-      >{cancelButtonText}</button
+      ><slot name="cancel" /></button
     >
     <button
       class="primary"
       disabled={disableUpdate}
       on:click={goToConfirmation}
-      data-tid="go-confirm-delay-button"
+      data-tid="go-confirm-delay-button"><slot name="confirm" /></button
     >
-      {confirmButtonText}
-    </button>
   </div>
 </div>
 

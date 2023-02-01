@@ -24,8 +24,6 @@
   export let neuron: SnsNeuron;
   export let token: Token;
   export let delayInSeconds: number;
-  export let cancelButtonText: string;
-  export let confirmButtonText: string;
 
   let neuronDissolveDelaySeconds: bigint;
   $: neuronDissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
@@ -85,8 +83,6 @@
   minProjectDelayInSeconds={minSnsDissolveDelaySeconds}
   minDelayInSeconds={Number(neuronDissolveDelaySeconds)}
   maxDelayInSeconds={maxSnsDelayInSeconds}
-  {cancelButtonText}
-  {confirmButtonText}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
 >
@@ -97,4 +93,6 @@
     testId="neuron-id"
     text={getSnsNeuronIdAsHexString(neuron)}
   />
+  <svelte:fragment slot="cancel"><slot name="cancel" /></svelte:fragment>
+  <svelte:fragment slot="confirm"><slot name="confirm" /></svelte:fragment>
 </SetDissolveDelay>

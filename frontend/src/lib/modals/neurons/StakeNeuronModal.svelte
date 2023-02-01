@@ -178,13 +178,16 @@
   {#if currentStep?.name === "SetDissolveDelay"}
     {#if newNeuron !== undefined}
       <SetNnsDissolveDelay
-        cancelButtonText={$i18n.neurons.skip}
-        confirmButtonText={$i18n.neurons.set_delay}
         neuron={newNeuron}
         on:nnsCancel={goEditFollowers}
         on:nnsConfirmDelay={goNext}
         bind:delayInSeconds
-      />
+      >
+        <svelte:fragment slot="cancel">{$i18n.neurons.skip}</svelte:fragment>
+        <svelte:fragment slot="confirm"
+          >{$i18n.neurons.set_delay}</svelte:fragment
+        >
+      </SetNnsDissolveDelay>
     {/if}
   {/if}
   {#if currentStep?.name === "ConfirmDissolveDelay"}

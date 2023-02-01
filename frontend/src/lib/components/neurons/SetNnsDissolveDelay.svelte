@@ -15,8 +15,6 @@
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
-  export let cancelButtonText: string;
-  export let confirmButtonText: string;
 
   let neuronStake: TokenAmount;
   $: neuronStake = TokenAmount.fromE8s({
@@ -42,10 +40,10 @@
   minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
   maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
   minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
-  {cancelButtonText}
-  {confirmButtonText}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
 >
   <p slot="neuron-id" class="value">{neuron.neuronId}</p>
+  <svelte:fragment slot="cancel"><slot name="cancel" /></svelte:fragment>
+  <svelte:fragment slot="confirm"><slot name="confirm" /></svelte:fragment>
 </SetDissolveDelay>

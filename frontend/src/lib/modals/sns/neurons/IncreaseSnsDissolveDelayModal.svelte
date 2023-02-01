@@ -88,9 +88,12 @@
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
-      cancelButtonText={$i18n.core.cancel}
-      confirmButtonText={$i18n.neurons.update_delay}
-    />
+    >
+      <svelte:fragment slot="cancel">{$i18n.core.cancel}</svelte:fragment>
+      <svelte:fragment slot="confirm"
+        >{$i18n.neurons.update_delay}</svelte:fragment
+      >
+    </SetSnsDissolveDelay>
   {/if}
   {#if currentStep.name === "ConfirmSnsDissolveDelay"}
     <ConfirmSnsDissolveDelay
