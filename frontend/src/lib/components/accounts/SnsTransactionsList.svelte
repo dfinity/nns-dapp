@@ -1,8 +1,6 @@
 <script lang="ts">
   import { loadAccountNextTransactions } from "$lib/services/sns-transactions.services";
-  import {
-    snsTransactionsStore,
-  } from "$lib/stores/sns-transactions.store";
+  import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
