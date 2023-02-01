@@ -13,6 +13,10 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
+///
+/// These services are implicitly covered by their consumers' services testing - i.e. ckbtc-transactions.services.spec and sns-transactions.services.spec
+///
+
 export interface LoadIcrcAccountTransactionsParams {
   account: Account;
   canisterId: Principal;
