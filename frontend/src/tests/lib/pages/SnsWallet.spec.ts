@@ -90,7 +90,7 @@ describe("SnsWallet", () => {
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
       );
       await waitFor(() =>
-        expect(queryByTestId("sns-transactions-list")).toBeInTheDocument()
+        expect(queryByTestId("transactions-list")).toBeInTheDocument()
       );
     });
 

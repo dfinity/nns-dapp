@@ -14,7 +14,7 @@
   export let completed = false;
 </script>
 
-<div data-tid="sns-transactions-list">
+<div data-tid="transactions-list">
   {#if transactions.length === 0 && !loading}
     {$i18n.wallet.no_transactions}
   {:else if transactions.length === 0 && loading}
