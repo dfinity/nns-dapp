@@ -336,7 +336,7 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # If the sns canister is to be used, we need to know the canister ID.  However the canister should be created after the nns-dapp,
   # e.g. here, to avoid changing canister IDs.
   [[ "${DEPLOY_SNS_AGGREGATOR:-}" != "true" ]] || dfx canister --network "$DFX_NETWORK" canister id sns_aggregator || dfx canister --network "$DFX_NETWORK" create sns_aggregator --no-wallet || {
-      echo "WARNING: Failed to create sns_aggregator.  Performance may be degraded."
+    echo "WARNING: Failed to create sns_aggregator.  Performance may be degraded."
   } >&2
   dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
   OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
