@@ -1,5 +1,5 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
-import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type {
@@ -8,6 +8,7 @@ import type {
   Transaction,
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
@@ -23,21 +24,21 @@ import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
  *
  * @param params
  * @param {Account} params.account
- * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStore} params.store
+ * @param {UniverseCanisterId} params.canisterId
+ * @param {IcrcTransactionsStoreData} params.store
  * @returns {SnsTransactionWithId[]}
  */
 export const getSortedTransactionsFromStore = ({
   store,
-  rootCanisterId,
+  canisterId,
   account,
 }: {
-  store: SnsTransactionsStoreData;
-  rootCanisterId: Principal;
+  store: IcrcTransactionsStoreData;
+  canisterId: UniverseCanisterId;
   account: Account;
 }): IcrcTransactionData[] =>
   mapToSelfTransaction(
-    store[rootCanisterId.toText()]?.[account.identifier].transactions ?? []
+    store[canisterId.toText()]?.[account.identifier].transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
@@ -161,3 +162,51 @@ export const mapIcrcTransaction = ({
     });
   }
 };
+
+// TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
+// It seems that the `Index` canister has a bug.
+/**
+ * Returns the oldest transaction id of an Icrc account.
+ *
+ * @param params
+ * @param {Account} params.account
+ * @param {Principal} params.rootCanisterId
+ * @param {IcrcTransactionsStoreData} params.store
+ * @returns {bigint}
+ */
+export const getOldestTxIdFromStore = ({
+  store,
+  canisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  canisterId: Principal;
+  account: Account;
+}): bigint | undefined => {
+  const accountData = store[canisterId.toText()]?.[account.identifier];
+  if (accountData === undefined) {
+    return;
+  }
+  return accountData.transactions.sort((a, b) =>
+    Number(a.transaction.timestamp - b.transaction.timestamp)
+  )[0].id;
+};
+/**
+ * Returns whether all transactions of an SNS account have been loaded.
+ *
+ * @param params
+ * @param {Account} params.account
+ * @param {UniverseCanisterId} params.canisterId
+ * @param {IcrcTransactionsStoreData} params.store
+ * @returns {boolean}
+ */
+export const isIcrcTransactionsCompleted = ({
+  store,
+  canisterId,
+  account,
+}: {
+  store: IcrcTransactionsStoreData;
+  canisterId: UniverseCanisterId;
+  account: Account;
+}): boolean =>
+  Boolean(store[canisterId.toText()]?.[account.identifier].completed);

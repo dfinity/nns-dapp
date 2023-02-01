@@ -1,7 +1,9 @@
-import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { AccountTransactionType } from "$lib/types/transaction";
 import {
+  getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
+  isIcrcTransactionsCompleted,
   mapIcrcTransaction,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "../..//mocks/auth.store.mock";
@@ -48,7 +50,7 @@ describe("icrc-transaction utils", () => {
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
       const transactions = [secondTx, oldestTx, recentTx];
-      const store: SnsTransactionsStoreData = {
+      const store: IcrcTransactionsStoreData = {
         [mockPrincipal.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,
@@ -59,7 +61,7 @@ describe("icrc-transaction utils", () => {
       };
       const data = getSortedTransactionsFromStore({
         store,
-        rootCanisterId: mockPrincipal,
+        canisterId: mockPrincipal,
         account: mockSnsMainAccount,
       });
       expect(data[0]).toEqual({
@@ -77,7 +79,7 @@ describe("icrc-transaction utils", () => {
     });
 
     it("should set selfTransaction to true", () => {
-      const store: SnsTransactionsStoreData = {
+      const store: IcrcTransactionsStoreData = {
         [mockSnsMainAccount.principal.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions: [selfTransaction, selfTransaction],
@@ -88,7 +90,7 @@ describe("icrc-transaction utils", () => {
       };
       const data = getSortedTransactionsFromStore({
         store,
-        rootCanisterId: mockPrincipal,
+        canisterId: mockPrincipal,
         account: mockSnsMainAccount,
       });
       expect(data[0]).toEqual({
@@ -187,6 +189,95 @@ describe("icrc-transaction utils", () => {
       expect(data.isSend).toBe(true);
       const txData = transactionFromMainToSubaccount.transaction.transfer[0];
       expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
+    });
+  });
+
+  describe("getOldestTransactionId", () => {
+    const recentTx = {
+      id: BigInt(1234),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(3000),
+      },
+    };
+    const secondTx = {
+      id: BigInt(1235),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(2000),
+      },
+    };
+    const oldestTx = {
+      id: BigInt(1236),
+      transaction: {
+        ...transactionFromMainToSubaccount.transaction,
+        timestamp: BigInt(1000),
+      },
+    };
+
+    it("returns the id of the oldest tx", () => {
+      const rootCanisterId = mockSnsMainAccount.principal;
+      const transactions = [secondTx, oldestTx, recentTx];
+      const store: IcrcTransactionsStoreData = {
+        [rootCanisterId.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions,
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      expect(
+        getOldestTxIdFromStore({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsMainAccount,
+        })
+      ).toBe(oldestTx.id);
+    });
+
+    it("returns undefined if no data is found", () => {
+      expect(
+        getOldestTxIdFromStore({
+          store: {},
+          canisterId: mockSnsMainAccount.principal,
+          account: mockSnsMainAccount,
+        })
+      ).toBeUndefined();
+    });
+  });
+
+  describe("isTransactionsCompleted", () => {
+    it("returns the value in store", () => {
+      const rootCanisterId = mockSnsMainAccount.principal;
+      const store: IcrcTransactionsStoreData = {
+        [rootCanisterId.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions: [transactionFromMainToSubaccount],
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+          [mockSnsSubAccount.identifier]: {
+            transactions: [transactionFromMainToSubaccount],
+            completed: true,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      expect(
+        isIcrcTransactionsCompleted({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsMainAccount,
+        })
+      ).toBe(false);
+      expect(
+        isIcrcTransactionsCompleted({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsSubAccount,
+        })
+      ).toBe(true);
     });
   });
 });

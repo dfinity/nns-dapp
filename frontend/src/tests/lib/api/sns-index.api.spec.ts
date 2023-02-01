@@ -20,7 +20,7 @@ describe("sns-index api", () => {
     it("returns the transactions from the api", async () => {
       const result = await getSnsTransactions({
         identity: mockIdentity,
-        rootCanisterId: rootCanisterIdMock,
+        canisterId: rootCanisterIdMock,
         account: {
           owner: mockPrincipal,
         },
