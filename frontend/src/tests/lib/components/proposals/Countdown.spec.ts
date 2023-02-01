@@ -13,6 +13,10 @@ describe("Countdown", () => {
     const now = Date.now();
     jest.useFakeTimers().setSystemTime(now);
   });
+
+  afterAll(() => {
+    jest.clearAllTimers();
+  });
   it("should render no countdown", () => {
     const { container } = render(Countdown, {
       props: {

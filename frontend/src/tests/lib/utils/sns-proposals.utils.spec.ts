@@ -28,6 +28,10 @@ describe("sns-proposals utils", () => {
     total: BigInt(30),
     timestamp_seconds: BigInt(1),
   };
+
+  afterAll(() => {
+    jest.clearAllTimers();
+  });
   describe("isAccepted", () => {
     it("should return true if the proposal is accepted", () => {
       const proposal: SnsProposalData = {

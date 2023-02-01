@@ -7,6 +7,10 @@ describe("cache utils", () => {
       jest.useFakeTimers().setSystemTime(now);
     });
 
+    afterAll(() => {
+      jest.clearAllTimers();
+    });
+
     it("should set and get certified data", () => {
       const data = "test";
       const cache = new ResponseCache<string>();

@@ -9,7 +9,9 @@ import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("ProposalCard", () => {
-  jest.useFakeTimers().setSystemTime(Date.now());
+  beforeAll(() => {
+    jest.useFakeTimers().setSystemTime(Date.now());
+  });
 
   const nowSeconds = Math.floor(nowInSeconds());
   const props = {

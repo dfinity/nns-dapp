@@ -120,9 +120,9 @@ export const createCachedQueryAndUpdate = <R, E>() => {
           response: R;
         }) => {
           cache.set({ certified, response });
-          strategyCalls.onLoadListeners.forEach((listener) =>
-            listener({ certified, response })
-          );
+          strategyCalls.onLoadListeners.forEach((listener) => {
+            listener({ certified, response });
+          });
           // Reset the listeners when we get the response from the "most certified" call of the strategy
           if (
             (strategy === "query_and_update" && certified) ||
@@ -135,9 +135,9 @@ export const createCachedQueryAndUpdate = <R, E>() => {
         },
         onError: ({ error, certified }: { certified: boolean; error: E }) => {
           cache.reset(certified);
-          strategyCalls.onErrorListeners.forEach((listener) =>
-            listener({ error, certified })
-          );
+          strategyCalls.onErrorListeners.forEach((listener) => {
+            listener({ error, certified });
+          });
           // Reset the listeners when we get the response from the "most certified" call of the strategy
           if (
             (strategy === "query_and_update" && certified) ||
