@@ -7,6 +7,7 @@ import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDi
 import { updateDelay } from "$lib/services/sns-neurons.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -98,7 +99,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR * 2 },
+        target: { value: Math.round(secondsToDays(SECONDS_IN_YEAR * 2)) },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
