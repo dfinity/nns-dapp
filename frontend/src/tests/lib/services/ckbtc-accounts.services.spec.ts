@@ -1,9 +1,12 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
+import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 
 describe("ckbtc-accounts-services", () => {
   describe("loadSnsAccounts", () => {
@@ -51,6 +54,13 @@ describe("ckbtc-accounts-services", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       });
+      icrcTransactionsStore.addTransactions({
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        accountIdentifier: mockCkBTCMainAccount.identifier,
+        transactions: [mockIcrcTransactionWithId],
+        oldestTxId: undefined,
+        completed: false,
+      });
 
       jest
         .spyOn(ledgerApi, "getCkBTCAccounts")
@@ -60,6 +70,11 @@ describe("ckbtc-accounts-services", () => {
 
       const store = get(ckBTCAccountsStore);
       expect(store.accounts).toHaveLength(0);
+
+      const transactionsStore = get(icrcTransactionsStore);
+      expect(
+        transactionsStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
+      ).toBeUndefined();
     });
   });
 });
