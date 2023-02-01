@@ -5,7 +5,7 @@
 import * as indexApi from "$lib/api/sns-index.api";
 import { DEFAULT_SNS_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/sns-transactions.services";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -16,7 +16,7 @@ import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 describe("sns-transactions-services", () => {
   describe("loadAccountTransactions", () => {
     beforeEach(() => {
-      snsTransactionsStore.reset();
+      icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
@@ -28,8 +28,8 @@ describe("sns-transactions-services", () => {
         });
       const start = BigInt(1234);
       const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountTransactions({
-        rootCanisterId,
+      await services.loadSnsAccountTransactions({
+        canisterId: rootCanisterId,
         account: mockSnsMainAccount,
         start,
       });
@@ -48,7 +48,7 @@ describe("sns-transactions-services", () => {
         })
       );
 
-      const storeData = get(snsTransactionsStore);
+      const storeData = get(icrcTransactionsStore);
       expect(
         storeData[rootCanisterId.toText()]?.[
           mockSnsMainAccount.principal.toText()
@@ -59,7 +59,7 @@ describe("sns-transactions-services", () => {
 
   describe("loadAccountNextTransactions", () => {
     beforeEach(() => {
-      snsTransactionsStore.reset();
+      icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
@@ -70,8 +70,8 @@ describe("sns-transactions-services", () => {
           transactions: [mockSnsTransactionWithId],
         });
       const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountNextTransactions({
-        rootCanisterId,
+      await services.loadSnsAccountNextTransactions({
+        canisterId: rootCanisterId,
         account: mockSnsMainAccount,
       });
 
@@ -88,7 +88,7 @@ describe("sns-transactions-services", () => {
         })
       );
 
-      const storeData = get(snsTransactionsStore);
+      const storeData = get(icrcTransactionsStore);
       expect(
         storeData[rootCanisterId.toText()]?.[
           mockSnsMainAccount.principal.toText()
@@ -105,15 +105,15 @@ describe("sns-transactions-services", () => {
         });
       const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       const oldestTxId = BigInt(1234);
-      snsTransactionsStore.addTransactions({
-        rootCanisterId,
+      icrcTransactionsStore.addTransactions({
+        canisterId: rootCanisterId,
         accountIdentifier: mockSnsMainAccount.identifier,
         transactions: [mockSnsTransactionWithId],
         oldestTxId,
         completed: false,
       });
-      await services.loadAccountNextTransactions({
-        rootCanisterId,
+      await services.loadSnsAccountNextTransactions({
+        canisterId: rootCanisterId,
         account: mockSnsMainAccount,
       });
 

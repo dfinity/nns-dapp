@@ -1,4 +1,4 @@
-import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
 
@@ -8,7 +8,7 @@ import type { Principal } from "@dfinity/principal";
  * @param params
  * @param {Account} params.account
  * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStoreData} params.store
+ * @param {IcrcTransactionsStoreData} params.store
  * @returns {boolean}
  */
 export const isSnsTransactionsCompleted = ({
@@ -16,7 +16,7 @@ export const isSnsTransactionsCompleted = ({
   rootCanisterId,
   account,
 }: {
-  store: SnsTransactionsStoreData;
+  store: IcrcTransactionsStoreData;
   rootCanisterId: Principal;
   account: Account;
 }): boolean =>
@@ -30,7 +30,7 @@ export const isSnsTransactionsCompleted = ({
  * @param params
  * @param {Account} params.account
  * @param {Principal} params.rootCanisterId
- * @param {SnsTransactionsStoreData} params.store
+ * @param {IcrcTransactionsStoreData} params.store
  * @returns {bigint}
  */
 export const getOldestTxIdFromStore = ({
@@ -38,7 +38,7 @@ export const getOldestTxIdFromStore = ({
   rootCanisterId,
   account,
 }: {
-  store: SnsTransactionsStoreData;
+  store: IcrcTransactionsStoreData;
   rootCanisterId: Principal;
   account: Account;
 }): bigint | undefined => {

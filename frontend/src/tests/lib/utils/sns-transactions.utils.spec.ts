@@ -1,4 +1,4 @@
-import type { SnsTransactionsStoreData } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import {
   getOldestTxIdFromStore,
   isSnsTransactionsCompleted,
@@ -24,7 +24,7 @@ describe("sns-transactions.utils", () => {
   describe("isTransactionsCompleted", () => {
     it("returns the value in store", () => {
       const rootCanisterId = mockSnsMainAccount.principal;
-      const store: SnsTransactionsStoreData = {
+      const store: IcrcTransactionsStoreData = {
         [rootCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
@@ -81,7 +81,7 @@ describe("sns-transactions.utils", () => {
     it("returns the id of the oldest tx", () => {
       const rootCanisterId = mockSnsMainAccount.principal;
       const transactions = [secondTx, oldestTx, recentTx];
-      const store: SnsTransactionsStoreData = {
+      const store: IcrcTransactionsStoreData = {
         [rootCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,

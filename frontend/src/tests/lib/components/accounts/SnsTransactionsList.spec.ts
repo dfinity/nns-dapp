@@ -3,7 +3,7 @@
  */
 
 import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.svelte";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
@@ -41,7 +41,7 @@ describe("SnsTransactionList", () => {
 
   it("renders skeleton when loading transactions", async () => {
     jest
-      .spyOn(snsTransactionsStore, "subscribe")
+      .spyOn(icrcTransactionsStore, "subscribe")
       .mockImplementation(mockSnsTransactionsStoreSubscribe({}));
     const { queryAllByTestId } = renderSnsTransactionList(
       mockSnsMainAccount,
@@ -53,7 +53,7 @@ describe("SnsTransactionList", () => {
 
   it("should display no-transactions message", async () => {
     jest
-      .spyOn(snsTransactionsStore, "subscribe")
+      .spyOn(icrcTransactionsStore, "subscribe")
       .mockImplementation(mockSnsTransactionsStoreSubscribe({}));
     const { getByText } = renderSnsTransactionList(
       mockSnsMainAccount,
@@ -78,7 +78,7 @@ describe("SnsTransactionList", () => {
       },
     };
     jest
-      .spyOn(snsTransactionsStore, "subscribe")
+      .spyOn(icrcTransactionsStore, "subscribe")
       .mockImplementation(mockSnsTransactionsStoreSubscribe(store));
     const { queryAllByTestId } = renderSnsTransactionList(
       mockMainAccount,

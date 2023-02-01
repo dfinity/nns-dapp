@@ -1,6 +1,6 @@
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -12,7 +12,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { loadAccountTransactions } from "./sns-transactions.services";
+import { loadSnsAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -41,7 +41,7 @@ export const loadSnsAccounts = async ({
 
       // hide unproven data
       snsAccountsStore.resetProject(rootCanisterId);
-      snsTransactionsStore.resetProject(rootCanisterId);
+      icrcTransactionsStore.resetUniverse(rootCanisterId.toText());
 
       toastsError(
         toToastError({
@@ -107,7 +107,10 @@ export const snsTransferTokens = async ({
     await Promise.all([
       loadSnsAccounts({ rootCanisterId }),
       loadTransactions
-        ? loadAccountTransactions({ account: source, rootCanisterId })
+        ? loadSnsAccountTransactions({
+            account: source,
+            canisterId: rootCanisterId,
+          })
         : Promise.resolve(),
     ]);
 

@@ -4,9 +4,9 @@
 
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
-import { loadAccountTransactions } from "$lib/services/sns-transactions.services";
+import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
@@ -75,7 +75,7 @@ describe("sns-accounts-services", () => {
         const store = get(snsAccountsStore);
         return expect(store[mockPrincipal.toText()]).toBeUndefined();
       });
-      const transactionsStore = get(snsTransactionsStore);
+      const transactionsStore = get(icrcTransactionsStore);
       expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
@@ -168,7 +168,7 @@ describe("sns-accounts-services", () => {
       expect(success).toBe(true);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
-      expect(loadAccountTransactions).toBeCalled();
+      expect(loadSnsAccountTransactions).toBeCalled();
     });
 
     it("should show toast and return success false if transfer fails", async () => {

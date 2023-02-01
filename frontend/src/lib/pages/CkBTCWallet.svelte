@@ -70,6 +70,10 @@
   let loaded = false;
 
   const loadData = async () => {
+    // This will display a spinner each time we search and load an account
+    // It will also re-create a new component for the list of transactions which per extension will trigger fetching those
+    loaded = false;
+
     const { state } = await loadAccount();
 
     // The account was loaded or was not found even though accounts are already loaded in store

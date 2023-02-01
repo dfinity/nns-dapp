@@ -15,7 +15,7 @@ export const getCkBTCTransactions = async ({
   ...rest
 }: Omit<
   GetTransactionsParams,
-  "getTransactions"
+  "getTransactions" | "canisterId"
 >): Promise<GetTransactionsResponse> => {
   logWithTimestamp("Getting ckBTC accounts transactions: call...");
 

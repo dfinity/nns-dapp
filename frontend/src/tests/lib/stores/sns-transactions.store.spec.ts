@@ -1,4 +1,4 @@
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
@@ -10,17 +10,17 @@ import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("SNS Transactions store", () => {
   describe("snsTransactionsStore", () => {
-    afterEach(() => snsTransactionsStore.reset());
+    afterEach(() => icrcTransactionsStore.reset());
     it("should set transactions for a project and account when it doesn't exist", () => {
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
 
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
@@ -28,23 +28,23 @@ describe("SNS Transactions store", () => {
     });
 
     it("should add transactions for a project and a different account", () => {
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
 
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsSubAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
 
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
@@ -68,22 +68,22 @@ describe("SNS Transactions store", () => {
         ...mockSnsTransactionWithId,
         id: BigInt(3),
       };
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [tx1, tx2],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
 
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions.length
@@ -104,22 +104,22 @@ describe("SNS Transactions store", () => {
         id: BigInt(3),
       };
       const oldestTxId = BigInt(1);
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [tx1, tx2],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId,
         completed: false,
       });
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(3),
         completed: false,
       });
 
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.oldestTxId
@@ -127,49 +127,49 @@ describe("SNS Transactions store", () => {
     });
 
     it("should reset accounts for a project", () => {
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
 
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
       ).toEqual([mockSnsTransactionWithId]);
 
-      snsTransactionsStore.resetProject(mockPrincipal);
-      const accountsInStore2 = get(snsTransactionsStore);
+      icrcTransactionsStore.resetUniverse(mockPrincipal.toText());
+      const accountsInStore2 = get(icrcTransactionsStore);
       expect(accountsInStore2[mockPrincipal.toText()]).toBeUndefined();
     });
 
     it("should add transactions for another project", () => {
       const principal2 = Principal.fromText("aaaaa-aa");
 
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: mockPrincipal,
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
-      const accountsInStore = get(snsTransactionsStore);
+      const accountsInStore = get(icrcTransactionsStore);
       expect(
         accountsInStore[mockPrincipal.toText()]?.[mockSnsMainAccount.identifier]
           ?.transactions
       ).toEqual([mockSnsTransactionWithId]);
 
-      snsTransactionsStore.addTransactions({
-        rootCanisterId: principal2,
+      icrcTransactionsStore.addTransactions({
+        canisterId: principal2,
         transactions: [mockSnsTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: BigInt(10),
         completed: false,
       });
-      const accountsInStore2 = get(snsTransactionsStore);
+      const accountsInStore2 = get(icrcTransactionsStore);
       expect(
         accountsInStore2[mockPrincipal.toText()]?.[
           mockSnsMainAccount.identifier
