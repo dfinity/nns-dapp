@@ -27,12 +27,12 @@ export const getTransactions = async ({
   maxResults: max_results,
   start,
   account,
-  getTransactions,
+  getTransactions: getTransactionsApi,
 }: Omit<
   GetTransactionsParams,
   "canisterId"
 >): Promise<GetTransactionsResponse> => {
-  const { oldest_tx_id, ...rest } = await getTransactions({
+  const { oldest_tx_id, ...rest } = await getTransactionsApi({
     max_results,
     start,
     account,

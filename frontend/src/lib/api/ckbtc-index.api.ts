@@ -21,7 +21,7 @@ export const getCkBTCTransactions = async ({
 
   const {
     canister: { getTransactions },
-  } = await ckBTCCanister({ identity });
+  } = await ckBTCIndexCanister({ identity });
 
   const results = await getIcrcTransactions({
     identity,
@@ -34,7 +34,7 @@ export const getCkBTCTransactions = async ({
   return results;
 };
 
-const ckBTCCanister = async ({
+const ckBTCIndexCanister = async ({
   identity,
 }: {
   identity: Identity;

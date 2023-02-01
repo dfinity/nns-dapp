@@ -23,14 +23,14 @@ describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (
     account,
     transactionWithId,
-    rootCanisterId = mockSnsFullProject.rootCanisterId
+    governanceCanisterId = undefined
   ) =>
     render(IcrcTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
-        rootCanisterId,
+        governanceCanisterId
       },
     });
 
@@ -84,7 +84,7 @@ describe("IcrcTransactionCard", () => {
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
       stakeNeuronTransaction,
-      mockSnsFullProject.rootCanisterId
+      mockSnsFullProject.summary.governanceCanisterId
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {
