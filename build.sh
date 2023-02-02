@@ -35,6 +35,9 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Need to know which deployment we are building for:
 . "$TOPLEVEL/scripts/require-dfx-network.sh"
 
+# Can we skip this here because build-frontend.sh now does it?
+# Or do we need the exports for the backend as well?
+
 # Assemble the configuration
 . config.sh
 
