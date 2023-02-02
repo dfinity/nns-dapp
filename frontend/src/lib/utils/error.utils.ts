@@ -16,11 +16,11 @@ import {
   InsufficientAmountError as InsufficientAmountNNSError,
   InsufficientFundsError,
   InvalidAccountIDError,
-  InvalidPercentageError,
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
 import { SnsGovernanceError } from "@dfinity/sns";
+import { InvalidPercentageError } from "@dfinity/utils";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {

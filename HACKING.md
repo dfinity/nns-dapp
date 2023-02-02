@@ -103,6 +103,11 @@ e.g. in `canisters`:
   "type": "custom",
   "candid": "tmp/ledger.did",
   "wasm": "tmp/ledger_canister.wasm"
+},
+"ckbtc_test_index": {
+  "type": "custom",
+  "candid": "tmp/index.did",
+  "wasm": "tmp/index_canister.wasm"
 }
 ```
 
@@ -118,4 +123,4 @@ The index canister does not exist yet on mainnet but, will be proposed soon. Sam
 
 Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` per default neither. 
 
-Therefore this flag should also be set manually to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+Therefore this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.

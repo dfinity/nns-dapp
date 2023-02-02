@@ -1,5 +1,5 @@
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID,
 } from "$lib/constants/canister-ids.constants";
 import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
@@ -17,7 +17,7 @@ export const NNS_UNIVERSE: Universe = {
 };
 
 export const CKBTC_UNIVERSE: Universe = {
-  canisterId: CKBTC_LEDGER_CANISTER_ID.toText(),
+  canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
 };
 
 const universesStore = derived<

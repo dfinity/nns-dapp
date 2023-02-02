@@ -27,6 +27,10 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsAccounts", () => {
+  const goToWallet = async () => {
+    // Do nothing
+  };
+
   describe("when there are accounts in the store", () => {
     beforeAll(() => {
       jest
@@ -45,13 +49,13 @@ describe("SnsAccounts", () => {
     });
 
     it("should load accounts and transaction fee", () => {
-      render(SnsAccounts);
+      render(SnsAccounts, { props: { goToWallet } });
 
       expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = render(SnsAccounts);
+      const { getByText } = render(SnsAccounts, { props: { goToWallet } });
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
@@ -59,7 +63,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(SnsAccounts);
+      const { getAllByTestId } = render(SnsAccounts, { props: { goToWallet } });
 
       await waitFor(() =>
         expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
@@ -67,7 +71,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should load sns accounts of the project", () => {
-      render(SnsAccounts);
+      render(SnsAccounts, { props: { goToWallet } });
 
       expect(syncSnsAccounts).toHaveBeenCalledWith({
         rootCanisterId: mockPrincipal,
@@ -85,7 +89,7 @@ describe("SnsAccounts", () => {
         });
     });
     it("should not render a token amount component nor zero", () => {
-      const { container } = render(SnsAccounts);
+      const { container } = render(SnsAccounts, { props: { goToWallet } });
 
       // Tooltip wraps the amount
       expect(

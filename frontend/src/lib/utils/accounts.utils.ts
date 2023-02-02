@@ -80,7 +80,7 @@ export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
 
-export const getAccountFromStore = ({
+export const findAccount = ({
   identifier,
   accounts,
 }: {
@@ -110,13 +110,13 @@ export const getAccountByRootCanister = ({
   }
 
   if (isUniverseNns(rootCanisterId)) {
-    return getAccountFromStore({
+    return findAccount({
       identifier,
       accounts: nnsAccounts,
     });
   }
 
-  return getAccountFromStore({
+  return findAccount({
     identifier,
     accounts: snsAccounts[rootCanisterId.toText()]?.accounts ?? [],
   });
