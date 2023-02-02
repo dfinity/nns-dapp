@@ -6,4 +6,5 @@ export interface IcrcTokenMetadata {
   name: string;
   symbol: string;
   fee: bigint;
+  // TODO: integrate "decimals" to replace ICP_DISPLAYED_DECIMALS_DETAILED
 }
