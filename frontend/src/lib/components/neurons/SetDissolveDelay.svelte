@@ -46,7 +46,6 @@
     delayInDays > maxDelayInDays;
 
   const updateDelays = () => {
-    console.log('updateDelays delayInDays', delayInDays)
     if (delayInDays < minDelayInDays) {
       delayInDays = minDelayInDays;
     }
@@ -56,7 +55,6 @@
     }
 
     delayInSeconds = daysToSeconds(delayInDays);
-    console.log('updateDelays delayInSeconds', delayInSeconds)
   };
   const setMin = () => {
     delayInDays = Math.max(
@@ -80,7 +78,6 @@
     }
 
     delayInSeconds = daysToSeconds(delayInDays);
-    console.log('updateInputError delayInSeconds', delayInSeconds)
   };
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
