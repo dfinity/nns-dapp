@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 105498
 * Remove dashboard routing fallback.
 * Login screen minor changes.
 * Extended dissolve delay input.
