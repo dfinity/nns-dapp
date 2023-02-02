@@ -269,8 +269,9 @@ export const querySnsProjects = async (): Promise<CachedSns[]> => {
   }
   try {
     const data: CachedSnsDto[] = await response.json();
+    const convertedData = convertDtoData(data);
     logWithTimestamp("Loading SNS projects from aggregator canister completed");
-    return convertDtoData(data);
+    return convertedData;
   } catch (err) {
     console.error("Error converting data", err);
     throw new Error("Error converting data from aggregator canister");
