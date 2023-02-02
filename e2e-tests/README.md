@@ -11,25 +11,15 @@ more info.
 
 - dfx version same as in dfx.json.
 
-### Start replica
-
-Start a dfx replica:
-
-```bash
-# in root folder
-dfx start --clean
-
-# run replica in the background with
-dfx start --clean --background
-```
-
-### Download and install NNS canisters
+### Setup local environment
 
 From the root directory.
 
 ```bash
 ./scripts/dfx-nns-deploy-custom
 ```
+
+This script starts a local replica in the background and installs all needed canisters.
 
 ### Setup e2e tests
 
