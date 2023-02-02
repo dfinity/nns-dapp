@@ -208,7 +208,7 @@ describe("neurons-services", () => {
   beforeEach(() => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
-    neuronsStore.setNeurons({ neurons: [], certified: true });
+    neuronsStore.reset();
     accountsStore.reset();
     resetIdentity();
   });
