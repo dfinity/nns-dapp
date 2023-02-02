@@ -1,6 +1,8 @@
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
@@ -20,6 +22,10 @@ export const getIcrcMainAccount = async ({
   identity: Identity;
   certified: boolean;
   balance: (params: BalanceParams) => Promise<IcrcTokens>;
+  /**
+   * TODO: integrate ckBTC fee
+   * @deprecated metadata should not be called here and token should not be interpreted per account because it is the same token for all accounts
+   */
   metadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
 }): Promise<Account> => {
   const mainAccountIdentifier = { owner: identity.getPrincipal() };
@@ -44,4 +50,22 @@ export const getIcrcMainAccount = async ({
     }),
     type: "main",
   };
+};
+
+export const getIcrcToken = async ({
+  certified,
+  metadata: ledgerMetadata,
+}: {
+  certified: boolean;
+  metadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
+}): Promise<IcrcTokenMetadata> => {
+  const metadata = await ledgerMetadata({ certified });
+
+  const token = mapOptionalToken(metadata);
+
+  if (isNullish(token)) {
+    throw new LedgerErrorKey("error.icrc_token_load");
+  }
+
+  return token;
 };

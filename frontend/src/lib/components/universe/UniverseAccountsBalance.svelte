@@ -2,14 +2,26 @@
   import { nonNullish } from "$lib/utils/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import type { TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
+  import { universesTokensStore } from "$lib/derived/universes-tokens.derived";
 
   export let universe: Universe;
 
+  // TODO: conversion from E8S to use new tokensStore until account.ts.balance is converted to E8S
+  let balanceE8S: bigint | undefined;
+  $: balanceE8S =
+    $universesAccountsBalance[universe.canisterId]?.balance?.toE8s();
+
+  let token: Token | undefined;
+  $: token = $universesTokensStore[universe.canisterId]?.token;
+
   let balance: TokenAmount | undefined;
-  $: balance = $universesAccountsBalance[universe.canisterId]?.balance;
+  $: balance =
+    nonNullish(balanceE8S) && nonNullish(token)
+      ? TokenAmount.fromE8s({ amount: balanceE8S, token })
+      : undefined;
 </script>
 
 <div class="amount">

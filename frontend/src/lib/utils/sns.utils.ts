@@ -1,11 +1,11 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
 import type { PngDataUrl } from "$lib/types/assets";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type {
   QuerySns,
@@ -25,7 +25,7 @@ import type {
   SnsSwapDerivedState,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
-import { isPngAsset } from "./utils";
+import { isNullish, isPngAsset } from "./utils";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
   params?: SnsParams;
@@ -33,7 +33,7 @@ type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
-  token?: SnsTokenMetadata;
+  token?: IcrcTokenMetadata;
   swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
@@ -99,12 +99,12 @@ const mapOptionalMetadata = ({
 };
 
 /**
- * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
+ * Token metadata is given only if the properties NNS-dapp needs (name, symbol and fee) are defined.
  */
 export const mapOptionalToken = (
   response: IcrcTokenMetadataResponse
-): SnsTokenMetadata | undefined => {
-  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
+): IcrcTokenMetadata | undefined => {
+  const nullishToken: Partial<IcrcTokenMetadata> = response.reduce(
     (acc, [key, value]) => {
       switch (key) {
         case IcrcMetadataResponseEntries.SYMBOL:
@@ -112,6 +112,9 @@ export const mapOptionalToken = (
           break;
         case IcrcMetadataResponseEntries.NAME:
           acc = { ...acc, ...("Text" in value && { name: value.Text }) };
+          break;
+        case IcrcMetadataResponseEntries.FEE:
+          acc = { ...acc, ...("Nat" in value && { fee: value.Nat }) };
       }
 
       return acc;
@@ -119,11 +122,15 @@ export const mapOptionalToken = (
     {}
   );
 
-  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
+  if (
+    isNullish(nullishToken.name) ||
+    isNullish(nullishToken.symbol) ||
+    isNullish(nullishToken.fee)
+  ) {
     return undefined;
   }
 
-  return nullishToken as SnsTokenMetadata;
+  return nullishToken as IcrcTokenMetadata;
 };
 
 /**

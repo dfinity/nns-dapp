@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -19,7 +19,7 @@
     }
 
     loading = true;
-    await loadCkBTCAccounts({});
+    await syncCkBTCAccounts({});
     loading = false;
   });
 </script>

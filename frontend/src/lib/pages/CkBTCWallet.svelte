@@ -14,7 +14,7 @@
   import { findAccount } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import { nonNullish } from "$lib/utils/utils";
-  import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -84,7 +84,7 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await loadCkBTCAccounts({});
+    await syncCkBTCAccounts({});
 
     // And finally try to set the account again
     await loadAccount();

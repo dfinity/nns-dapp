@@ -7,9 +7,13 @@ import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
+import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { nonNullish } from "$lib/utils/utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -54,6 +58,25 @@ export const loadSnsProjects = async (): Promise<void> => {
           fee: sns.icrc1_fee as bigint,
           certified: true,
         }))
+    );
+    tokensStore.setTokens(
+      cachedSnses
+        .map(({ icrc1_metadata, canister_ids: { root_canister_id } }) => ({
+          token: mapOptionalToken(icrc1_metadata),
+          root_canister_id,
+        }))
+        .filter(({ token }) => nonNullish(token))
+        .reduce(
+          (acc, { root_canister_id, token }) => ({
+            ...acc,
+            [root_canister_id]: {
+              // Above filter ensure the token is not undefined therefore it can be safely cast
+              token: token as IcrcTokenMetadata,
+              certified: true,
+            },
+          }),
+          {} as TokensStoreData
+        )
     );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {

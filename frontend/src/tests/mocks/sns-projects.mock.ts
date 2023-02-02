@@ -1,10 +1,10 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import {
@@ -128,9 +128,10 @@ export const mockMetadata: SnsSummaryMetadata = {
     "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
 };
 
-export const mockToken: SnsTokenMetadata = {
+export const mockToken: IcrcTokenMetadata = {
   name: "Tetris",
   symbol: "TET",
+  fee: BigInt(0),
 };
 
 export const mockSnsSummaryList: SnsSummary[] = [
@@ -157,6 +158,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Pacman",
       symbol: "PAC",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -175,6 +177,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Mario",
       symbol: "SPM",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -193,6 +196,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Kong",
       symbol: "DKG",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,

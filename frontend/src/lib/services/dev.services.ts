@@ -49,5 +49,6 @@ export const getTokens = async ({
     rootCanisterId,
   });
 
+  // Reload accounts to sync tokens that have been transferred
   await loadSnsAccounts({ rootCanisterId });
 };
