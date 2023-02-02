@@ -4,7 +4,7 @@
 
 import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
 import {
-  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
@@ -60,7 +60,7 @@ describe("SummaryLogo", () => {
   describe("ckBTC", () => {
     beforeAll(() => {
       page.mock({
-        data: { universe: CKBTC_LEDGER_CANISTER_ID.toText() },
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
     });

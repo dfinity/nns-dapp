@@ -18,10 +18,7 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
-import {
-  getAccountByPrincipal,
-  getAccountFromStore,
-} from "$lib/utils/accounts.utils";
+import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
@@ -164,7 +161,7 @@ export const getAccountTransactions = async ({
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
-  const account: Account | undefined = getAccountFromStore({
+  const account: Account | undefined = findAccount({
     identifier,
     accounts: get(nnsAccountsListStore),
   });

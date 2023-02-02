@@ -1,6 +1,7 @@
 import {
   snsSummariesStore,
   snsSwapCommitmentsStore,
+  type SnsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
@@ -24,7 +25,10 @@ export interface SnsFullProject {
  *
  * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
-export const snsProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
+export const snsProjectsStore = derived<
+  [Readable<SnsSummary[]>, SnsSwapCommitmentsStore],
+  SnsFullProject[] | undefined
+>(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     summaries?.map((summary) => {
