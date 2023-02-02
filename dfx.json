@@ -11,6 +11,7 @@
           "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "nnsdapp": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -74,6 +75,7 @@
           "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "nnsdapp": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
@@ -217,6 +219,22 @@
       ],
       "type": "persistent"
     },
+    "nnsdapp": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://nnsdapp.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": false,
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
     "small14": {
       "config": {
         "FETCH_ROOT_KEY": true,
@@ -344,7 +362,7 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": true
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "bind": "127.0.0.1:8080",

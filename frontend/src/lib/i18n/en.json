@@ -37,9 +37,9 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
-    "sns_accounts_load": "An error occurred while loading the accounts.",
+    "accounts_load": "An error occurred while loading the accounts.",
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
-    "sns_token_load": "An error occurred while loading the project token.",
+    "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -486,13 +486,13 @@
     "voting_power_tooltip_with_stake": "Calculated as: <br/>(ICP staked + maturity staked) x Dissolve Delay Bonus x Age Bonus<br/>($stake + $st4kedMaturity) x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the community fund?",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the community fund?",
-    "participate_community_fund": "Participate in upcoming community fund.",
+    "participate_community_fund": "Participate in community fund.",
     "auto_stake_maturity": "Automatically stake new maturity.",
     "auto_stake_maturity_on": "Are you sure that you would like to automatically stake new maturity of this neuron?",
     "auto_stake_maturity_off": "Are you sure that you would like to stop automatically staking new maturity of this neuron?",
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
-    "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
+    "community_fund_more_info": "Join the community fund to support growing projects on the IC. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/community-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">Learn more</a> about how your neurons (un-staked) maturity is used.",
     "maturity_title": "Maturity",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
@@ -765,7 +765,7 @@
     "tvl": "Total Value Locked"
   },
   "ckbtc": {
-    "title": "Chain-key Bitcoin",
+    "title": "ckBTC",
     "ckBTC": "ckBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo"
   }

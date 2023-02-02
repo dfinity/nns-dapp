@@ -2,6 +2,7 @@ import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { canistersStore } from "$lib/stores/canisters.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -13,7 +14,6 @@ import {
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { AddAccountStore } from "$lib/types/add-account.context";
@@ -107,7 +107,7 @@ export const initDebugStore = () =>
       selectedProjectStore,
       snsNeuronsStore,
       snsAccountsStore,
-      snsTransactionsStore,
+      icrcTransactionsStore,
       selectedSnsNeuronStore,
       transactionsStore,
       snsProjectsStore,

@@ -561,12 +561,12 @@ mod def {
     impl From<SnsVersion> for SnsVersionHumanReadable {
         fn from(payload: SnsVersion) -> Self {
             SnsVersionHumanReadable {
-                root_wasm_hash: calculate_hash_string(&payload.root_wasm_hash),
-                governance_wasm_hash: calculate_hash_string(&payload.governance_wasm_hash),
-                ledger_wasm_hash: calculate_hash_string(&payload.ledger_wasm_hash),
-                swap_wasm_hash: calculate_hash_string(&payload.swap_wasm_hash),
-                archive_wasm_hash: calculate_hash_string(&payload.archive_wasm_hash),
-                index_wasm_hash: calculate_hash_string(&payload.index_wasm_hash),
+                root_wasm_hash: format_bytes(&payload.root_wasm_hash),
+                governance_wasm_hash: format_bytes(&payload.governance_wasm_hash),
+                ledger_wasm_hash: format_bytes(&payload.ledger_wasm_hash),
+                swap_wasm_hash: format_bytes(&payload.swap_wasm_hash),
+                archive_wasm_hash: format_bytes(&payload.archive_wasm_hash),
+                index_wasm_hash: format_bytes(&payload.index_wasm_hash),
             }
         }
     }
