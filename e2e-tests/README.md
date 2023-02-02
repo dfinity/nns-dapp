@@ -50,19 +50,6 @@ Recommendation: Use only chrome:
 export WDIO_BROWSER=chrome
 ```
 
-### Populate
-
-First e2e is also used to populate the nns dapp:
-
-```bash
-# in root folder
-./deploy.sh --populate local
-```
-
-Then it executes the e2e test in "user-N01-neuron-created.e2e.ts".
-
-Therefore, if this works your setup is ready.
-
 ### Execute e2e tests
 
 All the e2e tests can be run with:
