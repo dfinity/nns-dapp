@@ -18,17 +18,28 @@ import { GovernanceCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { ledgerCanister as getLedgerCanister } from "./ledger.api";
 
+/**
+ * COMMON TYPES
+ */
+
+// Type for ANY call
 type ApiCallParams = {
   identity: Identity;
 };
 
+// Type for read-only calls.
 export type ApiQueryParams = ApiCallParams & {
   certified: boolean;
 };
 
-export type ApiCallNeuronParams = ApiCallParams & {
+// Shared type for calls to manage a neuron
+export type ApiManageNeuronParams = ApiCallParams & {
   neuronId: NeuronId;
 };
+
+/**
+ * API FUNCTIONS
+ */
 
 export type ApiQueryNeuronParams = ApiQueryParams & {
   neuronId: NeuronId;
@@ -54,7 +65,7 @@ export const queryNeuron = async ({
   return response;
 };
 
-export type ApiIncreaseDissolveDelayParams = ApiCallNeuronParams & {
+export type ApiIncreaseDissolveDelayParams = ApiManageNeuronParams & {
   dissolveDelayInSeconds: number;
 };
 
@@ -84,7 +95,7 @@ export const increaseDissolveDelay = async ({
 export const joinCommunityFund = async ({
   neuronId,
   identity,
-}: ApiCallNeuronParams): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -95,7 +106,7 @@ export const joinCommunityFund = async ({
 export const leaveCommunityFund = async ({
   neuronId,
   identity,
-}: ApiCallNeuronParams): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -103,7 +114,7 @@ export const leaveCommunityFund = async ({
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiAutoStakeMaturityParams = ApiCallNeuronParams & {
+export type ApiAutoStakeMaturityParams = ApiManageNeuronParams & {
   autoStake: boolean;
 };
 
@@ -134,7 +145,7 @@ export const autoStakeMaturity = async ({
   );
 };
 
-export type ApiDisburseParams = ApiCallNeuronParams & {
+export type ApiDisburseParams = ApiManageNeuronParams & {
   toAccountId?: string;
   amount?: E8s;
 };
@@ -152,7 +163,7 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiMergeMaturityParams = ApiCallNeuronParams & {
+export type ApiMergeMaturityParams = ApiManageNeuronParams & {
   percentageToMerge: number;
 };
 
@@ -168,7 +179,7 @@ export const mergeMaturity = async ({
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiStakeMaturityParams = ApiCallNeuronParams & {
+export type ApiStakeMaturityParams = ApiManageNeuronParams & {
   percentageToStake: number;
 };
 
@@ -188,7 +199,7 @@ export const stakeMaturity = async ({
   logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiSpawnNeuronParams = ApiCallNeuronParams & {
+export type ApiSpawnNeuronParams = ApiManageNeuronParams & {
   // percentageToSpawn is not yet supported by the ledger IC app
   percentageToSpawn?: number;
 };
@@ -209,7 +220,8 @@ export const spawnNeuron = async ({
   return newNeuronId;
 };
 
-export type ApiHotkeyCallParams = ApiCallNeuronParams & {
+// Shared by addHotkey and removeHotkey
+export type ApiManageHotkeyParams = ApiManageNeuronParams & {
   principal: Principal;
 };
 
@@ -217,7 +229,7 @@ export const addHotkey = async ({
   neuronId,
   principal,
   identity,
-}: ApiHotkeyCallParams): Promise<void> => {
+}: ApiManageHotkeyParams): Promise<void> => {
   logWithTimestamp(`Add hotkey (for neuron ${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -229,7 +241,7 @@ export const removeHotkey = async ({
   neuronId,
   principal,
   identity,
-}: ApiHotkeyCallParams): Promise<void> => {
+}: ApiManageHotkeyParams): Promise<void> => {
   logWithTimestamp(`Remove hotkey (for neuron ${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -239,7 +251,7 @@ export const removeHotkey = async ({
   );
 };
 
-export type ApiSplitNeuronParams = ApiCallNeuronParams & {
+export type ApiSplitNeuronParams = ApiManageNeuronParams & {
   amount: bigint;
 };
 
@@ -290,7 +302,7 @@ export const mergeNeurons = async ({
 export const startDissolving = async ({
   neuronId,
   identity,
-}: ApiCallNeuronParams): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Starting Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -301,7 +313,7 @@ export const startDissolving = async ({
 export const stopDissolving = async ({
   neuronId,
   identity,
-}: ApiCallNeuronParams): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -309,7 +321,7 @@ export const stopDissolving = async ({
   logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiSetFolloweesParams = ApiCallNeuronParams & {
+export type ApiSetFolloweesParams = ApiManageNeuronParams & {
   topic: Topic;
   followees: NeuronId[];
 };
@@ -406,7 +418,7 @@ export const queryKnownNeurons = async ({
 export const claimOrRefreshNeuron = async ({
   neuronId,
   identity,
-}: ApiCallNeuronParams): Promise<NeuronId | undefined> => {
+}: ApiManageNeuronParams): Promise<NeuronId | undefined> => {
   logWithTimestamp(
     `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) call...`
   );
@@ -421,6 +433,10 @@ export const claimOrRefreshNeuron = async ({
   );
   return response;
 };
+
+/**
+ * CANISTER SERVICE CREATION
+ */
 
 // TODO: Apply pattern to other canister instantiation L2-371
 export const governanceCanister = async ({

@@ -3,6 +3,7 @@ import {
   addHotkey,
   autoStakeMaturity,
   claimOrRefreshNeuron,
+  disburse,
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
@@ -21,6 +22,7 @@ import {
   stopDissolving,
 } from "$lib/api/governance.api";
 import { Topic } from "@dfinity/nns";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 
 jest.mock("$lib/api/governance.api", () => {
@@ -57,6 +59,7 @@ describe("neurons api-service", () => {
       const params = { neuronId, identity: mockIdentity, certified: true };
       neuronsApiService.queryNeuron(params);
       expect(queryNeuron).toHaveBeenCalledWith(params);
+      expect(queryNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("queryNeurons", () => {
@@ -64,6 +67,7 @@ describe("neurons api-service", () => {
       const params = { identity: mockIdentity, certified: true };
       neuronsApiService.queryNeurons(params);
       expect(queryNeurons).toHaveBeenCalledWith(params);
+      expect(queryNeurons).toHaveBeenCalledTimes(1);
     });
   });
   describe("queryKnownNeurons", () => {
@@ -71,6 +75,7 @@ describe("neurons api-service", () => {
       const params = { identity: mockIdentity, certified: true };
       neuronsApiService.queryKnownNeurons(params);
       expect(queryKnownNeurons).toHaveBeenCalledWith(params);
+      expect(queryKnownNeurons).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -84,6 +89,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.addHotkey(params);
       expect(addHotkey).toHaveBeenCalledWith(params);
+      expect(addHotkey).toHaveBeenCalledTimes(1);
     });
   });
   describe("autoStakeMaturity", () => {
@@ -95,6 +101,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.autoStakeMaturity(params);
       expect(autoStakeMaturity).toHaveBeenCalledWith(params);
+      expect(autoStakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("claimOrRefreshNeuron", () => {
@@ -105,6 +112,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.claimOrRefreshNeuron(params);
       expect(claimOrRefreshNeuron).toHaveBeenCalledWith(params);
+      expect(claimOrRefreshNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("disburse", () => {
@@ -112,10 +120,12 @@ describe("neurons api-service", () => {
       const params = {
         neuronId,
         identity: mockIdentity,
-        autoStake: true,
+        toAccount: mockMainAccount.identifier,
+        amount: BigInt(10_000_000),
       };
-      neuronsApiService.autoStakeMaturity(params);
-      expect(autoStakeMaturity).toHaveBeenCalledWith(params);
+      neuronsApiService.disburse(params);
+      expect(disburse).toHaveBeenCalledWith(params);
+      expect(disburse).toHaveBeenCalledTimes(1);
     });
   });
   describe("increaseDissolveDelay", () => {
@@ -127,6 +137,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.increaseDissolveDelay(params);
       expect(increaseDissolveDelay).toHaveBeenCalledWith(params);
+      expect(increaseDissolveDelay).toHaveBeenCalledTimes(1);
     });
   });
   describe("joinCommunityFund", () => {
@@ -137,6 +148,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.joinCommunityFund(params);
       expect(joinCommunityFund).toHaveBeenCalledWith(params);
+      expect(joinCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
   describe("leaveCommunityFund", () => {
@@ -147,6 +159,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.leaveCommunityFund(params);
       expect(leaveCommunityFund).toHaveBeenCalledWith(params);
+      expect(leaveCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
   describe("mergeMaturity", () => {
@@ -158,6 +171,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.mergeMaturity(params);
       expect(mergeMaturity).toHaveBeenCalledWith(params);
+      expect(mergeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("mergeNeurons", () => {
@@ -169,6 +183,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.mergeNeurons(params);
       expect(mergeNeurons).toHaveBeenCalledWith(params);
+      expect(mergeNeurons).toHaveBeenCalledTimes(1);
     });
   });
   describe("removeHotkey", () => {
@@ -180,6 +195,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.removeHotkey(params);
       expect(removeHotkey).toHaveBeenCalledWith(params);
+      expect(removeHotkey).toHaveBeenCalledTimes(1);
     });
   });
   describe("setFollowees", () => {
@@ -192,6 +208,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.setFollowees(params);
       expect(setFollowees).toHaveBeenCalledWith(params);
+      expect(setFollowees).toHaveBeenCalledTimes(1);
     });
   });
   describe("spawnNeuron", () => {
@@ -202,6 +219,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.spawnNeuron(params);
       expect(spawnNeuron).toHaveBeenCalledWith(params);
+      expect(spawnNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("splitNeuron", () => {
@@ -213,6 +231,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.splitNeuron(params);
       expect(splitNeuron).toHaveBeenCalledWith(params);
+      expect(splitNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("stakeMaturity", () => {
@@ -224,6 +243,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.stakeMaturity(params);
       expect(stakeMaturity).toHaveBeenCalledWith(params);
+      expect(stakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("stakeNeuron", () => {
@@ -237,6 +257,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.stakeNeuron(params);
       expect(stakeNeuron).toHaveBeenCalledWith(params);
+      expect(stakeNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("startDissolving", () => {
@@ -247,6 +268,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.startDissolving(params);
       expect(startDissolving).toHaveBeenCalledWith(params);
+      expect(startDissolving).toHaveBeenCalledTimes(1);
     });
   });
   describe("stopDissolving", () => {
@@ -257,6 +279,7 @@ describe("neurons api-service", () => {
       };
       neuronsApiService.stopDissolving(params);
       expect(stopDissolving).toHaveBeenCalledWith(params);
+      expect(stopDissolving).toHaveBeenCalledTimes(1);
     });
   });
 });

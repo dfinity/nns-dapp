@@ -20,10 +20,10 @@ import {
   startDissolving,
   stopDissolving,
   type ApiAutoStakeMaturityParams,
-  type ApiCallNeuronParams,
   type ApiDisburseParams,
-  type ApiHotkeyCallParams,
   type ApiIncreaseDissolveDelayParams,
+  type ApiManageHotkeyParams,
+  type ApiManageNeuronParams,
   type ApiMergeMaturityParams,
   type ApiMergeNeuronsParams,
   type ApiQueryNeuronParams,
@@ -37,24 +37,24 @@ import {
 
 export const neuronsApiService = {
   // Read calls
+  queryKnownNeurons(params: ApiQueryParams) {
+    return queryKnownNeurons(params);
+  },
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);
   },
   queryNeurons(params: ApiQueryParams) {
     return queryNeurons(params);
   },
-  queryKnownNeurons(params: ApiQueryParams) {
-    return queryKnownNeurons(params);
-  },
 
   // Action calls
-  addHotkey(params: ApiHotkeyCallParams) {
+  addHotkey(params: ApiManageHotkeyParams) {
     return addHotkey(params);
   },
   autoStakeMaturity(params: ApiAutoStakeMaturityParams) {
     return autoStakeMaturity(params);
   },
-  claimOrRefreshNeuron(params: ApiCallNeuronParams) {
+  claimOrRefreshNeuron(params: ApiManageNeuronParams) {
     return claimOrRefreshNeuron(params);
   },
   disburse(params: ApiDisburseParams) {
@@ -63,10 +63,10 @@ export const neuronsApiService = {
   increaseDissolveDelay(params: ApiIncreaseDissolveDelayParams) {
     return increaseDissolveDelay(params);
   },
-  joinCommunityFund(params: ApiCallNeuronParams) {
+  joinCommunityFund(params: ApiManageNeuronParams) {
     return joinCommunityFund(params);
   },
-  leaveCommunityFund(params: ApiCallNeuronParams) {
+  leaveCommunityFund(params: ApiManageNeuronParams) {
     return leaveCommunityFund(params);
   },
   // @deprecated
@@ -76,7 +76,7 @@ export const neuronsApiService = {
   mergeNeurons(params: ApiMergeNeuronsParams) {
     return mergeNeurons(params);
   },
-  removeHotkey(params: ApiHotkeyCallParams) {
+  removeHotkey(params: ApiManageHotkeyParams) {
     return removeHotkey(params);
   },
   setFollowees(params: ApiSetFolloweesParams) {
@@ -94,10 +94,10 @@ export const neuronsApiService = {
   stakeNeuron(params: ApiStakeNeuronParams) {
     return stakeNeuron(params);
   },
-  startDissolving(params: ApiCallNeuronParams) {
+  startDissolving(params: ApiManageNeuronParams) {
     return startDissolving(params);
   },
-  stopDissolving(params: ApiCallNeuronParams) {
+  stopDissolving(params: ApiManageNeuronParams) {
     return stopDissolving(params);
   },
 };
