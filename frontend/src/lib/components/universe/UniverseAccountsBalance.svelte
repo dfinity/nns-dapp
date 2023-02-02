@@ -10,8 +10,8 @@
   export let universe: Universe;
 
   // TODO: conversion from E8S to use new tokensStore until account.ts.balance is converted to E8S
-  let balanceE8S: bigint | undefined;
-  $: balanceE8S =
+  let balanceE8s: bigint | undefined;
+  $: balanceE8s =
     $universesAccountsBalance[universe.canisterId]?.balance?.toE8s();
 
   let token: Token | undefined;
@@ -19,8 +19,8 @@
 
   let balance: TokenAmount | undefined;
   $: balance =
-    nonNullish(balanceE8S) && nonNullish(token)
-      ? TokenAmount.fromE8s({ amount: balanceE8S, token })
+    nonNullish(balanceE8s) && nonNullish(token)
+      ? TokenAmount.fromE8s({ amount: balanceE8s, token })
       : undefined;
 </script>
 
