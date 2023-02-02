@@ -36,10 +36,11 @@
     {showInfo}
     bind:value
     on:blur
-    on:input
+    on:nnsInput
   >
+    <slot name="start" slot="start" />
     <slot name="label" slot="label" />
-    <slot name="additional" slot="additional" />
+    <slot name="end" slot="end" />
   </Input>
 
   {#if error}
