@@ -33,26 +33,10 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 }
 
 # Need to know which deployment we are building for:
-DFX_NETWORK="${DFX_NETWORK:-}"
-export DFX_NETWORK
-jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
-  echo "Which deployment? Set DFX_NETWORK to one of:"
-  jq -er '.networks | keys | join("  ")' dfx.json
-  exit 1
-} >&2
+. "$TOPLEVEL/scripts/require-dfx-network.sh"
 
 # Assemble the configuration
 . config.sh
-export HOST
-export IDENTITY_SERVICE_URL
-export OWN_CANISTER_ID
-export OWN_CANISTER_URL
-export FETCH_ROOT_KEY
-export GOVERNANCE_CANISTER_ID
-export GOVERNANCE_CANISTER_URL
-export LEDGER_CANISTER_ID
-export LEDGER_CANISTER_URL
-export WASM_CANISTER_ID
 
 set -x
 
