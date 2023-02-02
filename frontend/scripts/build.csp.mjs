@@ -141,6 +141,7 @@ const updateCSP = (indexHtml) => {
 };
 
 const cspConnectSrc = () => {
+  // TODO: Use `URL` to check if the URL is valid and not introduce a security issue
   const src = [
     process.env.VITE_IDENTITY_SERVICE_URL,
     process.env.VITE_OWN_CANISTER_URL,
