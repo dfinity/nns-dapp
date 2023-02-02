@@ -8,8 +8,7 @@ import type { Subscriber } from "svelte/store";
 import { mockCkBTCToken } from "./ckbtc-accounts.mock";
 import { mockSnsFullProject, mockSnsToken } from "./sns-projects.mock";
 
-export const mockUniversesTokens = {
-  [OWN_CANISTER_ID.toText()]: NNS_TOKEN,
+export const mockTokens = {
   [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
     token: mockCkBTCToken,
     certified: true,
@@ -18,6 +17,11 @@ export const mockUniversesTokens = {
     token: mockSnsToken,
     certified: true,
   },
+};
+
+export const mockUniversesTokens = {
+  [OWN_CANISTER_ID.toText()]: NNS_TOKEN,
+  ...mockTokens,
 };
 
 export const mockTokensSubscribe =

@@ -10,7 +10,7 @@ import type {
 } from "$lib/stores/tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { ICPToken } from "@dfinity/nns";
-import { derived } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 
 export const NNS_TOKEN: TokensStoreUniverseData = {
   token: {
@@ -28,15 +28,19 @@ export const universesTokensStore = derived<[TokensStore], TokensStoreData>(
   })
 );
 
-export const nnsTokenStore = derived<[TokensStore], TokensStoreUniverseData>(
-  [tokensStore],
-  ([$tokenStore]) => $tokenStore[OWN_CANISTER_ID.toText()]
+export const nnsTokenStore = derived<
+  [Readable<TokensStoreData>],
+  TokensStoreUniverseData
+>(
+  [universesTokensStore],
+  ([$universesTokensStore]) => $universesTokensStore[OWN_CANISTER_ID.toText()]
 );
 
 export const ckBTCTokenStore = derived<
-  [TokensStore],
+  [Readable<TokensStoreData>],
   TokensStoreUniverseData | undefined
 >(
-  [tokensStore],
-  ([$tokenStore]) => $tokenStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
+  [universesTokensStore],
+  ([$universesTokensStore]) =>
+    $universesTokensStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
 );
