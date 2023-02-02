@@ -1,4 +1,4 @@
-import { neuronsApiService } from "$lib/api-services/neurons.api-service";
+import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
@@ -128,81 +128,81 @@ describe("neurons-services", () => {
   const newSpawnedNeuronId = BigInt(1234);
 
   const spyStakeNeuron = jest
-    .spyOn(neuronsApiService, "stakeNeuron")
+    .spyOn(api, "stakeNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron.neuronId));
 
   const spyGetNeuron = jest
-    .spyOn(neuronsApiService, "queryNeuron")
+    .spyOn(api, "queryNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
   const spyQueryNeurons = jest
-    .spyOn(neuronsApiService, "queryNeurons")
+    .spyOn(api, "queryNeurons")
     .mockImplementation(() => Promise.resolve(neurons));
 
   const spyIncreaseDissolveDelay = jest
-    .spyOn(neuronsApiService, "increaseDissolveDelay")
+    .spyOn(api, "increaseDissolveDelay")
     .mockImplementation(() => Promise.resolve());
 
   const spyJoinCommunityFund = jest
-    .spyOn(neuronsApiService, "joinCommunityFund")
+    .spyOn(api, "joinCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
   const spyAutoStakeMaturity = jest
-    .spyOn(neuronsApiService, "autoStakeMaturity")
+    .spyOn(api, "autoStakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spyLeaveCommunityFund = jest
-    .spyOn(neuronsApiService, "leaveCommunityFund")
+    .spyOn(api, "leaveCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
   const spyDisburse = jest
-    .spyOn(neuronsApiService, "disburse")
+    .spyOn(api, "disburse")
     .mockImplementation(() => Promise.resolve());
 
   const spyMergeMaturity = jest
-    .spyOn(neuronsApiService, "mergeMaturity")
+    .spyOn(api, "mergeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spyStakeMaturity = jest
-    .spyOn(neuronsApiService, "stakeMaturity")
+    .spyOn(api, "stakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spySpawnNeuron = jest
-    .spyOn(neuronsApiService, "spawnNeuron")
+    .spyOn(api, "spawnNeuron")
     .mockImplementation(() => Promise.resolve(newSpawnedNeuronId));
 
   const spyMergeNeurons = jest
-    .spyOn(neuronsApiService, "mergeNeurons")
+    .spyOn(api, "mergeNeurons")
     .mockImplementation(() => Promise.resolve());
 
   const spyAddHotkey = jest
-    .spyOn(neuronsApiService, "addHotkey")
+    .spyOn(api, "addHotkey")
     .mockImplementation(() => Promise.resolve());
 
   const spyRemoveHotkey = jest
-    .spyOn(neuronsApiService, "removeHotkey")
+    .spyOn(api, "removeHotkey")
     .mockImplementation(() => Promise.resolve());
 
   const spySplitNeuron = jest
-    .spyOn(neuronsApiService, "splitNeuron")
+    .spyOn(api, "splitNeuron")
     .mockImplementation(() => Promise.resolve(BigInt(11)));
 
   const spyStartDissolving = jest
-    .spyOn(neuronsApiService, "startDissolving")
+    .spyOn(api, "startDissolving")
     .mockImplementation(() => Promise.resolve());
 
   const spyStopDissolving = jest
-    .spyOn(neuronsApiService, "stopDissolving")
+    .spyOn(api, "stopDissolving")
     .mockImplementation(() => Promise.resolve());
 
   const spySetFollowees = jest
-    .spyOn(neuronsApiService, "setFollowees")
+    .spyOn(api, "setFollowees")
     .mockImplementation(() => Promise.resolve());
 
   const spyClaimOrRefresh = jest
-    .spyOn(neuronsApiService, "claimOrRefreshNeuron")
+    .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
 
   afterEach(() => {
