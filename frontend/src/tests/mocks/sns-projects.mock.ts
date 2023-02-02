@@ -234,14 +234,14 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
 
 export const mockSnsToken: IcrcTokenMetadata = {
   symbol: "TST",
-  name: "test",
+  name: "Tetris",
   fee: BigInt(40_000),
 };
 
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
-  [IcrcMetadataResponseEntries.NAME, { Text: "Tetris" }],
-  [IcrcMetadataResponseEntries.SYMBOL, { Text: "TET" }],
+  [IcrcMetadataResponseEntries.NAME, { Text: mockSnsToken.name }],
+  [IcrcMetadataResponseEntries.SYMBOL, { Text: mockSnsToken.symbol }],
   [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
 ];
 
