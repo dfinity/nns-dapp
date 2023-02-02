@@ -22,7 +22,7 @@ export const getSnsAccounts = async ({
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
 
-  const { balance, ledgerMetadata } = await wrapper({
+  const { balance: getBalance, ledgerMetadata: getMetadata } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
@@ -31,8 +31,8 @@ export const getSnsAccounts = async ({
   const mainAccount = await getIcrcMainAccount({
     identity,
     certified,
-    balance,
-    metadata: ledgerMetadata,
+    getBalance,
+    getMetadata,
   });
 
   logWithTimestamp("Getting sns accounts: done");
@@ -51,7 +51,7 @@ export const getSnsToken = async ({
 }): Promise<IcrcTokenMetadata> => {
   logWithTimestamp("Getting sns token: call...");
 
-  const { ledgerMetadata } = await wrapper({
+  const { ledgerMetadata: getMetadata } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
@@ -59,7 +59,7 @@ export const getSnsToken = async ({
 
   const token = await getIcrcToken({
     certified,
-    metadata: ledgerMetadata,
+    getMetadata,
   });
 
   logWithTimestamp("Getting sns token: done");

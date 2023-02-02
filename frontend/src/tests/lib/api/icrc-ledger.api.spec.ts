@@ -15,8 +15,8 @@ describe("icrc-ledger api", () => {
       const account = await getIcrcMainAccount({
         certified: true,
         identity: mockIdentity,
-        balance: balanceSpy,
-        metadata: metadataSpy,
+        getBalance: balanceSpy,
+        getMetadata: metadataSpy,
       });
 
       expect(account).not.toBeUndefined();
@@ -36,8 +36,8 @@ describe("icrc-ledger api", () => {
         getIcrcMainAccount({
           certified: true,
           identity: mockIdentity,
-          balance: balanceSpy,
-          metadata: metadataSpy,
+          getBalance: balanceSpy,
+          getMetadata: metadataSpy,
         });
 
       expect(call).rejects.toThrowError();
@@ -50,7 +50,7 @@ describe("icrc-ledger api", () => {
 
       const token = await getIcrcToken({
         certified: true,
-        metadata: metadataSpy,
+        getMetadata: metadataSpy,
       });
 
       expect(token).toEqual(mockSnsToken);
@@ -66,7 +66,7 @@ describe("icrc-ledger api", () => {
       const call = () =>
         getIcrcToken({
           certified: true,
-          metadata: metadataSpy,
+          getMetadata: metadataSpy,
         });
 
       expect(call).rejects.toThrowError();

@@ -25,8 +25,8 @@ export const getCkBTCAccounts = async ({
   const mainAccount = await getIcrcMainAccount({
     identity,
     certified,
-    balance,
-    metadata,
+    getBalance: balance,
+    getMetadata: metadata,
   });
 
   logWithTimestamp("Getting ckBTC accounts: done");
@@ -44,12 +44,12 @@ export const getCkBTCToken = async ({
   logWithTimestamp("Getting ckBTC token: call...");
 
   const {
-    canister: { metadata },
+    canister: { metadata: getMetadata },
   } = await ckBTCLedgerCanister({ identity });
 
   const token = await getIcrcToken({
     certified,
-    metadata,
+    getMetadata,
   });
 
   logWithTimestamp("Getting ckBTC token: done");

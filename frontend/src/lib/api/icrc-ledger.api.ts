@@ -16,22 +16,22 @@ import type { QueryParams } from "@dfinity/utils";
 export const getIcrcMainAccount = async ({
   identity,
   certified,
-  balance,
-  metadata: ledgerMetadata,
+  getBalance,
+  getMetadata: ledgerMetadata,
 }: {
   identity: Identity;
   certified: boolean;
-  balance: (params: BalanceParams) => Promise<IcrcTokens>;
+  getBalance: (params: BalanceParams) => Promise<IcrcTokens>;
   /**
    * TODO: integrate ckBTC fee
    * @deprecated metadata should not be called here and token should not be interpreted per account because it is the same token for all accounts
    */
-  metadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
+  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
 }): Promise<Account> => {
   const mainAccountIdentifier = { owner: identity.getPrincipal() };
 
   const [mainBalanceE8s, metadata] = await Promise.all([
-    balance({ ...mainAccountIdentifier, certified }),
+    getBalance({ ...mainAccountIdentifier, certified }),
     ledgerMetadata({ certified }),
   ]);
 
@@ -54,12 +54,12 @@ export const getIcrcMainAccount = async ({
 
 export const getIcrcToken = async ({
   certified,
-  metadata: ledgerMetadata,
+  getMetadata,
 }: {
   certified: boolean;
-  metadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
+  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
 }): Promise<IcrcTokenMetadata> => {
-  const metadata = await ledgerMetadata({ certified });
+  const metadata = await getMetadata({ certified });
 
   const token = mapOptionalToken(metadata);
 
