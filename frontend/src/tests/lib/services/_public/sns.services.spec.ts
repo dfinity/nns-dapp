@@ -102,7 +102,7 @@ describe("SNS public services", () => {
     });
 
     it("should load and map tokens", async () => {
-      const spyQuerySnsProjects = jest
+      jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
 
