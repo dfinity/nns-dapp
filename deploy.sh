@@ -194,6 +194,7 @@ if [[ "$GUESS" == "true" ]]; then
     DEPLOY_NNS_BACKEND=true
     DEPLOY_II=true
     DEPLOY_NNS_DAPP=true
+    DEPLOY_SNS_AGGREGATOR=true
     POPULATE=true
     ;;
   *)
