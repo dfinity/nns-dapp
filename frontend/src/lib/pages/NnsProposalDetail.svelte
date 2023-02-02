@@ -15,9 +15,14 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
+  import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
+
+  let strategy: QueryAndUpdateStrategy;
+  $: strategy = isSignedIn($authStore.identity) ? "query_and_update" : "query";
 
   const mapProposalId = (
     proposalIdText: string | undefined | null = undefined
@@ -50,7 +55,8 @@
       referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
     );
 
-  const findProposal = async () => {
+  let findProposal: () => Promise<void>;
+  $: findProposal = async () => {
     const onError = (certified: boolean) => {
       // Ignore "application payload size (X) cannot be larger than Y" error thrown by update calls
       if (certified) {
@@ -80,6 +86,7 @@
       },
       handleError: onError,
       silentUpdateErrorMessages: true,
+      strategy,
     });
   };
 

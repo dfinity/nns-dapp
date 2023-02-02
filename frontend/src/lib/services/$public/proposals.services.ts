@@ -53,11 +53,13 @@ const handleFindProposalsError = ({
 
 export const listProposals = async ({
   loadFinished,
+  strategy,
 }: {
   loadFinished: (params: {
     paginationOver: boolean;
     certified: boolean | undefined;
   }) => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
@@ -71,6 +73,7 @@ export const listProposals = async ({
       });
     },
     onError: handleFindProposalsError,
+    strategy,
   });
 };
 
@@ -83,12 +86,14 @@ export const listProposals = async ({
 export const listNextProposals = async ({
   beforeProposal,
   loadFinished,
+  strategy,
 }: {
   beforeProposal: ProposalId | undefined;
   loadFinished: (params: {
     paginationOver: boolean;
     certified: boolean | undefined;
   }) => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> =>
   findProposals({
     beforeProposal,
@@ -108,6 +113,7 @@ export const listNextProposals = async ({
       });
     },
     onError: handleFindProposalsError,
+    strategy,
   });
 
 const findProposals = async ({
@@ -115,6 +121,7 @@ const findProposals = async ({
   onLoad,
   onError,
   loadFinished,
+  strategy,
 }: {
   beforeProposal: ProposalId | undefined;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
@@ -123,6 +130,7 @@ const findProposals = async ({
     paginationOver: boolean;
     certified: boolean | undefined;
   }) => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
 
@@ -168,6 +176,7 @@ const findProposals = async ({
   let uncertifiedProposals: ProposalInfo[] | undefined;
 
   return queryAndUpdate<ProposalInfo[], unknown>({
+    strategy,
     identityType: "current",
     request: ({ certified, identity }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),

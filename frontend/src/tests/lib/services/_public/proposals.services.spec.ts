@@ -225,6 +225,18 @@ describe("proposals-services", () => {
       await expect(call).resolves;
     });
 
+    it("should list proposals with strategy", async () => {
+      const call = async () =>
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+          strategy: "query",
+        });
+
+      await expect(call).resolves;
+    });
+
     it("should list next proposals if no identity", async () => {
       const call = async () =>
         await listNextProposals({
@@ -232,6 +244,19 @@ describe("proposals-services", () => {
           loadFinished: () => {
             // do nothing here
           },
+        });
+
+      await expect(call).resolves;
+    });
+
+    it("should list next proposals with strategy", async () => {
+      const call = async () =>
+        await listNextProposals({
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          loadFinished: () => {
+            // do nothing here
+          },
+          strategy: "query",
         });
 
       await expect(call).resolves;
