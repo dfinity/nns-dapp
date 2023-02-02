@@ -55,7 +55,7 @@ impl From<&Assets> for AssetHashes {
 #[derive(CandidType, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Asset {
     /// HTTP headers to be served with this asset.
-    /// 
+    ///
     /// Note: This is typically used for headers that are fairly specific to this asset.
     ///       Headers that are common, such as certification headers or mime type headers
     ///       that can be derived from the path are typically added dynamically.

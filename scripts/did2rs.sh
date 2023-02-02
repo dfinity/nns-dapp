@@ -59,6 +59,7 @@ cd "$GIT_ROOT"
 	#![cfg_attr(rustfmt, rustfmt_skip)]
 	#![allow(clippy::all)]
 	#![allow(non_camel_case_types)]
+  #![allow(dead_code)]
 
 	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 	use ic_cdk::api::call::CallResult;
