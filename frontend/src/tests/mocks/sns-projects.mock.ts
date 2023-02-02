@@ -232,11 +232,17 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   description: ["Web3 for the win"],
 };
 
+export const mockSnsToken: IcrcTokenMetadata = {
+  symbol: "TST",
+  name: "test",
+  fee: BigInt(40_000),
+};
+
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
   [IcrcMetadataResponseEntries.NAME, { Text: "Tetris" }],
   [IcrcMetadataResponseEntries.SYMBOL, { Text: "TET" }],
-  [IcrcMetadataResponseEntries.FEE, { Nat: BigInt(1000) }],
+  [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
 ];
 
 export const mockQueryMetadata: QuerySnsMetadata = {
@@ -247,6 +253,6 @@ export const mockQueryMetadata: QuerySnsMetadata = {
 };
 
 export const mockTokenStore = (run: Subscriber<Token>) => {
-  run({ symbol: "TST", name: "test" });
+  run(mockSnsToken);
   return () => undefined;
 };

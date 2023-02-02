@@ -10,7 +10,10 @@ import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockSnsSwapCommitment } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsSwapCommitment,
+  mockSnsToken,
+} from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("selected-project-new-transaction-data derived store", () => {
@@ -29,6 +32,7 @@ describe("selected-project-new-transaction-data derived store", () => {
       const projectData = snsResponsesForLifecycle({
         lifecycles: [SnsSwapLifecycle.Committed],
       });
+
       const rootCanisterIdText = projectData[0][0].rootCanisterId;
       const tokenData = projectData[0][0].token;
       const rootCanisterId = Principal.fromText(rootCanisterIdText);
@@ -42,7 +46,7 @@ describe("selected-project-new-transaction-data derived store", () => {
 
       page.mock({ data: { universe: rootCanisterIdText } });
 
-      const fee = BigInt(40_000);
+      const fee = mockSnsToken.fee;
       transactionsFeesStore.setFee({
         rootCanisterId,
         fee,
@@ -50,9 +54,13 @@ describe("selected-project-new-transaction-data derived store", () => {
       });
 
       const token = mapOptionalToken(tokenData);
+
       const storeData = get(snsSelectedProjectNewTxData);
       expect(storeData.rootCanisterId.toText()).toEqual(rootCanisterIdText);
-      expect(storeData.token).toEqual(token);
+      expect(storeData.token).toEqual({
+        name: token.name,
+        symbol: token.symbol,
+      });
       expect(storeData.transactionFee.toE8s()).toEqual(fee);
     });
 

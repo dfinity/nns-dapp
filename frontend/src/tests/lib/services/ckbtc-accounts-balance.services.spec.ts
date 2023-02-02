@@ -6,7 +6,10 @@ import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "../../mocks/ckbtc-accounts.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {
@@ -15,6 +18,10 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("ckbtc-accounts-balance.services", () => {
+  jest
+    .spyOn(ledgerApi, "getCkBTCToken")
+    .mockImplementation(() => Promise.resolve(mockCkBTCToken));
+
   afterEach(() => {
     jest.clearAllMocks();
 

@@ -6,7 +6,10 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockSnsSummaryList } from "../../mocks/sns-projects.mock";
+import {
+  mockSnsSummaryList,
+  mockSnsToken,
+} from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {
@@ -15,6 +18,12 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("sns-accounts-balance.services", () => {
+  beforeAll(() => {
+    jest
+      .spyOn(ledgerApi, "getSnsToken")
+      .mockImplementation(() => Promise.resolve(mockSnsToken));
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
 
