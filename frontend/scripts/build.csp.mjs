@@ -8,11 +8,11 @@ import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
-// Caching canister enabled ONLY in small12 for now
-const enableSnsCacheCanister = process.env.VITE_DFX_NETWORK === "small12";
+// Aggregator canister enabled ONLY in small12 for now
+const enableSnsAggregatorCanister = process.env.VITE_DFX_NETWORK === "small12";
 
 // TODO: Use env var https://dfinity.atlassian.net/browse/GIX-1245
-const cachingCanisterUrl =
+const aggregatorCanisterUrl =
   "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network";
 
 const buildCsp = (htmlFile) => {
@@ -127,7 +127,7 @@ const updateCSP = (indexHtml) => {
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
         img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/ ${
-          enableSnsCacheCanister ? cachingCanisterUrl : ""
+          enableSnsAggregatorCanister ? aggregatorCanisterUrl : ""
         };
         child-src 'self';
         manifest-src 'self';
@@ -153,8 +153,8 @@ const cspConnectSrc = () => {
     process.env.VITE_LEDGER_CANISTER_URL,
   ];
 
-  if (enableSnsCacheCanister) {
-    src.push(cachingCanisterUrl);
+  if (enableSnsAggregatorCanister) {
+    src.push(aggregatorCanisterUrl);
   }
 
   return src

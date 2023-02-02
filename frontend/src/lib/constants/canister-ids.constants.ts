@@ -16,8 +16,12 @@ export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
 // TODO: environment variables for ckBTC canister IDs
 export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
-  "ml52i-qqaaa-aaaar-qaaba-cai"
+  "q3fc5-haaaa-aaaaa-aaahq-cai"
 );
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
-  "mc6ru-gyaaa-aaaar-qaaaq-cai"
+  "q4eej-kyaaa-aaaaa-aaaha-cai"
 );
+export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
+  "si2b5-pyaaa-aaaaa-aaaja-cai"
+);
+export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;

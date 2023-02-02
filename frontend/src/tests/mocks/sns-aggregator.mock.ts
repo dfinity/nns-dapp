@@ -1,6 +1,6 @@
-import type { CachedSns } from "$lib/api/sns-caching.api";
+import type { CachedSns } from "$lib/api/sns-aggregator.api";
 
-export const cachingSnsMock: CachedSns = {
+export const aggregatorSnsMock: CachedSns = {
   index: 11,
   canister_ids: {
     root_canister_id: "4nwps-saaaa-aaaaa-aabjq-cai",
