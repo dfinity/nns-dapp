@@ -2,13 +2,14 @@
  * @jest-environment jsdom
  */
 
-import SnsTransactionCard from "$lib/components/accounts/SnsTransactionCard.svelte";
+import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
+import { createIcrcTransactionWithId } from "../../../mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
@@ -17,20 +18,19 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
-import { createSnstransactionWithId } from "../../../mocks/sns-transactions.mock";
 
-describe("SnsTransactionCard", () => {
+describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (
     account,
     transactionWithId,
-    rootCanisterId = mockSnsFullProject.rootCanisterId
+    governanceCanisterId = undefined
   ) =>
-    render(SnsTransactionCard, {
+    render(IcrcTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
-        rootCanisterId,
+        governanceCanisterId,
       },
     });
 
@@ -42,7 +42,7 @@ describe("SnsTransactionCard", () => {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
-  const transactionFromMainToSubaccount = createSnstransactionWithId(to, from);
+  const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
 
   beforeEach(() => {
     jest
@@ -79,12 +79,12 @@ describe("SnsTransactionCard", () => {
       owner: mockSnsFullProject.summary.governanceCanisterId,
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
-    const stakeNeuronTransaction = createSnstransactionWithId(toGov, from);
+    const stakeNeuronTransaction = createIcrcTransactionWithId(toGov, from);
     stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
       stakeNeuronTransaction,
-      mockSnsFullProject.rootCanisterId
+      mockSnsFullProject.summary.governanceCanisterId
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {

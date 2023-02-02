@@ -16,7 +16,7 @@
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
-  import { getAccountFromStore } from "$lib/utils/accounts.utils";
+  import { findAccount } from "$lib/utils/accounts.utils";
   import {
     debugSelectedAccountStore,
     debugTransactions,
@@ -94,7 +94,7 @@
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
   $: selectedAccountStore.set({
-    account: getAccountFromStore({
+    account: findAccount({
       identifier: accountIdentifier,
       accounts: $nnsAccountsListStore,
     }),
@@ -112,7 +112,7 @@
   <main class="legacy" data-tid="nns-wallet">
     <section>
       {#if $selectedAccountStore.account !== undefined}
-        <Summary displayProjects={false} />
+        <Summary displayUniverse={false} />
 
         <WalletSummary />
         <WalletActions />

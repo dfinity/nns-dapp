@@ -191,7 +191,7 @@ export const snsSummariesStore = derived<SnsQueryStore, SnsSummary[]>(
 
 // ************** Sns commitment **************
 
-export type SnsSwapCommitmentsStore =
+export type SnsSwapCommitmentsStoreData =
   | {
       swapCommitment: SnsSwapCommitment;
       certified: boolean;
@@ -199,9 +199,18 @@ export type SnsSwapCommitmentsStore =
   | undefined
   | null;
 
-const initSnsSwapCommitmentsStore = () => {
+export interface SnsSwapCommitmentsStore
+  extends Readable<SnsSwapCommitmentsStoreData> {
+  setSwapCommitment: (data: {
+    swapCommitment: SnsSwapCommitment;
+    certified: boolean;
+  }) => void;
+  reset: () => void;
+}
+
+const initSnsSwapCommitmentsStore = (): SnsSwapCommitmentsStore => {
   const { subscribe, update, set } =
-    writable<SnsSwapCommitmentsStore>(undefined);
+    writable<SnsSwapCommitmentsStoreData>(undefined);
 
   return {
     subscribe,
