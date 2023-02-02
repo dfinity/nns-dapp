@@ -134,7 +134,8 @@ export class NeuronsTab extends MyNavigator {
         "Get dissolve delay input"
       ).then(async (element) => element.setValue(dissolveDelay));
 
-      // update by range (doesn't work, )
+      // update by range (doesn't work)
+      // TODO: find the way to update using the range. Currently it doesn't trigger `handleInput={updateDelays}` (check the range in gix components)
       // await this.getElement(
       //   NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
       //   "Get dissolve delay slider"
