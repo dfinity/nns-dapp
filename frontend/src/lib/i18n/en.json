@@ -133,12 +133,12 @@
     "earn": "Vote & earn rewards",
     "launchpad": "SNS Launch Pad",
     "ic_logo": "Internet Computer logo",
-    "about": "About",
+    "dashboard": "Dashboard",
     "voting_rewards": "Voting rewards",
     "logo": "Network Nervous System logo",
-    "copyright": "© 2023 Internet Computer",
     "github_link": "Link to NNS-dapp repo on GitHub",
-    "background": "An abstract image for design and presentation purpose only"
+    "background": "An abstract image for design and presentation purpose only",
+    "internetcomputer_dot_org_link": "Link to internetcomputer.org"
   },
   "accounts": {
     "main": "Main",
@@ -765,7 +765,7 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total Value Locked"
+    "tvl": "Total ICP Value Locked"
   },
   "ckbtc": {
     "title": "ckBTC",
