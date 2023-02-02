@@ -755,6 +755,7 @@
     },
     "network": {
       "config": {
+	"SNS_AGGREGATOR_CANISTER_ID": "q4eej-kyaaa-aaaaa-aaaha-cai",
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
         "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
       }

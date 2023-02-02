@@ -60,7 +60,7 @@ local_deployment_data="$(
   : "Try to find the SNS aggregator URL"
   : "- may be deployed locally"
   SNS_AGGREGATOR_URL="$(
-    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
+    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || jq -r '.defaults.network.config.SNS_AGGREGATOR_CANISTER_ID // ""' dfx.json)"
   )"
   export SNS_AGGREGATOR_URL
   test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL

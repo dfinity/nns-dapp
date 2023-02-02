@@ -61,8 +61,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Thu Feb 2 15:52:22 2023 +0100, includes a placeholder for the sns_aggregator canister ID.
-          ref: '2fcca2dd41053b7dfbd85c9342df966667fdd2e3'
+          # Version from Thu Feb 2 2023, includes a placeholder for the sns_aggregator canister ID.
+          ref: '4bb32a400cf672950616d82a0fcfc37f79b9d3e4'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
