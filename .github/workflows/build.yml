@@ -106,7 +106,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          SCREENSHOT=1 npm run test | tee -a wdio.log
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
@@ -133,7 +133,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
-          path: screenshots/**/*.png
+          path: e2e-tests/screenshots/**/*.png
+          retention-days: 7
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
         run: |

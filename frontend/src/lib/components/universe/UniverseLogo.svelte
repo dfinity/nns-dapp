@@ -4,7 +4,6 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
-  import { isNullish } from "$lib/utils/utils";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
 
@@ -21,7 +20,6 @@
   let ckBTC = false;
   $: ckBTC = isUniverseCkBTC(canisterId);
 
-  // TODO: use ckBTC logo provided by ledger
   let logo: string;
   $: logo = summary?.metadata.logo ?? (ckBTC ? CKBTC_LOGO : IC_LOGO);
 
