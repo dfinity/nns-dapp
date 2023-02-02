@@ -57,7 +57,7 @@ export WASM_CANISTER_ID
 set -x
 
 ###################
-# frontend # (output: frontend/public/)
+# frontend # (output: assets.tar.xz)
 ###################
 "$TOPLEVEL/build-frontend.sh"
 
