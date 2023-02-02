@@ -128,8 +128,7 @@ describe("SnsNeuronHotkeysCard", () => {
         addHotkeyPermissions
       ),
     };
-    const { queryAllByTestId, queryByTestId, container } =
-      renderCard(hotkeyNeuron);
+    const { queryAllByTestId, queryByTestId } = renderCard(hotkeyNeuron);
 
     const removeButtons = queryAllByTestId("remove-hotkey-button");
     await fireEvent.click(removeButtons[0]);
