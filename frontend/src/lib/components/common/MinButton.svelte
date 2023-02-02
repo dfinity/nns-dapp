@@ -4,7 +4,7 @@
 </script>
 
 <button
-  data-tid="max-button"
+  data-tid="min-button"
   on:click|preventDefault
   class="ghost"
   type="button"
@@ -12,7 +12,7 @@
   <span class="icon">
     <IconSubdirectory />
   </span>
-  {$i18n.core.max}
+  {$i18n.core.min}
 </button>
 
 <style lang="scss">
@@ -25,5 +25,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: scaleX(-1);
   }
 </style>
