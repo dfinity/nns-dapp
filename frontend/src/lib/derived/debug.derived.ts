@@ -31,13 +31,13 @@ import {
   type Writable,
 } from "svelte/store";
 
-// TODO(dskloetd): Rename to createReadableStore.
-const createDerivedStore = <T>(store: Writable<T>): Readable<T> =>
-  { subscribe: store.subscribe };
+const createReadableStore = <T>(store: Writable<T>): Readable<T> => ({
+  subscribe: store.subscribe,
+});
 
 let addAccountStore: Readable<AddAccountStore>;
 export const debugAddAccountStore = (store: Writable<AddAccountStore>) =>
-  (addAccountStore = createDerivedStore(store));
+  (addAccountStore = createReadableStore(store));
 
 // Context stores might not be initialized when debugger is called.
 // Therefore, we need to initialize them here.
@@ -46,14 +46,14 @@ let walletStore: Readable<WalletStore> = readable({
   neurons: [],
 });
 export const debugSelectedAccountStore = (store: Writable<WalletStore>) =>
-  (walletStore = createDerivedStore(store));
+  (walletStore = createReadableStore(store));
 let selectedProposalStore: Readable<SelectedProposalStore> = readable({
   proposalId: undefined,
   proposal: undefined,
 });
 export const debugSelectedProposalStore = (
   store: Writable<SelectedProposalStore>
-) => (selectedProposalStore = createDerivedStore(store));
+) => (selectedProposalStore = createReadableStore(store));
 let selectedCanisterStore: Readable<SelectCanisterDetailsStore> = readable({
   info: undefined,
   details: undefined,
@@ -63,21 +63,21 @@ let selectedCanisterStore: Readable<SelectCanisterDetailsStore> = readable({
 });
 export const debugSelectedCanisterStore = (
   store: Writable<SelectCanisterDetailsStore>
-) => (selectedCanisterStore = createDerivedStore(store));
+) => (selectedCanisterStore = createReadableStore(store));
 let selectedProjectStore: Readable<ProjectDetailStore> = readable({
   summary: null,
   swapCommitment: null,
 });
 export const debugSelectedProjectStore = (
   store: Writable<ProjectDetailStore>
-) => (selectedProjectStore = createDerivedStore(store));
+) => (selectedProjectStore = createReadableStore(store));
 let selectedSnsNeuronStore: Readable<SelectedSnsNeuronStore> = readable({
   selected: undefined,
   neuron: undefined,
 });
 export const debugSelectedSnsNeuronStore = (
   store: Writable<SelectedSnsNeuronStore>
-) => (selectedSnsNeuronStore = createDerivedStore(store));
+) => (selectedSnsNeuronStore = createReadableStore(store));
 const transactionsStore = writable<Transaction[] | undefined>(undefined);
 export const debugTransactions = (transactions: Transaction[] | undefined) => {
   transactionsStore.set(transactions);
