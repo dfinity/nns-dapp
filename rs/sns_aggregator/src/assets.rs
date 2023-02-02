@@ -1,3 +1,4 @@
+//! Machinery for pre-computing assets and serving them as certified HTTP responses.
 use crate::state::STATE;
 use candid::CandidType;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
@@ -8,23 +9,33 @@ use std::collections::HashMap;
 
 type HeaderField = (String, String);
 
+/// The standardised data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpRequest {
+    /// The HTTP method of the request, such as "GET" or "POST".
     pub method: String,
+    /// The requested URL, such as "https://example.ic0.app/some/path?foo=bar".
     pub url: String,
+    /// The HTTP request headers
     pub headers: Vec<(String, String)>,
+    /// The complete body of the HTTP request
     pub body: ByteBuf,
 }
 
+/// The standardised data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpResponse {
+    /// The HTTP status code.  E.g. 200 for succcess, 4xx for "you did something wrong", 5xx for "we broke".
     pub status_code: u16,
+    /// The headers of the HTTP response
     pub headers: Vec<HeaderField>,
+    /// The body of the HTTP response
     pub body: ByteBuf,
 }
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
+/// A tree containing the hashes of all the assets; used for certification.
 #[derive(Default)]
 pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 
@@ -43,19 +54,22 @@ impl From<&Assets> for AssetHashes {
 /// An asset to be served via HTTP requests.
 #[derive(CandidType, Clone, Deserialize, PartialEq, Eq, Debug)]
 pub struct Asset {
+    /// HTTP headers to be served with this asset.
+    /// 
+    /// Note: This is typically used for headers that are fairly specific to this asset.
+    ///       Headers that are common, such as certification headers or mime type headers
+    ///       that can be derived from the path are typically added dynamically.
     pub headers: Vec<HeaderField>,
+    /// The HTTP body when this asset is served.
     pub bytes: Vec<u8>,
 }
 
 impl Asset {
+    /// Creates a new asset with the given bytes in the HTTP body.
     pub fn new(bytes: Vec<u8>) -> Self {
         Self { headers: vec![], bytes }
     }
-
-    pub fn new_stable(bytes: Vec<u8>) -> Self {
-        Self { headers: vec![], bytes }
-    }
-
+    /// Adds the given header to the given asset.
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
