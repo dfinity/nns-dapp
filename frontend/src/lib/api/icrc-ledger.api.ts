@@ -1,7 +1,7 @@
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type {

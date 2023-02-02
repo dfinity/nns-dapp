@@ -12,7 +12,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { nonNullish } from "$lib/utils/utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";

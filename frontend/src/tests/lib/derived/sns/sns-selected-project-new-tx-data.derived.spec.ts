@@ -5,7 +5,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
