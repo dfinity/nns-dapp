@@ -39,6 +39,14 @@ export const mockAuthStoreSubscribe = (
   return () => undefined;
 };
 
+export const mockAuthStoreNoIdentitySubscribe = (
+  run: Subscriber<AuthStore>
+): (() => void) => {
+  run({ identity: undefined });
+
+  return () => undefined;
+};
+
 /**
  * A dynamic mock of the auth store. The component that uses it will be rendered for test with an undefined value on mount.
  * Within the test suite, the mock can then be used to trigger state changes to simulate re-render.

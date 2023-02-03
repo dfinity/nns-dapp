@@ -60,6 +60,10 @@ export const queryAndUpdate = async <R, E>({
       ? getCurrentIdentity()
       : await getAuthenticatedIdentity();
 
+  const currentStrategy = identity.getPrincipal().isAnonymous()
+    ? "query"
+    : strategy;
+
   const queryOrUpdate = (certified: boolean) =>
     request({ certified, identity })
       .then((response) => {
@@ -74,9 +78,9 @@ export const queryAndUpdate = async <R, E>({
       .finally(() => (certifiedDone = certifiedDone || certified));
 
   // apply fetching strategy
-  if (strategy === "query") {
+  if (currentStrategy === "query") {
     requests = [queryOrUpdate(false)];
-  } else if (strategy === "update") {
+  } else if (currentStrategy === "update") {
     requests = [queryOrUpdate(true)];
   } else {
     requests = [queryOrUpdate(false), queryOrUpdate(true)];

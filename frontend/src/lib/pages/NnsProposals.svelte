@@ -24,8 +24,6 @@
     filteredProposals,
   } from "$lib/derived/proposals.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
@@ -34,9 +32,6 @@
   let loading = false;
   let hidden = false;
   let initialized = false;
-
-  let strategy: QueryAndUpdateStrategy;
-  $: strategy = isSignedIn($authStore.identity) ? "query_and_update" : "query";
 
   const loadFinished = ({ paginationOver }: { paginationOver: boolean }) => {
     loading = false;
@@ -53,27 +48,24 @@
     });
   };
 
-  let findNextProposals: () => Promise<void>;
-  $: findNextProposals = async () => {
+  const findNextProposals = async () => {
     loading = true;
 
     try {
       await listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
         loadFinished,
-        strategy,
       });
     } catch (err: unknown) {
       loadError(err);
     }
   };
 
-  let findProposals: () => Promise<void>;
-  $: findProposals = async () => {
+  const findProposals = async () => {
     loading = true;
 
     try {
-      await listProposals({ loadFinished, strategy });
+      await listProposals({ loadFinished });
     } catch (err: unknown) {
       loadError(err);
     }
@@ -81,12 +73,12 @@
 
   let debounceFindProposals: () => void | undefined;
 
-  onMount(async () => {
-    // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
-    const initDebounceFindProposals = () => {
-      debounceFindProposals = debounce(async () => await findProposals(), 250);
-    };
+  // We do not want to fetch the proposals twice when the component is mounting because the filter subscriber will emit a first value
+  const initDebounceFindProposals = () => {
+    debounceFindProposals = debounce(async () => await findProposals(), 250);
+  };
 
+  onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Proposal,
       effectivePreviousPath: referrerPath,

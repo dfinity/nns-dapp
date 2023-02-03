@@ -1,9 +1,45 @@
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { authStore } from "$lib/stores/auth.store";
 import * as devUtils from "$lib/utils/dev.utils";
 import { tick } from "svelte";
+import { mockAuthStoreNoIdentitySubscribe } from "../../mocks/auth.store.mock";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
+    describe("not logged in user", () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      });
+
+      it("should use only query for requests", async () => {
+        const testResponse = "test";
+        const request = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(testResponse));
+        const onLoad = jest.fn();
+        const onError = jest.fn();
+
+        await queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+          identityType: "current",
+          strategy: "query_and_update",
+        });
+
+        expect(request).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledTimes(1);
+        expect(onLoad).toHaveBeenCalledWith({
+          certified: false,
+          response: testResponse,
+        });
+        expect(onError).not.toBeCalled();
+      });
+    });
+
     it("should request twice", async () => {
       const request = jest
         .fn()

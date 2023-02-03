@@ -19,6 +19,7 @@ import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
@@ -165,6 +166,8 @@ export const loadSnsNervousSystemFunctions = async (
   if (store[rootCanisterId.toText()]?.certified) {
     return;
   }
+
+  const identity = await getCurrentIdentity();
   return queryAndUpdate<SnsNervousSystemFunction[], Error>({
     request: ({ certified, identity }) =>
       getNervousSystemFunctions({
@@ -193,7 +196,7 @@ export const loadSnsNervousSystemFunctions = async (
     },
     identityType: "current",
     onError: ({ certified, error }) => {
-      if (certified) {
+      if (certified || identity.getPrincipal().isAnonymous()) {
         toastsError({
           labelKey: "error__sns.sns_load_functions",
           err: error,
