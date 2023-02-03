@@ -68,6 +68,8 @@ jobs:
           dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai
           : Deploy the aggregator
           dfx deploy sns_aggregator
+      - name: Wait for the aggregator to get data
+        run: sleep 30
       - name: Get data from the sns aggregator
         run: |
           curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
