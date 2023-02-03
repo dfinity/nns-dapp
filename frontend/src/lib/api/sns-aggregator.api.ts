@@ -3,6 +3,7 @@ import {
   AGGREGATOR_CANISTER_PATH,
   AGGREGATOR_CANISTER_VERSION,
 } from "$lib/constants/sns.constants";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { nonNullish } from "$lib/utils/utils";
 import type {
   IcrcMetadataResponseEntries,
@@ -263,6 +264,7 @@ const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
   data.map(convertSnsData);
 
 export const querySnsProjects = async (): Promise<CachedSns[]> => {
+  logWithTimestamp("Loading SNS projects from aggregator canister...");
   const response = await fetch(
     `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${AGGREGATOR_CANISTER_PATH}`
   );
@@ -271,7 +273,9 @@ export const querySnsProjects = async (): Promise<CachedSns[]> => {
   }
   try {
     const data: CachedSnsDto[] = await response.json();
-    return convertDtoData(data);
+    const convertedData = convertDtoData(data);
+    logWithTimestamp("Loading SNS projects from aggregator canister completed");
+    return convertedData;
   } catch (err) {
     console.error("Error converting data", err);
     throw new Error("Error converting data from aggregator canister");
