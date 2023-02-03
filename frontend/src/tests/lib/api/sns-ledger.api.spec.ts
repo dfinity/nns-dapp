@@ -1,8 +1,8 @@
 import {
   getSnsAccounts,
   getSnsToken,
+  snsTransfer,
   transactionFee,
-  transfer,
 } from "$lib/api/sns-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
@@ -86,11 +86,11 @@ describe("sns-ledger api", () => {
 
   describe("transfer", () => {
     it("successfully calls transfer api", async () => {
-      await transfer({
+      await snsTransfer({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
         to: { owner: mockIdentity.getPrincipal() },
-        e8s: BigInt(10_000_000),
+        amount: BigInt(10_000_000),
         createdAt: BigInt(123456),
         fee: BigInt(10_000),
       });

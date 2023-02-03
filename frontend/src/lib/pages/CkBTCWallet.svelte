@@ -11,7 +11,7 @@
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
-  import { findAccount } from "$lib/utils/accounts.utils";
+  import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import { nonNullish } from "$lib/utils/utils";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
@@ -54,7 +54,7 @@
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    if ($ckBTCAccountsStore.accounts.length > 0) {
+    if (hasAccounts($ckBTCAccountsStore.accounts)) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",

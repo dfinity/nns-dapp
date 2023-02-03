@@ -1,4 +1,8 @@
-import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import {
+  ckBTCTransfer,
+  getCkBTCAccounts,
+  getCkBTCToken,
+} from "$lib/api/ckbtc-ledger.api";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -82,6 +86,23 @@ describe("ckbtc-ledger api", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("transfer", () => {
+    it("successfully calls transfer api", async () => {
+      const transferSpy =
+        ledgerCanisterMock.transfer.mockResolvedValue(undefined);
+
+      await ckBTCTransfer({
+        identity: mockIdentity,
+        to: { owner: mockIdentity.getPrincipal() },
+        amount: BigInt(10_000_000),
+        createdAt: BigInt(123456),
+        fee: BigInt(10_000),
+      });
+
+      expect(transferSpy).toBeCalled();
     });
   });
 });

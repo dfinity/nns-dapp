@@ -1,10 +1,12 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import {
+  ckBTCTokenFeeStore,
   ckBTCTokenStore,
   nnsTokenStore,
 } from "$lib/derived/universes-tokens.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
 import {
@@ -12,7 +14,7 @@ import {
   mockUniversesTokens,
 } from "../../mocks/tokens.mock";
 
-describe("universes-tokens.derived.spec", () => {
+describe("universes-tokens", () => {
   describe("complete data set", () => {
     beforeAll(() => {
       jest
@@ -35,9 +37,23 @@ describe("universes-tokens.derived.spec", () => {
         certified: true,
       });
     });
+
+    it("should derive ckBTC token fee", () => {
+      const tokenFee = get(ckBTCTokenFeeStore);
+
+      expect(tokenFee).toEqual(
+        TokenAmount.fromE8s({
+          amount: mockCkBTCToken.fee,
+          token: {
+            name: mockCkBTCToken.name,
+            symbol: mockCkBTCToken.symbol,
+          },
+        })
+      );
+    });
   });
 
-  describe("ckBTC", () => {
+  describe("ckBTC empty", () => {
     beforeAll(() => {
       jest.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({

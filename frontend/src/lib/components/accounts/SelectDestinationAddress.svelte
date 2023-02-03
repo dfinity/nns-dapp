@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Account } from "$lib/types/account";
   import {
     getAccountByRootCanister,
@@ -12,6 +10,7 @@
   import type { Principal } from "@dfinity/principal";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
@@ -22,8 +21,7 @@
   let selectedAccount: Account | undefined = getAccountByRootCanister({
     identifier: selectedDestinationAddress,
     rootCanisterId,
-    nnsAccounts: $nnsAccountsListStore,
-    snsAccounts: $snsAccountsStore,
+    universesAccounts: $universesAccountsStore,
   });
   let address: string;
   $: {
@@ -41,8 +39,7 @@
   $: showToggle =
     (getAccountsByRootCanister({
       rootCanisterId,
-      nnsAccounts: $nnsAccountsListStore,
-      snsAccounts: $snsAccountsStore,
+      universesAccounts: $universesAccountsStore,
     })?.filter(filterAccounts).length ?? 0) > 0;
 
   const onToggleManualInput = () => {

@@ -1,6 +1,6 @@
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
@@ -13,7 +13,7 @@ import { isUniverseCkBTC, pathSupportsCkBTC } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
 
 export const NNS_UNIVERSE: Universe = {
-  canisterId: OWN_CANISTER_ID.toText(),
+  canisterId: OWN_CANISTER_ID_TEXT,
 };
 
 export const CKBTC_UNIVERSE: Universe = {

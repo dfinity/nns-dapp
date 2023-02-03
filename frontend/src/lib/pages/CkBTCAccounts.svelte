@@ -6,13 +6,14 @@
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
 
   onMount(async () => {
-    if ($ckBTCAccountsStore.accounts.length > 0) {
+    if (hasAccounts($ckBTCAccountsStore.accounts)) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;

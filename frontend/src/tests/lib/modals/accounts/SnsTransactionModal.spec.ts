@@ -11,7 +11,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import type { Principal } from "@dfinity/principal";
-import { fireEvent, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
@@ -23,6 +23,7 @@ import {
   mockSnsMainAccount,
 } from "../../../mocks/sns-accounts.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
+import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -63,39 +64,9 @@ describe("SnsTransactionModal", () => {
   });
 
   it("should transfer tokens", async () => {
-    const { queryAllByText, getByTestId, container } =
-      await renderTransactionModal();
+    const result = await renderTransactionModal();
 
-    await waitFor(() =>
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
-    );
-    const participateButton = getByTestId("transaction-button-next");
-    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-    // Enter amount
-    const icpAmount = "10";
-    const input = container.querySelector("input[name='amount']");
-    input && fireEvent.input(input, { target: { value: icpAmount } });
-
-    // Enter valid destination address
-    const addressInput = container.querySelector(
-      "input[name='accounts-address']"
-    );
-    addressInput &&
-      fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
-    await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-    );
-
-    fireEvent.click(participateButton);
-
-    await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
-    expect(queryAllByText(icpAmount, { exact: false }).length).toBeGreaterThan(
-      0
-    );
-
-    const confirmButton = getByTestId("transaction-button-execute");
-    fireEvent.click(confirmButton);
+    await testTransferTokens(result);
 
     await waitFor(() => expect(snsTransferTokens).toBeCalled());
   });
