@@ -6,8 +6,11 @@ mod state;
 mod types;
 mod upstream;
 
+use std::time::Duration;
+
 use assets::{insert_favicon, HttpRequest};
 use ic_cdk::api::call::{self};
+use ic_cdk::timer::set_timer_interval;
 use state::STATE;
 use types::Icrc1Value;
 
@@ -32,15 +35,15 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
     call::reply((response,));
 }
 
-/// Periodic function call responsible for populating the cache
-#[ic_cdk_macros::heartbeat]
-async fn heartbeat() {
-    crate::upstream::update_cache().await;
-}
-
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
+    // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();
+    // Periodic function call responsible for populating and aggregating the cache.
+    //
+    // Note: In future we are likely to want to make the duration dynamic and
+    //       have an altogether more complicated data collection schedule.
+    set_timer_interval(Duration::from_secs(1), || ic_cdk::spawn(crate::upstream::update_cache()));
 }
 
 #[ic_cdk_macros::init]
