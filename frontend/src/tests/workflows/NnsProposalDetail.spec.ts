@@ -45,8 +45,9 @@ jest.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("Proposal detail page when not logged in user", () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    neuronsStore.reset();
   });
 
   describe("when logged in user", () => {
@@ -54,7 +55,6 @@ describe("Proposal detail page when not logged in user", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
-      neuronsStore.reset();
     });
 
     it("should render proposal with certified data", async () => {
@@ -78,6 +78,7 @@ describe("Proposal detail page when not logged in user", () => {
       );
       expect(queryByTestId("proposal-system-info-details")).toBeInTheDocument();
       expect(queryByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
+      expect(queryByTestId("login-button")).not.toBeInTheDocument();
 
       expect(queryProposal).toHaveBeenCalledWith({
         proposalId: proposal.id,
@@ -118,6 +119,9 @@ describe("Proposal detail page when not logged in user", () => {
       );
       expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument();
       expect(queryByTestId("login-button")).toBeInTheDocument();
+      expect(
+        queryByTestId("voting-confirmation-toolbar")
+      ).not.toBeInTheDocument();
 
       expect(queryProposal).toHaveBeenCalledTimes(1);
       expect(queryProposal).toHaveBeenCalledWith({
