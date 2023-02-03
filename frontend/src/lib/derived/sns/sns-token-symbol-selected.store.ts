@@ -5,7 +5,7 @@ import { derived, type Readable } from "svelte/store";
 
 /**
  * TODO: integrate ckBTC fee
- * @deprecated to be replaced with universesTokenStore (Token returned here does not contain fee)
+ * @deprecated to be replaced with tokenStore (Token returned here does not contain fee)
  */
 export const snsTokenSymbolSelectedStore: Readable<Token | undefined> = derived(
   [selectedUniverseIdStore, snsSummariesStore],
