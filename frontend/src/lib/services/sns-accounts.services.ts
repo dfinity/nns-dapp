@@ -1,5 +1,6 @@
 import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
 import { getIcrcAccountIdentity } from "$lib/services/icrc-accounts.services";
+import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -60,7 +61,11 @@ export const syncSnsAccounts = async (params: {
   rootCanisterId: Principal;
   handleError?: () => void;
 }) => {
-  await Promise.all([loadSnsAccounts(params), loadSnsTransactionFee(params)]);
+  await Promise.all([
+    loadSnsAccounts(params),
+    loadSnsTransactionFee(params),
+    loadSnsToken(params),
+  ]);
 };
 
 export const snsTransferTokens = async ({

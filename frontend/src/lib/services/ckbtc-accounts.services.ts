@@ -1,5 +1,6 @@
 import { getCkBTCAccounts } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -43,3 +44,6 @@ export const loadCkBTCAccounts = async ({
     logMessage: "Syncing ckBTC Accounts",
   });
 };
+
+export const syncCkBTCAccounts = async (params: { handleError?: () => void }) =>
+  await Promise.all([loadCkBTCAccounts(params), loadCkBTCToken(params)]);

@@ -1,10 +1,14 @@
 import {
   getSnsAccounts,
+  getSnsToken,
   transactionFee,
   transfer,
 } from "$lib/api/sns-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
+import {
+  mockQueryTokenResponse,
+  mockSnsToken,
+} from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
@@ -92,6 +96,36 @@ describe("sns-ledger api", () => {
       });
 
       expect(transferSpy).toBeCalled();
+    });
+  });
+
+  describe("getSnsToken", () => {
+    beforeEach(() => {
+      setMetadataSuccess();
+    });
+
+    it("returns project token metadata", async () => {
+      const token = await getSnsToken({
+        certified: true,
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+      });
+
+      expect(token).toEqual(mockSnsToken);
+
+      expect(metadataSpy).toBeCalled();
+    });
+
+    it("throws an error if no token", () => {
+      setMetadataError();
+      const call = () =>
+        getSnsToken({
+          certified: true,
+          identity: mockIdentity,
+          rootCanisterId: rootCanisterIdMock,
+        });
+
+      expect(call).rejects.toThrowError();
     });
   });
 });
