@@ -28,12 +28,9 @@ pub async fn update_cache() {
         ic_cdk::println!("Need to get more SNSs");
         set_list_of_sns_to_get().await
     };
-    match result {
-        Err(err) => {
-            ic_cdk::println!("Heartbeat command failed with: {err:?}");
-        }
-        Ok(_) => (),
-    };
+    if let Err(err) = result {
+        ic_cdk::println!("Heartbeat command failed with: {err:?}");
+    }
 }
 
 /// Gets a list of SNSs from the nns-sns-wasm canister and puts it in the queue of SNSs to query.
@@ -57,7 +54,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
             ic_cdk::println!(
                 "Yay, got {} SNSs: {}",
                 stuff.instances.len(),
-                serde_json::to_string(&stuff).unwrap_or("Could not serialise response".to_string())
+                serde_json::to_string(&stuff).unwrap_or_else(|_| "Could not serialise response".to_string())
             );
             let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
             STATE.with(|state| {
