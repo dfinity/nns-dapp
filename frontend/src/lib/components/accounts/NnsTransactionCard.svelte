@@ -1,13 +1,11 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import {
-    mapNnsTransaction,
-    type Transaction,
-  } from "$lib/utils/transactions.utils";
+  import { mapNnsTransaction } from "$lib/utils/transactions.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
   import { ICPToken } from "@dfinity/nns";
+  import type { Transaction } from "$lib/types/transaction";
 
   export let account: Account;
   export let transaction: NnsTransaction;

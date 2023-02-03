@@ -7,29 +7,26 @@ export const FETCH_ROOT_KEY: boolean =
 // TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
 // Local development needs `.raw` to avoid CORS issues for now.
 // TODO: Fix CORS issues
-export const CACHING_CANISTER_URL =
-  import.meta.env.CACHING_CANISTER_URL ??
-  (DFX_NETWORK === "small12"
-    ? DEV
-      ? "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network"
-      : "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network"
-    : undefined);
+export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
+  (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string) === ""
+    ? undefined
+    : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
 
 interface FEATURE_FLAGS {
   ENABLE_SNS_2: boolean;
   ENABLE_SNS_VOTING: boolean;
-  ENABLE_SNS_CACHING: boolean;
+  ENABLE_SNS_AGGREGATOR: boolean;
   ENABLE_CKBTC_LEDGER: boolean;
 }
 
 export const {
   ENABLE_SNS_2,
   ENABLE_SNS_VOTING,
-  ENABLE_SNS_CACHING,
+  ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC_LEDGER,
 }: FEATURE_FLAGS = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false,"ENABLE_SNS_VOTING": false, "ENABLE_SNS_CACHING": false, "ENABLE_CKBTC_LEDGER": false}'
+    '{"ENABLE_SNS_2":false,"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": false}'
 );
 
 export const IS_TESTNET: boolean =

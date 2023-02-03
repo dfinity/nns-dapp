@@ -1,3 +1,4 @@
+import { SECONDS_IN_DAY } from "../common/constants";
 import { MyNavigator } from "../common/navigator";
 
 export class NeuronsTab extends MyNavigator {
@@ -10,6 +11,8 @@ export class NeuronsTab extends MyNavigator {
   static readonly STAKE_NEURON_AMOUNT_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="input-ui-element"]`;
   static readonly STAKE_NEURON_SUBMIT_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="create-neuron-button"]`;
   static readonly SET_DISSOLVE_DELAY_SLIDER_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-range"]`;
+  static readonly SET_DISSOLVE_DELAY_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-ui-element"]`;
+  static readonly SET_DISSOLVE_DELAY_MIN_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="min-button"]`;
   static readonly SET_DISSOLVE_DELAY_SUBMIT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="go-confirm-delay-button"]`;
   static readonly SKIP_DISSOLVE_DELAY_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="cancel-neuron-delay"]`;
   static readonly SET_DISSOLVE_DELAY_CONFIRM_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="confirm-delay-button"]`;
@@ -90,14 +93,15 @@ export class NeuronsTab extends MyNavigator {
     // Ok, now the accounts should have loaded.
 
     const icp = options?.icp ?? 1;
-    const dissolveDelay = options?.dissolveDelay ?? 100000000;
+    const dissolveDelay = Math.ceil(
+      (options?.dissolveDelay ?? 100000000) / SECONDS_IN_DAY
+    );
 
-    console.log("Start staking neuron:");
+    console.log("Start staking neuron:", icp, dissolveDelay);
     await this.click(
       NeuronsTab.STAKE_NEURON_BUTTON_SELECTOR,
       "Click to start staking neuron"
     );
-    await this.getElement(NeuronsTab.MODAL_SELECTOR, "Wait for modal");
 
     console.log("Choose account");
     await this.waitForModalWithTitle("Select Source Account");
@@ -120,10 +124,29 @@ export class NeuronsTab extends MyNavigator {
     console.log("Setting dissolve delay...");
     await this.waitForModalWithTitle("Set Dissolve Delay", { timeout: 70_000 });
     if (dissolveDelay > 0) {
+      await this.waitForModalWithTitle("Set Dissolve Delay", {
+        timeout: 70_000,
+      });
+
+      // update by input change
       await this.getElement(
-        NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
-        "Get dissolve delay slider"
+        NeuronsTab.SET_DISSOLVE_DELAY_INPUT_SELECTOR,
+        "Get dissolve delay input"
       ).then(async (element) => element.setValue(dissolveDelay));
+
+      // update by range (doesn't work)
+      // TODO: find the way to update using the range. Currently it doesn't trigger `handleInput={updateDelays}` (check the range in gix components)
+      // await this.getElement(
+      //   NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
+      //   "Get dissolve delay slider"
+      // ).then(async (element) => element.setValue(dissolveDelay));
+
+      // update by min click (always works)
+      // await this.click(
+      //   NeuronsTab.SET_DISSOLVE_DELAY_MIN_BUTTON_SELECTOR,
+      //   "Click to set minimum dissolve delay"
+      // );
+
       await this.click(
         NeuronsTab.SET_DISSOLVE_DELAY_SUBMIT_SELECTOR,
         "Submit dissolve delay"

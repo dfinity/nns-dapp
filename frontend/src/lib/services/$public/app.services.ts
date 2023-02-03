@@ -1,7 +1,7 @@
 import { browser } from "$app/environment";
 import {
-  CACHING_CANISTER_URL,
-  ENABLE_SNS_CACHING,
+  ENABLE_SNS_AGGREGATOR,
+  SNS_AGGREGATOR_CANISTER_URL,
 } from "$lib/constants/environment.constants";
 import {
   loadSnsProjects,
@@ -22,7 +22,7 @@ export const initAppPublicData = (): Promise<
   const initNns: Promise<void>[] = [];
 
   const initSns: Promise<void>[] = [
-    ENABLE_SNS_CACHING && CACHING_CANISTER_URL !== undefined
+    ENABLE_SNS_AGGREGATOR && SNS_AGGREGATOR_CANISTER_URL !== undefined
       ? loadSnsProjects()
       : loadSnsSummaries(),
   ];
