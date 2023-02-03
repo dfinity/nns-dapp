@@ -27,7 +27,7 @@ let lastIndex = 0;
  * The returned promise notify when first fetched data are available.
  * Could call onLoad only once if the update response was first.
  *
- * If the user is not authenticated, the strategy is ignored and only QUERY is used.
+ * If the user is not authenticated, strategies other than "query" will throw an error.
  */
 export const queryAndUpdate = async <R, E>({
   request,
