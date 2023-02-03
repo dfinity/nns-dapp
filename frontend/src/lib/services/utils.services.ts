@@ -26,12 +26,14 @@ let lastIndex = 0;
  * Depending on the strategy makes one or two requests (QUERY and UPDATE in parallel).
  * The returned promise notify when first fetched data are available.
  * Could call onLoad only once if the update response was first.
+ *
+ * If the user is not authenticated, the strategy is ignored and only QUERY is used.
  */
 export const queryAndUpdate = async <R, E>({
   request,
   onLoad,
   onError,
-  strategy = "query_and_update",
+  strategy,
   logMessage,
   identityType = "authorized",
 }: {
@@ -45,13 +47,6 @@ export const queryAndUpdate = async <R, E>({
   let certifiedDone = false;
   let requests: Array<Promise<void>>;
   let logPrefix: string;
-  const log = ({ postfix }: { postfix: string }) => {
-    if (strategy !== "query_and_update") {
-      return;
-    }
-    logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage ?? ""}`;
-    logWithTimestamp(`${logPrefix} calls${postfix}`);
-  };
 
   const identity: Identity =
     identityType === "anonymous"
@@ -60,9 +55,27 @@ export const queryAndUpdate = async <R, E>({
       ? getCurrentIdentity()
       : await getAuthenticatedIdentity();
 
+  if (
+    identity.getPrincipal().isAnonymous() &&
+    strategy !== undefined &&
+    strategy !== "query"
+  ) {
+    throw new Error(
+      "Cannot use strategy other than 'query' for anonymous identity."
+    );
+  }
+
   const currentStrategy = identity.getPrincipal().isAnonymous()
     ? "query"
-    : strategy;
+    : strategy ?? "query_and_update";
+
+  const log = ({ postfix }: { postfix: string }) => {
+    if (currentStrategy !== "query_and_update") {
+      return;
+    }
+    logPrefix = logPrefix ?? `[${lastIndex++}] ${logMessage ?? ""}`;
+    logWithTimestamp(`${logPrefix} calls${postfix}`);
+  };
 
   const queryOrUpdate = (certified: boolean) =>
     request({ certified, identity })

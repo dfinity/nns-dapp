@@ -226,7 +226,7 @@ export const loadProposal = async ({
   callback,
   silentErrorMessages,
   silentUpdateErrorMessages,
-  strategy = "query_and_update",
+  strategy,
 }: {
   proposalId: ProposalId;
   setProposal: (proposal: ProposalInfo) => void;
