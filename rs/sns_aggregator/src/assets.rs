@@ -205,7 +205,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
         let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
         headers.push(certificate_header);
 
-        match state.assets.borrow().get(&request_path) {
+        match state.assets.borrow().get(request_path) {
             Some(asset) => {
                 headers.extend(asset.headers.clone());
                 if let Some(content_type) = content_type_of(request_path) {
