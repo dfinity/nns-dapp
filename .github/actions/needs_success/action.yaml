@@ -11,7 +11,7 @@ description: |
   - check the result of all the needed jobs. (use this action)
 inputs:
   needs:
-          description: "JSON describing the needed jobs.  (use: `'$ {{ toJson(needs) }}'`)"
+    description: "JSON describing the needed jobs.  (use: `'$ {{ toJson(needs) }}'`)"
     required: true
 runs:
   using: "composite"
