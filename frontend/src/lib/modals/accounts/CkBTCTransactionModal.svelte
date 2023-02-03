@@ -49,6 +49,8 @@
       dispatcher("nnsClose");
     }
   };
+
+  // TODO: review usage of nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)
 </script>
 
 <!-- Checks for type safety but, already performs in parent -->
