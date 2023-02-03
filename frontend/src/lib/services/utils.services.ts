@@ -14,6 +14,8 @@ export type QueryAndUpdateOnResponse<R> = (options: {
 export type QueryAndUpdateOnError<E> = (options: {
   certified: boolean;
   error: E;
+  // The identity used for the request
+  identity: Identity;
 }) => void;
 
 export type QueryAndUpdateStrategy = "query_and_update" | "query" | "update";
@@ -86,7 +88,7 @@ export const queryAndUpdate = async <R, E>({
       })
       .catch((error: E) => {
         if (certifiedDone) return;
-        onError?.({ certified, error });
+        onError?.({ certified, error, identity });
       })
       .finally(() => (certifiedDone = certifiedDone || certified));
 

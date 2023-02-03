@@ -21,6 +21,7 @@ import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
+import type { Identity } from "@dfinity/agent";
 import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
@@ -34,14 +35,14 @@ import {
 const handleFindProposalsError = ({
   error: err,
   certified,
+  identity,
 }: {
   error: unknown;
   certified: boolean;
+  identity: Identity;
 }) => {
   console.error(err);
-
-  // Explicitly handle only UPDATE errors
-  if (certified === true) {
+  if (certified || identity.getPrincipal().isAnonymous()) {
     proposalsStore.setProposals({ proposals: [], certified });
 
     toastsError({
@@ -258,12 +259,13 @@ export const loadProposal = async ({
     handleError?.(erroneusResponse.certified);
   };
 
+  const identity = getCurrentIdentity();
   try {
     return await getProposal({
       proposalId,
       onLoad: ({ response: proposal, certified }) => {
         if (!proposal) {
-          catchError({ certified, error: undefined });
+          catchError({ certified, error: undefined, identity });
           return;
         }
 
@@ -275,7 +277,7 @@ export const loadProposal = async ({
       strategy,
     });
   } catch (error: unknown) {
-    catchError({ certified: true, error });
+    catchError({ certified: true, error, identity });
   }
 };
 
@@ -291,7 +293,7 @@ const getProposal = async ({
   proposalId: ProposalId;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo | undefined>;
   onError: QueryAndUpdateOnError<Error | unknown | undefined>;
-  strategy: QueryAndUpdateStrategy;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<ProposalInfo | undefined, unknown>({
     identityType: "current",

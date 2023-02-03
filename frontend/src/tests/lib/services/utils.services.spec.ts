@@ -5,6 +5,7 @@ import { tick } from "svelte";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
+  mockIdentity,
 } from "../../mocks/auth.store.mock";
 
 describe("api-utils", () => {
@@ -154,7 +155,11 @@ describe("api-utils", () => {
 
         expect(onLoad).not.toBeCalled();
         expect(onError).toBeCalledTimes(2);
-        expect(onError).toBeCalledWith({ certified: false, error: "test" });
+        expect(onError).toBeCalledWith({
+          certified: false,
+          error: "test",
+          identity: mockIdentity,
+        });
       });
 
       it("should not call QUERY onLoad when UPDATE comes first", async () => {

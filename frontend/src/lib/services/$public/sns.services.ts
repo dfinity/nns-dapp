@@ -19,7 +19,6 @@ import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
@@ -100,22 +99,19 @@ export const loadSnsSummaries = (): Promise<void> => {
         querySnsSwapStates({ certified, identity }),
       ]),
     onLoad: ({ response }) => snsQueryStore.setData(response),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        snsQueryStore.setLoadingState();
+
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.list_summaries",
+          })
+        );
       }
-
-      // hide unproven data
-      snsQueryStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_summaries",
-        })
-      );
     },
     logMessage: "Syncing Sns summaries",
   });
@@ -136,22 +132,19 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         proposals,
         certified,
       }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        snsProposalsStore.setLoadingState();
+
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error.proposal_not_found",
+          })
+        );
       }
-
-      // hide unproven data
-      snsProposalsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.proposal_not_found",
-        })
-      );
     },
     logMessage: "Syncing Sns proposals",
   });
@@ -167,7 +160,6 @@ export const loadSnsNervousSystemFunctions = async (
     return;
   }
 
-  const identity = await getCurrentIdentity();
   return queryAndUpdate<SnsNervousSystemFunction[], Error>({
     request: ({ certified, identity }) =>
       getNervousSystemFunctions({
@@ -195,7 +187,7 @@ export const loadSnsNervousSystemFunctions = async (
       });
     },
     identityType: "current",
-    onError: ({ certified, error }) => {
+    onError: ({ certified, error, identity }) => {
       // If the user is not logged in, only a query is done.
       // Therefore, we want to show an error even if the error doesn't come from a certified call.
       if (certified || identity.getPrincipal().isAnonymous()) {
