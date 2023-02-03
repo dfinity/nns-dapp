@@ -5,7 +5,7 @@
   import { type Token, TokenAmount } from "@dfinity/nns";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
-  import { universesTokensStore } from "$lib/derived/universes-tokens.derived";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   export let universe: Universe;
 
@@ -15,7 +15,7 @@
     $universesAccountsBalance[universe.canisterId]?.balance?.toE8s();
 
   let token: Token | undefined;
-  $: token = $universesTokensStore[universe.canisterId]?.token;
+  $: token = $tokensStore[universe.canisterId]?.token;
 
   let balance: TokenAmount | undefined;
   $: balance =

@@ -6,8 +6,8 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import { universesTokensStore } from "$lib/derived/universes-tokens.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { fireEvent } from "@testing-library/dom";
@@ -33,7 +33,7 @@ describe("SelectUniverseDropdown", () => {
     .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
   jest
-    .spyOn(universesTokensStore, "subscribe")
+    .spyOn(tokensStore, "subscribe")
     .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 
   jest

@@ -6,7 +6,7 @@ import {
   mockSnsFullProject,
   mockSnsToken,
 } from "../../mocks/sns-projects.mock";
-import { mockTokens } from "../../mocks/tokens.mock";
+import { mockTokens, mockUniversesTokens } from "../../mocks/tokens.mock";
 
 describe("Tokens store", () => {
   afterEach(() => tokensStore.reset());
@@ -33,14 +33,17 @@ describe("Tokens store", () => {
     tokensStore.reset();
 
     const store = get(tokensStore);
-    expect(Object.keys(store)).toHaveLength(0);
+    // 1 for Nns
+    expect(Object.keys(store)).toHaveLength(1);
   });
 
   it("should set tokens", () => {
     tokensStore.setTokens(mockTokens);
 
     const store = get(tokensStore);
-    expect(Object.keys(store)).toHaveLength(Object.keys(mockTokens).length);
+    expect(Object.keys(store)).toHaveLength(
+      Object.keys(mockUniversesTokens).length
+    );
 
     expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].token).toEqual(
       mockCkBTCToken
@@ -59,14 +62,16 @@ describe("Tokens store", () => {
     tokensStore.setTokens(mockTokens);
 
     const store = get(tokensStore);
-    expect(Object.keys(store)).toHaveLength(Object.keys(mockTokens).length);
+    expect(Object.keys(store)).toHaveLength(
+      Object.keys(mockUniversesTokens).length
+    );
 
     tokensStore.resetUniverse(CKBTC_UNIVERSE_CANISTER_ID);
 
     const updatedStore = get(tokensStore);
 
     expect(Object.keys(updatedStore)).toHaveLength(
-      Object.keys(mockTokens).length - 1
+      Object.keys(mockUniversesTokens).length - 1
     );
     expect(updatedStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toBeUndefined();
   });

@@ -1,3 +1,5 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   UniverseCanisterId,
@@ -30,7 +32,7 @@ export interface TokensStore extends Readable<TokensStoreData> {
 
 /**
  * A store that holds the various token metadata (name, symbol, fee etc.).
- * Currently used to hold ckBTC and Snses metadata - i.e. Nns excluded.
+ * It is currently initialized with the token metadata of the Nns / IC as constants. Further metadata - e.g. Sns and ckBTC - will be fetched and appended.
  *
  * - setToken: set the token metadata fetched from an Icrc ledger
  * - reset: reset a particular ledger token metadata. used for testing purpose
@@ -38,7 +40,13 @@ export interface TokensStore extends Readable<TokensStoreData> {
  *
  */
 const initTokensStore = (): TokensStore => {
-  const { subscribe, update, set } = writable<TokensStoreData>({});
+  const initialTokensStoreData: TokensStoreData = {
+    [OWN_CANISTER_ID_TEXT]: NNS_TOKEN,
+  };
+
+  const { subscribe, update, set } = writable<TokensStoreData>(
+    initialTokensStoreData
+  );
 
   return {
     subscribe,
@@ -62,7 +70,7 @@ const initTokensStore = (): TokensStore => {
 
     // Used in tests
     reset() {
-      set({});
+      set(initialTokensStoreData);
     },
 
     resetUniverse(canisterId: UniverseCanisterId) {
