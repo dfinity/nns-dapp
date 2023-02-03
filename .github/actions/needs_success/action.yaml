@@ -7,7 +7,7 @@ description: |
   instead you wish the current job to fail if any job needed by
   the current one fails, you need to:
 
-  - set the current job to always run. (use: `if: ${{ always() }}`)
+  - set the current job to always run. (use: `if: $ {{ always() }}`)
   - check the result of all the needed jobs. (use this action)
 inputs:
   needs:
