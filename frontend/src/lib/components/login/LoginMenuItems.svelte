@@ -10,11 +10,11 @@
 
 <div class="menu-items">
   <MenuItem
-    href="https://internetcomputer.org/nns"
+    href="https://dashboard.internetcomputer.org/"
     rel="noopener noreferrer"
     target="_blank"
   >
-    <span>{$i18n.auth.about} <IconNorthEast /></span>
+    <span>{$i18n.auth.dashboard} <IconNorthEast /></span>
   </MenuItem>
 
   <MenuItem
