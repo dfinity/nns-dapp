@@ -1,3 +1,9 @@
+import { approveSale as approveSaleApi } from "$lib/api/sns-ledger.api";
+import {
+  commitTokens as commitTokensApi,
+  getOpenTicket as getOpenTicketApi,
+  newSaleTicket as newSaleTicketApi,
+} from "$lib/api/sns-sale.api";
 import {
   participateInSnsSwap,
   querySnsMetadata,
@@ -29,6 +35,10 @@ import {
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { NeuronId } from "@dfinity/sns/dist/candid/sns_governance";
+import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import type { E8s } from "@dfinity/sns/dist/types/types/common";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -292,4 +302,166 @@ export const participateInSwap = async ({
     );
     return { success };
   }
+};
+
+export const getOpenTicket = async ({
+  withTicket,
+  rootCanisterId,
+  certified,
+}: {
+  withTicket: boolean; // TODO: for testing purpose only
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<Ticket | undefined> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    const { result } = await getOpenTicketApi({
+      identity,
+      rootCanisterId,
+      withTicket,
+      certified,
+    });
+
+    const resultData = fromDefinedNullable(result);
+
+    if ("Ok" in resultData) {
+      return fromNullable(resultData.Ok.ticket);
+    }
+
+    toastsError(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
+  } catch (error: unknown) {
+    // TODO: add error handling
+    throw error;
+  }
+};
+
+export const newSaleTicket = async ({
+  rootCanisterId,
+  certified,
+  neuronId,
+  amount_icp_e8s,
+}: {
+  rootCanisterId: Principal;
+  certified: boolean;
+  neuronId: NeuronId;
+  amount_icp_e8s: E8s;
+}): Promise<Ticket | undefined> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    const { result } = await newSaleTicketApi({
+      identity,
+      rootCanisterId,
+      neuronId,
+      amount_icp_e8s,
+    });
+
+    const resultData = fromDefinedNullable(result);
+
+    if ("Ok" in resultData) {
+      return fromNullable(resultData.Ok.ticket);
+    }
+
+    toastsError(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
+  } catch (error: unknown) {
+    // TODO: add error handling
+    throw error;
+  }
+};
+
+export const commitTokens = async ({
+  rootCanisterId,
+  certified,
+  ticketId,
+}: {
+  rootCanisterId: Principal;
+  certified: boolean;
+  ticketId: bigint;
+}): Promise<Ticket | undefined> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await commitTokensApi({
+      identity,
+      rootCanisterId,
+      ticketId,
+    });
+
+    // TODO: update when available
+    return;
+
+    // if ("Ok" in resultData) {
+    //   return fromNullable(resultData.Ok.ticket);
+    // }
+
+    toastsError(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
+  } catch (error: unknown) {
+    // TODO: add error handling
+    throw error;
+  }
+};
+
+// Ledger
+// {subaccount, to, amount, expires_at, created_at_time, memo}
+// TODO: update when did available
+export const approveSale = async ({
+  rootCanisterId,
+  ticketId,
+}: {
+  rootCanisterId: Principal;
+  ticketId: bigint;
+}): Promise<Ticket | undefined> => {
+  try {
+    const identity = await getNeuronIdentity();
+
+    await approveSaleApi({
+      identity,
+      rootCanisterId,
+      ticketId,
+    });
+
+    // TODO: update when available
+    return;
+
+    // if ("Ok" in resultData) {
+    //   return fromNullable(resultData.Ok.ticket);
+    // }
+
+    toastsError(
+      toToastError({
+        err: error,
+        fallbackErrorLabelKey: "error__sns.cannot_participate",
+      })
+    );
+  } catch (error: unknown) {
+    // TODO: add error handling
+    throw error;
+  }
+};
+
+// Sale
+export const notifyApproveFailure = async () => {
+  // notify_approve_failure
+  console.log(`💸PaymentFlow::notify_approve_failure`);
+};
+
+// Sale
+export const buyTokens = () => {
+  console.log(`💸PaymentFlow::buy_tokens`);
 };

@@ -124,3 +124,20 @@ export const transfer = async ({
         : undefined,
   });
 };
+
+// TODO: update when available
+export const approveSale = async ({
+  identity,
+  rootCanisterId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+}): Promise<void> => {
+  const { approveSale: approveSaleApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await approveSaleApi();
+};
