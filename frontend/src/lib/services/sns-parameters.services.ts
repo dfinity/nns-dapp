@@ -28,22 +28,19 @@ export const loadSnsParameters = async (
         parameters,
         certified,
       }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        snsParametersStore.resetProject(rootCanisterId);
+
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.load_parameters",
+          })
+        );
       }
-
-      // // hide unproven data
-      snsParametersStore.resetProject(rootCanisterId);
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.load_parameters",
-        })
-      );
     },
     logMessage: "Syncing Sns Parameters",
   });

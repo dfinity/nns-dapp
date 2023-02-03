@@ -8,6 +8,7 @@ import {
   loadSnsNervousSystemFunctions,
   loadSnsProjects,
 } from "$lib/services/$public/sns.services";
+import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -15,7 +16,10 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import {
   aggregatorSnsMock,
   aggregatorTokenMock,
@@ -33,6 +37,9 @@ describe("SNS public services", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
       jest.clearAllMocks();
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
     });
     it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
       const spyGetFunctions = jest
@@ -81,6 +88,10 @@ describe("SNS public services", () => {
       snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
+      jest.clearAllMocks();
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
     });
     it("loads sns stores with data", async () => {
       const spyQuerySnsProjects = jest
