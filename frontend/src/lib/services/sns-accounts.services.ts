@@ -1,5 +1,6 @@
-import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
-import { getIcrcAccountIdentity } from "$lib/services/icrc-accounts.services";
+import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
+import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
+import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -7,10 +8,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
@@ -71,9 +69,8 @@ export const syncSnsAccounts = async (params: {
 export const snsTransferTokens = async ({
   rootCanisterId,
   source,
-  destinationAddress,
-  amount,
   loadTransactions,
+  ...rest
 }: {
   rootCanisterId: Principal;
   source: Account;
@@ -81,45 +78,28 @@ export const snsTransferTokens = async ({
   amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
-  try {
-    const e8s = numberToE8s(amount);
-    const identity: Identity = await getIcrcAccountIdentity(source);
-    const to = decodeIcrcAccount(destinationAddress);
+  const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;
 
-    const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
-      ?.fee;
-
-    if (!fee) {
-      throw new Error("error.transaction_fee_not_found");
-    }
-
-    await transfer({
-      identity,
-      to,
-      fromSubAccount: source.subAccount,
-      e8s,
-      rootCanisterId,
-      fee,
-    });
-
-    await Promise.all([
-      loadSnsAccounts({ rootCanisterId }),
-      loadTransactions
+  return transferTokens({
+    source,
+    fee,
+    ...rest,
+    transfer: async (
+      params: {
+        identity: Identity;
+      } & Omit<IcrcTransferParams, "transfer">
+    ) =>
+      await snsTransfer({
+        ...params,
+        rootCanisterId,
+      }),
+    reloadAccounts: async () => await loadSnsAccounts({ rootCanisterId }),
+    reloadTransactions: async () =>
+      await (loadTransactions
         ? loadSnsAccountTransactions({
             account: source,
             canisterId: rootCanisterId,
           })
-        : Promise.resolve(),
-    ]);
-
-    return { success: true };
-  } catch (err) {
-    toastsError(
-      ledgerErrorToToastError({
-        fallbackErrorLabelKey: "error.transaction_error",
-        err,
-      })
-    );
-    return { success: false };
-  }
+        : Promise.resolve()),
+  });
 };

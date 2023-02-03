@@ -1,4 +1,8 @@
-import { getIcrcMainAccount, getIcrcToken } from "$lib/api/icrc-ledger.api";
+import {
+  getIcrcMainAccount,
+  getIcrcToken,
+  icrcTransfer,
+} from "$lib/api/icrc-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,
@@ -70,6 +74,22 @@ describe("icrc-ledger api", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("transfer", () => {
+    it("successfully calls transfer api", async () => {
+      const transferSpy = jest.fn().mockResolvedValue(undefined);
+
+      await icrcTransfer({
+        to: { owner: mockIdentity.getPrincipal() },
+        amount: BigInt(10_000_000),
+        createdAt: BigInt(123456),
+        fee: BigInt(10_000),
+        transfer: transferSpy,
+      });
+
+      expect(transferSpy).toBeCalled();
     });
   });
 });

@@ -1,5 +1,10 @@
 import { createAgent } from "$lib/api/agent.api";
-import { getIcrcMainAccount, getIcrcToken } from "$lib/api/icrc-ledger.api";
+import {
+  getIcrcMainAccount,
+  getIcrcToken,
+  icrcTransfer as transferIcrcApi,
+  type IcrcTransferParams,
+} from "$lib/api/icrc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
@@ -55,6 +60,26 @@ export const getCkBTCToken = async ({
   logWithTimestamp("Getting ckBTC token: done");
 
   return token;
+};
+
+export const ckBTCTransfer = async ({
+  identity,
+  ...rest
+}: {
+  identity: Identity;
+} & Omit<IcrcTransferParams, "transfer">): Promise<void> => {
+  logWithTimestamp("Getting ckBTC transfer: call...");
+
+  const {
+    canister: { transfer: transferApi },
+  } = await ckBTCLedgerCanister({ identity });
+
+  await transferIcrcApi({
+    ...rest,
+    transfer: transferApi,
+  });
+
+  logWithTimestamp("Getting ckBTC transfer: done");
 };
 
 const ckBTCLedgerCanister = async ({

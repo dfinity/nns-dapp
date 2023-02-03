@@ -16,7 +16,7 @@ dfx deploy ckbtc_test_minter --argument "(record {
     btc_network = variant { Regtest };
     ledger_id = principal \"$LEDGERID\";
     ecdsa_key_name = \"dfx_test_key\";
-    retrieve_btc_min_fee = 0;
+    retrieve_btc_min_fee = 12_500;
     retrieve_btc_min_amount = 0;
     mode = variant { GeneralAvailability };
     max_time_in_queue_nanos = 420_000_000_000;
@@ -28,7 +28,7 @@ dfx deploy ckbtc_test_ledger --argument "(record {
     token_symbol = \"ckBTC\";
     token_name = \"Token ckBTC\";
     minting_account = record { owner = principal \"$MINTERID\" };
-    transfer_fee = 0;
+    transfer_fee = 11_500;
     metadata = vec {};
     initial_balances = vec { record { record { owner = principal \"$PRINCIPAL\"; }; 10_000_000; }; };
     archive_options = record {

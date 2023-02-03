@@ -7,6 +7,8 @@ import type {
   TokensStoreUniverseData,
 } from "$lib/stores/tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { nonNullish } from "$lib/utils/utils";
+import { TokenAmount } from "@dfinity/nns";
 import { derived, type Readable } from "svelte/store";
 
 export const nnsTokenStore = derived<
@@ -20,4 +22,19 @@ export const ckBTCTokenStore = derived<
 >(
   [tokensStore],
   ([$tokensStore]) => $tokensStore[CKBTC_UNIVERSE_CANISTER_ID.toText()]
+);
+
+export const ckBTCTokenFeeStore = derived<
+  [Readable<TokensStoreUniverseData | undefined>],
+  TokenAmount | undefined
+>([ckBTCTokenStore], ([$ckBTCTokenStore]) =>
+  nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenStore?.token)
+    ? TokenAmount.fromE8s({
+        amount: $ckBTCTokenStore.token.fee,
+        token: {
+          name: $ckBTCTokenStore.token.name,
+          symbol: $ckBTCTokenStore.token.symbol,
+        },
+      })
+    : undefined
 );
