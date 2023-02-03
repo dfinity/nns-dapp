@@ -196,6 +196,8 @@ export const loadSnsNervousSystemFunctions = async (
     },
     identityType: "current",
     onError: ({ certified, error }) => {
+      // If the user is not logged in, only a query is done.
+      // Therefore, we want to show an error even if the error doesn't come from a certified call.
       if (certified || identity.getPrincipal().isAnonymous()) {
         toastsError({
           labelKey: "error__sns.sns_load_functions",

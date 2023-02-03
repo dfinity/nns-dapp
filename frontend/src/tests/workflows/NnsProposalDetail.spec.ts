@@ -6,15 +6,18 @@ import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
-import { authStore, type AuthStore } from "$lib/stores/auth.store";
+import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
-import { mockAuthStoreSubscribe, mockIdentity } from "../mocks/auth.store.mock";
+import {
+  mockAuthStoreNoIdentitySubscribe,
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../mocks/auth.store.mock";
 import { mockNeuron } from "../mocks/neurons.mock";
 import { mockProposalInfo } from "../mocks/proposal.mock";
 
@@ -97,11 +100,7 @@ describe("Proposal detail page when not logged in user", () => {
     beforeEach(() => {
       jest
         .spyOn(authStore, "subscribe")
-        .mockImplementation((run: Subscriber<AuthStore>): (() => void) => {
-          run({ identity: undefined });
-
-          return () => undefined;
-        });
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
     it("should render proposal with uncertified data", async () => {
