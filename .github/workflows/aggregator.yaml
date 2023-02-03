@@ -70,7 +70,10 @@ jobs:
           dfx deploy sns_aggregator
       - name: Get data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json"
+          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          (( $(jq length aggregate-1.json) == 1 ))  || {
+            echo ERROR: Expected to have 1 SNS in the aggregator.
+          }
       - name: Stop replica
         run: dfx stop
   aggregator-pass:
