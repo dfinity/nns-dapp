@@ -228,6 +228,13 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 }
 
 /// Inserts a favicon into the certified assets, if there is not one already.
+///
+/// Note: If a browser visits the aggregation canister directy, it will request
+///       a favicon.  As there is none, the asset canister will return an error
+///       and the error also has no certification header, so for two reasons the
+///       users will see errors in their console.  While these errors are not an
+///       issue in production, they may be misleading at best and may hide real
+///       errors when developers examine the canister.
 pub fn insert_favicon() {
     STATE.with(|state| {
         // Ensure that there is a favicon, or else we get log spam about bad requests.
