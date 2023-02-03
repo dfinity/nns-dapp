@@ -7,6 +7,9 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
+/**
+ * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
+ */
 const loadCkBTCAccountsBalance = (): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
@@ -25,6 +28,9 @@ const loadCkBTCAccountsBalance = (): Promise<void> => {
   });
 };
 
+/**
+ * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
+ */
 const loadCkBTCToken = (): Promise<void> => {
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     request: ({ certified, identity }) =>
