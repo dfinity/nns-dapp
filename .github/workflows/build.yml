@@ -140,7 +140,7 @@ jobs:
   toy:
     runs-on: ubuntu-20.04
     steps:
-            - run: false
+      - run: false
   build-pass:
     # needs: ["build"]
     needs: ["toy"]
