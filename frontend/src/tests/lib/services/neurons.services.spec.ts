@@ -518,7 +518,8 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(neuron);
 
-      expectToastError("controller of the neuron");
+      // Is this really the right error for this situation??
+      expectToastError("Sorry, none of your principals is the controller of the neuron. Neuron has no controller");
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
@@ -814,7 +815,8 @@ describe("neurons-services", () => {
         targetNeuronId: neuron2.neuronId,
       });
 
-      expectToastError("neurons with the same id");
+      // Is this really the right error for this situation??
+      expectToastError("Those two neurons cannot be merged. Two neurons with the same id can't be merged.");
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
