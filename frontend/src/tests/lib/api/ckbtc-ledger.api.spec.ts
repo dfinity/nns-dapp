@@ -1,8 +1,11 @@
-import { getCkBTCAccounts } from "$lib/api/ckbtc-ledger.api";
+import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
+import {
+  mockQueryTokenResponse,
+  mockSnsToken,
+} from "../../mocks/sns-projects.mock";
 
 describe("ckbtc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
@@ -16,7 +19,7 @@ describe("ckbtc-ledger api", () => {
   afterAll(() => jest.clearAllMocks());
 
   describe("getCkBTCAccounts", () => {
-    it("returns main account with balance and project token metadata", async () => {
+    it("returns main account with balance and token metadata", async () => {
       const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
         mockQueryTokenResponse
       );
@@ -45,6 +48,35 @@ describe("ckbtc-ledger api", () => {
 
       const call = () =>
         getCkBTCAccounts({
+          certified: true,
+          identity: mockIdentity,
+        });
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("getCkBTCToken", () => {
+    it("returns token metadata", async () => {
+      const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
+        mockQueryTokenResponse
+      );
+
+      const token = await getCkBTCToken({
+        certified: true,
+        identity: mockIdentity,
+      });
+
+      expect(token).toEqual(mockSnsToken);
+
+      expect(metadataSpy).toBeCalled();
+    });
+
+    it("throws an error if no token", () => {
+      ledgerCanisterMock.metadata.mockResolvedValue([]);
+
+      const call = () =>
+        getCkBTCToken({
           certified: true,
           identity: mockIdentity,
         });

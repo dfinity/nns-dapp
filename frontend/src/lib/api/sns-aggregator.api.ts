@@ -57,6 +57,10 @@ export type CachedSns = {
     derived: SnsSwapDerivedState;
   };
   icrc1_metadata: IcrcTokenMetadataResponse;
+  /**
+   * TODO: integrate ckBTC fee
+   * @deprecated we will use the icrc1_metadata.fee as source information for the fee
+   */
   icrc1_fee?: bigint;
 };
 

@@ -1,6 +1,7 @@
-import { getIcrcMainAccount } from "$lib/api/icrc-ledger.api";
+import { getIcrcMainAccount, getIcrcToken } from "$lib/api/icrc-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
@@ -21,7 +22,7 @@ export const getSnsAccounts = async ({
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
 
-  const { balance, ledgerMetadata } = await wrapper({
+  const { balance: getBalance, ledgerMetadata: getMetadata } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
@@ -30,13 +31,40 @@ export const getSnsAccounts = async ({
   const mainAccount = await getIcrcMainAccount({
     identity,
     certified,
-    balance,
-    metadata: ledgerMetadata,
+    getBalance,
+    getMetadata,
   });
 
   logWithTimestamp("Getting sns accounts: done");
 
   return [mainAccount];
+};
+
+export const getSnsToken = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<IcrcTokenMetadata> => {
+  logWithTimestamp("Getting sns token: call...");
+
+  const { ledgerMetadata: getMetadata } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const token = await getIcrcToken({
+    certified,
+    getMetadata,
+  });
+
+  logWithTimestamp("Getting sns token: done");
+
+  return token;
 };
 
 export const transactionFee = async ({

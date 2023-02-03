@@ -3,7 +3,7 @@
  */
 
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
-import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
@@ -11,7 +11,7 @@ import en from "../../mocks/i18n.mock";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -31,7 +31,7 @@ describe("CkBTCAccounts", () => {
     it("should not load ckBTC accounts", () => {
       render(CkBTCAccounts, { props: { goToWallet } });
 
-      expect(loadCkBTCAccounts).not.toHaveBeenCalled();
+      expect(syncCkBTCAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
@@ -61,7 +61,7 @@ describe("CkBTCAccounts", () => {
     it("should call load ckBTC accounts", () => {
       render(CkBTCAccounts, { props: { goToWallet } });
 
-      expect(loadCkBTCAccounts).toHaveBeenCalled();
+      expect(syncCkBTCAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {

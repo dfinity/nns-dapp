@@ -1,8 +1,9 @@
 import { createAgent } from "$lib/api/agent.api";
-import { getIcrcMainAccount } from "$lib/api/icrc-ledger.api";
+import { getIcrcMainAccount, getIcrcToken } from "$lib/api/icrc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
@@ -24,13 +25,36 @@ export const getCkBTCAccounts = async ({
   const mainAccount = await getIcrcMainAccount({
     identity,
     certified,
-    balance,
-    metadata,
+    getBalance: balance,
+    getMetadata: metadata,
   });
 
   logWithTimestamp("Getting ckBTC accounts: done");
 
   return [mainAccount];
+};
+
+export const getCkBTCToken = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<IcrcTokenMetadata> => {
+  logWithTimestamp("Getting ckBTC token: call...");
+
+  const {
+    canister: { metadata: getMetadata },
+  } = await ckBTCLedgerCanister({ identity });
+
+  const token = await getIcrcToken({
+    certified,
+    getMetadata,
+  });
+
+  logWithTimestamp("Getting ckBTC token: done");
+
+  return token;
 };
 
 const ckBTCLedgerCanister = async ({

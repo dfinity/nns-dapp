@@ -1,6 +1,9 @@
-import { getIcrcMainAccount } from "$lib/api/icrc-ledger.api";
+import { getIcrcMainAccount, getIcrcToken } from "$lib/api/icrc-ledger.api";
 import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockQueryTokenResponse } from "../../mocks/sns-projects.mock";
+import {
+  mockQueryTokenResponse,
+  mockSnsToken,
+} from "../../mocks/sns-projects.mock";
 
 describe("icrc-ledger api", () => {
   describe("getIcrcMainAccount", () => {
@@ -12,8 +15,8 @@ describe("icrc-ledger api", () => {
       const account = await getIcrcMainAccount({
         certified: true,
         identity: mockIdentity,
-        balance: balanceSpy,
-        metadata: metadataSpy,
+        getBalance: balanceSpy,
+        getMetadata: metadataSpy,
       });
 
       expect(account).not.toBeUndefined();
@@ -33,8 +36,37 @@ describe("icrc-ledger api", () => {
         getIcrcMainAccount({
           certified: true,
           identity: mockIdentity,
-          balance: balanceSpy,
-          metadata: metadataSpy,
+          getBalance: balanceSpy,
+          getMetadata: metadataSpy,
+        });
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("getIcrcToken", () => {
+    it("returns token metadata", async () => {
+      const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
+
+      const token = await getIcrcToken({
+        certified: true,
+        getMetadata: metadataSpy,
+      });
+
+      expect(token).toEqual(mockSnsToken);
+
+      expect(metadataSpy).toBeCalled();
+    });
+
+    it("throws an error if no token", () => {
+      const metadataSpy = async () => {
+        throw new Error();
+      };
+
+      const call = () =>
+        getIcrcToken({
+          certified: true,
+          getMetadata: metadataSpy,
         });
 
       expect(call).rejects.toThrowError();

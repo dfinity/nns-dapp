@@ -11,6 +11,7 @@ import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived
 import { accountsStore } from "$lib/stores/accounts.store";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -29,12 +30,20 @@ import {
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
 import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
+import {
+  mockTokensSubscribe,
+  mockUniversesTokens,
+} from "../../../mocks/tokens.mock";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {
     page.mock({
       data: { universe: mockSnsCanisterId.toText() },
     });
+
+    jest
+      .spyOn(tokensStore, "subscribe")
+      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 
     jest
       .spyOn(snsProjectsCommittedStore, "subscribe")
