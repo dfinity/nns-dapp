@@ -137,8 +137,13 @@ jobs:
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
+  toy:
+    runs-on: ubuntu-20.04
+    steps:
+      run: false
   build-pass:
-    needs: ["build"]
+    # needs: ["build"]
+    needs: ["toy"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
