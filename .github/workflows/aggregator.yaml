@@ -68,6 +68,12 @@ jobs:
           dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai
           : Deploy the aggregator
           dfx deploy sns_aggregator
+      - name: 'Upload aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
       - name: Wait for the aggregator to get data
         run: sleep 30
       - name: Get data from the sns aggregator
