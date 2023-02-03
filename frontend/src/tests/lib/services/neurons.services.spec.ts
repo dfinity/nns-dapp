@@ -57,14 +57,16 @@ const {
   topUpNeuron,
 } = services;
 
-let toasts : ToastMsg[] = [];
-toastsStore.subscribe(t => toasts = t);
+let toasts: ToastMsg[] = [];
+toastsStore.subscribe((t) => (toasts = t));
 
 const expectToastError = (contained: string) =>
-      expect(toasts).toMatchObject([{
-        level: "error",
-        text: expect.stringContaining(contained)
-      }]);
+  expect(toasts).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
 
 let testIdentity: Identity | null = mockIdentity;
 const setNoAccountIdentity = () => (testIdentity = null);
@@ -519,7 +521,9 @@ describe("neurons-services", () => {
       await toggleAutoStakeMaturity(neuron);
 
       // Is this really the right error for this situation??
-      expectToastError("Sorry, none of your principals is the controller of the neuron. Neuron has no controller");
+      expectToastError(
+        "Sorry, none of your principals is the controller of the neuron. Neuron has no controller"
+      );
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
@@ -816,7 +820,9 @@ describe("neurons-services", () => {
       });
 
       // Is this really the right error for this situation??
-      expectToastError("Those two neurons cannot be merged. Two neurons with the same id can't be merged.");
+      expectToastError(
+        "Those two neurons cannot be merged. Two neurons with the same id can't be merged."
+      );
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
