@@ -30,7 +30,7 @@ export const loadSnsToken = async ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: rootCanisterId, token }),
     onError: ({ error: err, certified }) => {
-      if (certified !== true) {
+      if (certified) {
         return;
       }
 
