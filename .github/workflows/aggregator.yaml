@@ -12,6 +12,40 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
+      - name: set-env
+        run: ./build-config.sh >> $GITHUB_ENV
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+      # Cache the ic-cdk-optimizer
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/ic-cdk-optimizer
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
+      - name: Install Software
+        run: |
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # Helps with debugging
+      - name: Versions
+        run: |
+          set -x
+          dfx --version
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          ic-cdk-optimizer --version
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
