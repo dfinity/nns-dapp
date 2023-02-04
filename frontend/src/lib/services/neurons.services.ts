@@ -238,7 +238,7 @@ export const stakeNeuron = async ({
  */
 export const listNeurons = async ({
   callback,
-  strategy = "query_and_update",
+  strategy,
 }: {
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;

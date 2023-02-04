@@ -103,6 +103,7 @@
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
+    "token_not_found": "Sorry, there was an error loading the token metadata information.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",

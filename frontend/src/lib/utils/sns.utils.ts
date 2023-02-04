@@ -1,21 +1,18 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
 import type { PngDataUrl } from "$lib/types/assets";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type {
   QuerySns,
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
-import {
-  IcrcMetadataResponseEntries,
-  type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -33,7 +30,7 @@ type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
-  token?: SnsTokenMetadata;
+  token?: IcrcTokenMetadata;
   swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
@@ -96,34 +93,6 @@ const mapOptionalMetadata = ({
     name: nullishName,
     description: nullishDescription,
   } as SnsSummaryMetadata;
-};
-
-/**
- * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
- */
-export const mapOptionalToken = (
-  response: IcrcTokenMetadataResponse
-): SnsTokenMetadata | undefined => {
-  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
-    (acc, [key, value]) => {
-      switch (key) {
-        case IcrcMetadataResponseEntries.SYMBOL:
-          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
-          break;
-        case IcrcMetadataResponseEntries.NAME:
-          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
-      }
-
-      return acc;
-    },
-    {}
-  );
-
-  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
-    return undefined;
-  }
-
-  return nullishToken as SnsTokenMetadata;
 };
 
 /**

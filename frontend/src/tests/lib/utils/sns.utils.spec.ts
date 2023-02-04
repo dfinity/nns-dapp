@@ -3,7 +3,6 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
-  mapOptionalToken,
 } from "$lib/utils/sns.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
@@ -15,7 +14,6 @@ import {
   mockQueryMetadata,
   mockQueryMetadataResponse,
   mockQuerySwap,
-  mockQueryTokenResponse,
   mockSnsParams,
   mockSnsSummaryList,
   mockSummary,
@@ -214,14 +212,6 @@ describe("sns-utils", () => {
         controller: mockIdentity.getPrincipal(),
       });
       expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
-    });
-  });
-
-  describe("mapOptionalToken", () => {
-    it("should return token", () => {
-      const token = mapOptionalToken(mockQueryTokenResponse);
-      expect(token?.name).toBeDefined();
-      expect(token?.symbol).toBeDefined();
     });
   });
 

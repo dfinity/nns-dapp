@@ -107,6 +107,7 @@ interface I18nError {
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
+  token_not_found: string;
   fetch_transactions: string;
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;

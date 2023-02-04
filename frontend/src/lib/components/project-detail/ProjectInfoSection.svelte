@@ -1,9 +1,5 @@
 <script lang="ts">
-  import type {
-    SnsSummary,
-    SnsSummaryMetadata,
-    SnsTokenMetadata,
-  } from "$lib/types/sns";
+  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
@@ -13,6 +9,7 @@
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import { isNullish } from "$lib/utils/utils";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -22,7 +19,7 @@
   $: summary = $projectDetailStore.summary;
 
   let metadata: SnsSummaryMetadata | undefined;
-  let token: SnsTokenMetadata | undefined;
+  let token: IcrcTokenMetadata | undefined;
 
   $: metadata = summary?.metadata;
   $: token = summary?.token;

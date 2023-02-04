@@ -24,6 +24,7 @@
   import { goto } from "$app/navigation";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
+  import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -104,6 +105,8 @@
 
 {#if $isNnsUniverseStore}
   <NnsAccountsFooter />
+{:else if $isCkBTCUniverseStore}
+  <CkBTCAccountsFooter />
 {:else if nonNullish($snsProjectSelectedStore)}
   <SnsAccountsFooter />
 {/if}

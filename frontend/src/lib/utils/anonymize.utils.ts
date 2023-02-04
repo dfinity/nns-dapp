@@ -4,12 +4,12 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { IcrcTransaction } from "@dfinity/ledger";
 import {
@@ -451,7 +451,7 @@ type AnonymizedSnsSummary = {
   rootCanisterId?: string;
   swapCanisterId?: string;
   metadata: SnsSummaryMetadata;
-  token: SnsTokenMetadata;
+  token: IcrcTokenMetadata;
   swap: SnsSummarySwap;
   derived: SnsSwapDerivedState;
 };
