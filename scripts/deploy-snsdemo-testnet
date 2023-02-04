@@ -26,8 +26,7 @@ set -euo pipefail
 
 : Standard dfx sns demo, with standard canisters, not local nns-dapp.
 dfx-sns-demo --network "$DFX_NETWORK" ${DFX_IC_COMMIT:+--ic_commit} ${DFX_IC_COMMIT:+$DFX_IC_COMMIT} --ic_dir "$IC_REPO_DIR" --nd_dir "$ND_REPO_DIR"
-          : Claim the canister ID reserved for the aggregator by snsdemo
-          dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai --network "$DFX_NETWORK"
-          : Deploy the aggregator
-          dfx deploy sns_aggregator --network "$DFX_NETWORK"
-
+: Claim the canister ID reserved for the aggregator by snsdemo
+dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai --network "$DFX_NETWORK"
+: Deploy the aggregator
+dfx deploy sns_aggregator --network "$DFX_NETWORK"

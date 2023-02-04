@@ -15,7 +15,7 @@ use state::STATE;
 use types::Icrc1Value;
 
 /// API method for basic health checks.
-/// 
+///
 /// TODO: Provide useful metrics at http://${canister_domain}/metrics
 #[ic_cdk_macros::query]
 fn health_check(name: String) -> String {
@@ -45,7 +45,10 @@ fn post_upgrade() {
     //
     // Note: In future we are likely to want to make the duration dynamic and
     //       have an altogether more complicated data collection schedule.
-    set_timer_interval(Duration::from_secs(1), || ic_cdk::spawn(crate::upstream::update_cache()));
+    set_timer_interval(
+        Duration::from_secs(1),
+        || ic_cdk::spawn(crate::upstream::update_cache()),
+    );
 }
 
 #[ic_cdk_macros::init]
