@@ -130,6 +130,15 @@ install_jq_linux() {
   sudo apt-get install jq
 }
 
+install_yq_darwin() {
+  echo "Installing yq..."
+  brew install yq
+}
+install_yq_linux() {
+  echo "Installing yq..."
+  sudo snap install yq
+}
+
 install_npm_darwin() {
   echo "Installing npm"
   brew install node
@@ -244,6 +253,7 @@ is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
+command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
