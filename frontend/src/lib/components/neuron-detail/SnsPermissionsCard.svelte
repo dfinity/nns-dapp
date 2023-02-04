@@ -1,0 +1,60 @@
+<script lang="ts">
+  import CardInfo from "../ui/CardInfo.svelte";
+  import Separator from "../ui/Separator.svelte";
+  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import TagsList from "../ui/TagsList.svelte";
+  import Hash from "../ui/Hash.svelte";
+  import { Tag } from "@dfinity/gix-components";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "$lib/types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { permissionI18nMapper } from "$lib/i18n/dev-i18n";
+
+  const { store }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
+
+  let neuron: SnsNeuron | undefined | null = $store.neuron;
+
+  const openModal = async () => {
+    openSnsNeuronModal({ type: "dev-add-permissions" });
+  };
+</script>
+
+<!-- ONLY FOR TESTNET. NO UNIT TESTS -->
+<CardInfo>
+  <h3 slot="start">Permissions</h3>
+
+  {#each neuron?.permissions || [] as permission}
+    <TagsList id="permissions">
+      <Hash
+        text={permission.principal[0]?.toText() ?? ""}
+        id={permission.principal[0]?.toText() ?? ""}
+        tagName="h5"
+        slot="title"
+      />
+      {#each permission.permission_type as permissionType}
+        <Tag tagName="li">{permissionI18nMapper[permissionType] ?? ""}</Tag>
+      {/each}
+    </TagsList>
+  {/each}
+
+  <div>
+    <button on:click={openModal} class="primary">Add Permissions</button>
+  </div>
+</CardInfo>
+
+<Separator />
+
+<style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
+  div {
+    display: flex;
+    justify-content: flex-start;
+  }
+</style>
