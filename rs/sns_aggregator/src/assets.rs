@@ -14,7 +14,9 @@ type HeaderField = (String, String);
 pub struct HttpRequest {
     /// The HTTP method of the request, such as "GET" or "POST".
     pub method: String,
-    /// The requested URL, such as "https://example.ic0.app/some/path?foo=bar".
+    /// The requested path and query string, for example "/some/path?foo=bar".
+    ///
+    /// Note: This does NOT contain the domain, port or protocol.
     pub url: String,
     /// The HTTP request headers
     pub headers: Vec<(String, String)>,
