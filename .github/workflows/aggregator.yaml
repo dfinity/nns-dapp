@@ -61,13 +61,7 @@ jobs:
           dfx-sns-demo-install
       - name: Deploy NNS and SNS canisters
         run: |
-          dfx-sns-demo
-      - name: Deploy aggregator
-        run: |
-          : Claim the canister ID reserved by snsdemo
-          dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai
-          : Deploy the aggregator
-          dfx deploy sns_aggregator
+          ./scripts/deploy-snsdemo-testnet
       - name: 'Upload aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
