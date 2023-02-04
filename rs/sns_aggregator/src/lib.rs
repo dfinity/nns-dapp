@@ -15,8 +15,10 @@ use state::STATE;
 use types::Icrc1Value;
 
 /// API method for basic health checks.
+/// 
+/// TODO: Provide useful metrics at http://${canister_domain}/metrics
 #[ic_cdk_macros::query]
-fn greet(name: String) -> String {
+fn health_check(name: String) -> String {
     STATE.with(|state| {
         let last_partial_update = state.sns_aggregator.borrow().last_partial_update;
         let last_update = state.sns_aggregator.borrow().last_update;
