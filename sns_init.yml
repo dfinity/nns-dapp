@@ -1,35 +1,26 @@
-description: 'We''ve been making video game games since 2006, we''re based in Toronto,
-  Canada and launched in December 2011. And we''ve had our first video game show on
-  the internet in 2012, but didn''t quite have the excitement of The Sims.
+description: 'We''ve been making video game games since 2006, we''re based in Toronto, Canada and launched in December 2011. And we''ve had our first video game show on the internet in 2012, but didn''t quite have the excitement of The Sims.
 
-  It''s been a rough few years for us. We''ve been in competition on ICDevs for video
-  game development for two years now and now, with some help from Valve, we''re starting
-  a campaign for a new game you just can''t get by with your first purchase. All of
-  which means we are back at it… which means we''re not talking about ICDevs!
+  It''s been a rough few years for us. We''ve been in competition on ICDevs for video game development for two years now and now, with some help from Valve, we''re starting a campaign for a new game you just can''t get by with your first purchase. All of which means we are back at it… which means we''re not talking about ICDevs!
 
-  We are looking forward to the next step in our journey as we push to bring you more
-  exclusive new games and content.
+  We are looking forward to the next step in our journey as we push to bring you more exclusive new games and content.
 
   The New Year of ICDevs
 
-  As always, we are so proud to announce that we''re not talking about ICDevs anymore,
-  because we have to, we want to give you a great surprise. With all the momentum
-  we''ve gathered and all these people behind us, we have to make sure we take care
-  off ICDevs as a way to fund more games, more content, and more people.
+  As always, we are so proud to announce that we''re not talking about ICDevs anymore, because we have to, we want to give you a great surprise. With all the momentum we''ve gathered and all these people behind us, we have to make sure we take care off ICDevs as a way to fund more games, more content, and more people.
 
   Unfortunately, you didn''t know. On the ICDevs website, there is an email'
 fallback_controller_principal_ids:
-- hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe
+  - hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe
 initial_token_distribution:
   FractionalDeveloperVotingPower:
     airdrop_distribution:
       airdrop_neurons:
-      - controller: w3i5o-5ylvd-cmm42-pw66i-n6qcw-fw3q7-kk5la-4edui-ozozq-5qq3j-dae
-        stake_e8s: 100000000
+        - controller: w3i5o-5ylvd-cmm42-pw66i-n6qcw-fw3q7-kk5la-4edui-ozozq-5qq3j-dae
+          stake_e8s: 100000000
     developer_distribution:
       developer_neurons:
-      - controller: dktcs-d43lz-rosn2-wnwsj-kef34-6kl3i-ux7qb-ka6xr-biref-ykeaj-sqe
-        stake_e8s: 100000000
+        - controller: dktcs-d43lz-rosn2-wnwsj-kef34-6kl3i-ux7qb-ka6xr-biref-ykeaj-sqe
+          stake_e8s: 100000000
     swap_distribution:
       initial_swap_amount_e8s: 200000000
       total_e8s: 1000000000
