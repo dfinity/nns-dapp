@@ -22,7 +22,7 @@ clap.define short=x long=ic_dir desc="Directory containing the ic source code" v
 clap.define short=y long=nd_dir desc="Directory containing the nns-dapp source code" variable=ND_REPO_DIR default="$HOME/dfn/nns-dapp"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
+set -euxo pipefail
 
 : Standard dfx sns demo, with standard canisters, not local nns-dapp.
 dfx-sns-demo --network "$DFX_NETWORK" ${DFX_IC_COMMIT:+--ic_commit} ${DFX_IC_COMMIT:+$DFX_IC_COMMIT} --ic_dir "$IC_REPO_DIR" --nd_dir "$ND_REPO_DIR"

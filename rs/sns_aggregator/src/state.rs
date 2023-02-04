@@ -4,17 +4,23 @@ use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
 use crate::types::state::UpstreamData;
+use crate::types::{CandidType, Deserialize, Serialize};
 use crate::{
     assets::{AssetHashes, Assets},
     types::state::SnsCache,
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
+use ic_cdk::timer::TimerId;
 use std::cell::RefCell;
 use std::str::FromStr;
 
 /// Semi-Persistent state, not guaranteed to be preserved across upgrades but persistent enough to store a cache.
 #[derive(Default)]
 pub struct State {
+    /// Configuration that is changed only by deployment, upgrade or similar events.
+    pub config: RefCell<Config>,
+    /// Scheduler for getting data from upstream
+    pub timer_id: RefCell<Option<TimerId>>,
     /// Data collected about SNSs, dumped as received from upstream.
     pub sns_aggregator: RefCell<SnsCache>,
     /// Pre-signed data that can be served as high performance certified query calls.
@@ -104,5 +110,18 @@ impl State {
                 .insert(root_canister_id, upstream_data);
         });
         Ok(())
+    }
+}
+
+#[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
+pub struct Config {
+    /// The update interval, in milliseconds
+    pub update_interval_ms: u64,
+}
+impl Default for Config {
+    fn default() -> Self {
+        Config {
+            update_interval_ms: 10_000,
+        }
     }
 }

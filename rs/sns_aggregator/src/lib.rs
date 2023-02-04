@@ -11,7 +11,7 @@ use std::time::Duration;
 use assets::{insert_favicon, HttpRequest};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
-use state::STATE;
+use state::{Config, STATE};
 use types::Icrc1Value;
 
 /// API method for basic health checks.
@@ -38,20 +38,52 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 }
 
 #[ic_cdk_macros::post_upgrade]
-fn post_upgrade() {
-    // Browsers complain if they don't get pretty pictures.  So do I.
-    insert_favicon();
-    // Periodic function call responsible for populating and aggregating the cache.
-    //
-    // Note: In future we are likely to want to make the duration dynamic and
-    //       have an altogether more complicated data collection schedule.
-    set_timer_interval(
-        Duration::from_secs(1),
-        || ic_cdk::spawn(crate::upstream::update_cache()),
-    );
+fn post_upgrade(config: Option<Config>) {
+    ic_cdk::api::print("Calling post_upgrade...");
+    setup(config);
 }
 
 #[ic_cdk_macros::init]
-fn init() {
+fn init(config: Option<Config>) {
+    ic_cdk::api::print("Calling init...");
+    setup(config);
+}
+
+/// Code that needs to be run on init and after every upgrade.
+#[ic_cdk_macros::update]
+fn setup(config: Option<Config>) {
+    ic_cdk::api::print(format!(
+        "\n\
+        ///////////////////////////\n\
+        // R E C O N F I G U R E //\n\
+        ///////////////////////////\n\
+        {config:#?}"
+    ));
+    // Set configuration, if provided
+    if let Some(config) = config {
+        ic_cdk::api::print(format!("Setting config to: {:?}", &config));
+        STATE.with(|state| {
+            *state.config.borrow_mut() = config;
+        });
+    } else {
+        ic_cdk::api::print(format!("Using existing config."));
+    }
+    // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();
+
+    // Schedules data collection from the SNSs.
+    //
+    // Note: In future we are likely to want to make the duration dynamic and
+    //       have an altogether more complicated data collection schedule.
+    //
+    // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
+    let timer_interval = Duration::from_millis(STATE.with(|s| s.config.borrow().update_interval_ms));
+    ic_cdk::api::print(format!("Set interval to {}", &timer_interval.as_millis()));
+    STATE.with(|state| {
+        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
+        let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
+        if let Some(id) = old_timer {
+            ic_cdk::timer::clear_timer(id);
+        }
+    });
 }

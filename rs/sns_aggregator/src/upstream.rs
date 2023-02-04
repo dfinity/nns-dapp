@@ -11,7 +11,7 @@ use ic_cdk::api::{call::RejectionCode, management_canister::provisional::Caniste
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
-    ic_cdk::println!("Heartbeat");
+    ic_cdk::println!("Getting upstream data...");
     let sns_maybe = STATE.with(|state| {
         state.sns_aggregator.borrow_mut().last_partial_update = time();
         state.sns_aggregator.borrow_mut().sns_to_get.pop()

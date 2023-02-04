@@ -12,7 +12,7 @@ pub use ic_sns_ledger::{Tokens as SnsTokens, Value as Icrc1Value};
 pub use ic_sns_root::ListSnsCanistersResponse;
 pub use ic_sns_swap::GetStateResponse;
 pub use ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse, SnsCanisterIds};
-use serde::Serialize;
+pub use serde::Serialize;
 
 /// A named empty record.
 ///
