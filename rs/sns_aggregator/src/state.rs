@@ -21,9 +21,7 @@ pub struct State {
     pub timer_id: RefCell<Option<TimerId>>,
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
-    stable: StableState,
-    /// Configuration that is changed only by deployment, upgrade or similar events.
-    pub config: RefCell<Config>,
+    pub stable: StableState,
     /// Data collected about SNSs, dumped as received from upstream.
     pub sns_aggregator: RefCell<SnsCache>,
     /// Pre-signed data that can be served as high performance certified query calls.
@@ -37,9 +35,10 @@ pub struct State {
     pub asset_hashes: RefCell<AssetHashes>,
 }
 
-#[derive(Default, Clone, CandidType, Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Default, Clone, CandidType, Serialize, Deserialize, Debug)]
 pub struct StableState {
-
+    /// Configuration that is changed only by deployment, upgrade or similar events.
+    pub config: RefCell<Config>,
 }
 
 thread_local! {

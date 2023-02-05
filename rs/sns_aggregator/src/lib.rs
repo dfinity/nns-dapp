@@ -73,7 +73,7 @@ fn setup(config: Option<Config>) {
     if let Some(config) = config {
         ic_cdk::api::print(format!("Setting config to: {:?}", &config));
         STATE.with(|state| {
-            *state.config.borrow_mut() = config;
+            *state.stable.config.borrow_mut() = config;
         });
     } else {
         ic_cdk::api::print(format!("Using existing config."));
@@ -87,7 +87,7 @@ fn setup(config: Option<Config>) {
     //       have an altogether more complicated data collection schedule.
     //
     // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
-    let timer_interval = Duration::from_millis(STATE.with(|s| s.config.borrow().update_interval_ms));
+    let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.config.borrow().update_interval_ms));
     ic_cdk::api::print(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
