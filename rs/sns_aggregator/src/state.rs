@@ -38,7 +38,7 @@ pub struct StableState {
     /// Configuration that is changed only by deployment, upgrade or similar events.
     pub config: RefCell<Config>,
     /// Data collected about SNSs, dumped as received from upstream.
-    pub sns_aggregator: RefCell<SnsCache>,
+    pub sns_cache: RefCell<SnsCache>,
 }
 
 thread_local! {
@@ -61,8 +61,8 @@ impl State {
         // Updates the max index, if needed
         {
             STATE.with(|state| {
-                if state.stable.sns_aggregator.borrow().max_index < index {
-                    state.stable.sns_aggregator.borrow_mut().max_index = index;
+                if state.stable.sns_cache.borrow().max_index < index {
+                    state.stable.sns_cache.borrow_mut().max_index = index;
                 }
             });
         }
@@ -88,12 +88,12 @@ impl State {
         }
         const PAGE_SIZE: u64 = 10;
         // If this is in the last N, update latest.
-        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.stable.sns_aggregator.borrow().max_index) {
+        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.stable.sns_cache.borrow().max_index) {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
                     .stable
-                    .sns_aggregator
+                    .sns_cache
                     .borrow()
                     .upstream_data
                     .values()
@@ -112,7 +112,7 @@ impl State {
         // Add this to the list of values from upstream
         STATE.with(|state| {
             state.stable
-                .sns_aggregator
+                .sns_cache
                 .borrow_mut()
                 .upstream_data
                 .insert(root_canister_id, upstream_data);
