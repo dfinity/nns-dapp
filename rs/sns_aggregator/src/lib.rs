@@ -57,7 +57,9 @@ fn setup(config: Option<Config>) {
         ///////////////////////////\n\
         // R E C O N F I G U R E //\n\
         ///////////////////////////\n\
-        {config:#?}"
+        // New configuration:
+        {config:#?}\n\
+        ///////////////////////////\n"
     ));
     // Set configuration, if provided
     if let Some(config) = config {
