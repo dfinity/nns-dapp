@@ -59,6 +59,7 @@ fn init(config: Option<Config>) {
 #[ic_cdk_macros::update] // TODO: Expose this method only in dev builds
 #[candid_method(update)]
 fn setup(config: Option<Config>) {
+    // Note: This is intentionally highly visible in logs.
     ic_cdk::api::print(format!(
         "\n\
         ///////////////////////////\n\
