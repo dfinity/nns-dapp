@@ -92,6 +92,10 @@ const initTransactionFeesStore = (): TransactionFeesStore => {
   };
 };
 
+/**
+ * TODO: integrate ckBTC fee
+ * @deprecated to be replaced with a derived store of tokensStore
+ */
 export const transactionsFeesStore = initTransactionFeesStore();
 
 /**

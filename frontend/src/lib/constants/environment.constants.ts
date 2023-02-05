@@ -7,13 +7,10 @@ export const FETCH_ROOT_KEY: boolean =
 // TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
 // Local development needs `.raw` to avoid CORS issues for now.
 // TODO: Fix CORS issues
-export const SNS_AGGREGATOR_CANISTER_URL =
-  import.meta.env.SNS_AGGREGATOR_CANISTER_URL ??
-  (DFX_NETWORK === "small12"
-    ? DEV
-      ? "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network"
-      : "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network"
-    : undefined);
+export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
+  (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string) === ""
+    ? undefined
+    : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
 
 interface FEATURE_FLAGS {
   ENABLE_SNS_2: boolean;

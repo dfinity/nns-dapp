@@ -17,6 +17,7 @@ jobs:
             brew install bash
             brew install jq
             brew install coreutils
+            brew install gzip
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
@@ -40,7 +41,7 @@ jobs:
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Show versions
         run: |
-          for exec in bash dfx jq npm node ; do
+          for exec in bash dfx jq npm node gzip xz ; do
             echo $exec --version
             "$exec" --version
           done

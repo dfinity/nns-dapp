@@ -3,33 +3,33 @@
  */
 
 import * as indexApi from "$lib/api/sns-index.api";
-import { DEFAULT_SNS_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/sns-transactions.services";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockSnsTransactionWithId } from "../../mocks/sns-transactions.mock";
 
 describe("sns-transactions-services", () => {
-  describe("loadAccountTransactions", () => {
+  describe("loadSnsAccountTransactions", () => {
     beforeEach(() => {
-      snsTransactionsStore.reset();
+      icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
-          transactions: [mockSnsTransactionWithId],
+          transactions: [mockIcrcTransactionWithId],
         });
       const start = BigInt(1234);
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountTransactions({
-        rootCanisterId,
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      await services.loadSnsAccountTransactions({
+        canisterId,
         account: mockSnsMainAccount,
         start,
       });
@@ -42,36 +42,35 @@ describe("sns-transactions-services", () => {
         expect(spyGetTransactions).toBeCalledWith({
           identity: mockIdentity,
           account: snsAccount,
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          canisterId,
           start,
         })
       );
 
-      const storeData = get(snsTransactionsStore);
+      const storeData = get(icrcTransactionsStore);
       expect(
-        storeData[rootCanisterId.toText()]?.[
-          mockSnsMainAccount.principal.toText()
-        ].transactions[0]
-      ).toEqual(mockSnsTransactionWithId);
+        storeData[canisterId.toText()]?.[mockSnsMainAccount.principal.toText()]
+          .transactions[0]
+      ).toEqual(mockIcrcTransactionWithId);
     });
   });
 
-  describe("loadAccountNextTransactions", () => {
+  describe("loadSnsAccountNextTransactions", () => {
     beforeEach(() => {
-      snsTransactionsStore.reset();
+      icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());
     it("loads transactions in the store", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
-          transactions: [mockSnsTransactionWithId],
+          transactions: [mockIcrcTransactionWithId],
         });
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      await services.loadAccountNextTransactions({
-        rootCanisterId,
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      await services.loadSnsAccountNextTransactions({
+        canisterId,
         account: mockSnsMainAccount,
       });
 
@@ -83,37 +82,36 @@ describe("sns-transactions-services", () => {
         expect(spyGetTransactions).toBeCalledWith({
           identity: mockIdentity,
           account: snsAccount,
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          canisterId,
         })
       );
 
-      const storeData = get(snsTransactionsStore);
+      const storeData = get(icrcTransactionsStore);
       expect(
-        storeData[rootCanisterId.toText()]?.[
-          mockSnsMainAccount.principal.toText()
-        ].transactions[0]
-      ).toEqual(mockSnsTransactionWithId);
+        storeData[canisterId.toText()]?.[mockSnsMainAccount.principal.toText()]
+          .transactions[0]
+      ).toEqual(mockIcrcTransactionWithId);
     });
 
     it("uses store oldest transaction to set the start", async () => {
       const spyGetTransactions = jest
-        .spyOn(indexApi, "getTransactions")
+        .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
-          transactions: [mockSnsTransactionWithId],
+          transactions: [mockIcrcTransactionWithId],
         });
-      const rootCanisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
+      const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       const oldestTxId = BigInt(1234);
-      snsTransactionsStore.addTransactions({
-        rootCanisterId,
+      icrcTransactionsStore.addTransactions({
+        canisterId,
         accountIdentifier: mockSnsMainAccount.identifier,
-        transactions: [mockSnsTransactionWithId],
+        transactions: [mockIcrcTransactionWithId],
         oldestTxId,
         completed: false,
       });
-      await services.loadAccountNextTransactions({
-        rootCanisterId,
+      await services.loadSnsAccountNextTransactions({
+        canisterId,
         account: mockSnsMainAccount,
       });
 
@@ -123,11 +121,11 @@ describe("sns-transactions-services", () => {
           account: {
             owner: mockSnsMainAccount.principal,
           },
-          maxResults: BigInt(DEFAULT_SNS_TRANSACTION_PAGE_LIMIT),
-          rootCanisterId,
+          maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          canisterId,
           // TODO: It should be oldestTxId but there is a bug in the Index canister that doesn't return proper oldestTxId
           // Instead, we need to calculate the oldest by checking the transactions.
-          start: mockSnsTransactionWithId.id,
+          start: mockIcrcTransactionWithId.id,
         });
       });
     });

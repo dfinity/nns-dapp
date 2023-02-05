@@ -34,8 +34,10 @@ cargo build "${cargo_args[@]}"
 # ic-cdk-optimizer # (output: ${canister_name}.wasm)
 ####################
 echo Optimising wasm
-ic-cdk-optimizer "./target/wasm32-unknown-unknown/release/${canister_name}.wasm" -o "./${canister_name}.wasm"
-gzip -f -n "${canister_name}.wasm"
-mv "${canister_name}.wasm.gz" "${canister_name}.wasm"
-ls -sh "./${canister_name}.wasm"
-sha256sum "./${canister_name}.wasm"
+wasm_path="$(canister_name="$canister_name" jq -r '.canisters[env.canister_name].wasm' dfx.json)"
+mkdir -p "$(dirname "$wasm_path")"
+ic-cdk-optimizer "./target/wasm32-unknown-unknown/release/${canister_name}.wasm" -o "$wasm_path"
+gzip -f -n "${wasm_path}"
+mv "${wasm_path}.gz" "${wasm_path}"
+ls -sh "${wasm_path}"
+sha256sum "${wasm_path}"

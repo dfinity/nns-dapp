@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { loadAccountNextTransactions } from "$lib/services/sns-transactions.services";
-  import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
+  import { loadSnsAccountNextTransactions } from "$lib/services/sns-transactions.services";
+  import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+  import type { IcrcTransactionData } from "$lib/types/transaction";
+  import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import {
     getSortedTransactionsFromStore,
-    isTransactionsCompleted,
-    type SnsTransactionData,
-  } from "$lib/utils/sns-transactions.utils";
-  import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import SnsTransactionCard from "./SnsTransactionCard.svelte";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
+    isIcrcTransactionsCompleted,
+  } from "$lib/utils/icrc-transactions.utils";
 
   export let account: Account;
   export let rootCanisterId: Principal;
@@ -21,9 +19,9 @@
 
   onMount(async () => {
     loading = true;
-    await loadAccountNextTransactions({
+    await loadSnsAccountNextTransactions({
       account,
-      rootCanisterId,
+      canisterId: rootCanisterId,
     });
     loading = false;
   });
@@ -32,47 +30,39 @@
   let loadMore: () => Promise<void>;
   $: loadMore = async () => {
     loading = true;
-    await loadAccountNextTransactions({
+    await loadSnsAccountNextTransactions({
       account,
-      rootCanisterId,
+      canisterId: rootCanisterId,
     });
     loading = false;
   };
 
-  let transactions: SnsTransactionData[];
+  let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
-    store: $snsTransactionsStore,
-    rootCanisterId,
+    store: $icrcTransactionsStore,
+    canisterId: rootCanisterId,
     account,
   });
 
   let completed: boolean;
-  $: completed = isTransactionsCompleted({
-    store: $snsTransactionsStore,
-    rootCanisterId,
+  $: completed = isIcrcTransactionsCompleted({
+    store: $icrcTransactionsStore,
+    canisterId: rootCanisterId,
     account,
   });
+
+  let governanceCanisterId: Principal | undefined;
+  $: governanceCanisterId = $snsProjectsStore?.find(
+    ({ rootCanisterId: currentId }) =>
+      currentId.toText() === rootCanisterId.toText()
+  )?.summary.governanceCanisterId;
 </script>
 
-<div data-tid="sns-transactions-list">
-  {#if transactions.length === 0 && !loading}
-    {$i18n.wallet.no_transactions}
-  {:else if transactions.length === 0 && loading}
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
-  {:else}
-    <InfiniteScroll on:nnsIntersect={loadMore} disabled={loading || completed}>
-      {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
-        <SnsTransactionCard
-          transactionWithId={transaction}
-          {toSelfTransaction}
-          {account}
-          {rootCanisterId}
-        />
-      {/each}
-    </InfiniteScroll>
-    {#if loading}
-      <Spinner inline />
-    {/if}
-  {/if}
-</div>
+<IcrcTransactionsList
+  on:nnsIntersect={loadMore}
+  {account}
+  {transactions}
+  {loading}
+  {governanceCanisterId}
+  {completed}
+/>

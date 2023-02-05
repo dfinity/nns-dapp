@@ -128,21 +128,18 @@ export const loadSnsSummary = async ({
       ]),
     onLoad: ({ response: data }) =>
       snsQueryStore.updateData({ data, rootCanisterId }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.load_summary",
+          })
+        );
 
-      if (certified !== true) {
-        return;
+        onError();
       }
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.load_summary",
-        })
-      );
-
-      onError();
     },
     logMessage: "Syncing Sns summary",
   });
@@ -163,21 +160,19 @@ export const loadSnsSwapCommitment = async ({
       }),
     onLoad: ({ response: swapCommitment, certified }) =>
       snsSwapCommitmentsStore.setSwapCommitment({ swapCommitment, certified }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.load_swap_commitment",
+          })
+        );
+
+        onError?.();
       }
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.load_swap_commitment",
-        })
-      );
-
-      onError?.();
     },
     logMessage: "Syncing Sns swap commitment",
   });

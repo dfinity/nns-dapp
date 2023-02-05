@@ -4,6 +4,7 @@
 
 import { accountsStore } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
 
 export const nnsAccountsListStore: Readable<Account[]> = derived(
@@ -13,3 +14,5 @@ export const nnsAccountsListStore: Readable<Account[]> = derived(
       ? []
       : [main, ...(subAccounts ?? []), ...(hardwareWallets ?? [])]
 );
+
+export type UniversesAccounts = Record<UniverseCanisterIdText, Account[]>;
