@@ -15,6 +15,7 @@ import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
+import { getNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -41,7 +42,7 @@ import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getAuthenticatedIdentity } from "./auth.services";
+import { getAuthenticatedIdentity, getCurrentIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
@@ -309,8 +310,7 @@ export const getOpenTicket = async ({
   certified: boolean;
 }): Promise<Ticket | undefined> => {
   try {
-    const identity = await getNeuronIdentity();
-
+    const identity = await getCurrentIdentity();
     const { result } = await getOpenTicketApi({
       identity,
       rootCanisterId,

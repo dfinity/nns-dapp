@@ -7,6 +7,8 @@ import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
+  identity,
+  rootCanisterId,
   withTicket,
   certified,
 }: {
@@ -23,9 +25,11 @@ export const getOpenTicket = async ({
     certified,
   });
 
-  await getOpenTicket({ withTicket });
+  const response = await getOpenTicket({ withTicket });
 
   logWithTimestamp(`getOpenTicket complete.`);
+
+  return response;
 };
 
 export const newSaleTicket = async ({

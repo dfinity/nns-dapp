@@ -1,8 +1,8 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
-  import { BottomSheet } from "@dfinity/gix-components";
+  import { getContext, onMount } from "svelte";
+  import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -15,6 +15,10 @@
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+  import { getOpenTicket } from "$lib/services/sns.services";
+  import { Principal } from "@dfinity/principal";
+  import { nonNullish } from "$lib/utils/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -39,6 +43,31 @@
     swapCommitment: $projectDetailStore.swapCommitment,
   });
 
+  let loadingTicket = true;
+  let openTicket: Ticket | undefined;
+
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = nonNullish($projectDetailStore.rootCanisterId)
+    ? Principal.fromText($projectDetailStore.rootCanisterId)
+    : undefined;
+
+  const updateTicket = async () => {
+    console.log("ParticipateButton::updateTicket", rootCanisterId);
+    if (rootCanisterId === undefined) {
+      return;
+    }
+    loadingTicket = true;
+
+    openTicket = await getOpenTicket({
+      withTicket: false,
+      rootCanisterId,
+      certified: true,
+    });
+
+    loadingTicket = false;
+  };
+  $: rootCanisterId, updateTicket();
+
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
@@ -51,13 +80,20 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
+            disabled={loadingTicket || openTicket !== undefined}
             on:click={openModal}
-            class="primary"
+            class="primary participate"
             data-tid="sns-project-participate-button"
-            >{userHasParticipatedToSwap
-              ? $i18n.sns_project_detail.increase_participation
-              : $i18n.sns_project_detail.participate}</button
           >
+            {#if loadingTicket || openTicket !== undefined}
+              <span>
+                <Spinner size="small" inline />
+              </span>
+            {/if}
+            {userHasParticipatedToSwap
+              ? $i18n.sns_project_detail.increase_participation
+              : $i18n.sns_project_detail.participate}
+          </button>
         {:else}
           <Tooltip
             id="sns-project-participate-button-tooltip"
@@ -82,6 +118,13 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
+  .participate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
+  }
 
   [role="toolbar"] {
     display: flex;
