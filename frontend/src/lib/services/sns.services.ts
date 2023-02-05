@@ -337,13 +337,11 @@ export const getOpenTicket = async ({
 
 export const newSaleTicket = async ({
   rootCanisterId,
-  certified,
-  neuronId,
+  subaccount,
   amount_icp_e8s,
 }: {
   rootCanisterId: Principal;
-  certified: boolean;
-  neuronId: NeuronId;
+  subaccount: NeuronId;
   amount_icp_e8s: E8s;
 }): Promise<Ticket | undefined> => {
   try {
@@ -352,7 +350,7 @@ export const newSaleTicket = async ({
     const { result } = await newSaleTicketApi({
       identity,
       rootCanisterId,
-      neuronId,
+      subaccount,
       amount_icp_e8s,
     });
 

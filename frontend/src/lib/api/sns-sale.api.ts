@@ -35,12 +35,12 @@ export const getOpenTicket = async ({
 export const newSaleTicket = async ({
   identity,
   rootCanisterId,
-  neuronId,
+                                      subaccount,
   amount_icp_e8s,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: NeuronId;
+  subaccount: NeuronId;
   amount_icp_e8s: E8s;
 }) => {
   logWithTimestamp(`newSaleTicket call...`);
@@ -51,7 +51,7 @@ export const newSaleTicket = async ({
     certified: true,
   });
 
-  const response = await newSaleTicket({ neuronId, amount_icp_e8s });
+  const response = await newSaleTicket({ subaccount, amount_icp_e8s });
 
   logWithTimestamp(`newSaleTicket complete.`);
 
