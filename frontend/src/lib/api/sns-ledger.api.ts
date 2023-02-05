@@ -118,9 +118,11 @@ export const snsTransfer = async ({
 export const approveSale = async ({
   identity,
   rootCanisterId,
+                                    ticketId,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
+  ticketId: bigint;
 }): Promise<void> => {
   const { approveSale: approveSaleApi } = await wrapper({
     identity,

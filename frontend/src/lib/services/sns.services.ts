@@ -15,7 +15,6 @@ import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { getNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -348,7 +347,7 @@ export const newSaleTicket = async ({
   amount_icp_e8s: E8s;
 }): Promise<Ticket | undefined> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getCurrentIdentity();
 
     const { result } = await newSaleTicketApi({
       identity,
@@ -385,7 +384,7 @@ export const commitTokens = async ({
   ticketId: bigint;
 }): Promise<Ticket | undefined> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getCurrentIdentity();
 
     await commitTokensApi({
       identity,
@@ -423,7 +422,7 @@ export const approveSale = async ({
   ticketId: bigint;
 }): Promise<Ticket | undefined> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getCurrentIdentity();
 
     await approveSaleApi({
       identity,
