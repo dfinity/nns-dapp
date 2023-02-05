@@ -47,8 +47,8 @@
   let openTicket: Ticket | undefined;
 
   let rootCanisterId: Principal | undefined;
-  $: rootCanisterId = nonNullish($projectDetailStore.rootCanisterId)
-    ? Principal.fromText($projectDetailStore.rootCanisterId)
+  $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
+    ? $projectDetailStore.summary.rootCanisterId
     : undefined;
 
   const updateTicket = async () => {
