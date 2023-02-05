@@ -17,10 +17,13 @@ use std::str::FromStr;
 /// Semi-Persistent state, not guaranteed to be preserved across upgrades but persistent enough to store a cache.
 #[derive(Default)]
 pub struct State {
-    /// Configuration that is changed only by deployment, upgrade or similar events.
-    pub config: RefCell<Config>,
     /// Scheduler for getting data from upstream
     pub timer_id: RefCell<Option<TimerId>>,
+    /// State perserved across upgrades, as long as the new data structures
+    /// are compatible.
+    stable: StableState,
+    /// Configuration that is changed only by deployment, upgrade or similar events.
+    pub config: RefCell<Config>,
     /// Data collected about SNSs, dumped as received from upstream.
     pub sns_aggregator: RefCell<SnsCache>,
     /// Pre-signed data that can be served as high performance certified query calls.
@@ -32,6 +35,11 @@ pub struct State {
     pub assets: RefCell<Assets>,
     /// Hashes for the assets, needed for signing.
     pub asset_hashes: RefCell<AssetHashes>,
+}
+
+#[derive(Default, Clone, CandidType, Serialize, Deserialize, Debug, Eq, PartialEq)]
+pub struct StableState {
+
 }
 
 thread_local! {
