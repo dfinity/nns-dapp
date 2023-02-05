@@ -35,6 +35,12 @@ pub struct HttpResponse {
     pub body: ByteBuf,
 }
 
+impl From<String> for HttpResponse {
+    fn from(string: String) -> Self {
+        HttpResponse { status_code: 200, headers: Vec::new(), body: ByteBuf::from(string.as_bytes()) }
+    }
+} 
+
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
 /// A tree containing the hashes of all the assets; used for certification.

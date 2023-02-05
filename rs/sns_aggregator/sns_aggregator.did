@@ -1,0 +1,5 @@
+type Config = record { update_interval_ms : nat64 };
+service : (opt Config) -> {
+  http_request : () -> () query;
+  setup : (opt Config) -> ();
+}

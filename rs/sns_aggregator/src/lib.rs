@@ -8,7 +8,8 @@ mod upstream;
 
 use std::time::Duration;
 
-use assets::{insert_favicon, HttpRequest};
+use assets::{insert_favicon, HttpRequest, HttpResponse};
+use candid::{export_service, candid_method};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
 use state::{Config, STATE};
@@ -29,11 +30,15 @@ fn health_check(name: String) -> String {
 
 /// Web server
 #[export_name = "canister_query http_request"]
+#[candid_method(query)]
 fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 {
     ic_cdk::setup();
     let request = call::arg_data::<(HttpRequest,)>().0;
-    let response = assets::http_request(request);
+    let response = match request.url.as_ref() {
+        "/__candid" => HttpResponse::from(__export_service()),
+        _ => assets::http_request(request),
+    };
     call::reply((response,));
 }
 
@@ -44,13 +49,15 @@ fn post_upgrade(config: Option<Config>) {
 }
 
 #[ic_cdk_macros::init]
+#[candid_method(init)]
 fn init(config: Option<Config>) {
     ic_cdk::api::print("Calling init...");
     setup(config);
 }
 
 /// Code that needs to be run on init and after every upgrade.
-#[ic_cdk_macros::update]
+#[ic_cdk_macros::update] // TODO: Expose this method only in dev builds
+#[candid_method(update)]
 fn setup(config: Option<Config>) {
     ic_cdk::api::print(format!(
         "\n\
@@ -88,4 +95,10 @@ fn setup(config: Option<Config>) {
             ic_cdk::timer::clear_timer(id);
         }
     });
+}
+
+export_service!();
+#[ic_cdk_macros::query]
+fn interface() -> String {
+    __export_service()
 }
