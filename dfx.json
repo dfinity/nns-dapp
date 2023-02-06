@@ -174,7 +174,12 @@
       ],
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+	  "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
+	}
+      }
     },
     "ckbtc_index": {
       "build": [
@@ -182,7 +187,12 @@
       ],
       "candid": "target/ic/ic-icrc1-index.did",
       "wasm": "target/ic/ic-icrc1-index.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+	  "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
+	}
+      }
     }
   },
   "networks": {
