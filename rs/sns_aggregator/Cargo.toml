@@ -9,8 +9,16 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
+base64 = "0.13.0"
 candid = "0.8.2"
-ic-cdk = "0.6.7"
-ic-cdk-macros = "0.6.7"
+ic-cdk = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a", features = ["timers"] }
+ic-cdk-macros = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
+ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
+lazy_static = "1.4.0"
 serde = "1.0.126"
+serde_cbor = "0.11.2"
 serde_derive = "1.0.126"
+serde_bytes = "0.11.5"
+serde_json = "1.0.91"
+sha2 = "0.10.6"
+anyhow = "1.0.68"
