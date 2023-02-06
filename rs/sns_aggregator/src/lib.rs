@@ -81,9 +81,18 @@ fn post_upgrade(config: Option<Config>) {
     setup(config);
 }
 
-/// Code that needs to be run on init and after every upgrade.
-#[ic_cdk_macros::update] // TODO: Expose this method only in dev builds
+/// Method to allow reconfiguration without a wasm change.
+/// 
+/// Note: This _could_ be exposed in production if limited to the controllers
+///  - Controllers can be obtained by the async call: agent.read_state_canister_info(canister_id, "controllers")
+#[cfg(feature = "reconfigurable")]
+#[ic_cdk_macros::update]
 #[candid_method(update)]
+fn reconfigure(config: Option<Config>) {
+    setup(config);
+}
+
+/// Code that needs to be run on init and after every upgrade.
 fn setup(config: Option<Config>) {
     // Note: This is intentionally highly visible in logs.
     ic_cdk::api::print(format!(
