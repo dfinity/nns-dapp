@@ -14,6 +14,7 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { ToastMsg } from "@dfinity/gix-components";
@@ -35,6 +36,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
@@ -218,6 +220,7 @@ describe("neurons-services", () => {
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
+    resetAccountIdentity();
   });
 
   describe("stake new neuron", () => {
@@ -264,7 +267,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expectToastError("minimum of 1 ICP");
+      expectToastError(en.error.amount_not_enough_stake_neuron);
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
@@ -300,7 +303,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expectToastError("not enough funds");
+      expectToastError(en.error.insufficient_funds);
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -357,7 +360,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
     });
 
@@ -372,7 +375,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -411,7 +414,7 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(neuron);
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
@@ -424,7 +427,7 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(notControlledNeuron);
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
@@ -481,7 +484,7 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(neuron);
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
 
@@ -493,7 +496,7 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(notControlledNeuron);
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
 
@@ -520,10 +523,10 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(neuron);
 
-      // Is this really the right error for this situation??
-      expectToastError(
-        "Sorry, none of your principals is the controller of the neuron. Neuron has no controller"
-      );
+      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
+        $minVersion: '2.2.1',
+        $currentVersion: '1.9.9',
+      }));
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
@@ -548,7 +551,7 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -564,7 +567,7 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -590,7 +593,7 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -606,7 +609,7 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -632,7 +635,7 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -663,7 +666,10 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expectToastError("upgrade the Ledger App");
+      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
+        $minVersion: '2.2.1',
+        $currentVersion: '1.9.9',
+      }));
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -679,7 +685,7 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -705,7 +711,7 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
     });
@@ -721,7 +727,7 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
     });
@@ -746,7 +752,7 @@ describe("neurons-services", () => {
         targetNeuronId: neurons[1].neuronId,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
 
@@ -769,7 +775,7 @@ describe("neurons-services", () => {
         targetNeuronId: neuron.neuronId,
       });
 
-      expectToastError("need to have the same controller");
+      expectToastError(en.error.merge_neurons_not_same_controller);
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
 
@@ -820,9 +826,10 @@ describe("neurons-services", () => {
       });
 
       // Is this really the right error for this situation??
-      expectToastError(
-        "Those two neurons cannot be merged. Two neurons with the same id can't be merged."
-      );
+      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
+        $minVersion: '2.2.1',
+        $currentVersion: '1.9.9',
+      }));
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
@@ -846,7 +853,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
 
@@ -861,7 +868,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
   });
@@ -958,7 +965,7 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
 
@@ -973,7 +980,7 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
   });
@@ -991,7 +998,7 @@ describe("neurons-services", () => {
 
       await startDissolving(BigInt(10));
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
 
@@ -1003,7 +1010,7 @@ describe("neurons-services", () => {
 
       await startDissolving(notControlledNeuron.neuronId);
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
   });
@@ -1021,7 +1028,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(BigInt(10));
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
 
@@ -1033,7 +1040,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(notControlledNeuron.neuronId);
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
   });
@@ -1077,7 +1084,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spySplitNeuron).not.toHaveBeenCalled();
     });
 
@@ -1092,7 +1099,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySplitNeuron).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -1129,7 +1136,7 @@ describe("neurons-services", () => {
         followee: controlledNeuron.neuronId,
       });
 
-      expectToastError("same neuron as followee");
+      expectToastError(en.new_followee.same_neuron);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1151,7 +1158,7 @@ describe("neurons-services", () => {
         followee: followee,
       });
 
-      expectToastError("already following this neuron");
+      expectToastError(en.new_followee.already_followed);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1168,7 +1175,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1186,7 +1193,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1285,7 +1292,7 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expectToastError("without any identity");
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1309,7 +1316,7 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expectToastError("controller of the neuron");
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
