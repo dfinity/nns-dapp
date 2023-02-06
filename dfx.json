@@ -756,7 +756,9 @@
         "HOST": "https://benchmarklarge.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [
