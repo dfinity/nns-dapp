@@ -1,3 +1,4 @@
+import { isStringDefinedNotEmpty } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
 
 export const OWN_CANISTER_ID_TEXT = import.meta.env
@@ -14,14 +15,27 @@ export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
 );
 export const WASM_CANISTER_ID = import.meta.env.VITE_WASM_CANISTER_ID;
 
-// TODO: environment variables for ckBTC canister IDs
+// TODO: environment variables for ckBTC "minter" canister ID
 export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
   "q3fc5-haaaa-aaaaa-aaahq-cai"
 );
+
+// We fallback to hardcoded canister IDs because ckBTC is not deployed on every environment at the moment and we do not want to introduce constants that can be undefined
+// Feature flag should be set accordingly. Feature flag is active on mainnet, the fallback are the one to use on mainnet.
+const MAINNET_CKBTC_LEDGER_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
+const MAINNET_CKBTC_INDEX_CANISTER_ID = "n5wcd-faaaa-aaaar-qaaea-cai";
+
+const ENV_CKBTC_LEDGER_CANISTER_ID = import.meta.env.CKBTC_LEDGER_CANISTER_ID;
+const ENV_CKBTC_INDEX_CANISTER_ID = import.meta.env.CKBTC_INDEX_CANISTER_ID;
+
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
-  "q4eej-kyaaa-aaaaa-aaaha-cai"
+  isStringDefinedNotEmpty(ENV_CKBTC_LEDGER_CANISTER_ID)
+    ? ENV_CKBTC_LEDGER_CANISTER_ID
+    : MAINNET_CKBTC_LEDGER_CANISTER_ID
 );
 export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
-  "si2b5-pyaaa-aaaaa-aaaja-cai"
+  isStringDefinedNotEmpty(ENV_CKBTC_INDEX_CANISTER_ID)
+    ? ENV_CKBTC_INDEX_CANISTER_ID
+    : MAINNET_CKBTC_INDEX_CANISTER_ID
 );
 export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;
