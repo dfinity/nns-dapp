@@ -42,16 +42,16 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
     call::reply((response,));
 }
 
-#[ic_cdk_macros::post_upgrade]
-fn post_upgrade(config: Option<Config>) {
-    ic_cdk::api::print("Calling post_upgrade...");
-    setup(config);
-}
-
 #[ic_cdk_macros::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
     ic_cdk::api::print("Calling init...");
+    setup(config);
+}
+
+#[ic_cdk_macros::post_upgrade]
+fn post_upgrade(config: Option<Config>) {
+    ic_cdk::api::print("Calling post_upgrade...");
     setup(config);
 }
 

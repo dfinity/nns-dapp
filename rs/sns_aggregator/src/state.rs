@@ -25,7 +25,7 @@ pub struct State {
     /// Hashes for the assets, needed for signing.
     ///
     /// Note: It would be nice to store the asset hashes in stable memory, however RBTree does not support
-    /// the required macros for serialization and deserialization.
+    /// the required macros for serialization and deserialization.  Instead, we recompute this after upgrade.
     pub asset_hashes: RefCell<AssetHashes>,
 }
 
