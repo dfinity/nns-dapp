@@ -1,5 +1,18 @@
 type Config = record { update_interval_ms : nat64 };
+type HttpHeader = record { text; text };
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec HttpHeader;
+};
+type HttpResponse = record  {
+    status_code: nat16;
+    headers: vec record HttpHeader;
+    body: vec nat8;
+};
+
 service : (opt Config) -> {
-  http_request : () -> () query;
-  setup : (opt Config) -> ();
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  reconfigure : (opt Config) -> ();
 }
