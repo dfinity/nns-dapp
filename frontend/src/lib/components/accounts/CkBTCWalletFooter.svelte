@@ -30,7 +30,7 @@
     });
 
     try {
-      // TODO: ckBTC - can we derive the address in NNS-dapp frontend and, if not, should we keep track of the address in a store?
+      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
       const btcAddress = await getBTCAddress();
 
       emit<CkBTCWalletModal>({

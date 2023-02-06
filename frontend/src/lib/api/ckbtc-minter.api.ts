@@ -16,7 +16,7 @@ export const getBTCAddress = async ({
     canister: { getBtcAddress: getBTCAddressApi },
   } = await ckBTCMinterCanister({ identity });
 
-  // We use the identity to follow NNS-dapp's scheme but, if it would not be provided it would be the same result as if not provided, the "caller" is used as owner.
+  // We use the identity to follow NNS-dapp's scheme but, if it would not be provided, it would be the same result. If "owner" is not provided, the minter canister uses the "caller" as a fallback.
   // TODO: Support subaccounts
   const address = await getBTCAddressApi({
     owner: identity.getPrincipal(),
