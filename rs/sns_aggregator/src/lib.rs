@@ -82,7 +82,7 @@ fn post_upgrade(config: Option<Config>) {
 }
 
 /// Method to allow reconfiguration without a wasm change.
-/// 
+///
 /// Note: This _could_ be exposed in production if limited to the controllers
 ///  - Controllers can be obtained by the async call: agent.read_state_canister_info(canister_id, "controllers")
 #[cfg(feature = "reconfigurable")]
