@@ -824,7 +824,6 @@ describe("neurons-services", () => {
         targetNeuronId: neuron2.neuronId,
       });
 
-      // Is this really the right error for this situation??
       expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
         $minVersion: '2.2.1',
         $currentVersion: '1.9.9',
