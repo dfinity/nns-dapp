@@ -167,6 +167,22 @@
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
       "type": "custom"
+    },
+    "ckbtc_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-ledger.did",
+      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "type": "custom"
+    },
+    "ckbtc_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-index.did",
+      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "type": "custom"
     }
   },
   "networks": {
