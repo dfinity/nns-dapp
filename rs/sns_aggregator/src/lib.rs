@@ -19,12 +19,13 @@ use types::Icrc1Value;
 ///
 /// TODO: Provide useful metrics at http://${canister_domain}/metrics
 #[ic_cdk_macros::query]
-fn health_check(name: String) -> String {
+fn health_check() -> String {
     STATE.with(|state| {
-        let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update;
-        let last_update = state.stable.borrow().sns_cache.borrow().last_update;
+        let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update / 1000000000;
+        let last_update = state.stable.borrow().sns_cache.borrow().last_update / 1000000000;
         let num_to_get = state.stable.borrow().sns_cache.borrow().sns_to_get.len();
-        format!("Hello, {name}!  The last partial update was at: {last_partial_update}.  Last update cycle started at {last_update} with {num_to_get} outstanding.")
+        let num_sns = state.stable.borrow().sns_cache.borrow().all_sns.len();
+        format!("The last partial update was at: {last_partial_update}.  Last update cycle started at {last_update} with {num_to_get}/{num_sns} outstanding.")
     })
 }
 

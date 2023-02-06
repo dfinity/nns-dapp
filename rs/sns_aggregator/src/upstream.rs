@@ -58,6 +58,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
             );
             let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
             STATE.with(|state| {
+                state.stable.borrow().sns_cache.borrow_mut().all_sns = instances.clone();
                 state.stable.borrow().sns_cache.borrow_mut().sns_to_get = instances;
             });
             Ok(())
