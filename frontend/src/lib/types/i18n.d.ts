@@ -111,6 +111,7 @@ interface I18nError {
   fetch_transactions: string;
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
+  adding_permissions: string;
   canister_invalid_transaction: string;
 }
 
