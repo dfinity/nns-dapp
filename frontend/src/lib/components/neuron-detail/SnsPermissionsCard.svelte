@@ -24,7 +24,7 @@
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <CardInfo>
-  <h3 slot="start">Permissions</h3>
+  <h3 slot="start">Permissions TESTNET ONLY</h3>
 
   {#each neuron?.permissions || [] as permission}
     <TagsList id="permissions">

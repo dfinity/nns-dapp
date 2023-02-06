@@ -50,34 +50,37 @@
   };
 
   const add = async () => {
-    if (principal !== undefined) {
-      try {
-        const identity = await getCurrentIdentity();
-        startBusy({ initiator: "dev-add-sns-neuron-permissions" });
-        await addNeuronPermissions({
-          permissions: selectablePermissions
-            .filter((p) => p.checked)
-            .map((p) => p.permission),
-          identity,
-          principal,
-          rootCanisterId,
-          neuronId,
-        });
-        await reloadNeuron();
-        dispatcher("nnsClose");
-      } catch (err) {
-        console.error(err);
-        toastsError({ labelKey: "error.adding_permissions", err });
-      } finally {
-        stopBusy("dev-add-sns-neuron-permissions");
-      }
+    if (principal === undefined) {
+      return;
+    }
+    try {
+      const identity = await getCurrentIdentity();
+      startBusy({ initiator: "dev-add-sns-neuron-permissions" });
+      await addNeuronPermissions({
+        permissions: selectablePermissions
+          .filter((p) => p.checked)
+          .map((p) => p.permission),
+        identity,
+        principal,
+        rootCanisterId,
+        neuronId,
+      });
+      await reloadNeuron();
+      dispatcher("nnsClose");
+    } catch (err) {
+      console.error(err);
+      toastsError({ labelKey: "error.adding_permissions", err });
+    } finally {
+      stopBusy("dev-add-sns-neuron-permissions");
     }
   };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  <svelte:fragment slot="title"
+    >{`${currentStep?.title} - TESTNET ONLY`}</svelte:fragment
+  >
 
   {#if currentStep.name === "AddPrincipal"}
     <AddPrincipal
