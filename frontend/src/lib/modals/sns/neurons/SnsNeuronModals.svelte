@@ -28,6 +28,8 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import AddPermissionsModal from "./AddPermissionsModal.svelte";
 
   // Modal events
 
@@ -147,6 +149,15 @@
         <SnsIncreaseStakeNeuronModal
           {rootCanisterId}
           {token}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+        />
+      {/if}
+
+      {#if type === "dev-add-permissions" && IS_TESTNET}
+        <AddPermissionsModal
+          {rootCanisterId}
           {neuronId}
           {reloadNeuron}
           on:nnsClose={close}
