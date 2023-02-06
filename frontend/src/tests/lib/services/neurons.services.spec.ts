@@ -522,10 +522,12 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(neuron);
 
-      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
-        $minVersion: '2.2.1',
-        $currentVersion: '1.9.9',
-      }));
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
@@ -665,10 +667,12 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
-        $minVersion: '2.2.1',
-        $currentVersion: '1.9.9',
-      }));
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -824,10 +828,12 @@ describe("neurons-services", () => {
         targetNeuronId: neuron2.neuronId,
       });
 
-      expectToastError(replacePlaceholders(en.error__ledger.version_not_supported, {
-        $minVersion: '2.2.1',
-        $currentVersion: '1.9.9',
-      }));
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
