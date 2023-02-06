@@ -245,6 +245,27 @@ describe("icrc-transaction utils", () => {
         })
       ).toBeUndefined();
     });
+
+    it("returns undefined if empty data", () => {
+      const rootCanisterId = mockSnsMainAccount.principal;
+      const transactions = [];
+      const store: IcrcTransactionsStoreData = {
+        [rootCanisterId.toText()]: {
+          [mockSnsMainAccount.identifier]: {
+            transactions,
+            completed: false,
+            oldestTxId: BigInt(1234),
+          },
+        },
+      };
+      expect(
+        getOldestTxIdFromStore({
+          store,
+          canisterId: rootCanisterId,
+          account: mockSnsMainAccount,
+        })
+      ).toBeUndefined();
+    });
   });
 
   describe("isTransactionsCompleted", () => {

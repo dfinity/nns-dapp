@@ -8,7 +8,7 @@
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <CardInfo>
-  <h3 slot="start">Proposals</h3>
+  <h3 slot="start">Proposals TESTNET ONLY</h3>
 
   <div>
     <button
