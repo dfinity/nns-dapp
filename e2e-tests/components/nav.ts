@@ -1,5 +1,4 @@
-export const MENU_SELECTOR = '[data-tid="menu"]';
-export const MENU_CLOSE_SELECTOR = '[data-tid="menu-close"]';
+export const MENU_TOGGLE_SELECTOR = '[data-tid="menu-toggle"]';
 
 export const NAV_ACCOUNTS_SELECTOR: string = `[data-tid="menuitem-accounts"]`;
 export const NAV_NEURONS_SELECTOR: string = `[data-tid="menuitem-neurons"]`;

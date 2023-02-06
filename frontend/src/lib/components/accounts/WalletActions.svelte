@@ -2,16 +2,14 @@
   import type { AccountType } from "$lib/types/account";
   import { getContext } from "svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "$lib/types/selected-account.context";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
   import RenameSubAccountButton from "./RenameSubAccountButton.svelte";
   import HardwareWalletShowActionButton from "./HardwareWalletShowActionButton.svelte";
   import HardwareWalletListNeuronsButton from "./HardwareWalletListNeuronsButton.svelte";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let type: AccountType | undefined;
   $: type = $store.account?.type;
@@ -29,12 +27,9 @@
 </div>
 
 <style lang="scss">
-  div {
-    display: flex;
-    justify-content: flex-end;
+  @use "../../themes/mixins/section";
 
-    > :global(*:not(:last-of-type)) {
-      margin-right: var(--padding);
-    }
+  div {
+    @include section.actions;
   }
 </style>

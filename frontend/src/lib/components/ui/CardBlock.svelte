@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Collapsible from "./Collapsible.svelte";
+  import { Collapsible } from "@dfinity/gix-components";
 
   export let expandable = false;
   export let limitHeight = true;

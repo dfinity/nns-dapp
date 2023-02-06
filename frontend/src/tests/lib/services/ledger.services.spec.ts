@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+import * as agent from "$lib/api/agent.api";
 import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
@@ -15,7 +19,6 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
-import * as agent from "$lib/utils/agent.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
@@ -44,13 +47,13 @@ describe("ledger-services", () => {
     describe("success", () => {
       const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
-      beforeAll(() =>
+      beforeAll(() => {
         jest
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          )
-      );
+          );
+      });
 
       afterAll(() => {
         jest.clearAllMocks();
@@ -84,14 +87,14 @@ describe("ledger-services", () => {
         });
       });
 
-      it("should display a toast for the error assuming the user has cancelled the process", async () => {
+      it("should display a toast for the error assuming the browser is not supported", async () => {
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.access_denied",
+          labelKey: "error__ledger.browser_not_supported",
         });
 
         spyToastError.mockRestore();
@@ -123,7 +126,7 @@ describe("ledger-services", () => {
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
       jest
-        .spyOn(authServices, "getIdentity")
+        .spyOn(authServices, "getAuthenticatedIdentity")
         .mockImplementation(() => Promise.resolve(mockGetIdentity()));
     });
 

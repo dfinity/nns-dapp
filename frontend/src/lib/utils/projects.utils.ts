@@ -1,25 +1,23 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { SnsFullProject } from "$lib/stores/projects.store";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type {
   SnsSummary,
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
-import { formatToken } from "./icp.utils";
 import { getCommitmentE8s } from "./sns.utils";
+import { formatToken } from "./token.utils";
 
-const filterProjectsStatus = ({
+export const filterProjectsStatus = ({
   swapLifecycle,
   projects,
 }: {
   swapLifecycle: SnsSwapLifecycle;
   projects: SnsFullProject[] | undefined;
-}) =>
+}): SnsFullProject[] | undefined =>
   projects?.filter(
     ({
       summary: {
@@ -30,7 +28,7 @@ const filterProjectsStatus = ({
 
 export const filterCommittedProjects = (
   projects: SnsFullProject[] | undefined
-) =>
+): SnsFullProject[] | undefined =>
   filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Committed,
     projects,
@@ -189,7 +187,10 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $commitment: formatToken({ value: totalCommitment }),
+        $newCommitment: formatToken({ value: amount.toE8s() }),
+        $currentCommitment: formatToken({
+          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        }),
         $maxCommitment: formatToken({
           value: project.summary.swap.params.max_participant_icp_e8s,
         }),
@@ -217,6 +218,3 @@ export const validParticipation = ({
   }
   return { valid: true };
 };
-
-export const isNnsProject = (canisterId: Principal): boolean =>
-  canisterId.toText() === OWN_CANISTER_ID.toText();

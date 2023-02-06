@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import DissolveActionButton from "$lib/components/neuron-detail/actions/DissolveActionButton.svelte";
 import {
   startDissolving,
   stopDissolving,
@@ -10,6 +9,8 @@ import {
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
+import DissolveActionButtonTest from "./DissolveActionButtonTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -25,21 +26,27 @@ describe("DissolveActionButton", () => {
   });
 
   it("renders start dissolve message when neuron is locked", () => {
-    const { getByText } = render(DissolveActionButton, {
+    const { getByText } = render(DissolveActionButtonTest, {
       props: {
-        neuronId: BigInt(10),
-        neuronState: NeuronState.Locked,
+        neuron: {
+          ...mockNeuron,
+          neuronId: BigInt(10),
+          state: NeuronState.Locked,
+        },
       },
     });
 
     expect(getByText(en.neuron_detail.start_dissolving)).toBeInTheDocument();
   });
 
-  it("renders stop dissolve message when neuron is dissolving", () => {
-    const { getByText } = render(DissolveActionButton, {
+  it("renders stop dissolve message when neuron is dissolving", async () => {
+    const { getByText } = render(DissolveActionButtonTest, {
       props: {
-        neuronId: BigInt(10),
-        neuronState: NeuronState.Dissolving,
+        neuron: {
+          ...mockNeuron,
+          neuronId: BigInt(10),
+          state: NeuronState.Dissolving,
+        },
       },
     });
 
@@ -47,10 +54,13 @@ describe("DissolveActionButton", () => {
   });
 
   it("calls startDissolving action on click and LOCKED state", async () => {
-    const { container, queryByTestId } = render(DissolveActionButton, {
+    const { container, queryByTestId } = render(DissolveActionButtonTest, {
       props: {
-        neuronId: BigInt(10),
-        neuronState: NeuronState.Locked,
+        neuron: {
+          ...mockNeuron,
+          neuronId: BigInt(10),
+          state: NeuronState.Locked,
+        },
       },
     });
 
@@ -72,10 +82,13 @@ describe("DissolveActionButton", () => {
   });
 
   it("calls stopDissolving action on click and DISSOLVING state", async () => {
-    const { container, queryByTestId } = render(DissolveActionButton, {
+    const { container, queryByTestId } = render(DissolveActionButtonTest, {
       props: {
-        neuronId: BigInt(10),
-        neuronState: NeuronState.Dissolving,
+        neuron: {
+          ...mockNeuron,
+          neuronId: BigInt(10),
+          state: NeuronState.Dissolving,
+        },
       },
     });
 

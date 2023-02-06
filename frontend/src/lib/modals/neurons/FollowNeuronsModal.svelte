@@ -1,23 +1,15 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId } from "@dfinity/nns";
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { Modal } from "@dfinity/gix-components";
 
-  export let neuron: NeuronInfo;
+  export let neuronId: NeuronId;
 </script>
 
-<LegacyModal size="big" on:nnsClose>
-  <span slot="title">{$i18n.neurons.follow_neurons_screen}</span>
-  <section>
-    <EditFollowNeurons {neuron} />
-  </section>
-</LegacyModal>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  section {
-    @include modal.section;
-  }
-</style>
+<Modal on:nnsClose>
+  <svelte:fragment slot="title"
+    >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
+  >
+  <EditFollowNeurons {neuronId} />
+</Modal>

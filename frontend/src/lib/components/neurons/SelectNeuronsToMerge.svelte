@@ -2,7 +2,6 @@
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
@@ -13,7 +12,7 @@
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import NeuronCard from "./NeuronCard.svelte";
+  import NnsNeuronCard from "./NnsNeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];
 
@@ -53,12 +52,12 @@
   $: isMaxSelection = selectedNeuronIds.length >= MAX_NEURONS_MERGED;
 </script>
 
-<div class="wrapper">
+<div class="wrapper legacy">
   <ul class="items">
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}
       <li>
         {#if mergeable}
-          <NeuronCard
+          <NnsNeuronCard
             on:click={() => toggleNeuronId(neuron.neuronId)}
             role="checkbox"
             {selected}
@@ -69,13 +68,14 @@
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
             text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
-            <NeuronCard disabled role="checkbox" {neuron} />
+            <NnsNeuronCard disabled role="checkbox" {neuron} />
           </Tooltip>
         {/if}
       </li>
     {/each}
   </ul>
-  <FooterModal>
+
+  <div class="toolbar">
     <button on:click={() => dispatcher("nnsClose")} class="secondary"
       >{$i18n.core.cancel}</button
     >
@@ -86,31 +86,16 @@
       disabled={!isMaxSelection}
       >{$i18n.neurons.merge_neurons_modal_merge_button}</button
     >
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
-  .wrapper {
-    position: relative;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-  }
-
   .items {
-    max-height: calc(100% - var(--padding-8x));
-    width: calc(100% - 2px);
-    overflow-y: scroll;
-
     padding: 0;
     list-style-type: none;
 
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     // Needed to have the outline of the NeuronCard visible when selected
     li {

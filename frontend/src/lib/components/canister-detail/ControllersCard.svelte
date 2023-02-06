@@ -7,7 +7,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import Value from "$lib/components/ui/Value.svelte";
+  import { Value } from "@dfinity/gix-components";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
   import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
 

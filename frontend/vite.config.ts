@@ -1,7 +1,7 @@
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 
@@ -14,28 +14,56 @@ const config: UserConfig = {
   build: {
     target: "es2020",
     rollupOptions: {
-      // Polyfill Buffer for production build
-      plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
+      output: {
+        manualChunks: (id) => {
+          const folder = dirname(id);
+
+          if (
+            ["@sveltejs", "svelte", "@dfinity/gix-components"].find((lib) =>
+              folder.includes(lib)
+            ) === undefined &&
+            folder.includes("node_modules")
+          ) {
+            return "vendor";
+          }
+
+          if (
+            [
+              "frontend/src/lib/api",
+              "frontend/src/lib/canisters",
+              "frontend/src/lib/constants",
+              "frontend/src/lib/derived",
+              "frontend/src/lib/identities",
+              "frontend/src/lib/keys",
+              "frontend/src/lib/proxy",
+              "frontend/src/lib/services",
+              "frontend/src/lib/stores",
+              "frontend/src/lib/types",
+              "frontend/src/lib/utils",
+            ].find((module) => folder.includes(module)) !== undefined
+          ) {
+            return "dapp";
+          }
+        },
+      },
+      // Polyfill Buffer for production build. The hardware wallet needs Buffer.
+      plugins: [
+        inject({
+          include: ["node_modules/@ledgerhq/**"],
+          modules: { Buffer: ["buffer", "Buffer"] },
+        }),
+      ],
     },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
   },
-  // Polyfill buffer for development. Thanks solution shared by chovyfu on the Discord channel.
-  // https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
         global: "globalThis",
       },
-      // Enable esbuild polyfill plugins
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          process: true,
-          buffer: true,
-        }),
-      ],
     },
   },
 };

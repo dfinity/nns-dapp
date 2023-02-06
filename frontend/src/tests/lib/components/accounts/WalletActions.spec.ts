@@ -3,30 +3,19 @@
  */
 
 import WalletActions from "$lib/components/accounts/WalletActions.svelte";
-import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "$lib/types/selected-account.context";
 import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
-import ContextWrapperTest from "../ContextWrapperTest.svelte";
+import WalletContextTest from "./WalletContextTest.svelte";
 
 describe("WalletActions", () => {
   const renderWalletActions = (account) =>
-    render(ContextWrapperTest, {
+    render(WalletContextTest, {
       props: {
-        contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
-        contextValue: {
-          store: writable<SelectedAccountStore>({
-            account,
-          }),
-        } as SelectedAccountContext,
-        Component: WalletActions,
+        account,
+        testComponent: WalletActions,
       },
     });
 

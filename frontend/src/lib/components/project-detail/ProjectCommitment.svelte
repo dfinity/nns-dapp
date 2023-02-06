@@ -3,7 +3,7 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
   import {

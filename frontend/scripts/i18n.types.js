@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-const { writeFileSync } = require("fs");
-const prettier = require("prettier");
-
-const en = require("../src/lib/i18n/en.json");
-const en_governance = require("../src/lib/i18n/en.governance.json");
+import { writeFileSync } from "fs";
+import prettier from "prettier";
+import en_governance from "../src/lib/i18n/en.governance.json" assert { type: "json" };
+import en from "../src/lib/i18n/en.json" assert { type: "json" };
 
 const mapKeys = (entries) =>
   Object.keys(entries).map((key) => {

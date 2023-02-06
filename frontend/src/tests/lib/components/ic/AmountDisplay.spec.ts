@@ -3,7 +3,7 @@
  */
 
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-import { formatToken } from "$lib/utils/icp.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";

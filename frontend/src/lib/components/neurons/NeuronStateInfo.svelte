@@ -10,41 +10,29 @@
 
   let stateInfo: StateInfo | undefined;
   $: stateInfo = getStateInfo(state);
-
-  let iconStyle: string;
-  $: iconStyle =
-    stateInfo?.color !== undefined ? `color: ${stateInfo.color};` : "";
 </script>
 
 {#if stateInfo !== undefined}
-  <div class="info">
-    <p style={iconStyle} class="status">
-      {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
-      <svelte:component this={stateInfo.Icon} />
-    </p>
+  <div class="status" data-tid="neuron-state-info">
+    <svelte:component this={stateInfo.Icon} />
+    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
   </div>
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/display";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .status {
     display: inline-flex;
-    color: var(--value-color);
-
-    :global {
-      svg {
-        margin-left: var(--padding-0_5x);
-      }
-    }
-  }
-
-  .info {
-    @include display.space-between;
+    gap: var(--padding-0_5x);
     align-items: center;
 
-    p {
-      margin: 0;
+    border-radius: var(--border-radius-0_5x);
+
+    @include fonts.small;
+
+    :global(svg) {
+      color: var(--tertiary);
     }
   }
 </style>

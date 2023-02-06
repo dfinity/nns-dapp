@@ -6,6 +6,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
 
   export let controllers: string[];
 
@@ -29,3 +30,5 @@
 </script>
 
 <ControllersCard on:nnsClose />
+
+<CanisterDetailModals />

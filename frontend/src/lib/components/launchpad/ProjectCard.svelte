@@ -2,13 +2,14 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
-  import type { SnsFullProject } from "$lib/stores/projects.store";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { Card } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { goto } from "$app/navigation";
+  import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
 
   export let project: SnsFullProject;
 
@@ -29,17 +30,16 @@
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
-  const showProject = () => {
-    routeStore.navigate({
-      path: `${AppPath.ProjectDetail}/${project.rootCanisterId.toText()}`,
-    });
-  };
+  const showProject = async () =>
+    await goto(
+      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
+    );
 </script>
 
 <Card
   role="link"
   on:click={showProject}
-  highlighted={commitmentE8s !== undefined}
+  theme={commitmentE8s !== undefined ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
@@ -50,12 +50,14 @@
 
   <ProjectCardSwapInfo {project} />
 
-  <!-- TODO L2-751: handle fetching errors -->
-  {#if swapCommitment === undefined}
-    <div class="spinner">
-      <Spinner size="small" inline />
-    </div>
-  {/if}
+  <SignedInOnly>
+    <!-- TODO L2-751: handle fetching errors -->
+    {#if swapCommitment === undefined}
+      <div class="spinner">
+        <Spinner size="small" inline />
+      </div>
+    {/if}
+  </SignedInOnly>
 </Card>
 
 <style lang="scss">

@@ -5,6 +5,8 @@
 import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
+import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("AddHotkeyButton", () => {
   afterEach(() => {
@@ -12,9 +14,10 @@ describe("AddHotkeyButton", () => {
   });
 
   it("renders add hotkey message", () => {
-    const { getByText } = render(AddHotkeyButton, {
+    const { getByText } = render(NeuronContextTest, {
       props: {
-        neuronId: BigInt(10),
+        neuron: mockNeuron,
+        testComponent: AddHotkeyButton,
       },
     });
 
@@ -22,9 +25,10 @@ describe("AddHotkeyButton", () => {
   });
 
   it("opens Add Hotkey Neuron Modal", async () => {
-    const { container, queryByTestId } = render(AddHotkeyButton, {
+    const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
-        neuronId: BigInt(10),
+        neuron: mockNeuron,
+        testComponent: AddHotkeyButton,
       },
     });
 

@@ -1,3 +1,4 @@
+import { resetAgents } from "$lib/api/agent.api";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
@@ -50,34 +51,28 @@ const initAuthStore = () => {
       });
     },
 
-    signIn: () =>
-      new Promise<void>((resolve, reject) => {
-        // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
-        // @see `Guard.svelte`
-        if (authClient === undefined) {
-          reject();
-          return;
-        }
+    signIn: async (onError: (error?: string) => void) => {
+      authClient = authClient ?? (await createAuthClient());
 
-        authClient?.login({
-          identityProvider: IDENTITY_SERVICE_URL,
-          maxTimeToLive: AUTH_SESSION_DURATION,
-          onSuccess: () => {
-            update((state: AuthStore) => ({
-              ...state,
-              identity: authClient?.getIdentity(),
-            }));
-
-            resolve();
-          },
-          onError: reject,
-        });
-      }),
+      await authClient?.login({
+        identityProvider: IDENTITY_SERVICE_URL,
+        maxTimeToLive: AUTH_SESSION_DURATION,
+        onSuccess: () => {
+          update((state: AuthStore) => ({
+            ...state,
+            identity: authClient?.getIdentity(),
+          }));
+        },
+        onError,
+      });
+    },
 
     signOut: async () => {
       const client: AuthClient = authClient ?? (await createAuthClient());
 
       await client.logout();
+
+      resetAgents();
 
       // We currently do not have issue because the all screen is reloaded after sign-out.
       // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.

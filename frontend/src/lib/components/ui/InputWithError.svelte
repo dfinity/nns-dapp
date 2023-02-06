@@ -18,6 +18,7 @@
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
+  export let showInfo = true;
 </script>
 
 <div class="wrapper" class:error>
@@ -32,13 +33,14 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
-    showInfo={$$slots.label !== undefined || $$slots.additional !== undefined}
+    {showInfo}
     bind:value
     on:blur
-    on:input
+    on:nnsInput
   >
+    <slot name="start" slot="start" />
     <slot name="label" slot="label" />
-    <slot name="additional" slot="additional" />
+    <slot name="end" slot="end" />
   </Input>
 
   {#if error}

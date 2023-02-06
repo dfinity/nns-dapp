@@ -3,7 +3,9 @@
  */
 
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {
@@ -16,25 +18,39 @@ describe("AccountMenu", () => {
     expect(() => getByRole("menu")).toThrow();
   });
 
-  it("should be open", async () => {
-    const renderResult = render(AccountMenu);
+  it("should display a sign-in button if not signed in", () => {
+    const { getByTestId } = render(AccountMenu);
 
-    await show(renderResult);
+    expect(getByTestId("toolbar-login")).not.toBeNull();
   });
 
-  it("should display logout button", async () => {
-    const renderResult = render(AccountMenu);
+  describe("signed in", () => {
+    beforeAll(() =>
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe)
+    );
 
-    await show(renderResult);
+    it("should be open", async () => {
+      const renderResult = render(AccountMenu);
 
-    expect(renderResult.getByTestId("logout")).not.toBeNull();
-  });
+      await show(renderResult);
+    });
 
-  it("should display theme toggle", async () => {
-    const renderResult = render(AccountMenu);
+    it("should display theme toggle", async () => {
+      const renderResult = render(AccountMenu);
 
-    await show(renderResult);
+      await show(renderResult);
 
-    expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+      expect(renderResult.getByTestId("theme-toggle")).not.toBeNull();
+    });
+
+    it("should display logout button if signed in", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      expect(renderResult.getByTestId("logout")).not.toBeNull();
+    });
   });
 });

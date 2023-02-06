@@ -2,20 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
-import NeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import { dispatchIntersecting } from "$lib/directives/intersection.directives";
+import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { routeStore } from "$lib/stores/route.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import en from "../../mocks/i18n.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { mockVoteRegistration } from "../../mocks/proposal.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
 
-jest.mock("$lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn().mockResolvedValue(undefined),
   };
@@ -38,47 +36,72 @@ describe("NeuronDetail", () => {
   const querySkeleton = (container: HTMLElement): HTMLElement | null =>
     container.querySelector('[data-tid="skeleton-card"]');
 
-  jest
-    .spyOn(routeStore, "subscribe")
-    .mockImplementation(
-      mockRouteStoreSubscribe(`${CONTEXT_PATH}/aaaaa-aa/neuron/${neuronId}`)
-    );
-
   afterEach(() => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
-
-    jest.clearAllMocks();
   });
 
+  const props = {
+    neuronIdText: `${neuronId}`,
+  };
+
   it("should display skeletons", () => {
-    const { container } = render(NeuronDetail);
+    const { container } = render(NnsNeuronDetail, props);
 
     expect(querySkeleton(container)).not.toBeNull();
   });
 
-  it("should render a title with neuron ID", () => {
-    render(NeuronDetail);
+  const testTitle = async ({
+    intersecting,
+    text,
+  }: {
+    intersecting: boolean;
+    text: string;
+  }) => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
+
+    const element = getByTestId("neuron-id-title") as HTMLElement;
+    dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
+    await waitFor(() => expect(title).toEqual(text));
+  };
 
-    expect(title).toEqual(`${en.core.icp} – ${neuronId}`);
-  });
+  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+    await testTitle({
+      intersecting: false,
+      text: `${en.core.icp} – ${neuronId}`,
+    }));
+
+  it("should render a static title if title is intersecting viewport", async () =>
+    await testTitle({ intersecting: true, text: en.neuron_detail.title }));
 
   it("should hide skeletons after neuron data are available", async () => {
-    const { container } = render(NeuronDetail);
+    const { container } = render(NnsNeuronDetail, props);
 
     fillNeuronStore();
 
     await waitFor(() => expect(querySkeleton(container)).toBeNull());
   });
 
-  it("should show skeletons when neuron is in voting process", async () => {
-    const { container } = render(NeuronDetail);
+  it("should render nns project name", async () => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
 
     fillNeuronStore();
 
-    waitFor(() => expect(querySkeleton(container)).toBeNull());
+    await waitFor(() => expect(getByTestId("projects-summary")).not.toBeNull());
+  });
+
+  it("should show skeletons when neuron is in voting process", async () => {
+    const { container } = render(NnsNeuronDetail, props);
+
+    fillNeuronStore();
+
+    await waitFor(() => expect(querySkeleton(container)).toBeNull());
 
     voteRegistrationStore.add({
       ...mockVoteRegistration,

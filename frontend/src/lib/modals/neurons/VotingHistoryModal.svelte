@@ -1,10 +1,10 @@
 <script lang="ts">
-  import LegacyModal from "$lib/modals/LegacyModal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import { Spinner } from "@dfinity/gix-components";
-  import NeuronCard from "$lib/components/neurons/NeuronCard.svelte";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { createEventDispatcher, onMount } from "svelte";
   import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
@@ -34,22 +34,16 @@
   });
 </script>
 
-<LegacyModal testId="voting-history-modal" on:nnsClose size="big">
+<Modal testId="voting-history-modal" on:nnsClose>
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
-    <div class="content">
-      <NeuronCard proposerNeuron {neuron} />
+    <div class="content legacy">
+      <NnsNeuronCard proposerNeuron {neuron} />
 
       <VotingHistoryCard {neuron} />
     </div>
   {:else}
     <Spinner />
   {/if}
-</LegacyModal>
-
-<style lang="scss">
-  .content {
-    padding: var(--padding-2x);
-  }
-</style>
+</Modal>

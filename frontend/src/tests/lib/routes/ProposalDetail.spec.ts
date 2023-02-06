@@ -2,68 +2,66 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { neuronsStore } from "$lib/stores/neurons.store";
-import { proposalsStore } from "$lib/stores/proposals.store";
-import { routeStore } from "$lib/stores/route.store";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { page } from "$mocks/$app/stores";
+import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import en from "../../mocks/i18n.mock";
-import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
-import { buildMockNeuronsStoreSubscribe } from "../../mocks/neurons.mock";
 import {
-  mockEmptyProposalsStoreSubscribe,
-  mockProposals,
-} from "../../mocks/proposals.store.mock";
-import { mockRouteStoreSubscribe } from "../../mocks/route.store.mock";
-import { silentConsoleErrors } from "../../mocks/utils.mock";
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../../mocks/sns-projects.mock";
 
 describe("ProposalDetail", () => {
-  const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
-
-  const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
-
-  beforeAll(silentConsoleErrors);
-
-  beforeEach(() => {
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
-    jest
-      .spyOn(routeStore, "subscribe")
-      .mockImplementation(
-        mockRouteStoreSubscribe(`/#/proposal/${mockProposals[0].id}`)
-      );
-
-    jest
-      .spyOn(proposalsStore, "subscribe")
-      .mockImplementation(mockEmptyProposalsStoreSubscribe);
-
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation((): LedgerCanister => mockLedgerCanister);
-
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
+    // Reset to default value
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+      },
+      routeId: AppPath.Proposal,
+    });
   });
 
-  it("should render loading neurons", async () => {
-    const { getByText } = render(ProposalDetail);
+  afterAll(jest.clearAllMocks);
 
-    await waitFor(() =>
-      expect(
-        getByText(en.proposal_detail.loading_neurons, { exact: false })
-      ).toBeInTheDocument()
-    );
+  it("should render NnsProposalDetail by default", () => {
+    const { queryByTestId } = render(ProposalDetail, {
+      props: {
+        proposalIdText: undefined,
+      },
+    });
+
+    expect(queryByTestId("proposal-details-grid")).toBeInTheDocument();
+  });
+
+  describe("SnsProposalDetail", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(snsProjectsStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Proposal,
+      });
+    });
+
+    it("should render SnsProposalDetail when project provided", () => {
+      const { queryByTestId } = render(ProposalDetail, {
+        props: {
+          proposalIdText: undefined,
+        },
+      });
+
+      expect(queryByTestId("sns-proposal-details-grid")).toBeInTheDocument();
+    });
   });
 });

@@ -3,6 +3,7 @@
   import { Card } from "@dfinity/gix-components";
   import CanisterCardTitle from "./CanisterCardTitle.svelte";
   import CanisterCardSubTitle from "./CanisterCardSubTitle.svelte";
+  import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 
   export let canister: CanisterDetails;
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
@@ -10,17 +11,19 @@
 </script>
 
 <Card {role} {ariaLabel} on:click testId="canister-card">
-  <div slot="start" class="title-block">
+  <div slot="start" class="title">
     <CanisterCardTitle {canister} />
+
+    <CanisterCardSubTitle {canister} />
   </div>
 
-  <CanisterCardSubTitle {canister} />
+  <CanisterCardCycles {canister} />
 </Card>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/card";
 
-  .title-block {
+  .title {
     @include card.stacked-title;
     @include card.title;
   }

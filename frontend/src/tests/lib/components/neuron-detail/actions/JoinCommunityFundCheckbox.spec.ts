@@ -6,6 +6,7 @@ import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/Joi
 import { toggleCommunityFund } from "$lib/services/neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -23,9 +24,11 @@ describe("JoinCommunityFundCheckbox", () => {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: undefined,
     };
-    const { queryByTestId } = render(JoinCommunityFundCheckbox, {
+
+    const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: JoinCommunityFundCheckbox,
       },
     });
 
@@ -37,9 +40,11 @@ describe("JoinCommunityFundCheckbox", () => {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: BigInt(1200),
     };
-    const { queryByTestId } = render(JoinCommunityFundCheckbox, {
+
+    const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: JoinCommunityFundCheckbox,
       },
     });
 
@@ -52,9 +57,11 @@ describe("JoinCommunityFundCheckbox", () => {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: undefined,
     };
-    const { queryByTestId } = render(JoinCommunityFundCheckbox, {
+
+    const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: JoinCommunityFundCheckbox,
       },
     });
 
@@ -67,9 +74,11 @@ describe("JoinCommunityFundCheckbox", () => {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: undefined,
     };
-    const { container, queryByTestId } = render(JoinCommunityFundCheckbox, {
+
+    const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: JoinCommunityFundCheckbox,
       },
     });
 
@@ -94,9 +103,11 @@ describe("JoinCommunityFundCheckbox", () => {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: BigInt(10),
     };
-    const { container, queryByTestId } = render(JoinCommunityFundCheckbox, {
+
+    const { container, queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: JoinCommunityFundCheckbox,
       },
     });
 

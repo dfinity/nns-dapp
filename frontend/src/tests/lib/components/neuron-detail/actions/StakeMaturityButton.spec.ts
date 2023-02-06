@@ -3,38 +3,44 @@
  */
 
 import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import en from "../../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
 
 describe("StakeMaturityButton", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders stake maturity message", () => {
+  it("renders stake maturity cta", () => {
     const { getByText } = render(StakeMaturityButton, {
       props: {
-        neuron: mockNeuron,
+        enoughMaturity: true,
       },
     });
 
     expect(getByText(en.neuron_detail.stake_maturity)).toBeInTheDocument();
   });
 
-  it("should open stake maturity modal", async () => {
-    const { getByText, getByTestId } = render(StakeMaturityButton, {
+  it("should be enabled", async () => {
+    const { getByTestId } = render(StakeMaturityButton, {
       props: {
-        neuron: mockNeuron,
+        enoughMaturity: true,
       },
     });
 
-    fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
+    const button = getByTestId("stake-maturity-button");
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBeFalsy());
+  });
 
-    await waitFor(() =>
-      expect(
-        getByText(en.neuron_detail.stake_maturity_modal_title)
-      ).toBeInTheDocument()
-    );
+  it("should be disabled", async () => {
+    const { getByTestId } = render(StakeMaturityButton, {
+      props: {
+        enoughMaturity: false,
+      },
+    });
+
+    const btn = getByTestId("stake-maturity-button") as HTMLButtonElement;
+
+    expect(btn.hasAttribute("disabled")).toBeTruthy();
   });
 });

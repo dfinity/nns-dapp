@@ -1,65 +1,42 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { accountsStore } from "$lib/stores/accounts.store";
-  import type { AccountsStore } from "$lib/stores/accounts.store";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { routeStore } from "$lib/stores/route.store";
-  import type { TokenAmount } from "@dfinity/nns";
-  import { sumTokenAmounts } from "$lib/utils/icp.utils";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import AccountsTitle from "$lib/components/accounts/AccountsTitle.svelte";
-  import { walletPathStore } from "$lib/derived/paths.derived";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { nonNullish } from "$lib/utils/utils";
+  import type { Account } from "$lib/types/account";
 
-  let accounts: AccountsStore | undefined;
-
-  const unsubscribe: Unsubscriber = accountsStore.subscribe(
-    async (storeData: AccountsStore) => (accounts = storeData)
-  );
-
-  const cardClick = (identifier: string) =>
-    routeStore.navigate({ path: `${$walletPathStore}/${identifier}` });
-
-  onDestroy(unsubscribe);
-
-  let totalBalance: TokenAmount | undefined;
-  $: totalBalance =
-    accounts?.main?.balance !== undefined
-      ? sumTokenAmounts(
-          accounts?.main?.balance,
-          ...(accounts?.subAccounts || []).map(({ balance }) => balance),
-          ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
-        )
-      : undefined;
+  export let goToWallet: (account: Account) => Promise<void>;
 </script>
 
-<section data-tid="accounts-body">
-  <AccountsTitle balance={totalBalance} />
-  {#if accounts?.main?.identifier}
+<div class="card-grid" data-tid="accounts-body">
+  {#if nonNullish($accountsStore?.main)}
+    <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
+    {@const mainAccount = $accountsStore.main}
+
     <AccountCard
       role="link"
-      on:click={() => cardClick(accounts?.main?.identifier ?? "")}
-      showCopy
-      account={accounts?.main}>{$i18n.accounts.main}</AccountCard
+      on:click={() => goToWallet(mainAccount)}
+      hash
+      account={$accountsStore.main}>{$i18n.accounts.main}</AccountCard
     >
-    {#each accounts.subAccounts ?? [] as subAccount}
+    {#each $accountsStore.subAccounts ?? [] as subAccount}
       <AccountCard
         role="link"
-        on:click={() => cardClick(subAccount.identifier)}
-        showCopy
+        on:click={() => goToWallet(subAccount)}
+        hash
         account={subAccount}>{subAccount.name}</AccountCard
       >
     {/each}
-    {#each accounts.hardwareWallets ?? [] as walletAccount}
+    {#each $accountsStore.hardwareWallets ?? [] as walletAccount}
       <AccountCard
         role="link"
-        on:click={() => cardClick(walletAccount.identifier)}
-        showCopy
+        on:click={() => goToWallet(walletAccount)}
+        hash
         account={walletAccount}>{walletAccount.name}</AccountCard
       >
     {/each}
   {:else}
-    <SkeletonCard />
+    <SkeletonCard size="medium" />
   {/if}
-</section>
+</div>

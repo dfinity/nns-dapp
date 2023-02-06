@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import AddControllerModal from "$lib/modals/canisters/AddControllerModal.svelte";
+  import AddControllerModal from "$lib/modals/canisters/AddCanisterControllerModal.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,

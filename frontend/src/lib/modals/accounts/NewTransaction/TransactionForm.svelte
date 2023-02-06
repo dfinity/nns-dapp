@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "$lib/modals/FooterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
@@ -9,15 +8,19 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { getMaxTransactionAmount } from "$lib/utils/icp.utils";
+  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import KeyValuePair from "$lib/components/ui/KeyValuePair.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
+  import { NotEnoughAmountError } from "$lib/types/common.errors";
+  import type { Principal } from "@dfinity/principal";
+  import { translate } from "$lib/utils/i18n.utils";
 
   // Tested in the TransactionModal
+  export let rootCanisterId: Principal;
   export let selectedAccount: Account | undefined = undefined;
   export let canSelectDestination: boolean;
   export let canSelectSource: boolean;
@@ -29,6 +32,9 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+  export let validateAmount: (
+    amount: number | undefined
+  ) => string | undefined = () => undefined;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -67,12 +73,19 @@
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
-      errorMessage = undefined;
+      errorMessage = validateAmount(amount);
     } catch (error: unknown) {
+      if (error instanceof NotEnoughAmountError) {
+        errorMessage = $i18n.error.insufficient_funds;
+        return;
+      }
       if (error instanceof InvalidAmountError) {
         errorMessage = $i18n.error.amount_not_valid;
+        return;
       }
-      errorMessage = $i18n.error.insufficient_funds;
+      if (error instanceof Error) {
+        errorMessage = translate({ labelKey: error.message });
+      }
     }
   })();
   const dispatcher = createEventDispatcher();
@@ -85,26 +98,23 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={goNext}
-  class="wrapper"
-  data-tid="transaction-step-1"
->
+<form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
   <div class="select-account">
-    {#if selectedAccount !== undefined}
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.source}</span>
-        <AmountDisplay
-          slot="value"
-          singleLine
-          amount={selectedAccount?.balance}
-        />
-      </KeyValuePair>
-    {/if}
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.accounts.source}</span>
+      <!-- svelte:fragment needed to avoid warnings -->
+      <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
+      <svelte:fragment slot="value">
+        {#if selectedAccount !== undefined}
+          <AmountDisplay singleLine amount={selectedAccount?.balance} />
+        {/if}
+      </svelte:fragment>
+    </KeyValuePair>
+
     {#if canSelectSource}
-      <SelectAccountDropdown bind:selectedAccount />
+      <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
     {:else}
-      <div>
+      <div class="given-source">
         <p>
           {selectedAccount?.name ?? $i18n.accounts.main}
         </p>
@@ -114,19 +124,22 @@
       </div>
     {/if}
   </div>
-  <div class="wrapper info">
+
+  <div class="wrapper">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
+
   {#if canSelectDestination}
     <SelectDestinationAddress
+      {rootCanisterId}
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
     />
   {/if}
 
-  <FooterModal>
+  <div class="toolbar">
     <button
       class="secondary"
       data-tid="transaction-button-cancel"
@@ -139,12 +152,10 @@
       disabled={disableButton}
       type="submit">{$i18n.accounts.review_action}</button
     >
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
-
   form {
     --dropdown-width: 100%;
   }
@@ -161,13 +172,15 @@
     align-items: stretch;
     justify-content: center;
     gap: var(--padding-3x);
-
-    &.info {
-      gap: var(--padding-2x);
-    }
   }
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .given-source {
+    p {
+      margin: 0;
+    }
   }
 </style>

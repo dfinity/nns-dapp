@@ -3,10 +3,11 @@
  */
 
 import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
-import { fireEvent } from "@testing-library/svelte";
-import { renderSelectedSnsNeuronContext } from "../../../../mocks/context-wrapper.mock";
+import { fireEvent, render } from "@testing-library/svelte";
+import { mockPrincipal } from "../../../../mocks/auth.store.mock";
 import en from "../../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
+import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("AddSnsHotkeyButton", () => {
   afterEach(() => {
@@ -14,10 +15,12 @@ describe("AddSnsHotkeyButton", () => {
   });
 
   const renderCard = () =>
-    renderSelectedSnsNeuronContext({
-      Component: AddSnsHotkeyButton,
-      neuron: mockSnsNeuron,
-      reload: jest.fn(),
+    render(SnsNeuronContextTest, {
+      props: {
+        neuron: mockSnsNeuron,
+        rootCanisterId: mockPrincipal,
+        testComponent: AddSnsHotkeyButton,
+      },
     });
 
   it("renders add hotkey message", () => {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
+  import { Checkbox } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { getVotingPower } from "$lib/utils/proposals.utils";
@@ -25,7 +25,6 @@
           )}
           on:nnsChange={() => toggleSelection(neuron.neuronId)}
           text="block"
-          selector="neuron-checkbox"
           {disabled}
         >
           <span
@@ -65,12 +64,8 @@
     padding: 0 0 var(--padding-1_5x);
 
     // checkbox restyling
-    :global(.neuron-checkbox) {
-      padding: var(--padding);
-    }
-    :global(input[type="checkbox"]) {
-      margin-left: 0;
-    }
+    --checkbox-padding: var(--padding);
+
     :global(label) {
       margin-left: var(--padding-0_5x);
 

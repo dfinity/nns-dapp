@@ -16,7 +16,7 @@ describe("DateSeconds", () => {
     container: HTMLElement;
   }) => {
     expect(container.querySelector(selector)?.textContent).toContain(
-      "January 1, 1970"
+      "Jan 1, 1970"
     );
     expect(container.querySelector(selector)?.textContent).toContain(
       "12:00 AM"

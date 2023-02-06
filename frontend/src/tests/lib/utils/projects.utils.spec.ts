@@ -1,5 +1,4 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { SnsFullProject } from "$lib/stores/projects.store";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -9,13 +8,12 @@ import {
   durationTillSwapDeadline,
   filterActiveProjects,
   filterCommittedProjects,
+  filterProjectsStatus,
   hasUserParticipatedToSwap,
-  isNnsProject,
   projectRemainingAmount,
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import {
   createTransferableAmount,
@@ -30,6 +28,40 @@ import {
 
 describe("project-utils", () => {
   describe("filter", () => {
+    it("should filter by status", () => {
+      expect(
+        filterProjectsStatus({
+          projects: [
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+            },
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+            },
+          ],
+          swapLifecycle: SnsSwapLifecycle.Open,
+        })[0].summary.swap.lifecycle
+      ).toEqual(SnsSwapLifecycle.Open);
+
+      expect(
+        filterProjectsStatus({
+          projects: [
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+            },
+            {
+              ...mockSnsFullProject,
+              summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+            },
+          ],
+          swapLifecycle: SnsSwapLifecycle.Pending,
+        })
+      ).toEqual([]);
+    });
+
     it("should return no committed projects", () =>
       expect(
         filterCommittedProjects([
@@ -760,16 +792,6 @@ describe("project-utils", () => {
         amountE8s: participationE8s,
       });
       expect(expected).toBe(false);
-    });
-  });
-
-  describe("isNnsProject", () => {
-    it("returns true if nns dapp principal", () => {
-      expect(isNnsProject(OWN_CANISTER_ID)).toBeTruthy();
-    });
-
-    it("returns true if nns dapp principal", () => {
-      expect(isNnsProject(Principal.from("aaaaa-aa"))).toBeFalsy();
     });
   });
 });

@@ -12,7 +12,7 @@ import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock"
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import { mockProposals } from "../../../mocks/proposals.store.mock";
-import { silentConsoleErrors } from "../../../mocks/utils.mock";
+import { silentConsoleErrors } from "../../../utils/utils.test-utils";
 
 describe("Ballots", () => {
   const mockBallot: BallotInfo = {

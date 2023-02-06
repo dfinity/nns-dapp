@@ -20,10 +20,16 @@ jest.mock("./src/lib/constants/identity.constants.ts", () => ({
 }));
 
 jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
+  OWN_CANISTER_ID_TEXT: "qhbym-qaaaa-aaaaa-aaafq-cai",
   OWN_CANISTER_ID: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai"),
   LEDGER_CANISTER_ID: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
   GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   CYCLES_MINTING_CANISTER_ID: Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai"),
+  WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+  CKBTC_MINTER_CANISTER_ID: Principal.fromText("q3fc5-haaaa-aaaaa-aaahq-cai"),
+  CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
+  CKBTC_INDEX_CANISTER_ID: Principal.fromText("si2b5-pyaaa-aaaaa-aaaja-cai"),
+  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
 }));
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
@@ -31,9 +37,12 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   HOST: "https://ic0.app",
   DEV: false,
   FETCH_ROOT_KEY: false,
-  WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
-  ENABLE_SNS: true,
   ENABLE_SNS_2: true,
+  ENABLE_SNS_VOTING: true,
+  ENABLE_SNS_AGGREGATOR: true,
+  ENABLE_CKBTC_LEDGER: true,
+  SNS_AGGREGATOR_CANISTER_URL:
+    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
 }));
 
@@ -43,8 +52,3 @@ global.localStorage = localStorageMock;
 configure({
   testIdAttribute: "data-tid",
 });
-
-const DOMPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-const { window } = new JSDOM("<!DOCTYPE html>");
-global.DOMPurify = DOMPurify(window);

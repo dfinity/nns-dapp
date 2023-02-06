@@ -295,38 +295,6 @@ const makeRewardNodeProviderDummyProposal = ({
   },
 });
 
-// TODO: Fix dummy proposal decentralized sale
-// const MS_IN_A_DAY = 24 * 60 * 60 * 1000;
-// const makeSnsDecentralizationSaleDummyProposalRequest = ({
-//   title,
-//   url,
-//   summary,
-//   neuronId,
-//   swapCanisterId,
-// }) => ({
-//   neuronId,
-//   title,
-//   url: url,
-//   summary: summary,
-//   action: {
-//     SetSnsTokenSwapOpenTimeWindow: {
-//       swapCanisterId,
-//       request: {
-//         openTimeWindow: {
-//           // Start time 10 minutes from now
-//           startTimestampSeconds: BigInt(
-//             Math.round((Date.now() + 1000 * 60 * 10) / 1000)
-//           ),
-//           // End time 5 days from now
-//           endTimestampSeconds: BigInt(
-//             Math.round((Date.now() + MS_IN_A_DAY + MS_IN_A_DAY * 5) / 1000)
-//           ),
-//         },
-//       },
-//     },
-//   },
-// });
-
 const makeExecuteNnsFunctionDummyProposalRequest = ({
                                                       title,
                                                       url,
@@ -442,19 +410,6 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
   try {
     // Used only on testnet
     // We do one by one, in case one fails, we don't do the others.
-    // TODO: Fix decentralized sale dummy proposal
-    // if (swapCanisterId !== undefined) {
-    //   const request0 = makeSnsDecentralizationSaleDummyProposalRequest({
-    //     title: "Test sns proposal title",
-    //     neuronId,
-    //     url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
-    //     summary: DEMO_SUMMARY,
-    //     swapCanisterId,
-    //   });
-    //   console.log("SnsDecentralizationSale Proposal...");
-    //   await canister.makeProposal(request0);
-    // }
-
     const request1 = makeMotionDummyProposalRequest({
       title:
           "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",

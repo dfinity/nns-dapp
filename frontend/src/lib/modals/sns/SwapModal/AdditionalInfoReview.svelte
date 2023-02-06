@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Checkbox from "$lib/components/ui/Checkbox.svelte";
-  import { ICON_SIZE_LARGE } from "$lib/constants/style.constants";
+  import { Checkbox } from "@dfinity/gix-components";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
@@ -27,7 +27,6 @@
   .additional-info-review {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
 
     .warning {
       display: grid;

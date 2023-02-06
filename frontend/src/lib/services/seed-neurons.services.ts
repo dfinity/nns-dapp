@@ -1,10 +1,10 @@
+import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import { createAgent } from "$lib/utils/agent.utils";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
 import { bytesToHexString } from "$lib/utils/utils";

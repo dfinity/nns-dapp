@@ -1,29 +1,20 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import type { SvelteComponent } from "svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
-  export let neuron: NeuronInfo | SnsNeuron;
-  export let modal: typeof SvelteComponent;
-  export let reloadContext:
-    | ((params: { forceFetch: boolean }) => Promise<void>)
-    | undefined = undefined;
-
-  let showModal = false;
-  const openModal = () => (showModal = true);
-  const closeModal = () => (showModal = false);
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
-<button class="warning" on:click={openModal} data-tid="disburse-button"
-  >{$i18n.neuron_detail.disburse}</button
+<button
+  class="secondary"
+  on:click={() =>
+    openNnsNeuronModal({ type: "disburse", data: { neuron: $store.neuron } })}
+  data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >
-
-{#if showModal}
-  <svelte:component
-    this={modal}
-    {neuron}
-    {reloadContext}
-    on:nnsClose={closeModal}
-  />
-{/if}

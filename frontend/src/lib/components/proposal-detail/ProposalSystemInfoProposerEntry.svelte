@@ -1,13 +1,18 @@
 <script lang="ts">
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
-  import { sanitize } from "$lib/utils/html.utils";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposer: NeuronId | undefined;
 
   let modalOpen = false;
+
+  // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 {#if proposer !== undefined}
@@ -16,18 +21,25 @@
       >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
     >
 
-    <button
-      class="text"
-      on:click|stopPropagation={() => (modalOpen = true)}
-      slot="value"
-    >
-      <span class="value" data-tid="proposal-system-info-proposer-value"
-        >{proposer}</span
-      >
-    </button>
+    <svelte:fragment slot="value">
+      {#if signedIn}
+        <button
+          class="text"
+          on:click|stopPropagation={() => (modalOpen = true)}
+        >
+          <span class="value" data-tid="proposal-system-info-proposer-value"
+            >{proposer}</span
+          >
+        </button>
+      {:else}
+        <span class="value" data-tid="proposal-system-info-proposer-value"
+          >{proposer}</span
+        >
+      {/if}
+    </svelte:fragment>
 
     <svelte:fragment slot="info">
-      {@html sanitize($i18n.proposal_detail.proposer_description)}
+      <Html text={$i18n.proposal_detail.proposer_description} />
     </svelte:fragment>
   </KeyValuePairInfo>
 

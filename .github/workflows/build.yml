@@ -3,7 +3,6 @@
 # we have end-to-end tests working.
 # https://dfinity.atlassian.net/browse/L2-191
 name: Native build
-
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -11,87 +10,42 @@ name: Native build
 # date before merge. It's also nice to have CI running on branches without PRs.
 on:
   push:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 env:
-      NNS_CACHING_KEY: dv-0004
-
+  NNS_CACHING_KEY: dv-0004
 jobs:
-  nns_canisters:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
-
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
-
-      - name: Download prebuilt nns canisters
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        run: ./e2e-tests/scripts/nns-canister-download
-
-      - name: Set up docker buildx
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build nns canisters
-        if: steps.create_nns_canister_cache.outputs.cache-hit != 'true'
-        uses: docker/build-push-action@v2
-        with:
-          context: e2e-tests/scripts
-          file: e2e-tests/scripts/nns-canister.Dockerfile
-          build-args: |
-            "IC_COMMIT=${{ env.IC_COMMIT }}"
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
-          outputs: target/ic
-
-      - name: Show canister versions
-        run: sha256sum target/ic/*.wasm
-
   build:
-    needs: [nns_canisters]
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
       - name: set-env
         run: ./build-config.sh >> $GITHUB_ENV
-
       # Cache based on the Cargo.lock
       # The cache key is always an exact match or no match (i.e. no
       # "restore-keys"-style matching). Because (in case of an exact match)
       # GitHub actions won't (re-)upload the cache after the build, it means that
       # our cache won't just grow forever.
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-
       # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/ic-cdk-optimizer
           key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
-
       - name: Install Software
         run: |
           ./scripts/setup --profile ~/.bashrc
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-
       # Helps with debugging
       - name: Versions
         run: |
@@ -102,39 +56,32 @@ jobs:
           rustc --version
           cargo --version
           ic-cdk-optimizer --version
-
-      - name: Start replica
-        run: |
-          dfx start --background --clean
-
-      - name: Get cached nns canisters
-        id: create_nns_canister_cache
-        uses: actions/cache@v2
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
         with:
-          path: |
-            target/ic
-          key: "nns-canisters-${{ env.IC_COMMIT }}-${{hashFiles( 'e2e-tests/scripts/nns-canister*' )}}-${{ env.NNS_CACHING_KEY }}"
-      - name: Show canister versions
-        run: sha256sum target/ic/*.wasm
-      # IDENTITY_SERVICE_URL needs to match `e2e-tests/test.js`
-      - name: Deploy NNS canisters
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from Mon Jan 16 10:10:47
+          ref: 'e1d7dd4c10fb8a731a534ae2ef4b08474fea5f6b'
+      - name: Add SNS scripts to the path
         run: |
-          ./e2e-tests/scripts/nns-canister-install
-
-      - name: Deploy
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install SNS script dependencies
         run: |
-          dfx canister create internet_identity --no-wallet
-          dfx canister create nns-dapp --no-wallet
-          ./deploy.sh --ii --nns-dapp local
-          cp nns-dapp.wasm nns-dapp_local.wasm
-
+          dfx-sns-demo-install
+      - name: Deploy NNS and SNS canisters
+        run: |
+          # Note: This deploys standard NNS canisters but with:
+          # - The current code for the nns-dapp
+          # - The II version specified in dfx.json
+          # - Functional SNS canisters
+          ./scripts/dfx-nns-deploy-custom --features sns
       - name: 'Upload nns-dapp_local wasm module'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
           retention-days: 3
-
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -143,72 +90,63 @@ jobs:
             then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
             else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
             fi
+            : If the tag is for a proposal, make it public
+            [[ "$tag" != proposal-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
-
-      - name: Create initial state
-        run: |
-          ./deploy.sh --populate local
-
-      - name: Build proxy
-        working-directory: proxy
-        run: |
-          npm ci
-          npm run build
-
       - name: prepare and run the test suite
         working-directory: e2e-tests
         run: |
           npm ci
-
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log || true
-
+          SCREENSHOT=1 npm run test | tee -a wdio.log
       - name: Stop replica
         run: dfx stop
-
       - name: Archive wdio logs
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wdio-logs
           path: e2e-tests/wdio.log
-
-# Disable screenshot saving until screenshots are stable.
-#      - name: Commit screenshots
-#        if: ${{ github.ref != 'refs/heads/main' }}
-#        uses: EndBug/add-and-commit@v7.4.0
-#        with:
-#          add: e2e-tests/screenshots
-#          author_name: Screenshot Committer
-#          author_email: "<nobody@example.com>"
-#          message: "Update screenshots"
-#          # do not pull: if this branch is behind, then we might as well let
-#          # the pushing fail
-#          pull: "NO-PULL"
-#
+          # Disable screenshot saving until screenshots are stable.
+          #      - name: Commit screenshots
+          #        if: ${{ github.ref != 'refs/heads/main' }}
+          #        uses: EndBug/add-and-commit@v9.1.1
+          #        with:
+          #          add: e2e-tests/screenshots
+          #          author_name: Screenshot Committer
+          #          author_email: "<nobody@example.com>"
+          #          message: "Update screenshots"
+          #          # do not pull: if this branch is behind, then we might as well let
+          #          # the pushing fail
+          #          pull: "NO-PULL"
+          #
       - name: Archive screenshots
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
-          path: screenshots/**/*.png
-
+          path: e2e-tests/screenshots/**/*.png
+          retention-days: 7
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
-
   build-pass:
-    needs: ["nns_canisters", "build"]
+    needs: ["build"]
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-       - name: Build workflow passes
-         run: echo OK
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

@@ -1,3 +1,1 @@
-export const ACCOUNT_ADDRESS_MIN_LENGTH = 40;
-
 export const HARDWARE_WALLET_NAME_MIN_LENGTH = 2;

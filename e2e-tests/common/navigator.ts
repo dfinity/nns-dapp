@@ -1,4 +1,4 @@
-import { MENU_CLOSE_SELECTOR, MENU_SELECTOR } from "../components/nav";
+import { MENU_TOGGLE_SELECTOR } from "../components/nav";
 
 /**
  * Additional functionality for the wdio "browser".
@@ -57,14 +57,14 @@ export class MyNavigator {
   }
 
   async openMenu(): Promise<void> {
-    await this.click(MENU_SELECTOR, "Open the menu");
+    await this.click(MENU_TOGGLE_SELECTOR, "Open the menu");
 
     // Small delay for menu animation
     await this.browser.pause(500);
   }
 
   async closeMenu(): Promise<void> {
-    await this.click(MENU_CLOSE_SELECTOR, "Close the menu");
+    await this.click(MENU_TOGGLE_SELECTOR, "Close the menu");
 
     // Small delay for menu animation
     await this.browser.pause(500);

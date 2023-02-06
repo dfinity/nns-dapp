@@ -8,10 +8,12 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { get } from "svelte/store";
-  import { snsProjectSelectedStore } from "$lib/derived/selected-project.derived";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   let visible = false;
   let transferring = false;
@@ -28,7 +30,7 @@
 
     transferring = true;
 
-    const selectedProjectId = get(snsProjectSelectedStore);
+    const selectedProjectId = get(selectedUniverseIdStore);
 
     try {
       if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
@@ -64,17 +66,22 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore || ICPToken;
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
-<button
-  role="menuitem"
-  data-tid="get-icp-button"
-  on:click|preventDefault|stopPropagation={() => (visible = true)}
-  class="open"
->
-  <IconAccountBalance />
-  <span>{`Get ${token.symbol}`}</span>
-</button>
+{#if signedIn}
+  <button
+    role="menuitem"
+    data-tid="get-icp-button"
+    on:click|preventDefault|stopPropagation={() => (visible = true)}
+    class="open"
+  >
+    <IconAccountBalance />
+    <span>{`Get ${token.symbol}`}</span>
+  </button>
+{/if}
 
 <Modal {visible} role="alert" on:nnsClose={onClose}>
   <span slot="title">{`Get ${token.symbol}`}</span>
@@ -112,37 +119,29 @@
 </Modal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/styles/mixins/fonts";
 
   .open {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
-    font-size: var(--font-size-h5);
-    font-weight: 700;
+    @include fonts.h5;
 
-    letter-spacing: var(--letter-spacing-title);
+    color: var(--menu-color);
 
     padding: var(--padding-2x);
 
     &:focus,
     &:hover {
-      background: var(--background-tint);
+      color: var(--menu-select-color);
     }
 
     span {
-      margin: 0 0 0 var(--padding);
+      margin: 0 var(--padding) 0 var(--padding-2x);
     }
-  }
 
-  @include media.light-theme() {
-    .open {
-      &:focus,
-      &:hover {
-        background: var(--background-shade);
-      }
-    }
+    z-index: var(--z-index);
   }
 
   form {

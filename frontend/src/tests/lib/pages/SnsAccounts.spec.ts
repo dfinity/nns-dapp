@@ -2,16 +2,23 @@
  * @jest-environment jsdom
  */
 
-import { CONTEXT_PATH } from "$lib/constants/routes.constants";
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { routeStore } from "$lib/stores/route.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "../../mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -20,37 +27,35 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsAccounts", () => {
+  const goToWallet = async () => {
+    // Do nothing
+  };
+
   describe("when there are accounts in the store", () => {
-    beforeEach(() => {
+    beforeAll(() => {
       jest
-        .spyOn(snsProjectAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe());
-      // Context needs to match the mocked sns accounts
-      routeStore.update({
-        path: `${CONTEXT_PATH}/${mockPrincipal.toText()}/accounts`,
-      });
-    });
+        .spyOn(snsAccountsStore, "subscribe")
+        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
 
-    it("should render accounts title", () => {
-      const { getByTestId } = render(SnsAccounts);
+      jest
+        .spyOn(snsProjectSelectedStore, "subscribe")
+        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
-      expect(getByTestId("accounts-title")).toBeInTheDocument();
+      jest
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+
+      page.mock({ data: { universe: mockPrincipal.toText() } });
     });
 
     it("should load accounts and transaction fee", () => {
-      render(SnsAccounts);
+      render(SnsAccounts, { props: { goToWallet } });
 
       expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
-    it("should contain a tooltip", () => {
-      const { container } = render(SnsAccounts);
-
-      expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-    });
-
     it("should render a main Account", async () => {
-      const { getByText } = render(SnsAccounts);
+      const { getByText } = render(SnsAccounts, { props: { goToWallet } });
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
@@ -58,7 +63,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(SnsAccounts);
+      const { getAllByTestId } = render(SnsAccounts, { props: { goToWallet } });
 
       await waitFor(() =>
         expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
@@ -66,9 +71,11 @@ describe("SnsAccounts", () => {
     });
 
     it("should load sns accounts of the project", () => {
-      render(SnsAccounts);
+      render(SnsAccounts, { props: { goToWallet } });
 
-      expect(syncSnsAccounts).toHaveBeenCalledWith(mockPrincipal);
+      expect(syncSnsAccounts).toHaveBeenCalledWith({
+        rootCanisterId: mockPrincipal,
+      });
     });
   });
 
@@ -82,7 +89,7 @@ describe("SnsAccounts", () => {
         });
     });
     it("should not render a token amount component nor zero", () => {
-      const { container } = render(SnsAccounts);
+      const { container } = render(SnsAccounts, { props: { goToWallet } });
 
       // Tooltip wraps the amount
       expect(

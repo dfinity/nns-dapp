@@ -65,7 +65,7 @@
     .progressbar {
       position: relative;
       height: var(--padding-1_5x);
-      background: var(--negative-emphasis-light);
+      background: var(--negative-emphasis);
 
       border-radius: var(--padding);
       overflow: hidden;

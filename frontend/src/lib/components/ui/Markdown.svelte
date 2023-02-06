@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { markdownToSanitizedHTML } from "$lib/utils/html.utils";
-
-  import { Spinner } from "@dfinity/gix-components";
+  import { markdownToHTML } from "$lib/utils/html.utils";
+  import { Spinner, Html } from "@dfinity/gix-components";
 
   export let text: string | undefined;
 
@@ -9,7 +8,7 @@
   let error = false;
   const transform = async (text: string) => {
     try {
-      html = await markdownToSanitizedHTML(text);
+      html = await markdownToHTML(text);
     } catch (err) {
       console.error(err);
       error = true;
@@ -23,5 +22,5 @@
 {:else if html === undefined}
   <Spinner inline />
 {:else}
-  {@html html}
+  <Html text={html} />
 {/if}

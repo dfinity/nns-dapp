@@ -1,3 +1,4 @@
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -41,6 +42,34 @@ const initSnsNeuronsStore = () => {
           certified,
         },
       }));
+    },
+
+    addNeurons({
+      rootCanisterId,
+      neurons,
+      certified,
+    }: {
+      rootCanisterId: Principal;
+      neurons: SnsNeuron[];
+      certified: boolean | undefined;
+    }) {
+      update((currentState: NeuronsStore) => {
+        const newIds = new Set(
+          neurons.map((neuron) => getSnsNeuronIdAsHexString(neuron))
+        );
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            neurons: [
+              ...neurons,
+              ...(currentState[rootCanisterId.toText()]?.neurons.filter(
+                (neuron) => !newIds.has(getSnsNeuronIdAsHexString(neuron))
+              ) ?? []),
+            ],
+            certified,
+          },
+        };
+      });
     },
 
     // Used in tests

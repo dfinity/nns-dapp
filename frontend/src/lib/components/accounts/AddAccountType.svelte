@@ -6,7 +6,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import CardItem from "$lib/components/ui/CardItem.svelte";
+  import { Card } from "@dfinity/gix-components";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -17,34 +17,25 @@
   const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
-<div class="wizard-wrapper wrapper">
-  <CardItem
-    on:click={selectNewSubAccount}
-    testId="choose-linked-as-account-type"
-  >
-    <svelte:fragment slot="title"
-      >{$i18n.accounts.new_linked_title}</svelte:fragment
-    >
-    <svelte:fragment slot="subtitle"
-      >{$i18n.accounts.new_linked_subtitle}</svelte:fragment
-    >
-  </CardItem>
-  <CardItem
-    on:click={selectNewHardwareWallet}
-    testId="choose-hardware-wallet-as-account-type"
-  >
-    <svelte:fragment slot="title"
-      >{$i18n.accounts.attach_hardware_title}</svelte:fragment
-    >
-    <svelte:fragment slot="subtitle"
-      >{$i18n.accounts.attach_hardware_subtitle}</svelte:fragment
-    >
-  </CardItem>
-</div>
+<Card
+  role="button"
+  on:click={selectNewSubAccount}
+  testId="choose-linked-as-account-type"
+>
+  <h4>{$i18n.accounts.new_linked_title}</h4>
+  <span>{$i18n.accounts.new_linked_subtitle}</span>
+</Card>
+<Card
+  role="button"
+  on:click={selectNewHardwareWallet}
+  testId="choose-hardware-wallet-as-account-type"
+>
+  <h4>{$i18n.accounts.attach_hardware_title}</h4>
+  <span>{$i18n.accounts.attach_hardware_subtitle}</span>
+</Card>
 
 <style lang="scss">
-  // Need to overwrite the default of wizrd-wrapper
-  .wizard-wrapper.wrapper {
-    justify-content: center;
+  span {
+    margin-bottom: var(--padding-0_5x);
   }
 </style>

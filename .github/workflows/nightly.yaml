@@ -1,5 +1,4 @@
 name: Nightly Publication
-
 on:
   schedule:
     - cron: "0 0 * * *"
@@ -7,21 +6,19 @@ on:
     branches:
       # Commit to the nightly branch and push to test.
       - nightly
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   update-ii:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Update II
         run: ./scripts/update-ii
       - name: Commit updated Internet Identity
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action
@@ -35,7 +32,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
@@ -48,7 +45,7 @@ jobs:
           git diff package-lock.json
         working-directory: e2e-tests
       - name: Commit updated chromedriver
-        uses: EndBug/add-and-commit@v7.2.0
+        uses: EndBug/add-and-commit@v9.1.1
         with:
           add: .
           author_name: Nightly GitHub Action
@@ -57,11 +54,15 @@ jobs:
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
-
   nightly-passes:
     needs: ["update-ii", "update-chromedriver"]
+    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-       - name: Nightly workflow passes
-         run: echo OK
-
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

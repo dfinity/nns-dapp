@@ -2,10 +2,9 @@
  * @jest-environment jsdom
  */
 
-import DetachActionButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockCanister } from "../../../mocks/canisters.mock";
+import DetachActionButtonTest from "./DetachActionButtonTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
@@ -19,20 +18,12 @@ describe("DissolveActionButton", () => {
   });
 
   it("renders button", () => {
-    const { queryByTestId } = render(DetachActionButton, {
-      props: {
-        canisterId: mockCanister.canister_id,
-      },
-    });
+    const { queryByTestId } = render(DetachActionButtonTest);
     expect(queryByTestId("detach-canister-button")).toBeInTheDocument();
   });
 
   it("calls detachCanister when confirming modal", async () => {
-    const { queryByTestId } = render(DetachActionButton, {
-      props: {
-        canisterId: mockCanister.canister_id,
-      },
-    });
+    const { queryByTestId } = render(DetachActionButtonTest);
 
     const buttonElement = queryByTestId("detach-canister-button");
     expect(buttonElement).not.toBeNull();

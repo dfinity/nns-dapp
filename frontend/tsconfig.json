@@ -14,6 +14,7 @@
     "**/*.spec.ts",
     "jest.setup.ts",
     "**/*.mock.ts",
-    "**/*Test.svelte"
+    "**/*Test.svelte",
+    "**/*.test-utils.ts"
   ]
 }

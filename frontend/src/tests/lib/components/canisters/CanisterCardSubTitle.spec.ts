@@ -37,7 +37,7 @@ describe("CanisterCardSubTitle", () => {
     const button = queryByRole("button");
 
     expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+      `Copy to clipboard: ${mockCanister.canister_id.toText()}`
     );
   });
 });

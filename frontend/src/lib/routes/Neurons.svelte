@@ -1,45 +1,33 @@
 <script lang="ts">
-  import { ENABLE_SNS } from "$lib/constants/environment.constants";
   import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
-  import {
-    isNnsProjectStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/selected-project.derived";
-  import { onMount } from "svelte";
-  import { routeStore } from "$lib/stores/route.store";
-  import { isRoutePath } from "$lib/utils/app-path.utils";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import SelectProjectDropdownHeader from "$lib/components/ic/SelectProjectDropdownHeader.svelte";
-
-  // TODO: Clean after enabling sns https://dfinity.atlassian.net/browse/GIX-1013
-  onMount(() => {
-    if (
-      ENABLE_SNS &&
-      isRoutePath({
-        paths: [AppPath.LegacyNeurons],
-        routePath: $routeStore.path,
-      })
-    ) {
-      routeStore.changeContext(OWN_CANISTER_ID.toText());
-    }
-  });
+  import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
+  import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
+  import { nonNullish } from "$lib/utils/utils";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 </script>
 
-<main class="legacy">
-  {#if ENABLE_SNS}
-    <SelectProjectDropdownHeader />
-  {/if}
+<main>
+  <SummaryUniverse />
 
-  {#if $isNnsProjectStore}
+  {#if $isNnsUniverseStore}
     <NnsNeurons />
-  {:else if $snsProjectSelectedStore !== undefined}
+  {:else if nonNullish($snsProjectSelectedStore)}
     <SnsNeurons />
   {/if}
 </main>
 
-{#if $isNnsProjectStore}
+{#if $isNnsUniverseStore}
   <NnsNeuronsFooter />
+  <!-- Staking SNS Neurons has not yet been reviewed by security -->
+{:else if nonNullish($snsProjectSelectedStore)}
+  <SnsNeuronsFooter />
 {/if}
+
+<style lang="scss">
+  main {
+    padding-bottom: var(--footer-height);
+  }
+</style>

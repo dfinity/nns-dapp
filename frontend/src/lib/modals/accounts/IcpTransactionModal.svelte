@@ -1,19 +1,20 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { transferICP } from "$lib/services/accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import type { Step } from "$lib/stores/steps.state";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
-  import type { NewTransaction } from "$lib/types/transaction.context";
+  import type { NewTransaction } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 
   export let selectedAccount: Account | undefined = undefined;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
   $: title =
     currentStep?.name === "Form"
@@ -31,16 +32,10 @@
       }),
     });
 
-    // Errors in amount already handled by TransactionModal
-    const tokenAmount = TokenAmount.fromNumber({
-      amount,
-      token: ICPToken,
-    });
-
     const { success } = await transferICP({
-      selectedAccount: sourceAccount,
+      sourceAccount,
       destinationAddress,
-      amount: tokenAmount,
+      amount,
     });
 
     if (success) {
@@ -58,15 +53,17 @@
 </script>
 
 <TransactionModal
+  rootCanisterId={OWN_CANISTER_ID}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
   sourceAccount={selectedAccount}
+  transactionFee={$mainTransactionFeeStoreAsToken}
 >
   <svelte:fragment slot="title"
     >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
-  <p slot="description">
+  <p slot="description" class="value">
     {$i18n.accounts.icp_transaction_description}
   </p>
 </TransactionModal>

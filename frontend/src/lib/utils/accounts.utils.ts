@@ -1,7 +1,11 @@
-import type { AccountsStore } from "$lib/stores/accounts.store";
+import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
-import { InsufficientAmountError } from "$lib/types/common.errors";
-import { checkAccountId } from "@dfinity/nns";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
+import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { isNullish } from "$lib/utils/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
+import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
 /*
@@ -14,7 +18,7 @@ export const getAccountByPrincipal = ({
   accounts: { main, hardwareWallets },
 }: {
   principal: string;
-  accounts: AccountsStore;
+  accounts: AccountsStoreData;
 }): Account | undefined => {
   if (main?.principal?.toText() === principal) {
     return main;
@@ -36,7 +40,17 @@ export const invalidAddress = (address: string | undefined): boolean => {
     checkAccountId(address);
     return false;
   } catch (_) {
-    return true;
+    try {
+      // TODO: Find a better solution to check if the address is valid for SNS as well.
+      // It might also be an SNS address
+      decodeIcrcAccount(address);
+      return false;
+    } catch {
+      _;
+    }
+    {
+      return true;
+    }
   }
 };
 
@@ -65,37 +79,45 @@ export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
 
-export const getAccountFromStore = ({
+export const findAccount = ({
   identifier,
-  accountsStore: { main, subAccounts, hardwareWallets },
+  accounts,
 }: {
-  identifier: string | undefined;
-  accountsStore: AccountsStore;
+  identifier: string | undefined | null;
+  accounts: Account[];
 }): Account | undefined => {
-  if (identifier === undefined) {
+  if (identifier === undefined || identifier === null) {
     return undefined;
   }
 
-  if (main?.identifier === identifier) {
-    return main;
-  }
-
-  const subAccount: Account | undefined = subAccounts?.find(
-    (account: Account) => account.identifier === identifier
-  );
-
-  if (subAccount !== undefined) {
-    return subAccount;
-  }
-
-  return hardwareWallets?.find(
-    (account: Account) => account.identifier === identifier
-  );
+  return accounts.find(({ identifier: id }) => id === identifier);
 };
+
+export const getAccountByRootCanister = ({
+  identifier,
+  universesAccounts,
+  rootCanisterId,
+}: {
+  identifier: string | undefined;
+  universesAccounts: UniversesAccounts;
+  rootCanisterId: Principal;
+}): Account | undefined =>
+  findAccount({
+    identifier,
+    accounts: universesAccounts[rootCanisterId.toText()] ?? [],
+  });
+
+export const getAccountsByRootCanister = ({
+  universesAccounts,
+  rootCanisterId,
+}: {
+  universesAccounts: UniversesAccounts;
+  rootCanisterId: Principal;
+}): Account[] | undefined => universesAccounts[rootCanisterId.toText()];
 
 /**
  * Throws error if the account doesn't have enough balance.
- * @throws InsufficientAmountError
+ * @throws NotEnoughAmountError
  */
 export const assertEnoughAccountFunds = ({
   account,
@@ -105,6 +127,44 @@ export const assertEnoughAccountFunds = ({
   amountE8s: bigint;
 }): void => {
   if (account.balance.toE8s() < amountE8s) {
-    throw new InsufficientAmountError("error.insufficient_funds");
+    throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
+
+/**
+ * Returns `undefined` if the "main" account was not find.
+ * @param accounts
+ */
+export const mainAccount = (accounts: Account[]): Account | undefined => {
+  return accounts.find((account) => account.type === "main");
+};
+
+export const accountName = ({
+  account,
+  mainName,
+}: {
+  account: Account | undefined;
+  mainName: string;
+}): string =>
+  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
+
+export const sumNnsAccounts = (
+  accounts: AccountsStoreData | undefined
+): TokenAmount | undefined =>
+  accounts?.main?.balance !== undefined
+    ? sumTokenAmounts(
+        accounts?.main?.balance,
+        ...(accounts?.subAccounts || []).map(({ balance }) => balance),
+        ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
+      )
+    : undefined;
+
+export const sumAccounts = (
+  accounts: Account[] | undefined
+): TokenAmount | undefined =>
+  isNullish(accounts) || accounts.length === 0
+    ? undefined
+    : sumTokenAmounts(...accounts.map(({ balance }) => balance));
+
+export const hasAccounts = (accounts: Account[]): boolean =>
+  accounts.length > 0;

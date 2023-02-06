@@ -8,8 +8,12 @@ export class ProposalsTab extends MyNavigator {
   static readonly PROPOSAL_FILTER_APPLY_SELECTOR: string = `[data-tid="apply-proposals-filter"]`;
   static readonly HEADER_BACK_SELECTOR: string = '[data-tid="back"]';
 
-  public static proposalIdSelector(proposalId: number): string {
-    return `[data-tid="proposal-id"][data-proposal-id="${proposalId}"]`;
+  public static proposalCardSelector(proposalId: number): string {
+    return `[data-tid="proposal-card"] [data-proposal-id="${proposalId}"]`;
+  }
+
+  public static proposalDetailsSelector(proposalId: number): string {
+    return `[data-tid="proposal-system-info-details"][data-proposal-id="${proposalId}"]`;
   }
 
   /**

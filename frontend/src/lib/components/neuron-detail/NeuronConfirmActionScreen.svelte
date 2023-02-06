@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { busy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
   const dispatcher = createEventDispatcher();

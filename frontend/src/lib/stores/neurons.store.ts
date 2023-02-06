@@ -28,23 +28,20 @@ const initNeuronsStore = () => {
 
     setNeurons({ neurons, certified }: Required<NeuronsStore>) {
       set({
-        neurons: [...neurons.filter(hasValidStake)],
+        neurons,
         certified,
       });
     },
 
     pushNeurons({ neurons, certified }: Required<NeuronsStore>) {
       update(({ neurons: oldNeurons }: NeuronsStore) => {
-        const filteredNewNeurons = neurons.filter(hasValidStake);
-        const newIds = new Set(
-          filteredNewNeurons.map(({ neuronId }) => neuronId)
-        );
+        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
         return {
           neurons: [
             ...(oldNeurons || []).filter(
               ({ neuronId }) => !newIds.has(neuronId)
             ),
-            ...filteredNewNeurons,
+            ...neurons,
           ],
           certified,
         };
@@ -91,7 +88,7 @@ export const neuronsStore = initNeuronsStore();
 
 export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
   neuronsStore,
-  ($neuronsStore) => $neuronsStore.neurons || []
+  ($neuronsStore) => $neuronsStore.neurons?.filter(hasValidStake) || []
 );
 
 export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(

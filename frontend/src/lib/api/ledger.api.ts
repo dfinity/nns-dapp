@@ -1,8 +1,9 @@
+import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
-import { createAgent } from "$lib/utils/agent.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type { BlockHeight, TokenAmount } from "@dfinity/nns";
@@ -16,6 +17,7 @@ import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
  * @param {string} params.to send ICP to destination address - an account identifier
  * @param {ICP} params.amount the amount to be transferred in ICP
  * @param {number[] | undefined} params.fromSubAccount the optional subaccount that would be the source of the transaction
+ * @param {bigint | undefined} params.createdAt the optional timestamp of the transaction. Used to avoid deduplication.
  */
 export const sendICP = async ({
   identity,
@@ -23,12 +25,14 @@ export const sendICP = async ({
   amount,
   fromSubAccount,
   memo,
+  createdAt,
 }: {
   identity: Identity;
   to: string;
   amount: TokenAmount;
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
+  createdAt?: bigint;
 }): Promise<BlockHeight> => {
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
@@ -38,6 +42,7 @@ export const sendICP = async ({
     amount: amount.toE8s(),
     fromSubAccount,
     memo,
+    createdAt: createdAt ?? nowInBigIntNanoSeconds(),
   });
   logWithTimestamp(`Sending icp complete.`);
   return response;

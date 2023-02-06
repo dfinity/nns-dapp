@@ -1,19 +1,21 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
   QuerySnsMetadata,
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsNeuron,
   SnsNeuronId,
-  SnsNeuronPermissionType,
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
@@ -139,14 +141,14 @@ export const querySnsSwapState = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<QuerySnsSwapState | undefined> => {
+}): Promise<QuerySnsSwapState> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
   const {
     swapState,
-    canisterIds: { swapCanisterId },
+    canisterIds: { swapCanisterId, governanceCanisterId },
   }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
@@ -162,6 +164,7 @@ export const querySnsSwapState = async ({
   return {
     rootCanisterId,
     swapCanisterId,
+    governanceCanisterId,
     swap,
     derived,
     certified,
@@ -269,7 +272,7 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
-  // If the client disconnects after the tranfer, the participation will still be notified.
+  // If the client disconnects after the transfer, the participation will still be notified.
   const { canister: nnsDapp } = await nnsDappCanister({ identity });
   await nnsDapp.addPendingNotifySwap({
     swap_canister_id: swapCanisterId,
@@ -277,11 +280,13 @@ export const participateInSnsSwap = async ({
     buyer_sub_account: toNullable(fromSubAccount),
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   // Send amount to the ledger
   await nnsLedger.transfer({
     amount: amount.toE8s(),
     fromSubAccount,
     to: accountIdentifier,
+    createdAt,
   });
 
   // Notify participation
@@ -313,7 +318,10 @@ export const querySnsNeurons = async ({
   return neurons;
 };
 
-export const querySnsNeuron = async ({
+/**
+ * Returns the neuron or raises an error if not found.
+ */
+export const getSnsNeuron = async ({
   identity,
   rootCanisterId,
   certified,
@@ -338,82 +346,112 @@ export const querySnsNeuron = async ({
   return neuron;
 };
 
-export const addNeuronPermissions = async ({
+/**
+ * Returns the neuron or undefined.
+ */
+export const querySnsNeuron = async ({
   identity,
   rootCanisterId,
-  permissions,
-  principal,
+  certified,
   neuronId,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
+  certified: boolean;
   neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Adding neuron permissions: call...");
-  const { addNeuronPermissions } = await wrapper({
+}): Promise<SnsNeuron | undefined> => {
+  logWithTimestamp("Querying sns neuron: call...");
+  const { queryNeuron } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
-    certified: true,
+    certified,
   });
-  await addNeuronPermissions({
-    permissions,
-    principal,
+  const neuron = await queryNeuron({
     neuronId,
   });
 
-  logWithTimestamp("Adding neuron permissions: done");
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
 };
 
-export const removeNeuronPermissions = async ({
-  identity,
+/**
+ * Stake SNS neuron.
+ *
+ * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
+ *
+ * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
+ */
+export const stakeNeuron = async ({
+  controller,
+  stakeE8s,
   rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
+  identity,
+  source,
+  fee,
 }: {
-  identity: Identity;
+  controller: Principal;
+  stakeE8s: bigint;
   rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Removing neuron permissions: call...");
-  const { removeNeuronPermissions } = await wrapper({
+  identity: Identity;
+  source: IcrcAccount;
+  fee: bigint;
+}): Promise<SnsNeuronId> => {
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
+
+  const { stakeNeuron: stakeNeuronApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  await removeNeuronPermissions({
-    permissions,
-    principal,
-    neuronId,
+
+  const createdAt = nowInBigIntNanoSeconds();
+  const newNeuronId = await stakeNeuronApi({
+    stakeE8s,
+    source,
+    controller,
+    createdAt,
+    fee,
   });
 
-  logWithTimestamp("Removing neuron permissions: done");
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+  return newNeuronId;
 };
 
-export const disburse = async ({
-  identity,
-  rootCanisterId,
+export const increaseStakeNeuron = async ({
   neuronId,
+  stakeE8s,
+  rootCanisterId,
+  identity,
+  source,
 }: {
-  identity: Identity;
-  rootCanisterId: Principal;
   neuronId: SnsNeuronId;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: IcrcAccount;
 }): Promise<void> => {
-  logWithTimestamp(`Disburse sns neuron call...`);
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
 
-  const { disburse } = await wrapper({
+  const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
 
-  await disburse({
+  await increaseStakeNeuronApi({
+    stakeE8s,
+    source,
     neuronId,
   });
 
-  logWithTimestamp(`Disburse sns neuron complete.`);
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
 };

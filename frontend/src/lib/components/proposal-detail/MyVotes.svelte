@@ -2,7 +2,7 @@
   import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
+  import { IconThumbDown, IconThumbUp, Value } from "@dfinity/gix-components";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -10,7 +10,6 @@
     votedNeuronDetails,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
-  import Value from "$lib/components/ui/Value.svelte";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 
   export let proposalInfo: ProposalInfo;

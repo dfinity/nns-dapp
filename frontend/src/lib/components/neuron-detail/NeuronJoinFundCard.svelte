@@ -5,7 +5,8 @@
   import { isNeuronControllableByUser } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
-  import KeyValuePairInfo from "$lib/components/ui/KeyValuePairInfo.svelte";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -19,19 +20,19 @@
 {#if isControlledByUser}
   <CardInfo>
     <KeyValuePairInfo testId="join-community-fund">
-      <h3 slot="key">{$i18n.neuron_detail.community_fund}</h3>
+      <h3 slot="key">{$i18n.neurons.community_fund_title}</h3>
 
-      <svelte:fragment slot="info"
-        ><div class="info">
-          {@html $i18n.neuron_detail.community_fund_more_info}
-        </div></svelte:fragment
-      >
+      <div class="info" slot="info">
+        <Html text={$i18n.neuron_detail.community_fund_more_info} />
+      </div>
     </KeyValuePairInfo>
 
     <div class="join">
       <JoinCommunityFundCheckbox {neuron} />
     </div>
   </CardInfo>
+
+  <Separator />
 {/if}
 
 <style lang="scss">
@@ -39,18 +40,12 @@
     line-height: var(--line-height-standard);
   }
 
-  .join {
-    --select-label-order: 1;
-    --select-padding: var(--padding) 0;
+  .info {
+    line-height: initial;
   }
 
-  .info {
-    // For the link inside "i18n.neuron_detail.community_fund_more_info"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
-    }
+  .join {
+    --checkbox-label-order: 1;
+    --checkbox-padding: var(--padding) 0;
   }
 </style>

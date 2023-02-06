@@ -1,29 +1,30 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
-  import LegacyWizardModal from "$lib/modals/LegacyWizardModal.svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SetDissolveDelay",
-      showBackButton: false,
       title: $i18n.neurons.set_dissolve_delay,
     },
     {
       name: "ConfirmDissolveDelay",
-      showBackButton: true,
       title: $i18n.neurons.confirm_dissolve_delay,
     },
   ];
 
-  let currentStep: Step;
-  let modal: LegacyWizardModal;
+  let currentStep: WizardStep;
+  let modal: WizardModal;
 
   let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
@@ -36,18 +37,20 @@
   };
 </script>
 
-<LegacyWizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep.name === "SetDissolveDelay"}
-    <SetDissolveDelay
+    <SetNnsDissolveDelay
       {neuron}
-      cancelButtonText={$i18n.core.cancel}
-      confirmButtonText={$i18n.neurons.update_delay}
-      minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
-    />
+    >
+      <svelte:fragment slot="cancel">{$i18n.core.cancel}</svelte:fragment>
+      <svelte:fragment slot="confirm"
+        >{$i18n.neurons.update_delay}</svelte:fragment
+      >
+    </SetNnsDissolveDelay>
   {/if}
   {#if currentStep.name === "ConfirmDissolveDelay"}
     <ConfirmDissolveDelay
@@ -58,4 +61,4 @@
       on:nnsBack={modal.back}
     />
   {/if}
-</LegacyWizardModal>
+</WizardModal>

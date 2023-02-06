@@ -8,6 +8,7 @@ import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";
 import type { Proposal } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import en from "../../../mocks/i18n.mock";
 import {
   mockProposalInfo,
@@ -50,7 +51,7 @@ describe("ProposalSystemInfoSection", () => {
     value: string | undefined;
     description: string | undefined;
     testId: string;
-    renderResult: RenderResult;
+    renderResult: RenderResult<SvelteComponent>;
   }) => {
     const { getByText, getByTestId } = renderResult;
     expect(getByText(label)).toBeInTheDocument();

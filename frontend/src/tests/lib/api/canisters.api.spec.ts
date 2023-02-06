@@ -15,6 +15,7 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
@@ -38,11 +39,16 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
-  beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
-  );
+  beforeAll(() => {
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    const now = Date.now();
+    jest.useFakeTimers().setSystemTime(now);
+  });
 
-  afterAll(() => jest.resetAllMocks());
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.clearAllTimers();
+  });
 
   beforeEach(() => {
     jest
@@ -245,6 +251,7 @@ describe("canisters-api", () => {
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -341,6 +348,7 @@ describe("canisters-api", () => {
         to: AccountIdentifier.fromHex(recipient.toHex()),
         amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();

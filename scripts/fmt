@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+
+set -x
+./scripts/fmt-frontend
+./scripts/fmt-e2e
+./scripts/fmt-json
+./scripts/fmt-rs
+./scripts/fmt-sh

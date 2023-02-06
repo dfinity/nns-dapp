@@ -1,62 +1,39 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { stopBusy } from "$lib/stores/busy.store";
-  import { stakeMaturity } from "$lib/services/neurons.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { createEventDispatcher } from "svelte";
-  import type { Step, Steps } from "$lib/stores/steps.state";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
-  import { startBusyNeuron } from "$lib/services/busy.services";
-  import WizardModal from "../WizardModal.svelte";
-  import type { NeuronId } from "@dfinity/nns";
+  import {
+    Html,
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
 
-  export let neuron: NeuronInfo;
+  export let formattedMaturity: string;
 
-  let neuronId: NeuronId;
-  $: ({ neuronId } = neuron);
-
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
       title: $i18n.neuron_detail.stake_maturity_modal_title,
     },
     {
       name: "ConfirmStake",
-      showBackButton: true,
       title: $i18n.neuron_detail.stake_confirmation_modal_title,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let modal: WizardModal;
 
   let percentageToStake = 0;
 
   const dispatcher = createEventDispatcher();
+  const stakeNeuronMaturity = () =>
+    dispatcher("nnsStakeMaturity", { percentageToStake });
   const close = () => dispatcher("nnsClose");
-
-  const stakeNeuronMaturity = async () => {
-    startBusyNeuron({ initiator: "stake-maturity", neuronId });
-
-    const { success } = await stakeMaturity({
-      neuronId,
-      percentageToStake,
-    });
-
-    if (success) {
-      toastsSuccess({
-        labelKey: "neuron_detail.stake_maturity_success",
-      });
-      close();
-    }
-
-    stopBusy("stake-maturity");
-  };
 
   const goToConfirm = () => modal.next();
 </script>
@@ -68,7 +45,7 @@
 
   {#if currentStep.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {neuron}
+      {formattedMaturity}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
@@ -84,15 +61,17 @@
       on:nnsConfirm={stakeNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      {@html replacePlaceholders(
-        $i18n.neuron_detail.stake_maturity_confirmation,
-        {
-          $percentage: formatPercentage(percentageToStake / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          }),
-        }
-      )}
+      <Html
+        text={replacePlaceholders(
+          $i18n.neuron_detail.stake_maturity_confirmation,
+          {
+            $percentage: formatPercentage(percentageToStake / 100, {
+              minFraction: 0,
+              maxFraction: 0,
+            }),
+          }
+        )}
+      />
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>

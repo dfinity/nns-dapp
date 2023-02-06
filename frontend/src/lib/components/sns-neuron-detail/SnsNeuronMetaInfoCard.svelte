@@ -1,23 +1,34 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { secondsToDate } from "$lib/utils/date.utils";
-  import Value from "$lib/components/ui/Value.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import SnsNeuronCard from "../sns-neurons/SnsNeuronCard.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import DisburseButton from "../neuron-detail/actions/DisburseButton.svelte";
-  import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import {
+    getSnsNeuronIdAsHexString,
     getSnsNeuronState,
-    hasPermissionToDisburse,
+    hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { NeuronState } from "@dfinity/nns";
+  import type { E8s, NeuronState, Token } from "@dfinity/nns";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
+  import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
+  import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { authStore } from "$lib/stores/auth.store";
+  import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
+  import type { NervousSystemParameters } from "@dfinity/sns";
+
+  export let parameters: NervousSystemParameters;
+  export let token: Token;
+  export let transactionFee: E8s;
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -25,52 +36,62 @@
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
 
-  let dissolveState: NeuronState | undefined;
-  $: dissolveState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
+  let neuronState: NeuronState | undefined;
+  $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
-  let allowedToDisburse: boolean;
-  $: allowedToDisburse = isNullish(neuron)
-    ? false
-    : hasPermissionToDisburse({
-        neuron,
-        identity: $authStore.identity,
-      });
+  let allowedToSplit: boolean;
+  $: allowedToSplit =
+    nonNullish(neuron) &&
+    hasPermissionToSplit({
+      neuron,
+      identity: $authStore.identity,
+    });
 
-  const { reload: reloadContext } = getContext<SelectedSnsNeuronContext>(
-    SELECTED_SNS_NEURON_CONTEXT_KEY
-  );
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    const neuronId = nonNullish(neuron)
+      ? getSnsNeuronIdAsHexString(neuron)
+      : undefined;
+
+    layoutTitleStore.set(
+      intersecting || isNullish(neuronId)
+        ? $i18n.neuron_detail.title
+        : shortenWithMiddleEllipsis(neuronId)
+    );
+  };
 </script>
 
-{#if nonNullish(neuron)}
-  <SnsNeuronCard {neuron} cardType="info">
-    <section>
-      <p>
-        <Value>{secondsToDate(Number(neuron.created_timestamp_seconds))}</Value>
-        - {$i18n.neurons.staked}
-      </p>
+{#if nonNullish(neuron) && nonNullish(neuronState)}
+  <div class="content-cell-details">
+    <KeyValuePair>
+      <SnsNeuronCardTitle
+        tagName="h3"
+        {neuron}
+        slot="key"
+        on:nnsIntersecting={updateLayoutTitle}
+      />
+      <NeuronStateInfo state={neuronState} slot="value" />
+    </KeyValuePair>
 
-      <div class="buttons">
-        {#if dissolveState === NeuronState.Dissolved && allowedToDisburse}
-          <DisburseButton
-            {neuron}
-            modal={DisburseSnsNeuronModal}
-            {reloadContext}
-          />
-        {:else if dissolveState === NeuronState.Dissolving || dissolveState === NeuronState.Locked}
-          <!-- TODO(GIX-985): Sns/DissolveActionButton -->
-        {/if}
-      </div>
-    </section>
-  </SnsNeuronCard>
+    <SnsNeuronAge {neuron} />
+
+    <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+    <div class="buttons">
+      {#if allowedToSplit}
+        <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
+      {/if}
+    </div>
+  </div>
+
+  <Separator />
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-
-  section {
-    padding: var(--padding) 0 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
+  .content-cell-details {
+    gap: var(--padding-1_5x);
   }
 </style>
