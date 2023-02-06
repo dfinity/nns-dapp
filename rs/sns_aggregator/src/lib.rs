@@ -112,7 +112,7 @@ fn setup(config: Option<Config>) {
             *state.stable.borrow().config.borrow_mut() = config;
         });
     } else {
-        ic_cdk::api::print(format!("Using existing config."));
+        ic_cdk::api::print("Using existing config.");
     }
     // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();
