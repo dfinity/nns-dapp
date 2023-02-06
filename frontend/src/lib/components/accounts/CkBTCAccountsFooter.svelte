@@ -3,7 +3,10 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { ckBTCTokenFeeStore } from "$lib/derived/universes-tokens.derived";
+  import {
+    ckBTCTokenFeeStore,
+    ckBTCTokenStore,
+  } from "$lib/derived/universes-tokens.derived";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { hasAccounts } from "$lib/utils/accounts.utils";
 
@@ -14,11 +17,17 @@
   let canMakeTransactions = false;
   $: canMakeTransactions =
     hasAccounts($ckBTCAccountsStore.accounts) &&
-    nonNullish($ckBTCTokenFeeStore);
+    nonNullish($ckBTCTokenFeeStore) &&
+    nonNullish($ckBTCTokenStore);
 </script>
 
-{#if modal === "NewTransaction"}
-  <CkBTCTransactionModal on:nnsClose={closeModal} />
+{#if modal === "NewTransaction" && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
+  <CkBTCTransactionModal
+    on:nnsClose={closeModal}
+    on:nnsTransfer={closeModal}
+    token={$ckBTCTokenStore.token}
+    transactionFee={$ckBTCTokenFeeStore}
+  />
 {/if}
 
 {#if canMakeTransactions}
