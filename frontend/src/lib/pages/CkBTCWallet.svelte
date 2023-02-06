@@ -23,6 +23,10 @@
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
+  import {
+    ckBTCTokenFeeStore,
+    ckBTCTokenStore,
+  } from "$lib/derived/universes-tokens.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -97,6 +101,12 @@
   };
 
   $: accountIdentifier, (async () => await loadData())();
+
+  let canMakeTransactions = false;
+  $: canMakeTransactions =
+    hasAccounts($ckBTCAccountsStore.accounts) &&
+    nonNullish($ckBTCTokenFeeStore) &&
+    nonNullish($ckBTCTokenStore);
 </script>
 
 <Island>
@@ -118,21 +128,25 @@
     </section>
   </main>
 
-  <Footer columns={1}>
-    <button
-      class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={isNullish($selectedAccountStore.account) || $busy}
-      data-tid="open-new-sns-transaction"
-      >{$i18n.accounts.new_transaction}</button
-    >
-  </Footer>
+  {#if canMakeTransactions}
+    <Footer columns={1}>
+      <button
+        class="primary"
+        on:click={() => (showNewTransactionModal = true)}
+        disabled={isNullish($selectedAccountStore.account) || $busy}
+        data-tid="open-new-sns-transaction"
+        >{$i18n.accounts.new_transaction}</button
+      >
+    </Footer>
+  {/if}
 </Island>
 
-{#if showNewTransactionModal}
+{#if showNewTransactionModal && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
   <CkBTCTransactionModal
     on:nnsClose={() => (showNewTransactionModal = false)}
     selectedAccount={$selectedAccountStore.account}
     loadTransactions
+    token={$ckBTCTokenStore.token}
+    transactionFee={$ckBTCTokenFeeStore}
   />
 {/if}
