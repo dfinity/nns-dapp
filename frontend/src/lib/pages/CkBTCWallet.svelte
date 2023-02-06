@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Island, Spinner } from "@dfinity/gix-components";
+  import { busy, Island, Spinner } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
@@ -13,7 +13,7 @@
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "$lib/utils/utils";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -21,8 +21,12 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
+  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
+  import Footer from "$lib/components/layout/Footer.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
+
+  let showNewTransactionModal = false;
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -113,4 +117,22 @@
       {/if}
     </section>
   </main>
+
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={() => (showNewTransactionModal = true)}
+      disabled={isNullish($selectedAccountStore.account) || $busy}
+      data-tid="open-new-sns-transaction"
+      >{$i18n.accounts.new_transaction}</button
+    >
+  </Footer>
 </Island>
+
+{#if showNewTransactionModal}
+  <CkBTCTransactionModal
+    on:nnsClose={() => (showNewTransactionModal = false)}
+    selectedAccount={$selectedAccountStore.account}
+    loadTransactions
+  />
+{/if}
