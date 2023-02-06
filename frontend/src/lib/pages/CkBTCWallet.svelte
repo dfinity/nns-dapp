@@ -143,7 +143,7 @@
         class="primary"
         on:click={() => (showNewTransactionModal = true)}
         disabled={isNullish($selectedAccountStore.account) || $busy}
-        data-tid="open-new-sns-transaction"
+        data-tid="open-new-ckbtc-transaction"
         >{$i18n.accounts.new_transaction}</button
       >
     </Footer>

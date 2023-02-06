@@ -8,9 +8,11 @@ import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { page } from "$mocks/$app/stores";
-import { render, waitFor } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
 import en from "../../mocks/i18n.mock";
+import { mockUniversesTokens } from "../../mocks/tokens.mock";
+import { tokensStore } from "$lib/stores/tokens.store";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -59,6 +61,8 @@ describe("CkBTCWallet", () => {
         certified: true,
       });
 
+      tokensStore.setTokens(mockUniversesTokens);
+
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
@@ -89,6 +93,23 @@ describe("CkBTCWallet", () => {
       await waitFor(() =>
         expect(queryByTestId("wallet-summary")).toBeInTheDocument()
       );
+    });
+
+    it("should open new transaction modal", async () => {
+      const { queryByTestId, getByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("open-new-ckbtc-transaction")).toBeInTheDocument()
+      );
+
+      const button = getByTestId(
+        "open-new-ckbtc-transaction"
+      ) as HTMLButtonElement;
+      await fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+      });
     });
   });
 });
