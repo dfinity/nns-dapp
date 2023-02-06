@@ -21,9 +21,9 @@ use types::Icrc1Value;
 #[ic_cdk_macros::query]
 fn health_check(name: String) -> String {
     STATE.with(|state| {
-        let last_partial_update = state.stable.sns_cache.borrow().last_partial_update;
-        let last_update = state.stable.sns_cache.borrow().last_update;
-        let num_to_get = state.stable.sns_cache.borrow().sns_to_get.len();
+        let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update;
+        let last_update = state.stable.borrow().sns_cache.borrow().last_update;
+        let num_to_get = state.stable.borrow().sns_cache.borrow().sns_to_get.len();
         format!("Hello, {name}!  The last partial update was at: {last_partial_update}.  Last update cycle started at {last_update} with {num_to_get} outstanding.")
     })
 }
@@ -49,9 +49,35 @@ fn init(config: Option<Config>) {
     setup(config);
 }
 
+#[ic_cdk_macros::pre_upgrade]
+fn pre_upgrade() {
+    // Make an effort to save state.  If it doesn't work, it doesn't matter much
+    // as the data will be fetched from upstream anew.  There will be a period in
+    // which the data is unavailable but that will pass.
+    STATE.with(|state| {
+        if let Ok(bytes) = serde_cbor::to_vec(&state.stable) {
+            match ic_cdk::storage::stable_save((bytes,)) {
+                Ok(_) => ic_cdk::api::print("Saved state"),
+                Err(err) => ic_cdk::api::print(format!("Failed to save state: {err:?}")),
+            }
+        }
+    });
+}
+
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     ic_cdk::api::print("Calling post_upgrade...");
+    // Make an effort to restore state.  If it doesn't work, give up.
+    STATE.with(|state| {
+        if let Ok(data) = ic_cdk::storage::stable_restore()
+            .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
+            .and_then(|(bytes,): (Vec<u8>,)| {
+                serde_cbor::from_slice(&bytes[..]).map_err(|err| format!("Failed to parse stable memory: {err:?}"))
+            })
+        {
+            *state.stable.borrow_mut() = data;
+        }
+    });
     setup(config);
 }
 
@@ -73,7 +99,7 @@ fn setup(config: Option<Config>) {
     if let Some(config) = config {
         ic_cdk::api::print(format!("Setting config to: {:?}", &config));
         STATE.with(|state| {
-            *state.stable.config.borrow_mut() = config;
+            *state.stable.borrow().config.borrow_mut() = config;
         });
     } else {
         ic_cdk::api::print(format!("Using existing config."));
@@ -87,7 +113,7 @@ fn setup(config: Option<Config>) {
     //       have an altogether more complicated data collection schedule.
     //
     // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
-    let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.config.borrow().update_interval_ms));
+    let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
     ic_cdk::api::print(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));

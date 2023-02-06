@@ -179,7 +179,8 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
     ic_cdk::api::print(format!("Inserting asset {}", &path.clone().into()));
     STATE.with(|s| {
         let mut asset_hashes = s.asset_hashes.borrow_mut();
-        let mut assets = s.stable.assets.borrow_mut();
+        let stable_memory = s.stable.borrow();
+        let mut assets = stable_memory.assets.borrow_mut();
         let path = path.into();
 
         let index = "index.html";
@@ -217,7 +218,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
         let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
         headers.push(certificate_header);
 
-        match state.stable.assets.borrow().get(request_path) {
+        match state.stable.borrow().assets.borrow().get(request_path) {
             Some(asset) => {
                 headers.extend(asset.headers.clone());
                 if let Some(content_type) = content_type_of(request_path) {
@@ -252,7 +253,7 @@ pub fn insert_favicon() {
         // Ensure that there is a favicon, or else we get log spam about bad requests.
         {
             let favicon_path = "/favicon.ico";
-            if state.stable.assets.borrow().get(favicon_path).is_none() {
+            if state.stable.borrow().assets.borrow().get(favicon_path).is_none() {
                 let asset = Asset {
                     headers: Vec::new(),
                     bytes: include_bytes!("favicon.ico").to_vec(),

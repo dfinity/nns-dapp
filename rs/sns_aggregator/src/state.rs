@@ -21,7 +21,7 @@ pub struct State {
     pub timer_id: RefCell<Option<TimerId>>,
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
-    pub stable: StableState,
+    pub stable: RefCell<StableState>,
     /// Hashes for the assets, needed for signing.
     ///
     /// Note: It would be nice to store the asset hashes in stable memory, however RBTree does not support
@@ -45,7 +45,7 @@ pub struct StableState {
 }
 
 thread_local! {
-    /// Single global container for state.
+    /// Single global container for state
     pub static STATE: State = State::default();
 }
 
@@ -64,8 +64,8 @@ impl State {
         // Updates the max index, if needed
         {
             STATE.with(|state| {
-                if state.stable.sns_cache.borrow().max_index < index {
-                    state.stable.sns_cache.borrow_mut().max_index = index;
+                if state.stable.borrow().sns_cache.borrow().max_index < index {
+                    state.stable.borrow().sns_cache.borrow_mut().max_index = index;
                 }
             });
         }
@@ -91,11 +91,12 @@ impl State {
         }
         const PAGE_SIZE: u64 = 10;
         // If this is in the last N, update latest.
-        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.stable.sns_cache.borrow().max_index) {
+        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index) {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
                     .stable
+                    .borrow()
                     .sns_cache
                     .borrow()
                     .upstream_data
@@ -116,6 +117,7 @@ impl State {
         STATE.with(|state| {
             state
                 .stable
+                .borrow()
                 .sns_cache
                 .borrow_mut()
                 .upstream_data
