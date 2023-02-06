@@ -24,6 +24,7 @@
 {#if modal === "NewTransaction" && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
   <CkBTCTransactionModal
     on:nnsClose={closeModal}
+    on:nnsTransfer={closeModal}
     token={$ckBTCTokenStore.token}
     transactionFee={$ckBTCTokenFeeStore}
   />

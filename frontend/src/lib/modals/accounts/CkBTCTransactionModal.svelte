@@ -46,7 +46,7 @@
 
     if (success) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
-      dispatcher("nnsClose");
+      dispatcher("nnsTransfer");
     }
   };
 </script>

@@ -45,9 +45,7 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
-  const loadAccount = async (): Promise<{
-    state: "loaded" | "not_found" | "unknown";
-  }> => {
+  const setSelectedAccount = () => {
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
@@ -55,6 +53,17 @@
       }),
       neurons: [],
     });
+  };
+
+  const onTransferReloadSelectedAccount = () => {
+    setSelectedAccount();
+    showNewTransactionModal = false;
+  };
+
+  const loadAccount = async (): Promise<{
+    state: "loaded" | "not_found" | "unknown";
+  }> => {
+    setSelectedAccount();
 
     // We found an account in store for the provided account identifier, all data are set
     if (nonNullish($selectedAccountStore.account)) {
@@ -144,6 +153,7 @@
 {#if showNewTransactionModal && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
   <CkBTCTransactionModal
     on:nnsClose={() => (showNewTransactionModal = false)}
+    on:nnsTransfer={onTransferReloadSelectedAccount}
     selectedAccount={$selectedAccountStore.account}
     loadTransactions
     token={$ckBTCTokenStore.token}
