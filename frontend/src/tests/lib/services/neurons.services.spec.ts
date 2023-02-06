@@ -211,6 +211,7 @@ describe("neurons-services", () => {
     neuronsStore.reset();
     accountsStore.reset();
     resetIdentity();
+    resetAccountIdentity();
   });
 
   describe("stake new neuron", () => {
@@ -306,8 +307,6 @@ describe("neurons-services", () => {
 
       expect(response).toBeUndefined();
       expect(toastsShow).toBeCalled();
-
-      resetAccountIdentity();
     });
   });
 
@@ -511,6 +510,8 @@ describe("neurons-services", () => {
           controller: smallerVersionIdentity.getPrincipal().toText(),
         },
       };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+
       await toggleAutoStakeMaturity(neuron);
 
       expect(toastsShow).toHaveBeenCalled();
@@ -799,6 +800,11 @@ describe("neurons-services", () => {
           controller: smallerVersionIdentity.getPrincipal().toText(),
         },
       };
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
+
       await mergeNeurons({
         sourceNeuronId: neuron1.neuronId,
         targetNeuronId: neuron2.neuronId,
@@ -1468,7 +1474,6 @@ describe("neurons-services", () => {
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
       expect(call).rejects.toThrow(NotAuthorizedNeuronError);
-      resetAccountIdentity();
     });
   });
 
