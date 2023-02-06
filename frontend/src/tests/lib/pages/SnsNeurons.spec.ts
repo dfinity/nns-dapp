@@ -135,6 +135,14 @@ describe("SnsNeurons", () => {
         expect(queryByTestId("community-fund-title")).toBeInTheDocument()
       );
     });
+
+    it("should render two grids", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(2)
+      );
+    });
   });
 
   describe("no neurons", () => {
