@@ -177,8 +177,8 @@
       "type": "custom",
       "remote": {
         "id": {
-	  "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
-	}
+          "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
+        }
       }
     },
     "ckbtc_index": {
@@ -190,8 +190,8 @@
       "type": "custom",
       "remote": {
         "id": {
-	  "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
-	}
+          "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
+        }
       }
     }
   },
