@@ -8,14 +8,16 @@ import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.sv
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
+import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "../../../mocks/ckbtc-accounts.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import { mockUniversesTokens } from "../../../mocks/tokens.mock";
 import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
@@ -30,6 +32,11 @@ describe("CkBTCTransactionModal", () => {
       component: CkBTCTransactionModal,
       props: {
         selectedAccount,
+        token: mockCkBTCToken,
+        transactionFee: TokenAmount.fromE8s({
+          amount: mockCkBTCToken.fee,
+          token: mockCkBTCToken,
+        }),
       },
     });
 
@@ -44,8 +51,6 @@ describe("CkBTCTransactionModal", () => {
       accounts: [mockCkBTCMainAccount],
       certified: true,
     });
-
-    tokensStore.setTokens(mockUniversesTokens);
 
     page.mock({
       data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
