@@ -800,7 +800,10 @@ describe("neurons-services", () => {
           controller: smallerVersionIdentity.getPrincipal().toText(),
         },
       };
-      neuronsStore.pushNeurons({ neurons: [neuron1, neuron2], certified: true });
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
 
       await mergeNeurons({
         sourceNeuronId: neuron1.neuronId,
