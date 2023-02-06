@@ -113,6 +113,7 @@ interface I18nError {
   amount_not_enough_stake_sns_neuron: string;
   canister_invalid_transaction: string;
   ckbtc_get_btc_address: string;
+  ckbtc_get_btc_no_account: string;
 }
 
 interface I18nWarning {

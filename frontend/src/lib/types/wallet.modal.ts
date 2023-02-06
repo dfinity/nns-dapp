@@ -1,3 +1,5 @@
+import type { Account } from "$lib/types/account";
+
 // Nns
 export type WalletModalType = "rename" | "hw-list-neurons";
 
@@ -10,6 +12,7 @@ export type CkBTCWalletModalType = "ckbtc-receive";
 
 export interface CkBTCWalletModalData {
   btcAddress: string;
+  account: Account;
 }
 
 export interface CkBTCWalletModal {

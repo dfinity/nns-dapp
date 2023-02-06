@@ -17,6 +17,14 @@
   const { store }: WalletContext = context;
 
   const openReceive = async () => {
+    // Button is disabled if no account anyway
+    if (isNullish($store.account)) {
+      toastsError({
+        labelKey: "error.ckbtc_get_btc_no_account",
+      });
+      return;
+    }
+
     startBusy({
       initiator: "get-btc-address",
     });
@@ -29,7 +37,7 @@
         message: "ckBTCWalletModal",
         detail: {
           type: "ckbtc-receive",
-          data: { btcAddress },
+          data: { btcAddress, account: $store.account },
         },
       });
     } catch (err: unknown) {

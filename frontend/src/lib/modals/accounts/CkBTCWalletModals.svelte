@@ -1,6 +1,7 @@
 <script lang="ts">
   import type {
     CkBTCWalletModal,
+    CkBTCWalletModalData,
     CkBTCWalletModalType,
   } from "$lib/types/wallet.modal";
   import { nonNullish } from "$lib/utils/utils";
@@ -12,14 +13,12 @@
   let type: CkBTCWalletModalType | undefined;
   $: type = modal?.type;
 
-  let btcAddress: string | undefined;
-  $: btcAddress = (modal as CkBTCWalletModal | undefined)?.data?.btcAddress;
-
-  $: console.log(btcAddress, type, modal);
+  let data: CkBTCWalletModalData | undefined;
+  $: data = (modal as CkBTCWalletModal | undefined)?.data;
 </script>
 
 <svelte:window on:ckBTCWalletModal={({ detail }) => (modal = detail)} />
 
-{#if type === "ckbtc-receive" && nonNullish(btcAddress)}
-  <CkBTCReceiveModal {btcAddress} on:nnsClose={close} />
+{#if type === "ckbtc-receive" && nonNullish(data)}
+  <CkBTCReceiveModal {data} on:nnsClose={close} />
 {/if}
