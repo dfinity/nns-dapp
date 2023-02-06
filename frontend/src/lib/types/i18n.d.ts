@@ -112,6 +112,7 @@ interface I18nError {
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
   canister_invalid_transaction: string;
+  ckbtc_get_btc_address: string;
 }
 
 interface I18nWarning {
@@ -818,6 +819,8 @@ interface I18nCkbtc {
   title: string;
   ckBTC: string;
   logo: string;
+  receive: string;
+  address: string;
 }
 
 interface I18nNeuron_state {

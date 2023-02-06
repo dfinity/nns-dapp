@@ -179,7 +179,8 @@
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -195,7 +196,8 @@
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -211,7 +213,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -227,7 +230,8 @@
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -243,7 +247,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -259,7 +264,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -275,7 +281,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -291,7 +298,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -307,7 +315,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -330,7 +339,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -346,7 +356,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -362,7 +373,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "bind": "127.0.0.1:8080",

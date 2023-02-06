@@ -27,6 +27,9 @@
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
+  import { ENABLE_CKBTC_RECEIVE } from "$lib/constants/environment.constants";
+  import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
+  import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -138,7 +141,11 @@
   </main>
 
   {#if canMakeTransactions}
-    <Footer columns={1}>
+    <Footer columns={ENABLE_CKBTC_RECEIVE ? 2 : 1}>
+      {#if ENABLE_CKBTC_RECEIVE}
+        <CkBTCWalletFooter />
+      {/if}
+
       <button
         class="primary"
         on:click={() => (showNewTransactionModal = true)}
@@ -149,6 +156,8 @@
     </Footer>
   {/if}
 </Island>
+
+<CkBTCWalletModals />
 
 {#if showNewTransactionModal && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
   <CkBTCTransactionModal
