@@ -2,7 +2,7 @@
   import CardInfo from "../ui/CardInfo.svelte";
   import Separator from "../ui/Separator.svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
   import TagsList from "../ui/TagsList.svelte";
   import Hash from "../ui/Hash.svelte";
   import { Tag } from "@dfinity/gix-components";
@@ -11,7 +11,6 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import { permissionI18nMapper } from "$lib/i18n/dev-i18n";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -36,7 +35,7 @@
         slot="title"
       />
       {#each permission.permission_type as permissionType}
-        <Tag tagName="li">{permissionI18nMapper[permissionType] ?? ""}</Tag>
+        <Tag tagName="li">{SnsNeuronPermissionType[permissionType]}</Tag>
       {/each}
     </TagsList>
   {/each}

@@ -14,7 +14,6 @@
   import { getCurrentIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { enumValues } from "$lib/utils/enum.utils";
-  import { permissionI18nMapper } from "$lib/i18n/dev-i18n";
   import { toastsError } from "$lib/stores/toasts.store";
 
   export let neuronId: SnsNeuronId;
@@ -98,7 +97,7 @@
         inputId={String(permission)}
         {checked}
         on:nnsChange={() => toggle(permission)}
-        >{permissionI18nMapper[permission] ?? permission}</Checkbox
+        >{SnsNeuronPermissionType[permission]}</Checkbox
       >
     {/each}
     <div class="toolbar">
