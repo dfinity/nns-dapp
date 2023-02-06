@@ -22,6 +22,19 @@ pub struct State {
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
     pub stable: StableState,
+    /// Hashes for the assets, needed for signing.
+    ///
+    /// Note: It would be nice to store the asset hashes in stable memory, however RBTree does not support
+    /// the required macros for serialization and deserialization.
+    pub asset_hashes: RefCell<AssetHashes>,
+}
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct StableState {
+    /// Configuration that is changed only by deployment, upgrade or similar events.
+    pub config: RefCell<Config>,
+    /// Data collected about SNSs, dumped as received from upstream.
+    pub sns_cache: RefCell<SnsCache>,
     /// Pre-signed data that can be served as high performance certified query calls.
     ///
     /// - /sns/list/latest/slow.json
@@ -29,16 +42,6 @@ pub struct State {
     /// - /sns/root/${sns_root}/logo.{jpg/png/...}
     /// - /sns/root/${sns_root}/slow.json
     pub assets: RefCell<Assets>,
-    /// Hashes for the assets, needed for signing.
-    pub asset_hashes: RefCell<AssetHashes>,
-}
-
-#[derive(Default, Clone, CandidType, Serialize, Deserialize, Debug)]
-pub struct StableState {
-    /// Configuration that is changed only by deployment, upgrade or similar events.
-    pub config: RefCell<Config>,
-    /// Data collected about SNSs, dumped as received from upstream.
-    pub sns_cache: RefCell<SnsCache>,
 }
 
 thread_local! {
@@ -111,7 +114,8 @@ impl State {
         }
         // Add this to the list of values from upstream
         STATE.with(|state| {
-            state.stable
+            state
+                .stable
                 .sns_cache
                 .borrow_mut()
                 .upstream_data

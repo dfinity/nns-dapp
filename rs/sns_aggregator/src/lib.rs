@@ -9,7 +9,7 @@ mod upstream;
 use std::time::Duration;
 
 use assets::{insert_favicon, HttpRequest, HttpResponse};
-use candid::{export_service, candid_method};
+use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
 use state::{Config, STATE};
