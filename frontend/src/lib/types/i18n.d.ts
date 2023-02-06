@@ -107,6 +107,7 @@ interface I18nError {
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
+  token_not_found: string;
   fetch_transactions: string;
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
@@ -141,12 +142,12 @@ interface I18nAuth {
   earn: string;
   launchpad: string;
   ic_logo: string;
-  about: string;
+  dashboard: string;
   voting_rewards: string;
   logo: string;
-  copyright: string;
   github_link: string;
   background: string;
+  internetcomputer_dot_org_link: string;
 }
 
 interface I18nAccounts {
@@ -257,6 +258,9 @@ interface I18nNeurons {
   dissolve_delay_title: string;
   no_delay: string;
   dissolve_delay_description: string;
+  dissolve_delay_label: string;
+  dissolve_delay_below_minimum: string;
+  dissolve_delay_above_maximum: string;
   voting_power: string;
   skip: string;
   update_delay: string;

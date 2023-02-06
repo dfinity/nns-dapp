@@ -5,7 +5,7 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
-import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { render, waitFor } from "@testing-library/svelte";
@@ -14,7 +14,7 @@ import en from "../../mocks/i18n.mock";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -48,7 +48,7 @@ describe("CkBTCWallet", () => {
     it("should call to load ckBTC accounts", async () => {
       render(CkBTCWallet, props);
 
-      await waitFor(() => expect(loadCkBTCAccounts).toBeCalled());
+      await waitFor(() => expect(syncCkBTCAccounts).toBeCalled());
     });
   });
 

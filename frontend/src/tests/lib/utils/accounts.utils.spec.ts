@@ -8,6 +8,7 @@ import {
   getAccountByRootCanister,
   getAccountsByRootCanister,
   getPrincipalFromString,
+  hasAccounts,
   invalidAddress,
   isAccountHardwareWallet,
   mainAccount,
@@ -33,6 +34,13 @@ import {
 } from "../../mocks/sns-accounts.mock";
 
 describe("accounts-utils", () => {
+  const accounts = [mockMainAccount, mockSubAccount];
+
+  const universesAccounts = {
+    [OWN_CANISTER_ID.toText()]: accounts,
+    [mockPrincipal.toText()]: [mockSnsMainAccount, mockSnsSubAccount],
+  };
+
   describe("getAccountByPrincipal", () => {
     it("returns main account when principal matches", () => {
       const accounts = {
@@ -154,20 +162,11 @@ describe("accounts-utils", () => {
   });
 
   describe("getAccountByRootCanister", () => {
-    const accounts = [mockMainAccount, mockSubAccount];
-    const snsAccounts = {
-      [mockPrincipal.toText()]: {
-        accounts: [mockSnsMainAccount, mockSnsSubAccount],
-        certified: true,
-      },
-    };
-
     it("should not return an account if no identifier is provided", () => {
       expect(
         getAccountByRootCanister({
           identifier: undefined,
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: OWN_CANISTER_ID,
         })
       ).toBeUndefined();
@@ -177,8 +176,7 @@ describe("accounts-utils", () => {
       expect(
         getAccountByRootCanister({
           identifier: "aaa",
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: OWN_CANISTER_ID,
         })
       ).toBeUndefined();
@@ -188,8 +186,7 @@ describe("accounts-utils", () => {
       expect(
         getAccountByRootCanister({
           identifier: mockMainAccount.identifier,
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: OWN_CANISTER_ID,
         })
       ).toEqual(mockMainAccount);
@@ -199,8 +196,7 @@ describe("accounts-utils", () => {
       expect(
         getAccountByRootCanister({
           identifier: mockSnsMainAccount.identifier,
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: mockPrincipal,
         })
       ).toEqual(mockSnsMainAccount);
@@ -219,8 +215,7 @@ describe("accounts-utils", () => {
     it("should return undefined if no accounts", () => {
       expect(
         getAccountsByRootCanister({
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: Principal.fromText("aaaaa-aa"),
         })
       ).toBeUndefined();
@@ -229,8 +224,7 @@ describe("accounts-utils", () => {
     it("should return corresponding nns accounts", () => {
       expect(
         getAccountsByRootCanister({
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: OWN_CANISTER_ID,
         })
       ).toEqual(accounts);
@@ -239,8 +233,7 @@ describe("accounts-utils", () => {
     it("should return corresponding sns accounts", () => {
       expect(
         getAccountsByRootCanister({
-          nnsAccounts: accounts,
-          snsAccounts,
+          universesAccounts,
           rootCanisterId: mockPrincipal,
         })
       ).toEqual(snsAccounts[mockPrincipal.toText()].accounts);
@@ -393,5 +386,12 @@ describe("accounts-utils", () => {
         sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).token.name
       ).toEqual(mockSnsMainAccount.balance.token.name);
     });
+  });
+
+  describe("hasAccounts", () => {
+    it("should have accounts", () =>
+      expect(hasAccounts([mockMainAccount])).toBeTruthy());
+
+    it("should not have accounts", () => expect(hasAccounts([])).toBeFalsy());
   });
 });

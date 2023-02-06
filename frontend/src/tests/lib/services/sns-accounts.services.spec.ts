@@ -140,7 +140,7 @@ describe("sns-accounts-services", () => {
         certified: true,
       });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(undefined);
 
       const { success } = await services.snsTransferTokens({
@@ -163,7 +163,7 @@ describe("sns-accounts-services", () => {
         certified: true,
       });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(undefined);
 
       const { success } = await services.snsTransferTokens({
@@ -187,7 +187,7 @@ describe("sns-accounts-services", () => {
         certified: true,
       });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
@@ -208,7 +208,7 @@ describe("sns-accounts-services", () => {
     it("should show toast and return success false if there is no transaction fee", async () => {
       transactionsFeesStore.reset();
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
