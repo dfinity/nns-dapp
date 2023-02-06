@@ -220,7 +220,6 @@ describe("neurons-services", () => {
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
-    resetAccountIdentity();
   });
 
   describe("stake new neuron", () => {
