@@ -55,5 +55,5 @@
   class="primary"
   on:click={openReceive}
   disabled={isNullish($store.account) || $busy}
-  data-tid="open-new-ckbtc-transaction">{$i18n.ckbtc.receive}</button
+  data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
 >
