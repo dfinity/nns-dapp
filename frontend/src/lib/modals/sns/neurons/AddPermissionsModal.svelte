@@ -98,7 +98,7 @@
         inputId={String(permission)}
         {checked}
         on:nnsChange={() => toggle(permission)}
-        >{permissionI18nMapper[permission]}</Checkbox
+        >{permissionI18nMapper[permission] ?? permission}</Checkbox
       >
     {/each}
     <div class="toolbar">
