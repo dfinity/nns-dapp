@@ -4,7 +4,7 @@ use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::GetStateResponse;
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
-use ic_cdk::{api::management_canister::provisional::CanisterId, export::Principal};
+use ic_cdk::{api::management_canister::provisional::CanisterId};
 use std::collections::BTreeMap;
 
 use candid::Nat;
@@ -49,21 +49,6 @@ pub struct UpstreamData {
     pub icrc1_fee: Nat,
 }
 
-// TODO: Derive from Candid
-#[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
-pub struct CanisterStatusResultV2 {
-    status: CanisterStatusType,
-    module_hash: Option<Vec<u8>>,
-    controller: candid::Principal,
-    settings: DefiniteCanisterSettingsArgs,
-    memory_size: candid::Nat,
-    cycles: candid::Nat,
-    // this is for compat with Spec 0.12/0.13
-    balance: Vec<(Vec<u8>, candid::Nat)>,
-    freezing_threshold: candid::Nat,
-    idle_cycles_burned_per_day: candid::Nat,
-}
-
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, CandidType)]
 pub enum CanisterStatusType {
     #[serde(rename = "running")]
@@ -72,19 +57,4 @@ pub enum CanisterStatusType {
     Stopping,
     #[serde(rename = "stopped")]
     Stopped,
-}
-
-// Struct used for encoding/decoding
-/// `(record {
-///     controller : principal;
-///     compute_allocation: nat;
-///     memory_allocation: opt nat;
-/// })`
-#[derive(Clone, CandidType, Serialize, Deserialize, Debug, Eq, PartialEq)]
-pub struct DefiniteCanisterSettingsArgs {
-    controller: Principal,
-    controllers: Vec<Principal>,
-    compute_allocation: candid::Nat,
-    memory_allocation: candid::Nat,
-    freezing_threshold: candid::Nat,
 }
