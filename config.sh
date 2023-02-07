@@ -122,8 +122,8 @@ featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
-ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
+ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -139,8 +139,8 @@ VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
-VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}
-VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}" | tee "$ENV_FILE"
+VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "Config has been defined in '${ENV_FILE}'" >&2
 
@@ -150,10 +150,10 @@ export IDENTITY_SERVICE_URL
 SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
 export SNS_AGGREGATOR_URL
 
-CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
-export CKBTC_INDEX_CANISTER_ID
 CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
 export CKBTC_LEDGER_CANISTER_ID
+CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
+export CKBTC_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
