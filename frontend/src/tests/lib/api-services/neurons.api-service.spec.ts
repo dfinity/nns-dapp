@@ -67,8 +67,8 @@ describe("neurons api-service", () => {
 
     it("should fail if queryNeuron api fails", async () => {
       expect(() =>
-        neuronsApiService.queryNeuron({ neuronId: BigInt(3), ...params })
-      ).rejects.toThrow("No neuron with id 3");
+        neuronsApiService.queryNeuron({ neuronId: BigInt(999), ...params })
+      ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
   });
