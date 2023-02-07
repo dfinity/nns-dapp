@@ -1,3 +1,4 @@
+//! 
 use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use super::ic_sns_ledger::Value as Icrc1Value;
 use super::ic_sns_root::ListSnsCanistersResponse;
@@ -10,10 +11,12 @@ use std::collections::BTreeMap;
 use candid::Nat;
 use serde::Serialize;
 
+/// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
 pub struct SnsCache {
     /// A list of SNSs that need to be populated in the cache.
     pub sns_to_get: Vec<(SnsIndex, DeployedSns)>,
+    /// TODO: Delete.  This field is included for debugging purposes only.
     pub all_sns: Vec<(SnsIndex, DeployedSns)>,
     /// Data obtained about each SNS
     pub upstream_data: BTreeMap<CanisterId, UpstreamData>,
@@ -25,11 +28,11 @@ pub struct SnsCache {
     pub max_index: u64,
 }
 
+/// The index of an SNS in the list provided by the nns-sns-wasm canister.
 pub type SnsIndex = u64;
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
-
 pub struct UpstreamData {
     /// Index of the SNS in the SNS wasms canister
     pub index: u64,
