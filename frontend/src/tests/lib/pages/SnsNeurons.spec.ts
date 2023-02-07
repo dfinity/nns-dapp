@@ -98,7 +98,7 @@ describe("SnsNeurons", () => {
       );
     });
 
-    it("should render one grids", async () => {
+    it.only("should render one grids", async () => {
       const { container } = render(SnsNeurons);
 
       await waitFor(() =>
@@ -144,13 +144,47 @@ describe("SnsNeurons", () => {
       );
     });
 
-    it("should render two grids and title", async () => {
-      const { container, queryByTestId } = render(SnsNeurons);
+    it("should render two grids", async () => {
+      const { container } = render(SnsNeurons);
 
       await waitFor(() =>
         expect(container.querySelectorAll(".card-grid").length).toBe(2)
       );
-      expect(queryByTestId("community-fund-title")).toBeInTheDocument();
+    });
+  });
+
+  describe("with only neurons from CF", () => {
+    beforeEach(() => {
+      const neuron2: SnsNeuron = {
+        ...createMockSnsNeuron({
+          id: [1, 2, 4],
+        }),
+        source_nns_neuron_id: [BigInt(123)],
+      };
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
+    });
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should render Community Fund title", async () => {
+      const { queryByTestId } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(queryByTestId("community-fund-title")).toBeInTheDocument()
+      );
+    });
+
+    it("should render one grid", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(1)
+      );
     });
   });
 

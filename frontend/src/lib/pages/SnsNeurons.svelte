@@ -66,21 +66,24 @@
   $: summary = $snsProjectSelectedStore?.summary;
 </script>
 
-<div class="card-grid" data-tid="sns-neurons-body">
-  {#if loading}
-    <SkeletonCard />
-    <SkeletonCard />
-  {:else}
-    {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
-      <SnsNeuronCard
-        role="link"
-        {neuron}
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={async () => await goToNeuronDetails(neuron)}
-      />
-    {/each}
-  {/if}
-</div>
+{#if $sortedSnsUserNeuronsStore.length > 0 || loading}
+  <div class="card-grid" data-tid="sns-neurons-body">
+    {#if loading}
+      <SkeletonCard />
+      <SkeletonCard />
+    {:else}
+      {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+        <SnsNeuronCard
+          role="link"
+          {neuron}
+          ariaLabel={$i18n.neurons.aria_label_neuron_card}
+          on:click={async () => await goToNeuronDetails(neuron)}
+        />
+      {/each}
+    {/if}
+  </div>
+{/if}
+
 {#if $sortedSnsCFNeuronsStore.length > 0}
   <h2
     data-tid="community-fund-title"
