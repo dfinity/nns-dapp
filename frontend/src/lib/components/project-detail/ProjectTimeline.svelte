@@ -16,13 +16,15 @@
 
   let swap: SnsSummarySwap;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap } = $projectDetailStore.summary as SnsSummary);
+  $: ({
+    swap: { lifecycle },
+  } = $projectDetailStore.summary as SnsSummary);
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 </script>
 
-{#if durationTillDeadline !== undefined}
+{#if durationTillDeadline && lifecycle === SnsSwapLifecycle.Open}
   <KeyValuePair>
     <span slot="key">
       {$i18n.sns_project_detail.deadline}
@@ -32,4 +34,5 @@
     </Value>
   </KeyValuePair>
 {/if}
-<div />
+
+<!-- TODO: Show Starting in... -->

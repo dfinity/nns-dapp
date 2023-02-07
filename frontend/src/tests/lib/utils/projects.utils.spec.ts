@@ -127,8 +127,20 @@ describe("project-utils", () => {
             ...mockSnsFullProject,
             summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
           },
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Adopted),
+          },
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
+          },
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
+          },
         ])?.length
-      ).toEqual(2);
+      ).toEqual(3);
     });
   });
 

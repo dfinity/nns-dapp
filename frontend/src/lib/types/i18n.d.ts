@@ -581,7 +581,9 @@ interface I18nSns_launchpad {
   header: string;
   committed_projects: string;
   no_committed_projects: string;
+  no_opening_soon_projects: string;
   open_projects: string;
+  upcoming_projects: string;
   no_open_projects: string;
   proposals: string;
   project_logo: string;
@@ -602,10 +604,12 @@ interface I18nSns_project_detail {
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
+  starts: string;
   user_commitment: string;
   user_current_commitment: string;
   status: string;
   status_open: string;
+  status_adopted: string;
   enter_amount: string;
   status_committed: string;
   status_aborted: string;

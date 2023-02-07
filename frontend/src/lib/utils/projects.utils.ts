@@ -48,7 +48,11 @@ export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
         swap: { lifecycle },
       },
     }) =>
-      [SnsSwapLifecycle.Committed, SnsSwapLifecycle.Open].includes(lifecycle)
+      [
+        SnsSwapLifecycle.Committed,
+        SnsSwapLifecycle.Open,
+        SnsSwapLifecycle.Adopted,
+      ].includes(lifecycle)
   );
 
 /**

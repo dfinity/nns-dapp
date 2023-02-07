@@ -15,7 +15,7 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectTimeline", () => {
-  it("should render timeline", () => {
+  it("should render deadline if status Open", () => {
     const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
     const { queryByText } = renderContextCmp({
       summary,

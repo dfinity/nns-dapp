@@ -50,6 +50,13 @@
     <dd class="value">{$i18n.sns_project_detail.completed}</dd>
   {/if}
 
+  <!-- Sale is adopted -->
+  {#if lifecycle === SnsSwapLifecycle.Adopted}
+    <dt>{$i18n.sns_project_detail.starts}</dt>
+    <!-- TODO: Show when it starts -->
+    <dd class="value">{"TODO: Fetch lifecycle status"}</dd>
+  {/if}
+
   <!-- Sale is open -->
   {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
     <dt>{$i18n.sns_project_detail.deadline}</dt>

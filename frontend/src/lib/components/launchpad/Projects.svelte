@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish, keyOf } from "$lib/utils/utils";
   import { snsQueryStore, snsSummariesStore } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
@@ -23,11 +23,16 @@
   let loading = false;
   $: loading = isNullish($snsSummariesStore) || isNullish($snsQueryStore);
 
+  const mapper = {
+    [SnsSwapLifecycle.Open]: "no_open_projects",
+    [SnsSwapLifecycle.Adopted]: "no_opening_soon_projects",
+    [SnsSwapLifecycle.Committed]: "no_committed_projects",
+  };
   let noProjectsMessageLabel: string;
-  $: noProjectsMessageLabel =
-    status === SnsSwapLifecycle.Committed
-      ? $i18n.sns_launchpad.no_committed_projects
-      : $i18n.sns_launchpad.no_open_projects;
+  $: noProjectsMessageLabel = keyOf({
+    obj: $i18n.sns_launchpad,
+    key: mapper[status],
+  });
 </script>
 
 {#if loading || projects === undefined}

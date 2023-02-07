@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+import {
+  snsProjectsAdoptedStore,
+  snsProjectsCommittedStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import Launchpad from "$lib/pages/Launchpad.svelte";
 import { loadSnsSwapCommitments } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -48,6 +51,9 @@ describe("Launchpad", () => {
       jest
         .spyOn(snsProjectsCommittedStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      jest
+        .spyOn(snsProjectsAdoptedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
       const { getByText } = render(Launchpad);
 
       // TBU
@@ -55,6 +61,7 @@ describe("Launchpad", () => {
       expect(
         getByText(en.sns_launchpad.committed_projects)
       ).toBeInTheDocument();
+      expect(getByText(en.sns_launchpad.upcoming_projects)).toBeInTheDocument();
       expect(getByText(en.sns_launchpad.proposals)).toBeInTheDocument();
     });
 
@@ -62,6 +69,21 @@ describe("Launchpad", () => {
       render(Launchpad);
 
       await waitFor(() => expect(loadSnsSwapCommitments).toHaveBeenCalled());
+    });
+
+    it("should not render upcoming projects title if no committed projects", () => {
+      jest
+        .spyOn(snsProjectsAdoptedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([]));
+
+      const { queryByText } = render(Launchpad);
+
+      // TBU
+      expect(queryByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
+      expect(
+        queryByText(en.sns_launchpad.upcoming_projects)
+      ).not.toBeInTheDocument();
+      expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
     });
 
     it("should not render committed project title if no committed projects", () => {
