@@ -7,7 +7,8 @@ The GIX team is the team that develops and maintains the internet identity (http
 and NNS frontend dapp (https://nns.ic0.app).  In particular, the NNS frontend dapp shows information
 about current SNS projects.  The team would like to create a canister that aggregates data from all
 dapps that have been, or are being, decentralized via SNS so that this data can be displayed in web
-browsers with low latency and with minimal load on the network.
+browsers with low latency and with minimal load on the network.  The team proposes to deploy the
+canister, test, then transfer ownership to the NNS.
 
 Note that the SNS subnet is a normal application subnet, with restricted access.  All SNS canisters
 deployed to this subnet must pay for their work with cycles.  Canisters deployed by the GIX team are
