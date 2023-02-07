@@ -59,6 +59,7 @@ RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs
 
 # Install dfx
 COPY dfx.json dfx.json
+ADD .dfx .
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 # Start the second container

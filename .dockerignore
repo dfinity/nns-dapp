@@ -2,6 +2,7 @@
 .*
 !.rustfmt.toml
 !.gitignore
+!.dfx
 
 build-inputs.txt
 assets.tar.xz
