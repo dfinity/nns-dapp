@@ -26,6 +26,16 @@ export const mockFullNeuron: Neuron = {
   followees: [],
 };
 
+export const createMockFullNeuron = (id: number | BigInt) => {
+  if (typeof id === "number") {
+    id = BigInt(id);
+  }
+  return {
+    ...mockFullNeuron,
+    neuronId: id,
+  } as Neuron;
+};
+
 export const mockNeuron: NeuronInfo = {
   neuronId: BigInt(1),
   dissolveDelaySeconds: BigInt(11111),
@@ -39,10 +49,31 @@ export const mockNeuron: NeuronInfo = {
   fullNeuron: mockFullNeuron,
 };
 
+export const createMockNeuron = (id: number | BigInt) => {
+  if (typeof id === "number") {
+    id = BigInt(id);
+  }
+  return {
+    ...mockNeuron,
+    neuronId: id,
+    fullNeuron: createMockFullNeuron(id),
+  } as NeuronInfo;
+};
+
 export const mockKnownNeuron: KnownNeuron = {
   id: BigInt(1000),
   name: "Famous Neuron",
   description: undefined,
+};
+
+export const createMockKnownNeuron = (id: number | BigInt) => {
+  if (typeof id === "number") {
+    id = BigInt(id);
+  }
+  return {
+    ...mockKnownNeuron,
+    id: id,
+  } as KnownNeuron;
 };
 
 export const buildMockNeuronsStoreSubscribe =
