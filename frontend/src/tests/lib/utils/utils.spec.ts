@@ -8,7 +8,7 @@ import {
   isHash,
   isNullish,
   isPngAsset,
-  isStringNonNullishNotEmpty,
+  notEmptyString,
   nonNullish,
   poll,
   PollingLimitExceededError,
@@ -225,12 +225,12 @@ describe("utils", () => {
     });
   });
 
-  describe("isStringNonNullishNotEmpty", () => {
+  describe("notEmptyString", () => {
     it("should determine not empty", () => {
-      expect(isStringNonNullishNotEmpty(null)).toBeFalsy();
-      expect(isStringNonNullishNotEmpty(undefined)).toBeFalsy();
-      expect(isStringNonNullishNotEmpty("")).toBeFalsy();
-      expect(isStringNonNullishNotEmpty("test")).toBeTruthy();
+      expect(notEmptyString(null)).toBeFalsy();
+      expect(notEmptyString(undefined)).toBeFalsy();
+      expect(notEmptyString("")).toBeFalsy();
+      expect(notEmptyString("test")).toBeTruthy();
     });
   });
 
