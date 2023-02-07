@@ -161,6 +161,10 @@ export const nonNullish = <T>(
   argument: T | undefined | null
 ): argument is NonNullable<T> => !isNullish(argument);
 
+/** Not null and not undefined and not empty */
+export const isStringNonNullishNotEmpty = (value?: string): boolean =>
+  nonNullish(value) && value !== "";
+
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,
   fun: (args: T) => Promise<R>
@@ -347,6 +351,3 @@ export const expandObject = (
     }
     return acc;
   }, {} as Record<string, unknown>);
-
-export const isStringNonNullishNotEmpty = (value?: string): boolean =>
-  nonNullish(value) && value !== "";
