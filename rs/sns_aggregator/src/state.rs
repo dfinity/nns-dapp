@@ -31,7 +31,7 @@ pub struct State {
 }
 
 /// State that is saved across canister upgrades.
-/// 
+///
 /// Note: Ultimately, the canister state is regenerated automatically, so if state cannot be kept across an upgrade,
 ///       the state is discarded in favour of upgrading.
 #[derive(Default, Serialize, Deserialize)]
@@ -56,9 +56,9 @@ thread_local! {
 
 impl State {
     /// The maximum number of SNS included in a response.
-    /// 
+    ///
     /// Pages are pre-computed to contain indices [0..PAGE_SIZE-1], [PAGE_SIZE..2*PAGE_SIZE-1] and so on.
-    /// 
+    ///
     /// Also, the list of most recent SNSs is limited to the page size.
     pub const PAGE_SIZE: u64 = 10;
 
@@ -101,9 +101,11 @@ impl State {
             };
             insert_asset(path, asset);
         }
-        
+
         // If this is in the last N, update latest.
-        if upstream_data.index + State::PAGE_SIZE > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index) {
+        if upstream_data.index + State::PAGE_SIZE
+            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index)
+        {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
