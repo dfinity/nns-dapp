@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   curl_test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
@@ -81,7 +81,7 @@ jobs:
   aggregator-pass:
     needs: ["curl_test"]
     if: ${{ always() }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checks workflow passes
         run: |

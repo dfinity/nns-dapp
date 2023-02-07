@@ -1,54 +1,10 @@
 import { neuronsApiService } from "$lib/api-services/neurons.api-service";
-import {
-  addHotkey,
-  autoStakeMaturity,
-  claimOrRefreshNeuron,
-  disburse,
-  increaseDissolveDelay,
-  joinCommunityFund,
-  leaveCommunityFund,
-  mergeMaturity,
-  mergeNeurons,
-  queryKnownNeurons,
-  queryNeuron,
-  queryNeurons,
-  removeHotkey,
-  setFollowees,
-  spawnNeuron,
-  splitNeuron,
-  stakeMaturity,
-  stakeNeuron,
-  startDissolving,
-  stopDissolving,
-} from "$lib/api/governance.api";
+import * as api from "$lib/api/governance.api";
 import { Topic } from "@dfinity/nns";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 
-jest.mock("$lib/api/governance.api", () => {
-  return {
-    addHotkey: jest.fn(),
-    autoStakeMaturity: jest.fn(),
-    claimOrRefreshNeuron: jest.fn(),
-    disburse: jest.fn(),
-    increaseDissolveDelay: jest.fn(),
-    joinCommunityFund: jest.fn(),
-    leaveCommunityFund: jest.fn(),
-    mergeMaturity: jest.fn(),
-    mergeNeurons: jest.fn(),
-    queryKnownNeurons: jest.fn(),
-    queryNeuron: jest.fn(),
-    queryNeurons: jest.fn(),
-    removeHotkey: jest.fn(),
-    setFollowees: jest.fn(),
-    spawnNeuron: jest.fn(),
-    splitNeuron: jest.fn(),
-    stakeMaturity: jest.fn(),
-    stakeNeuron: jest.fn(),
-    startDissolving: jest.fn(),
-    stopDissolving: jest.fn(),
-  };
-});
+jest.mock("$lib/api/governance.api");
 
 describe("neurons api-service", () => {
   const neuronId = BigInt(12);
@@ -58,24 +14,24 @@ describe("neurons api-service", () => {
     it("should call queryNeuron api", () => {
       const params = { neuronId, identity: mockIdentity, certified: true };
       neuronsApiService.queryNeuron(params);
-      expect(queryNeuron).toHaveBeenCalledWith(params);
-      expect(queryNeuron).toHaveBeenCalledTimes(1);
+      expect(api.queryNeuron).toHaveBeenCalledWith(params);
+      expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("queryNeurons", () => {
     it("should call queryNeurons api", () => {
       const params = { identity: mockIdentity, certified: true };
       neuronsApiService.queryNeurons(params);
-      expect(queryNeurons).toHaveBeenCalledWith(params);
-      expect(queryNeurons).toHaveBeenCalledTimes(1);
+      expect(api.queryNeurons).toHaveBeenCalledWith(params);
+      expect(api.queryNeurons).toHaveBeenCalledTimes(1);
     });
   });
   describe("queryKnownNeurons", () => {
     it("should call queryKnownNeurons api", () => {
       const params = { identity: mockIdentity, certified: true };
       neuronsApiService.queryKnownNeurons(params);
-      expect(queryKnownNeurons).toHaveBeenCalledWith(params);
-      expect(queryKnownNeurons).toHaveBeenCalledTimes(1);
+      expect(api.queryKnownNeurons).toHaveBeenCalledWith(params);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -88,8 +44,8 @@ describe("neurons api-service", () => {
         principal: mockPrincipal,
       };
       neuronsApiService.addHotkey(params);
-      expect(addHotkey).toHaveBeenCalledWith(params);
-      expect(addHotkey).toHaveBeenCalledTimes(1);
+      expect(api.addHotkey).toHaveBeenCalledWith(params);
+      expect(api.addHotkey).toHaveBeenCalledTimes(1);
     });
   });
   describe("autoStakeMaturity", () => {
@@ -100,8 +56,8 @@ describe("neurons api-service", () => {
         autoStake: true,
       };
       neuronsApiService.autoStakeMaturity(params);
-      expect(autoStakeMaturity).toHaveBeenCalledWith(params);
-      expect(autoStakeMaturity).toHaveBeenCalledTimes(1);
+      expect(api.autoStakeMaturity).toHaveBeenCalledWith(params);
+      expect(api.autoStakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("claimOrRefreshNeuron", () => {
@@ -111,8 +67,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.claimOrRefreshNeuron(params);
-      expect(claimOrRefreshNeuron).toHaveBeenCalledWith(params);
-      expect(claimOrRefreshNeuron).toHaveBeenCalledTimes(1);
+      expect(api.claimOrRefreshNeuron).toHaveBeenCalledWith(params);
+      expect(api.claimOrRefreshNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("disburse", () => {
@@ -124,8 +80,8 @@ describe("neurons api-service", () => {
         amount: BigInt(10_000_000),
       };
       neuronsApiService.disburse(params);
-      expect(disburse).toHaveBeenCalledWith(params);
-      expect(disburse).toHaveBeenCalledTimes(1);
+      expect(api.disburse).toHaveBeenCalledWith(params);
+      expect(api.disburse).toHaveBeenCalledTimes(1);
     });
   });
   describe("increaseDissolveDelay", () => {
@@ -136,8 +92,8 @@ describe("neurons api-service", () => {
         dissolveDelayInSeconds: 2,
       };
       neuronsApiService.increaseDissolveDelay(params);
-      expect(increaseDissolveDelay).toHaveBeenCalledWith(params);
-      expect(increaseDissolveDelay).toHaveBeenCalledTimes(1);
+      expect(api.increaseDissolveDelay).toHaveBeenCalledWith(params);
+      expect(api.increaseDissolveDelay).toHaveBeenCalledTimes(1);
     });
   });
   describe("joinCommunityFund", () => {
@@ -147,8 +103,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.joinCommunityFund(params);
-      expect(joinCommunityFund).toHaveBeenCalledWith(params);
-      expect(joinCommunityFund).toHaveBeenCalledTimes(1);
+      expect(api.joinCommunityFund).toHaveBeenCalledWith(params);
+      expect(api.joinCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
   describe("leaveCommunityFund", () => {
@@ -158,8 +114,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.leaveCommunityFund(params);
-      expect(leaveCommunityFund).toHaveBeenCalledWith(params);
-      expect(leaveCommunityFund).toHaveBeenCalledTimes(1);
+      expect(api.leaveCommunityFund).toHaveBeenCalledWith(params);
+      expect(api.leaveCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
   describe("mergeMaturity", () => {
@@ -170,8 +126,8 @@ describe("neurons api-service", () => {
         percentageToMerge: 0.2,
       };
       neuronsApiService.mergeMaturity(params);
-      expect(mergeMaturity).toHaveBeenCalledWith(params);
-      expect(mergeMaturity).toHaveBeenCalledTimes(1);
+      expect(api.mergeMaturity).toHaveBeenCalledWith(params);
+      expect(api.mergeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("mergeNeurons", () => {
@@ -182,8 +138,8 @@ describe("neurons api-service", () => {
         targetNeuronId: BigInt(20),
       };
       neuronsApiService.mergeNeurons(params);
-      expect(mergeNeurons).toHaveBeenCalledWith(params);
-      expect(mergeNeurons).toHaveBeenCalledTimes(1);
+      expect(api.mergeNeurons).toHaveBeenCalledWith(params);
+      expect(api.mergeNeurons).toHaveBeenCalledTimes(1);
     });
   });
   describe("removeHotkey", () => {
@@ -194,8 +150,8 @@ describe("neurons api-service", () => {
         principal: mockPrincipal,
       };
       neuronsApiService.removeHotkey(params);
-      expect(removeHotkey).toHaveBeenCalledWith(params);
-      expect(removeHotkey).toHaveBeenCalledTimes(1);
+      expect(api.removeHotkey).toHaveBeenCalledWith(params);
+      expect(api.removeHotkey).toHaveBeenCalledTimes(1);
     });
   });
   describe("setFollowees", () => {
@@ -207,8 +163,8 @@ describe("neurons api-service", () => {
         followees: [BigInt(2), BigInt(20)],
       };
       neuronsApiService.setFollowees(params);
-      expect(setFollowees).toHaveBeenCalledWith(params);
-      expect(setFollowees).toHaveBeenCalledTimes(1);
+      expect(api.setFollowees).toHaveBeenCalledWith(params);
+      expect(api.setFollowees).toHaveBeenCalledTimes(1);
     });
   });
   describe("spawnNeuron", () => {
@@ -218,8 +174,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.spawnNeuron(params);
-      expect(spawnNeuron).toHaveBeenCalledWith(params);
-      expect(spawnNeuron).toHaveBeenCalledTimes(1);
+      expect(api.spawnNeuron).toHaveBeenCalledWith(params);
+      expect(api.spawnNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("splitNeuron", () => {
@@ -230,8 +186,8 @@ describe("neurons api-service", () => {
         amount: BigInt(10_000_000),
       };
       neuronsApiService.splitNeuron(params);
-      expect(splitNeuron).toHaveBeenCalledWith(params);
-      expect(splitNeuron).toHaveBeenCalledTimes(1);
+      expect(api.splitNeuron).toHaveBeenCalledWith(params);
+      expect(api.splitNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("stakeMaturity", () => {
@@ -242,8 +198,8 @@ describe("neurons api-service", () => {
         percentageToStake: 0.2,
       };
       neuronsApiService.stakeMaturity(params);
-      expect(stakeMaturity).toHaveBeenCalledWith(params);
-      expect(stakeMaturity).toHaveBeenCalledTimes(1);
+      expect(api.stakeMaturity).toHaveBeenCalledWith(params);
+      expect(api.stakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
   describe("stakeNeuron", () => {
@@ -256,8 +212,8 @@ describe("neurons api-service", () => {
         fromSubaccount: new Uint8Array(),
       };
       neuronsApiService.stakeNeuron(params);
-      expect(stakeNeuron).toHaveBeenCalledWith(params);
-      expect(stakeNeuron).toHaveBeenCalledTimes(1);
+      expect(api.stakeNeuron).toHaveBeenCalledWith(params);
+      expect(api.stakeNeuron).toHaveBeenCalledTimes(1);
     });
   });
   describe("startDissolving", () => {
@@ -267,8 +223,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.startDissolving(params);
-      expect(startDissolving).toHaveBeenCalledWith(params);
-      expect(startDissolving).toHaveBeenCalledTimes(1);
+      expect(api.startDissolving).toHaveBeenCalledWith(params);
+      expect(api.startDissolving).toHaveBeenCalledTimes(1);
     });
   });
   describe("stopDissolving", () => {
@@ -278,8 +234,8 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
       };
       neuronsApiService.stopDissolving(params);
-      expect(stopDissolving).toHaveBeenCalledWith(params);
-      expect(stopDissolving).toHaveBeenCalledTimes(1);
+      expect(api.stopDissolving).toHaveBeenCalledWith(params);
+      expect(api.stopDissolving).toHaveBeenCalledTimes(1);
     });
   });
 });
