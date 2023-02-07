@@ -34,6 +34,51 @@ import {
   type ApiStakeMaturityParams,
   type ApiStakeNeuronParams,
 } from "$lib/api/governance.api";
+import type { Identity } from "@dfinity/agent";
+import type { NeuronInfo } from "@dfinity/nns";
+
+const cacheExpirationDurationMs = 5 * 60 * 1000;
+
+const nowMs = () => new Date().getTime();
+
+let cachedNeurons: NeuronInfo[] | null = null;
+
+// When the neurons were last cached.
+let cacheTimestampMs: number | null = null;
+
+// The principal of the identity for which the neurons were cached.
+let cachePrincipalText: string | null = null;
+
+export const clearCache = () => {
+  cachedNeurons = null;
+  cacheTimestampMs = null;
+  cachePrincipalText = null;
+};
+
+const hasValidCachedNeurons = (identity: Identity) => {
+  if (
+    cachedNeurons === null ||
+    cacheTimestampMs === null ||
+    cachePrincipalText === null
+  ) {
+    return false;
+  }
+  if (nowMs() - cacheTimestampMs > cacheExpirationDurationMs) {
+    clearCache();
+    return false;
+  }
+  return cachePrincipalText === identity.getPrincipal().toText();
+};
+
+const clearCacheAfter = async <R>(promise: Promise<R>) => {
+  const result: R = await promise;
+  clearCache();
+  return result;
+};
+
+export const resetNeuronsApiService = () => {
+  clearCache();
+};
 
 export const neuronsApiService = {
   // Read calls
@@ -43,61 +88,71 @@ export const neuronsApiService = {
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);
   },
-  queryNeurons(params: ApiQueryParams) {
-    return queryNeurons(params);
+  async queryNeurons(params: ApiQueryParams) {
+    if (hasValidCachedNeurons(params.identity)) {
+      return cachedNeurons;
+    }
+    const promise = queryNeurons(params);
+    if (!params.certified) {
+      return promise;
+    }
+    cachedNeurons = await promise;
+    cacheTimestampMs = nowMs();
+    cachePrincipalText = params.identity.getPrincipal().toText();
+    return cachedNeurons;
   },
 
   // Action calls
-  addHotkey(params: ApiManageHotkeyParams) {
-    return addHotkey(params);
+  async addHotkey(params: ApiManageHotkeyParams) {
+    return clearCacheAfter(addHotkey(params));
   },
   autoStakeMaturity(params: ApiAutoStakeMaturityParams) {
-    return autoStakeMaturity(params);
+    return clearCacheAfter(autoStakeMaturity(params));
   },
   claimOrRefreshNeuron(params: ApiManageNeuronParams) {
-    return claimOrRefreshNeuron(params);
+    return clearCacheAfter(claimOrRefreshNeuron(params));
   },
   disburse(params: ApiDisburseParams) {
-    return disburse(params);
+    return clearCacheAfter(disburse(params));
   },
   increaseDissolveDelay(params: ApiIncreaseDissolveDelayParams) {
-    return increaseDissolveDelay(params);
+    return clearCacheAfter(increaseDissolveDelay(params));
   },
   joinCommunityFund(params: ApiManageNeuronParams) {
-    return joinCommunityFund(params);
+    return clearCacheAfter(joinCommunityFund(params));
   },
   leaveCommunityFund(params: ApiManageNeuronParams) {
-    return leaveCommunityFund(params);
+    return clearCacheAfter(leaveCommunityFund(params));
   },
   // @deprecated
   mergeMaturity(params: ApiMergeMaturityParams) {
-    return mergeMaturity(params);
+    return clearCacheAfter(mergeMaturity(params));
   },
   mergeNeurons(params: ApiMergeNeuronsParams) {
-    return mergeNeurons(params);
+    return clearCacheAfter(mergeNeurons(params));
   },
   removeHotkey(params: ApiManageHotkeyParams) {
-    return removeHotkey(params);
+    return clearCacheAfter(removeHotkey(params));
   },
   setFollowees(params: ApiSetFolloweesParams) {
-    return setFollowees(params);
+    return clearCacheAfter(setFollowees(params));
   },
   spawnNeuron(params: ApiSpawnNeuronParams) {
-    return spawnNeuron(params);
+    return clearCacheAfter(spawnNeuron(params));
   },
   splitNeuron(params: ApiSplitNeuronParams) {
-    return splitNeuron(params);
+    return clearCacheAfter(splitNeuron(params));
   },
   stakeMaturity(params: ApiStakeMaturityParams) {
-    return stakeMaturity(params);
+    return clearCacheAfter(stakeMaturity(params));
   },
   stakeNeuron(params: ApiStakeNeuronParams) {
-    return stakeNeuron(params);
+    return clearCacheAfter(stakeNeuron(params));
   },
   startDissolving(params: ApiManageNeuronParams) {
-    return startDissolving(params);
+    return clearCacheAfter(startDissolving(params));
   },
   stopDissolving(params: ApiManageNeuronParams) {
-    return stopDissolving(params);
+    return clearCacheAfter(stopDissolving(params));
   },
 };
