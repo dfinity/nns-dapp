@@ -25,8 +25,10 @@ export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
 const MAINNET_CKBTC_LEDGER_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
 const MAINNET_CKBTC_INDEX_CANISTER_ID = "n5wcd-faaaa-aaaar-qaaea-cai";
 
-const ENV_CKBTC_LEDGER_CANISTER_ID = import.meta.env.CKBTC_LEDGER_CANISTER_ID;
-const ENV_CKBTC_INDEX_CANISTER_ID = import.meta.env.CKBTC_INDEX_CANISTER_ID;
+const ENV_CKBTC_LEDGER_CANISTER_ID = import.meta.env
+  .VITE_CKBTC_LEDGER_CANISTER_ID;
+const ENV_CKBTC_INDEX_CANISTER_ID = import.meta.env
+  .VITE_CKBTC_INDEX_CANISTER_ID;
 
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
   isStringNonNullishNotEmpty(ENV_CKBTC_LEDGER_CANISTER_ID)
