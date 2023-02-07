@@ -1,3 +1,4 @@
+//! The state of the canister
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::types::slow::logo_binary;
@@ -29,6 +30,10 @@ pub struct State {
     pub asset_hashes: RefCell<AssetHashes>,
 }
 
+/// State that is saved across canister upgrades.
+/// 
+/// Note: Ultimately, the canister state is regenerated automatically, so if state cannot be kept across an upgrade,
+///       the state is discarded in favour of upgrading.
 #[derive(Default, Serialize, Deserialize)]
 pub struct StableState {
     /// Configuration that is changed only by deployment, upgrade or similar events.
@@ -134,6 +139,7 @@ impl State {
     }
 }
 
+/// Parameters that control the behaviour of the aggregator canister.
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
 pub struct Config {
     /// The update interval, in milliseconds
