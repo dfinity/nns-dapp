@@ -97,6 +97,14 @@ describe("SnsNeurons", () => {
         expect(queryAllByTestId("sns-neuron-card-title").length).toBe(2)
       );
     });
+
+    it("should render one grids", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(1)
+      );
+    });
   });
 
   describe("with neurons from CF", () => {
@@ -136,12 +144,13 @@ describe("SnsNeurons", () => {
       );
     });
 
-    it("should render two grids", async () => {
-      const { container } = render(SnsNeurons);
+    it("should render two grids and title", async () => {
+      const { container, queryByTestId } = render(SnsNeurons);
 
       await waitFor(() =>
         expect(container.querySelectorAll(".card-grid").length).toBe(2)
       );
+      expect(queryByTestId("community-fund-title")).toBeInTheDocument();
     });
   });
 

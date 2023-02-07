@@ -84,9 +84,9 @@
 {#if $sortedSnsCFNeuronsStore.length > 0}
   <h2
     data-tid="community-fund-title"
-    class={$sortedSnsUserNeuronsStore.length > 0
-      ? "top-margin bottom-margin"
-      : "bottom-margin"}
+    class={`bottom-margin ${
+      $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
+    }`}
   >
     {$i18n.sns_neuron_detail.community_fund_section}
   </h2>
