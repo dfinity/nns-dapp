@@ -348,5 +348,5 @@ export const expandObject = (
     return acc;
   }, {} as Record<string, unknown>);
 
-export const isStringDefinedNotEmpty = (value?: string): boolean =>
+export const isStringNonNullishNotEmpty = (value?: string): boolean =>
   nonNullish(value) && value !== "";
