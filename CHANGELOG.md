@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXXXX
+* Launch ckBTC wallet functionality!
+* Fix bug in transactions list.
+* Introduce GZIP encoding for assets.
+
 ## Proposal 105498
 * Remove dashboard routing fallback.
 * Login screen minor changes.
