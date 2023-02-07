@@ -44,7 +44,7 @@ describe("neurons api-service", () => {
             identity,
             certified,
           }: api.ApiQueryNeuronParams) => {
-            const neuron = neurons.find((n) => n.neuronId == neuronId);
+            const neuron = neurons.find((n) => n.neuronId === neuronId);
             if (!neuron) {
               throw new Error(`No neuron with id ${neuronId}`);
             }
@@ -190,9 +190,7 @@ describe("neurons api-service", () => {
         neuronId,
         identity: mockIdentity,
       };
-      jest
-        .spyOn(api, "claimOrRefreshNeuron")
-        .mockImplementationOnce(async () => neuronId);
+      jest.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
       expect(await neuronsApiService.claimOrRefreshNeuron(params)).toEqual(
         neuronId
       );
@@ -311,9 +309,7 @@ describe("neurons api-service", () => {
         neuronId,
         identity: mockIdentity,
       };
-      jest
-        .spyOn(api, "spawnNeuron")
-        .mockImplementationOnce(async () => neuronId);
+      jest.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
       expect(await neuronsApiService.spawnNeuron(params)).toEqual(neuronId);
       expect(api.spawnNeuron).toHaveBeenCalledWith(params);
       expect(api.spawnNeuron).toHaveBeenCalledTimes(1);
@@ -327,9 +323,7 @@ describe("neurons api-service", () => {
         identity: mockIdentity,
         amount: BigInt(10_000_000),
       };
-      jest
-        .spyOn(api, "splitNeuron")
-        .mockImplementationOnce(async () => neuronId);
+      jest.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
       expect(await neuronsApiService.splitNeuron(params)).toEqual(neuronId);
       expect(api.splitNeuron).toHaveBeenCalledWith(params);
       expect(api.splitNeuron).toHaveBeenCalledTimes(1);
@@ -358,9 +352,7 @@ describe("neurons api-service", () => {
         ledgerCanisterIdentity: mockIdentity,
         fromSubaccount: new Uint8Array(),
       };
-      jest
-        .spyOn(api, "stakeNeuron")
-        .mockImplementationOnce(async () => neuronId);
+      jest.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);
       expect(await neuronsApiService.stakeNeuron(params)).toEqual(neuronId);
       expect(api.stakeNeuron).toHaveBeenCalledWith(params);
       expect(api.stakeNeuron).toHaveBeenCalledTimes(1);

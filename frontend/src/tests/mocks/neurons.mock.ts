@@ -72,7 +72,7 @@ export const createMockKnownNeuron = (id: number | BigInt) => {
   }
   return {
     ...mockKnownNeuron,
-    id: id,
+    id,
   } as KnownNeuron;
 };
 
