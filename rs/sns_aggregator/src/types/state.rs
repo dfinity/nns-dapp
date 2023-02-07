@@ -48,13 +48,3 @@ pub struct UpstreamData {
     /// The ledger fee, presumably a transaction fee.
     pub icrc1_fee: Nat,
 }
-
-#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, CandidType)]
-pub enum CanisterStatusType {
-    #[serde(rename = "running")]
-    Running,
-    #[serde(rename = "stopping")]
-    Stopping,
-    #[serde(rename = "stopped")]
-    Stopped,
-}
