@@ -8,7 +8,7 @@ type HttpRequest = record {
 };
 type HttpResponse = record  {
     status_code: nat16;
-    headers: vec record HttpHeader;
+    headers: vec HttpHeader;
     body: vec nat8;
 };
 
