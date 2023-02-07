@@ -60,7 +60,7 @@ cd "$GIT_ROOT"
 	#![allow(clippy::all)]
 	#![allow(clippy::all)]
 	#![allow(non_camel_case_types)]
-  #![allow(dead_code)]
+	#![allow(dead_code)]
 
 	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 	use ic_cdk::api::call::CallResult;
