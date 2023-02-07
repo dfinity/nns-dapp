@@ -89,7 +89,7 @@ export const neuronsApiService = {
     return queryNeuron(params);
   },
   async queryNeurons(params: ApiQueryParams) {
-    if (hasValidCachedNeurons(params.identity)) {
+    if (cachedNeurons !== null && hasValidCachedNeurons(params.identity)) {
       return cachedNeurons;
     }
     const promise = queryNeurons(params);
