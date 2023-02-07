@@ -4,7 +4,7 @@ use std::str::FromStr;
 use crate::convert_canister_id;
 use crate::state::{State, STATE};
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
-use crate::types::state::UpstreamData;
+use crate::types::upstream::UpstreamData;
 use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};

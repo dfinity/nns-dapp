@@ -3,11 +3,11 @@ use crate::convert_canister_id;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
-use crate::types::state::UpstreamData;
+use crate::types::upstream::UpstreamData;
 use crate::types::{CandidType, Deserialize, Serialize};
 use crate::{
     assets::{AssetHashes, Assets},
-    types::state::SnsCache,
+    types::upstream::SnsCache,
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::timer::TimerId;
