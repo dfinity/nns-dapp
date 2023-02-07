@@ -12,12 +12,12 @@ use serde::Serialize;
 
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
 pub struct SnsCache {
-    // A list of SNSs that need to be populated in the cache.
+    /// A list of SNSs that need to be populated in the cache.
     pub sns_to_get: Vec<(SnsIndex, DeployedSns)>,
     pub all_sns: Vec<(SnsIndex, DeployedSns)>,
-    // Data obtained about each SNS
+    /// Data obtained about each SNS
     pub upstream_data: BTreeMap<CanisterId, UpstreamData>,
-    // Time of last partial update
+    /// Time of last partial update
     pub last_partial_update: u64,
     /// Time of last complete cycle
     pub last_update: u64,

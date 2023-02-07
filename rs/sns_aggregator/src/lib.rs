@@ -1,5 +1,6 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
 pub mod assets;
 mod conversion;
 mod state;
@@ -43,6 +44,12 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
     call::reply((response,));
 }
 
+/// Function called when a canister is first created IF it is created
+/// with this code.
+/// 
+/// Note: If the canister os created with e.g. `dfx canister create`
+///       and then deployed normally, `init(..)` is never called.
+#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
@@ -50,6 +57,8 @@ fn init(config: Option<Config>) {
     setup(config);
 }
 
+/// Function called before upgrade to a new wasm.
+#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
@@ -65,6 +74,8 @@ fn pre_upgrade() {
     });
 }
 
+/// Function called after a canister has been upgraded to a new wasm.
+#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     ic_cdk::api::print("Calling post_upgrade...");
@@ -134,7 +145,12 @@ fn setup(config: Option<Config>) {
     });
 }
 
+// Collects all the API method signatures for export as a candid interface definition.
+//
+// Note: This MUST come after all the API methods.
 export_service!();
+
+/// Returns candid describing the interface.
 #[ic_cdk_macros::query]
 fn interface() -> String {
     __export_service()
