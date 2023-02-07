@@ -7,6 +7,7 @@ import * as services from "$lib/services/ckbtc-minter.services";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { waitFor } from "@testing-library/svelte";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 
 describe("ckbtc-miniter-services", () => {
   describe("getBTCAddress", () => {
@@ -19,7 +20,7 @@ describe("ckbtc-miniter-services", () => {
     it("should get bitcoin address", async () => {
       const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
-        .mockResolvedValue("a_test_address");
+        .mockResolvedValue(mockCkBTCAddress);
 
       await services.getBTCAddress();
 

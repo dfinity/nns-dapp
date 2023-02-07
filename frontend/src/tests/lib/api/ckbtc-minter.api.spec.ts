@@ -2,6 +2,7 @@ import { getBTCAddress } from "$lib/api/ckbtc-minter.api";
 import { CkBTCMinterCanister } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
@@ -16,14 +17,12 @@ describe("ckbtc-minter api", () => {
 
   describe("getBTCAddress", () => {
     it("returns the bitcoin address", async () => {
-      const address = "a_test_address";
-
       const getBTCAddressSpy =
-        minterCanisterMock.getBtcAddress.mockResolvedValue(address);
+        minterCanisterMock.getBtcAddress.mockResolvedValue(mockCkBTCAddress);
 
       const result = await getBTCAddress({ identity: mockIdentity });
 
-      expect(result).toEqual(address);
+      expect(result).toEqual(mockCkBTCAddress);
 
       expect(getBTCAddressSpy).toBeCalled();
     });

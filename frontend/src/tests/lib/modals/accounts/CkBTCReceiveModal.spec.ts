@@ -3,19 +3,20 @@
  */
 
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCAddress,
+  mockCkBTCMainAccount,
+} from "../../../mocks/ckbtc-accounts.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
 describe("CkBTCReceiveModal", () => {
-  const mockBtcAddress = "a_test_address";
-
   const renderTransactionModal = () =>
     renderModal({
       component: CkBTCReceiveModal,
       props: {
         data: {
           account: mockCkBTCMainAccount,
-          btcAddress: mockBtcAddress,
+          btcAddress: mockCkBTCAddress,
         },
       },
     });
@@ -23,7 +24,7 @@ describe("CkBTCReceiveModal", () => {
   it("should render BTC address", async () => {
     const { getByText } = await renderTransactionModal();
 
-    expect(getByText(mockBtcAddress)).toBeInTheDocument();
+    expect(getByText(mockCkBTCAddress)).toBeInTheDocument();
   });
 
   it("should render account identifier (without being shortened)", async () => {
