@@ -29,6 +29,7 @@ interface I18nCore {
   previous: string;
   next: string;
   principal_is: string;
+  done: string;
 }
 
 interface I18nError {
@@ -824,6 +825,9 @@ interface I18nCkbtc {
   logo: string;
   receive: string;
   address: string;
+  btc_receive_note: string;
+  qrcode_aria_label_bitcoin: string;
+  qrcode_aria_label_ckBTC: string;
 }
 
 interface I18nNeuron_state {
