@@ -828,6 +828,7 @@ interface I18nCkbtc {
   btc_receive_note: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
+  bitcoin: string;
 }
 
 interface I18nNeuron_state {

@@ -11,6 +11,9 @@
   import type { CkBTCWalletModalData } from "$lib/types/wallet.modal";
   import type { Account } from "$lib/types/account";
   import { SvelteComponent } from "svelte";
+  import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
+  import Logo from "$lib/components/ui/Logo.svelte";
 
   export let data: CkBTCWalletModalData;
 
@@ -30,6 +33,12 @@
     modalRendered = true;
     segment?.initIndicator();
   };
+
+  let logo: string;
+  $: logo = selectedSegmentId === bitcoinSegmentId ? BITCOIN_LOGO : CKBTC_LOGO;
+
+  let logoArialLabel: string;
+  $: logoArialLabel = selectedSegmentId === bitcoinSegmentId ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
@@ -74,7 +83,11 @@
           ariaLabel={selectedSegmentId === bitcoinSegmentId
             ? $i18n.ckbtc.qrcode_aria_label_bitcoin
             : $i18n.ckbtc.qrcode_aria_label_ckBTC}
-        />
+        >
+          <div class="logo" slot="logo">
+            <Logo src={logo} size="big" framed={false} testId="logo" alt={logoArialLabel} />
+          </div>
+        </QRCode>
       {/if}
     </article>
   </div>
@@ -95,6 +108,8 @@
     @include media.min-width(large) {
       display: grid;
       grid-template-columns: repeat(2, 50%);
+
+      padding: var(--padding-2x) 0;
     }
   }
 
@@ -115,7 +130,7 @@
     }
 
     @include media.min-width(large) {
-      padding: var(--padding-4x);
+      padding: 0 var(--padding-4x);
     }
   }
 
@@ -131,5 +146,17 @@
 
   button.primary {
     width: 100%;
+  }
+
+  .logo {
+    width: calc(10 * var(--padding));
+    height: calc(10 * var(--padding));
+    background: var(--overlay-content-background);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: var(--border-radius);
   }
 </style>
