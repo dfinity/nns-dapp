@@ -86,13 +86,17 @@ fn post_upgrade(config: Option<Config>) {
     ic_cdk::api::print("Calling post_upgrade...");
     // Make an effort to restore state.  If it doesn't work, give up.
     STATE.with(|state| {
-        if let Ok(data) = ic_cdk::storage::stable_restore()
+        match ic_cdk::storage::stable_restore()
             .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
             .and_then(|(bytes,): (Vec<u8>,)| {
                 serde_cbor::from_slice(&bytes[..]).map_err(|err| format!("Failed to parse stable memory: {err:?}"))
-            })
-        {
-            *state.stable.borrow_mut() = data;
+            }) {
+            Ok(data) => {
+                *state.stable.borrow_mut() = data;
+            }
+            Err(message) => {
+                ic_cdk::api::print(message);
+            }
         }
     });
     setup(config);
