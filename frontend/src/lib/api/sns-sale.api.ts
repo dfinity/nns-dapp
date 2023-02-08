@@ -1,7 +1,6 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { NeuronId } from "@dfinity/sns/dist/candid/sns_governance";
 import type { GetOpenTicketResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
@@ -35,13 +34,13 @@ export const getOpenTicket = async ({
 export const newSaleTicket = async ({
   identity,
   rootCanisterId,
-                                      subaccount,
   amount_icp_e8s,
+  subaccount,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  subaccount: NeuronId;
   amount_icp_e8s: E8s;
+  subaccount?: Uint8Array;
 }) => {
   logWithTimestamp(`newSaleTicket call...`);
 
@@ -56,26 +55,4 @@ export const newSaleTicket = async ({
   logWithTimestamp(`newSaleTicket complete.`);
 
   return response;
-};
-
-export const commitTokens = async ({
-  identity,
-  rootCanisterId,
-  ticketId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  ticketId: bigint;
-}): Promise<void> => {
-  logWithTimestamp(`commitTokens call...`);
-
-  const { commitTokens } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
-
-  await commitTokens(ticketId);
-
-  logWithTimestamp(`commitTokens complete.`);
 };

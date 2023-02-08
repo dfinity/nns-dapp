@@ -113,22 +113,3 @@ export const snsTransfer = async ({
 
   logWithTimestamp("Getting Sns transfer: done");
 };
-
-// TODO: update when available
-export const approveSale = async ({
-  identity,
-  rootCanisterId,
-                                    ticketId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  ticketId: bigint;
-}): Promise<void> => {
-  const { approveSale: approveSaleApi } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-
-  await approveSaleApi();
-};

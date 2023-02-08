@@ -372,80 +372,6 @@ export const newSaleTicket = async ({
   }
 };
 
-export const commitTokens = async ({
-  rootCanisterId,
-  certified,
-  ticketId,
-}: {
-  rootCanisterId: Principal;
-  certified: boolean;
-  ticketId: bigint;
-}): Promise<Ticket | undefined> => {
-  try {
-    const identity = await getCurrentIdentity();
-
-    await commitTokensApi({
-      identity,
-      rootCanisterId,
-      ticketId,
-    });
-
-    // TODO: update when available
-    return;
-
-    // if ("Ok" in resultData) {
-    //   return fromNullable(resultData.Ok.ticket);
-    // }
-
-    toastsError(
-      toToastError({
-        err: error,
-        fallbackErrorLabelKey: "error__sns.cannot_participate",
-      })
-    );
-  } catch (error: unknown) {
-    // TODO: add error handling
-    throw error;
-  }
-};
-
-// Ledger
-// {subaccount, to, amount, expires_at, created_at_time, memo}
-// TODO: update when did available
-export const approveSale = async ({
-  rootCanisterId,
-  ticketId,
-}: {
-  rootCanisterId: Principal;
-  ticketId: bigint;
-}): Promise<Ticket | undefined> => {
-  try {
-    const identity = await getCurrentIdentity();
-
-    await approveSaleApi({
-      identity,
-      rootCanisterId,
-      ticketId,
-    });
-
-    // TODO: update when available
-    return;
-
-    // if ("Ok" in resultData) {
-    //   return fromNullable(resultData.Ok.ticket);
-    // }
-
-    toastsError(
-      toToastError({
-        err: error,
-        fallbackErrorLabelKey: "error__sns.cannot_participate",
-      })
-    );
-  } catch (error: unknown) {
-    // TODO: add error handling
-    throw error;
-  }
-};
 
 // Sale
 export const notifyApproveFailure = async () => {
@@ -453,7 +379,3 @@ export const notifyApproveFailure = async () => {
   console.log(`💸PaymentFlow::notify_approve_failure`);
 };
 
-// Sale
-export const buyTokens = () => {
-  console.log(`💸PaymentFlow::buy_tokens`);
-};
