@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   formatting:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     env:
       DFX_NETWORK: mainnet
     steps:
@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         rust: ["1.64.0"]
-        os: [ubuntu-22.04]
+        os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -57,7 +57,7 @@ jobs:
           RUST_BACKTRACE: 1
   svelte-tests:
     needs: formatting
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
@@ -84,7 +84,7 @@ jobs:
         working-directory: ./frontend
   svelte-lint:
     needs: formatting
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
@@ -108,7 +108,7 @@ jobs:
         working-directory: ./frontend
   e2e-lint:
     needs: formatting
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
@@ -130,7 +130,7 @@ jobs:
   shell-checks:
     needs: formatting
     name: ShellCheck
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
@@ -140,7 +140,7 @@ jobs:
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
         run: |
