@@ -582,6 +582,7 @@ interface I18nSns_launchpad {
   committed_projects: string;
   no_committed_projects: string;
   no_opening_soon_projects: string;
+  no_projects: string;
   open_projects: string;
   upcoming_projects: string;
   no_open_projects: string;
