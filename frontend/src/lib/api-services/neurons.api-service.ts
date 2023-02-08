@@ -34,10 +34,12 @@ import {
   type ApiStakeMaturityParams,
   type ApiStakeNeuronParams,
 } from "$lib/api/governance.api";
+import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
+import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 
-const cacheExpirationDurationMs = 5 * 60 * 1000;
+const cacheExpirationDurationMs = 5 * SECONDS_IN_MINUTE * 1000;
 
 const nowMs = () => new Date().getTime();
 
@@ -55,27 +57,31 @@ export const clearCache = () => {
   cachePrincipalText = null;
 };
 
-const hasValidCachedNeurons = (identity: Identity) => {
+const hasValidCachedNeurons = (identity: Identity): boolean => {
   if (
-    cachedNeurons === null ||
-    cacheTimestampMs === null ||
-    cachePrincipalText === null
+    isNullish(cachedNeurons) ||
+    isNullish(cacheTimestampMs) ||
+    isNullish(cachePrincipalText)
   ) {
     return false;
   }
   if (nowMs() - cacheTimestampMs > cacheExpirationDurationMs) {
-    clearCache();
     return false;
   }
   return cachePrincipalText === identity.getPrincipal().toText();
 };
 
 const clearCacheAfter = async <R>(promise: Promise<R>) => {
-  const result: R = await promise;
-  clearCache();
+  let result : R;
+  try {
+    result = await promise;
+  } finally {
+    clearCache();
+  }
   return result;
 };
 
+// Should be called in between tests to clean up state.
 export const resetNeuronsApiService = () => {
   clearCache();
 };

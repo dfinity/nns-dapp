@@ -37,6 +37,8 @@ const shouldNotInvalidateCache = async <P, R>({
   apiServiceFunc: (params: P) => Promise<R>;
   params: P;
 }) => {
+  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
   await neuronsApiService.queryNeurons(qParams);
@@ -64,6 +66,7 @@ const shouldInvalidateCache = async <P, R>({
     resolveApi = resolve;
   });
   (apiFunc as jest.Mock).mockReturnValue(apiPromise);
+  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
@@ -83,7 +86,59 @@ const shouldInvalidateCache = async <P, R>({
 
   // Once the API result resolves, the cache is cleared.
   resolveApi();
-  await apiPromise;
+  await servicePromise;
+
+  // Now the cache was invalidated.
+  await neuronsApiService.queryNeurons(qParams);
+  expect(api.queryNeurons).toHaveBeenCalledTimes(2);
+
+  // Getting results from the cache once again.
+  await neuronsApiService.queryNeurons(qParams);
+  expect(api.queryNeurons).toHaveBeenCalledTimes(2);
+};
+
+const shouldInvalidateCacheOnFailure = async <P, R>({
+  apiFunc,
+  apiServiceFunc,
+  params,
+}: {
+  apiFunc: (params: P) => Promise<R>;
+  apiServiceFunc: (params: P) => Promise<R>;
+  params: P;
+}) => {
+  let rejectApi: (error: Error) => void;
+  const apiPromise = new Promise<void>((_, reject) => {
+    rejectApi = reject;
+  });
+  (apiFunc as jest.Mock).mockReturnValue(apiPromise);
+  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+
+  const qParams = { identity: identity1, certified: true };
+  expect(api.queryNeurons).toHaveBeenCalledTimes(0);
+  await neuronsApiService.queryNeurons(qParams);
+  expect(api.queryNeurons).toHaveBeenCalledTimes(1);
+
+  const servicePromise = apiServiceFunc(params);
+  expect(apiFunc).toHaveBeenCalledTimes(1);
+
+  // Still getting results from the cache.
+  await neuronsApiService.queryNeurons(qParams);
+  expect(api.queryNeurons).toHaveBeenCalledTimes(1);
+
+  // Still getting results from the cache.
+  await neuronsApiService.queryNeurons(qParams);
+  expect(api.queryNeurons).toHaveBeenCalledTimes(1);
+
+  // Once the API call fails, the cache is cleared.
+  const apiErrorMessage = "Api call failed";
+  rejectApi(new Error(apiErrorMessage));
+
+  try {
+    await servicePromise;
+    fail("The call should have failed.");
+  } catch (error) {
+    expect(error.message).toEqual(apiErrorMessage);
+  }
 
   // Now the cache was invalidated.
   await neuronsApiService.queryNeurons(qParams);
@@ -331,6 +386,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.addHotkey,
+        apiServiceFunc: neuronsApiService.addHotkey,
+        params,
+      });
+    });
   });
 
   describe("autoStakeMaturity", () => {
@@ -348,6 +411,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.autoStakeMaturity,
+        apiServiceFunc: neuronsApiService.autoStakeMaturity,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.autoStakeMaturity,
         apiServiceFunc: neuronsApiService.autoStakeMaturity,
         params,
@@ -377,6 +448,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.claimOrRefreshNeuron,
+        apiServiceFunc: neuronsApiService.claimOrRefreshNeuron,
+        params,
+      });
+    });
   });
 
   describe("disburse", () => {
@@ -395,6 +474,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.disburse,
+        apiServiceFunc: neuronsApiService.disburse,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.disburse,
         apiServiceFunc: neuronsApiService.disburse,
         params,
@@ -422,6 +509,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.increaseDissolveDelay,
+        apiServiceFunc: neuronsApiService.increaseDissolveDelay,
+        params,
+      });
+    });
   });
 
   describe("joinCommunityFund", () => {
@@ -443,6 +538,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.joinCommunityFund,
+        apiServiceFunc: neuronsApiService.joinCommunityFund,
+        params,
+      });
+    });
   });
 
   describe("leaveCommunityFund", () => {
@@ -459,6 +562,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.leaveCommunityFund,
+        apiServiceFunc: neuronsApiService.leaveCommunityFund,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.leaveCommunityFund,
         apiServiceFunc: neuronsApiService.leaveCommunityFund,
         params,
@@ -486,6 +597,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.mergeMaturity,
+        apiServiceFunc: neuronsApiService.mergeMaturity,
+        params,
+      });
+    });
   });
 
   describe("mergeNeurons", () => {
@@ -508,6 +627,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.mergeNeurons,
+        apiServiceFunc: neuronsApiService.mergeNeurons,
+        params,
+      });
+    });
   });
 
   describe("removeHotkey", () => {
@@ -525,6 +652,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.removeHotkey,
+        apiServiceFunc: neuronsApiService.removeHotkey,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.removeHotkey,
         apiServiceFunc: neuronsApiService.removeHotkey,
         params,
@@ -553,6 +688,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.setFollowees,
+        apiServiceFunc: neuronsApiService.setFollowees,
+        params,
+      });
+    });
   });
 
   describe("spawnNeuron", () => {
@@ -570,6 +713,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.spawnNeuron,
+        apiServiceFunc: neuronsApiService.spawnNeuron,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.spawnNeuron,
         apiServiceFunc: neuronsApiService.spawnNeuron,
         params,
@@ -598,6 +749,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.splitNeuron,
+        apiServiceFunc: neuronsApiService.splitNeuron,
+        params,
+      });
+    });
   });
 
   describe("stakeMaturity", () => {
@@ -615,6 +774,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.stakeMaturity,
+        apiServiceFunc: neuronsApiService.stakeMaturity,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.stakeMaturity,
         apiServiceFunc: neuronsApiService.stakeMaturity,
         params,
@@ -645,6 +812,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.stakeNeuron,
+        apiServiceFunc: neuronsApiService.stakeNeuron,
+        params,
+      });
+    });
   });
 
   describe("startDissolving", () => {
@@ -666,6 +841,14 @@ describe("neurons api-service", () => {
         params,
       });
     });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.startDissolving,
+        apiServiceFunc: neuronsApiService.startDissolving,
+        params,
+      });
+    });
   });
 
   describe("stopDissolving", () => {
@@ -682,6 +865,14 @@ describe("neurons api-service", () => {
 
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
+        apiFunc: api.stopDissolving,
+        apiServiceFunc: neuronsApiService.stopDissolving,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
         apiFunc: api.stopDissolving,
         apiServiceFunc: neuronsApiService.stopDissolving,
         params,
