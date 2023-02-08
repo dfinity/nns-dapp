@@ -7,10 +7,9 @@ set -euxo pipefail
 	exit 1
 }
 
-
 NEURON=36
 
-cargo run --bin ic-admin -- --nns-url https://nns.ic0.app/ \
+/home/max/.cache/dfinity/versions/0.13.0/ic-admin --nns-url https://nns.ic0.app/ \
 	--use-hsm \
 	--pin $(cat ~/.hsm-pin) \
 	--key-id 01 \
