@@ -3,7 +3,7 @@ use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunc
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Swap};
 use crate::types::ic_sns_wasm::DeployedSns;
-use crate::types::upstream::UpstreamData;
+use crate::types::state::UpstreamData;
 use crate::Icrc1Value;
 use candid::CandidType;
 use candid::Nat;
@@ -80,9 +80,12 @@ pub fn logo_binary(data_url: &str) -> Vec<u8> {
     base64::decode(data_url.strip_prefix(LOGO_PREFIX).expect("Unsupported URL prefix")).unwrap_or_default()
 }
 
+/// Slowly changing information about an SNS canister's swap state.
 #[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]
 pub struct SlowSwapState {
+    /// Slowly changing information extracted directly from an SNS canister.
     pub swap: Option<SlowSwap>,
+    /// Slowly changing information deduced about a swap state.
     pub derived: Option<SlowDerivedState>,
 }
 impl From<&GetStateResponse> for SlowSwapState {
@@ -94,6 +97,7 @@ impl From<&GetStateResponse> for SlowSwapState {
     }
 }
 
+/// Slow information about an SNS extracted from its swap canister.
 #[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]
 pub struct SlowSwap {
     /// The current lifecycle of the swap.
@@ -119,8 +123,10 @@ impl From<&Swap> for SlowSwap {
     }
 }
 
+/// Slow informaton about an SNS extracted from its derived state.
 #[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, serde::Serialize)]
 pub struct SlowDerivedState {
+    /// Current approximate total ICP committed to an SNS.
     pub buyer_total_icp_e8s: u64,
     /// Current approximate rate SNS tokens per ICP.
     pub sns_tokens_per_icp: f32,
