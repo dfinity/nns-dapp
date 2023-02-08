@@ -107,7 +107,10 @@
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
+    "adding_permissions": "There was an error adding permissions.",
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
+    "ckbtc_get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
+    "ckbtc_get_btc_no_account": "An account should be provided to execute this feature"
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -599,6 +602,7 @@
   "sns_neuron_detail": {
     "header": "Neuron",
     "all_topics": "All topics",
+    "community_fund_section": "Community Fund",
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
@@ -771,6 +775,8 @@
   "ckbtc": {
     "title": "ckBTC",
     "ckBTC": "ckBTC",
-    "logo": "Chain-key Bitcoin (ckBTC) logo"
+    "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "receive": "Receive",
+    "address": "Address"
   }
 }

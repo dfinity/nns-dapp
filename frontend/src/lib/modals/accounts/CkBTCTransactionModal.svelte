@@ -9,15 +9,15 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import {
-    ckBTCTokenFeeStore,
-    ckBTCTokenStore,
-  } from "$lib/derived/universes-tokens.derived";
-  import { nonNullish } from "$lib/utils/utils";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
+  import type { TokenAmount } from "@dfinity/nns";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
+
+  export let token: IcrcTokenMetadata;
+  export let transactionFee: TokenAmount;
 
   let currentStep: WizardStep;
 
@@ -46,31 +46,26 @@
 
     if (success) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
-      dispatcher("nnsClose");
+      dispatcher("nnsTransfer");
     }
   };
-
-  // TODO: review usage of nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)
 </script>
 
-<!-- Checks for type safety but, already performs in parent -->
-{#if nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
-  <TransactionModal
-    rootCanisterId={CKBTC_UNIVERSE_CANISTER_ID}
-    on:nnsSubmit={transfer}
-    on:nnsClose
-    bind:currentStep
-    token={$ckBTCTokenStore.token}
-    transactionFee={$ckBTCTokenFeeStore}
-    sourceAccount={selectedAccount}
+<TransactionModal
+  rootCanisterId={CKBTC_UNIVERSE_CANISTER_ID}
+  on:nnsSubmit={transfer}
+  on:nnsClose
+  bind:currentStep
+  {token}
+  {transactionFee}
+  sourceAccount={selectedAccount}
+>
+  <svelte:fragment slot="title"
+    >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
   >
-    <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
-    >
-    <p slot="description" class="value">
-      {replacePlaceholders($i18n.accounts.sns_transaction_description, {
-        $token: $ckBTCTokenStore.token.symbol,
-      })}
-    </p>
-  </TransactionModal>
-{/if}
+  <p slot="description" class="value">
+    {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+      $token: token.symbol,
+    })}
+  </p>
+</TransactionModal>

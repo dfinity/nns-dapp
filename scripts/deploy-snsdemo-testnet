@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Deploys a test environment for the sns_aggregator.
+
+	Note: This does NOT deploy the local nns-dapp; it uses the standard published wasm
+	used by dfx nns deploy.
+
+	Note: This script should be integrated in the main deploy.sh and deployed with a flag,
+	      like other components.  There are some complications with that, so this is a simple
+	      alternative until the main deploy.sh has been adapted.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=c long=ic_commit desc="The IC commit to use" variable=DFX_IC_COMMIT default=""
+clap.define short=x long=ic_dir desc="Directory containing the ic source code" variable=IC_REPO_DIR default="$HOME/dfn/ic"
+clap.define short=y long=nd_dir desc="Directory containing the nns-dapp source code" variable=ND_REPO_DIR default="$HOME/dfn/nns-dapp"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+: Standard dfx sns demo, with standard canisters, not local nns-dapp.
+dfx-sns-demo --network "$DFX_NETWORK" ${DFX_IC_COMMIT:+--ic_commit} ${DFX_IC_COMMIT:+$DFX_IC_COMMIT} --ic_dir "$IC_REPO_DIR" --nd_dir "$ND_REPO_DIR"
+: Claim the canister ID reserved for the aggregator by snsdemo
+dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai --network "$DFX_NETWORK"
+: Deploy the aggregator
+dfx deploy sns_aggregator --network "$DFX_NETWORK"
