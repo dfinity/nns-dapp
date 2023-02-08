@@ -23,10 +23,13 @@
   let loading = false;
   $: loading = isNullish($snsSummariesStore) || isNullish($snsQueryStore);
 
-  const mapper = {
+  const mapper: Record<SnsSwapLifecycle, string> = {
     [SnsSwapLifecycle.Open]: "no_open_projects",
     [SnsSwapLifecycle.Adopted]: "no_opening_soon_projects",
     [SnsSwapLifecycle.Committed]: "no_committed_projects",
+    [SnsSwapLifecycle.Unspecified]: "no_projects",
+    [SnsSwapLifecycle.Aborted]: "no_projects",
+    [SnsSwapLifecycle.Pending]: "no_projects",
   };
   let noProjectsMessageLabel: string;
   $: noProjectsMessageLabel = keyOf({
