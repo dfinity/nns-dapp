@@ -406,7 +406,7 @@
         }
       },
       "bind": "127.0.0.1:8080",
-      "type": "ephemeral"
+      "type": "persistent"
     },
     "large01": {
       "config": {
