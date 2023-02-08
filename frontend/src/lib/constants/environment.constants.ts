@@ -17,6 +17,7 @@ interface FEATURE_FLAGS {
   ENABLE_SNS_VOTING: boolean;
   ENABLE_SNS_AGGREGATOR: boolean;
   ENABLE_CKBTC_LEDGER: boolean;
+  ENABLE_CKBTC_RECEIVE: boolean;
 }
 
 export const {
@@ -24,9 +25,10 @@ export const {
   ENABLE_SNS_VOTING,
   ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC_LEDGER,
+  ENABLE_CKBTC_RECEIVE,
 }: FEATURE_FLAGS = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": true}'
+    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": true, "ENABLE_CKBTC_RECEIVE": false}'
 );
 
 export const IS_TESTNET: boolean =

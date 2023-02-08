@@ -1,5 +1,6 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
 pub mod assets;
 mod conversion;
 mod state;
@@ -37,6 +38,17 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
     call::reply((response,));
 }
 
+/// Function called when a canister is first created IF it is created
+/// with this code.
+///
+/// Note: If the canister os created with e.g. `dfx canister create`
+///       and then deployed normally, `init(..)` is never called.
+#[ic_cdk_macros::init]
+fn init() {
+    insert_favicon();
+}
+
+/// Function called before upgrade to a new wasm.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     // Browsers complain if they don't get pretty pictures.  So do I.
@@ -49,9 +61,4 @@ fn post_upgrade() {
         Duration::from_secs(1),
         || ic_cdk::spawn(crate::upstream::update_cache()),
     );
-}
-
-#[ic_cdk_macros::init]
-fn init() {
-    insert_favicon();
 }
