@@ -2,40 +2,162 @@ import { neuronsApiService } from "$lib/api-services/neurons.api-service";
 import * as api from "$lib/api/governance.api";
 import { Topic } from "@dfinity/nns";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  createMockIdentity,
+  mockIdentity,
+  mockPrincipal,
+} from "../../mocks/auth.store.mock";
+import {
+  createMockKnownNeuron,
+  createMockNeuron,
+} from "../../mocks/neurons.mock";
 
 jest.mock("$lib/api/governance.api");
+
+const neuron1 = createMockNeuron(1);
+const neuron2 = createMockNeuron(2);
+const neurons = [neuron1, neuron2];
+
+const identity1 = createMockIdentity(1);
+const identity2 = createMockIdentity(2);
+const unknownIdentity = createMockIdentity(999);
+
+const knownNeuron1 = createMockKnownNeuron(1001);
+const knownNeuron2 = createMockKnownNeuron(1002);
 
 describe("neurons api-service", () => {
   const neuronId = BigInt(12);
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   // Read calls
+
   describe("queryNeuron", () => {
-    it("should call queryNeuron api", () => {
-      const params = { neuronId, identity: mockIdentity, certified: true };
-      neuronsApiService.queryNeuron(params);
-      expect(api.queryNeuron).toHaveBeenCalledWith(params);
+    beforeEach(() => {
+      jest
+        .spyOn(api, "queryNeuron")
+        .mockImplementation(
+          async ({
+            neuronId,
+            identity,
+            certified,
+          }: api.ApiQueryNeuronParams) => {
+            const neuron = neurons.find((n) => n.neuronId === neuronId);
+            if (!neuron) {
+              throw new Error(`No neuron with id ${neuronId}`);
+            }
+            return neuron;
+          }
+        );
+    });
+
+    const params = { identity: mockIdentity, certified: true };
+
+    it("should call queryNeuron api", async () => {
+      expect(
+        await neuronsApiService.queryNeuron({ neuronId: BigInt(1), ...params })
+      ).toEqual(neuron1);
+      expect(
+        await neuronsApiService.queryNeuron({ neuronId: BigInt(2), ...params })
+      ).toEqual(neuron2);
+      expect(api.queryNeuron).toHaveBeenCalledTimes(2);
+    });
+
+    it("should fail if queryNeuron api fails", async () => {
+      expect(() =>
+        neuronsApiService.queryNeuron({ neuronId: BigInt(999), ...params })
+      ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("queryNeurons", () => {
-    it("should call queryNeurons api", () => {
-      const params = { identity: mockIdentity, certified: true };
-      neuronsApiService.queryNeurons(params);
-      expect(api.queryNeurons).toHaveBeenCalledWith(params);
+    beforeEach(() => {
+      jest
+        .spyOn(api, "queryNeurons")
+        .mockImplementation(
+          async ({ identity, certified }: api.ApiQueryParams) => {
+            if (identity === identity1) {
+              return [neuron1];
+            }
+            if (identity === identity2) {
+              return [neuron2];
+            }
+            throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+          }
+        );
+    });
+
+    const params = { certified: true };
+
+    it("should call queryNeurons api", async () => {
+      expect(
+        await neuronsApiService.queryNeurons({ identity: identity1, ...params })
+      ).toEqual([neuron1]);
+      expect(
+        await neuronsApiService.queryNeurons({ identity: identity2, ...params })
+      ).toEqual([neuron2]);
+      expect(api.queryNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should fail if queryNeurons api fails", async () => {
+      expect(() =>
+        neuronsApiService.queryNeurons({ identity: unknownIdentity, ...params })
+      ).rejects.toThrow("Unknown identity");
       expect(api.queryNeurons).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("queryKnownNeurons", () => {
-    it("should call queryKnownNeurons api", () => {
-      const params = { identity: mockIdentity, certified: true };
-      neuronsApiService.queryKnownNeurons(params);
-      expect(api.queryKnownNeurons).toHaveBeenCalledWith(params);
+    beforeEach(() => {
+      jest
+        .spyOn(api, "queryKnownNeurons")
+        .mockImplementation(
+          async ({ identity, certified }: api.ApiQueryParams) => {
+            if (identity === identity1) {
+              return [knownNeuron1];
+            }
+            if (identity === identity2) {
+              return [knownNeuron2];
+            }
+            throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+          }
+        );
+    });
+
+    const params = { certified: true };
+
+    it("should call queryKnownNeurons api", async () => {
+      expect(
+        await neuronsApiService.queryKnownNeurons({
+          identity: identity1,
+          ...params,
+        })
+      ).toEqual([knownNeuron1]);
+      expect(
+        await neuronsApiService.queryKnownNeurons({
+          identity: identity2,
+          ...params,
+        })
+      ).toEqual([knownNeuron2]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should fail if queryKnownNeurons api fails", async () => {
+      expect(() =>
+        neuronsApiService.queryKnownNeurons({
+          identity: unknownIdentity,
+          ...params,
+        })
+      ).rejects.toThrow("Unknown identity");
       expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
     });
   });
 
   // Action calls
+
   describe("addHotkey", () => {
     it("should call addHotkey api", () => {
       const params = {
@@ -48,6 +170,7 @@ describe("neurons api-service", () => {
       expect(api.addHotkey).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("autoStakeMaturity", () => {
     it("should call autoStakeMaturity api", () => {
       const params = {
@@ -60,17 +183,22 @@ describe("neurons api-service", () => {
       expect(api.autoStakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("claimOrRefreshNeuron", () => {
-    it("should call claimOrRefreshNeuron api", () => {
+    it("should call claimOrRefreshNeuron api", async () => {
       const params = {
         neuronId,
         identity: mockIdentity,
       };
-      neuronsApiService.claimOrRefreshNeuron(params);
+      jest.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
+      expect(await neuronsApiService.claimOrRefreshNeuron(params)).toEqual(
+        neuronId
+      );
       expect(api.claimOrRefreshNeuron).toHaveBeenCalledWith(params);
       expect(api.claimOrRefreshNeuron).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("disburse", () => {
     it("should call disburse api", () => {
       const params = {
@@ -84,6 +212,7 @@ describe("neurons api-service", () => {
       expect(api.disburse).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("increaseDissolveDelay", () => {
     it("should call increaseDissolveDelay api", () => {
       const params = {
@@ -96,6 +225,7 @@ describe("neurons api-service", () => {
       expect(api.increaseDissolveDelay).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("joinCommunityFund", () => {
     it("should call joinCommunityFund api", () => {
       const params = {
@@ -107,6 +237,7 @@ describe("neurons api-service", () => {
       expect(api.joinCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("leaveCommunityFund", () => {
     it("should call leaveCommunityFund api", () => {
       const params = {
@@ -118,6 +249,7 @@ describe("neurons api-service", () => {
       expect(api.leaveCommunityFund).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("mergeMaturity", () => {
     it("should call mergeMaturity api", () => {
       const params = {
@@ -130,6 +262,7 @@ describe("neurons api-service", () => {
       expect(api.mergeMaturity).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("mergeNeurons", () => {
     it("should call mergeNeurons api", () => {
       const params = {
@@ -142,6 +275,7 @@ describe("neurons api-service", () => {
       expect(api.mergeNeurons).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("removeHotkey", () => {
     it("should call removeHotkey api", () => {
       const params = {
@@ -154,6 +288,7 @@ describe("neurons api-service", () => {
       expect(api.removeHotkey).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("setFollowees", () => {
     it("should call setFollowees api", () => {
       const params = {
@@ -167,29 +302,34 @@ describe("neurons api-service", () => {
       expect(api.setFollowees).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("spawnNeuron", () => {
-    it("should call spawnNeuron api", () => {
+    it("should call spawnNeuron api", async () => {
       const params = {
         neuronId,
         identity: mockIdentity,
       };
-      neuronsApiService.spawnNeuron(params);
+      jest.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
+      expect(await neuronsApiService.spawnNeuron(params)).toEqual(neuronId);
       expect(api.spawnNeuron).toHaveBeenCalledWith(params);
       expect(api.spawnNeuron).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("splitNeuron", () => {
-    it("should call splitNeuron api", () => {
+    it("should call splitNeuron api", async () => {
       const params = {
         neuronId,
         identity: mockIdentity,
         amount: BigInt(10_000_000),
       };
-      neuronsApiService.splitNeuron(params);
+      jest.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
+      expect(await neuronsApiService.splitNeuron(params)).toEqual(neuronId);
       expect(api.splitNeuron).toHaveBeenCalledWith(params);
       expect(api.splitNeuron).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("stakeMaturity", () => {
     it("should call stakeMaturity api", () => {
       const params = {
@@ -202,8 +342,9 @@ describe("neurons api-service", () => {
       expect(api.stakeMaturity).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("stakeNeuron", () => {
-    it("should call stakeNeuron api", () => {
+    it("should call stakeNeuron api", async () => {
       const params = {
         identity: mockIdentity,
         stake: BigInt(10_000_000),
@@ -211,11 +352,13 @@ describe("neurons api-service", () => {
         ledgerCanisterIdentity: mockIdentity,
         fromSubaccount: new Uint8Array(),
       };
-      neuronsApiService.stakeNeuron(params);
+      jest.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);
+      expect(await neuronsApiService.stakeNeuron(params)).toEqual(neuronId);
       expect(api.stakeNeuron).toHaveBeenCalledWith(params);
       expect(api.stakeNeuron).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("startDissolving", () => {
     it("should call startDissolving api", () => {
       const params = {
@@ -227,6 +370,7 @@ describe("neurons api-service", () => {
       expect(api.startDissolving).toHaveBeenCalledTimes(1);
     });
   });
+
   describe("stopDissolving", () => {
     it("should call stopDissolving api", () => {
       const params = {
