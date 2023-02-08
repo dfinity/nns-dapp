@@ -16,9 +16,9 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
-  import { getOpenTicket } from "$lib/services/sns.services";
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "$lib/utils/utils";
+  import { getOpenTicket } from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY

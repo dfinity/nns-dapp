@@ -1,11 +1,4 @@
-import { approveSale as approveSaleApi } from "$lib/api/sns-ledger.api";
 import {
-  commitTokens as commitTokensApi,
-  getOpenTicket as getOpenTicketApi,
-  newSaleTicket as newSaleTicketApi,
-} from "$lib/api/sns-sale.api";
-import {
-  participateInSnsSwap,
   querySnsMetadata,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
@@ -15,6 +8,7 @@ import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
+import { participateInSnsSwap } from "$lib/services/sns-sale.services";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -35,13 +29,9 @@ import {
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { NeuronId } from "@dfinity/sns/dist/candid/sns_governance";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
-import type { E8s } from "@dfinity/sns/dist/types/types/common";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getAuthenticatedIdentity, getCurrentIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
@@ -229,7 +219,16 @@ export const participateInSwap = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {
+  console.log(
+    "participateInSwap amount, canister, account",
+    amount.toE8s(),
+    rootCanisterId.toText(),
+    account
+  );
+  //
+
   let success = false;
+  // validation
   try {
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -298,84 +297,3 @@ export const participateInSwap = async ({
     return { success };
   }
 };
-
-export const getOpenTicket = async ({
-  withTicket,
-  rootCanisterId,
-  certified,
-}: {
-  withTicket: boolean; // TODO: for testing purpose only
-  rootCanisterId: Principal;
-  certified: boolean;
-}): Promise<Ticket | undefined> => {
-  try {
-    const identity = await getCurrentIdentity();
-    const { result } = await getOpenTicketApi({
-      identity,
-      rootCanisterId,
-      withTicket,
-      certified,
-    });
-
-    const resultData = fromDefinedNullable(result);
-
-    if ("Ok" in resultData) {
-      return fromNullable(resultData.Ok.ticket);
-    }
-
-    toastsError(
-      toToastError({
-        err: error,
-        fallbackErrorLabelKey: "error__sns.cannot_participate",
-      })
-    );
-  } catch (error: unknown) {
-    // TODO: add error handling
-    throw error;
-  }
-};
-
-export const newSaleTicket = async ({
-  rootCanisterId,
-  subaccount,
-  amount_icp_e8s,
-}: {
-  rootCanisterId: Principal;
-  subaccount: NeuronId;
-  amount_icp_e8s: E8s;
-}): Promise<Ticket | undefined> => {
-  try {
-    const identity = await getCurrentIdentity();
-
-    const { result } = await newSaleTicketApi({
-      identity,
-      rootCanisterId,
-      subaccount,
-      amount_icp_e8s,
-    });
-
-    const resultData = fromDefinedNullable(result);
-
-    if ("Ok" in resultData) {
-      return fromNullable(resultData.Ok.ticket);
-    }
-
-    toastsError(
-      toToastError({
-        err: error,
-        fallbackErrorLabelKey: "error__sns.cannot_participate",
-      })
-    );
-  } catch (error: unknown) {
-    // TODO: add error handling
-    throw error;
-  }
-};
-
-
-// Sale
-export const notifyApproveFailure = async () => {
-  // notify_approve_failure
-  console.log(`💸PaymentFlow::notify_approve_failure`);
-};
-
