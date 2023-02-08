@@ -41,7 +41,8 @@ export type BusyStateInitiatorType =
   | "disburse-sns-neuron"
   | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
-  | "load-sns-accounts";
+  | "load-sns-accounts"
+  | "get-btc-address";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;
