@@ -12,7 +12,7 @@ concurrency:
 jobs:
   tag_tip:
     if: github.event.pull_request.merged
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Tag main as tip
@@ -22,7 +22,7 @@ jobs:
   tag_pass:
     needs: ["tag_tip"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
         run: |
