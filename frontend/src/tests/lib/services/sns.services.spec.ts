@@ -16,7 +16,8 @@ import {
 } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const { participateInSwap, getSwapAccount, loadSnsSwapCommitments } = services;
+const { initiateSnsSwapParticipation, getSwapAccount, loadSnsSwapCommitments } =
+  services;
 
 let testGetIdentityReturn = Promise.resolve(mockIdentity);
 const setNoAccountIdentity = () =>
@@ -34,7 +35,7 @@ jest.mock("$lib/services/accounts.services", () => {
 });
 
 describe("sns-services", () => {
-  describe("participateInSwap", () => {
+  describe("initiateSnsSwapParticipation", () => {
     const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
       certified: true,
       lifecycles: [SnsSwapLifecycle.Open],
@@ -66,7 +67,7 @@ describe("sns-services", () => {
       const spyQueryState = jest
         .spyOn(api, "querySnsSwapState")
         .mockImplementation(() => Promise.resolve(querySnsSwapStates[0]));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromString({
           amount: "3",
           token: ICPToken,
@@ -109,7 +110,7 @@ describe("sns-services", () => {
             )
           )
         );
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromE8s({
           amount: participationE8s,
           token: ICPToken,
@@ -131,7 +132,7 @@ describe("sns-services", () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.reject(new Error("test")));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromString({
           amount: "3",
           token: ICPToken,
@@ -164,7 +165,7 @@ describe("sns-services", () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromE8s({
           amount: minimumE8s - BigInt(10_000),
           token: ICPToken,
@@ -197,7 +198,7 @@ describe("sns-services", () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromE8s({
           amount: maximumE8s + BigInt(10_000),
           token: ICPToken,
@@ -225,7 +226,7 @@ describe("sns-services", () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromE8s({
           amount:
             account.balance.toE8s() +
@@ -250,7 +251,7 @@ describe("sns-services", () => {
       const spyParticipate = jest
         .spyOn(api, "participateInSnsSwap")
         .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         amount: TokenAmount.fromString({
           amount: "3",
           token: ICPToken,

@@ -18,7 +18,6 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     getSwapAccount,
-    participateInSwap,
   } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
@@ -31,6 +30,7 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import {initiateSnsSwapParticipation} from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -97,7 +97,7 @@
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
-      const { success } = await participateInSwap({
+      const { success } = await initiateSnsSwapParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,

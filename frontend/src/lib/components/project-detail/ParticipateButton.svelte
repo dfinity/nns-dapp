@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext, onMount } from "svelte";
+  import { getContext } from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -15,10 +15,13 @@
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
-  import { Principal } from "@dfinity/principal";
+  import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "$lib/utils/utils";
-  import { getOpenTicket } from "$lib/services/sns-sale.services";
+  import {
+    getOpenTicket,
+    participateInSnsSwap,
+    type SnsTicket,
+  } from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -43,13 +46,13 @@
     swapCommitment: $projectDetailStore.swapCommitment,
   });
 
-  let loadingTicket = true;
-  let openTicket: Ticket | undefined;
-
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
-    ? $projectDetailStore.summary.rootCanisterId
+    ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
+
+  let loadingTicket = true;
+  let ticket: SnsTicket | undefined;
 
   const updateTicket = async () => {
     console.log("ParticipateButton::updateTicket", rootCanisterId);
@@ -58,11 +61,18 @@
     }
     loadingTicket = true;
 
-    openTicket = await getOpenTicket({
-      withTicket: false,
+    ticket = await getOpenTicket({
+      withTicket: true,
       rootCanisterId,
       certified: true,
     });
+
+    // restore purchase
+    if (ticket?.rootCanisterId.toText() === rootCanisterId.toText()) {
+      participateInSnsSwap({
+        ticket,
+      });
+    }
 
     loadingTicket = false;
   };
@@ -80,12 +90,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loadingTicket || openTicket !== undefined}
+            disabled={loadingTicket || ticket !== undefined}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loadingTicket || openTicket !== undefined}
+            {#if loadingTicket || ticket !== undefined}
               <span>
                 <Spinner size="small" inline />
               </span>
