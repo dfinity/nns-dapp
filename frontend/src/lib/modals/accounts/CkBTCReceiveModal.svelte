@@ -89,7 +89,7 @@
           <div class="logo" slot="logo">
             <Logo
               src={logo}
-              size="big"
+              size="huge"
               framed={false}
               testId="logo"
               alt={logoArialLabel}
