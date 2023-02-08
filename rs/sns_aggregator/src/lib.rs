@@ -9,11 +9,11 @@ mod upstream;
 
 use std::time::Duration;
 
-use assets::{insert_favicon, HttpRequest, HttpResponse};
+use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
-use state::{Config, STATE};
+use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
 /// API method for basic health checks.
@@ -89,9 +89,11 @@ fn post_upgrade(config: Option<Config>) {
         match ic_cdk::storage::stable_restore()
             .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
             .and_then(|(bytes,): (Vec<u8>,)| {
-                serde_cbor::from_slice(&bytes[..]).map_err(|err| format!("Failed to parse stable memory: {err:?}"))
+                serde_cbor::from_slice::<StableState>(&bytes[..])
+                    .map_err(|err| format!("Failed to parse stable memory: {err:?}"))
             }) {
             Ok(data) => {
+                *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
                 *state.stable.borrow_mut() = data;
             }
             Err(message) => {
