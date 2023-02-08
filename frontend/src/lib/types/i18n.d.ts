@@ -826,6 +826,7 @@ interface I18nCkbtc {
   receive: string;
   address: string;
   btc_receive_note: string;
+  ckBTC_receive_note: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;

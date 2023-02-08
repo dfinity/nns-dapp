@@ -34,14 +34,14 @@
     segment?.initIndicator();
   };
 
+  let bitcoin = true;
+  $: bitcoin = selectedSegmentId === bitcoinSegmentId;
+
   let logo: string;
-  $: logo = selectedSegmentId === bitcoinSegmentId ? BITCOIN_LOGO : CKBTC_LOGO;
+  $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
 
   let logoArialLabel: string;
-  $: logoArialLabel =
-    selectedSegmentId === bitcoinSegmentId
-      ? $i18n.ckbtc.bitcoin
-      : $i18n.ckbtc.title;
+  $: logoArialLabel = bitcoin ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
 
   let qrCodeRendered = false;
 </script>
@@ -58,7 +58,7 @@
 
   <div class="content">
     <div>
-      {#if selectedSegmentId === bitcoinSegmentId}
+      {#if bitcoin}
         <KeyValuePair>
           <span slot="key" class="label">{$i18n.ckbtc.address}</span>
           <div slot="value" class="address">
@@ -66,8 +66,6 @@
             <Copy value={btcAddress} />
           </div>
         </KeyValuePair>
-
-        <p class="description">{$i18n.ckbtc.btc_receive_note}</p>
       {:else}
         <KeyValuePair>
           <span slot="key" class="label">{$i18n.ckbtc.address}</span>
@@ -82,10 +80,8 @@
     <article class="qrcode">
       {#if modalRendered}
         <QRCode
-          value={selectedSegmentId === bitcoinSegmentId
-            ? btcAddress
-            : account.identifier}
-          ariaLabel={selectedSegmentId === bitcoinSegmentId
+          value={bitcoin ? btcAddress : account.identifier}
+          ariaLabel={bitcoin
             ? $i18n.ckbtc.qrcode_aria_label_bitcoin
             : $i18n.ckbtc.qrcode_aria_label_ckBTC}
           on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
@@ -102,6 +98,10 @@
         </QRCode>
       {/if}
     </article>
+
+    <p class="description">
+      {bitcoin ? $i18n.ckbtc.btc_receive_note : $i18n.ckbtc.ckBTC_receive_note}
+    </p>
   </div>
 
   <div class="toolbar">
@@ -119,9 +119,11 @@
     flex-direction: column;
     gap: var(--padding-2x);
 
-    @include media.min-width(large) {
+    @include media.min-width(medium) {
       display: grid;
       grid-template-columns: repeat(2, 50%);
+      grid-template-rows: auto 1fr;
+      grid-row-gap: var(--padding-4x);
 
       padding: var(--padding-2x) 0;
     }
@@ -140,16 +142,18 @@
     padding: var(--padding-2x) var(--padding-8x);
 
     @include media.min-width(medium) {
-      padding: var(--padding-2x) calc(20 * var(--padding));
-    }
+      grid-column: 2 / 3;
+      grid-row: 1 / 3;
 
-    @include media.min-width(large) {
       padding: 0 var(--padding-4x);
     }
   }
 
   .description {
-    margin-top: var(--padding-4x);
+    @include media.min-width(medium) {
+      grid-column: 1 / 2;
+      margin-top: 0;
+    }
   }
 
   .receive {
