@@ -20,7 +20,7 @@ set -euo pipefail
 rm -f nns-dapp.wasm nns-dapp_local.wasm
 
 : "Set local network as persistent"
-cat <<< "$(jq -r '.local.type |= "persistent"' "${HOME}/.config/dfx/networks.json")" > "${HOME}/.config/dfx/networks.json"
+echo -e '{\n  "local": {\n    "bind": "127.0.0.1:8080",\n    "type": "persistent",\n    "replica": {\n      "subnet_type": "system"\n    }\n  }\n}' >"${HOME}/.config/dfx/networks.json"
 
 : "Build nns-dapp for local use, with standard canister IDs, and inject into the wasm cache."
 "$SOURCE_DIR"/dfx-software-nd-cache
