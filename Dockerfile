@@ -7,7 +7,7 @@
 
 # This is the "builder", i.e. the base image used later to build the final
 # code.
-FROM ubuntu:22.04 as builder
+FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
 ARG rust_version=1.64.0
