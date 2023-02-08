@@ -64,6 +64,11 @@ fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
     // as the data will be fetched from upstream anew.  There will be a period in
     // which the data is unavailable but that will pass.
+    //
+    // Note: Serializing the data is problematic as not all types support Candid
+    //       serialization and not all support Serde.  At present the best choice
+    //       seems to be to serialize with Serde, omitting asset hashes which can
+    //       be serialized with neither.
     STATE.with(|state| {
         if let Ok(bytes) = serde_cbor::to_vec(&state.stable) {
             match ic_cdk::storage::stable_save((bytes,)) {
