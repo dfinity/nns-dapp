@@ -165,6 +165,7 @@
 
     @include media.min-width(medium) {
       --segment-width: fit-content;
+      --segment-button-width: 200px;
     }
   }
 
