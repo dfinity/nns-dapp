@@ -38,7 +38,12 @@
   $: logo = selectedSegmentId === bitcoinSegmentId ? BITCOIN_LOGO : CKBTC_LOGO;
 
   let logoArialLabel: string;
-  $: logoArialLabel = selectedSegmentId === bitcoinSegmentId ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
+  $: logoArialLabel =
+    selectedSegmentId === bitcoinSegmentId
+      ? $i18n.ckbtc.bitcoin
+      : $i18n.ckbtc.title;
+
+  let qrCodeRendered = false;
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
@@ -83,9 +88,16 @@
           ariaLabel={selectedSegmentId === bitcoinSegmentId
             ? $i18n.ckbtc.qrcode_aria_label_bitcoin
             : $i18n.ckbtc.qrcode_aria_label_ckBTC}
+          on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
         >
           <div class="logo" slot="logo">
-            <Logo src={logo} size="big" framed={false} testId="logo" alt={logoArialLabel} />
+            <Logo
+              src={logo}
+              size="big"
+              framed={false}
+              testId="logo"
+              alt={logoArialLabel}
+            />
           </div>
         </QRCode>
       {/if}
@@ -93,7 +105,9 @@
   </div>
 
   <div class="toolbar">
-    <button class="primary" type="submit">{$i18n.core.done}</button>
+    {#if qrCodeRendered}
+      <button class="primary" type="submit">{$i18n.core.done}</button>
+    {/if}
   </div>
 </Modal>
 
