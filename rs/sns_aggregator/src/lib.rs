@@ -48,7 +48,7 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 /// with this code.
 ///
 /// Note: If the canister os created with e.g. `dfx canister create`
-///       and then deployed normally, `init(..)` is never called.
+///       and then `dfx deploy`, `init(..)` is never called.
 #[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::init]
 #[candid_method(init)]

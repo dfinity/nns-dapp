@@ -1,4 +1,4 @@
-//!
+//! Data types for storing upstream SNS data.
 use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use super::ic_sns_ledger::Value as Icrc1Value;
 use super::ic_sns_root::ListSnsCanistersResponse;
