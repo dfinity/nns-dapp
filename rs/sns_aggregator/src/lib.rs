@@ -28,7 +28,7 @@ fn health_check() -> String {
         let num_sns = state.stable.borrow().sns_cache.borrow().all_sns.len();
         // An optional name that may be defined during compilation to force upgrades by changing
         // the wasm.  This also allows the developer to verify that their release has been deployed
-        // withoutclooking up the wasm hash.
+        // without looking up the wasm hash.
         let release_name = option_env!("RELEASE_NAME").unwrap_or("Squirrel");
         format!("Hello from {release_name}.  The last partial update was at: {last_partial_update}.  Last update cycle started at {last_update} with {num_to_get}/{num_sns} outstanding.")
     })
