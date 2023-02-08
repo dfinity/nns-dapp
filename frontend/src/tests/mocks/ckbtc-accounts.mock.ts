@@ -21,3 +21,5 @@ export const mockCkBTCMainAccount: Account = {
   principal: mockPrincipal,
   type: "main",
 };
+
+export const mockCkBTCAddress = "bcrt1qu2aqme90t6hpac50x0xw8ljwqs250vn6tzlmsv";
