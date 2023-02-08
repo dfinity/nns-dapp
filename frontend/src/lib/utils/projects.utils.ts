@@ -65,6 +65,17 @@ export const durationTillSwapDeadline = ({
   swap_due_timestamp_seconds - BigInt(nowInSeconds());
 
 /**
+ * Duration in seconds until the start of the swap if defined.
+ * @param swap
+ */
+export const durationTillSwapStart = ({
+  decentralization_sale_open_timestamp_seconds,
+}: SnsSummarySwap): bigint | undefined =>
+  decentralization_sale_open_timestamp_seconds !== undefined
+    ? decentralization_sale_open_timestamp_seconds - BigInt(nowInSeconds())
+    : undefined;
+
+/**
  * Returns the minimum between:
  * - user remaining commitment to reach user maximum
  * - remaining commitment to reach project maximum

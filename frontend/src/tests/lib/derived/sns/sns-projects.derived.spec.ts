@@ -102,7 +102,7 @@ describe("projects.derived", () => {
       expect(adopted?.length).toEqual(1);
 
       snsQueryStore.setData(
-        snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Adopted] })
+        snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const noAdopted = get(snsProjectsAdoptedStore);
       expect(noAdopted?.length).toEqual(0);

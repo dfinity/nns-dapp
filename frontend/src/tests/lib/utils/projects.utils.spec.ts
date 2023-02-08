@@ -6,6 +6,7 @@ import {
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
   durationTillSwapDeadline,
+  durationTillSwapStart,
   filterActiveProjects,
   filterCommittedProjects,
   filterProjectsStatus,
@@ -145,6 +146,14 @@ describe("project-utils", () => {
   });
 
   describe("durationTillSwapDeadline", () => {
+    const now = Date.now();
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
       const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);
@@ -156,6 +165,26 @@ describe("project-utils", () => {
         },
       };
       expect(durationTillSwapDeadline(swap)).toEqual(BigInt(dueSeconds));
+    });
+  });
+
+  describe("durationTillSwapStart", () => {
+    const now = Date.now();
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+    it("should return duration until swap deadline", () => {
+      const dueSeconds = 3600;
+      const dueTimestampSeconds = BigInt(nowInSeconds() + dueSeconds);
+      const swap = {
+        ...mockSwap,
+        decentralization_sale_open_timestamp_seconds: dueTimestampSeconds,
+      };
+      expect(durationTillSwapStart(swap)).toEqual(BigInt(dueSeconds));
     });
   });
 
