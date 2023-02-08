@@ -1,3 +1,4 @@
+//! The state of the canister
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::types::slow::logo_binary;
@@ -34,6 +35,13 @@ thread_local! {
 }
 
 impl State {
+    /// The maximum number of SNS included in a response.
+    ///
+    /// Pages are pre-computed to contain indices [0..PAGE_SIZE-1], [PAGE_SIZE..2*PAGE_SIZE-1] and so on.
+    ///
+    /// Also, the list of most recent SNSs is limited to the page size.
+    pub const PAGE_SIZE: u64 = 10;
+
     /// Adds an SNS into the state accessible via certfied query calls.
     pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
@@ -73,9 +81,8 @@ impl State {
             };
             insert_asset(path, asset);
         }
-        const PAGE_SIZE: u64 = 10;
         // If this is in the last N, update latest.
-        if upstream_data.index + PAGE_SIZE > STATE.with(|state| state.sns_aggregator.borrow().max_index) {
+        if upstream_data.index + State::PAGE_SIZE > STATE.with(|state| state.sns_aggregator.borrow().max_index) {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
@@ -84,7 +91,7 @@ impl State {
                     .upstream_data
                     .values()
                     .rev()
-                    .take(PAGE_SIZE as usize)
+                    .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
                 serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
