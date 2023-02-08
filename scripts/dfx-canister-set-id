@@ -16,11 +16,7 @@ export DFX_NETWORK
 export DFX_CANISTER_NAME
 export DFX_CANISTER_ID
 
-if [[ "$DFX_NETWORK" == "local" ]]; then
-  FILENAME=".dfx/local/canister_ids.json"
-else
-  FILENAME="canister_ids.json"
-fi
+FILENAME="canister_ids.json"
 
 (
   set +euo pipefail
