@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   builder:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       # We use buildx and its GitHub Actions caching support `type=gha`. For
@@ -28,7 +28,7 @@ jobs:
           target: builder
   assets:
     needs: builder
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -83,14 +83,14 @@ jobs:
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   docker-build:
     needs: assets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Extract assets for verification
         run: echo TODO
   docker-build-passes:
     needs: ["assets", "docker-build"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
         run: |
