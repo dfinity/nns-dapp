@@ -35,44 +35,42 @@ import {
   type ApiStakeNeuronParams,
 } from "$lib/api/governance.api";
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 
-const cacheExpirationDurationMs = 5 * SECONDS_IN_MINUTE * 1000;
+const cacheExpirationDurationSeconds = 5 * SECONDS_IN_MINUTE;
 
-const nowMs = () => new Date().getTime();
+interface NeuronsCache {
+  neurons: NeuronInfo[];
+  // When the neurons were cached.
+  timestampSeconds: number;
+  // The principal of the identity for which the neurons were cached.
+  principalText: string;
+}
 
-let cachedNeurons: NeuronInfo[] | null = null;
-
-// When the neurons were last cached.
-let cacheTimestampMs: number | null = null;
-
-// The principal of the identity for which the neurons were cached.
-let cachePrincipalText: string | null = null;
+let neuronsCache: NeuronsCache | null = null;
 
 export const clearCache = () => {
-  cachedNeurons = null;
-  cacheTimestampMs = null;
-  cachePrincipalText = null;
+  neuronsCache = null;
 };
 
 const hasValidCachedNeurons = (identity: Identity): boolean => {
+  if (isNullish(neuronsCache)) {
+    return false;
+  }
   if (
-    isNullish(cachedNeurons) ||
-    isNullish(cacheTimestampMs) ||
-    isNullish(cachePrincipalText)
+    nowInSeconds() - neuronsCache.timestampSeconds >
+    cacheExpirationDurationSeconds
   ) {
     return false;
   }
-  if (nowMs() - cacheTimestampMs > cacheExpirationDurationMs) {
-    return false;
-  }
-  return cachePrincipalText === identity.getPrincipal().toText();
+  return neuronsCache.principalText === identity.getPrincipal().toText();
 };
 
 const clearCacheAfter = async <R>(promise: Promise<R>) => {
-  let result : R;
+  let result: R;
   try {
     result = await promise;
   } finally {
@@ -95,17 +93,19 @@ export const neuronsApiService = {
     return queryNeuron(params);
   },
   async queryNeurons(params: ApiQueryParams) {
-    if (cachedNeurons !== null && hasValidCachedNeurons(params.identity)) {
-      return cachedNeurons;
+    if (!isNullish(neuronsCache) && hasValidCachedNeurons(params.identity)) {
+      return neuronsCache.neurons;
     }
     const promise = queryNeurons(params);
     if (!params.certified) {
       return promise;
     }
-    cachedNeurons = await promise;
-    cacheTimestampMs = nowMs();
-    cachePrincipalText = params.identity.getPrincipal().toText();
-    return cachedNeurons;
+    neuronsCache = {
+      neurons: await promise,
+      timestampSeconds: nowInSeconds(),
+      principalText: params.identity.getPrincipal().toText(),
+    };
+    return neuronsCache.neurons;
   },
 
   // Action calls
