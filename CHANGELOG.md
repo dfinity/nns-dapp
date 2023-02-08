@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXX
+## Proposal 106377
 * Launch ckBTC wallet functionality!
 * Fix bug in transactions list.
 * Introduce GZIP encoding for assets.
