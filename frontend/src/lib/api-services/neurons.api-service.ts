@@ -36,7 +36,7 @@ import {
 } from "$lib/api/governance.api";
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { isNullish } from "$lib/utils/utils";
+import { isNullish, nonNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 
@@ -93,7 +93,7 @@ export const neuronsApiService = {
     return queryNeuron(params);
   },
   async queryNeurons(params: ApiQueryParams) {
-    if (!isNullish(neuronsCache) && hasValidCachedNeurons(params.identity)) {
+    if (nonNullish(neuronsCache) && hasValidCachedNeurons(params.identity)) {
       return neuronsCache.neurons;
     }
     const promise = queryNeurons(params);
