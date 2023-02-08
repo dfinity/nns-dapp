@@ -156,6 +156,12 @@
     display: flex;
     justify-content: center;
     margin-bottom: var(--padding-2x);
+
+    --segment-width: 100%;
+
+    @include media.min-width(medium) {
+      --segment-width: fit-content;
+    }
   }
 
   button.primary {
