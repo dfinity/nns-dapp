@@ -34,6 +34,8 @@ import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
+import {IcrcTransferError} from "@dfinity/ledger";
+import {ledgerErrorToToastError} from "$lib/utils/sns-ledger.utils";
 
 export interface SnsTicket {
   rootCanisterId: Principal;
@@ -291,6 +293,7 @@ export const initiateSnsSwapParticipation = async ({
           summary: project?.summary,
           amountE8s: amount.toE8s() + BigInt(1),
         });
+
       if (!(openStateError && lastCommitment)) {
         throw error;
       }
@@ -399,10 +402,24 @@ export const participateInSnsSwap = async ({
       createdAt: creationTime,
       memo: ticketId,
     });
-  } catch (transferError) {
-    // TxDuplicateError
+  } catch (err) {
+    if (err instanceof IcrcTransferError) {
 
-    console.log(transferError);
+      // TODO(GIX-1271): implement more detailed feedback (based on the table)
+
+      if (!("Duplicate" in err.errorType)) {
+        console.log(err);
+
+        toastsError(
+          ledgerErrorToToastError({
+            fallbackErrorLabelKey: "error.transaction_error",
+            err,
+          })
+        );
+
+        return;
+      }
+    }
   }
 
   // refresh_buyer_tokens
