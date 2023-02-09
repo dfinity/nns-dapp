@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import * as governanceApi from "$lib/api/governance.api";
 import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -22,6 +24,8 @@ import {
   mockProposals,
 } from "../../mocks/proposals.store.mock";
 import { silentConsoleErrors } from "../../utils/utils.test-utils";
+
+jest.mock("$lib/api/governance.api");
 
 describe("ProposalDetail", () => {
   jest
@@ -61,25 +65,58 @@ describe("ProposalDetail", () => {
     proposalIdText: `${mockProposals[0].id}`,
   };
 
-  it("should render proposal detail if not signed in", async () => {
-    authStoreMock.next({
-      identity: undefined,
+  describe.only("logged in user", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      resetNeuronsApiService();
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+    });
+    it("should render proposal detail if signed in", async () => {
+      const { queryByTestId } = render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      );
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
-    await waitFor(() =>
-      expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
-    );
+    it("should query neurons", async () => {
+      render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          certified: true,
+        })
+      );
+      expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+    });
   });
 
-  it("should render proposal detail if signed in", async () => {
-    authStoreMock.next({
-      identity: mockIdentity,
+  describe("logged out user", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      resetNeuronsApiService();
+      authStoreMock.next({
+        identity: undefined,
+      });
+      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+    });
+    it("should render proposal detail if not signed in", async () => {
+      const { queryByTestId } = render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
+      );
     });
 
-    const { queryByTestId } = render(ProposalDetail, props);
-    await waitFor(() =>
-      expect(queryByTestId("proposal-details-grid")).toBeInTheDocument()
-    );
+    it("should NOT query neurons", async () => {
+      render(ProposalDetail, props);
+      await waitFor(() =>
+        expect(governanceApi.queryNeurons).not.toHaveBeenCalled()
+      );
+    });
   });
 });

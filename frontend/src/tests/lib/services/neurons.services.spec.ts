@@ -1,3 +1,4 @@
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -143,10 +144,6 @@ describe("neurons-services", () => {
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
   const neurons = [sameControlledNeuron, controlledNeuron];
-
-  const spyQueryNeurons = jest
-    .spyOn(api, "queryNeurons")
-    .mockImplementation(() => Promise.resolve(neurons));
 
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
@@ -319,6 +316,15 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
+    const spyQueryNeurons = jest
+      .spyOn(api, "queryNeurons")
+      .mockImplementation(() => Promise.resolve(neurons));
+
+    beforeEach(() => {
+      resetNeuronsApiService();
+      jest.clearAllMocks();
+    });
+
     it("should list neurons", async () => {
       const oldNeuronsList = get(definedNeuronsStore);
       expect(oldNeuronsList).toEqual([]);
@@ -329,6 +335,37 @@ describe("neurons-services", () => {
 
       const newNeuronsList = get(definedNeuronsStore);
       expect(newNeuronsList).toEqual(neurons);
+    });
+
+    it("should not set uncertified if the response come after certified", async () => {
+      const oldData = get(neuronsStore);
+      expect(oldData.neurons).toBeUndefined();
+
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalled();
+
+      const newNeurons = get(neuronsStore);
+      expect(newNeurons.neurons).toEqual(neurons);
+      expect(newNeurons.certified).toEqual(true);
+    });
+
+    it("should not call api when called twice and cache is not reset", async () => {
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
     });
 
     it("should not list neurons if no identity", async () => {

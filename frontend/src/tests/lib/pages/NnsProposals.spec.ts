@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
@@ -35,6 +37,8 @@ import {
   mockProposalsStoreSubscribe,
 } from "../../mocks/proposals.store.mock";
 
+jest.mock("$lib/api/governance.api");
+
 describe("NnsProposals", () => {
   const nothingFound = (
     container: HTMLElement
@@ -62,6 +66,35 @@ describe("NnsProposals", () => {
     });
 
     afterAll(() => jest.clearAllMocks());
+
+    describe("neurons", () => {
+      beforeEach(() => {
+        // TODO: Mock the canister call instead of the service
+        const mockGovernanceCanister: MockGovernanceCanister =
+          new MockGovernanceCanister([]);
+        jest
+          .spyOn(GovernanceCanister, "create")
+          .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+        jest.clearAllMocks();
+        neuronsStore.reset();
+        resetNeuronsApiService();
+        jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      });
+      it("should load neurons", async () => {
+        render(NnsProposals);
+
+        await waitFor(() =>
+          expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+            identity: mockIdentity,
+            certified: true,
+          })
+        );
+        expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          certified: false,
+        });
+      });
+    });
 
     describe("Matching results", () => {
       const mockGovernanceCanister: MockGovernanceCanister =
@@ -194,6 +227,28 @@ describe("NnsProposals", () => {
     });
 
     afterAll(() => jest.clearAllMocks());
+
+    describe("neurons", () => {
+      beforeEach(() => {
+        // TODO: Mock the canister call instead of the service
+        const mockGovernanceCanister: MockGovernanceCanister =
+          new MockGovernanceCanister([]);
+        jest
+          .spyOn(GovernanceCanister, "create")
+          .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+        jest.clearAllMocks();
+        neuronsStore.reset();
+        resetNeuronsApiService();
+        jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      });
+      it("should NOT load neurons", async () => {
+        render(NnsProposals);
+
+        await waitFor(() =>
+          expect(governanceApi.queryNeurons).not.toHaveBeenCalled()
+        );
+      });
+    });
 
     describe("Matching results", () => {
       const mockGovernanceCanister: MockGovernanceCanister =

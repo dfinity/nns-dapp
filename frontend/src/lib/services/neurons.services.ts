@@ -243,12 +243,21 @@ export const listNeurons = async ({
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
+  let certifiedNeuronsSet = false;
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy,
     request: ({ certified, identity }) =>
       neuronsApiService.queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
-      neuronsStore.setNeurons({ neurons, certified });
+      // Skip if we already have certified neurons
+      // Otherwise we depend on the order of the responses
+      if (certifiedNeuronsSet) {
+        return;
+      }
+      if (certified) {
+        certifiedNeuronsSet = true;
+        neuronsStore.setNeurons({ neurons, certified });
+      }
 
       callback?.(certified);
     },
