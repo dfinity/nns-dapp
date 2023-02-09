@@ -97,8 +97,8 @@ impl State {
 
     /// Adds an SNS into the state accessible via certfied query calls.
     #[deny(clippy::panic)]
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
+    #[deny(clippy::expect_used)]
+    #[deny(clippy::unwrap_used)]
     pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
     }
@@ -106,8 +106,8 @@ impl State {
     ///
     /// - /sns/index/{index}.json <- All aggregate data about the SNS, in JSON format.
     #[deny(clippy::panic)]
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
+    #[deny(clippy::expect_used)]
+    #[deny(clippy::unwrap_used)]
     pub fn insert_sns_v1(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         let prefix = "/v1";
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
@@ -120,16 +120,16 @@ impl State {
                 }
             });
         }
-                // Add this to the list of values from upstream
-                STATE.with(|state| {
-                    state
-                        .stable
-                        .borrow()
-                        .sns_cache
-                        .borrow_mut()
-                        .upstream_data
-                        .insert(root_canister_id, upstream_data.clone());
-                });
+        // Add this to the list of values from upstream
+        STATE.with(|state| {
+            state
+                .stable
+                .borrow()
+                .sns_cache
+                .borrow_mut()
+                .upstream_data
+                .insert(root_canister_id, upstream_data.clone());
+        });
         // Adds the logo
         {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
@@ -188,7 +188,7 @@ impl State {
                     .borrow()
                     .upstream_data
                     .values()
-                    .rev()
+                    .skip((pagenum * State::PAGE_SIZE) as usize)
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();

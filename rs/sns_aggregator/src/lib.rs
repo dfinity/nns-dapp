@@ -16,7 +16,7 @@ use std::time::Duration;
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
-use ic_cdk::timer::{set_timer_interval, set_timer};
+use ic_cdk::timer::{set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -189,7 +189,9 @@ fn setup(config: Option<Config>) {
     });
     // Get one SNS quickly, to show that basic functionality works.
     for i in 0..2 {
-        set_timer(Duration::from_secs(i*4), || ic_cdk::spawn(crate::upstream::update_cache()));
+        set_timer(Duration::from_secs(i * 4), || {
+            ic_cdk::spawn(crate::upstream::update_cache())
+        });
     }
 }
 
