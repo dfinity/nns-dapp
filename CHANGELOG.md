@@ -1,5 +1,36 @@
 # Changelog
 
+## Proposal 106377
+* Launch ckBTC wallet functionality!
+* Fix bug in transactions list.
+* Introduce GZIP encoding for assets.
+* Fetch data with "query" for not logged in users.
+
+## Proposal 105498
+* Remove dashboard routing fallback.
+* Login screen minor changes.
+* Extended dissolve delay input.
+* Payload rendering fix.
+* Text and style updates.
+
+## Proposal 104642
+* Fix bug encoding and decoding ICRC-1 subaccounts.
+
+## Proposal 104287
+* Auto-stake for non-controlled neurons.
+* Enable Merge HW controlled neurons.
+* Add "created at" parameter in transactions.
+* Poll and display canister status (cycles, memory and status).
+* Use new library "dfinity/ledger".
+* Update proposal rendering (new types).
+* Minor fixes and improvements.
+
+## Proposal 103049
+* Split layout and new token selector for "Accounts" and "Neurons".
+* Display TVL (total value locked) in USD.
+* Remove badge "new" next to menu entry "Launchpad".
+* Fixes and UI improvements.
+
 ## Proposal 101945
 * Increase sns neuron stake.
 * Split sns neuron.

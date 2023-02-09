@@ -3,10 +3,7 @@
   import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
   import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
   import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
-  import {
-    isNnsUniverseStore,
-    selectedUniverseIdStore,
-  } from "$lib/derived/selected-universe.derived";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";

@@ -2,10 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import {
+  snsProjectsAdoptedStore,
+  snsProjectsCommittedStore,
+} from "$lib/derived/sns/sns-projects.derived";
 import Launchpad from "$lib/pages/Launchpad.svelte";
+import { loadSnsSwapCommitments } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
@@ -30,42 +34,90 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 describe("Launchpad", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
-
-  beforeAll(() =>
-    authStoreMock.next({
-      identity: mockIdentity,
-    })
-  );
-
-  afterEach(() => jest.clearAllMocks());
-
-  it("should render titles", () => {
+  describe("signed in", () => {
     jest
-      .spyOn(committedProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-    const { getByText } = render(Launchpad);
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    // TBU
-    expect(getByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
-    expect(getByText(en.sns_launchpad.committed_projects)).toBeInTheDocument();
-    expect(getByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    beforeAll(() =>
+      authStoreMock.next({
+        identity: mockIdentity,
+      })
+    );
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should render titles", () => {
+      jest
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      jest
+        .spyOn(snsProjectsAdoptedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      const { getByText } = render(Launchpad);
+
+      // TBU
+      expect(getByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
+      expect(
+        getByText(en.sns_launchpad.committed_projects)
+      ).toBeInTheDocument();
+      expect(getByText(en.sns_launchpad.upcoming_projects)).toBeInTheDocument();
+      expect(getByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    });
+
+    it("should call loadSnsSwapCommitments", async () => {
+      render(Launchpad);
+
+      await waitFor(() => expect(loadSnsSwapCommitments).toHaveBeenCalled());
+    });
+
+    it("should not render upcoming projects title if no committed projects", () => {
+      jest
+        .spyOn(snsProjectsAdoptedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([]));
+
+      const { queryByText } = render(Launchpad);
+
+      // TBU
+      expect(queryByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
+      expect(
+        queryByText(en.sns_launchpad.upcoming_projects)
+      ).not.toBeInTheDocument();
+      expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    });
+
+    it("should not render committed project title if no committed projects", () => {
+      jest
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([]));
+
+      const { queryByText } = render(Launchpad);
+
+      // TBU
+      expect(queryByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
+      expect(
+        queryByText(en.sns_launchpad.committed_projects)
+      ).not.toBeInTheDocument();
+      expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+    });
   });
 
-  it("should not render committed project title if no committed projects", () => {
+  describe("not logged in", () => {
     jest
-      .spyOn(committedProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([]));
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    const { queryByText } = render(Launchpad);
+    beforeAll(() =>
+      authStoreMock.next({
+        identity: undefined,
+      })
+    );
+    it("should not call loadSnsSwapCommitments", async () => {
+      render(Launchpad);
 
-    // TBU
-    expect(queryByText(en.sns_launchpad.open_projects)).toBeInTheDocument();
-    expect(
-      queryByText(en.sns_launchpad.committed_projects)
-    ).not.toBeInTheDocument();
-    expect(queryByText(en.sns_launchpad.proposals)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(loadSnsSwapCommitments).not.toHaveBeenCalled()
+      );
+    });
   });
 });

@@ -8,20 +8,17 @@ export const listKnownNeurons = (): Promise<void> => {
   return queryAndUpdate<KnownNeuron[], unknown>({
     request: (options) => api.queryKnownNeurons(options),
     onLoad: ({ response: neurons }) => knownNeuronsStore.setNeurons(neurons),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        knownNeuronsStore.setNeurons([]);
+
+        toastsError({
+          labelKey: "error.get_known_neurons",
+          err,
+        });
       }
-
-      // Explicitly handle only UPDATE errors
-      knownNeuronsStore.setNeurons([]);
-
-      toastsError({
-        labelKey: "error.get_known_neurons",
-        err,
-      });
     },
     logMessage: "Syncing Known Neurons",
   });

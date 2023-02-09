@@ -1,14 +1,14 @@
-import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import {
+  getIcrcMainAccount,
+  getIcrcToken,
+  icrcTransfer as transferIcrcApi,
+  type IcrcTransferParams,
+} from "$lib/api/icrc-ledger.api";
 import type { Account } from "$lib/types/account";
-import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { mapOptionalToken } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
-import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { encodeSnsAccount, type SnsAccount } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getSnsAccounts = async ({
@@ -22,36 +22,50 @@ export const getSnsAccounts = async ({
 }): Promise<Account[]> => {
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
-  const { balance, ledgerMetadata } = await wrapper({
+
+  const { balance: getBalance, ledgerMetadata: getMetadata } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
   });
 
-  const snsMainAccount = { owner: identity.getPrincipal() };
-  const [mainBalanceE8s, metadata] = await Promise.all([
-    balance(snsMainAccount),
-    ledgerMetadata({}),
-  ]);
+  const mainAccount = await getIcrcMainAccount({
+    identity,
+    certified,
+    getBalance,
+    getMetadata,
+  });
 
-  const projectToken = mapOptionalToken(metadata);
+  logWithTimestamp("Getting sns accounts: done");
 
-  if (projectToken === undefined) {
-    throw new LedgerErrorKey("error.sns_token_load");
-  }
-
-  const mainAccount: Account = {
-    identifier: encodeSnsAccount(snsMainAccount),
-    principal: identity.getPrincipal(),
-    balance: TokenAmount.fromE8s({
-      amount: mainBalanceE8s,
-      token: projectToken,
-    }),
-    type: "main",
-  };
-
-  logWithTimestamp("Getting sns neuron: done");
   return [mainAccount];
+};
+
+export const getSnsToken = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<IcrcTokenMetadata> => {
+  logWithTimestamp("Getting sns token: call...");
+
+  const { ledgerMetadata: getMetadata } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  const token = await getIcrcToken({
+    certified,
+    getMetadata,
+  });
+
+  logWithTimestamp("Getting sns token: done");
+
+  return token;
 };
 
 export const transactionFee = async ({
@@ -76,40 +90,26 @@ export const transactionFee = async ({
   return fee;
 };
 
-export const transfer = async ({
+export const snsTransfer = async ({
   identity,
-  to,
-  e8s,
   rootCanisterId,
-  memo,
-  fromSubAccount,
-  createdAt,
+  ...rest
 }: {
   identity: Identity;
-  to: SnsAccount;
-  e8s: bigint;
   rootCanisterId: Principal;
-  memo?: Uint8Array;
-  fromSubAccount?: SubAccountArray;
-  createdAt?: bigint;
-}): Promise<void> => {
+} & Omit<IcrcTransferParams, "transfer">): Promise<void> => {
+  logWithTimestamp("Getting Sns transfer: call...");
+
   const { transfer: transferApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
 
-  await transferApi({
-    amount: e8s,
-    to: {
-      owner: to.owner,
-      subaccount: toNullable(to.subaccount),
-    },
-    created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
-    memo,
-    from_subaccount:
-      fromSubAccount !== undefined
-        ? arrayOfNumberToUint8Array(fromSubAccount)
-        : undefined,
+  await transferIcrcApi({
+    ...rest,
+    transfer: transferApi,
   });
+
+  logWithTimestamp("Getting Sns transfer: done");
 };

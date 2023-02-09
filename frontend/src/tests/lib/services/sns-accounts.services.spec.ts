@@ -4,19 +4,20 @@
 
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
-import { loadAccountTransactions } from "$lib/services/sns-transactions.services";
+import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => ({
-  loadAccountTransactions: jest.fn(),
+  loadSnsAccountTransactions: jest.fn(),
 }));
 
 describe("sns-accounts-services", () => {
@@ -65,6 +66,14 @@ describe("sns-accounts-services", () => {
         accounts: [mockSnsMainAccount],
         certified: true,
       });
+      icrcTransactionsStore.addTransactions({
+        canisterId: mockPrincipal,
+        accountIdentifier: mockSnsMainAccount.identifier,
+        transactions: [mockIcrcTransactionWithId],
+        oldestTxId: undefined,
+        completed: false,
+      });
+
       const spyQuery = jest
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.reject(undefined));
@@ -75,7 +84,7 @@ describe("sns-accounts-services", () => {
         const store = get(snsAccountsStore);
         return expect(store[mockPrincipal.toText()]).toBeUndefined();
       });
-      const transactionsStore = get(snsTransactionsStore);
+      const transactionsStore = get(icrcTransactionsStore);
       expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
@@ -119,9 +128,19 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
+
+    afterEach(() => {
+      transactionsFeesStore.reset();
+    });
+
     it("should call sns transfer tokens", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(undefined);
 
       const { success } = await services.snsTransferTokens({
@@ -138,8 +157,13 @@ describe("sns-accounts-services", () => {
     });
 
     it("should load transactions if flag is passed", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(undefined);
 
       const { success } = await services.snsTransferTokens({
@@ -153,12 +177,17 @@ describe("sns-accounts-services", () => {
       expect(success).toBe(true);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
-      expect(loadAccountTransactions).toBeCalled();
+      expect(loadSnsAccountTransactions).toBeCalled();
     });
 
     it("should show toast and return success false if transfer fails", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyTransfer = jest
-        .spyOn(ledgerApi, "transfer")
+        .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
@@ -175,12 +204,26 @@ describe("sns-accounts-services", () => {
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
     });
-  });
 
-  describe("getSnsAccountIdentity", () => {
-    it("returns identity", async () => {
-      const identity = await services.getSnsAccountIdentity(mockSnsMainAccount);
-      expect(identity).toEqual(mockIdentity);
+    it("should show toast and return success false if there is no transaction fee", async () => {
+      transactionsFeesStore.reset();
+      const spyTransfer = jest
+        .spyOn(ledgerApi, "snsTransfer")
+        .mockRejectedValue(new Error("test error"));
+      const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+
+      const { success } = await services.snsTransferTokens({
+        rootCanisterId: mockPrincipal,
+        source: mockSnsMainAccount,
+        destinationAddress: "aaaaa-aa",
+        amount: 1,
+        loadTransactions: false,
+      });
+
+      expect(success).toBe(false);
+      expect(spyTransfer).not.toBeCalled();
+      expect(spyAccounts).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
     });
   });
 });

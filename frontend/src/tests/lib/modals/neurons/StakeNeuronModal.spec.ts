@@ -12,6 +12,7 @@ import {
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { secondsToDays } from "$lib/utils/date.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
@@ -275,7 +276,9 @@ describe("StakeNeuronModal", () => {
 
       const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
       inputRange &&
-        (await fireEvent.input(inputRange, { target: { value: FIVE_MONTHS } }));
+        (await fireEvent.input(inputRange, {
+          target: { value: secondsToDays(FIVE_MONTHS) },
+        }));
 
       const updateDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
@@ -336,7 +339,9 @@ describe("StakeNeuronModal", () => {
 
       const ONE_YEAR = 60 * 60 * 24 * 365;
       inputRange &&
-        (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
+        (await fireEvent.input(inputRange, {
+          target: { value: secondsToDays(ONE_YEAR) },
+        }));
 
       const goToConfirmDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
@@ -496,7 +501,9 @@ describe("StakeNeuronModal", () => {
 
       const ONE_YEAR = 60 * 60 * 24 * 365;
       inputRange &&
-        (await fireEvent.input(inputRange, { target: { value: ONE_YEAR } }));
+        (await fireEvent.input(inputRange, {
+          target: { value: secondsToDays(ONE_YEAR) },
+        }));
 
       const goToConfirmDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'

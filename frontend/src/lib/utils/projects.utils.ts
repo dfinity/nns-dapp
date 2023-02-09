@@ -1,4 +1,4 @@
-import type { SnsFullProject } from "$lib/derived/projects.derived";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type {
   SnsSummary,
   SnsSummarySwap,
@@ -48,7 +48,11 @@ export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
         swap: { lifecycle },
       },
     }) =>
-      [SnsSwapLifecycle.Committed, SnsSwapLifecycle.Open].includes(lifecycle)
+      [
+        SnsSwapLifecycle.Committed,
+        SnsSwapLifecycle.Open,
+        SnsSwapLifecycle.Adopted,
+      ].includes(lifecycle)
   );
 
 /**
@@ -59,6 +63,17 @@ export const durationTillSwapDeadline = ({
   params: { swap_due_timestamp_seconds },
 }: SnsSummarySwap): bigint | undefined =>
   swap_due_timestamp_seconds - BigInt(nowInSeconds());
+
+/**
+ * Duration in seconds until the start of the swap if defined.
+ * @param swap
+ */
+export const durationTillSwapStart = ({
+  decentralization_sale_open_timestamp_seconds,
+}: SnsSummarySwap): bigint | undefined =>
+  decentralization_sale_open_timestamp_seconds !== undefined
+    ? decentralization_sale_open_timestamp_seconds - BigInt(nowInSeconds())
+    : undefined;
 
 /**
  * Returns the minimum between:

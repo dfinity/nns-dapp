@@ -41,9 +41,9 @@ interface I18nError {
   neuron_spawning: string;
   neuron_load: string;
   sns_neurons_load: string;
-  sns_accounts_load: string;
+  accounts_load: string;
   sns_accounts_balance_load: string;
-  sns_token_load: string;
+  icrc_token_load: string;
   list_proposals: string;
   list_canisters: string;
   missing_identity: string;
@@ -107,9 +107,14 @@ interface I18nError {
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
+  token_not_found: string;
   fetch_transactions: string;
   transaction_data: string;
+  amount_not_enough_stake_sns_neuron: string;
+  adding_permissions: string;
   canister_invalid_transaction: string;
+  ckbtc_get_btc_address: string;
+  ckbtc_get_btc_no_account: string;
 }
 
 interface I18nWarning {
@@ -140,12 +145,12 @@ interface I18nAuth {
   earn: string;
   launchpad: string;
   ic_logo: string;
-  about: string;
+  dashboard: string;
   voting_rewards: string;
   logo: string;
-  copyright: string;
   github_link: string;
   background: string;
+  internetcomputer_dot_org_link: string;
 }
 
 interface I18nAccounts {
@@ -256,6 +261,9 @@ interface I18nNeurons {
   dissolve_delay_title: string;
   no_delay: string;
   dissolve_delay_description: string;
+  dissolve_delay_label: string;
+  dissolve_delay_below_minimum: string;
+  dissolve_delay_above_maximum: string;
   voting_power: string;
   skip: string;
   update_delay: string;
@@ -573,7 +581,10 @@ interface I18nSns_launchpad {
   header: string;
   committed_projects: string;
   no_committed_projects: string;
+  no_opening_soon_projects: string;
+  no_projects: string;
   open_projects: string;
+  upcoming_projects: string;
   no_open_projects: string;
   proposals: string;
   project_logo: string;
@@ -594,10 +605,12 @@ interface I18nSns_project_detail {
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
+  starts: string;
   user_commitment: string;
   user_current_commitment: string;
   status: string;
   status_open: string;
+  status_adopted: string;
   enter_amount: string;
   status_committed: string;
   status_aborted: string;
@@ -620,6 +633,7 @@ interface I18nSns_project_detail {
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
+  community_fund_section: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
@@ -813,6 +827,8 @@ interface I18nCkbtc {
   title: string;
   ckBTC: string;
   logo: string;
+  receive: string;
+  address: string;
 }
 
 interface I18nNeuron_state {

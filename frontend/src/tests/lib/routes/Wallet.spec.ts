@@ -1,9 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { projectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
@@ -18,6 +21,18 @@ import {
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
     syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-accounts.services", () => {
+  return {
+    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-transactions.services", () => {
+  return {
+    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -44,7 +59,7 @@ describe("Wallet", () => {
   describe("sns context", () => {
     beforeAll(() => {
       jest
-        .spyOn(projectsStore, "subscribe")
+        .spyOn(snsProjectsStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
       page.mock({
@@ -61,5 +76,19 @@ describe("Wallet", () => {
       });
       expect(getByTestId("sns-wallet")).toBeInTheDocument();
     });
+  });
+
+  it("should render ckBTC wallet", () => {
+    page.mock({
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
+
+    const { getByTestId } = render(Wallet, {
+      props: {
+        accountIdentifier: principal(0).toText(),
+      },
+    });
+    expect(getByTestId("ckbtc-wallet")).toBeInTheDocument();
   });
 });
