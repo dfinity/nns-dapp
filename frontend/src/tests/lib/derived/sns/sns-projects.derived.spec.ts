@@ -1,5 +1,6 @@
 import {
   snsProjectsActivePadStore,
+  snsProjectsAdoptedStore,
   snsProjectsCommittedStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
@@ -90,6 +91,21 @@ describe("projects.derived", () => {
       );
       const noCommitted = get(snsProjectsCommittedStore);
       expect(noCommitted?.length).toEqual(0);
+    });
+
+    it("should filter projects that are adopted only", () => {
+      snsQueryStore.setData(
+        snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Adopted] })
+      );
+
+      const adopted = get(snsProjectsAdoptedStore);
+      expect(adopted?.length).toEqual(1);
+
+      snsQueryStore.setData(
+        snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
+      );
+      const noAdopted = get(snsProjectsAdoptedStore);
+      expect(noAdopted?.length).toEqual(0);
     });
   });
 });

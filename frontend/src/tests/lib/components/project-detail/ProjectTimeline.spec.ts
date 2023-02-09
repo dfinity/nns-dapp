@@ -3,9 +3,13 @@
  */
 
 import ProjectTimeline from "$lib/components/project-detail/ProjectTimeline.svelte";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { secondsToDuration } from "$lib/utils/date.utils";
-import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
+import {
+  durationTillSwapDeadline,
+  durationTillSwapStart,
+} from "$lib/utils/projects.utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import en from "../../../mocks/i18n.mock";
 import {
@@ -15,7 +19,16 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectTimeline", () => {
-  it("should render timeline", () => {
+  const now = Date.now();
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(now);
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it("should render deadline if status Open", () => {
     const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
     const { queryByText } = renderContextCmp({
       summary,
@@ -28,5 +41,29 @@ describe("ProjectTimeline", () => {
       durationTillSwapDeadline(summary.swap) as bigint
     );
     expect(queryByText(expectedDeadline)).toBeInTheDocument();
+  });
+
+  it("should render starting info if status Adopted", () => {
+    const summaryData = summaryForLifecycle(SnsSwapLifecycle.Adopted);
+    const summary = {
+      ...summaryData,
+      swap: {
+        ...summaryData.swap,
+        decentralization_sale_open_timestamp_seconds: BigInt(
+          now + SECONDS_IN_DAY
+        ),
+      },
+    };
+    const { queryByText } = renderContextCmp({
+      summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectTimeline,
+    });
+    expect(queryByText(en.sns_project_detail.starts)).toBeInTheDocument();
+
+    const expectedStartingInfo = secondsToDuration(
+      durationTillSwapStart(summary.swap)
+    );
+    expect(queryByText(expectedStartingInfo)).toBeInTheDocument();
   });
 });
