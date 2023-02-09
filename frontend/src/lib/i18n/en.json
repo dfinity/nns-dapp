@@ -37,9 +37,9 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
-    "sns_accounts_load": "An error occurred while loading the accounts.",
+    "accounts_load": "An error occurred while loading the accounts.",
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
-    "sns_token_load": "An error occurred while loading the project token.",
+    "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -103,9 +103,14 @@
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
+    "token_not_found": "Sorry, there was an error loading the token metadata information.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
+    "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
+    "adding_permissions": "There was an error adding permissions.",
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
+    "ckbtc_get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
+    "ckbtc_get_btc_no_account": "An account should be provided to execute this feature"
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -132,12 +137,12 @@
     "earn": "Vote & earn rewards",
     "launchpad": "SNS Launch Pad",
     "ic_logo": "Internet Computer logo",
-    "about": "About",
+    "dashboard": "Dashboard",
     "voting_rewards": "Voting rewards",
     "logo": "Network Nervous System logo",
-    "copyright": "© 2023 Internet Computer",
     "github_link": "Link to NNS-dapp repo on GitHub",
-    "background": "An abstract image for design and presentation purpose only"
+    "background": "An abstract image for design and presentation purpose only",
+    "internetcomputer_dot_org_link": "Link to internetcomputer.org"
   },
   "accounts": {
     "main": "Main",
@@ -246,6 +251,9 @@
     "dissolve_delay_title": "Dissolve Delay",
     "no_delay": "0",
     "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "dissolve_delay_label": "Dissolve Delay (in days)",
+    "dissolve_delay_below_minimum": "Dissolve delay is below minimum voting allowance",
+    "dissolve_delay_above_maximum": "Dissolve delay exceeds the maximum allowed delay",
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
@@ -485,13 +493,13 @@
     "voting_power_tooltip_with_stake": "Calculated as: <br/>(ICP staked + maturity staked) x Dissolve Delay Bonus x Age Bonus<br/>($stake + $st4kedMaturity) x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the community fund?",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the community fund?",
-    "participate_community_fund": "Participate in upcoming community fund.",
+    "participate_community_fund": "Participate in community fund.",
     "auto_stake_maturity": "Automatically stake new maturity.",
     "auto_stake_maturity_on": "Are you sure that you would like to automatically stake new maturity of this neuron?",
     "auto_stake_maturity_off": "Are you sure that you would like to stop automatically staking new maturity of this neuron?",
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
-    "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
+    "community_fund_more_info": "Join the community fund to support growing projects on the IC. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/community-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">Learn more</a> about how your neurons (un-staked) maturity is used.",
     "maturity_title": "Maturity",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
@@ -550,7 +558,10 @@
     "header": "Launch Pad",
     "committed_projects": "Launched",
     "no_committed_projects": "No launched projects so far.",
+    "no_opening_soon_projects": "No projects opening soon.",
+    "no_projects": "No projects for this state.",
     "open_projects": "Current Launches",
+    "upcoming_projects": "Upcoming Launches",
     "no_open_projects": "Looks like there are no SNS decentralisation sales running right now. Hopefully one is coming soon! <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">Read more about how SNSs are created</a>.",
     "proposals": "Proposals",
     "project_logo": "project logo",
@@ -569,10 +580,12 @@
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
+    "starts": "Starts in",
     "user_commitment": "My Commitment",
     "user_current_commitment": "My Current Commitment",
     "status": "Status",
     "status_open": "Accepting Participation",
+    "status_adopted": "Starting Soon",
     "enter_amount": "Enter Amount",
     "status_committed": "Completed",
     "status_aborted": "Aborted",
@@ -594,6 +607,7 @@
   "sns_neuron_detail": {
     "header": "Neuron",
     "all_topics": "All topics",
+    "community_fund_section": "Community Fund",
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
@@ -761,11 +775,13 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total Value Locked"
+    "tvl": "Total ICP Value Locked"
   },
   "ckbtc": {
-    "title": "Chain-key Bitcoin",
+    "title": "ckBTC",
     "ckBTC": "ckBTC",
-    "logo": "Chain-key Bitcoin (ckBTC) logo"
+    "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "receive": "Receive",
+    "address": "Address"
   }
 }

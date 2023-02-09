@@ -12,12 +12,6 @@ import {
 } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
-
 describe("Projects", () => {
   beforeEach(() => {
     snsQueryStore.reset();
@@ -54,6 +48,37 @@ describe("Projects", () => {
 
     expect(getAllByTestId("card").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Open).length
+    );
+  });
+
+  it("should render 'Adopted' projects", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
+    const lifecycles = [
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Adopted,
+      SnsSwapLifecycle.Committed,
+      SnsSwapLifecycle.Adopted,
+    ];
+
+    snsQueryStore.setData(
+      snsResponsesForLifecycle({
+        lifecycles,
+      })
+    );
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
+      certified: false,
+    });
+
+    const { getAllByTestId } = render(Projects, {
+      props: {
+        status: SnsSwapLifecycle.Adopted,
+      },
+    });
+
+    expect(getAllByTestId("card").length).toBe(
+      lifecycles.filter((lc) => lc === SnsSwapLifecycle.Adopted).length
     );
   });
 
@@ -100,6 +125,24 @@ describe("Projects", () => {
     const { queryByTestId } = render(Projects, {
       props: {
         status: SnsSwapLifecycle.Open,
+      },
+    });
+
+    expect(queryByTestId("no-projects-message")).toBeInTheDocument();
+  });
+
+  it("should render a message when no adopted projects available", () => {
+    const principal = mockSnsSummaryList[0].rootCanisterId;
+
+    snsQueryStore.setData([[], []]);
+    snsSwapCommitmentsStore.setSwapCommitment({
+      swapCommitment: mockSnsSwapCommitment(principal),
+      certified: false,
+    });
+
+    const { queryByTestId } = render(Projects, {
+      props: {
+        status: SnsSwapLifecycle.Adopted,
       },
     });
 

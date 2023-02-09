@@ -6,7 +6,7 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import {
   sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
-} from "$lib/derived/sorted-sns-neurons.derived";
+} from "$lib/derived/sns/sns-sorted-neurons.derived";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
@@ -97,6 +97,14 @@ describe("SnsNeurons", () => {
         expect(queryAllByTestId("sns-neuron-card-title").length).toBe(2)
       );
     });
+
+    it.only("should render one grids", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(1)
+      );
+    });
   });
 
   describe("with neurons from CF", () => {
@@ -133,6 +141,49 @@ describe("SnsNeurons", () => {
 
       await waitFor(() =>
         expect(queryByTestId("community-fund-title")).toBeInTheDocument()
+      );
+    });
+
+    it("should render two grids", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(2)
+      );
+    });
+  });
+
+  describe("with only neurons from CF", () => {
+    beforeEach(() => {
+      const neuron2: SnsNeuron = {
+        ...createMockSnsNeuron({
+          id: [1, 2, 4],
+        }),
+        source_nns_neuron_id: [BigInt(123)],
+      };
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
+    });
+
+    afterEach(() => jest.clearAllMocks());
+
+    it("should render Community Fund title", async () => {
+      const { queryByTestId } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(queryByTestId("community-fund-title")).toBeInTheDocument()
+      );
+    });
+
+    it("should render one grid", async () => {
+      const { container } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(container.querySelectorAll(".card-grid").length).toBe(1)
       );
     });
   });

@@ -4,7 +4,7 @@
 
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, render } from "@testing-library/svelte";
 import {
@@ -30,7 +30,7 @@ describe("SelectUniverseList", () => {
   ];
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe(projects));
 
   beforeEach(() => {

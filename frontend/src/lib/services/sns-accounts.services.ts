@@ -1,16 +1,17 @@
-import { getSnsAccounts, transfer } from "$lib/api/sns-ledger.api";
+import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
+import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
+import { transferTokens } from "$lib/services/icrc-accounts.services";
+import { loadSnsToken } from "$lib/services/sns-tokens.services";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsTransactionsStore } from "$lib/stores/sns-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
-import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { loadAccountTransactions } from "./sns-transactions.services";
+import { get } from "svelte/store";
+import { loadSnsAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -39,12 +40,12 @@ export const loadSnsAccounts = async ({
 
       // hide unproven data
       snsAccountsStore.resetProject(rootCanisterId);
-      snsTransactionsStore.resetProject(rootCanisterId);
+      icrcTransactionsStore.resetUniverse(rootCanisterId);
 
       toastsError(
         toToastError({
           err,
-          fallbackErrorLabelKey: "error.sns_accounts_load",
+          fallbackErrorLabelKey: "error.accounts_load",
         })
       );
 
@@ -58,22 +59,18 @@ export const syncSnsAccounts = async (params: {
   rootCanisterId: Principal;
   handleError?: () => void;
 }) => {
-  await Promise.all([loadSnsAccounts(params), loadSnsTransactionFee(params)]);
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getSnsAccountIdentity = async (_: Account): Promise<Identity> => {
-  // TODO: Support Hardware Wallets
-  const identity = await getAuthenticatedIdentity();
-  return identity;
+  await Promise.all([
+    loadSnsAccounts(params),
+    loadSnsTransactionFee(params),
+    loadSnsToken(params),
+  ]);
 };
 
 export const snsTransferTokens = async ({
   rootCanisterId,
   source,
-  destinationAddress,
-  amount,
   loadTransactions,
+  ...rest
 }: {
   rootCanisterId: Principal;
   source: Account;
@@ -81,34 +78,28 @@ export const snsTransferTokens = async ({
   amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
-  try {
-    const e8s = numberToE8s(amount);
-    const identity: Identity = await getSnsAccountIdentity(source);
-    const to = decodeSnsAccount(destinationAddress);
+  const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;
 
-    await transfer({
-      identity,
-      to,
-      fromSubAccount: source.subAccount,
-      e8s,
-      rootCanisterId,
-    });
-
-    await Promise.all([
-      loadSnsAccounts({ rootCanisterId }),
-      loadTransactions
-        ? loadAccountTransactions({ account: source, rootCanisterId })
-        : Promise.resolve(),
-    ]);
-
-    return { success: true };
-  } catch (err) {
-    toastsError(
-      ledgerErrorToToastError({
-        fallbackErrorLabelKey: "error.transaction_error",
-        err,
-      })
-    );
-    return { success: false };
-  }
+  return transferTokens({
+    source,
+    fee,
+    ...rest,
+    transfer: async (
+      params: {
+        identity: Identity;
+      } & Omit<IcrcTransferParams, "transfer">
+    ) =>
+      await snsTransfer({
+        ...params,
+        rootCanisterId,
+      }),
+    reloadAccounts: async () => await loadSnsAccounts({ rootCanisterId }),
+    reloadTransactions: async () =>
+      await (loadTransactions
+        ? loadSnsAccountTransactions({
+            account: source,
+            canisterId: rootCanisterId,
+          })
+        : Promise.resolve()),
+  });
 };

@@ -27,9 +27,9 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import {
-  decodeSnsAccount,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
@@ -590,7 +590,17 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
+    afterEach(() => {
+      transactionsFeesStore.reset();
+      jest.clearAllMocks();
+    });
+
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
+      transactionsFeesStore.setFee({
+        rootCanisterId: mockPrincipal,
+        fee: BigInt(100),
+        certified: true,
+      });
       const spyStake = jest
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -609,6 +619,22 @@ describe("sns-neurons-services", () => {
       expect(spyQuery).toBeCalled();
       expect(loadSnsAccounts).toBeCalled();
     });
+
+    it("should not call sns api stakeNeuron if fee is not present", async () => {
+      transactionsFeesStore.reset();
+      const spyStake = jest
+        .spyOn(api, "stakeNeuron")
+        .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
+
+      const { success } = await stakeNeuron({
+        rootCanisterId: mockPrincipal,
+        amount: 2,
+        account: mockSnsMainAccount,
+      });
+
+      expect(success).toBeFalsy();
+      expect(spyStake).not.toBeCalled();
+    });
   });
 
   describe("increaseStakeNeuron", () => {
@@ -622,7 +648,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
-      const identifier = decodeSnsAccount(account.identifier);
+      const identifier = decodeIcrcAccount(account.identifier);
 
       const { success } = await increaseStakeNeuron({
         rootCanisterId,

@@ -22,6 +22,10 @@
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
 
+  export let rootCanisterId: string | undefined | null;
+
+  $: rootCanisterId, reload();
+
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
       rootCanisterId,
@@ -101,8 +105,6 @@
           )?.swapCommitment
         : undefined;
   };
-
-  export let rootCanisterId: string | undefined | null;
 
   /**
    * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.

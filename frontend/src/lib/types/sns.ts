@@ -1,3 +1,4 @@
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
@@ -22,18 +23,12 @@ export interface SnsSummaryMetadata {
   description: string;
 }
 
-/**
- * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.
- * That's why we have to map the data as well.
- */
-export interface SnsTokenMetadata {
-  name: string;
-  symbol: string;
-}
-
 export interface SnsSummarySwap {
   neuron_recipes: Array<SnsNeuronRecipe>;
   cf_participants: Array<CfParticipant>;
+  decentralization_sale_open_timestamp_seconds?: bigint;
+  // We don't use it for now and keep it as the candid optional type
+  finalize_swap_in_progress: [] | [boolean];
   // We don't use it for now and keep it as the candid optional type
   init: [] | [SnsSwapInit];
   lifecycle: number;
@@ -58,7 +53,7 @@ export interface SnsSummary {
   /**
    * The token metadata of the Sns project (name of the token and symbol)
    */
-  token: SnsTokenMetadata;
+  token: IcrcTokenMetadata;
 
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)

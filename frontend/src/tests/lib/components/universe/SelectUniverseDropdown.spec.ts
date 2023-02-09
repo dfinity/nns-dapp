@@ -3,10 +3,11 @@
  */
 import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
-import { committedProjectsStore } from "$lib/derived/projects.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { fireEvent } from "@testing-library/dom";
@@ -21,6 +22,10 @@ import {
   mockSnsFullProject,
   mockTokenStore,
 } from "../../../mocks/sns-projects.mock";
+import {
+  mockTokensSubscribe,
+  mockUniversesTokens,
+} from "../../../mocks/tokens.mock";
 
 describe("SelectUniverseDropdown", () => {
   jest
@@ -28,11 +33,15 @@ describe("SelectUniverseDropdown", () => {
     .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
   jest
+    .spyOn(tokensStore, "subscribe")
+    .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+
+  jest
     .spyOn(snsTokenSymbolSelectedStore, "subscribe")
     .mockImplementation(mockTokenStore);
 
   jest
-    .spyOn(committedProjectsStore, "subscribe")
+    .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
   beforeAll(() => {

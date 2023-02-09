@@ -6,7 +6,6 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
-  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
@@ -16,6 +15,7 @@
   import { updateDelay } from "$lib/services/sns-neurons.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import SetSnsDissolveDelay from "$lib/components/sns-neurons/SetSnsDissolveDelay.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let rootCanisterId: Principal;
@@ -38,9 +38,6 @@
   let modal: WizardModal;
 
   let delayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
-
-  let minDelayInSeconds: number | undefined;
-  $: minDelayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
 
   $: if ($snsOnlyProjectStore !== undefined) {
     loadSnsParameters($snsOnlyProjectStore);
@@ -88,11 +85,15 @@
       {rootCanisterId}
       {neuron}
       {token}
-      {minDelayInSeconds}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
-    />
+    >
+      <svelte:fragment slot="cancel">{$i18n.core.cancel}</svelte:fragment>
+      <svelte:fragment slot="confirm"
+        >{$i18n.neurons.update_delay}</svelte:fragment
+      >
+    </SetSnsDissolveDelay>
   {/if}
   {#if currentStep.name === "ConfirmSnsDissolveDelay"}
     <ConfirmSnsDissolveDelay

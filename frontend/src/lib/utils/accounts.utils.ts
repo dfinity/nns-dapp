@@ -1,12 +1,12 @@
+import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
-import { isUniverseNns } from "$lib/utils/universe.utils";
+import { isNullish } from "$lib/utils/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { decodeSnsAccount } from "@dfinity/sns";
 
 /*
  * Returns the principal's main or hardware account
@@ -43,7 +43,7 @@ export const invalidAddress = (address: string | undefined): boolean => {
     try {
       // TODO: Find a better solution to check if the address is valid for SNS as well.
       // It might also be an SNS address
-      decodeSnsAccount(address);
+      decodeIcrcAccount(address);
       return false;
     } catch {
       _;
@@ -79,7 +79,7 @@ export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
 
-export const getAccountFromStore = ({
+export const findAccount = ({
   identifier,
   accounts,
 }: {
@@ -95,47 +95,25 @@ export const getAccountFromStore = ({
 
 export const getAccountByRootCanister = ({
   identifier,
-  nnsAccounts,
-  snsAccounts,
+  universesAccounts,
   rootCanisterId,
 }: {
   identifier: string | undefined;
-  nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStoreData;
+  universesAccounts: UniversesAccounts;
   rootCanisterId: Principal;
-}): Account | undefined => {
-  if (identifier === undefined) {
-    return undefined;
-  }
-
-  if (isUniverseNns(rootCanisterId)) {
-    return getAccountFromStore({
-      identifier,
-      accounts: nnsAccounts,
-    });
-  }
-
-  return getAccountFromStore({
+}): Account | undefined =>
+  findAccount({
     identifier,
-    accounts: snsAccounts[rootCanisterId.toText()]?.accounts ?? [],
+    accounts: universesAccounts[rootCanisterId.toText()] ?? [],
   });
-};
 
 export const getAccountsByRootCanister = ({
-  nnsAccounts,
-  snsAccounts,
+  universesAccounts,
   rootCanisterId,
 }: {
-  nnsAccounts: Account[];
-  snsAccounts: SnsAccountsStoreData;
+  universesAccounts: UniversesAccounts;
   rootCanisterId: Principal;
-}): Account[] | undefined => {
-  if (isUniverseNns(rootCanisterId)) {
-    return nnsAccounts;
-  }
-
-  return snsAccounts[rootCanisterId.toText()]?.accounts;
-};
+}): Account[] | undefined => universesAccounts[rootCanisterId.toText()];
 
 /**
  * Throws error if the account doesn't have enough balance.
@@ -170,7 +148,7 @@ export const accountName = ({
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
-export const sumAccounts = (
+export const sumNnsAccounts = (
   accounts: AccountsStoreData | undefined
 ): TokenAmount | undefined =>
   accounts?.main?.balance !== undefined
@@ -180,3 +158,13 @@ export const sumAccounts = (
         ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
       )
     : undefined;
+
+export const sumAccounts = (
+  accounts: Account[] | undefined
+): TokenAmount | undefined =>
+  isNullish(accounts) || accounts.length === 0
+    ? undefined
+    : sumTokenAmounts(...accounts.map(({ balance }) => balance));
+
+export const hasAccounts = (accounts: Account[]): boolean =>
+  accounts.length > 0;
