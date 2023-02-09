@@ -189,7 +189,7 @@ export const getOldestTxIdFromStore = ({
   }
   return accountData.transactions.sort((a, b) =>
     Number(a.transaction.timestamp - b.transaction.timestamp)
-  )[0].id;
+  )[0]?.id;
 };
 /**
  * Returns whether all transactions of an SNS account have been loaded.

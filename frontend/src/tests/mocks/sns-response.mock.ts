@@ -5,6 +5,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import {
   mockDerived,
   mockQueryMetadata,
@@ -16,6 +17,9 @@ import { governanceCanisterIdMock, swapCanisterIdMock } from "./sns.api.mock";
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {
     ...swap,
+    decentralization_sale_open_timestamp_seconds: toNullable(
+      swap.decentralization_sale_open_timestamp_seconds
+    ),
     params: [{ ...swap.params }],
   },
 ];

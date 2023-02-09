@@ -89,6 +89,8 @@ export const aggregatorSnsMock: CachedSns = {
   swap_state: {
     swap: {
       lifecycle: 3,
+      decentralization_sale_open_timestamp_seconds: [BigInt(1234)],
+      finalize_swap_in_progress: [false],
       buyers: [],
       init: [
         {
@@ -121,6 +123,7 @@ export const aggregatorSnsMock: CachedSns = {
               dissolve_delay_interval_seconds: BigInt(2629800),
             },
           ],
+          sale_delay_seconds: [BigInt(1234)],
         },
       ],
       open_sns_token_swap_proposal_id: [BigInt(120)],
