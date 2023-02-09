@@ -62,13 +62,29 @@ describe("Proposal detail page when not logged in user", () => {
       jest.clearAllMocks();
       neuronsStore.reset();
       resetNeuronsApiService();
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([mockNeuron]);
+      jest
+        .spyOn(governanceApi, "queryNeurons")
+        .mockImplementation(async ({ certified }) => {
+          // Mock delay in one of both calls.
+          // Otherwise there is a race condition that the onLoad of queryAndUpdate for query after certified has been called.
+          // The problem seems to be that the `certifiedDone` is set in the finally.
+          // Yet, I couldn't replicate the issue with a test in `utils.services.spec.ts`.
+          // Therefore, I delay here the QUERY to prove that it still works, even in the bad case that certified data comes before uncertified.
+          if (!certified) {
+            return new Promise((resolve) =>
+              setTimeout(() => {
+                resolve([mockNeuron]);
+              }, 1)
+            );
+          }
+          return [mockNeuron];
+        });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
     });
 
-    it.only("should render proposal with certified data", async () => {
+    it("should render proposal with certified data", async () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       const { queryByTestId } = render(NnsProposalDetail, {
         props: {

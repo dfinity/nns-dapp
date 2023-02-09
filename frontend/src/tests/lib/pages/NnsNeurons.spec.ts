@@ -9,17 +9,20 @@ import * as authServices from "$lib/services/auth.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockGetIdentity, mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 jest.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    neuronsStore.reset();
+  });
+
   describe("with enough neurons", () => {
     beforeEach(() => {
-      jest.resetAllMocks();
-      neuronsStore.reset();
       resetNeuronsApiService();
       const mockNeuron2 = {
         ...mockNeuron,
@@ -36,7 +39,7 @@ describe("NnsNeurons", () => {
       };
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockImplementation(() => Promise.resolve(mockGetIdentity()));
+        .mockResolvedValue(mockIdentity);
       jest
         .spyOn(api, "queryNeurons")
         .mockResolvedValue([mockNeuron, spawningNeuron, mockNeuron2]);
@@ -68,12 +71,10 @@ describe("NnsNeurons", () => {
 
   describe("no neurons", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.reset();
       resetNeuronsApiService();
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockImplementation(() => Promise.resolve(mockGetIdentity()));
+        .mockResolvedValue(mockIdentity);
       jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
@@ -88,11 +89,9 @@ describe("NnsNeurons", () => {
 
   describe("navigating", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.reset();
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockImplementation(() => Promise.resolve(mockGetIdentity()));
+        .mockResolvedValue(mockIdentity);
       jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 

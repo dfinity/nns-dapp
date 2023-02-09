@@ -74,7 +74,7 @@ describe("NnsProposals", () => {
           new MockGovernanceCanister([]);
         jest
           .spyOn(GovernanceCanister, "create")
-          .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+          .mockReturnValue(mockGovernanceCanister);
         jest.clearAllMocks();
         neuronsStore.reset();
         resetNeuronsApiService();

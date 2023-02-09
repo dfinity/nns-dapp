@@ -40,6 +40,10 @@ describe("ProposalDetail", () => {
   beforeAll(silentConsoleErrors);
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    resetNeuronsApiService();
+    jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -50,11 +54,9 @@ describe("ProposalDetail", () => {
 
     jest
       .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+      .mockReturnValue(mockGovernanceCanister);
 
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+    jest.spyOn(LedgerCanister, "create").mockReturnValue(mockLedgerCanister);
 
     jest
       .spyOn(neuronsStore, "subscribe")
@@ -65,14 +67,11 @@ describe("ProposalDetail", () => {
     proposalIdText: `${mockProposals[0].id}`,
   };
 
-  describe.only("logged in user", () => {
+  describe("logged in user", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      resetNeuronsApiService();
       authStoreMock.next({
         identity: mockIdentity,
       });
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
     });
     it("should render proposal detail if signed in", async () => {
       const { queryByTestId } = render(ProposalDetail, props);
@@ -98,12 +97,9 @@ describe("ProposalDetail", () => {
 
   describe("logged out user", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      resetNeuronsApiService();
       authStoreMock.next({
         identity: undefined,
       });
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
     });
     it("should render proposal detail if not signed in", async () => {
       const { queryByTestId } = render(ProposalDetail, props);

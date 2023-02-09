@@ -322,7 +322,6 @@ describe("neurons-services", () => {
 
     beforeEach(() => {
       resetNeuronsApiService();
-      jest.clearAllMocks();
     });
 
     it("should list neurons", async () => {
