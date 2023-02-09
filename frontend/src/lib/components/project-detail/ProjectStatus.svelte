@@ -24,6 +24,7 @@
     [SnsSwapLifecycle.Open]: $i18n.sns_project_detail.status_open,
     [SnsSwapLifecycle.Committed]: $i18n.sns_project_detail.status_committed,
     [SnsSwapLifecycle.Aborted]: $i18n.sns_project_detail.status_aborted,
+    [SnsSwapLifecycle.Adopted]: $i18n.sns_project_detail.status_adopted,
   };
 
   let lifecycle: number;

@@ -47,7 +47,18 @@ describe("ProjectStatusSection", () => {
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
   });
 
-  it("should not render project participate button", () => {
+  it("should not render project participate button for adopted", () => {
+    const { queryByTestId } = renderContextCmp({
+      summary: summaryForLifecycle(SnsSwapLifecycle.Adopted),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatusSection,
+    });
+    expect(
+      queryByTestId("sns-project-participate-button")
+    ).not.toBeInTheDocument();
+  });
+
+  it("should not render project participate button for committed projects", () => {
     const { queryByTestId } = renderContextCmp({
       summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
