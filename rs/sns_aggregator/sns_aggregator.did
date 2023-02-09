@@ -15,4 +15,6 @@ type HttpResponse = record  {
 service : (opt Config) -> {
   http_request : (HttpRequest) -> (HttpResponse) query;
   reconfigure : (opt Config) -> ();
+  health_check : () -> (text) query;
+  stable_data : () -> (text) query;
 }

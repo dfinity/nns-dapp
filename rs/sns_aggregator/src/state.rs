@@ -49,6 +49,18 @@ pub struct StableState {
     pub assets: RefCell<Assets>,
 }
 
+impl StableState {
+    pub fn to_bytes(&self) -> Result<Vec<u8>, String> {
+        serde_cbor::to_vec(self).map_err(|err| format!("Failed to serialize stable data: {err:?}"))
+    }
+    pub fn from_bytes(slice: &[u8]) -> Result<Self, String> {
+        serde_cbor::from_slice(slice).map_err(|err| format!("Failed to parse stable data: {err:?}"))
+    }
+    pub fn summarize_bytes(bytes: &[u8]) -> String {
+        format!("{} bytes starting {:?}", bytes.len(), &bytes[0..std::cmp::min(7, bytes.len())])
+    }
+}
+
 thread_local! {
     /// Single global container for state
     pub static STATE: State = State::default();

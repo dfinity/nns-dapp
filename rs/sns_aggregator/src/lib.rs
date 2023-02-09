@@ -7,6 +7,9 @@ mod state;
 mod types;
 mod upstream;
 
+#[cfg(test)]
+mod tests;
+
 use std::time::Duration;
 
 use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse};
@@ -19,6 +22,7 @@ use types::Icrc1Value;
 /// API method for basic health checks.
 ///
 /// TODO: Provide useful metrics at http://${canister_domain}/metrics
+#[candid_method(query)]
 #[ic_cdk_macros::query]
 fn health_check() -> String {
     STATE.with(|state| {
@@ -34,9 +38,19 @@ fn health_check() -> String {
     })
 }
 
-/// Web server
-#[export_name = "canister_query http_request"]
+/// API method to dump stable data, preserved across upgrades, as JSON.
 #[candid_method(query)]
+#[ic_cdk_macros::query]
+fn stable_data() -> String {
+    STATE.with(|state| {
+        let to_serialize: &StableState = &(*state.stable.borrow());
+        serde_json::to_string(to_serialize).expect("Failed to serialize")
+      })
+}
+
+/// Web server
+#[candid_method(query)]
+#[export_name = "canister_query http_request"]
 fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 {
     ic_cdk::setup();
@@ -74,9 +88,11 @@ fn pre_upgrade() {
     //       seems to be to serialize with Serde, omitting asset hashes which can
     //       be serialized with neither.
     STATE.with(|state| {
-        if let Ok(bytes) = serde_cbor::to_vec(&state.stable) {
+        let to_serialize: &StableState = &(*state.stable.borrow());
+        if let Ok(bytes) = to_serialize.to_bytes() {
+            let bytes_summary = StableState::summarize_bytes(&bytes);
             match ic_cdk::storage::stable_save((bytes,)) {
-                Ok(_) => ic_cdk::api::print("Saved state"),
+                Ok(_) => ic_cdk::api::print(format!("Saved state as {bytes_summary}")),
                 Err(err) => ic_cdk::api::print(format!("Failed to save state: {err:?}")),
             }
         }
@@ -93,8 +109,7 @@ fn post_upgrade(config: Option<Config>) {
         match ic_cdk::storage::stable_restore()
             .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
             .and_then(|(bytes,): (Vec<u8>,)| {
-                serde_cbor::from_slice::<StableState>(&bytes[..])
-                    .map_err(|err| format!("Failed to parse stable memory: {err:?}"))
+                StableState::from_bytes(&bytes)
             }) {
             Ok(data) => {
                 *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
