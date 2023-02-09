@@ -233,6 +233,8 @@ export const anonymizeSnsNeuron = async (
     voting_power_percentage_multiplier,
     followees,
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   } = snsNeuron;
 
   return {
@@ -258,6 +260,8 @@ export const anonymizeSnsNeuron = async (
       followees.followees.map(({ id }) => subaccountToHexString(id)),
     ]),
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   };
 };
 
