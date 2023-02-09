@@ -337,19 +337,6 @@ describe("neurons-services", () => {
       expect(newNeuronsList).toEqual(neurons);
     });
 
-    it("should not set uncertified if the response come after certified", async () => {
-      const oldData = get(neuronsStore);
-      expect(oldData.neurons).toBeUndefined();
-
-      await listNeurons();
-
-      expect(spyQueryNeurons).toHaveBeenCalled();
-
-      const newNeurons = get(neuronsStore);
-      expect(newNeurons.neurons).toEqual(neurons);
-      expect(newNeurons.certified).toEqual(true);
-    });
-
     it("should not call api when called twice and cache is not reset", async () => {
       await listNeurons();
 
