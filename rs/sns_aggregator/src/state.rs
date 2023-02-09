@@ -105,7 +105,7 @@ impl State {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
             let asset = Asset {
                 headers: Vec::new(),
-                bytes: logo_binary(upstream_data.meta.logo.as_ref().map(|s| s.as_str()).unwrap_or("")),
+                bytes: logo_binary(upstream_data.meta.logo.as_deref().unwrap_or("")),
             };
             insert_asset(path, asset);
         }
