@@ -7,6 +7,7 @@ use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
+/// A standard HTTP header
 type HeaderField = (String, String);
 
 /// The standardised data structure for HTTP responses as supported natively by the replica.
@@ -35,6 +36,7 @@ pub struct HttpResponse {
     pub body: ByteBuf,
 }
 
+/// The domain separator used to distinguish HTTP asset hashes from others.
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
 /// A tree containing the hashes of all the assets; used for certification.
@@ -96,6 +98,7 @@ impl Assets {
     }
 }
 
+/// The mime type of an asset, based on the path suffix.
 fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
@@ -136,6 +139,7 @@ fn security_headers() -> Vec<HeaderField> {
     ]
 }
 
+/// Generates a header used by clients to verify the integrity of the data.
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = ic_cdk::api::data_certificate().unwrap_or_else(|| {
         panic!("data certificate is only available in query calls");
@@ -193,6 +197,7 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
     });
 }
 
+/// System call to certify the root hash.
 fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
     ic_cdk::api::set_certified_data(&prefixed_root_hash[..]);
