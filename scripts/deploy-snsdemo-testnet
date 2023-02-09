@@ -29,4 +29,4 @@ dfx-sns-demo --network "$DFX_NETWORK" ${DFX_IC_COMMIT:+--ic_commit} ${DFX_IC_COM
 : Claim the canister ID reserved for the aggregator by snsdemo
 dfx-canister-set-id --canister_name sns_aggregator --canister_id q4eej-kyaaa-aaaaa-aaaha-cai --network "$DFX_NETWORK"
 : Deploy the aggregator
-dfx deploy sns_aggregator --network "$DFX_NETWORK"
+RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
