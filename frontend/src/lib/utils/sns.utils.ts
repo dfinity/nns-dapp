@@ -106,6 +106,9 @@ const mapOptionalSwap = (
     ? undefined
     : {
         ...swapData,
+        decentralization_sale_open_timestamp_seconds: fromNullable(
+          swapData.decentralization_sale_open_timestamp_seconds
+        ),
         params: fromNullable(swapData.params),
       };
 

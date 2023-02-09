@@ -54,16 +54,16 @@ describe("ProjectDetail", () => {
       rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
     };
 
-    it("should load summary", () => {
+    it("should load summary", async () => {
       render(ProjectDetail, props);
 
-      waitFor(() => expect(loadSnsSummary).toBeCalled());
+      await waitFor(() => expect(loadSnsSummary).toBeCalled());
     });
 
-    it("should load swap state", () => {
+    it("should load swap state", async () => {
       render(ProjectDetail, props);
 
-      waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+      await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
     });
 
     it("should render info section", async () => {

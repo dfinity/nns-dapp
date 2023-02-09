@@ -93,12 +93,15 @@ export const mockSnsParams: SnsParams = {
   sns_token_e8s: BigInt(150000000),
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
+  sale_delay_seconds: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
   neuron_recipes: [],
   cf_participants: [],
   init: [],
+  decentralization_sale_open_timestamp_seconds: undefined,
+  finalize_swap_in_progress: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
@@ -108,6 +111,8 @@ export const mockSwap: SnsSummarySwap = {
 export const mockQuerySwap: SnsSwap = {
   neuron_recipes: [],
   cf_participants: [],
+  decentralization_sale_open_timestamp_seconds: [],
+  finalize_swap_in_progress: [],
   init: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
