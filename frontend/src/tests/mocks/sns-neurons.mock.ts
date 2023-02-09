@@ -52,6 +52,8 @@ export const createMockSnsNeuron = ({
         ],
   followees: [],
   neuron_fees_e8s: BigInt(0),
+  vesting_period_seconds: [],
+  disburse_maturity_in_progress: [],
 });
 
 export const mockSnsNeuronId = {
