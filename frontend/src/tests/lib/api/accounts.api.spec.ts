@@ -32,9 +32,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
@@ -54,9 +52,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
@@ -74,9 +70,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const error = new Error("test");
@@ -99,9 +93,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
@@ -122,9 +114,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
@@ -156,9 +146,7 @@ describe("accounts-api", () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
 
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
