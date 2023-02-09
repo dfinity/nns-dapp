@@ -12,7 +12,7 @@ mod tests;
 
 use std::time::Duration;
 
-use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse};
+use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse, insert_home_page};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
@@ -156,6 +156,7 @@ fn setup(config: Option<Config>) {
     }
     // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();
+    insert_home_page();
 
     // Schedules data collection from the SNSs.
     //
