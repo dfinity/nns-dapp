@@ -16,6 +16,8 @@ use serde::Serialize;
 pub struct SnsCache {
     /// A list of SNSs that need to be populated in the cache.
     pub sns_to_get: Vec<(SnsIndex, DeployedSns)>,
+    /// TODO: Delete.  This field is included for debugging purposes only.
+    pub all_sns: Vec<(SnsIndex, DeployedSns)>,
     /// Data obtained about each SNS
     pub upstream_data: BTreeMap<CanisterId, UpstreamData>,
     /// Time of last partial update
