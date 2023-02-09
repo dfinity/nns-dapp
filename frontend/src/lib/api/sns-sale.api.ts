@@ -13,7 +13,7 @@ export const getOpenTicket = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  withTicket: boolean;
+  withTicket?: boolean;
   certified: boolean;
 }): Promise<GetOpenTicketResponse> => {
   logWithTimestamp(`getOpenTicket call...`);

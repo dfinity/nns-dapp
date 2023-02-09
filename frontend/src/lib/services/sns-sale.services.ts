@@ -33,6 +33,7 @@ import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import {get} from "svelte/store";
 
 export interface SnsTicket {
   rootCanisterId: Principal;
@@ -44,7 +45,7 @@ export const getOpenTicket = async ({
   rootCanisterId,
   certified,
 }: {
-  withTicket: boolean; // TODO: for testing purpose only
+  withTicket?: boolean; // TODO: for testing purpose only
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsTicket | undefined> => {
@@ -179,7 +180,6 @@ export const initiateSnsSwapParticipation = async ({
   let success = false;
   // validation
   try {
-    // TODO(sale): is it icp transaction fee only?
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
@@ -321,24 +321,7 @@ export const participateInSnsSwap = async ({
     controller,
   });
 
-  // // Create a ticket (Sale)
-  // const ticket: Ticket = await newSaleTicket({
-  //   rootCanisterId,
-  //   subaccount: nonNullish(fromSubAccount)
-  //     ? Uint8Array.from(fromSubAccount)
-  //     : undefined,
-  //   amount_icp_e8s: amount.toE8s(),
-  // });
   console.log("newSaleTicket: ticket", saleTicket);
-
-  // If the client disconnects after the transfer, the participation will still be notified.
-  // const { canister: nnsDapp } = await nnsDappCanister({ identity });
-  // TODO(sale): be sure this is not needed anymore
-  // await nnsDapp.addPendingNotifySwap({
-  //   swap_canister_id: swapCanisterId,
-  //   buyer: controller,
-  //   buyer_sub_account: toNullable(fromSubAccount),
-  // });
 
   // Send amount to the ledger
   await nnsLedger.transfer({
@@ -353,10 +336,4 @@ export const participateInSnsSwap = async ({
   await notifyParticipation({ buyer: controller.toText() });
 
   logWithTimestamp("Participating in swap: done");
-};
-
-// TODO(Sale): do we need it?
-export const notifyApproveFailure = async () => {
-  // notify_approve_failure
-  console.log(`💸PaymentFlow::notify_approve_failure`);
 };
