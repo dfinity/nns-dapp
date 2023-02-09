@@ -10,7 +10,6 @@
   import { i18n } from "$lib/stores/i18n";
   import type { CkBTCWalletModalData } from "$lib/types/wallet.modal";
   import type { Account } from "$lib/types/account";
-  import { SvelteComponent } from "svelte";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import Logo from "$lib/components/ui/Logo.svelte";
@@ -27,7 +26,7 @@
   let selectedSegmentId = bitcoinSegmentId;
 
   let modalRendered = false;
-  let segment: typeof SvelteComponent;
+  let segment: Segment;
 
   const onIntroEnd = () => {
     modalRendered = true;
