@@ -29,15 +29,19 @@ describe("CkBTCReceiveModal", () => {
     expect(getByText(mockCkBTCAddress)).toBeInTheDocument();
   });
 
-  it("should render account identifier (without being shortened)", async () => {
-    const { getByText, container } = await renderTransactionModal();
-
+  const selectCkBTC = async (container: HTMLElement) => {
     const button = container.querySelector(
       "div.segment-button:nth-of-type(3) button"
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
 
     await fireEvent.click(button);
+  };
+
+  it("should render account identifier (without being shortened)", async () => {
+    const { getByText, container } = await renderTransactionModal();
+
+    await selectCkBTC(container);
 
     await waitFor(() =>
       expect(getByText(mockCkBTCMainAccount.identifier)).toBeInTheDocument()
@@ -59,15 +63,26 @@ describe("CkBTCReceiveModal", () => {
   it("should render account identifier (without being shortened)", async () => {
     const { getByText, container } = await renderTransactionModal();
 
-    const button = container.querySelector(
-      "div.segment-button:nth-of-type(3) button"
-    ) as HTMLButtonElement;
-    expect(button).not.toBeNull();
-
-    await fireEvent.click(button);
+    await selectCkBTC(container);
 
     await waitFor(() =>
       expect(getByText(en.ckbtc.ckBTC_receive_note)).toBeInTheDocument()
+    );
+  });
+
+  it("should render a bitcoin logo", async () => {
+    const { getByTestId } = await renderTransactionModal();
+
+    expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.bitcoin);
+  });
+
+  it("should render ckBTC logo", async () => {
+    const { getByTestId, container } = await renderTransactionModal();
+
+    await selectCkBTC(container);
+
+    await waitFor(() =>
+      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.title)
     );
   });
 });
