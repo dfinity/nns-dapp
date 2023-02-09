@@ -24,7 +24,7 @@ fi
 
 need() {
   tool="$1"
-  if ! command -v "$tool" > /dev/null; then
+  if ! command -v "$tool" >/dev/null; then
     echo "You need $tool."
     echo "Either it's not installed or it's not in your path."
     echo "You can run ./scripts/setup to install necessary tools including $tool."
@@ -36,7 +36,7 @@ need dfx
 need jq
 need npm
 
-if ! pgrep icx-proxy > /dev/null; then
+if ! pgrep icx-proxy >/dev/null; then
   echo "You need a local replica."
   echo "A 'local replica' is what you get by running 'dfx start --clean'."
   echo "Make sure you run the command from the nns-dapp repo. The dfx.json file in the repo makes sure the subnet type is set to 'system' instead of 'application'."
@@ -47,7 +47,7 @@ fi
 
 nns_install_log=$(mktemp -t 'nns-install')
 echo "Running 'dfx nns install'. This may take a minute... Output is logged to $nns_install_log"
-if ! nns_dapp_url=$(dfx nns install 2> "$nns_install_log" | grep "^nns-dapp" | awk '{print $2}'); then
+if ! nns_dapp_url=$(dfx nns install 2>"$nns_install_log" | grep "^nns-dapp" | awk '{print $2}'); then
   echo "'dfx nns install' failed. Make sure you started a clean local replica and didn't do anything with it after running 'dfx start --clean'."
   echo "Try killing your local replica and starting it again."
   echo "You can also check the log file for errors: $nns_install_log"
@@ -59,17 +59,17 @@ fi
 rm $nns_install_log
 
 nns_dapp_canister_id=$(echo "$nns_dapp_url" | sed -e "s@http://\([^.]*\).localhost:8080/@\1@")
-DFX_NETWORK=local ./config.sh > /dev/null 2> /dev/null
+DFX_NETWORK=local ./config.sh >/dev/null 2>/dev/null
 mv frontend/.env frontend/.env-with-null
-cat frontend/.env-with-null | sed -e "s@null@${nns_dapp_canister_id}@" > frontend/.env
+cat frontend/.env-with-null | sed -e "s@null@${nns_dapp_canister_id}@" >frontend/.env
 
 local_ids=".dfx/local/canister_ids.json"
 if ! [ -f "$local_ids" ]; then
-echo "{
+  echo "{
   \"nns-dapp\": {
     \"local\": \"$nns_dapp_canister_id\"
   }
-}" > $local_ids
+}" >$local_ids
 fi
 
 cd frontend
