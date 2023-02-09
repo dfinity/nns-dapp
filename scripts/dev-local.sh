@@ -8,7 +8,8 @@
 # next time you can simply run `npm run dev` from the frontend directory.
 #
 # With this setup, you can work on the frontend code without building the
-# nns-dapp canister. But it will not use the local rust code for the canister.
+# nns-dapp canister. If you want to change the backend code, you can deploy it
+# with `dfx deploy nns-dapp` and it replace the provided canister.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."

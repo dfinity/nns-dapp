@@ -29,7 +29,8 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the
-nns-dapp canister. But it will not use the local rust code for the canister.
+nns-dapp canister. If you want to change the backend code, you can deploy it
+with `dfx deploy nns-dapp` and it replace the provided canister.
 
 Once you have a running replica with nns installed and a fixed
 `./frontend/.env` file, don't have to take all the steps every time.
