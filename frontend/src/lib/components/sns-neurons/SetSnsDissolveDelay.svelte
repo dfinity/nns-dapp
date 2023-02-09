@@ -84,7 +84,7 @@
   minDelayInSeconds={Number(neuronDissolveDelaySeconds)}
   maxDelayInSeconds={maxSnsDelayInSeconds}
   {calculateVotingPower}
-  minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
+  {minDissolveDelayDescription}
 >
   <Hash
     slot="neuron-id"
