@@ -113,7 +113,6 @@ impl State {
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
         let root_canister_str = root_canister_id.to_string();
         // Updates the max index, if needed
-        if true
         {
             STATE.with(|state| {
                 if state.stable.borrow().sns_cache.borrow().max_index < index {
@@ -132,17 +131,15 @@ impl State {
                         .insert(root_canister_id, upstream_data.clone());
                 });
         // Adds the logo
-        if true
         {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
             let asset = Asset {
                 headers: Vec::new(),
-                bytes: logo_binary(upstream_data.meta.logo.as_ref().map(|s| s.as_str()).unwrap_or("")),
+                bytes: logo_binary(upstream_data.meta.logo.as_deref().unwrap_or("")),
             };
             insert_asset(path, asset);
         }
         // Adds an http path for just this SNS.
-        if true
         {
             let slow_data = SlowSnsData::from(&upstream_data);
             let json_data = serde_json::to_string(&slow_data)?;
@@ -155,10 +152,34 @@ impl State {
         }
 
         // If this is in the last N, update latest.
-        if true && (upstream_data.index + State::PAGE_SIZE
-            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index))
+        if upstream_data.index + State::PAGE_SIZE
+            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index)
         {
             let path = format!("{prefix}/sns/list/latest/slow.json");
+            let json_data = STATE.with(|s| {
+                let slow_data: Vec<_> = s
+                    .stable
+                    .borrow()
+                    .sns_cache
+                    .borrow()
+                    .upstream_data
+                    .values()
+                    .rev()
+                    .take(State::PAGE_SIZE as usize)
+                    .map(SlowSnsData::from)
+                    .collect();
+                serde_json::to_string(&slow_data).unwrap_or_default()
+            });
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: json_data.into_bytes(),
+            };
+            insert_asset(path, asset);
+        }
+        // Update the page containing this SNS
+        {
+            let pagenum = upstream_data.index / State::PAGE_SIZE;
+            let path = format!("{prefix}/sns/list/page/{pagenum}/slow.json");
             let json_data = STATE.with(|s| {
                 let slow_data: Vec<_> = s
                     .stable
