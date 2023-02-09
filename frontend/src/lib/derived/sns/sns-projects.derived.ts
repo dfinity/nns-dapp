@@ -7,8 +7,10 @@ import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
+  filterProjectsStatus,
 } from "$lib/utils/projects.utils";
 import type { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 
 // ************** Sns full project - all information **************
@@ -59,4 +61,11 @@ export const snsProjectsCommittedStore = derived<
   SnsFullProject[] | undefined
 >(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
   filterCommittedProjects(projects)
+);
+
+export const snsProjectsAdoptedStore = derived<
+  Readable<SnsFullProject[] | undefined>,
+  SnsFullProject[] | undefined
+>(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
+  filterProjectsStatus({ swapLifecycle: SnsSwapLifecycle.Adopted, projects })
 );
