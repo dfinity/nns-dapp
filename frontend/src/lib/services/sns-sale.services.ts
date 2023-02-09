@@ -27,19 +27,25 @@ import {
   validParticipation,
 } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import {isNullish, nonNullish} from "$lib/utils/utils";
+import { isNullish } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-import {get} from "svelte/store";
+import { get } from "svelte/store";
 
 export interface SnsTicket {
   rootCanisterId: Principal;
   ticket: Ticket | undefined;
 }
 
+// TODO(sale): move to ic-js
+enum GetOpenTicketErrorType {
+  TYPE_UNSPECIFIED = 0,
+  TYPE_SALE_NOT_OPEN = 1,
+  TYPE_SALE_CLOSED = 2,
+}
 export const getOpenTicket = async ({
   withTicket,
   rootCanisterId,
@@ -69,23 +75,45 @@ export const getOpenTicket = async ({
 
     // TODO(GIX-1271): display more details in error message
 
-    console.error(resultData);
-    toastsError({
+    if ("Err" in resultData) {
+      const errorType = fromDefinedNullable(resultData.Err?.error_type ?? []);
+      toastsError({
         labelKey: "error__sns.cannot_participate",
-        err: fromDefinedNullable(resultData?.Err?.error_type ?? []),
-      }
-    );
+        err: GetOpenTicketErrorType[errorType],
+      });
+    }
+    console.error(resultData);
   } catch (err: unknown) {
     console.error(err);
     toastsError({
       labelKey: "error__sns.cannot_participate",
-        err,
-      }
-    );
+      err,
+    });
   }
 
   return new Error();
 };
+
+// TODO(sale): move to ic-js
+enum NewSaleTicketResponseErrorType {
+  TYPE_UNSPECIFIED = 0,
+  TYPE_SALE_NOT_OPEN = 1,
+  TYPE_SALE_CLOSED = 2,
+  // There is already an open ticket associated with the caller.
+  //
+  // When this is the `error_type`, then the field existing_ticket
+  // is set and contains the ticket itself.
+  TYPE_TICKET_EXISTS = 3,
+  // The amount sent by the user is not within the Sale parameters.
+  //
+  // When this is the `error_type`, then the field invalid_user_amount
+  // is set and describes minimum and maximum amounts.
+  TYPE_INVALID_USER_AMOUNT = 4,
+  // The specified subaccount is not a valid subaccount (length != 32 bytes).
+  TYPE_INVALID_SUBACCOUNT = 5,
+  // The specified principal is forbidden from creating tickets.
+  TYPE_INVALID_PRINCIPAL = 6,
+}
 
 export const newSaleTicket = async ({
   rootCanisterId,
@@ -115,12 +143,32 @@ export const newSaleTicket = async ({
       };
     }
 
-    // toastsError(
-    //   toToastError({
-    //     err: error,
-    //     fallbackErrorLabelKey: "error__sns.cannot_participate",
-    //   })
-    // );
+    // TODO(GIX-1271): display more details in error message
+
+    if ("Err" in resultData) {
+      const errorType: NewSaleTicketResponseErrorType = resultData.Err?.error_type;
+
+      if (errorType === NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS) {
+        const ticket = fromDefinedNullable(resultData.Err?.existing_ticket);
+
+        // TODO(GIX-1271): display and error and proceed w/ the ticket
+
+        return {
+          rootCanisterId,
+          ticket,
+        }
+      }
+
+      toastsError({
+        labelKey: "error__sns.cannot_participate",
+        err: NewSaleTicketResponseErrorType[errorType],
+      });
+
+      // just stop
+      NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN
+    }
+
+    console.error(resultData);
   } catch (error: unknown) {
     // TODO(sale): add error handling
     console.error(error);
@@ -220,7 +268,9 @@ export const initiateSnsSwapParticipation = async ({
       const ticket = await newSaleTicket({
         rootCanisterId,
         // TODO(sale): Uint8Array?
-        subaccount: isNullish(subaccount) ? undefined : Uint8Array.from(subaccount),
+        subaccount: isNullish(subaccount)
+          ? undefined
+          : Uint8Array.from(subaccount),
         amount_icp_e8s: amount.toE8s(),
       });
 
@@ -339,14 +389,16 @@ export const participateInSnsSwap = async ({
   });
 
   try {
-  // Send amount to the ledger
-  await nnsLedger.transfer({
-    amount,
-    fromSubAccount: isNullish(subaccount) ? undefined : Array.from(subaccount),
-    to: accountIdentifier,
-    createdAt: creationTime,
-    memo: ticketId,
-  });
+    // Send amount to the ledger
+    await nnsLedger.transfer({
+      amount,
+      fromSubAccount: isNullish(subaccount)
+        ? undefined
+        : Array.from(subaccount),
+      to: accountIdentifier,
+      createdAt: creationTime,
+      memo: ticketId,
+    });
   } catch (transferError) {
     // TxDuplicateError
 

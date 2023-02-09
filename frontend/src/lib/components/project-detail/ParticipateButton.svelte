@@ -22,7 +22,7 @@
     participateInSnsSwap,
     type SnsTicket,
   } from "$lib/services/sns-sale.services";
-  import type {Ticket} from "@dfinity/sns/dist/candid/sns_swap";
+  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -59,7 +59,10 @@
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
-    if (rootCanisterId === undefined || loadingTicketRootCanisterId === rootCanisterId.toText()) {
+    if (
+      rootCanisterId === undefined ||
+      loadingTicketRootCanisterId === rootCanisterId.toText()
+    ) {
       return;
     }
     loading = true;
@@ -82,7 +85,10 @@
     ticket = saleTicket.ticket;
 
     // restore purchase
-    if (ticket !== undefined && saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()) {
+    if (
+      ticket !== undefined &&
+      saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
+    ) {
       participateInSnsSwap({
         ticket: saleTicket,
       });

@@ -16,9 +16,7 @@
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "$lib/utils/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    getSwapAccount,
-  } from "$lib/services/sns.services";
+  import { getSwapAccount } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
@@ -30,7 +28,7 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import {initiateSnsSwapParticipation} from "$lib/services/sns-sale.services";
+  import { initiateSnsSwapParticipation } from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
