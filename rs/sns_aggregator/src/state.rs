@@ -96,17 +96,24 @@ impl State {
     pub const PAGE_SIZE: u64 = 10;
 
     /// Adds an SNS into the state accessible via certfied query calls.
+    #[deny(clippy::panic)]
+#[deny(clippy::expect_used)]
+#[deny(clippy::unwrap_used)]
     pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
     }
     /// Adds pre-signed responses for the API version 1.
     ///
     /// - /sns/index/{index}.json <- All aggregate data about the SNS, in JSON format.
+    #[deny(clippy::panic)]
+#[deny(clippy::expect_used)]
+#[deny(clippy::unwrap_used)]
     pub fn insert_sns_v1(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         let prefix = "/v1";
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
         let root_canister_str = root_canister_id.to_string();
         // Updates the max index, if needed
+        if true
         {
             STATE.with(|state| {
                 if state.stable.borrow().sns_cache.borrow().max_index < index {
@@ -114,16 +121,28 @@ impl State {
                 }
             });
         }
+                // Add this to the list of values from upstream
+                STATE.with(|state| {
+                    state
+                        .stable
+                        .borrow()
+                        .sns_cache
+                        .borrow_mut()
+                        .upstream_data
+                        .insert(root_canister_id, upstream_data.clone());
+                });
         // Adds the logo
+        if true
         {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
             let asset = Asset {
                 headers: Vec::new(),
-                bytes: logo_binary(upstream_data.meta.logo.as_ref().expect("Missing logo")),
+                bytes: logo_binary(upstream_data.meta.logo.as_ref().map(|s| s.as_str()).unwrap_or("")),
             };
             insert_asset(path, asset);
         }
         // Adds an http path for just this SNS.
+        if true
         {
             let slow_data = SlowSnsData::from(&upstream_data);
             let json_data = serde_json::to_string(&slow_data)?;
@@ -136,8 +155,8 @@ impl State {
         }
 
         // If this is in the last N, update latest.
-        if upstream_data.index + State::PAGE_SIZE
-            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index)
+        if true && (upstream_data.index + State::PAGE_SIZE
+            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index))
         {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
@@ -152,7 +171,7 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
+                serde_json::to_string(&slow_data).unwrap_or_default()
             });
             let asset = Asset {
                 headers: Vec::new(),
@@ -160,16 +179,6 @@ impl State {
             };
             insert_asset(path, asset);
         }
-        // Add this to the list of values from upstream
-        STATE.with(|state| {
-            state
-                .stable
-                .borrow()
-                .sns_cache
-                .borrow_mut()
-                .upstream_data
-                .insert(root_canister_id, upstream_data);
-        });
         Ok(())
     }
 }
@@ -183,7 +192,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Config {
-            update_interval_ms: 10_000,
+            update_interval_ms: 120_000,
         }
     }
 }

@@ -98,27 +98,34 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         ic_cdk::api::call::call(governance_canister_id, "list_nervous_system_functions", ((),))
             .await
             .map(|response: (_,)| response.0)
-            .map_err(|err| anyhow!("Failed to get SNS parameters: {err:?}"))?;
+            .map_err(|err| crate::state::log(format!("Failed to get SNS parameters: {err:?}")))
+            .unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
         .await
         .map(|response: (_,)| response.0)
-        .map_err(|err| anyhow!("Failed to get swap state: {err:?}"))?;
+        .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}"))).unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
+    let icrc1_metadata = Vec::new();
+    /*
     let icrc1_metadata: Vec<(String, Icrc1Value)> =
         ic_cdk::api::call::call(ledger_canister_id, "icrc1_metadata", ((),))
             .await
             .map(|response: (_,)| response.0)
-            .map_err(|err| anyhow!("Failed to get ledger metadata: {err:?}"))?;
-
+            .map_err(|err| crate::state::log(format!("Failed to get ledger metadata: {err:?}")))
+            .unwrap_or_default();
+     */
     crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
-    let icrc1_fee: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_fee", ((),))
-        .await
-        .map(|response: (_,)| response.0)
-        .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
 
+    let icrc1_fee = SnsTokens::default();
+    /*
+        let icrc1_fee: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_fee", ((),))
+            .await
+            .map(|response: (_,)| response.0)
+            .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
+    */
     crate::state::log("Yay, got an SNS status".to_string());
     let slow_data = UpstreamData {
         index,
@@ -130,7 +137,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         icrc1_metadata,
         icrc1_fee,
     };
-    State::insert_sns(index, slow_data).map_err(|err| anyhow!("Failed to create certified assets: {err:?}"))?;
+    State::insert_sns(index, slow_data).map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}"))).unwrap_or_default();
     crate::state::log(format!("Getting SNS index {index}... DONE"));
     Ok(())
 }
