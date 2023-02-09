@@ -55,6 +55,7 @@
   let loading = true;
   let loadingTicketRootCanisterId: string | undefined;
   let ticket: Ticket | undefined;
+  let criticalError = false;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -65,10 +66,19 @@
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
     const saleTicket = await getOpenTicket({
+      // TODO(Sale): remove mock after testing
       // withTicket: true,
       rootCanisterId,
       certified: true,
     });
+
+    if (saleTicket instanceof Error) {
+      loading = false;
+      criticalError = true;
+      // stop the flow
+      return;
+    }
+
     ticket = saleTicket.ticket;
 
     // restore purchase
@@ -94,12 +104,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loading || ticket !== undefined}
+            disabled={loading || criticalError || ticket !== undefined}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loading || ticket !== undefined}
+            {#if loading}
               <span>
                 <Spinner size="small" inline />
               </span>
