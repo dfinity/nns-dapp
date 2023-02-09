@@ -63,6 +63,7 @@ nns_dapp_canister_id=$(echo "$nns_dapp_url" | sed -e "s@http://\([^.]*\).localho
 DFX_NETWORK=local ./config.sh >/dev/null 2>/dev/null
 mv frontend/.env frontend/.env-with-null
 cat frontend/.env-with-null | sed -e "s@null@${nns_dapp_canister_id}@" >frontend/.env
+rm frontend/.env-with-null
 
 local_ids=".dfx/local/canister_ids.json"
 if ! [ -f "$local_ids" ]; then
