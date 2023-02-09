@@ -318,7 +318,7 @@ describe("neurons-services", () => {
   describe("list neurons", () => {
     const spyQueryNeurons = jest
       .spyOn(api, "queryNeurons")
-      .mockImplementation(() => Promise.resolve(neurons));
+      .mockResolvedValue(neurons);
 
     beforeEach(() => {
       resetNeuronsApiService();
