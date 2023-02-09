@@ -108,24 +108,21 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}"))).unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
-    let icrc1_metadata = Vec::new();
-    /*
+    //let icrc1_metadata = Vec::new();
     let icrc1_metadata: Vec<(String, Icrc1Value)> =
         ic_cdk::api::call::call(ledger_canister_id, "icrc1_metadata", ((),))
             .await
             .map(|response: (_,)| response.0)
             .map_err(|err| crate::state::log(format!("Failed to get ledger metadata: {err:?}")))
             .unwrap_or_default();
-     */
-    crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
 
-    let icrc1_fee = SnsTokens::default();
-    /*
+            crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
+    //let icrc1_fee = SnsTokens::default();
         let icrc1_fee: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_fee", ((),))
             .await
             .map(|response: (_,)| response.0)
             .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
-    */
+    
     crate::state::log("Yay, got an SNS status".to_string());
     let slow_data = UpstreamData {
         index,
