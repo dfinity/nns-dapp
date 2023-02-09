@@ -45,7 +45,7 @@ fn stable_data() -> String {
     STATE.with(|state| {
         let to_serialize: &StableState = &(*state.stable.borrow());
         serde_json::to_string(to_serialize).expect("Failed to serialize")
-      })
+    })
 }
 
 /// Web server
@@ -108,9 +108,8 @@ fn post_upgrade(config: Option<Config>) {
     STATE.with(|state| {
         match ic_cdk::storage::stable_restore()
             .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
-            .and_then(|(bytes,): (Vec<u8>,)| {
-                StableState::from_bytes(&bytes)
-            }) {
+            .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
+        {
             Ok(data) => {
                 *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
                 *state.stable.borrow_mut() = data;

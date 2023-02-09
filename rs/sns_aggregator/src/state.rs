@@ -57,7 +57,11 @@ impl StableState {
         serde_cbor::from_slice(slice).map_err(|err| format!("Failed to parse stable data: {err:?}"))
     }
     pub fn summarize_bytes(bytes: &[u8]) -> String {
-        format!("{} bytes starting {:?}", bytes.len(), &bytes[0..std::cmp::min(7, bytes.len())])
+        format!(
+            "{} bytes starting {:?}",
+            bytes.len(),
+            &bytes[0..std::cmp::min(7, bytes.len())]
+        )
     }
 }
 
