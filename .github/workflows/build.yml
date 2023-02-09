@@ -61,17 +61,14 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mon Jan 16 10:10:47
-          ref: 'e1d7dd4c10fb8a731a534ae2ef4b08474fea5f6b'
+          # Version from Thu Feb 9 with dfx version 0.13.xxx
+          ref: 'd2e132dcd11cbc4b54ecc1f10d0dc9e67cb61da7'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
-      - name: Update dfx
-        run: |
-          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Deploy NNS and SNS canisters
         run: |
           # Note: This deploys standard NNS canisters but with:
