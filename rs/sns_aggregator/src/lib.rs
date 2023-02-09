@@ -12,7 +12,7 @@ mod tests;
 
 use std::time::Duration;
 
-use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse, insert_home_page};
+use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
