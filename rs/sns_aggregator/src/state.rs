@@ -192,6 +192,7 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
+                crate::state::log(format!("Page {pagenum} has {} entries.", slow_data.len()));
                 serde_json::to_string(&slow_data).unwrap_or_default()
             });
             let asset = Asset {
