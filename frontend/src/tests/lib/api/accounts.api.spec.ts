@@ -10,7 +10,7 @@ import type {
   AccountDetails,
   GetTransactionsResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
@@ -25,6 +25,9 @@ describe("accounts-api", () => {
   afterAll(() => jest.clearAllMocks());
 
   describe("loadAccounts", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
     it("should call ledger and nnsdapp to get account and balance", async () => {
       // Ledger mock
       const ledgerMock = mock<LedgerCanister>();
@@ -38,14 +41,12 @@ describe("accounts-api", () => {
       nnsDappMock.getAccount
         .mockRejectedValueOnce(new AccountNotFoundError("test"))
         .mockResolvedValue(mockAccountDetails);
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       await loadAccounts({ identity: mockIdentity, certified: true });
 
       expect(ledgerMock.accountBalance).toBeCalled();
-      expect(nnsDappMock.getAccount).toBeCalled();
+      expect(nnsDappMock.getAccount).toBeCalledTimes(2);
       expect(nnsDappMock.addAccount).toBeCalledTimes(1);
     });
 
@@ -60,14 +61,12 @@ describe("accounts-api", () => {
       // NNSDapp mock
       const nnsDappMock = mock<NNSDappCanister>();
       nnsDappMock.getAccount.mockResolvedValue(mockAccountDetails);
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       await loadAccounts({ identity: mockIdentity, certified: true });
 
       expect(ledgerMock.accountBalance).toBeCalled();
-      expect(nnsDappMock.getAccount).toBeCalled();
+      expect(nnsDappMock.getAccount).toBeCalledTimes(1);
       expect(nnsDappMock.addAccount).not.toBeCalled();
     });
 
@@ -80,19 +79,18 @@ describe("accounts-api", () => {
         .mockImplementation((): LedgerCanister => ledgerMock);
 
       // NNSDapp mock
+      const error = new Error("test");
       const nnsDappMock = mock<NNSDappCanister>();
       nnsDappMock.getAccount
-        .mockRejectedValueOnce(new Error("test"))
+        .mockRejectedValueOnce(error)
         .mockResolvedValue(mockAccountDetails);
       nnsDappMock.addAccount.mockResolvedValue(undefined);
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       const call = () =>
         loadAccounts({ identity: mockIdentity, certified: true });
 
-      await expect(call).rejects.toThrow();
+      await expect(call).rejects.toThrowError(error);
       expect(ledgerMock.accountBalance).not.toBeCalled();
       expect(nnsDappMock.addAccount).not.toBeCalled();
     });
@@ -110,9 +108,7 @@ describe("accounts-api", () => {
       nnsDappMock.getAccount
         .mockRejectedValueOnce(new AccountNotFoundError("test"))
         .mockRejectedValue(new Error("test"));
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       const call = () =>
         loadAccounts({ identity: mockIdentity, certified: true });
@@ -137,14 +133,23 @@ describe("accounts-api", () => {
         sub_accounts: [mockSubAccountDetails],
       };
       nnsDappMock.getAccount.mockResolvedValue(accountDetails);
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       await loadAccounts({ identity: mockIdentity, certified: true });
 
-      // Called once for main, another for the subaccount = 2
-      expect(ledgerMock.accountBalance).toBeCalledTimes(2);
+      // Called once for main, another for the subaccount
+      expect(ledgerMock.accountBalance).toBeCalledWith({
+        accountIdentifier: AccountIdentifier.fromHex(
+          mockAccountDetails.account_identifier
+        ),
+        certified: true,
+      });
+      expect(ledgerMock.accountBalance).toBeCalledWith({
+        accountIdentifier: AccountIdentifier.fromHex(
+          mockSubAccountDetails.account_identifier
+        ),
+        certified: true,
+      });
     });
 
     it("should get balances of hardware wallet accounts", async () => {
@@ -162,20 +167,29 @@ describe("accounts-api", () => {
         hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
       };
       nnsDappMock.getAccount.mockResolvedValue(accountDetails);
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation(() => nnsDappMock);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       await loadAccounts({ identity: mockIdentity, certified: true });
 
       // Called once for main, another for the hardware wallet = 2
-      expect(ledgerMock.accountBalance).toBeCalledTimes(2);
+      expect(ledgerMock.accountBalance).toBeCalledWith({
+        accountIdentifier: AccountIdentifier.fromHex(
+          mockAccountDetails.account_identifier
+        ),
+        certified: true,
+      });
+      expect(ledgerMock.accountBalance).toBeCalledWith({
+        accountIdentifier: AccountIdentifier.fromHex(
+          mockHardwareWalletAccountDetails.account_identifier
+        ),
+        certified: true,
+      });
     });
   });
 
   it("should call nnsDappCanister to create subaccount", async () => {
     const nnsDappMock = mock<NNSDappCanister>();
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     await createSubAccount({ name: "test subaccount", identity: mockIdentity });
 
@@ -184,7 +198,7 @@ describe("accounts-api", () => {
 
   it("should call nnsDappCanister to rename subaccount", async () => {
     const nnsDappMock = mock<NNSDappCanister>();
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     await renameSubAccount({
       newName: "test subaccount",
@@ -203,7 +217,7 @@ describe("accounts-api", () => {
     };
     const nnsDappMock = mock<NNSDappCanister>();
     nnsDappMock.getTransactions.mockResolvedValue(mockResponse);
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     const response = await getTransactions({
       identity: mockIdentity,
