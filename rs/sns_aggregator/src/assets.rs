@@ -269,3 +269,17 @@ pub fn insert_favicon() {
         }
     });
 }
+
+/// Insert a home page into the certified assets.
+pub fn insert_home_page() {
+    STATE.with(|state| {
+        let path = "/index.html";
+        if state.stable.borrow().assets.borrow().get(path).is_none() {
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: include_bytes!("index.html").to_vec(),
+            };
+            insert_asset(path, asset);
+        }
+    });
+}
