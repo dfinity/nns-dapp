@@ -249,15 +249,15 @@ export const listNeurons = async ({
     request: ({ certified, identity }) =>
       neuronsApiService.queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
-      // Skip if we already have certified neurons
-      // Otherwise we depend on the order of the responses
-      if (certifiedNeuronsSet) {
+      if (!certified && certifiedNeuronsSet) {
+        // Skip if we already have certified neurons
+        // Otherwise we depend on the order of the responses
         return;
       }
       if (certified) {
         certifiedNeuronsSet = true;
-        neuronsStore.setNeurons({ neurons, certified });
       }
+      neuronsStore.setNeurons({ neurons, certified });
 
       callback?.(certified);
     },
