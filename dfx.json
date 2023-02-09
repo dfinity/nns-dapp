@@ -43,7 +43,13 @@
           "small08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "benchmarklarge": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "benchmarklarge": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___benchmarklarge_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___large01_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___large02_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___large03_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___large04_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___large05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -108,7 +114,13 @@
           "small10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small14": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "benchmarklarge": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "benchmarklarge": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___benchmarklarge_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___large01_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___large02_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___large03_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___large04_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___large05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -406,6 +418,90 @@
         }
       },
       "bind": "127.0.0.1:8080",
+      "type": "ephemeral"
+    },
+    "https___benchmarklarge_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://benchmarklarge.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___large01_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large01.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___large02_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large02.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___large03_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large03.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___large04_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large04.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___large05_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://large05.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
       "type": "ephemeral"
     },
     "large01": {
