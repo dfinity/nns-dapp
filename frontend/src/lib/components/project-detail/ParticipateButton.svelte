@@ -52,15 +52,17 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  let loadingTicket = true;
+  let loading = true;
+  let loadingTicketRootCanisterId: string | undefined;
   let ticket: Ticket | undefined;
 
   const updateTicket = async () => {
-    console.log("ParticipateButton::updateTicket", rootCanisterId);
-    if (rootCanisterId === undefined) {
+    // Avoid second call for the same rootCanisterId
+    if (rootCanisterId === undefined || loadingTicketRootCanisterId === rootCanisterId.toText()) {
       return;
     }
-    loadingTicket = true;
+    loading = true;
+    loadingTicketRootCanisterId = rootCanisterId.toText();
 
     const saleTicket = await getOpenTicket({
       // withTicket: true,
@@ -76,7 +78,7 @@
       });
     }
 
-    loadingTicket = false;
+    loading = false;
   };
   $: rootCanisterId, updateTicket();
 
@@ -92,12 +94,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loadingTicket || ticket !== undefined}
+            disabled={loading || ticket !== undefined}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loadingTicket || ticket !== undefined}
+            {#if loading || ticket !== undefined}
               <span>
                 <Spinner size="small" inline />
               </span>
