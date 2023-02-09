@@ -10,9 +10,10 @@ mod upstream;
 #[cfg(test)]
 mod tests;
 
+use std::collections::VecDeque;
 use std::time::Duration;
 
-use assets::{insert_favicon, AssetHashes, HttpRequest, HttpResponse};
+use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::set_timer_interval;
@@ -48,6 +49,16 @@ fn stable_data() -> String {
     })
 }
 
+/// Get most recent log data
+#[candid_method(query)]
+#[ic_cdk_macros::query]
+fn tail_log() -> String {
+    STATE.with(|state| {
+        let to_serialize: &VecDeque<String> = &(*state.log.borrow());
+        to_serialize.iter().cloned().collect::<Vec<_>>().join("\n")
+    })
+}
+
 /// Web server
 #[candid_method(query)]
 #[export_name = "canister_query http_request"]
@@ -71,7 +82,7 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 #[ic_cdk_macros::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
-    ic_cdk::api::print("Calling init...");
+    crate::state::log("Calling init...".to_string());
     setup(config);
 }
 
@@ -92,8 +103,8 @@ fn pre_upgrade() {
         if let Ok(bytes) = to_serialize.to_bytes() {
             let bytes_summary = StableState::summarize_bytes(&bytes);
             match ic_cdk::storage::stable_save((bytes,)) {
-                Ok(_) => ic_cdk::api::print(format!("Saved state as {bytes_summary}")),
-                Err(err) => ic_cdk::api::print(format!("Failed to save state: {err:?}")),
+                Ok(_) => crate::state::log(format!("Saved state as {bytes_summary}")),
+                Err(err) => crate::state::log(format!("Failed to save state: {err:?}")),
             }
         }
     });
@@ -103,22 +114,25 @@ fn pre_upgrade() {
 #[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
-    ic_cdk::api::print("Calling post_upgrade...");
+    crate::state::log("Calling post_upgrade...".to_string());
     // Make an effort to restore state.  If it doesn't work, give up.
-    STATE.with(|state| {
-        match ic_cdk::storage::stable_restore()
-            .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
-            .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
-        {
-            Ok(data) => {
-                *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
-                *state.stable.borrow_mut() = data;
+    if false {
+        // Disabled until stable serde is fixed.
+        STATE.with(|state| {
+            match ic_cdk::storage::stable_restore()
+                .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
+                .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
+            {
+                Ok(data) => {
+                    *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
+                    *state.stable.borrow_mut() = data;
+                }
+                Err(message) => {
+                    crate::state::log(message);
+                }
             }
-            Err(message) => {
-                ic_cdk::api::print(message);
-            }
-        }
-    });
+        });
+    }
     setup(config);
 }
 
@@ -136,7 +150,7 @@ fn reconfigure(config: Option<Config>) {
 /// Code that needs to be run on init and after every upgrade.
 fn setup(config: Option<Config>) {
     // Note: This is intentionally highly visible in logs.
-    ic_cdk::api::print(format!(
+    crate::state::log(format!(
         "\n\
         ///////////////////////////\n\
         // R E C O N F I G U R E //\n\
@@ -147,15 +161,16 @@ fn setup(config: Option<Config>) {
     ));
     // Set configuration, if provided
     if let Some(config) = config {
-        ic_cdk::api::print(format!("Setting config to: {:?}", &config));
+        crate::state::log(format!("Setting config to: {:?}", &config));
         STATE.with(|state| {
             *state.stable.borrow().config.borrow_mut() = config;
         });
     } else {
-        ic_cdk::api::print("Using existing config.");
+        crate::state::log("Using existing config.".to_string());
     }
     // Browsers complain if they don't get pretty pictures.  So do I.
     insert_favicon();
+    insert_home_page();
 
     // Schedules data collection from the SNSs.
     //
@@ -164,7 +179,7 @@ fn setup(config: Option<Config>) {
     //
     // Note: Timers are lost on upgrade, so a fresh timer needs to be started after upgrade.
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
-    ic_cdk::api::print(format!("Set interval to {}", &timer_interval.as_millis()));
+    crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));

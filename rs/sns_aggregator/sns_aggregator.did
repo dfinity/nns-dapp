@@ -17,4 +17,5 @@ service : (opt Config) -> {
   reconfigure : (opt Config) -> ();
   health_check : () -> (text) query;
   stable_data : () -> (text) query;
+  tail_log : () -> (text) query;
 }

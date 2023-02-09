@@ -180,7 +180,7 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 
 /// Insert an asset into the state.
 pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
-    ic_cdk::api::print(format!("Inserting asset {}", &path.clone().into()));
+    crate::state::log(format!("Inserting asset {}", &path.clone().into()));
     STATE.with(|s| {
         let mut asset_hashes = s.asset_hashes.borrow_mut();
         let stable_memory = s.stable.borrow();
@@ -265,6 +265,20 @@ pub fn insert_favicon() {
                 };
                 insert_asset(favicon_path, asset);
             }
+        }
+    });
+}
+
+/// Insert a home page into the certified assets.
+pub fn insert_home_page() {
+    STATE.with(|state| {
+        let path = "/index.html";
+        if state.stable.borrow().assets.borrow().get(path).is_none() {
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: include_bytes!("index.html").to_vec(),
+            };
+            insert_asset(path, asset);
         }
     });
 }

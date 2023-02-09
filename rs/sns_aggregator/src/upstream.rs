@@ -1,4 +1,5 @@
 //! Functions that get data from upstream SNS and NNS canisters.
+
 use std::str::FromStr;
 
 use crate::convert_canister_id;
@@ -10,26 +11,27 @@ use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
+#[deny(clippy::panic)] // Put any errors in a queryable log.
 pub async fn update_cache() {
-    ic_cdk::println!("Getting upstream data...");
+    crate::state::log("Getting upstream data...".to_string());
     let sns_maybe = STATE.with(|state| {
         state.stable.borrow().sns_cache.borrow_mut().last_partial_update = time();
         state.stable.borrow().sns_cache.borrow_mut().sns_to_get.pop()
     });
-    ic_cdk::println!("Maybe have SNSs");
+    crate::state::log("Maybe have SNSs".to_string());
     let result = if let Some((index, sns)) = sns_maybe {
-        ic_cdk::println!("Consumed an SNS");
+        crate::state::log("Consumed an SNS".to_string());
         get_sns_data(index, sns).await
     } else {
         // Timestamp start of cycle
         STATE.with(|state| {
             state.stable.borrow().sns_cache.borrow_mut().last_update = time();
         });
-        ic_cdk::println!("Need to get more SNSs");
+        crate::state::log("Need to get more SNSs".to_string());
         set_list_of_sns_to_get().await
     };
     if let Err(err) = result {
-        ic_cdk::println!("Heartbeat command failed with: {err:?}");
+        crate::state::log(format!("SNS update command failed with: {err:?}"));
     }
 }
 
@@ -37,25 +39,25 @@ pub async fn update_cache() {
 ///
 /// Note: We can improve on this by filtering out SNSs that have become const.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
-    ic_cdk::println!("Asking for more SNSs");
+    crate::state::log("Asking for more SNSs".to_string());
     let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> = ic_cdk::api::call::call(
         CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!"),
         "list_deployed_snses",
         (EmptyRecord {},),
     )
     .await;
-    ic_cdk::println!("Asked for more SNSs");
+    crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err((_rejection_code, message)) => {
-            ic_cdk::println!("Cache update failed: {}", message);
+            crate::state::log(format!("Cache update failed: {}", message));
             Err(anyhow!("Cache update failed: {}", message))
         }
         Ok((stuff,)) => {
-            ic_cdk::println!(
+            crate::state::log(format!(
                 "Yay, got {} SNSs: {}",
                 stuff.instances.len(),
                 serde_json::to_string(&stuff).unwrap_or_else(|_| "Could not serialise response".to_string())
-            );
+            ));
             let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
             STATE.with(|state| {
                 state.stable.borrow().sns_cache.borrow_mut().all_sns = instances.clone();
@@ -67,47 +69,57 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
 }
 
 /// Populates the cache with the data for an SNS.
+#[deny(clippy::panic)]
+#[deny(clippy::expect_used)]
+#[deny(clippy::unwrap_used)]
 async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Result<()> {
+    crate::state::log(format!("Getting SNS index {index}..."));
     let swap_canister_id = convert_canister_id!(&sns_canister_ids.swap_canister_id);
     let root_canister_id = convert_canister_id!(&sns_canister_ids.root_canister_id);
     let governance_canister_id = convert_canister_id!(&sns_canister_ids.governance_canister_id);
     let ledger_canister_id = convert_canister_id!(&sns_canister_ids.ledger_canister_id);
 
+    crate::state::log(format!("Getting SNS index {index}... list_sns_canisters"));
     let list_sns_canisters: types::ListSnsCanistersResponse =
         ic_cdk::api::call::call(root_canister_id, "list_sns_canisters", (types::EmptyRecord {},))
             .await
             .map(|response: (_,)| response.0)
-            .expect("Failed to list SNS canisters");
+            .map_err(|err| anyhow!("Failed to list SNS canisters: {:?}", err))?;
 
+    crate::state::log(format!("Getting SNS index {index}... get_metadata"));
     let meta: types::GetMetadataResponse =
         ic_cdk::api::call::call(governance_canister_id, "get_metadata", (types::EmptyRecord {},))
             .await
             .map(|response: (_,)| response.0)
-            .expect("Failed to get SNS metadata");
+            .map_err(|err| anyhow!("Failed to get SNS metadata: {err:?}"))?;
 
+    crate::state::log(format!("Getting SNS index {index}... list_nervous_system_functions"));
     let parameters: types::ListNervousSystemFunctionsResponse =
         ic_cdk::api::call::call(governance_canister_id, "list_nervous_system_functions", ((),))
             .await
             .map(|response: (_,)| response.0)
-            .expect("Failed to get SNS parameters");
+            .map_err(|err| anyhow!("Failed to get SNS parameters: {err:?}"))?;
 
+    crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
         .await
         .map(|response: (_,)| response.0)
-        .expect("Failed to get swap state");
+        .map_err(|err| anyhow!("Failed to get swap state: {err:?}"))?;
 
+    crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
     let icrc1_metadata: Vec<(String, Icrc1Value)> =
         ic_cdk::api::call::call(ledger_canister_id, "icrc1_metadata", ((),))
             .await
             .map(|response: (_,)| response.0)
-            .expect("Failed to get ledger metadata");
+            .map_err(|err| anyhow!("Failed to get ledger metadata: {err:?}"))?;
 
+    crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
     let icrc1_fee: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_fee", ((),))
         .await
         .map(|response: (_,)| response.0)
-        .expect("Failed to get ledger fee");
+        .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
 
-    ic_cdk::println!("Yay, got an SNS status");
+    crate::state::log("Yay, got an SNS status".to_string());
     let slow_data = UpstreamData {
         index,
         canister_ids: sns_canister_ids,
@@ -118,6 +130,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         icrc1_metadata,
         icrc1_fee,
     };
-    State::insert_sns(index, slow_data).expect("Failed to create certified assets");
+    State::insert_sns(index, slow_data).map_err(|err| anyhow!("Failed to create certified assets: {err:?}"))?;
+    crate::state::log(format!("Getting SNS index {index}... DONE"));
     Ok(())
 }
