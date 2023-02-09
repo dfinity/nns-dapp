@@ -46,7 +46,7 @@ describe("ProjectStatus", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render committed text when not yet open", () => {
+  it("should render committed text", () => {
     const { queryByText } = renderContextCmp({
       summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -55,6 +55,18 @@ describe("ProjectStatus", () => {
 
     expect(
       queryByText(en.sns_project_detail.status_committed)
+    ).toBeInTheDocument();
+  });
+
+  it("should render starting soon text", () => {
+    const { queryByText } = renderContextCmp({
+      summary: summaryForLifecycle(SnsSwapLifecycle.Adopted),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatus,
+    });
+
+    expect(
+      queryByText(en.sns_project_detail.status_adopted)
     ).toBeInTheDocument();
   });
 
