@@ -50,12 +50,15 @@ pub struct StableState {
 }
 
 impl StableState {
+    /// Serialize stable state in order to store it in stable memory.
     pub fn to_bytes(&self) -> Result<Vec<u8>, String> {
         serde_cbor::to_vec(self).map_err(|err| format!("Failed to serialize stable data: {err:?}"))
     }
+    /// Parse stable state from the format used in stable memory.
     pub fn from_bytes(slice: &[u8]) -> Result<Self, String> {
         serde_cbor::from_slice(slice).map_err(|err| format!("Failed to parse stable data: {err:?}"))
     }
+    /// Textual description of serialized data.
     pub fn summarize_bytes(bytes: &[u8]) -> String {
         format!(
             "{} bytes starting {:?}",
