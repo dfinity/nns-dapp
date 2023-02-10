@@ -11,6 +11,7 @@
           "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "nnsdapp": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -41,7 +42,8 @@
           "small07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "small10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "benchmarklarge": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -55,7 +57,7 @@
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-12-01/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -74,6 +76,7 @@
           "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "nnsdapp": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
@@ -104,7 +107,8 @@
           "small09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "small14": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "benchmarklarge": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -155,6 +159,40 @@
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
+    },
+    "sns_aggregator": {
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
+      "candid": "rs/sns_aggregator/sns_aggregator.did",
+      "wasm": "sns_aggregator.wasm",
+      "type": "custom"
+    },
+    "ckbtc_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-ledger.did",
+      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
+        }
+      }
+    },
+    "ckbtc_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-index.did",
+      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
+        }
+      }
     }
   },
   "networks": {
@@ -168,8 +206,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_CACHING": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": true,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -184,8 +223,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_CACHING": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": true,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -200,8 +240,26 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
+    "nnsdapp": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://nnsdapp.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": false,
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -216,8 +274,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -232,8 +291,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -248,8 +308,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -264,8 +325,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -280,8 +342,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -303,8 +366,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -319,8 +383,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [
@@ -335,8 +400,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_CACHING": true,
-          "ENABLE_CKBTC_LEDGER": true
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "bind": "127.0.0.1:8080",
@@ -719,6 +785,42 @@
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"
+      ],
+      "type": "persistent"
+    },
+    "benchmarklarge": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://benchmarklarge.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_CKBTC_LEDGER": false
+        }
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:84ff:fede:d302]:8080",
+        "http://[2001:4d78:40d:0:5000:8aff:febb:940]:8080",
+        "http://[2607:fb58:9005:42:5000:25ff:fea8:3102]:8080",
+        "http://[2a00:fb01:400:42:5000:47ff:fe24:18e3]:8080",
+        "http://[2607:f6f0:3004:1:5000:baff:fe21:1788]:8080",
+        "http://[2001:4d78:40d:0:5000:cbff:fe9f:7716]:8080",
+        "http://[2607:fb58:9005:42:5000:beff:fe60:7957]:8080",
+        "http://[2a00:fb01:400:42:5000:b7ff:fe18:16ee]:8080",
+        "http://[2607:f6f0:3004:1:5000:b7ff:fe39:7218]:8080",
+        "http://[2001:4d78:40d:0:5000:30ff:fe09:7347]:8080",
+        "http://[2607:fb58:9005:42:5000:a9ff:fe72:34d3]:8080",
+        "http://[2a00:fb01:400:42:5000:19ff:feba:4071]:8080",
+        "http://[2607:fb58:9005:42:5000:8fff:fe79:c97f]:8080",
+        "http://[2607:f6f0:3004:1:5000:8aff:fe15:9e70]:8080",
+        "http://[2a00:fb01:400:42:5000:3cff:fe52:9419]:8080",
+        "http://[2607:f6f0:3004:1:5000:ddff:fe03:161c]:8080",
+        "http://[2001:4d78:40d:0:5000:17ff:fe8f:1c33]:8080",
+        "http://[2607:fb58:9005:42:5000:88ff:feac:1e67]:8080",
+        "http://[2a00:fb01:400:42:5000:6eff:fe05:c0ee]:8080",
+        "http://[2607:f6f0:3004:1:5000:14ff:feaf:7279]:8080",
+        "http://[2001:4d78:40d:0:5000:92ff:fe4a:77af]:8080"
       ],
       "type": "persistent"
     }

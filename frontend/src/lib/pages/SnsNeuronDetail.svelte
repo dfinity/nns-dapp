@@ -31,10 +31,11 @@
   import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "$lib/utils/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -151,11 +152,12 @@
         <SnsNeuronInfoStake />
         <SnsNeuronMaturityCard />
         <SnsNeuronFollowingCard />
-        {#if IS_TESTNET}
-          <SnsNeuronProposalsCard />
-        {/if}
         {#if nonNullish(parameters)}
           <SnsNeuronHotkeysCard {parameters} />
+        {/if}
+        {#if IS_TESTNET}
+          <SnsNeuronProposalsCard />
+          <SnsPermissionsCard />
         {/if}
       {/if}
     </section>

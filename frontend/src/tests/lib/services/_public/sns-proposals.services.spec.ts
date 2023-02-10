@@ -17,10 +17,10 @@ import { fromDefinedNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
-  authStoreMock,
+  mockAuthStoreNoIdentitySubscribe,
+  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
-  mutableMockAuthStoreSubscribe,
 } from "../../../mocks/auth.store.mock";
 import { mockSnsProposal } from "../../../mocks/sns-proposals.mock";
 
@@ -48,9 +48,12 @@ describe("sns-proposals services", () => {
       .mockImplementation(mutableMockAuthStoreSubscribe);
 
     describe("not logged in", () => {
-      afterEach(() => {
+      beforeEach(() => {
         snsProposalsStore.reset();
         jest.clearAllMocks();
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       });
 
       beforeAll(() => {
@@ -118,10 +121,15 @@ describe("sns-proposals services", () => {
     });
 
     describe("logged in", () => {
+      beforeEach(() => {
+        snsProposalsStore.reset();
+        jest.clearAllMocks();
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe);
+      });
+
       it("should call queryProposals with user's identity", async () => {
-        authStoreMock.next({
-          identity: mockIdentity,
-        });
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
         });

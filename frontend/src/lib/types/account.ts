@@ -7,6 +7,10 @@ export interface Account {
   identifier: string;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
+  /**
+   * TODO: integrate ckBTC fee
+   * @deprecated to be replaced with balanceE8s - token to be handled with tokensStore
+   */
   balance: TokenAmount;
   // Subaccounts and HardwareWallets have name and subAccount
   name?: string;

@@ -2,15 +2,16 @@ import type {
   CanisterDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { SnsTransactions } from "$lib/stores/sns-transactions.store";
+import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
+import type { IcrcTransaction } from "@dfinity/ledger";
 import {
   TokenAmount,
   type Ballot,
@@ -25,7 +26,6 @@ import type {
   SnsNeuron,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
-  SnsTransaction,
   SnsTransferableAmount,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
@@ -306,8 +306,8 @@ const anonymizeTransfer = async (
 };
 
 const anonymizeSnsTransaction = async (
-  tx: SnsTransaction
-): Promise<{ [key in keyof Required<SnsTransaction>]: unknown }> => {
+  tx: IcrcTransaction
+): Promise<{ [key in keyof Required<IcrcTransaction>]: unknown }> => {
   return {
     timestamp: tx.timestamp,
     kind: tx.kind,
@@ -318,9 +318,9 @@ const anonymizeSnsTransaction = async (
 };
 
 export const anonymizeTransactionStore = async (
-  store: SnsTransactions
+  store: IcrcTransactions
 ): Promise<
-  undefined | { [key in keyof Required<SnsTransactions>]: unknown }
+  undefined | { [key in keyof Required<IcrcTransactions>]: unknown }
 > => {
   const anonymizedStore: SnsTypeStore<unknown> = {};
   for (const [key, value] of Object.entries(store)) {
@@ -451,7 +451,7 @@ type AnonymizedSnsSummary = {
   rootCanisterId?: string;
   swapCanisterId?: string;
   metadata: SnsSummaryMetadata;
-  token: SnsTokenMetadata;
+  token: IcrcTokenMetadata;
   swap: SnsSummarySwap;
   derived: SnsSwapDerivedState;
 };

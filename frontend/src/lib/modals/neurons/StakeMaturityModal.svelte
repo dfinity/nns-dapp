@@ -33,6 +33,7 @@
   const dispatcher = createEventDispatcher();
   const stakeNeuronMaturity = () =>
     dispatcher("nnsStakeMaturity", { percentageToStake });
+  const close = () => dispatcher("nnsClose");
 
   const goToConfirm = () => modal.next();
 </script>
