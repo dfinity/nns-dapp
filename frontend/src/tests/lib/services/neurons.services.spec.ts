@@ -217,6 +217,7 @@ describe("neurons-services", () => {
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
+    resetNeuronsApiService();
   });
 
   describe("stake new neuron", () => {
@@ -320,10 +321,6 @@ describe("neurons-services", () => {
       .spyOn(api, "queryNeurons")
       .mockResolvedValue(neurons);
 
-    beforeEach(() => {
-      resetNeuronsApiService();
-    });
-
     it("should list neurons", async () => {
       const oldNeuronsList = get(definedNeuronsStore);
       expect(oldNeuronsList).toEqual([]);
@@ -348,6 +345,8 @@ describe("neurons-services", () => {
         identity: mockIdentity,
         certified: false,
       });
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
 
       await listNeurons();
 

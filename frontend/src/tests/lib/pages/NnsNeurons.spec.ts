@@ -9,6 +9,7 @@ import * as authServices from "$lib/services/auth.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
@@ -127,6 +128,11 @@ describe("NnsNeurons", () => {
       });
 
       render(NnsNeurons);
+
+      // We wait to make sure there are no more calls
+      await tick();
+      await tick();
+      await tick();
 
       await waitFor(() => expect(api.queryNeurons).toHaveBeenCalledTimes(2));
     });
