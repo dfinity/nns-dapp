@@ -34,6 +34,8 @@ jest.mock("$lib/services/sns-parameters.services", () => {
   };
 });
 
+jest.mock("$lib/api/governance.api");
+
 describe("Neurons", () => {
   beforeAll(() =>
     jest
