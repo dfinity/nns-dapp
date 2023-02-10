@@ -61,7 +61,7 @@ jobs:
           dfx-sns-demo-install
       - name: Deploy NNS and SNS canisters
         run: |
-          ./scripts/deploy-snsdemo-testnet
+          ./scripts/deploy-snsdemo-testnet --verbose
       - name: Make the aggregator collect data quickly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
       - name: 'Upload aggregator wasm module'

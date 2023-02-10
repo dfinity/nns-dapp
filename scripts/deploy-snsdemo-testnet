@@ -29,11 +29,27 @@ dfx-sns-demo --network "$DFX_NETWORK" ${DFX_IC_COMMIT:+--ic_commit} ${DFX_IC_COM
 
 : Make sure that we are using the expected ID and that it is healthy
 [[ "$(dfx identity whoami)" == "snsdemo8" ]] || dfx identity use snsdemo8
-dfx identity set-wallet "$( cd "$(dirname "$(command -v dfx-sns-demo)")"; dfx identity get-wallet )"
+dfx identity set-wallet "$(
+  cd "$(dirname "$(command -v dfx-sns-demo)")"
+  dfx identity get-wallet
+)"
 dfx wallet balance
+dfx identity get-wallet
+dfx identity get-principal
+
+: "Show all principals, in case the sns_aggregator canister has an unexpected controller"
+dfx-identity-list | while read -r name; do
+  principal="$(echo "" | dfx identity get-principal --identity "$name" 2>/dev/null)"
+  echo "${principal:-                                                               } $name"
+done
 
 : Claim the canister ID reserved for the aggregator by snsdemo
-AGGREGATOR_CANISTER_ID="$(cd "$(dirname "$(command -v dfx-sns-demo)")"; dfx canister id sns_aggregator)"
+AGGREGATOR_CANISTER_ID="$(
+  cd "$(dirname "$(command -v dfx-sns-demo)")"
+  dfx canister id sns_aggregator
+)"
 dfx-canister-set-id --canister_name sns_aggregator --canister_id "$AGGREGATOR_CANISTER_ID" --network "$DFX_NETWORK"
+dfx canister info sns_aggregator
+
 : Deploy the aggregator
 RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
