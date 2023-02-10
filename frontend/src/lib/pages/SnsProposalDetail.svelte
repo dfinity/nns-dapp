@@ -4,7 +4,6 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
-  import { snsOnlyProjectStore } from "$lib/derived/selected-project.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { debugSelectedSnsProposalStore } from "$lib/derived/debug.derived";
   import { authStore } from "$lib/stores/auth.store";
@@ -23,6 +22,7 @@
   import type { Principal } from "@dfinity/principal";
   import { mapProposalId } from "$lib/utils/proposals.utils";
   import { toastsShow } from "$lib/stores/toasts.store";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 

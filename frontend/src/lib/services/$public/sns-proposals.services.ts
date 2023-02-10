@@ -61,7 +61,7 @@ export const loadSnsProposal = async ({
   rootCanisterId: Principal;
   proposalId: bigint;
   setProposal: (proposal: SnsProposalData) => void;
-  handleError: ({ certified: boolean, error: unknown }) => void;
+  handleError: (props: { certified: boolean; error: unknown }) => void;
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   try {
