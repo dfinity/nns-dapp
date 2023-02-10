@@ -57,7 +57,7 @@ export const getOpenTicket = async ({
   withTicket?: boolean; // TODO: for testing purpose only
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsTicket | Error> => {
+}): Promise<SnsTicket | undefined> => {
   try {
     const identity = await getCurrentIdentity();
     const { result } = await getOpenTicketApi({
@@ -93,8 +93,6 @@ export const getOpenTicket = async ({
       err,
     });
   }
-
-  return new Error();
 };
 
 // TODO(sale): move to ic-js

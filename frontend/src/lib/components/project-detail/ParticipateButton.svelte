@@ -75,7 +75,7 @@
       certified: true,
     });
 
-    if (saleTicket instanceof Error) {
+    if (saleTicket === undefined) {
       loading = false;
       criticalError = true;
       // stop the flow
