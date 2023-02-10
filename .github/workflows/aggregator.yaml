@@ -74,7 +74,8 @@ jobs:
         run: sleep 30
       - name: Get the latest data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=1
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
@@ -90,7 +91,8 @@ jobs:
         run: sleep 30
       - name: Get the latest data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
@@ -98,7 +100,8 @@ jobs:
           }
       - name: Get the first page of data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
@@ -106,7 +109,8 @@ jobs:
           }
       - name: Get the second page of data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/page/1/slow.json" | tee aggregate-1.json
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/1/slow.json" | tee aggregate-1.json
           expect=2
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
