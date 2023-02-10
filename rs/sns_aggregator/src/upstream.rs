@@ -4,17 +4,17 @@ use std::str::FromStr;
 use crate::convert_canister_id;
 use crate::state::{State, STATE};
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
-use crate::types::state::UpstreamData;
+use crate::types::upstream::UpstreamData;
 use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
-    ic_cdk::println!("Heartbeat");
+    ic_cdk::println!("Getting upstream data...");
     let sns_maybe = STATE.with(|state| {
-        state.sns_aggregator.borrow_mut().last_partial_update = time();
-        state.sns_aggregator.borrow_mut().sns_to_get.pop()
+        state.stable.borrow().sns_cache.borrow_mut().last_partial_update = time();
+        state.stable.borrow().sns_cache.borrow_mut().sns_to_get.pop()
     });
     ic_cdk::println!("Maybe have SNSs");
     let result = if let Some((index, sns)) = sns_maybe {
@@ -23,7 +23,7 @@ pub async fn update_cache() {
     } else {
         // Timestamp start of cycle
         STATE.with(|state| {
-            state.sns_aggregator.borrow_mut().last_update = time();
+            state.stable.borrow().sns_cache.borrow_mut().last_update = time();
         });
         ic_cdk::println!("Need to get more SNSs");
         set_list_of_sns_to_get().await
@@ -58,7 +58,8 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
             );
             let instances: Vec<_> = (0..).zip(stuff.instances.into_iter()).collect();
             STATE.with(|state| {
-                state.sns_aggregator.borrow_mut().sns_to_get = instances;
+                state.stable.borrow().sns_cache.borrow_mut().all_sns = instances.clone();
+                state.stable.borrow().sns_cache.borrow_mut().sns_to_get = instances;
             });
             Ok(())
         }
