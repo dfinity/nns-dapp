@@ -51,6 +51,7 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
+WORKDIR /build
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
