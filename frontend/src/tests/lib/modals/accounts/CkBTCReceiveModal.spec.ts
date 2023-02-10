@@ -60,7 +60,7 @@ describe("CkBTCReceiveModal", () => {
     expect(getByText(en.ckbtc.btc_receive_note)).toBeInTheDocument();
   });
 
-  it("should render account identifier (without being shortened)", async () => {
+  it("should render a ckBTC description", async () => {
     const { getByText, container } = await renderTransactionModal();
 
     await selectCkBTC(container);
