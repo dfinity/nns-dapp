@@ -137,6 +137,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 /// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
+        ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
         ("X-Frame-Options".to_string(), "DENY".to_string()),
         ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
         (
@@ -265,6 +266,20 @@ pub fn insert_favicon() {
                 };
                 insert_asset(favicon_path, asset);
             }
+        }
+    });
+}
+
+/// Insert a home page into the certified assets.
+pub fn insert_home_page() {
+    STATE.with(|state| {
+        let path = "/index.html";
+        if state.stable.borrow().assets.borrow().get(path).is_none() {
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: include_bytes!("index.html").to_vec(),
+            };
+            insert_asset(path, asset);
         }
     });
 }

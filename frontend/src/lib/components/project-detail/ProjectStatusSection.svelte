@@ -48,7 +48,11 @@
   let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
-    [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
+    [
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Committed,
+      SnsSwapLifecycle.Adopted,
+    ].includes(lifecycle);
 </script>
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
