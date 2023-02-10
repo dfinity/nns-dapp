@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import {
@@ -7,8 +6,8 @@
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
-  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Principal } from "@dfinity/principal";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let selectedAccount: Account | undefined = undefined;
   export let rootCanisterId: Principal;
@@ -18,18 +17,18 @@
   // To avoid cyclical dependencies, we don't update this if `selectedAccount` changes
   let selectedAccountIdentifier: string | undefined =
     selectedAccount?.identifier;
+
   $: selectedAccount = getAccountByRootCanister({
     identifier: selectedAccountIdentifier,
     rootCanisterId,
-    nnsAccounts: $nnsAccountsListStore,
-    snsAccounts: $snsAccountsStore,
+    universesAccounts: $universesAccountsStore,
   });
 
+  let selectableAccounts: Account[] = [];
   $: selectableAccounts =
     getAccountsByRootCanister({
       rootCanisterId,
-      nnsAccounts: $nnsAccountsListStore,
-      snsAccounts: $snsAccountsStore,
+      universesAccounts: $universesAccountsStore,
     })?.filter(filterAccounts) ?? [];
 </script>
 

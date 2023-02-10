@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { page } from "$app/stores";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Login from "$lib/pages/Login.svelte";
@@ -55,27 +54,6 @@ describe("Login", () => {
       render(Login);
       const { path } = get(pageStore);
       expect(path).toEqual(AppPath.Accounts);
-    });
-
-    it("should redirect to proposal detail for backwards compatibility", () => {
-      const proposalId = "4";
-
-      window.history.pushState(
-        {},
-        "Proposal detail",
-        `/#/proposal/${proposalId}`
-      );
-
-      render(Login);
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Proposal);
-
-      const {
-        data: { proposal },
-      } = get(page);
-      expect(proposal).toEqual(proposalId);
-
-      window.history.back();
     });
   });
 

@@ -3,22 +3,11 @@ import type {
   Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
+import type { Transaction } from "$lib/types/transaction";
+import { AccountTransactionType } from "$lib/types/transaction";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
-
-// Value should match the key in i18n "transaction_names"
-export enum AccountTransactionType {
-  Burn = "burn",
-  Mint = "mint",
-  Send = "send",
-  StakeNeuron = "stakeNeuron",
-  StakeNeuronNotification = "stakeNeuronNotification",
-  TopUpNeuron = "topUpNeuron",
-  CreateCanister = "createCanister",
-  TopUpCanister = "topUpCanister",
-  ParticipateSwap = "participateSwap",
-}
 
 export const transactionType = (
   transaction: NnsTransaction
@@ -99,18 +88,6 @@ export const transactionDisplayAmount = ({
   }
   return amount;
 };
-
-export interface Transaction {
-  type: AccountTransactionType;
-  isReceive: boolean;
-  isSend: boolean;
-  // Account string representation
-  from: string | undefined;
-  // Account string representation
-  to: string | undefined;
-  displayAmount: TokenAmount;
-  date: Date;
-}
 
 export const mapNnsTransaction = ({
   transaction,

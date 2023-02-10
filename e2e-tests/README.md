@@ -11,25 +11,15 @@ more info.
 
 - dfx version same as in dfx.json.
 
-### Start replica
-
-Start a dfx replica:
-
-```bash
-# in root folder
-dfx start --clean
-
-# run replica in the background with
-dfx start --clean --background
-```
-
-### Download and install NNS canisters
+### Setup local environment
 
 From the root directory.
 
 ```bash
 ./scripts/dfx-nns-deploy-custom
 ```
+
+This script starts a local replica in the background and installs all needed canisters.
 
 ### Setup e2e tests
 
@@ -59,19 +49,6 @@ Recommendation: Use only chrome:
 # It doesn't matter the folder
 export WDIO_BROWSER=chrome
 ```
-
-### Populate
-
-First e2e is also used to populate the nns dapp:
-
-```bash
-# in root folder
-./deploy.sh --populate local
-```
-
-Then it executes the e2e test in "user-N01-neuron-created.e2e.ts".
-
-Therefore, if this works your setup is ready.
 
 ### Execute e2e tests
 

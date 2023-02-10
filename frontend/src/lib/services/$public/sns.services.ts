@@ -1,4 +1,4 @@
-import { querySnsProjects } from "$lib/api/sns-caching.api";
+import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
@@ -7,9 +7,13 @@ import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import { nonNullish } from "$lib/utils/utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -55,12 +59,31 @@ export const loadSnsProjects = async (): Promise<void> => {
           certified: true,
         }))
     );
+    tokensStore.setTokens(
+      cachedSnses
+        .map(({ icrc1_metadata, canister_ids: { root_canister_id } }) => ({
+          token: mapOptionalToken(icrc1_metadata),
+          root_canister_id,
+        }))
+        .filter(({ token }) => nonNullish(token))
+        .reduce(
+          (acc, { root_canister_id, token }) => ({
+            ...acc,
+            [root_canister_id]: {
+              // Above filter ensure the token is not undefined therefore it can be safely cast
+              token: token as IcrcTokenMetadata,
+              certified: true,
+            },
+          }),
+          {} as TokensStoreData
+        )
+    );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
-    // If caching canister fails, fallback to the old way
+    // If aggregator canister fails, fallback to the old way
     // TODO: Agree on whether we want to fallback or not.
     // If the error is due to overload of the system, we might not want the fallback.
-    // This is useful if the error comes from the caching canister only.
+    // This is useful if the error comes from the aggregator canister only.
     await loadSnsSummaries();
   }
 };
@@ -76,22 +99,19 @@ export const loadSnsSummaries = (): Promise<void> => {
         querySnsSwapStates({ certified, identity }),
       ]),
     onLoad: ({ response }) => snsQueryStore.setData(response),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        snsQueryStore.setLoadingState();
+
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.list_summaries",
+          })
+        );
       }
-
-      // hide unproven data
-      snsQueryStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__sns.list_summaries",
-        })
-      );
     },
     logMessage: "Syncing Sns summaries",
   });
@@ -112,22 +132,19 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         proposals,
         certified,
       }),
-    onError: ({ error: err, certified }) => {
+    onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
+      if (certified || identity.getPrincipal().isAnonymous()) {
+        snsProposalsStore.setLoadingState();
+
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error.proposal_not_found",
+          })
+        );
       }
-
-      // hide unproven data
-      snsProposalsStore.setLoadingState();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.proposal_not_found",
-        })
-      );
     },
     logMessage: "Syncing Sns proposals",
   });
@@ -142,6 +159,7 @@ export const loadSnsNervousSystemFunctions = async (
   if (store[rootCanisterId.toText()]?.certified) {
     return;
   }
+
   return queryAndUpdate<SnsNervousSystemFunction[], Error>({
     request: ({ certified, identity }) =>
       getNervousSystemFunctions({
@@ -169,8 +187,10 @@ export const loadSnsNervousSystemFunctions = async (
       });
     },
     identityType: "current",
-    onError: ({ certified, error }) => {
-      if (certified) {
+    onError: ({ certified, error, identity }) => {
+      // If the user is not logged in, only a query is done.
+      // Therefore, we want to show an error even if the error doesn't come from a certified call.
+      if (certified || identity.getPrincipal().isAnonymous()) {
         toastsError({
           labelKey: "error__sns.sns_load_functions",
           err: error,

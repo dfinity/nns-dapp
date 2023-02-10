@@ -69,7 +69,7 @@
 </script>
 
 <main>
-  <Summary displayProjects={false}>
+  <Summary displayUniverse={false}>
     <PrincipalText slot="details" inline />
   </Summary>
 

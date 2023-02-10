@@ -4,7 +4,6 @@
     type CyclesCallback,
     initCyclesWorker,
   } from "$lib/services/worker-cycles.services";
-  import { onMount } from "svelte";
   import { onDestroy } from "svelte/internal";
   import type { CanisterSync } from "$lib/types/canister";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";

@@ -1,13 +1,16 @@
 import {
   snsSummariesStore,
   snsSwapCommitmentsStore,
+  type SnsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
+  filterProjectsStatus,
 } from "$lib/utils/projects.utils";
 import type { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 
 // ************** Sns full project - all information **************
@@ -24,7 +27,10 @@ export interface SnsFullProject {
  *
  * @return SnsFullProject[] | undefined What we called project - i.e. the summary and swap of a Sns with the user commitment
  */
-export const snsProjectsStore: Readable<SnsFullProject[] | undefined> = derived(
+export const snsProjectsStore = derived<
+  [Readable<SnsSummary[]>, SnsSwapCommitmentsStore],
+  SnsFullProject[] | undefined
+>(
   [snsSummariesStore, snsSwapCommitmentsStore],
   ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
     summaries?.map((summary) => {
@@ -55,4 +61,11 @@ export const snsProjectsCommittedStore = derived<
   SnsFullProject[] | undefined
 >(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
   filterCommittedProjects(projects)
+);
+
+export const snsProjectsAdoptedStore = derived<
+  Readable<SnsFullProject[] | undefined>,
+  SnsFullProject[] | undefined
+>(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
+  filterProjectsStatus({ swapLifecycle: SnsSwapLifecycle.Adopted, projects })
 );
