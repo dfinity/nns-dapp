@@ -15,6 +15,7 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
@@ -51,17 +52,20 @@ jest.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
+let resolveCertifiedPromise;
+let resolveUncertifiedPromise;
+
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     neuronsStore.reset();
+    resetNeuronsApiService();
+    resolveCertifiedPromise = undefined;
+    resolveUncertifiedPromise = undefined;
   });
 
   describe("when logged in user", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.reset();
-      resetNeuronsApiService();
       jest
         .spyOn(governanceApi, "queryNeurons")
         .mockImplementation(async ({ certified }) => {
@@ -70,14 +74,13 @@ describe("Proposal detail page when not logged in user", () => {
           // The problem seems to be that the `certifiedDone` is set in the finally.
           // Yet, I couldn't replicate the issue with a test in `utils.services.spec.ts`.
           // Therefore, I delay here the QUERY to prove that it still works, even in the bad case that certified data comes before uncertified.
-          if (!certified) {
-            return new Promise((resolve) =>
-              setTimeout(() => {
-                resolve([mockNeuron]);
-              }, 1)
-            );
-          }
-          return [mockNeuron];
+          return new Promise((resolve) => {
+            if (certified) {
+              resolveCertifiedPromise = resolve;
+            } else {
+              resolveUncertifiedPromise = resolve;
+            }
+          });
         });
       jest
         .spyOn(authStore, "subscribe")
@@ -91,6 +94,19 @@ describe("Proposal detail page when not logged in user", () => {
           proposalIdText: proposal.id.toString(),
         },
       });
+
+      // Make sure we have the resolve functions.
+      await waitFor(() =>
+        expect(typeof resolveCertifiedPromise).toBe("function")
+      );
+      await waitFor(() =>
+        expect(typeof resolveUncertifiedPromise).toBe("function")
+      );
+      resolveCertifiedPromise([mockNeuron]);
+
+      // Wait a tick to make sure the uncertified comes after the certified.
+      await tick();
+      resolveUncertifiedPromise([]);
 
       await waitFor(() =>
         expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
@@ -131,6 +147,15 @@ describe("Proposal detail page when not logged in user", () => {
           proposalIdText: proposal.id.toString(),
         },
       });
+      // Make sure we have the resolve functions.
+      await waitFor(() =>
+        expect(typeof resolveCertifiedPromise).toBe("function")
+      );
+      await waitFor(() =>
+        expect(typeof resolveUncertifiedPromise).toBe("function")
+      );
+      resolveUncertifiedPromise([mockNeuron]);
+      resolveCertifiedPromise([mockNeuron]);
 
       await waitFor(() =>
         expect(governanceApi.queryNeurons).toHaveBeenCalledWith({

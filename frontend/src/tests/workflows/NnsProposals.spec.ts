@@ -38,12 +38,12 @@ jest.mock("$lib/api/governance.api");
 describe("NnsProposals", () => {
   afterEach(() => {
     jest.clearAllMocks();
+    neuronsStore.reset();
+    resetNeuronsApiService();
   });
 
   describe("when signed in user", () => {
     beforeEach(() => {
-      neuronsStore.reset();
-      resetNeuronsApiService();
       jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
       jest
         .spyOn(authStore, "subscribe")

@@ -64,7 +64,7 @@ describe("NnsProposals", () => {
 
     describe("neurons", () => {
       beforeEach(() => {
-        // TODO: Mock the canister call instead of the service
+        // TODO: Mock the canister call instead of the canister itself
         const mockGovernanceCanister: MockGovernanceCanister =
           new MockGovernanceCanister([]);
         jest
@@ -223,7 +223,7 @@ describe("NnsProposals", () => {
 
     describe("neurons", () => {
       beforeEach(() => {
-        // TODO: Mock the canister call instead of the service
+        // TODO: Mock the canister call instead of the canister itself
         const mockGovernanceCanister: MockGovernanceCanister =
           new MockGovernanceCanister([]);
         jest

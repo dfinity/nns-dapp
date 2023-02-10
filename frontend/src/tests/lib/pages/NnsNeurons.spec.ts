@@ -19,12 +19,12 @@ jest.mock("$lib/api/governance.api");
 describe("NnsNeurons", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    resetNeuronsApiService();
     neuronsStore.reset();
   });
 
   describe("with enough neurons", () => {
     beforeEach(() => {
-      resetNeuronsApiService();
       const mockNeuron2 = {
         ...mockNeuron,
         neuronId: BigInt(223),
@@ -72,7 +72,6 @@ describe("NnsNeurons", () => {
 
   describe("no neurons", () => {
     beforeEach(() => {
-      resetNeuronsApiService();
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
         .mockResolvedValue(mockIdentity);
@@ -97,7 +96,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should call query neurons twice when rendered", async () => {
-      resetNeuronsApiService();
       render(NnsNeurons);
 
       await waitFor(() =>
@@ -113,7 +111,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should NOT call query neurons after being visited", async () => {
-      resetNeuronsApiService();
       render(NnsNeurons);
 
       await waitFor(() =>
