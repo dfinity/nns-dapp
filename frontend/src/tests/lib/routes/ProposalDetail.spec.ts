@@ -15,6 +15,8 @@ import {
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 
+jest.mock("$lib/api/governance.api");
+
 describe("ProposalDetail", () => {
   beforeAll(() => {
     jest
