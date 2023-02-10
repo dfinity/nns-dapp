@@ -1,12 +1,12 @@
 <script lang="ts">
   import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
   import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
-  import type { WalletModal, WalletType } from "$lib/types/wallet.modal";
+  import type { WalletModal, WalletModalType } from "$lib/types/wallet.modal";
 
   let modal: WalletModal | undefined;
   const close = () => (modal = undefined);
 
-  let type: WalletType | undefined;
+  let type: WalletModalType | undefined;
   $: type = modal?.type;
 </script>
 

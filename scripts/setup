@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-. <(./build-config.sh)
 
 help_text() {
   cat <<-EOF
@@ -193,6 +192,13 @@ install_wget_linux() {
   sudo apt-get install wget
 }
 
+install_curl_linux() {
+  sudo apt-get install curl
+}
+install_curl_darwin() {
+  brew install curl
+}
+
 install_cmake_darwin() {
   brew install cmake
 }
@@ -249,6 +255,7 @@ sudo echo I have superpowers || {
 install_rosetta_maybe
 install_brew_maybe
 command -v wget || "install_wget_$OS"
+command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
@@ -257,6 +264,7 @@ command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
+. <(./build-config.sh)
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"

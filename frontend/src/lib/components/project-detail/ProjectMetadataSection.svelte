@@ -1,9 +1,5 @@
 <script lang="ts">
-  import type {
-    SnsSummary,
-    SnsSummaryMetadata,
-    SnsTokenMetadata,
-  } from "$lib/types/sns";
+  import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { getContext } from "svelte";
@@ -13,6 +9,7 @@
   } from "$lib/types/project-detail.context";
   import { isNullish } from "$lib/utils/utils";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -22,7 +19,7 @@
   $: summary = $projectDetailStore.summary;
 
   let metadata: SnsSummaryMetadata | undefined;
-  let token: SnsTokenMetadata | undefined;
+  let token: IcrcTokenMetadata | undefined;
 
   $: metadata = summary?.metadata;
   $: token = summary?.token;

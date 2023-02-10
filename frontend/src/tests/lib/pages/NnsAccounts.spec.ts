@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { IC_LOGO } from "$lib/constants/icp.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import {
   accountsStore,
@@ -17,29 +16,22 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
-import en from "../../mocks/i18n.mock";
 
 describe("NnsAccounts", () => {
+  const goToWallet = async () => {
+    // Do nothing
+  };
+
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {
     let accountsStoreMock: jest.SpyInstance;
 
-    it("should render title", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
-      const { getByTestId } = render(NnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
-    });
-
     it("should render a main card", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const article = container.querySelector("article");
       expect(article).not.toBeNull();
@@ -49,7 +41,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const cardTitleRow = container.querySelector(
         'article > div[data-tid="token-value-label"]'
@@ -64,7 +56,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      const { getByText } = render(NnsAccounts);
+      const { getByText } = render(NnsAccounts, { props: { goToWallet } });
       getByText(mockMainAccount.identifier);
     });
 
@@ -72,7 +64,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
 
@@ -86,7 +78,7 @@ describe("NnsAccounts", () => {
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         );
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
 
@@ -98,7 +90,7 @@ describe("NnsAccounts", () => {
       accountsStoreMock = jest
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(mockAccountsStoreSubscribe());
-      render(NnsAccounts);
+      render(NnsAccounts, { props: { goToWallet } });
 
       expect(accountsStoreMock).toHaveBeenCalled();
     });
@@ -118,25 +110,8 @@ describe("NnsAccounts", () => {
 
     afterAll(jest.clearAllMocks);
 
-    it("should render nns name", () => {
-      const { getByTestId } = render(NnsAccounts);
-
-      const titleRow = getByTestId("projects-summary");
-
-      expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
-    });
-
-    it("should render icp project logo", () => {
-      const { getByTestId } = render(NnsAccounts);
-
-      const logo = getByTestId("project-logo");
-      const img = logo.querySelector('[data-tid="logo"]');
-
-      expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
-    });
-
     it("should contain a tooltip", () => {
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
     });
@@ -159,7 +134,7 @@ describe("NnsAccounts", () => {
         );
     });
     it("should not render a token amount component nor zero", () => {
-      const { container } = render(NnsAccounts);
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       // The tooltip wraps the total amount
       expect(

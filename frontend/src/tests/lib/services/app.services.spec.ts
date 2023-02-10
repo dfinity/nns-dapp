@@ -45,10 +45,6 @@ describe("app-services", () => {
     // query + update calls
     const numberOfCalls = 2;
 
-    await expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(
-      numberOfCalls
-    );
-
     await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
       numberOfCalls
     );

@@ -1,0 +1,92 @@
+# Verify that the aggregator gets the required data
+name: Aggregator aggregates
+on:
+  push:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  curl_test:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: set-env
+        run: ./build-config.sh >> $GITHUB_ENV
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+      # Cache the ic-cdk-optimizer
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/ic-cdk-optimizer
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
+      - name: Install Software
+        run: |
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # Helps with debugging
+      - name: Versions
+        run: |
+          set -x
+          dfx --version
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          ic-cdk-optimizer --version
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from Thu Fep 9 with dfx 0.13.xxx
+          ref: '60a7369b864f72f1d0103462c8e979d1976ab109'
+      - name: Add SNS scripts to the path
+        run: |
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install SNS script dependencies
+        run: |
+          dfx-sns-demo-install
+      - name: Deploy NNS and SNS canisters
+        run: |
+          ./scripts/deploy-snsdemo-testnet
+      - name: 'Upload aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
+      - name: Wait for the aggregator to get data
+        run: sleep 30
+      - name: Get data from the sns aggregator
+        run: |
+          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          (( $(jq length aggregate-1.json) == 1 ))  || {
+            echo ERROR: Expected to have 1 SNS in the aggregator.
+          }
+      - name: Stop replica
+        run: dfx stop
+  aggregator-pass:
+    needs: ["curl_test"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

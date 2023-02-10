@@ -1,4 +1,11 @@
 import type { CachedSns } from "$lib/api/sns-aggregator.api";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
+
+export const aggregatorTokenMock: IcrcTokenMetadata = {
+  name: "Community Fund Demo",
+  symbol: "CFD",
+  fee: BigInt(1000),
+};
 
 export const aggregatorSnsMock: CachedSns = {
   index: 11,
@@ -82,6 +89,8 @@ export const aggregatorSnsMock: CachedSns = {
   swap_state: {
     swap: {
       lifecycle: 3,
+      decentralization_sale_open_timestamp_seconds: [BigInt(1234)],
+      finalize_swap_in_progress: [false],
       buyers: [],
       init: [
         {
@@ -114,6 +123,7 @@ export const aggregatorSnsMock: CachedSns = {
               dissolve_delay_interval_seconds: BigInt(2629800),
             },
           ],
+          sale_delay_seconds: [BigInt(1234)],
         },
       ],
       open_sns_token_swap_proposal_id: [BigInt(120)],
@@ -125,9 +135,9 @@ export const aggregatorSnsMock: CachedSns = {
   },
   icrc1_metadata: [
     ["icrc1:decimals", { Nat: BigInt(8) }],
-    ["icrc1:name", { Text: "Community Fund Demo" }],
-    ["icrc1:symbol", { Text: "CFD" }],
-    ["icrc1:fee", { Nat: BigInt(1000) }],
+    ["icrc1:name", { Text: aggregatorTokenMock.name }],
+    ["icrc1:symbol", { Text: aggregatorTokenMock.symbol }],
+    ["icrc1:fee", { Nat: aggregatorTokenMock.fee }],
   ],
-  icrc1_fee: BigInt(1000),
+  icrc1_fee: aggregatorTokenMock.fee,
 };

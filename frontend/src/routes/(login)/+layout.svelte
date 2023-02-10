@@ -74,7 +74,7 @@
 
     padding: 0;
 
-    @include media.min-width(large) {
+    @include media.min-width(xlarge) {
       padding: 0 0 var(--login-footer-offset);
     }
   }

@@ -5,12 +5,10 @@
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    AccountTransactionType,
-    type Transaction,
-    transactionName,
-  } from "$lib/utils/transactions.utils";
+  import { transactionName } from "$lib/utils/transactions.utils";
   import { KeyValuePair, IconNorthEast } from "@dfinity/gix-components";
+  import type { Transaction } from "$lib/types/transaction";
+  import type { AccountTransactionType } from "$lib/types/transaction";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -90,7 +88,7 @@
     }
 
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: 48px auto;
     align-items: flex-start;
     column-gap: var(--padding-2x);
 

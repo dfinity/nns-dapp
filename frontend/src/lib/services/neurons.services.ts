@@ -1,25 +1,5 @@
+import { neuronsApiService } from "$lib/api-services/neurons.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
-import {
-  addHotkey as addHotkeyApi,
-  autoStakeMaturity,
-  claimOrRefreshNeuron,
-  disburse as disburseApi,
-  increaseDissolveDelay,
-  joinCommunityFund,
-  leaveCommunityFund,
-  mergeMaturity as mergeMaturityApi,
-  mergeNeurons as mergeNeuronsApi,
-  queryNeuron,
-  queryNeurons,
-  removeHotkey as removeHotkeyApi,
-  setFollowees,
-  spawnNeuron as spawnNeuronApi,
-  splitNeuron as splitNeuronApi,
-  stakeMaturity as stakeMaturityApi,
-  stakeNeuron as stakeNeuronApi,
-  startDissolving as startDissolvingApi,
-  stopDissolving as stopDissolvingApi,
-} from "$lib/api/governance.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
@@ -112,11 +92,13 @@ const getNeuron = async ({
   forceFetch?: boolean;
 }): Promise<NeuronInfo | undefined> => {
   if (forceFetch) {
-    return queryNeuron({ neuronId, identity, certified });
+    return neuronsApiService.queryNeuron({ neuronId, identity, certified });
   }
   const neuron = getNeuronFromStore(neuronId);
 
-  return neuron || queryNeuron({ neuronId, identity, certified });
+  return (
+    neuron || neuronsApiService.queryNeuron({ neuronId, identity, certified })
+  );
 };
 
 export const getNeuronFromStore = (
@@ -228,7 +210,7 @@ export const stakeNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
-    const newNeuronId = await stakeNeuronApi({
+    const newNeuronId = await neuronsApiService.stakeNeuron({
       stake,
       identity,
       ledgerCanisterIdentity,
@@ -256,14 +238,15 @@ export const stakeNeuron = async ({
  */
 export const listNeurons = async ({
   callback,
-  strategy = "query_and_update",
+  strategy,
 }: {
   callback?: (certified: boolean) => void;
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
     strategy,
-    request: ({ certified, identity }) => queryNeurons({ certified, identity }),
+    request: ({ certified, identity }) =>
+      neuronsApiService.queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
       neuronsStore.setNeurons({ neurons, certified });
 
@@ -316,7 +299,7 @@ export const updateDelay = async ({
     const neuronIdentity: Identity = await getIdentityOfControllerByNeuronId(
       neuronId
     );
-    await increaseDissolveDelay({
+    await neuronsApiService.increaseDissolveDelay({
       neuronId,
       dissolveDelayInSeconds,
       identity: neuronIdentity,
@@ -341,12 +324,15 @@ export const toggleCommunityFund = async (
     );
 
     if (hasJoinedCommunityFund(neuron)) {
-      await leaveCommunityFund({
+      await neuronsApiService.leaveCommunityFund({
         neuronId: neuron.neuronId,
         identity,
       });
     } else {
-      await joinCommunityFund({ neuronId: neuron.neuronId, identity });
+      await neuronsApiService.joinCommunityFund({
+        neuronId: neuron.neuronId,
+        identity,
+      });
     }
 
     await getAndLoadNeuron(neuron.neuronId);
@@ -375,7 +361,7 @@ export const toggleAutoStakeMaturity = async (
       minVersion: CANDID_PARSER_VERSION,
     });
 
-    await autoStakeMaturity({
+    await neuronsApiService.autoStakeMaturity({
       neuronId,
       identity,
       autoStake: !hasAutoStakeMaturityOn(neuron),
@@ -425,7 +411,11 @@ export const mergeNeurons = async ({
       });
     }
 
-    await mergeNeuronsApi({ sourceNeuronId, targetNeuronId, identity });
+    await neuronsApiService.mergeNeurons({
+      sourceNeuronId,
+      targetNeuronId,
+      identity,
+    });
     success = true;
 
     await listNeurons();
@@ -459,7 +449,7 @@ export const addHotkeyForHardwareWalletNeuron = async ({
     const identity: Identity = await getAuthenticatedIdentity();
     const ledgerIdentity = await getLedgerIdentityProxy(accountIdentifier);
 
-    await addHotkeyApi({
+    await neuronsApiService.addHotkey({
       neuronId,
       identity: ledgerIdentity,
       principal: identity.getPrincipal(),
@@ -500,7 +490,7 @@ export const addHotkey = async ({
       neuronId
     );
 
-    await addHotkeyApi({ neuronId, identity, principal });
+    await neuronsApiService.addHotkey({ neuronId, identity, principal });
 
     await getAndLoadNeuron(neuronId);
 
@@ -535,7 +525,7 @@ export const removeHotkey = async ({
       neuronId
     );
 
-    await removeHotkeyApi({ neuronId, identity, principal });
+    await neuronsApiService.removeHotkey({ neuronId, identity, principal });
     removed = true;
 
     await getAndLoadNeuron(neuronId);
@@ -580,7 +570,11 @@ export const splitNeuron = async ({
       throw new NotEnoughAmountError();
     }
 
-    await splitNeuronApi({ neuronId, identity, amount: amountE8s });
+    await neuronsApiService.splitNeuron({
+      neuronId,
+      identity,
+      amount: amountE8s,
+    });
 
     await listNeurons();
 
@@ -603,7 +597,7 @@ export const disburse = async ({
       neuronId
     );
 
-    await disburseApi({ neuronId, toAccountId, identity });
+    await neuronsApiService.disburse({ neuronId, toAccountId, identity });
 
     await Promise.all([syncAccounts(), listNeurons()]);
 
@@ -633,7 +627,11 @@ export const mergeMaturity = async ({
       minVersion: MIN_VERSION_STAKE_MATURITY_WORKAROUND,
     });
 
-    await mergeMaturityApi({ neuronId, percentageToMerge, identity });
+    await neuronsApiService.mergeMaturity({
+      neuronId,
+      percentageToMerge,
+      identity,
+    });
 
     await getAndLoadNeuron(neuronId);
 
@@ -662,7 +660,11 @@ export const stakeMaturity = async ({
       minVersion: CANDID_PARSER_VERSION,
     });
 
-    await stakeMaturityApi({ neuronId, percentageToStake, identity });
+    await neuronsApiService.stakeMaturity({
+      neuronId,
+      percentageToStake,
+      identity,
+    });
 
     await getAndLoadNeuron(neuronId);
 
@@ -686,7 +688,7 @@ export const spawnNeuron = async ({
       neuronId
     );
 
-    const newNeuronId = await spawnNeuronApi({
+    const newNeuronId = await neuronsApiService.spawnNeuron({
       neuronId,
       percentageToSpawn,
       identity,
@@ -710,7 +712,7 @@ export const startDissolving = async (
       neuronId
     );
 
-    await startDissolvingApi({ neuronId, identity });
+    await neuronsApiService.startDissolving({ neuronId, identity });
 
     await getAndLoadNeuron(neuronId);
 
@@ -730,7 +732,7 @@ export const stopDissolving = async (
       neuronId
     );
 
-    await stopDissolvingApi({ neuronId, identity });
+    await neuronsApiService.stopDissolving({ neuronId, identity });
 
     await getAndLoadNeuron(neuronId);
 
@@ -766,7 +768,7 @@ const setFolloweesHelper = async ({
     if (topic === Topic.ManageNeuron) {
       identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
     }
-    await setFollowees({
+    await neuronsApiService.setFollowees({
       identity,
       neuronId: neuron.neuronId,
       topic,
@@ -912,7 +914,9 @@ export const reloadNeuron = (neuronId: NeuronId) =>
   new Promise<void>((resolve) => {
     getAuthenticatedIdentity()
       // To update the neuron stake with the subaccount balance
-      .then((identity) => claimOrRefreshNeuron({ identity, neuronId }))
+      .then((identity) =>
+        neuronsApiService.claimOrRefreshNeuron({ identity, neuronId })
+      )
       .then(() => {
         loadNeuron({
           neuronId,
