@@ -79,8 +79,20 @@ RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
 
+FROM builder AS build_aggregate
+SHELL ["bash", "-c"]
+COPY ./rs /build/rs
+COPY ./build-sns-aggregator.sh /build/build-sns-aggregator.sh
+COPY ./build-rs.sh /build/build-rs.sh
+COPY ./Cargo.toml /build/Cargo.toml
+COPY ./Cargo.lock /build/Cargo.lock
+COPY ./dfx.json /build/dfx.json
+WORKDIR /build
+RUN ./build-sns-aggregator.sh
+
 FROM scratch AS scratch
 COPY --from=build /build/nns-dapp.wasm /
 COPY --from=build /build/assets.tar.xz /
 COPY --from=build /build-inputs.txt /
 COPY --from=build /build/frontend /frontend
+COPY --from=build_aggregate /build/sns_aggregator.wasm /
