@@ -1,4 +1,3 @@
-safd
 # Tags the latest main, to trigger a release.
 name: Tag main as tip
 on:

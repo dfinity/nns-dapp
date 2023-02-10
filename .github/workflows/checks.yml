@@ -1,4 +1,3 @@
-npop
 name: CI Checks
 on:
   push:

@@ -1,4 +1,3 @@
-clobber
 name: Nightly Publication
 on:
   schedule:

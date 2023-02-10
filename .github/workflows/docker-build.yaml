@@ -1,4 +1,3 @@
-no
 name: Docker build
 on:
   push:
