@@ -36,6 +36,7 @@ import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import {IcrcTransferError} from "@dfinity/ledger";
 import {ledgerErrorToToastError} from "$lib/utils/sns-ledger.utils";
+import {TxDuplicateError} from "@dfinity/nns";
 
 export interface SnsTicket {
   rootCanisterId: Principal;
@@ -403,22 +404,19 @@ export const participateInSnsSwap = async ({
       memo: ticketId,
     });
   } catch (err) {
-    if (err instanceof IcrcTransferError) {
+    console.log(err);
 
-      // TODO(GIX-1271): implement more detailed feedback (based on the table)
+    // TODO(GIX-1271): implement more detailed feedback (based on the table)
 
-      if (!("Duplicate" in err.errorType)) {
-        console.log(err);
+    if (!(err instanceof TxDuplicateError)) {
+      toastsError(
+        ledgerErrorToToastError({
+          fallbackErrorLabelKey: "error.transaction_error",
+          err,
+        })
+      );
 
-        toastsError(
-          ledgerErrorToToastError({
-            fallbackErrorLabelKey: "error.transaction_error",
-            err,
-          })
-        );
-
-        return;
-      }
+      return;
     }
   }
 
