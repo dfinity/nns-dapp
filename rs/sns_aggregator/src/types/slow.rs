@@ -77,7 +77,7 @@ pub const LOGO_PREFIX: &str = "data:image/png;base64,";
 /// Get the logo as binary from base64.
 /// TODO: Maybe support more image types?
 pub fn logo_binary(data_url: &str) -> Vec<u8> {
-    base64::decode(data_url.strip_prefix(LOGO_PREFIX).unwrap_or_default()).unwrap_or_default()
+    base64::decode(data_url.strip_prefix(LOGO_PREFIX).expect("Unsupported URL prefix")).unwrap_or_default()
 }
 
 /// Slowly changing information about an SNS canister's swap state.

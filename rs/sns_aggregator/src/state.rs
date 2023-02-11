@@ -96,18 +96,12 @@ impl State {
     pub const PAGE_SIZE: u64 = 10;
 
     /// Adds an SNS into the state accessible via certfied query calls.
-    #[deny(clippy::panic)]
-    #[deny(clippy::expect_used)]
-    #[deny(clippy::unwrap_used)]
     pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
     }
     /// Adds pre-signed responses for the API version 1.
     ///
     /// - /sns/index/{index}.json <- All aggregate data about the SNS, in JSON format.
-    #[deny(clippy::panic)]
-    #[deny(clippy::expect_used)]
-    #[deny(clippy::unwrap_used)]
     pub fn insert_sns_v1(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         let prefix = "/v1";
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
@@ -120,16 +114,6 @@ impl State {
                 }
             });
         }
-        // Add this to the list of values from upstream
-        STATE.with(|state| {
-            state
-                .stable
-                .borrow()
-                .sns_cache
-                .borrow_mut()
-                .upstream_data
-                .insert(root_canister_id, upstream_data.clone());
-        });
         // Adds the logo
         {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
@@ -168,32 +152,7 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).unwrap_or_default()
-            });
-            let asset = Asset {
-                headers: Vec::new(),
-                bytes: json_data.into_bytes(),
-            };
-            insert_asset(path, asset);
-        }
-        // Update the page containing this SNS
-        {
-            let pagenum = upstream_data.index / State::PAGE_SIZE;
-            let path = format!("{prefix}/sns/list/page/{pagenum}/slow.json");
-            let json_data = STATE.with(|s| {
-                let slow_data: Vec<_> = s
-                    .stable
-                    .borrow()
-                    .sns_cache
-                    .borrow()
-                    .upstream_data
-                    .values()
-                    .skip((pagenum * State::PAGE_SIZE) as usize)
-                    .take(State::PAGE_SIZE as usize)
-                    .map(SlowSnsData::from)
-                    .collect();
-                crate::state::log(format!("Page {pagenum} has {} entries.", slow_data.len()));
-                serde_json::to_string(&slow_data).unwrap_or_default()
+                serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
             });
             let asset = Asset {
                 headers: Vec::new(),
@@ -248,7 +207,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Config {
-            update_interval_ms: 120_000,
+            update_interval_ms: 10_000,
         }
     }
 }
