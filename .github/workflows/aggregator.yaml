@@ -116,6 +116,14 @@ jobs:
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
           }
+      - name: Get logs
+        run: |
+          scripts/sns/aggregator/get_log > ,logs
+          LOG_LINES="$(wc -l ,logs)"
+          (( LOG_LINES > 10 )) || {
+            echo "ERROR: Expected a non-trivial number of lines to have been logged by now."
+            exit 1
+          }
       - name: Stop replica
         run: dfx stop
   aggregator-pass:

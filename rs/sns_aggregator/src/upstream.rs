@@ -12,6 +12,8 @@ use ic_cdk::api::{call::RejectionCode, management_canister::provisional::Caniste
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 #[deny(clippy::panic)] // Put any errors in a queryable log.
+#[deny(clippy::expect_used)]
+#[deny(clippy::unwrap_used)]
 pub async fn update_cache() {
     crate::state::log("Getting upstream data...".to_string());
     let sns_maybe = STATE.with(|state| {
