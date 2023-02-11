@@ -32,9 +32,9 @@ nns)
   dfx nns install
   ;;
 sns)
-  : "Deploy nns-dapp with NNS, SNS and aggregator canisters"
+  : "Deploy nns-dapp with NNS and SNS canisters"
   : "Note: This is done with a script from the snsdemo repository."
-  "$SOURCE_DIR/deploy-snsdemo-testnet"
+  dfx-sns-demo
   ;;
 *)
   {
@@ -45,7 +45,7 @@ sns)
 esac
 
 : "Verify that deployment has the expected canisters"
-for canister_name in nns-dapp internet_identity sns_aggregator; do
+for canister_name in nns-dapp internet_identity; do
   wasm="$(n="$canister_name" jq -r '.canisters[env.n].wasm' dfx.json)"
   build_hash="$(sha256sum "$wasm" | awk '{print $1}')"
   deployed_hash="$(dfx canister info "$canister_name" | awk '/Module hash/{print $3}')"
