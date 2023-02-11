@@ -52,4 +52,4 @@ dfx-canister-set-id --canister_name sns_aggregator --canister_id "$AGGREGATOR_CA
 dfx canister info sns_aggregator
 
 : Deploy the aggregator
-RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK" --yes
+RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
