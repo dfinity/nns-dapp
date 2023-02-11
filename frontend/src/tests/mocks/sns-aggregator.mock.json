@@ -66,6 +66,8 @@
     "swap_state": {
       "swap": {
         "lifecycle": 3,
+        "decentralization_sale_open_timestamp_seconds": 1234,
+        "finalize_swap_in_progress": false,
         "init": {
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "sns_governance_canister_id": "4yr67-tiaaa-aaaaa-aabka-cai",
@@ -89,7 +91,8 @@
           "neuron_basket_construction_parameters": {
             "count": 2,
             "dissolve_delay_interval_seconds": 2629800
-          }
+          },
+          "sale_delay_seconds": 1234
         },
         "open_sns_token_swap_proposal_id": 120
       },

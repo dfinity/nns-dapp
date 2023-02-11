@@ -16,6 +16,8 @@ jobs:
         run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
+      - name: Install yq
+        run: sudo snap install yq
       - name: Format
         run: ./scripts/fmt
       - name: Check formatted

@@ -7,6 +7,7 @@ use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
+/// A standard HTTP header
 type HeaderField = (String, String);
 
 /// The standardised data structure for HTTP responses as supported natively by the replica.
@@ -35,6 +36,17 @@ pub struct HttpResponse {
     pub body: ByteBuf,
 }
 
+impl From<String> for HttpResponse {
+    fn from(string: String) -> Self {
+        HttpResponse {
+            status_code: 200,
+            headers: Vec::new(),
+            body: ByteBuf::from(string.as_bytes()),
+        }
+    }
+}
+
+/// The domain separator used to distinguish HTTP asset hashes from others.
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
 /// A tree containing the hashes of all the assets; used for certification.
@@ -54,7 +66,7 @@ impl From<&Assets> for AssetHashes {
 }
 
 /// An asset to be served via HTTP requests.
-#[derive(CandidType, Clone, Deserialize, PartialEq, Eq, Debug)]
+#[derive(CandidType, Clone, Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Asset {
     /// HTTP headers to be served with this asset.
     ///
@@ -81,7 +93,7 @@ impl Asset {
 /// A database of assets indexed by the path to the actual file, e.g.
 /// `/index.html` is a key but `/` is not, although getting the latter
 /// will also return the former.
-#[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
+#[derive(Default, Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// Adds an asset to the assets database.
@@ -96,6 +108,7 @@ impl Assets {
     }
 }
 
+/// The mime type of an asset, based on the path suffix.
 fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
@@ -124,6 +137,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 /// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
+        ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
         ("X-Frame-Options".to_string(), "DENY".to_string()),
         ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
         (
@@ -136,6 +150,7 @@ fn security_headers() -> Vec<HeaderField> {
     ]
 }
 
+/// Generates a header used by clients to verify the integrity of the data.
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = ic_cdk::api::data_certificate().unwrap_or_else(|| {
         panic!("data certificate is only available in query calls");
@@ -169,7 +184,8 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
     ic_cdk::api::print(format!("Inserting asset {}", &path.clone().into()));
     STATE.with(|s| {
         let mut asset_hashes = s.asset_hashes.borrow_mut();
-        let mut assets = s.assets.borrow_mut();
+        let stable_memory = s.stable.borrow();
+        let mut assets = stable_memory.assets.borrow_mut();
         let path = path.into();
 
         let index = "index.html";
@@ -193,6 +209,7 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
     });
 }
 
+/// System call to certify the root hash.
 fn update_root_hash(a: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &a.0.root_hash());
     ic_cdk::api::set_certified_data(&prefixed_root_hash[..]);
@@ -207,7 +224,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
         let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
         headers.push(certificate_header);
 
-        match state.assets.borrow().get(request_path) {
+        match state.stable.borrow().assets.borrow().get(request_path) {
             Some(asset) => {
                 headers.extend(asset.headers.clone());
                 if let Some(content_type) = content_type_of(request_path) {
@@ -242,13 +259,27 @@ pub fn insert_favicon() {
         // Ensure that there is a favicon, or else we get log spam about bad requests.
         {
             let favicon_path = "/favicon.ico";
-            if state.assets.borrow().get(favicon_path).is_none() {
+            if state.stable.borrow().assets.borrow().get(favicon_path).is_none() {
                 let asset = Asset {
                     headers: Vec::new(),
                     bytes: include_bytes!("favicon.ico").to_vec(),
                 };
                 insert_asset(favicon_path, asset);
             }
+        }
+    });
+}
+
+/// Insert a home page into the certified assets.
+pub fn insert_home_page() {
+    STATE.with(|state| {
+        let path = "/index.html";
+        if state.stable.borrow().assets.borrow().get(path).is_none() {
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: include_bytes!("index.html").to_vec(),
+            };
+            insert_asset(path, asset);
         }
     });
 }
