@@ -58,11 +58,12 @@ jobs:
           path: ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
       - name: Release
         run: |
+          artefacts=(nns-dapp_mainnet.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz)
           for tag in $(git tag --points-at HEAD) ; do
             : Creates or updates a release for the tag
             if gh release view "$tag"
-            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm sns_aggregator.wasm assets.tar.xz || true
-            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm sns_aggregator.wasm assets.tar.xz
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" "${artefacts[@]}"
             fi
             : If the tag is for a proposal, make it public
             [[ "$tag" != proposal-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
