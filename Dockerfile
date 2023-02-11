@@ -89,6 +89,7 @@ COPY ./config.sh /build/
 COPY ./build-frontend.sh /build/
 COPY ./dfx.json /build/
 WORKDIR /build
+RUN ( cd frontend && npm ci )
 RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
 
 FROM builder AS build_nnsdapp
