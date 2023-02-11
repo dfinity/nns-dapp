@@ -137,6 +137,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 /// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
+        ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
         ("X-Frame-Options".to_string(), "DENY".to_string()),
         ("X-Content-Type-Options".to_string(), "nosniff".to_string()),
         (
