@@ -1,7 +1,6 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
-import type { Vote } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
   NervousSystemParameters,
@@ -10,6 +9,7 @@ import type {
   SnsNeuronId,
   SnsNeuronPermissionType,
   SnsProposalId,
+  SnsVote,
 } from "@dfinity/sns";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
@@ -395,7 +395,7 @@ export const registerVote = async ({
   rootCanisterId: Principal;
   identity: Identity;
   proposalId: SnsProposalId;
-  vote: Vote;
+  vote: SnsVote;
 }): Promise<void> => {
   logWithTimestamp(`Register vote: call...`);
 

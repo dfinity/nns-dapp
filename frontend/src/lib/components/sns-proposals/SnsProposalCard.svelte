@@ -13,12 +13,10 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import { Vote } from "@dfinity/nns";
   import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { SnsProposalDecisionStatus } from "@dfinity/sns";
-  import { isDefined } from "$lib/utils/utils";
+  import { SnsProposalDecisionStatus, SnsVote } from "@dfinity/sns";
   import { busy, startBusy } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
 
@@ -64,12 +62,14 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
+  // TODO(demo): remove after voting implementation
   let demoVoteEnable = false;
   $: demoVoteEnable =
     signedIn &&
     status === SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
 
-  const vote = async (vote: Vote) => {
+  // TODO(demo): remove after voting implementation
+  const vote = async (vote: SnsVote) => {
     startBusy({ initiator: "load-sns-accounts" });
     await registerVoteDemo({ proposal: proposalData, vote });
     stopBusy("load-sns-accounts");
@@ -91,13 +91,13 @@
       <button
         class="secondary"
         disabled={$busy}
-        on:click|preventDefault|stopPropagation={() => vote(Vote.Yes)}
+        on:click|preventDefault|stopPropagation={() => vote(SnsVote.Yes)}
         >Vote Yes</button
       >
       <button
         class="secondary"
         disabled={$busy}
-        on:click|preventDefault|stopPropagation={() => vote(Vote.No)}
+        on:click|preventDefault|stopPropagation={() => vote(SnsVote.No)}
         >Vote No</button
       >
     </div>

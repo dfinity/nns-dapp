@@ -4,6 +4,7 @@ import {
 } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import {
   getSnsNeuronIdentity,
   syncSnsNeurons,
@@ -17,7 +18,6 @@ import {
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { isNullish } from "$lib/utils/utils";
-import type { Vote } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -25,11 +25,11 @@ import type {
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
+  SnsVote,
 } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
-import {sortedSnsUserNeuronsStore} from "$lib/derived/sns/sns-sorted-neurons.derived";
 
 export const registerVote = async ({
   rootCanisterId,
@@ -40,7 +40,7 @@ export const registerVote = async ({
   neuronId: SnsNeuronId;
   rootCanisterId: Principal;
   proposalId: SnsProposalId;
-  vote: Vote;
+  vote: SnsVote;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -66,11 +66,12 @@ export const registerVote = async ({
   }
 };
 
+// TODO(demo): remove after voting implementation
 export const registerVoteDemo = async ({
   vote,
   proposal,
 }: {
-  vote: Vote;
+  vote: SnsVote;
   proposal: SnsProposalData;
 }) => {
   let registrations = 0;
