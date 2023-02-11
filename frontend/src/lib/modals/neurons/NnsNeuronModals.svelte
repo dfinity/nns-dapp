@@ -83,6 +83,6 @@
   {/if}
 {/if}
 
-{#if type === "voting-history" && followee !== undefined}
+{#if type === "voting-history" && nonNullish(followee)}
   <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
 {/if}

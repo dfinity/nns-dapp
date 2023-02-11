@@ -4,12 +4,12 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { IcrcTransaction } from "@dfinity/ledger";
 import {
@@ -233,6 +233,8 @@ export const anonymizeSnsNeuron = async (
     voting_power_percentage_multiplier,
     followees,
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   } = snsNeuron;
 
   return {
@@ -258,6 +260,8 @@ export const anonymizeSnsNeuron = async (
       followees.followees.map(({ id }) => subaccountToHexString(id)),
     ]),
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   };
 };
 
@@ -451,7 +455,7 @@ type AnonymizedSnsSummary = {
   rootCanisterId?: string;
   swapCanisterId?: string;
   metadata: SnsSummaryMetadata;
-  token: SnsTokenMetadata;
+  token: IcrcTokenMetadata;
   swap: SnsSummarySwap;
   derived: SnsSwapDerivedState;
 };

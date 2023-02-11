@@ -44,7 +44,7 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 set -x
 
 ###################
-# frontend # (output: frontend/public/)
+# frontend # (output: assets.tar.xz)
 ###################
 "$TOPLEVEL/build-frontend.sh"
 

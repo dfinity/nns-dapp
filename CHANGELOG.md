@@ -1,7 +1,20 @@
 # Changelog
 
+## Proposal 106377
+* Launch ckBTC wallet functionality!
+* Fix bug in transactions list.
+* Introduce GZIP encoding for assets.
+* Fetch data with "query" for not logged in users.
+
+## Proposal 105498
+* Remove dashboard routing fallback.
+* Login screen minor changes.
+* Extended dissolve delay input.
+* Payload rendering fix.
+* Text and style updates.
+
 ## Proposal 104642
-* Fix bug encoding and decoding ICRC-1 subaccounts
+* Fix bug encoding and decoding ICRC-1 subaccounts.
 
 ## Proposal 104287
 * Auto-stake for non-controlled neurons.

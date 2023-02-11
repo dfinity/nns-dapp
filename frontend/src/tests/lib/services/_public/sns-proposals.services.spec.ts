@@ -12,10 +12,10 @@ import type { SnsProposalData } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
-  authStoreMock,
+  mockAuthStoreNoIdentitySubscribe,
+  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
-  mutableMockAuthStoreSubscribe,
 } from "../../../mocks/auth.store.mock";
 import { mockSnsProposal } from "../../../mocks/sns-proposals.mock";
 
@@ -39,9 +39,12 @@ describe("sns-proposals services", () => {
       .mockResolvedValue(proposals);
 
     describe("not logged in", () => {
-      afterEach(() => {
+      beforeEach(() => {
         snsProposalsStore.reset();
         jest.clearAllMocks();
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       });
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
@@ -101,14 +104,15 @@ describe("sns-proposals services", () => {
     });
 
     describe("logged in", () => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mutableMockAuthStoreSubscribe);
+      beforeEach(() => {
+        snsProposalsStore.reset();
+        jest.clearAllMocks();
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe);
+      });
 
       it("should call queryProposals with user's identity", async () => {
-        authStoreMock.next({
-          identity: mockIdentity,
-        });
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
         });

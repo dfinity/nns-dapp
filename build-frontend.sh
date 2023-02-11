@@ -51,6 +51,9 @@ cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 # brew install xz
 cd "$tarball_dir"
 
+# shellcheck disable=SC2038 # We have sane filenames, without return characters in them.
+find . -type f | xargs -I{} gzip -fn "{}"
+
 # --mtime, --sort, --owner, --group, --numeric-owner and --format are all
 # there to get a tarball that's reproducible across different platforms.
 # See https://reproducible-builds.org/docs/archives/
