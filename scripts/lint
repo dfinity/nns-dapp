@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+cd "$(dirname "$(realpath "$0")")/.."
+
+set -x
+./scripts/lint-rs
+./scripts/lint-sh
+# NOTE: This list is NOT complete.  Some lint commands
+# need to be encoded as scripts, then they can be added
+# to the list above.
