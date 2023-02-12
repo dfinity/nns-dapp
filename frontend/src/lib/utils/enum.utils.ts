@@ -3,8 +3,12 @@
  *
  * e.g. enum Hello { World = 0; } => [0]
  */
-export const enumValues = <T>(obj: T): number[] => {
-  return Object.values(obj).filter((o: T) => typeof o === "number");
+export const enumValues = <T extends Record<string, unknown>>(
+  obj: T
+): number[] => {
+  return Object.values(obj).filter(
+    (o: unknown) => typeof o === "number"
+  ) as number[];
 };
 
 /**
@@ -12,8 +16,12 @@ export const enumValues = <T>(obj: T): number[] => {
  *
  * e.g. enum Hello { World = 0; } => ['World']
  */
-export const enumKeys = <T>(obj: T): string[] => {
-  return Object.values(obj).filter((o: T) => typeof o === "string");
+export const enumKeys = <T extends Record<string, unknown>>(
+  obj: T
+): string[] => {
+  return Object.values(obj).filter(
+    (o: unknown) => typeof o === "string"
+  ) as string[];
 };
 
 /**
@@ -50,16 +58,7 @@ export const enumsExclude = <T>({
     values,
   });
 
-  return enumKeys(obj)
+  return enumKeys(obj as Record<string, unknown>)
     .filter((key: string) => !keys.includes(key))
     .map((key: string) => obj[key as keyof T] as unknown as T);
-};
-
-/**
- * Return the length of an enum - i.e. the number of values
- *
- * e.g. enum Hello { A = 0; B = 1; C = 2; } => 3
- */
-export const enumSize = <T>(enm: T): number => {
-  return Object.values(enm).filter(isNaN).length;
 };
