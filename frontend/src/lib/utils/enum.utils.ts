@@ -62,3 +62,12 @@ export const enumsExclude = <T>({
     .filter((key: string) => !keys.includes(key))
     .map((key: string) => obj[key as keyof T] as unknown as T);
 };
+
+/**
+ * Return the length of an enum - i.e. the number of values
+ *
+ * e.g. enum Hello { A = 0; B = 1; C = 2; } => 3
+ */
+export const enumSize = <T>(enm: T): number => {
+  return Object.values(enm).filter(isNaN).length;
+};
