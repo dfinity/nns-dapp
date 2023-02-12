@@ -24,10 +24,16 @@
     filteredProposals,
   } from "$lib/derived/proposals.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
+
+  $: if (isSignedIn($authStore.identity)) {
+    listNeurons();
+  }
 
   let loading = false;
   let hidden = false;

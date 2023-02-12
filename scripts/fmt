@@ -8,3 +8,4 @@ set -x
 ./scripts/fmt-json
 ./scripts/fmt-rs
 ./scripts/fmt-sh
+./scripts/fmt-yaml

@@ -734,6 +734,7 @@ interface I18nError__sns {
   sns_stop_dissolving: string;
   sns_stake: string;
   sns_increase_stake: string;
+  sns_register_vote: string;
   sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
