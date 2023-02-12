@@ -15,7 +15,6 @@ module.exports = {
   moduleFileExtensions: ["js", "ts", "svelte"],
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
-  testEnvironment: "jsdom",
   testEnvironmentOptions: {
     url: "https://nns.ic0.app/",
   },
