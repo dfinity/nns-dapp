@@ -45,7 +45,7 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
-  // e.g. is called from "Receive" modal after minter.update_balance was successfully executed
+  // e.g. is called from "Receive" modal after user click "Done"
   const reloadAccount = async () => {
     await loadCkBTCAccounts({});
     await loadAccount();
