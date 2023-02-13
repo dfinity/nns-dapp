@@ -23,7 +23,7 @@
   import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 
-  import DetachCanisterButton from "$lib/components/canister-detail/DetachCanisterButton.svelte";
+  import UnlinkCanisterButton from "$lib/components/canister-detail/UnlinkCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
@@ -192,7 +192,7 @@
         <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
         <CanisterCardSubTitle canister={canisterInfo} />
         <div class="actions">
-          <DetachCanisterButton canisterId={canisterInfo.canister_id} />
+          <UnlinkCanisterButton canisterId={canisterInfo.canister_id} />
         </div>
       {:else}
         <div class="loader-title">

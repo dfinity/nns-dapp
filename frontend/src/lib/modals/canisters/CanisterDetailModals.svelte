@@ -1,6 +1,6 @@
 <script lang="ts">
   import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
-  import DetachCanisterModal from "$lib/modals/canisters/DetachCanisterModal.svelte";
+  import UnlinkCanisterModal from "$lib/modals/canisters/UnlinkCanisterModal.svelte";
   import AddCanisterControllerModal from "$lib/modals/canisters/AddCanisterControllerModal.svelte";
   import RemoveCanisterControllerModal from "$lib/modals/canisters/RemoveCanisterControllerModal.svelte";
   import type {
@@ -32,8 +32,8 @@
   <AddCyclesModal on:nnsClose={close} />
 {/if}
 
-{#if type === "detach" && canisterId !== undefined}
-  <DetachCanisterModal {canisterId} on:nnsClose={close} />
+{#if type === "unlink" && canisterId !== undefined}
+  <UnlinkCanisterModal {canisterId} on:nnsClose={close} />
 {/if}
 
 {#if type === "add-controller"}
