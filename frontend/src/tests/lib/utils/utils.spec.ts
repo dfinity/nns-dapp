@@ -6,7 +6,6 @@ import {
   isDefined,
   isHash,
   isPngAsset,
-  notEmptyString,
   poll,
   PollingLimitExceededError,
   removeKeys,
@@ -137,15 +136,6 @@ describe("utils", () => {
       expect(hexStringToBytes(bytesToHexString([1, 255, 3, 0]))).toEqual([
         1, 255, 3, 0,
       ]);
-    });
-  });
-
-  describe("notEmptyString", () => {
-    it("should determine not empty", () => {
-      expect(notEmptyString(null)).toBeFalsy();
-      expect(notEmptyString(undefined)).toBeFalsy();
-      expect(notEmptyString("")).toBeFalsy();
-      expect(notEmptyString("test")).toBeTruthy();
     });
   });
 
