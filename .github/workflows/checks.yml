@@ -139,8 +139,22 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+  ic-commit-consistency:
+    needs: formatting
+    name: IC Commit
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run the ic_commit code generator
+        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+      - name: Verify that there are no code changes
+        run: |
+                if git diff | grep . ; then
+                        echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                        exit 1
+                fi
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
