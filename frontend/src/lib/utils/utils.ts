@@ -3,24 +3,6 @@ import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
 
-/* eslint-disable-next-line @typescript-eslint/ban-types */
-export const debounce = (func: Function, timeout?: number) => {
-  let timer: NodeJS.Timer | undefined;
-
-  return (...args: unknown[]) => {
-    const next = () => func(...args);
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(
-      next,
-      timeout !== undefined && timeout > 0 ? timeout : 300
-    );
-  };
-};
-
 export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;
 
