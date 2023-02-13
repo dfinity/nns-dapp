@@ -3,22 +3,22 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
+import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
-import {nowInSeconds} from "$lib/utils/date.utils";
-import type {Principal} from "@dfinity/principal";
-import {mockPrincipal} from "./auth.store.mock";
-import {numberToE8s} from "$lib/utils/token.utils";
-import type {Ticket} from "@dfinity/sns/dist/candid/sns_swap";
-import type {SnsTicket} from "$lib/services/sns-sale.services";
 
 export const snsTicketMock = ({
   rootCanisterId,
-  owner
-                               }: {rootCanisterId: Principal; owner: Principal}): SnsTicket => ({
+  owner,
+}: {
+  rootCanisterId: Principal;
+  owner: Principal;
+}): SnsTicket => ({
   rootCanisterId,
   ticket: {
     creation_time: BigInt(nowInSeconds()),
@@ -30,7 +30,7 @@ export const snsTicketMock = ({
       },
     ],
     amount_icp_e8s: numberToE8s(10),
-  }
+  },
 });
 
 export const renderContextCmp = ({

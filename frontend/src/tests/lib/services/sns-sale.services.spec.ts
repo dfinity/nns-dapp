@@ -2,37 +2,52 @@
  * @jest-environment jsdom
  */
 
-import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { NotAuthorizedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import { participateInSnsSwap } from "$lib/services/sns-sale.services";
-import type { HttpAgent } from "@dfinity/agent";
+import {
+  getOpenTicket,
+  initiateSnsSwapParticipation,
+  newSaleTicket,
+  participateInSnsSwap,
+} from "$lib/services/sns-sale.services";
+import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
   LedgerCanister,
   TokenAmount,
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
-  createBuyersState,
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockIdentityErrorMsg,
+  mockPrincipal,
+} from "../../mocks/auth.store.mock";
+import {
+  mockProjectSubscribe,
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
+  mockSnsFullProject,
+  mockSnsToken,
   mockSwap,
 } from "../../mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
-  rootCanisterIdMock,
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
+import { snsTicketMock } from "../../mocks/sns.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -40,6 +55,9 @@ jest.mock("$lib/api/agent.api", () => {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
 });
+
+const identity: Identity | undefined = mockIdentity;
+const rootCanisterIdMock = identity.getPrincipal();
 
 describe("sns-api", () => {
   const mockQuerySwap = {
@@ -53,16 +71,43 @@ describe("sns-api", () => {
   };
 
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
-  const mockUserCommitment = createBuyersState(BigInt(100_000_000));
-  const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
-  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
-  const increaseStakeNeuronSpy = jest.fn();
+  const ticket = snsTicketMock({
+    rootCanisterId: rootCanisterIdMock,
+    owner: mockPrincipal,
+  });
+  const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
+    snsQueryStore.reset();
+
+    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([
+        {
+          ...mockSnsFullProject,
+          rootCanisterId: ticket.rootCanisterId,
+        },
+      ])
+    );
+
+    const ledgerMock = mock<LedgerCanister>();
+    ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
+
+    snsQueryStore.setData(
+      snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed],
+      })
+    );
+
+    const fee = mockSnsToken.fee;
+    transactionsFeesStore.setFee({
+      rootCanisterId: rootCanisterIdMock,
+      fee,
+      certified: true,
+    });
+
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => ledgerCanisterMock);
@@ -86,14 +131,14 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
-        getUserCommitment: getUserCommitmentSpy,
-        listNeurons: queryNeuronsSpy,
-        getNeuron: getNeuronSpy,
-        stakeNeuron: stakeNeuronSpy,
-        queryNeuron: queryNeuronSpy,
-        increaseStakeNeuron: increaseStakeNeuronSpy,
+        getOpenTicket: getOpenTicketSpy,
+        newSaleTicket: newSaleTicketSpy,
       })
     );
+
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {
@@ -101,48 +146,59 @@ describe("sns-api", () => {
     jest.restoreAllMocks();
   });
 
-  it("should participate in a swap by notifying nnsdapp, transferring and notifying swap", async () => {
-    const nnsDappMock = mock<NNSDappCanister>();
-    nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
-
-    await participateInSnsSwap({
-      amount: TokenAmount.fromString({
-        amount: "10",
-        token: ICPToken,
-      }) as TokenAmount,
-      rootCanisterId: rootCanisterIdMock,
-      identity: mockIdentity,
-      controller: Principal.fromText("aaaaa-aa"),
+  it("should getOpenTicket", async () => {
+    const result = await getOpenTicket({
+      rootCanisterId: ticket.rootCanisterId,
+      certified: true,
     });
 
-    expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
-    expect(ledgerCanisterMock.transfer).toBeCalled();
-    expect(notifyParticipationSpy).toBeCalled();
+    expect(getOpenTicketSpy).toBeCalled();
+    expect(result).toEqual(ticket);
   });
 
-  it("should not participate in a swap if notifying nnsdapp fails", async () => {
-    const nnsDappMock = mock<NNSDappCanister>();
-    nnsDappMock.addPendingNotifySwap.mockRejectedValue(
-      new NotAuthorizedError()
+  it("should create newSaleTicket", async () => {
+    const result = await newSaleTicket({
+      rootCanisterId: ticket.rootCanisterId,
+      amount_icp_e8s: 0n,
+    });
+
+    expect(newSaleTicketSpy).toBeCalled();
+    expect(result).toEqual(ticket);
+  });
+
+  it("should initiate SnsSwapParticipation", async () => {
+    const account = {
+      ...mockMainAccount,
+      balance: TokenAmount.fromE8s({
+        amount: BigInt(1_000_000_000_000),
+        token: ICPToken,
+      }),
+    };
+
+    const result = await initiateSnsSwapParticipation({
+      rootCanisterId: rootCanisterIdMock,
+      amount: TokenAmount.fromNumber({
+        amount: 1,
+        token: ICPToken,
+      }),
+      account,
+    });
+
+    expect(newSaleTicketSpy).toBeCalled();
+    expect(newSaleTicketSpy).toBeCalledWith(
+      expect.objectContaining({
+        amount_icp_e8s: 100000000n,
+      })
     );
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    expect(result).toEqual(ticket);
+  });
 
-    const call = () =>
-      participateInSnsSwap({
-        amount: TokenAmount.fromString({
-          amount: "10",
-          token: ICPToken,
-        }) as TokenAmount,
-        rootCanisterId: rootCanisterIdMock,
-        identity: mockIdentity,
-        controller: Principal.fromText("aaaaa-aa"),
-      });
+  it("should participateInSnsSwap", async () => {
+    const result = await participateInSnsSwap({
+      ticket,
+    });
 
-    // We need to wait until the call has finished to check the call to nnsDappMock
-    await expect(call).rejects.toThrow();
-    expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
-    expect(ledgerCanisterMock.transfer).not.toBeCalled();
-    expect(notifyParticipationSpy).not.toBeCalled();
+    expect(notifyParticipationSpy).toBeCalled();
+    expect(result).toEqual({ success: true });
   });
 });

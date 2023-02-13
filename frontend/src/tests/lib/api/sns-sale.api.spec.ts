@@ -2,10 +2,12 @@
  * @jest-environment jsdom
  */
 
+import { getOpenTicket, newSaleTicket } from "$lib/api/sns-sale.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -14,8 +16,6 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
-import {getOpenTicket, newSaleTicket} from "$lib/api/sns-sale.api";
-import type {SnsWasmCanisterOptions} from "@dfinity/nns";
 import { snsTicketMock } from "../../mocks/sns.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
@@ -26,11 +26,10 @@ describe("sns-sale.api", () => {
     owner: mockPrincipal,
   });
 
-  const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket);
-  const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket);
+  const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
-
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
