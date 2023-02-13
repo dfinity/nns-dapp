@@ -365,7 +365,6 @@ interface I18nCanisters {
   link_canister_title: string;
   link_canister_subtitle: string;
   link_canister_success: string;
-  attach_canister: string;
   enter_canister_id: string;
   canister_id: string;
   enter_amount: string;
@@ -389,16 +388,16 @@ interface I18nCanister_detail {
   add_cycles: string;
   top_up_canister: string;
   top_up_successful: string;
-  detach: string;
-  confirm_detach_title: string;
-  confirm_detach_description_1: string;
-  confirm_detach_description_2: string;
+  unlink: string;
+  confirm_unlink_title: string;
+  confirm_unlink_description_1: string;
+  confirm_unlink_description_2: string;
   confirm_remove_controller_title: string;
   confirm_remove_controller_description: string;
   confirm_remove_controller_user_description_1: string;
   confirm_remove_controller_user_description_2: string;
   confirm_remove_last_controller_description: string;
-  detach_success: string;
+  unlink_success: string;
   confirm_new_controller: string;
   enter_controller: string;
   edit_controller: string;
@@ -708,9 +707,9 @@ interface I18nError__canister {
   name_taken: string;
   name_too_long: string;
   limit_exceeded: string;
-  detach_not_found: string;
-  unknown_attach: string;
-  unknown_detach: string;
+  unlink_not_found: string;
+  unknown_link: string;
+  unknown_unlink: string;
   get_exchange_rate: string;
 }
 
