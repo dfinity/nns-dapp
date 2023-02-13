@@ -808,14 +808,11 @@ impl AccountsStore {
     pub fn mark_neuron_created(
         &mut self,
         principal: &PrincipalId,
-        block_height: BlockIndex,
         memo: Memo,
         neuron_id: NeuronId,
     ) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::NeuronCreated(neuron_id));
     }
 
     pub fn mark_neuron_topped_up(&mut self, block_height: BlockIndex) {

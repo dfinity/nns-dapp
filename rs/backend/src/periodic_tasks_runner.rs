@@ -28,7 +28,7 @@ pub async fn run_periodic_tasks() {
                 handle_participate_swap(principal, from, to, swap_canister_id).await;
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
-                handle_stake_neuron(block_height, principal, memo).await;
+                handle_stake_neuron(principal, memo).await;
             }
             MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo) => {
                 handle_top_up_neuron(block_height, principal, memo).await;
@@ -78,12 +78,12 @@ async fn handle_participate_swap(
     }
 }
 
-async fn handle_stake_neuron(block_height: BlockIndex, principal: PrincipalId, memo: Memo) {
+async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(neuron_id) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .mark_neuron_created(&principal, block_height, memo, neuron_id)
+                .mark_neuron_created(&principal, memo, neuron_id)
         }),
         Err(_error) => (),
     }
