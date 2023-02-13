@@ -19,6 +19,7 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
+import type { SnsTicket } from "$lib/types/sns";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -32,19 +33,16 @@ import { isNullish } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { TxDuplicateError } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
-} from "@dfinity/sns/dist/types/enums/swap.enums";
-import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
-} from "@dfinity/sns/dist/types/errors/swap.errors";
+} from "@dfinity/sns";
+import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
-import type {SnsTicket} from "$lib/types/sns";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -111,6 +109,7 @@ export const newSaleTicket = async ({
       // TODO(GIX-1271): display more details in error message
       switch (err.errorType) {
         case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS:
+          // TODO(GIX-1271): display notification that existed ticket is used
           return {
             rootCanisterId,
             ticket: err.existingTicket,
@@ -175,8 +174,7 @@ export const initiateSnsSwapParticipation = async ({
   amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
-}): Promise<{ success: boolean }> => {
-  let success = false;
+}): Promise<SnsTicket | undefined> => {
   // validation
   try {
     const transactionFee = get(transactionsFeesStore).main;
@@ -219,9 +217,10 @@ export const initiateSnsSwapParticipation = async ({
       });
 
       if (ticket) {
-        await participateInSnsSwap({
-          ticket,
-        });
+        return ticket;
+        // await participateInSnsSwap({
+        //   ticket,
+        // });
       }
     } catch (error: unknown) {
       // The last commitment might trigger this error
@@ -242,11 +241,6 @@ export const initiateSnsSwapParticipation = async ({
         throw error;
       }
     }
-
-    success = true;
-    await syncAccounts();
-
-    return { success };
   } catch (error: unknown) {
     toastsError(
       toToastError({
@@ -254,7 +248,6 @@ export const initiateSnsSwapParticipation = async ({
         fallbackErrorLabelKey: "error__sns.cannot_participate",
       })
     );
-    return { success };
   }
 };
 
@@ -300,7 +293,7 @@ export const participateInSnsSwap = async ({
   ticket: { ticket: saleTicket, rootCanisterId },
 }: {
   ticket: Required<SnsTicket>;
-}): Promise<void> => {
+}): Promise<{ success: boolean }> => {
   logWithTimestamp("Participating in swap: call...");
 
   const {
@@ -337,7 +330,7 @@ export const participateInSnsSwap = async ({
 
   try {
     // Send amount to the ledger
-    await nnsLedger.transfer({
+    const res = await nnsLedger.transfer({
       amount,
       fromSubAccount: isNullish(subaccount)
         ? undefined
@@ -359,12 +352,16 @@ export const participateInSnsSwap = async ({
         })
       );
 
-      return;
+      return { success: false };
     }
   }
 
   // refresh_buyer_tokens
   await notifyParticipation({ buyer: controller.toText() });
 
+  await syncAccounts();
+
   logWithTimestamp("Participating in swap: done");
+
+  return { success: true };
 };

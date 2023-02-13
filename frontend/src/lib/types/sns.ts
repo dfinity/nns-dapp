@@ -8,8 +8,8 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
-import type { PngDataUrl } from "./assets";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import type { PngDataUrl } from "./assets";
 
 export type RootCanisterId = Principal;
 export type RootCanisterIdText = string;
