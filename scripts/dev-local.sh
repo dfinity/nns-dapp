@@ -57,12 +57,13 @@ if ! nns_dapp_url=$(dfx nns install 2>"$nns_install_log" | grep "^nns-dapp" | aw
   tail -10 "$nns_install_log"
   exit 1
 fi
-rm $nns_install_log
+rm "$nns_install_log"
 
+# shellcheck disable=SC2001
 nns_dapp_canister_id=$(echo "$nns_dapp_url" | sed -e "s@http://\([^.]*\).localhost:8080/@\1@")
 DFX_NETWORK=local ./config.sh >/dev/null 2>/dev/null
 mv frontend/.env frontend/.env-with-null
-cat frontend/.env-with-null | sed -e "s@null@${nns_dapp_canister_id}@" >frontend/.env
+sed -e "s@null@${nns_dapp_canister_id}@" frontend/.env-with-null >frontend/.env
 rm frontend/.env-with-null
 
 local_ids=".dfx/local/canister_ids.json"
