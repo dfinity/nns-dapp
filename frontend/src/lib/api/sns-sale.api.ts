@@ -8,12 +8,10 @@ import { wrapper } from "./sns-wrapper.api";
 export const getOpenTicket = async ({
   identity,
   rootCanisterId,
-  withTicket,
   certified,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  withTicket?: boolean;
   certified: boolean;
 }): Promise<Ticket> => {
   logWithTimestamp(`getOpenTicket call...`);
@@ -24,7 +22,7 @@ export const getOpenTicket = async ({
     certified,
   });
 
-  const response = await getOpenTicket({ withTicket });
+  const response = await getOpenTicket({});
 
   logWithTimestamp(`getOpenTicket complete.`);
 

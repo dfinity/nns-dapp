@@ -51,11 +51,9 @@ export interface SnsTicket {
 }
 
 export const getOpenTicket = async ({
-  withTicket,
   rootCanisterId,
   certified,
 }: {
-  withTicket?: boolean; // TODO: for testing purpose only
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsTicket | undefined> => {
@@ -64,7 +62,6 @@ export const getOpenTicket = async ({
     const ticket = await getOpenTicketApi({
       identity,
       rootCanisterId,
-      withTicket,
       certified,
     });
 
