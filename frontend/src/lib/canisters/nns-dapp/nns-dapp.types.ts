@@ -74,10 +74,6 @@ export interface HttpResponse {
 export interface ICPTs {
   e8s: E8s;
 }
-export interface MultiPartTransactionError {
-  error_message: string;
-  block_height: BlockHeight;
-}
 export interface Receive {
   fee: ICPTs;
   from: AccountIdentifierString;
@@ -170,9 +166,6 @@ export default interface _SERVICE {
   ) => Promise<DetachCanisterResponse>;
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
-  get_multi_part_transaction_errors: () => Promise<
-    Array<MultiPartTransactionError>
-  >;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   get_transactions: (

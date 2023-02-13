@@ -58,10 +58,6 @@ export const idlFactory = ({ IDL }) => {
     canister_id: IDL.Principal,
   });
   const BlockHeight = IDL.Nat64;
-  const MultiPartTransactionError = IDL.Record({
-    error_message: IDL.Text,
-    block_height: BlockHeight,
-  });
   const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
   const GetProposalPayloadResponse = IDL.Variant({
@@ -182,11 +178,6 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], []),
-    get_multi_part_transaction_errors: IDL.Func(
-      [],
-      [IDL.Vec(MultiPartTransactionError)],
-      []
-    ),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],
