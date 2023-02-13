@@ -1,3 +1,4 @@
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -13,10 +14,12 @@ import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
+import type { ToastMsg } from "@dfinity/gix-components";
+import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
@@ -34,6 +37,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
@@ -56,12 +60,16 @@ const {
   topUpNeuron,
 } = services;
 
-jest.mock("$lib/stores/toasts.store", () => {
-  return {
-    toastsError: jest.fn(),
-    toastsShow: jest.fn(),
-  };
-});
+let toasts: ToastMsg[] = [];
+toastsStore.subscribe((t) => (toasts = t));
+
+const expectToastError = (contained: string) =>
+  expect(toasts).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
 
 let testIdentity: Identity | null = mockIdentity;
 const setNoAccountIdentity = () => (testIdentity = null);
@@ -137,10 +145,6 @@ describe("neurons-services", () => {
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyQueryNeurons = jest
-    .spyOn(api, "queryNeurons")
-    .mockImplementation(() => Promise.resolve(neurons));
-
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
     .mockImplementation(() => Promise.resolve());
@@ -211,6 +215,9 @@ describe("neurons-services", () => {
     neuronsStore.reset();
     accountsStore.reset();
     resetIdentity();
+    resetAccountIdentity();
+    toastsStore.reset();
+    resetNeuronsApiService();
   });
 
   describe("stake new neuron", () => {
@@ -257,7 +264,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsError).toBeCalled();
+      expectToastError(en.error.amount_not_enough_stake_neuron);
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
@@ -271,7 +278,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsShow).toBeCalled();
+      expectToastError("Invalid number NaN");
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
@@ -293,7 +300,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsShow).toBeCalled();
+      expectToastError(en.error.insufficient_funds);
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -305,13 +312,15 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsShow).toBeCalled();
-
-      resetAccountIdentity();
+      expectToastError("Cannot read properties of null");
     });
   });
 
   describe("list neurons", () => {
+    const spyQueryNeurons = jest
+      .spyOn(api, "queryNeurons")
+      .mockResolvedValue(neurons);
+
     it("should list neurons", async () => {
       const oldNeuronsList = get(definedNeuronsStore);
       expect(oldNeuronsList).toEqual([]);
@@ -322,6 +331,26 @@ describe("neurons-services", () => {
 
       const newNeuronsList = get(definedNeuronsStore);
       expect(newNeuronsList).toEqual(neurons);
+    });
+
+    it("should not call api when called twice and cache is not reset", async () => {
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
+
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
     });
 
     it("should not list neurons if no identity", async () => {
@@ -352,7 +381,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
     });
 
@@ -367,7 +396,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -406,7 +435,7 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(neuron);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
@@ -419,7 +448,7 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(notControlledNeuron);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
@@ -476,7 +505,7 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(neuron);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
 
@@ -488,7 +517,7 @@ describe("neurons-services", () => {
 
       await toggleAutoStakeMaturity(notControlledNeuron);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
 
@@ -511,9 +540,16 @@ describe("neurons-services", () => {
           controller: smallerVersionIdentity.getPrincipal().toText(),
         },
       };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+
       await toggleAutoStakeMaturity(neuron);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
     });
   });
@@ -538,7 +574,7 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -554,7 +590,7 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -580,7 +616,7 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -596,7 +632,7 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -622,7 +658,7 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -653,7 +689,12 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -669,7 +710,7 @@ describe("neurons-services", () => {
         percentageToStake: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStakeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
@@ -695,7 +736,7 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
     });
@@ -711,7 +752,7 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
     });
@@ -736,7 +777,7 @@ describe("neurons-services", () => {
         targetNeuronId: neurons[1].neuronId,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
 
@@ -759,7 +800,7 @@ describe("neurons-services", () => {
         targetNeuronId: neuron.neuronId,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.merge_neurons_not_same_controller);
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
 
@@ -799,12 +840,22 @@ describe("neurons-services", () => {
           controller: smallerVersionIdentity.getPrincipal().toText(),
         },
       };
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
+
       await mergeNeurons({
         sourceNeuronId: neuron1.neuronId,
         targetNeuronId: neuron2.neuronId,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
@@ -828,7 +879,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
 
@@ -843,7 +894,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
   });
@@ -940,7 +991,7 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
 
@@ -955,7 +1006,7 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
   });
@@ -973,7 +1024,7 @@ describe("neurons-services", () => {
 
       await startDissolving(BigInt(10));
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
 
@@ -985,7 +1036,7 @@ describe("neurons-services", () => {
 
       await startDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
   });
@@ -1003,7 +1054,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(BigInt(10));
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
 
@@ -1015,7 +1066,7 @@ describe("neurons-services", () => {
 
       await stopDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
   });
@@ -1059,7 +1110,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySplitNeuron).not.toHaveBeenCalled();
     });
 
@@ -1074,7 +1125,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySplitNeuron).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -1111,7 +1162,7 @@ describe("neurons-services", () => {
         followee: controlledNeuron.neuronId,
       });
 
-      expect(toastsError).toHaveBeenCalled();
+      expectToastError(en.new_followee.same_neuron);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1133,7 +1184,7 @@ describe("neurons-services", () => {
         followee: followee,
       });
 
-      expect(toastsError).toHaveBeenCalled();
+      expectToastError(en.new_followee.already_followed);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1150,7 +1201,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1168,7 +1219,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1267,7 +1318,7 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1291,7 +1342,7 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expect(toastsShow).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1468,7 +1519,6 @@ describe("neurons-services", () => {
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
       expect(call).rejects.toThrow(NotAuthorizedNeuronError);
-      resetAccountIdentity();
     });
   });
 

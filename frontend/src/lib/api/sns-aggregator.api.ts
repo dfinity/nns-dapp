@@ -79,6 +79,8 @@ type CachedNervousFunctionDto = {
 
 type CachedSnsSwapDto = {
   lifecycle: number;
+  decentralization_sale_open_timestamp_seconds?: number;
+  finalize_swap_in_progress?: boolean;
   init: {
     nns_governance_canister_id: string;
     sns_governance_canister_id: string;
@@ -101,6 +103,7 @@ type CachedSnsSwapDto = {
       count: number;
       dissolve_delay_interval_seconds: number;
     };
+    sale_delay_seconds?: number;
   };
   open_sns_token_swap_proposal_id: number;
 };
@@ -170,12 +173,20 @@ const convertSwap = ({
   open_sns_token_swap_proposal_id,
   init,
   params,
+  decentralization_sale_open_timestamp_seconds,
+  finalize_swap_in_progress,
 }: CachedSnsSwapDto): SnsSwap => ({
   lifecycle,
   // TODO: Ask to Max, why isn't it there?
   neuron_recipes: [],
   // TODO: Ask to Max, why isn't it there?
   cf_participants: [],
+  decentralization_sale_open_timestamp_seconds: toNullable(
+    convertOptionalNumToBigInt(decentralization_sale_open_timestamp_seconds)
+  ),
+  // TODO: Upgrade @dfinity/utils and use the fix for the optional boolean
+  finalize_swap_in_progress:
+    finalize_swap_in_progress === undefined ? [] : [finalize_swap_in_progress],
   buyers: [],
   open_sns_token_swap_proposal_id:
     open_sns_token_swap_proposal_id !== undefined
@@ -208,6 +219,9 @@ const convertSwap = ({
           ),
           count: BigInt(params.neuron_basket_construction_parameters.count),
         }),
+        sale_delay_seconds: toNullable(
+          convertOptionalNumToBigInt(params.sale_delay_seconds)
+        ),
       })
     : [],
 });

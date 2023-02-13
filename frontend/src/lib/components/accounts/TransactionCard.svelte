@@ -88,7 +88,7 @@
     }
 
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: 48px auto;
     align-items: flex-start;
     column-gap: var(--padding-2x);
 

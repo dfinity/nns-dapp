@@ -214,7 +214,7 @@ export const getSnsNeuron = async ({
         // Check that the neuron's stake is in sync with the subaccount's balance
         const neuronId = fromNullable(neuron.id);
         if (neuronId !== undefined) {
-          const identity = await getNeuronIdentity();
+          const identity = await getSnsNeuronIdentity();
           if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
             await refreshNeuron({ rootCanisterId, identity, neuronId });
             const updatedNeuron = await getSnsNeuronApi({
@@ -237,7 +237,8 @@ export const getSnsNeuron = async ({
 
 // Implement when SNS neurons can be controlled with Hardware wallets
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getNeuronIdentity = (): Promise<Identity> => getAuthenticatedIdentity();
+export const getSnsNeuronIdentity = (): Promise<Identity> =>
+  getAuthenticatedIdentity();
 
 export const addHotkey = async ({
   neuronId,
@@ -249,7 +250,7 @@ export const addHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
     await addNeuronPermissions({
       permissions: HOTKEY_PERMISSIONS,
       identity,
@@ -277,7 +278,7 @@ export const removeHotkey = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
     const principal = Principal.fromText(hotkey);
     await removeNeuronPermissions({
       permissions: HOTKEY_PERMISSIONS,
@@ -338,7 +339,7 @@ export const splitNeuron = async ({
     }
 
     // TODO: Get identity depending on account to support HW accounts
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
     // reload neurons (should be actual for nextMemo calculation)
     await loadNeurons({
       rootCanisterId,
@@ -380,7 +381,7 @@ export const disburse = async ({
   neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await disburseApi({
       rootCanisterId,
@@ -406,7 +407,7 @@ export const startDissolving = async ({
   neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await startDissolvingApi({
       rootCanisterId,
@@ -432,7 +433,7 @@ export const stopDissolving = async ({
   neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await stopDissolvingApi({
       rootCanisterId,
@@ -460,7 +461,7 @@ export const updateDelay = async ({
   dissolveDelaySeconds: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
     const currentDissolveDelay =
       getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
     const additionalDissolveDelaySeconds =
@@ -604,7 +605,7 @@ export const addFollowee = async ({
     return { success: false };
   }
 
-  const identity = await getNeuronIdentity();
+  const identity = await getSnsNeuronIdentity();
   const followee: SnsNeuronId = {
     id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
   };
@@ -687,7 +688,7 @@ export const removeFollowee = async ({
   followee: SnsNeuronId;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
-  const identity = await getNeuronIdentity();
+  const identity = await getSnsNeuronIdentity();
   const followeeHex = subaccountToHexString(followee.id);
 
   const topicFollowees = followeesByFunction({ neuron, functionId });
@@ -736,7 +737,7 @@ export const stakeMaturity = async ({
   percentageToStake: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await stakeMaturityApi({
       neuronId,
@@ -766,7 +767,7 @@ export const toggleAutoStakeMaturity = async ({
   rootCanisterId: Principal;
 }): Promise<{ success: boolean; err?: string }> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await autoStakeMaturityApi({
       neuronId,
@@ -794,7 +795,7 @@ export const makeDummyProposals = async ({
   rootCanisterId: Principal;
 }): Promise<void> => {
   try {
-    const identity = await getNeuronIdentity();
+    const identity = await getSnsNeuronIdentity();
 
     await makeSnsDummyProposals({
       neuronId,

@@ -65,6 +65,14 @@ local_deployment_data="$(
   export SNS_AGGREGATOR_URL
   test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
 
+  : "Try to find the ckBTC canister IDs"
+  CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"
+  export CKBTC_LEDGER_CANISTER_ID
+  test -n "${CKBTC_LEDGER_CANISTER_ID:-}" || unset CKBTC_LEDGER_CANISTER_ID
+  CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
+  export CKBTC_INDEX_CANISTER_ID
+  test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -74,6 +82,8 @@ local_deployment_data="$(
     OWN_CANISTER_ID: env.CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
+    CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
+    CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'
@@ -112,6 +122,8 @@ featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
+ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
+ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -126,7 +138,9 @@ VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
-VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}" | tee "$ENV_FILE"
+VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
+VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "Config has been defined in '${ENV_FILE}'" >&2
 
@@ -135,6 +149,11 @@ export IDENTITY_SERVICE_URL
 
 SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
 export SNS_AGGREGATOR_URL
+
+CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
+export CKBTC_LEDGER_CANISTER_ID
+CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
+export CKBTC_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
