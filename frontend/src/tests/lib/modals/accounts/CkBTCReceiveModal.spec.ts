@@ -21,6 +21,8 @@ jest.mock("$lib/services/ckbtc-minter.services", () => {
 describe("CkBTCReceiveModal", () => {
   const reloadAccountSpy = jest.fn();
 
+  afterEach(() => jest.clearAllMocks());
+
   const renderTransactionModal = () =>
     renderModal({
       component: CkBTCReceiveModal,
@@ -111,6 +113,20 @@ describe("CkBTCReceiveModal", () => {
     const { getByTestId } = await renderTransactionModal();
 
     fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+
+    await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+  });
+
+  it("should only reload account", async () => {
+    const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+
+    const { getByTestId, container } = await renderTransactionModal();
+
+    await selectCkBTC(container);
+
+    fireEvent.click(getByTestId("reload-ckbtc-account") as HTMLButtonElement);
+
+    expect(spyUpdateBalance).not.toHaveBeenCalled();
 
     await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
   });
