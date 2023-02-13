@@ -78,6 +78,11 @@
 
     stopBusy("update-ckbtc-balance");
   };
+
+  const reloadAccountAndClose = async () => {
+    await reloadAccount();
+    dispatcher("nnsClose");
+  };
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
@@ -140,12 +145,20 @@
 
   <div class="toolbar">
     {#if qrCodeRendered}
-      <button
-        class="primary"
-        on:click={updateBalance}
-        disabled={$busy}
-        data-tid="update-ckbtc-balance">{$i18n.core.done}</button
-      >
+      {#if bitcoin}
+        <button
+          class="primary"
+          on:click={updateBalance}
+          disabled={$busy}
+          data-tid="update-ckbtc-balance">{$i18n.core.done}</button
+        >
+      {:else}
+        <button
+          class="primary"
+          on:click={reloadAccountAndClose}
+          data-tid="reload-ckbtc-account">{$i18n.core.done}</button
+        >
+      {/if}
     {/if}
   </div>
 </Modal>
