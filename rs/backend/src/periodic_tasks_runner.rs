@@ -85,22 +85,14 @@ async fn handle_stake_neuron(block_height: BlockIndex, principal: PrincipalId, m
                 .borrow_mut()
                 .mark_neuron_created(&principal, block_height, memo, neuron_id)
         }),
-        Err(e) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .process_multi_part_transaction_error(block_height, e, false)
-        }),
+        Err(_error) => (),
     }
 }
 
 async fn handle_top_up_neuron(block_height: BlockIndex, principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up(block_height)),
-        Err(e) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .process_multi_part_transaction_error(block_height, e, false)
-        }),
+        Err(_error) => (),
     }
 }
 
@@ -119,22 +111,8 @@ async fn handle_create_canister_v2(block_height: BlockIndex, controller: Princip
                 )
             });
         }
-        Ok(Err(error)) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                    block_height,
-                    error.to_string(),
-                    false,
-                )
-            });
-        }
-        Err(error) => {
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.clone(), true)
-            });
-        }
+        Ok(Err(_error)) => (),
+        Err(_error) => (),
     }
 }
 
@@ -147,13 +125,6 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
         }),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                    block_height,
-                    error.to_string(),
-                    was_refunded,
-                )
-            });
             if was_refunded {
                 let subaccount = (&args.controller).into();
                 enqueue_create_or_top_up_canister_refund(
@@ -167,11 +138,6 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
             }
         }
         Err(error) => {
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.clone(), true)
-            });
             let subaccount = (&args.controller).into();
             enqueue_create_or_top_up_canister_refund(
                 args.controller,
@@ -196,22 +162,8 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
                 )
             });
         }
-        Ok(Err(error)) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                    block_height,
-                    format!("{:?}", error),
-                    false,
-                )
-            });
-        }
-        Err(error) => {
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error, false)
-            });
-        }
+        Ok(Err(_error)) => (),
+        Err(_error) => (),
     }
 }
 
@@ -220,13 +172,6 @@ async fn handle_top_up_canister(block_height: BlockIndex, args: TopUpCanisterArg
         Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                    block_height,
-                    error.to_string(),
-                    was_refunded,
-                )
-            });
             if was_refunded {
                 let subaccount = (&args.principal).into();
                 enqueue_create_or_top_up_canister_refund(
@@ -240,11 +185,6 @@ async fn handle_top_up_canister(block_height: BlockIndex, args: TopUpCanisterArg
             }
         }
         Err(error) => {
-            STATE.with(|s| {
-                s.accounts_store
-                    .borrow_mut()
-                    .process_multi_part_transaction_error(block_height, error.clone(), true)
-            });
             let subaccount = (&args.principal).into();
             enqueue_create_or_top_up_canister_refund(
                 args.principal,
@@ -270,15 +210,7 @@ async fn handle_refund(args: RefundTransactionArgs) {
 
     match ledger::send(send_request.clone()).await {
         Ok(_block_height) => (), 
-        Err(error) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                    args.original_transaction_block_height,
-                    error,
-                    false,
-                )
-            });
-        }
+        Err(_error) => (),
     }
 }
 
@@ -399,22 +331,9 @@ async fn enqueue_create_or_top_up_canister_refund(
                         .borrow_mut()
                         .enqueue_transaction_to_be_refunded(refund_args)
                 })
-            } else {
-                let error_message = format!("Unable to refund, account balance too low. Account: {}", from_account);
-                STATE.with(|s| {
-                    s.accounts_store.borrow_mut().process_multi_part_transaction_error(
-                        block_height,
-                        error_message,
-                        false,
-                    )
-                });
             }
         }
-        Err(error) => STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .process_multi_part_transaction_error(block_height, error, false)
-        }),
+        Err(_error) => (),
     };
 }
 

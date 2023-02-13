@@ -790,22 +790,6 @@ impl AccountsStore {
         );
     }
 
-    pub fn process_multi_part_transaction_error(
-        &mut self,
-        block_height: BlockIndex,
-        error: String,
-        refund_pending: bool,
-    ) {
-        let status = if refund_pending {
-            MultiPartTransactionStatus::ErrorWithRefundPending(error)
-        } else {
-            MultiPartTransactionStatus::Error(error)
-        };
-
-        self.multi_part_transactions_processor
-            .update_status(block_height, status);
-    }
-
     pub fn get_next_transaction_index(&self) -> TransactionIndex {
         match self.transactions.back() {
             Some(t) => t.transaction_index + 1,
