@@ -1,7 +1,7 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { GetOpenTicketResponse } from "@dfinity/sns/dist/candid/sns_swap";
+import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
@@ -15,7 +15,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   withTicket?: boolean;
   certified: boolean;
-}): Promise<GetOpenTicketResponse> => {
+}): Promise<Ticket> => {
   logWithTimestamp(`getOpenTicket call...`);
 
   const { getOpenTicket } = await wrapper({
@@ -41,7 +41,7 @@ export const newSaleTicket = async ({
   rootCanisterId: Principal;
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
-}) => {
+}): Promise<Ticket> => {
   logWithTimestamp(`newSaleTicket call...`);
 
   const { newSaleTicket } = await wrapper({

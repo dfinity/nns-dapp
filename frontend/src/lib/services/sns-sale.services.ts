@@ -15,7 +15,7 @@ import {
   getCurrentIdentity,
 } from "$lib/services/auth.services";
 import { snsQueryStore } from "$lib/stores/sns.store";
-import { toastsError } from "$lib/stores/toasts.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
@@ -26,29 +26,30 @@ import {
   commitmentExceedsAmountLeft,
   validParticipation,
 } from "$lib/utils/projects.utils";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { isNullish } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
+import { TxDuplicateError } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import {
+  GetOpenTicketErrorType,
+  NewSaleTicketResponseErrorType,
+} from "@dfinity/sns/dist/types/enums/swap.enums";
+import {
+  SnsSwapGetOpenTicketError,
+  SnsSwapNewTicketError,
+} from "@dfinity/sns/dist/types/errors/swap.errors";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
-import {IcrcTransferError} from "@dfinity/ledger";
-import {ledgerErrorToToastError} from "$lib/utils/sns-ledger.utils";
-import {TxDuplicateError} from "@dfinity/nns";
 
 export interface SnsTicket {
   rootCanisterId: Principal;
   ticket: Ticket | undefined;
 }
 
-// TODO(sale): move to ic-js
-enum GetOpenTicketErrorType {
-  TYPE_UNSPECIFIED = 0,
-  TYPE_SALE_NOT_OPEN = 1,
-  TYPE_SALE_CLOSED = 2,
-}
 export const getOpenTicket = async ({
   withTicket,
   rootCanisterId,
@@ -60,61 +61,32 @@ export const getOpenTicket = async ({
 }): Promise<SnsTicket | undefined> => {
   try {
     const identity = await getCurrentIdentity();
-    const { result } = await getOpenTicketApi({
+    const ticket = await getOpenTicketApi({
       identity,
       rootCanisterId,
       withTicket,
       certified,
     });
 
-    const resultData = fromDefinedNullable(result);
+    return {
+      rootCanisterId,
+      ticket,
+    };
+  } catch (err) {
+    let detail = "";
 
-    if ("Ok" in resultData) {
-      return {
-        rootCanisterId,
-        ticket: fromNullable(resultData.Ok.ticket),
-      };
+    if (err instanceof SnsSwapGetOpenTicketError) {
+      // TODO(GIX-1271): display more details in error message
+      detail = GetOpenTicketErrorType[err.errorType];
     }
 
-    // TODO(GIX-1271): display more details in error message
-
-    if ("Err" in resultData) {
-      const errorType = fromDefinedNullable(resultData.Err?.error_type ?? []);
-      toastsError({
-        labelKey: "error__sns.cannot_participate",
-        err: GetOpenTicketErrorType[errorType],
-      });
-    }
-    console.error(resultData);
-  } catch (err: unknown) {
-    console.error(err);
-    toastsError({
+    toastsShow({
       labelKey: "error__sns.cannot_participate",
-      err,
+      level: "error",
+      detail,
     });
   }
 };
-
-// TODO(sale): move to ic-js
-enum NewSaleTicketResponseErrorType {
-  TYPE_UNSPECIFIED = 0,
-  TYPE_SALE_NOT_OPEN = 1,
-  TYPE_SALE_CLOSED = 2,
-  // There is already an open ticket associated with the caller.
-  //
-  // When this is the `error_type`, then the field existing_ticket
-  // is set and contains the ticket itself.
-  TYPE_TICKET_EXISTS = 3,
-  // The amount sent by the user is not within the Sale parameters.
-  //
-  // When this is the `error_type`, then the field invalid_user_amount
-  // is set and describes minimum and maximum amounts.
-  TYPE_INVALID_USER_AMOUNT = 4,
-  // The specified subaccount is not a valid subaccount (length != 32 bytes).
-  TYPE_INVALID_SUBACCOUNT = 5,
-  // The specified principal is forbidden from creating tickets.
-  TYPE_INVALID_PRINCIPAL = 6,
-}
 
 export const newSaleTicket = async ({
   rootCanisterId,
@@ -124,56 +96,42 @@ export const newSaleTicket = async ({
   rootCanisterId: Principal;
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
-}): Promise<Required<SnsTicket>> => {
+}): Promise<SnsTicket | undefined> => {
   try {
     const identity = await getCurrentIdentity();
 
-    const { result } = await newSaleTicketApi({
+    const ticket = await newSaleTicketApi({
       identity,
       rootCanisterId,
       subaccount,
       amount_icp_e8s,
     });
 
-    const resultData = fromDefinedNullable(result);
+    return {
+      rootCanisterId,
+      ticket,
+    };
+  } catch (err) {
+    let detail = "";
 
-    if ("Ok" in resultData) {
-      return {
-        rootCanisterId,
-        ticket: fromDefinedNullable(resultData.Ok.ticket),
-      };
-    }
-
-    // TODO(GIX-1271): display more details in error message
-
-    if ("Err" in resultData) {
-      const errorType: NewSaleTicketResponseErrorType = resultData.Err?.error_type;
-
-      if (errorType === NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS) {
-        const ticket = fromDefinedNullable(resultData.Err?.existing_ticket);
-
-        // TODO(GIX-1271): display and error and proceed w/ the ticket
-
-        return {
-          rootCanisterId,
-          ticket,
-        }
+    if (err instanceof SnsSwapNewTicketError) {
+      // TODO(GIX-1271): display more details in error message
+      switch (err.errorType) {
+        case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS:
+          return {
+            rootCanisterId,
+            ticket: err.existingTicket,
+          };
       }
 
-      toastsError({
-        labelKey: "error__sns.cannot_participate",
-        err: NewSaleTicketResponseErrorType[errorType],
-      });
-
-      // just stop
-      NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN
+      detail = NewSaleTicketResponseErrorType[err.errorType];
     }
 
-    console.error(resultData);
-  } catch (error: unknown) {
-    // TODO(sale): add error handling
-    console.error(error);
-    throw error;
+    toastsShow({
+      labelKey: "error__sns.cannot_participate",
+      level: "error",
+      detail,
+    });
   }
 };
 
@@ -275,9 +233,11 @@ export const initiateSnsSwapParticipation = async ({
         amount_icp_e8s: amount.toE8s(),
       });
 
-      await participateInSnsSwap({
-        ticket,
-      });
+      if (ticket) {
+        await participateInSnsSwap({
+          ticket,
+        });
+      }
     } catch (error: unknown) {
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.

@@ -20,7 +20,6 @@
   import {
     getOpenTicket,
     participateInSnsSwap,
-    type SnsTicket,
   } from "$lib/services/sns-sale.services";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 
@@ -69,8 +68,6 @@
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
     const saleTicket = await getOpenTicket({
-      // TODO(Sale): remove mock after testing
-      // withTicket: true,
       rootCanisterId,
       certified: true,
     });
