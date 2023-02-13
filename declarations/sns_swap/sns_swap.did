@@ -135,7 +135,7 @@ service : (Init) -> {
   get_state : (record {}) -> (GetStateResponse) query;
   open : (OpenRequest) -> (record {});
   refresh_buyer_tokens : (RefreshBuyerTokensRequest) -> (
-  RefreshBuyerTokensResponse,
-  );
+      RefreshBuyerTokensResponse,
+    );
   restore_dapp_controllers : (record {}) -> (SetDappControllersCallResult);
 }
