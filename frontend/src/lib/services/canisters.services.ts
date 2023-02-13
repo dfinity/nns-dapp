@@ -221,7 +221,7 @@ export const attachCanister = async (
     toastsError(
       toToastError({
         err,
-        fallbackErrorLabelKey: "error__canister.unknown_attach",
+        fallbackErrorLabelKey: "error__canister.unknown_link",
       })
     );
     return { success: false };
@@ -245,7 +245,7 @@ export const detachCanister = async (
     toastsError(
       toToastError({
         err,
-        fallbackErrorLabelKey: "error__canister.unknown_detach",
+        fallbackErrorLabelKey: "error__canister.unknown_unlink",
       })
     );
     return { success };
