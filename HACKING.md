@@ -133,6 +133,26 @@ The index canister does not exist yet on mainnet but, will be proposed soon. Sam
 
 ### Feature flag
 
-Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` per default neither. 
+Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` and `ENABLE_CKBTC_RECEIVE` per default. 
 
-Therefore this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+
+## Mint bitcoin
+
+To mint bitcoin you should set up a local bitcoin network as display in the [documentation](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development).
+
+Once ready, 100 block can be minted to an address. The address can be found in the "ckBTC Receive modal".
+
+```bash
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1q286kjxmad4zmhex2dqus4t6u53z49y3shns028"
+```
+
+Once block minted, the minter should be unblocked to attribute reward. This can be done by minting more blocks to another address.
+
+e.g.
+
+```bash
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf createwallet "test"
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf getnewaddress
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1qtq30nuztv40nkncckn70n09tlype96snkxzhmt"
+```
