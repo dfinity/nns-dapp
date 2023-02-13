@@ -31,7 +31,7 @@ pub async fn run_periodic_tasks() {
                 handle_stake_neuron(principal, memo).await;
             }
             MultiPartTransactionToBeProcessed::TopUpNeuron(principal, memo) => {
-                handle_top_up_neuron(block_height, principal, memo).await;
+                handle_top_up_neuron(principal, memo).await;
             }
             MultiPartTransactionToBeProcessed::CreateCanister(args) => {
                 handle_create_canister(block_height, args).await;
@@ -89,9 +89,9 @@ async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
     }
 }
 
-async fn handle_top_up_neuron(block_height: BlockIndex, principal: PrincipalId, memo: Memo) {
+async fn handle_top_up_neuron(principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
-        Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up(block_height)),
+        Ok(_) => STATE.with(|s| s.accounts_store.borrow_mut().mark_neuron_topped_up()),
         Err(_error) => (),
     }
 }

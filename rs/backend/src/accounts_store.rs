@@ -815,10 +815,8 @@ impl AccountsStore {
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
     }
 
-    pub fn mark_neuron_topped_up(&mut self, block_height: BlockIndex) {
+    pub fn mark_neuron_topped_up(&mut self) {
         self.neurons_topped_up_count += 1;
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::Complete);
     }
 
     pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockIndex) {
