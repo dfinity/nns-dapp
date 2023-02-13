@@ -769,7 +769,6 @@ impl AccountsStore {
     pub fn attach_newly_created_canister(
         &mut self,
         principal: PrincipalId,
-        block_height: BlockIndex,
         canister_id: CanisterId,
     ) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
@@ -781,8 +780,6 @@ impl AccountsStore {
                 canister_id,
             });
             sort_canisters(&mut account.canisters);
-            self.multi_part_transactions_processor
-                .update_status(block_height, MultiPartTransactionStatus::CanisterCreated(canister_id));
         }
     }
 

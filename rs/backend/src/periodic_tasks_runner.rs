@@ -109,7 +109,7 @@ async fn handle_create_canister_v2(block_height: BlockIndex, controller: Princip
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(controller, block_height, canister_id)
+                .attach_newly_created_canister(controller, canister_id)
         }),
         Ok(Err(NotifyError::Processing)) => {
             STATE.with(|s| {
@@ -143,7 +143,7 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(args.controller, block_height, canister_id)
+                .attach_newly_created_canister(args.controller, canister_id)
         }),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
