@@ -903,8 +903,6 @@ impl AccountsStore {
 
     pub fn enqueue_multi_part_transaction(
         &mut self,
-        // TODO: Remove unused parameter
-        _principal: PrincipalId,
         block_height: BlockIndex,
         transaction: MultiPartTransactionToBeProcessed,
     ) {
