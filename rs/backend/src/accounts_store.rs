@@ -790,18 +790,6 @@ impl AccountsStore {
         );
     }
 
-    pub fn process_transaction_refund_completed(
-        &mut self,
-        original_transaction_block_height: BlockIndex,
-        refund_block_height: BlockIndex,
-        error_message: String,
-    ) {
-        self.multi_part_transactions_processor.update_status(
-            original_transaction_block_height,
-            MultiPartTransactionStatus::Refunded(refund_block_height, error_message),
-        );
-    }
-
     pub fn process_multi_part_transaction_error(
         &mut self,
         block_height: BlockIndex,

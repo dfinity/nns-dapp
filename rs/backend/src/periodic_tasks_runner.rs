@@ -269,15 +269,7 @@ async fn handle_refund(args: RefundTransactionArgs) {
     };
 
     match ledger::send(send_request.clone()).await {
-        Ok(block_height) => {
-            STATE.with(|s| {
-                s.accounts_store.borrow_mut().process_transaction_refund_completed(
-                    args.original_transaction_block_height,
-                    block_height,
-                    args.error_message,
-                )
-            });
-        }
+        Ok(_block_height) => (), 
         Err(error) => {
             STATE.with(|s| {
                 s.accounts_store.borrow_mut().process_multi_part_transaction_error(
