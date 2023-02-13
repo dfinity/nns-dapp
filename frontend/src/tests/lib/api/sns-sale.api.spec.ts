@@ -15,8 +15,8 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import {getOpenTicket, newSaleTicket} from "$lib/api/sns-sale.api";
-import {snsTicketMock} from "../../mocks/sns.mock";
 import type {SnsWasmCanisterOptions} from "@dfinity/nns";
+import { snsTicketMock } from "../../mocks/sns.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 

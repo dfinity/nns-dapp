@@ -44,11 +44,7 @@ import {
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
-
-export interface SnsTicket {
-  rootCanisterId: Principal;
-  ticket: Ticket | undefined;
-}
+import type {SnsTicket} from "$lib/types/sns";
 
 export const getOpenTicket = async ({
   rootCanisterId,
