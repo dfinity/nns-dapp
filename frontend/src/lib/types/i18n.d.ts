@@ -838,6 +838,12 @@ interface I18nCkbtc {
   bitcoin: string;
 }
 
+interface I18nError__ckbtc {
+  already_process: string;
+  no_new_utxo: string;
+  temporary_unavailable: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1072,6 +1078,7 @@ interface I18n {
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
+  error__ckbtc: I18nError__ckbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

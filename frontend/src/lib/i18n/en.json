@@ -790,5 +790,10 @@
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin"
+  },
+  "error__ckbtc": {
+    "already_process": "The minter has already been notified and updating the balance is in progress.",
+    "no_new_utxo": "There are no new UTXOs to process.",
+    "temporary_unavailable": "The minter is temporary unavailable."
   }
 }

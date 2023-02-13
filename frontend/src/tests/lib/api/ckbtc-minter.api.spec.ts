@@ -1,4 +1,4 @@
-import { getBTCAddress } from "$lib/api/ckbtc-minter.api";
+import { getBTCAddress, updateBalance } from "$lib/api/ckbtc-minter.api";
 import { CkBTCMinterCanister } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -15,12 +15,14 @@ describe("ckbtc-minter api", () => {
 
   afterAll(() => jest.clearAllMocks());
 
+  const params = { identity: mockIdentity };
+
   describe("getBTCAddress", () => {
     it("returns the bitcoin address", async () => {
       const getBTCAddressSpy =
         minterCanisterMock.getBtcAddress.mockResolvedValue(mockCkBTCAddress);
 
-      const result = await getBTCAddress({ identity: mockIdentity });
+      const result = await getBTCAddress(params);
 
       expect(result).toEqual(mockCkBTCAddress);
 
@@ -32,7 +34,50 @@ describe("ckbtc-minter api", () => {
         throw new Error();
       });
 
-      const call = () => getBTCAddress({ identity: mockIdentity });
+      const call = () => getBTCAddress(params);
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("updateBalance", () => {
+    it("returns successfully updated balance", async () => {
+      const ok = {
+        Ok: {
+          block_index: 1n,
+          amount: 100_000n,
+        },
+      };
+
+      const getBTCAddressSpy =
+        minterCanisterMock.updateBalance.mockResolvedValue(ok);
+
+      const result = await updateBalance(params);
+
+      expect(result).toEqual(ok);
+
+      expect(getBTCAddressSpy).toBeCalled();
+    });
+
+    it("returns error if an error was returned by the canister", async () => {
+      const error = { Err: { AlreadyProcessing: null } };
+
+      const getBTCAddressSpy =
+        minterCanisterMock.updateBalance.mockResolvedValue(error);
+
+      const result = await updateBalance(params);
+
+      expect(result).toEqual(error);
+
+      expect(getBTCAddressSpy).toBeCalled();
+    });
+
+    it("bubble throw error", () => {
+      minterCanisterMock.updateBalance.mockImplementation(async () => {
+        throw new Error();
+      });
+
+      const call = () => updateBalance(params);
 
       expect(call).rejects.toThrowError();
     });
