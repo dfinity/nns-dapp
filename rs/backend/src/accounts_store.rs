@@ -1,9 +1,6 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
-use crate::multi_part_transactions_processor::{
-    MultiPartTransactionToBeProcessed,
-    MultiPartTransactionsProcessor,
-};
+use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::time::time_millis;
 use crate::STATE;
@@ -519,11 +516,7 @@ impl AccountsStore {
             .map(|&(transaction_type, _)| transaction_type)
     }
 
-    pub fn complete_pending_transaction(
-        &mut self,
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-    ) {
+    pub fn complete_pending_transaction(&mut self, from: AccountIdentifier, to: AccountIdentifier) {
         self.remove_pending_transaction((from, to));
     }
 
@@ -766,11 +759,7 @@ impl AccountsStore {
 
     // We skip the checks here since in this scenario we must store the canister otherwise the user
     // won't be able to retrieve its Id.
-    pub fn attach_newly_created_canister(
-        &mut self,
-        principal: PrincipalId,
-        canister_id: CanisterId,
-    ) {
+    pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
@@ -805,12 +794,7 @@ impl AccountsStore {
         self.multi_part_transactions_processor.take_next()
     }
 
-    pub fn mark_neuron_created(
-        &mut self,
-        principal: &PrincipalId,
-        memo: Memo,
-        neuron_id: NeuronId,
-    ) {
+    pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
     }
@@ -862,8 +846,7 @@ impl AccountsStore {
         block_height: BlockIndex,
         transaction: MultiPartTransactionToBeProcessed,
     ) {
-        self.multi_part_transactions_processor
-            .push(block_height, transaction);
+        self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
     pub fn get_stats(&self) -> Stats {
@@ -1277,10 +1260,8 @@ impl AccountsStore {
                         amount,
                         refund_address: from,
                     };
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::CreateCanister(args),
-                    );
+                    self.multi_part_transactions_processor
+                        .push(block_height, MultiPartTransactionToBeProcessed::CreateCanister(args));
                 }
             }
             TransactionType::TopUpCanister(canister_id) => {
@@ -1296,10 +1277,8 @@ impl AccountsStore {
                         amount,
                         refund_address: from,
                     };
-                    self.multi_part_transactions_processor.push(
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpCanister(args),
-                    );
+                    self.multi_part_transactions_processor
+                        .push(block_height, MultiPartTransactionToBeProcessed::TopUpCanister(args));
                 }
             }
             _ => {}

@@ -70,11 +70,7 @@ async fn handle_participate_swap(
         buyer: principal.to_string(),
     };
     if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
-        STATE.with(|s| {
-            s.accounts_store
-                .borrow_mut()
-                .complete_pending_transaction(from, to)
-        });
+        STATE.with(|s| s.accounts_store.borrow_mut().complete_pending_transaction(from, to));
     }
 }
 
@@ -209,7 +205,7 @@ async fn handle_refund(args: RefundTransactionArgs) {
     };
 
     match ledger::send(send_request.clone()).await {
-        Ok(_block_height) => (), 
+        Ok(_block_height) => (),
         Err(_error) => (),
     }
 }

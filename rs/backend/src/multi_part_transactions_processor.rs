@@ -31,11 +31,7 @@ pub struct MultiPartTransactionError {
 }
 
 impl MultiPartTransactionsProcessor {
-    pub fn push(
-        &mut self,
-        block_height: BlockIndex,
-        transaction_to_be_processed: MultiPartTransactionToBeProcessed,
-    ) {
+    pub fn push(&mut self, block_height: BlockIndex, transaction_to_be_processed: MultiPartTransactionToBeProcessed) {
         self.queue.push_back((block_height, transaction_to_be_processed));
     }
 
@@ -61,10 +57,7 @@ mod tests {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
         for i in 0..10 {
-            processor.push(
-                i,
-                MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)),
-            );
+            processor.push(i, MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)));
         }
 
         for i in 0..10 {
