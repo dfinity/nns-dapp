@@ -2,8 +2,8 @@
   import { setContext, SvelteComponent } from "svelte";
   import {
     WALLET_CONTEXT_KEY,
-    WalletContext,
-    WalletStore,
+    CkBTCWalletContext,
+    WalletStore
   } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
@@ -17,8 +17,9 @@
     neurons: [],
   });
 
-  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
+  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: walletStore,
+    reloadAccount: () => Promise.resolve()
   });
 </script>
 

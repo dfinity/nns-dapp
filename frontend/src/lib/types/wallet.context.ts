@@ -19,6 +19,9 @@ export interface WalletStore {
 
 export interface WalletContext {
   store: Writable<WalletStore>;
+}
+
+export interface CkBTCWalletContext extends WalletContext {
   reloadAccount: () => Promise<void>;
 }
 

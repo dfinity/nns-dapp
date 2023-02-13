@@ -6,8 +6,8 @@
   import { writable } from "svelte/store";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
-    type WalletStore,
+    type CkBTCWalletContext,
+    type WalletStore
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
@@ -51,7 +51,7 @@
     await loadAccount();
   };
 
-  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
+  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
     reloadAccount,
   });

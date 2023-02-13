@@ -2,9 +2,9 @@
   import { isNullish } from "$lib/utils/utils";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
+    type CkBTCWalletContext
   } from "$lib/types/wallet.context";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { getContext } from "svelte";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -13,8 +13,8 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
 
-  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
-  const { store, reloadAccount }: WalletContext = context;
+  const context: CkBTCWalletContext = getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
+  const { store, reloadAccount }: CkBTCWalletContext = context;
 
   const openReceive = async () => {
     // Button is disabled if no account anyway
