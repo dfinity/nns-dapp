@@ -36,6 +36,8 @@ jest.mock("$lib/api/agent.api", () => {
 describe("neurons-api", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
+    jest.resetAllMocks();
+
     mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
@@ -49,10 +51,6 @@ describe("neurons-api", () => {
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation(() => mockGovernanceCanister);
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
   });
 
   it("stakeNeuron creates a new neuron", async () => {
