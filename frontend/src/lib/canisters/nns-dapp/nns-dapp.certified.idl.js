@@ -64,17 +64,6 @@ export const idlFactory = ({ IDL }) => {
   });
   const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
-  const MultiPartTransactionStatus = IDL.Variant({
-    Queued: IDL.Null,
-    Error: IDL.Text,
-    Refunded: IDL.Tuple(BlockHeight, IDL.Text),
-    CanisterCreated: CanisterId,
-    Complete: IDL.Null,
-    NotFound: IDL.Null,
-    NeuronCreated: NeuronId,
-    PendingSync: IDL.Null,
-    ErrorWithRefundPending: IDL.Text,
-  });
   const GetProposalPayloadResponse = IDL.Variant({
     Ok: IDL.Text,
     Err: IDL.Text,
@@ -196,11 +185,6 @@ export const idlFactory = ({ IDL }) => {
     get_multi_part_transaction_errors: IDL.Func(
       [],
       [IDL.Vec(MultiPartTransactionError)],
-      []
-    ),
-    get_multi_part_transaction_status: IDL.Func(
-      [IDL.Principal, BlockHeight],
-      [MultiPartTransactionStatus],
       []
     ),
     get_proposal_payload: IDL.Func(

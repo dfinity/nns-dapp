@@ -1,7 +1,7 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
-    MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
+    MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;
@@ -835,22 +835,6 @@ impl AccountsStore {
 
     pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
         self.block_height_synced_up_to
-    }
-
-    pub fn get_multi_part_transaction_status(
-        &self,
-        caller: PrincipalId,
-        block_height: BlockIndex,
-    ) -> MultiPartTransactionStatus {
-        if self.get_block_height_synced_up_to().unwrap_or(0) < block_height {
-            MultiPartTransactionStatus::PendingSync
-        } else {
-            self.multi_part_transactions_processor.get_status(caller, block_height)
-        }
-    }
-
-    pub fn get_multi_part_transaction_errors(&self) -> Vec<MultiPartTransactionError> {
-        self.multi_part_transactions_processor.get_errors()
     }
 
     pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
