@@ -601,7 +601,6 @@ impl AccountsStore {
                 } else if let Some(neuron_details) = self.neuron_accounts.get(&to) {
                     // Handle the case where people top up their neuron from an external account
                     self.multi_part_transactions_processor.push(
-                        neuron_details.principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
                     );
@@ -792,7 +791,6 @@ impl AccountsStore {
 
     pub fn enqueue_transaction_to_be_refunded(&mut self, args: RefundTransactionArgs) {
         self.multi_part_transactions_processor.push(
-            args.recipient_principal,
             args.original_transaction_block_height,
             MultiPartTransactionToBeProcessed::RefundTransaction(args),
         );
@@ -905,12 +903,13 @@ impl AccountsStore {
 
     pub fn enqueue_multi_part_transaction(
         &mut self,
-        principal: PrincipalId,
+        // TODO: Remove unused parameter
+        _principal: PrincipalId,
         block_height: BlockIndex,
         transaction: MultiPartTransactionToBeProcessed,
     ) {
         self.multi_part_transactions_processor
-            .push(principal, block_height, transaction);
+            .push(block_height, transaction);
     }
 
     pub fn get_stats(&self) -> Stats {
@@ -1286,7 +1285,6 @@ impl AccountsStore {
         match transaction_type {
             TransactionType::ParticipateSwap(swap_canister_id) => {
                 self.multi_part_transactions_processor.push(
-                    principal,
                     block_height,
                     MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
                 );
@@ -1300,7 +1298,6 @@ impl AccountsStore {
                 };
                 self.neuron_accounts.insert(to, neuron_details);
                 self.multi_part_transactions_processor.push(
-                    principal,
                     block_height,
                     MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
                 );
@@ -1309,7 +1306,6 @@ impl AccountsStore {
                 if let Some(neuron_account) = self.neuron_accounts.get(&to) {
                     // We need to use the memo from the original stake neuron transaction
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_account.principal, neuron_account.memo),
                     );
@@ -1318,7 +1314,6 @@ impl AccountsStore {
             TransactionType::CreateCanister => {
                 if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&principal).into())) {
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
                     );
@@ -1329,7 +1324,6 @@ impl AccountsStore {
                         refund_address: from,
                     };
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::CreateCanister(args),
                     );
@@ -1338,7 +1332,6 @@ impl AccountsStore {
             TransactionType::TopUpCanister(canister_id) => {
                 if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&canister_id.get()).into())) {
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id),
                     );
@@ -1350,7 +1343,6 @@ impl AccountsStore {
                         refund_address: from,
                     };
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpCanister(args),
                     );

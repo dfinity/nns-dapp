@@ -47,8 +47,6 @@ pub struct MultiPartTransactionError {
 impl MultiPartTransactionsProcessor {
     pub fn push(
         &mut self,
-        // TODO: Remove unused parameter
-        _principal: PrincipalId,
         block_height: BlockIndex,
         transaction_to_be_processed: MultiPartTransactionToBeProcessed,
     ) {
@@ -82,7 +80,6 @@ mod tests {
 
         for i in 0..10 {
             processor.push(
-                principal,
                 i,
                 MultiPartTransactionToBeProcessed::StakeNeuron(principal, Memo(i)),
             );
