@@ -143,6 +143,8 @@ To mint bitcoin you should set up a local bitcoin network as display in the [doc
 
 Once ready, 100 block can be minted to an address. The address can be found in the "ckBTC Receive modal".
 
+Example of command:
+
 ```bash
 ./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1q286kjxmad4zmhex2dqus4t6u53z49y3shns028"
 ```
