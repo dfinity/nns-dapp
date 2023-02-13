@@ -109,9 +109,7 @@
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "adding_permissions": "There was an error adding permissions.",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "ckbtc_get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
-    "ckbtc_get_btc_no_account": "An account should be provided to execute this feature"
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -786,14 +784,18 @@
     "receive": "Receive",
     "address": "Address",
     "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
-    "ckBTC_receive_note": "ckBTC sent to your ckBTC address is available after a few seconds.",
+    "ckbtc_receive_note": "ckBTC sent to your ckBTC address is available after a few seconds.",
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
-    "bitcoin": "Bitcoin"
+    "bitcoin": "Bitcoin",
+    "ckbtc_balance_updated": "Balance successfully updated."
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
     "no_new_utxo": "There are no new UTXOs to process.",
-    "temporary_unavailable": "The minter is temporary unavailable."
+    "temporary_unavailable": "The minter is temporary unavailable.",
+    "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
+    "get_btc_no_account": "An account should be provided to execute this feature",
+    "update_balance": "Sorry, the balance cannot be updated."
   }
 }

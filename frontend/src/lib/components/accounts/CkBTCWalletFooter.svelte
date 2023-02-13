@@ -20,7 +20,7 @@
     // Button is disabled if no account anyway
     if (isNullish($store.account)) {
       toastsError({
-        labelKey: "error.ckbtc_get_btc_no_account",
+        labelKey: "error__ckbtc.get_btc_no_account",
       });
       return;
     }
@@ -42,7 +42,7 @@
       });
     } catch (err: unknown) {
       toastsError({
-        labelKey: "error.ckbtc_get_btc_address",
+        labelKey: "error__ckbtc.get_btc_address",
         err,
       });
     }
