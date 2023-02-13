@@ -1,4 +1,4 @@
-import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
+import type { BlockHeight, E8s } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
