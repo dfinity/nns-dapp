@@ -153,7 +153,7 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
 
 async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: PrincipalId, canister_id: CanisterId) {
     match top_up_canister_v2(block_height, canister_id).await {
-        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+        Ok(Ok(_)) => (),
         Ok(Err(NotifyError::Processing)) => {
             STATE.with(|s| {
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
@@ -169,7 +169,7 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
 
 async fn handle_top_up_canister(block_height: BlockIndex, args: TopUpCanisterArgs) {
     match top_up_canister(args.canister_id, args.amount).await {
-        Ok(Ok(_)) => STATE.with(|s| s.accounts_store.borrow_mut().mark_canister_topped_up(block_height)),
+        Ok(Ok(_)) => (),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
             if was_refunded {

@@ -819,11 +819,6 @@ impl AccountsStore {
         self.neurons_topped_up_count += 1;
     }
 
-    pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockIndex) {
-        self.multi_part_transactions_processor
-            .update_status(original_transaction_block_height, MultiPartTransactionStatus::Complete);
-    }
-
     #[cfg(not(target_arch = "wasm32"))]
     pub fn get_transactions_count(&self) -> u32 {
         self.transactions.len() as u32
