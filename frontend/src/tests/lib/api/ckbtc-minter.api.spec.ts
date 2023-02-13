@@ -43,10 +43,8 @@ describe("ckbtc-minter api", () => {
   describe("updateBalance", () => {
     it("returns successfully updated balance", async () => {
       const ok = {
-        Ok: {
-          block_index: 1n,
-          amount: 100_000n,
-        },
+        block_index: 1n,
+        amount: 100_000n,
       };
 
       const getBTCAddressSpy =
@@ -59,20 +57,7 @@ describe("ckbtc-minter api", () => {
       expect(getBTCAddressSpy).toBeCalled();
     });
 
-    it("returns error if an error was returned by the canister", async () => {
-      const error = { Err: { AlreadyProcessing: null } };
-
-      const getBTCAddressSpy =
-        minterCanisterMock.updateBalance.mockResolvedValue(error);
-
-      const result = await updateBalance(params);
-
-      expect(result).toEqual(error);
-
-      expect(getBTCAddressSpy).toBeCalled();
-    });
-
-    it("bubble throw error", () => {
+    it("bubble errors", () => {
       minterCanisterMock.updateBalance.mockImplementation(async () => {
         throw new Error();
       });

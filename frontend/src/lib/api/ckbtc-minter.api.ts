@@ -6,7 +6,7 @@ import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type MinterParams,
-  type UpdateBalanceResponse,
+  type UpdateBalanceResult,
 } from "@dfinity/ckbtc";
 
 export const minterParams = ({
@@ -40,7 +40,7 @@ export const getBTCAddress = async (params: {
 
 export const updateBalance = async (params: {
   identity: Identity;
-}): Promise<UpdateBalanceResponse> => {
+}): Promise<UpdateBalanceResult> => {
   logWithTimestamp("Updating ckBTC balance: call...");
 
   const {

@@ -6,6 +6,12 @@ import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { i18n } from "$lib/stores/i18n";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
+import {
+  MinterAlreadyProcessingError,
+  MinterGenericError,
+  MinterNoNewUtxosError,
+  MinterTemporaryUnavailableError,
+} from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
 export const getBTCAddress = async (): Promise<string> => {
@@ -15,32 +21,30 @@ export const getBTCAddress = async (): Promise<string> => {
 
 export const updateBalance = async (): Promise<UpdateBalanceResult> => {
   const identity = await getAuthenticatedIdentity();
-  const result = await updateBalanceAPI({ identity });
 
-  if ("Err" in result) {
-    const { Err } = result;
-
-    if ("GenericError" in Err) {
-      const {
-        GenericError: { error_message, error_code },
-      } = Err;
-      throw new ApiErrorKey(`${error_message} (${error_code})`);
+  try {
+    return await updateBalanceAPI({ identity });
+  } catch (err: unknown) {
+    if (err instanceof MinterGenericError) {
+      throw new ApiErrorKey(err.message);
     }
 
     const labels = get(i18n);
 
-    if ("TemporarilyUnavailable" in Err) {
+    if (err instanceof MinterTemporaryUnavailableError) {
       throw new ApiErrorKey(
-        `${labels.error__ckbtc.temporary_unavailable} (${Err.TemporarilyUnavailable})`
+        `${labels.error__ckbtc.temporary_unavailable} (${err.message})`
       );
     }
 
-    if ("AlreadyProcessing" in Err) {
+    if (err instanceof MinterAlreadyProcessingError) {
       throw new ApiErrorKey(labels.error__ckbtc.already_process);
     }
 
-    throw new ApiErrorKey(labels.error__ckbtc.no_new_utxo);
-  }
+    if (err instanceof MinterNoNewUtxosError) {
+      throw new ApiErrorKey(labels.error__ckbtc.no_new_utxo);
+    }
 
-  return result.Ok;
+    throw err;
+  }
 };

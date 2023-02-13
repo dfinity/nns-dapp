@@ -5,7 +5,12 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { ApiErrorKey } from "$lib/types/api.errors";
-import type { UpdateBalanceError } from "@dfinity/ckbtc";
+import {
+  MinterAlreadyProcessingError,
+  MinterGenericError,
+  MinterNoNewUtxosError,
+  MinterTemporaryUnavailableError,
+} from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
@@ -33,10 +38,8 @@ describe("ckbtc-minter-services", () => {
   describe("updateBalance", () => {
     it("should update balance", async () => {
       const ok = {
-        Ok: {
-          block_index: 1n,
-          amount: 100_000n,
-        },
+        block_index: 1n,
+        amount: 100_000n,
       };
 
       const spyUpdateBalance = jest
@@ -51,7 +54,7 @@ describe("ckbtc-minter-services", () => {
         })
       );
 
-      expect(result).toEqual(ok.Ok);
+      expect(result).toEqual(ok);
     });
 
     it("should throw generic error", async () => {
@@ -62,45 +65,35 @@ describe("ckbtc-minter-services", () => {
         },
       };
 
-      const error: { Err: UpdateBalanceError } = { Err };
+      const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
 
-      jest.spyOn(minterApi, "updateBalance").mockResolvedValue(error);
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterGenericError(error);
+      });
 
       const call = () => services.updateBalance();
 
-      await expect(call).rejects.toThrowError(
-        new ApiErrorKey(
-          `${Err.GenericError.error_message} (${Err.GenericError.error_code})`
-        )
-      );
+      await expect(call).rejects.toThrowError(new ApiErrorKey(error));
     });
 
     it("should throw temporary unavailable error", async () => {
-      const Err = {
-        TemporarilyUnavailable: "message",
-      };
+      const error = "message";
 
-      const error: { Err: UpdateBalanceError } = { Err };
-
-      jest.spyOn(minterApi, "updateBalance").mockResolvedValue(error);
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterTemporaryUnavailableError(error);
+      });
 
       const call = () => services.updateBalance();
 
       await expect(call).rejects.toThrowError(
-        new ApiErrorKey(
-          `${en.error__ckbtc.temporary_unavailable} (${Err.TemporarilyUnavailable})`
-        )
+        new ApiErrorKey(`${en.error__ckbtc.temporary_unavailable} (${error})`)
       );
     });
 
     it("should throw already processing error", async () => {
-      const Err = {
-        AlreadyProcessing: null,
-      };
-
-      const error: { Err: UpdateBalanceError } = { Err };
-
-      jest.spyOn(minterApi, "updateBalance").mockResolvedValue(error);
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterAlreadyProcessingError();
+      });
 
       const call = () => services.updateBalance();
 
@@ -110,13 +103,9 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should throw no new UTXOs error", async () => {
-      const Err = {
-        NoNewUtxos: null,
-      };
-
-      const error: { Err: UpdateBalanceError } = { Err };
-
-      jest.spyOn(minterApi, "updateBalance").mockResolvedValue(error);
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterNoNewUtxosError();
+      });
 
       const call = () => services.updateBalance();
 
