@@ -21,10 +21,15 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
+  import { nonNullish } from "$lib/utils/utils";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let rootCanisterId: string | undefined | null;
 
-  $: rootCanisterId, reload();
+  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
+    loadCommitment(rootCanisterId);
+  }
 
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
@@ -36,7 +41,7 @@
       },
     });
 
-  const loadSwapState = (rootCanisterId: string) =>
+  const loadCommitment = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
@@ -54,7 +59,7 @@
 
     await Promise.all([
       loadSummary(rootCanisterId),
-      loadSwapState(rootCanisterId),
+      loadCommitment(rootCanisterId),
     ]);
   };
 
