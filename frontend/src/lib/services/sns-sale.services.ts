@@ -183,14 +183,6 @@ export const initiateSnsSwapParticipation = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<{ success: boolean }> => {
-  console.log(
-    "initiateSnsSwapParticipation amount, canister, account",
-    amount.toE8s(),
-    rootCanisterId.toText(),
-    account
-  );
-  //
-
   let success = false;
   // validation
   try {
@@ -362,7 +354,7 @@ export const participateInSnsSwap = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     // TODO(GIX-1271): implement more detailed feedback (based on the table)
 
