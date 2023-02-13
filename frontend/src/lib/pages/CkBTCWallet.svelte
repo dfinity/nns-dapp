@@ -14,7 +14,10 @@
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import {
+    loadCkBTCAccounts,
+    syncCkBTCAccounts,
+  } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -42,8 +45,15 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
+  // e.g. is called from "Receive" modal after minter.update_balance was successfully executed
+  const reloadAccount = async () => {
+    await loadCkBTCAccounts({});
+    await loadAccount();
+  };
+
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
+    reloadAccount,
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);

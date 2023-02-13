@@ -19,6 +19,7 @@ export interface WalletStore {
 
 export interface WalletContext {
   store: Writable<WalletStore>;
+  reloadAccount: () => Promise<void>;
 }
 
 export const WALLET_CONTEXT_KEY = Symbol("wallet");

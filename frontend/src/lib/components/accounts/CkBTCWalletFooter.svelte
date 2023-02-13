@@ -14,7 +14,7 @@
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
 
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
-  const { store }: WalletContext = context;
+  const { store, reloadAccount }: WalletContext = context;
 
   const openReceive = async () => {
     // Button is disabled if no account anyway
@@ -37,7 +37,7 @@
         message: "ckBTCWalletModal",
         detail: {
           type: "ckbtc-receive",
-          data: { btcAddress, account: $store.account },
+          data: { btcAddress, account: $store.account, reloadAccount },
         },
       });
     } catch (err: unknown) {

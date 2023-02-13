@@ -23,8 +23,9 @@
 
   let account: Account;
   let btcAddress: string;
+  let reloadAccount: () => Promise<void>;
 
-  $: ({ account, btcAddress } = data);
+  $: ({ account, btcAddress, reloadAccount } = data);
 
   let bitcoinSegmentId = Symbol();
   let ckBTCSegmentId = Symbol();
@@ -59,6 +60,8 @@
 
     try {
       await updateBalanceService();
+
+      await reloadAccount();
 
       toastsSuccess({
         labelKey: "ckbtc.ckbtc_balance_updated",
