@@ -4,9 +4,9 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { isNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger";
+import { isNullish } from "@dfinity/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {

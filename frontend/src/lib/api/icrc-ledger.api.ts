@@ -4,7 +4,6 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { isNullish, nonNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
@@ -19,7 +18,12 @@ import {
 } from "@dfinity/ledger";
 import { TokenAmount } from "@dfinity/nns";
 import type { QueryParams } from "@dfinity/utils";
-import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
 
 export const getIcrcMainAccount = async ({
   identity,

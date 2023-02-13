@@ -5,7 +5,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let neuronId: string | null | undefined;
 

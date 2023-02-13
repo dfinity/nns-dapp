@@ -1,5 +1,6 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
 
 /* eslint-disable-next-line @typescript-eslint/ban-types */
@@ -150,16 +151,6 @@ export const hexStringToBytes = (hexString: string): number[] => {
   }
   return bytes;
 };
-
-/** Is null or undefined */
-export const isNullish = <T>(
-  argument: T | undefined | null
-): argument is undefined | null => argument === null || argument === undefined;
-
-/** Not null and not undefined */
-export const nonNullish = <T>(
-  argument: T | undefined | null
-): argument is NonNullable<T> => !isNullish(argument);
 
 /** Not null and not undefined and not empty */
 export const notEmptyString = (value?: string): boolean =>
