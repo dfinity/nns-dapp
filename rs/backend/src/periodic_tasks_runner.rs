@@ -25,7 +25,7 @@ pub async fn run_periodic_tasks() {
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id) => {
-                handle_participate_swap(block_height, principal, from, to, swap_canister_id).await;
+                handle_participate_swap(principal, from, to, swap_canister_id).await;
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(block_height, principal, memo).await;
@@ -61,7 +61,6 @@ pub async fn run_periodic_tasks() {
 }
 
 async fn handle_participate_swap(
-    block_height: BlockIndex,
     principal: PrincipalId,
     from: AccountIdentifier,
     to: AccountIdentifier,
@@ -74,7 +73,7 @@ async fn handle_participate_swap(
         STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .complete_pending_transaction(from, to, block_height)
+                .complete_pending_transaction(from, to)
         });
     }
 }

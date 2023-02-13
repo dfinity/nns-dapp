@@ -523,10 +523,7 @@ impl AccountsStore {
         &mut self,
         from: AccountIdentifier,
         to: AccountIdentifier,
-        block_height: BlockIndex,
     ) {
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::Complete);
         self.remove_pending_transaction((from, to));
     }
 
