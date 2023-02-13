@@ -15,37 +15,37 @@ set -euo pipefail
 
 : "Make sure that DFX_IC_COMMIT is defined"
 [[ "${DFX_IC_COMMIT:-}" != "" ]] || {
-	echo "ERROR: Please specify which ic commit to use."
-	echo "  --ic_commit SOME_COMMIT"
-	exit 1
+  echo "ERROR: Please specify which ic commit to use."
+  echo "  --ic_commit SOME_COMMIT"
+  exit 1
 } >&2
 
 : "Bump IC_COMMIT in dfx.json"
 {
-	NEW_CONFIG="$(export DFX_IC_COMMIT && jq '.defaults.build.config.IC_COMMIT = (env.DFX_IC_COMMIT)' "$SOURCE_DIR/../dfx.json")"
-	[[ "$NEW_CONFIG" != "" ]] || {
-		echo "ERROR: Failed to set IC_COMMIT in dfx.json.  Please verify that dfx.json is valid JSON."
-		exit 1
-	} >&2
-	printf "%s\n" "$NEW_CONFIG" > "$SOURCE_DIR/../dfx.json"
+  NEW_CONFIG="$(export DFX_IC_COMMIT && jq '.defaults.build.config.IC_COMMIT = (env.DFX_IC_COMMIT)' "$SOURCE_DIR/../dfx.json")"
+  [[ "$NEW_CONFIG" != "" ]] || {
+    echo "ERROR: Failed to set IC_COMMIT in dfx.json.  Please verify that dfx.json is valid JSON."
+    exit 1
+  } >&2
+  printf "%s\n" "$NEW_CONFIG" >"$SOURCE_DIR/../dfx.json"
 }
 
 : "Get the latest sns wasm and did files"
 {
-	: "Remove any existing did and wasm files from the build directory"
-	rm -f target/ic/*.{did,wasm}
-	: "Get or build the did and wasm files"
-	e2e-tests/scripts/nns-canister-build
-	: "Apparently there is a convention of putting did files here:"
-	: "It would be nice to have a general rule rather than listing did files individually"
-	: "and to have a way of making sure that these are in sync with the paths in dfx.json."
-	for canister in sns_governance sns_root sns_swap sns_wasm ; do
-		cp "target/ic/${canister}.did" "declarations/${canister}/${canister}.did"
-	done
-	: "Files in unusual locations"
-	: "Maybe update the build command to copy to the standard pattern?"
-	: "Maybe also standardise canister names, such as nns-sns-wasm/sns_wasm?"
-	cp target/ic/ic-icrc1-ledger.did declarations/sns_ledger/sns_ledger.did
+  : "Remove any existing did and wasm files from the build directory"
+  rm -f target/ic/*.{did,wasm}
+  : "Get or build the did and wasm files"
+  e2e-tests/scripts/nns-canister-build
+  : "Apparently there is a convention of putting did files here:"
+  : "It would be nice to have a general rule rather than listing did files individually"
+  : "and to have a way of making sure that these are in sync with the paths in dfx.json."
+  for canister in sns_governance sns_root sns_swap sns_wasm; do
+    cp "target/ic/${canister}.did" "declarations/${canister}/${canister}.did"
+  done
+  : "Files in unusual locations"
+  : "Maybe update the build command to copy to the standard pattern?"
+  : "Maybe also standardise canister names, such as nns-sns-wasm/sns_wasm?"
+  cp target/ic/ic-icrc1-ledger.did declarations/sns_ledger/sns_ledger.did
 }
 
 : "Derive Rust types from candid interfaces"

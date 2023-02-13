@@ -149,10 +149,10 @@ jobs:
         run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
       - name: Verify that there are no code changes
         run: |
-                if git diff | grep . ; then
-                        echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
-                        exit 1
-                fi
+          if git diff | grep . ; then
+                  echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  exit 1
+          fi
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
     if: ${{ always() }}
