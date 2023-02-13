@@ -1,7 +1,7 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
-    MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
+    MultiPartTransactionToBeProcessed,
     MultiPartTransactionsProcessor,
 };
 use crate::state::StableState;

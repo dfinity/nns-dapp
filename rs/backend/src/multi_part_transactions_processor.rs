@@ -57,10 +57,6 @@ impl MultiPartTransactionsProcessor {
         self.queue.pop_front()
     }
 
-    // TODO(dskloetd): Remove this method and all calls to it.
-    pub fn update_status(&mut self, _block_height: BlockIndex, _status: MultiPartTransactionStatus) {
-    }
-
     pub fn get_queue_length(&self) -> u32 {
         self.queue.len() as u32
     }
