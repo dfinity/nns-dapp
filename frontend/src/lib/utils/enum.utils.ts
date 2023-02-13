@@ -68,6 +68,6 @@ export const enumsExclude = <T>({
  *
  * e.g. enum Hello { A = 0; B = 1; C = 2; } => 3
  */
-export const enumSize = <T>(enm: T): number => {
-  return Object.values(enm).filter(isNaN).length;
+export const enumSize = <T extends Record<string, unknown>>(enm: T): number => {
+  return Object.values(enm).filter((value) => isNaN(value as number)).length;
 };
