@@ -3,7 +3,7 @@
   import {
     WALLET_CONTEXT_KEY,
     CkBTCWalletContext,
-    WalletStore
+    WalletStore,
   } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
@@ -19,7 +19,7 @@
 
   setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: walletStore,
-    reloadAccount: () => Promise.resolve()
+    reloadAccount: () => Promise.resolve(),
   });
 </script>
 

@@ -2,7 +2,7 @@
   import { isNullish } from "$lib/utils/utils";
   import {
     WALLET_CONTEXT_KEY,
-    type CkBTCWalletContext
+    type CkBTCWalletContext,
   } from "$lib/types/wallet.context";
   import { getContext } from "svelte";
   import { busy } from "@dfinity/gix-components";
@@ -13,7 +13,8 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
 
-  const context: CkBTCWalletContext = getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
+  const context: CkBTCWalletContext =
+    getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
   const { store, reloadAccount }: CkBTCWalletContext = context;
 
   const openReceive = async () => {

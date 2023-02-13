@@ -7,7 +7,7 @@
   import {
     WALLET_CONTEXT_KEY,
     type CkBTCWalletContext,
-    type WalletStore
+    type WalletStore,
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";

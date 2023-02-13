@@ -41,7 +41,7 @@ describe("CkBTCWalletFooter", () => {
     ).not.toBeNull();
   });
 
-  it("should open reveive modal", async () => {
+  it("should open receive modal", async () => {
     const { getByTestId, container } =
       renderWalletActions(mockCkBTCMainAccount);
 

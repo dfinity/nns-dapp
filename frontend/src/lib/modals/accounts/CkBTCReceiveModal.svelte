@@ -48,7 +48,8 @@
   let logoArialLabel: string;
   $: logoArialLabel = bitcoin ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
 
-  let qrCodeRendered = false;
+  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
+  export let qrCodeRendered = false;
 
   const dispatcher = createEventDispatcher();
 
@@ -139,8 +140,11 @@
 
   <div class="toolbar">
     {#if qrCodeRendered}
-      <button class="primary" on:click={updateBalance} disabled={$busy}
-        >{$i18n.core.done}</button
+      <button
+        class="primary"
+        on:click={updateBalance}
+        disabled={$busy}
+        data-tid="update-ckbtc-balance">{$i18n.core.done}</button
       >
     {/if}
   </div>
