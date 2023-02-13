@@ -19,13 +19,13 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/api/governance.api";
+import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, LedgerCanister, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
-import type { HttpAgent } from "@dfinity/agent";
 
 jest.mock("$lib/api/agent.api", () => {
   return {
