@@ -13,11 +13,10 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { nonNullish } from "$lib/utils/utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { toNullable } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadSnsProjects = async (): Promise<void> => {

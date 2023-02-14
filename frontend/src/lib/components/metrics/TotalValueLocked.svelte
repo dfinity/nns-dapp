@@ -8,7 +8,7 @@
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";

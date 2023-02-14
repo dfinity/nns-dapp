@@ -17,7 +17,6 @@ import {
   hasPermissionToVote,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { isNullish } from "$lib/utils/utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -27,7 +26,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
+import { fromDefinedNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
 

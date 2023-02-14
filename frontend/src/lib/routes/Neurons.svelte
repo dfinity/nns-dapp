@@ -5,7 +5,7 @@
   import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 </script>
 

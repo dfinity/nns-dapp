@@ -40,6 +40,7 @@ import {
   type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type { SvelteComponent } from "svelte";
 import {
   getAccountByPrincipal,
@@ -49,7 +50,7 @@ import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { formatToken } from "./token.utils";
-import { isDefined, isNullish, nonNullish } from "./utils";
+import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;

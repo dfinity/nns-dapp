@@ -1,5 +1,5 @@
-import { notEmptyString } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
+import { notEmptyString } from "@dfinity/utils";
 
 export const OWN_CANISTER_ID_TEXT = import.meta.env
   .VITE_OWN_CANISTER_ID as string;
