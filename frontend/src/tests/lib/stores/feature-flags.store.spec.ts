@@ -10,6 +10,7 @@ import { get } from "svelte/store";
 
 describe("featureFlags store", () => {
   const noKey = "NO_KEY" as keyof FeatureFlags;
+  const error = new Error(`Unknown feature flag: ${noKey}`);
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
   });
@@ -34,7 +35,9 @@ describe("featureFlags store", () => {
   });
 
   it("should throw if a non feature flag is set", () => {
-    expect(() => overrideFeatureFlagsStore.setFlag(noKey, false)).toThrow();
+    expect(() => overrideFeatureFlagsStore.setFlag(noKey, false)).toThrowError(
+      error
+    );
   });
 
   it("should remove feature flags", () => {
@@ -53,6 +56,6 @@ describe("featureFlags store", () => {
   });
 
   it("should throw if a non feature flag is removed", () => {
-    expect(() => overrideFeatureFlagsStore.removeFlag(noKey)).toThrow();
+    expect(() => overrideFeatureFlagsStore.removeFlag(noKey)).toThrow(error);
   });
 });
