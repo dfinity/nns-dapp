@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 

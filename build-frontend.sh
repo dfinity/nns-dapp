@@ -2,6 +2,14 @@
 set -euo pipefail
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Need to know which deployment we are building for:
+. "$TOPLEVEL/scripts/require-dfx-network.sh"
+
+# Should we skip this if we can detect that it's already run from build.sh?
+
+# Assemble the configuration
+. config.sh
+
 ###################
 # frontend # (output: frontend/public/)
 ###################

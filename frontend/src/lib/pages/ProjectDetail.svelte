@@ -21,10 +21,16 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
+  import { nonNullish } from "@dfinity/utils";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { browser } from "$app/environment";
 
   export let rootCanisterId: string | undefined | null;
 
-  $: rootCanisterId, reload();
+  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
+    loadCommitment(rootCanisterId);
+  }
 
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
@@ -36,7 +42,7 @@
       },
     });
 
-  const loadSwapState = (rootCanisterId: string) =>
+  const loadCommitment = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
@@ -54,7 +60,7 @@
 
     await Promise.all([
       loadSummary(rootCanisterId),
-      loadSwapState(rootCanisterId),
+      loadCommitment(rootCanisterId),
     ]);
   };
 
@@ -70,8 +76,13 @@
     reload,
   });
 
-  const goBack = (): Promise<void> =>
-    goto(AppPath.Launchpad, { replaceState: true });
+  const goBack = async (): Promise<void> => {
+    if (!browser) {
+      return;
+    }
+
+    return goto(AppPath.Launchpad, { replaceState: true });
+  };
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store

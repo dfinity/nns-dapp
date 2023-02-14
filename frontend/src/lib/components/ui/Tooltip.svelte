@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-
-  /** Used in aria-describedby */
-  import { debounce } from "$lib/utils/utils";
+  import { debounce } from "@dfinity/utils";
 
   export let id: string;
   export let text = "";

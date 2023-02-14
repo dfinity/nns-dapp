@@ -13,6 +13,7 @@ export type CkBTCWalletModalType = "ckbtc-receive";
 export interface CkBTCWalletModalData {
   btcAddress: string;
   account: Account;
+  reloadAccount: () => Promise<void>;
 }
 
 export interface CkBTCWalletModal {

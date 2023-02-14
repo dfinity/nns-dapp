@@ -1,8 +1,8 @@
-import { nonNullish } from "$lib/utils/utils";
 import { Actor } from "@dfinity/agent";
 import type { ProposalId } from "@dfinity/nns";
 import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
 import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
 import {
@@ -279,7 +279,7 @@ export class NNSDappCanister {
       return;
     }
     if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
-      throw new CanisterNotFoundError("error__canister.detach_not_found", {
+      throw new CanisterNotFoundError("error__canister.unlink_not_found", {
         $canisterId: canisterId.toText(),
       });
     }

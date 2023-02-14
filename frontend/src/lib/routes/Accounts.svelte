@@ -13,18 +13,18 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import { ENABLE_CKBTC_LEDGER } from "$lib/constants/environment.constants";
   import type { Account } from "$lib/types/account";
   import { goto } from "$app/navigation";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
+  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -55,7 +55,7 @@
 
   const loadCkBTCAccountsBalances = async () => {
     // ckBTC is not enabled, information shall and cannot be fetched
-    if (!ENABLE_CKBTC_LEDGER) {
+    if (!$featureFlagsStore.ENABLE_CKBTC_LEDGER) {
       return;
     }
 

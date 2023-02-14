@@ -10,7 +10,7 @@
   const openModal = () =>
     emit<CanisterDetailModalDetach>({
       message: "nnsCanisterDetailModal",
-      detail: { type: "detach", data: { canisterId } },
+      detail: { type: "unlink", data: { canisterId } },
     });
 </script>
 
@@ -19,7 +19,7 @@
   type="button"
   on:click={openModal}
   disabled={$busy}
-  data-tid="detach-canister-button"
+  data-tid="unlink-canister-button"
 >
-  {$i18n.canister_detail.detach}
+  {$i18n.canister_detail.unlink}
 </button>

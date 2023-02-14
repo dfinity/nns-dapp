@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import type { Account } from "$lib/types/account";
 
   export let goToWallet: (account: Account) => Promise<void>;

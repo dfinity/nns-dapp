@@ -4,7 +4,7 @@
     CkBTCWalletModalData,
     CkBTCWalletModalType,
   } from "$lib/types/wallet.modal";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 
   let modal: CkBTCWalletModal | undefined;

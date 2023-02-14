@@ -4,7 +4,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsNeuronAmount from "$lib/components/sns-neurons/SnsNeuronAmount.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
