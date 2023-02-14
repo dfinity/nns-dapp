@@ -279,7 +279,7 @@ export class NNSDappCanister {
       return;
     }
     if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
-      throw new CanisterNotFoundError("error__canister.detach_not_found", {
+      throw new CanisterNotFoundError("error__canister.unlink_not_found", {
         $canisterId: canisterId.toText(),
       });
     }

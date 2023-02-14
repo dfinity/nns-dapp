@@ -13,6 +13,7 @@ import {
   nervousSystemParameters,
   queryProposals,
   refreshNeuron,
+  registerVote,
   removeNeuronPermissions,
   setFollowees,
   splitNeuron,
@@ -29,6 +30,7 @@ import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
+  SnsVote,
   type SnsListNervousSystemFunctionsResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
@@ -75,6 +77,7 @@ describe("sns-api", () => {
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
   const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
+  const registerVoteSpy = jest.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
@@ -124,6 +127,7 @@ describe("sns-api", () => {
         nervousSystemParameters: nervousSystemParametersSpy,
         setTopicFollowees: setTopicFolloweesSpy,
         stakeMaturity: stakeMaturitySpy,
+        registerVote: registerVoteSpy,
         autoStakeMaturity: autoStakeMaturitySpy,
         listProposals: listProposalsSpy,
       })
@@ -221,6 +225,18 @@ describe("sns-api", () => {
     });
 
     expect(stakeMaturitySpy).toBeCalled();
+  });
+
+  it("should registerVote", async () => {
+    await registerVote({
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+      rootCanisterId: rootCanisterIdMock,
+      identity: mockIdentity,
+      proposalId: mockSnsProposal.id[0],
+      vote: SnsVote.Yes,
+    });
+
+    expect(registerVoteSpy).toBeCalled();
   });
 
   it("should autoStakeMaturity", async () => {
