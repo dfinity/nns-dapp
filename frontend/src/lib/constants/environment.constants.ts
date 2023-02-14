@@ -12,7 +12,7 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
     ? undefined
     : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
 
-export interface FEATURE_FLAGS {
+export interface FeatureFlags {
   ENABLE_SNS_2: boolean;
   ENABLE_SNS_VOTING: boolean;
   ENABLE_SNS_AGGREGATOR: boolean;
@@ -25,7 +25,7 @@ export interface FEATURE_FLAGS {
  *
  * @see feature-flags.store.ts to use feature flags
  */
-export const FEATURE_FLAGS: FEATURE_FLAGS = JSON.parse(
+export const FEATURE_FLAGS: FeatureFlags = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
     '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": true, "ENABLE_CKBTC_RECEIVE": false}'
 );

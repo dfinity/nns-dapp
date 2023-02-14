@@ -2,7 +2,7 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import type { FEATURE_FLAGS } from "$lib/constants/environment.constants";
+import type { FeatureFlags } from "$lib/constants/environment.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   snsProjectsCommittedStore,
@@ -22,13 +22,13 @@ export const CKBTC_UNIVERSE: Universe = {
 };
 
 const universesStore = derived<
-  [Readable<SnsFullProject[] | undefined>, Readable<FEATURE_FLAGS>],
+  [Readable<SnsFullProject[] | undefined>, Readable<FeatureFlags>],
   Universe[]
 >(
   [snsProjectsCommittedStore, featureFlagsStore],
-  ([projects, featueFlags]: [SnsFullProject[] | undefined, FEATURE_FLAGS]) => [
+  ([projects, featureFlags]: [SnsFullProject[] | undefined, FeatureFlags]) => [
     NNS_UNIVERSE,
-    ...(featueFlags.ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
+    ...(featureFlags.ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
     ...(projects?.map(({ rootCanisterId, summary }) => ({
       canisterId: rootCanisterId.toText(),
       summary,

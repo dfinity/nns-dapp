@@ -19,10 +19,10 @@ export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];
-  const featueFlags = get(featureFlagsStore);
+  const featureFlags = get(featureFlagsStore);
 
   const initSns: Promise<void>[] = [
-    featueFlags.ENABLE_SNS_AGGREGATOR &&
+    featureFlags.ENABLE_SNS_AGGREGATOR &&
     SNS_AGGREGATOR_CANISTER_URL !== undefined
       ? loadSnsProjects()
       : loadSnsSummaries(),

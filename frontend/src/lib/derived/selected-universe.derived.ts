@@ -2,7 +2,7 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import type { FEATURE_FLAGS } from "$lib/constants/environment.constants";
+import type { FeatureFlags } from "$lib/constants/environment.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
@@ -41,13 +41,13 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Principal>, Readable<Page>, Readable<FEATURE_FLAGS>],
+  [Readable<Principal>, Readable<Page>, Readable<FeatureFlags>],
   Principal
 >(
   [pageUniverseIdStore, pageStore, featureFlagsStore],
-  ([canisterId, page, featueFlags]) => {
+  ([canisterId, page, featureFlags]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (featueFlags.ENABLE_CKBTC_LEDGER && pathSupportsCkBTC(page)) {
+    if (featureFlags.ENABLE_CKBTC_LEDGER && pathSupportsCkBTC(page)) {
       return canisterId;
     }
 

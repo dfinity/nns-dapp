@@ -1,9 +1,12 @@
-import { FEATURE_FLAGS } from "$lib/constants/environment.constants";
+import {
+  FEATURE_FLAGS,
+  type FeatureFlags,
+} from "$lib/constants/environment.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
 import { derived, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
-type OverrideFeatureFlagsData = Partial<FEATURE_FLAGS>;
+type OverrideFeatureFlagsData = Partial<FeatureFlags>;
 export interface OverrideFeatureFlagsStore
   extends Readable<OverrideFeatureFlagsData> {
   reset: () => void;
