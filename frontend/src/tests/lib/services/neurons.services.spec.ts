@@ -18,7 +18,6 @@ import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import type { ToastMsg } from "@dfinity/gix-components";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
