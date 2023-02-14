@@ -18,7 +18,6 @@ import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import type { ToastMsg } from "@dfinity/gix-components";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -60,11 +59,8 @@ const {
   topUpNeuron,
 } = services;
 
-let toasts: ToastMsg[] = [];
-toastsStore.subscribe((t) => (toasts = t));
-
 const expectToastError = (contained: string) =>
-  expect(toasts).toMatchObject([
+  expect(get(toastsStore)).toMatchObject([
     {
       level: "error",
       text: expect.stringContaining(contained),
