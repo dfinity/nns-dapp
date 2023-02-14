@@ -76,7 +76,7 @@
     reload,
   });
 
-  const goBack = (): Promise<void> => {
+  const goBack = async (): Promise<void> => {
     if (!browser) {
       return;
     }

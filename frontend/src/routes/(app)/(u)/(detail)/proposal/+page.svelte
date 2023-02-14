@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppPath } from "$lib/constants/routes.constants";
+  import type { AppPath } from "$lib/constants/routes.constants";
   import { afterNavigate } from "$app/navigation";
   import type { Navigation } from "@sveltejs/kit";
   import { referrerPathForNav } from "$lib/utils/page.utils";
