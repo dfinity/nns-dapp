@@ -1,5 +1,5 @@
 import {
-  FEATURE_FLAGS,
+  FEATURE_FLAG_ENVIRONMENT,
   type FeatureFlags,
 } from "$lib/constants/environment.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
@@ -33,7 +33,7 @@ const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
 export const featureFlagsStore = derived(
   overrideFeatureFlagsStore,
   ($overrideFeatureFlagsStore) => ({
-    ...FEATURE_FLAGS,
+    ...FEATURE_FLAG_ENVIRONMENT,
     ...$overrideFeatureFlagsStore,
   })
 );

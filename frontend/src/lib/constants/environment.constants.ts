@@ -25,7 +25,7 @@ export interface FeatureFlags {
  *
  * @see feature-flags.store.ts to use feature flags
  */
-export const FEATURE_FLAGS: FeatureFlags = JSON.parse(
+export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
     '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": true, "ENABLE_CKBTC_RECEIVE": false}'
 );
