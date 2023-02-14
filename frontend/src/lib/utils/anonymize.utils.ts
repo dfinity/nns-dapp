@@ -28,14 +28,14 @@ import type {
   SnsSwapDerivedState,
   SnsTransferableAmount,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { digestText } from "./dev.utils";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "./sns-neuron.utils";
 import { mapNnsTransaction } from "./transactions.utils";
-import { isNullish, mapPromises, nonNullish } from "./utils";
+import { mapPromises } from "./utils";
 
 const anonymiseAvailability = (value: unknown): "yes" | "no" =>
   nonNullish(value) ? "yes" : "no";

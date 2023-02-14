@@ -4,7 +4,7 @@
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let modal: "AddAccountModal" | "NewTransaction" | undefined = undefined;
   const openAddAccountModal = () => (modal = "AddAccountModal");

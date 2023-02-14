@@ -9,7 +9,7 @@
     proposalsStore,
   } from "$lib/stores/proposals.store";
   import type { Unsubscriber } from "svelte/store";
-  import { debounce } from "$lib/utils/utils";
+  import { debounce } from "@dfinity/utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import {
     listNextProposals,

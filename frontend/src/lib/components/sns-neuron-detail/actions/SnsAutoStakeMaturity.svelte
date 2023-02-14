@@ -11,7 +11,7 @@
     hasAutoStakeMaturityOn,
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import { authStore } from "$lib/stores/auth.store";
 
   const context: SelectedSnsNeuronContext =

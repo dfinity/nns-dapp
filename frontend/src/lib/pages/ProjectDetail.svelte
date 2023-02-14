@@ -21,7 +21,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";

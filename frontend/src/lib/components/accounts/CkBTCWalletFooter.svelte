@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { getContext } from "svelte";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
