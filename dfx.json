@@ -49,7 +49,13 @@
           "https___large02_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "https___large03_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "https___large04_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "https___large05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium06_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium07_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium08_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium09_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "https___medium10_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -120,7 +126,13 @@
           "https___large02_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "https___large03_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "https___large04_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "https___large05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium06_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium07_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium08_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium09_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "https___medium10_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -494,6 +506,90 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large05.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium05_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium05.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium06_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium06.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium07_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium07.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium08_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium08.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium09_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium09.testnet.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_2": true,
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
+        }
+      },
+      "type": "ephemeral"
+    },
+    "https___medium10_testnet_dfinity_network": {
+      "config": {
+        "FETCH_ROOT_KEY": true,
+        "HOST": "https://medium10.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
