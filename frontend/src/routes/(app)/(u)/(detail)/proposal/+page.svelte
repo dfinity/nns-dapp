@@ -1,9 +1,9 @@
 <script lang="ts">
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { afterNavigate } from "$app/navigation";
   import type { Navigation } from "@sveltejs/kit";
   import { referrerPathForNav } from "$lib/utils/page.utils";
+  import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 
   // Preloaded by +page.ts
   export let data: { proposal: string | null | undefined };
@@ -15,7 +15,4 @@
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 </script>
 
-<RouteModule
-  path={AppPath.Proposal}
-  params={{ proposalIdText: proposalId, referrerPath }}
-/>
+<ProposalDetail proposalIdText={proposalId} {referrerPath} />

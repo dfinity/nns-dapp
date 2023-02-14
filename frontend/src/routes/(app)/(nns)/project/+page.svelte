@@ -1,6 +1,5 @@
 <script lang="ts">
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 
   // Preloaded by +page.ts
   export let data: { project: string | null | undefined };
@@ -9,4 +8,4 @@
   $: ({ project: rootCanisterId } = data);
 </script>
 
-<RouteModule path={AppPath.Project} params={{ rootCanisterId }} />
+<ProjectDetail {rootCanisterId} />

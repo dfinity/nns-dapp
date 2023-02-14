@@ -24,6 +24,7 @@
   import { nonNullish } from "$lib/utils/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { browser } from "$app/environment";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -75,8 +76,13 @@
     reload,
   });
 
-  const goBack = (): Promise<void> =>
-    goto(AppPath.Launchpad, { replaceState: true });
+  const goBack = (): Promise<void> => {
+    if (!browser) {
+      return;
+    }
+
+    return goto(AppPath.Launchpad, { replaceState: true });
+  };
 
   const mapProjectDetail = (rootCanisterId: string) => {
     // Check project summaries are loaded in store

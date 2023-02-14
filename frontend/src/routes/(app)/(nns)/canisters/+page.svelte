@@ -5,11 +5,11 @@
   import { onMount } from "svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { afterNavigate } from "$app/navigation";
   import type { Navigation } from "@sveltejs/kit";
   import { referrerPathForNav } from "$lib/utils/page.utils";
+  import Canisters from "$lib/pages/Canisters.svelte";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -21,7 +21,7 @@
 </script>
 
 {#if signedIn}
-  <RouteModule path={AppPath.Canisters} params={{ referrerPath }} />
+  <Canisters {referrerPath} />
 {:else}
   <SignInCanisters />
 {/if}
