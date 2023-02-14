@@ -43,7 +43,8 @@ export type BusyStateInitiatorType =
   | "dev-add-sns-neuron-permissions"
   | "load-sns-accounts"
   | "get-btc-address"
-  | "update-ckbtc-balance";
+  | "update-ckbtc-balance"
+  | "reload-ckbtc-account";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

@@ -80,8 +80,14 @@
   };
 
   const reloadAccountAndClose = async () => {
+    startBusy({
+      initiator: "reload-ckbtc-account",
+    });
+
     await reloadAccount();
     dispatcher("nnsClose");
+
+    stopBusy("reload-ckbtc-account");
   };
 </script>
 
