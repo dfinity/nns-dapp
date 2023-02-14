@@ -4,9 +4,8 @@
   import SignInAccounts from "$lib/pages/SignInAccounts.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
+  import Accounts from "$lib/routes/Accounts.svelte";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -24,7 +23,7 @@
 <svelte:window bind:innerWidth />
 
 {#if signedIn}
-  <RouteModule path={AppPath.Accounts} />
+  <Accounts />
 {:else}
   <SignInAccounts />
 {/if}
