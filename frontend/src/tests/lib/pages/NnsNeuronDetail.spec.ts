@@ -36,7 +36,7 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
-    jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron]);
+    jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
   });
 
   it("should query neurons", async () => {
@@ -49,6 +49,17 @@ describe("NeuronDetail", () => {
     const { container } = render(NnsNeuronDetail, props);
 
     expect(querySkeleton(container)).not.toBeNull();
+  });
+
+  it("should show the proper neuron id", async () => {
+    const { getByTestId } = render(NnsNeuronDetail, props);
+
+    await waitFor(() => {
+      const neuronIdElement = getByTestId("neuron-id");
+      expect(neuronIdElement).not.toBeNull();
+      expect(neuronIdElement.textContent).toEqual(`${neuronId}`);
+      expect(neuronIdElement.textContent).not.toEqual(`${mockNeuron.neuronId}`);
+    });
   });
 
   const testTitle = async ({
