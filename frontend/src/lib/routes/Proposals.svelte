@@ -10,18 +10,13 @@
   import { browser } from "$app/environment";
 
   export let referrerPath: AppPath | undefined = undefined;
-
-  // Prevent prerendering issue IntersectionObserver is not defined
-  // Note: Another solution would be to lazy load the InfiniteScroll component
-  let isBrowser = true;
-  $: isBrowser = browser;
 </script>
 
 <main>
-  {#if ENABLE_SNS_VOTING && isBrowser}
+  {#if ENABLE_SNS_VOTING}
     <SummaryUniverse />
   {/if}
-  {#if isBrowser && ($isNnsUniverseStore || !ENABLE_SNS_VOTING)}
+  {#if $isNnsUniverseStore || !ENABLE_SNS_VOTING}
     <Proposals {referrerPath} />
   {:else if nonNullish($snsProjectSelectedStore) && ENABLE_SNS_VOTING}
     <SnsProposals />
