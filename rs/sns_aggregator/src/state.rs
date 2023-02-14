@@ -193,7 +193,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Config {
-            update_interval_ms: 10_000,
+            update_interval_ms: 120_000,
         }
     }
 }
