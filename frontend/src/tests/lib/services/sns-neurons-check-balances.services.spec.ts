@@ -9,13 +9,25 @@ import {
   neuronNeedsRefresh,
 } from "$lib/services/sns-neurons-check-balances.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "../../mocks/sns-neurons.mock";
 
 describe("sns-neurons-check-balances-services", () => {
+  beforeEach(() => {
+    snsParametersStore.setParameters({
+      rootCanisterId: mockPrincipal,
+      certified: true,
+      parameters: snsNervousSystemParametersMock,
+    });
+  });
+
   describe("checkSnsNeuronBalances", () => {
     beforeEach(() => {
       jest.clearAllMocks();
