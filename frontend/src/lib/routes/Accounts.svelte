@@ -13,7 +13,7 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { isUniverseCkBTC } from "$lib/utils/universe.utils";
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";

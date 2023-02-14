@@ -4,9 +4,8 @@
   import SignInNeurons from "$lib/pages/SignInNeurons.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
-  import RouteModule from "$lib/components/common/RouteModule.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
+  import Neurons from "$lib/routes/Neurons.svelte";
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
@@ -24,7 +23,7 @@
 <svelte:window bind:innerWidth />
 
 {#if signedIn}
-  <RouteModule path={AppPath.Neurons} />
+  <Neurons />
 {:else}
   <SignInNeurons />
 {/if}

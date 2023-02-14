@@ -6,15 +6,18 @@
   import { writable } from "svelte/store";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
+    type CkBTCWalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import {
+    loadCkBTCAccounts,
+    syncCkBTCAccounts,
+  } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -42,8 +45,15 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
+  // e.g. is called from "Receive" modal after user click "Done"
+  const reloadAccount = async () => {
+    await loadCkBTCAccounts({});
+    await loadAccount();
+  };
+
+  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
+    reloadAccount,
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);

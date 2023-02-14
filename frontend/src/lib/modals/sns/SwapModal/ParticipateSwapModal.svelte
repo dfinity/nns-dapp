@@ -14,7 +14,7 @@
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { getSwapAccount } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";

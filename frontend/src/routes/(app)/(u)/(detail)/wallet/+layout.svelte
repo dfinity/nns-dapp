@@ -3,7 +3,7 @@
   import Content from "$lib/components/layout/Content.svelte";
   import { goto } from "$app/navigation";
   import { accountsPathStore } from "$lib/derived/paths.derived";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import { navigating } from "$app/stores";
 
   const back = (): Promise<void> => goto($accountsPathStore);

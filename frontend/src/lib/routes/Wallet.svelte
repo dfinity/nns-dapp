@@ -7,7 +7,7 @@
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 

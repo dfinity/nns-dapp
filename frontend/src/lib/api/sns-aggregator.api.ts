@@ -4,7 +4,6 @@ import {
   AGGREGATOR_CANISTER_VERSION,
 } from "$lib/constants/sns.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { nonNullish } from "$lib/utils/utils";
 import type {
   IcrcMetadataResponseEntries,
   IcrcTokenMetadataResponse,
@@ -19,7 +18,7 @@ import type {
   FunctionType,
   NervousSystemFunction,
 } from "@dfinity/sns/dist/candid/sns_governance";
-import { toNullable } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;

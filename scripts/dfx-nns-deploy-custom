@@ -34,7 +34,7 @@ nns)
 sns)
   : "Deploy nns-dapp with NNS and SNS canisters"
   : "Note: This is done with a script from the snsdemo repository."
-  dfx-sns-demo
+  dfx-sns-demo --ic_commit "$(jq -r '.defaults.build.config.IC_COMMIT' "${SOURCE_DIR}/../dfx.json")"
   ;;
 *)
   {

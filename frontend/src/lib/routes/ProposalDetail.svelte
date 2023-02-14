@@ -5,7 +5,7 @@
   import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let referrerPath: AppPath | undefined = undefined;
   export let proposalIdText: string | null | undefined;
