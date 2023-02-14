@@ -175,6 +175,10 @@ fn setup(config: Option<Config>) {
     });
     // Get one SNS quickly, so that we don't need to wait for the normal, slow schedule before
     // there is some sign of life.
+    //
+    // We schedule two calls, one to get a list of SNSs, one to get an SNS from the list.
+    // Getting a list of SNSs typically takes two block heights, so a 4 second delay between
+    // the calls will cover all but the most extremely slow networks.
     for i in 0..2 {
         set_timer(Duration::from_secs(i * 4), || {
             ic_cdk::spawn(crate::upstream::update_cache())
