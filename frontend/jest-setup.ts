@@ -44,7 +44,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   HOST: "https://ic0.app",
   DEV: false,
   FETCH_ROOT_KEY: false,
-  FEATURE_FLAGS: {
+  FEATURE_FLAG_ENVIRONMENT: {
     ENABLE_SNS_2: true,
     ENABLE_SNS_VOTING: true,
     ENABLE_SNS_AGGREGATOR: true,
