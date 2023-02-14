@@ -19,7 +19,7 @@
   import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
   import { isNullish } from "@dfinity/utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
+  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -42,7 +42,7 @@
     <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePair>
 
-  {#if hasStakedMaturity(neuron) && ENABLE_SNS_2}
+  {#if hasStakedMaturity(neuron) && $featureFlagsStore.ENABLE_SNS_2}
     <KeyValuePair testId="staked-maturity">
       <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
@@ -52,13 +52,13 @@
     </KeyValuePair>
   {/if}
 
-  {#if allowedToStakeMaturity && ENABLE_SNS_2}
+  {#if allowedToStakeMaturity && $featureFlagsStore.ENABLE_SNS_2}
     <div class="actions" data-tid="stake-maturity-actions">
       <SnsStakeMaturityButton />
     </div>
   {/if}
 
-  {#if ENABLE_SNS_2}
+  {#if $featureFlagsStore.ENABLE_SNS_2}
     <SnsAutoStakeMaturity />
   {/if}
 </CardInfo>
