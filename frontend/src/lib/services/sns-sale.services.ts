@@ -49,7 +49,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsTicket | undefined> => {
-  console.debug('[sale]getOpenTicket start');
+  console.debug("[sale]getOpenTicket start");
   try {
     const identity = await getCurrentIdentity();
     const ticket = await getOpenTicketApi({
@@ -58,7 +58,7 @@ export const getOpenTicket = async ({
       certified,
     });
 
-    console.debug('[sale]getOpenTicket:', ticket);
+    console.debug("[sale]getOpenTicket:", ticket);
 
     return {
       rootCanisterId,
@@ -67,7 +67,7 @@ export const getOpenTicket = async ({
   } catch (err) {
     let detail = "";
 
-    console.error('[sale]getOpenTicket', err);
+    console.error("[sale]getOpenTicket", err);
 
     if (err instanceof SnsSwapGetOpenTicketError) {
       // TODO(GIX-1271): display more details in error message
@@ -91,7 +91,7 @@ export const newSaleTicket = async ({
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
 }): Promise<SnsTicket | undefined> => {
-  console.debug('[sale]newSaleTicket:', amount_icp_e8s, subaccount);
+  console.debug("[sale]newSaleTicket:", amount_icp_e8s, subaccount);
   try {
     const identity = await getCurrentIdentity();
     const ticket = await newSaleTicketApi({
@@ -108,7 +108,7 @@ export const newSaleTicket = async ({
   } catch (err) {
     let detail = "";
 
-    console.error('[sale]newSaleTicket', err);
+    console.error("[sale]newSaleTicket", err);
 
     if (err instanceof SnsSwapNewTicketError) {
       // TODO(GIX-1271): display more details in error message
@@ -180,7 +180,7 @@ export const initiateSnsSwapParticipation = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<SnsTicket | undefined> => {
-  console.debug('[sale]initiateSnsSwapParticipation:', amount, account);
+  console.debug("[sale]initiateSnsSwapParticipation:", amount, account);
   // validation
   try {
     const transactionFee = get(transactionsFeesStore).main;
@@ -226,13 +226,12 @@ export const initiateSnsSwapParticipation = async ({
         return ticket;
       }
     } catch (err: unknown) {
-      console.error('[sale]initiateSnsSwapParticipation 1', err);
+      console.error("[sale]initiateSnsSwapParticipation 1", err);
       // The last commitment might trigger this error
       // because the backend is faster than the frontend at notifying the commitment.
       // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
       const openStateError =
-        err instanceof Error &&
-        err.message?.includes("OPEN state") === true;
+        err instanceof Error && err.message?.includes("OPEN state") === true;
       // If it's the last commitment, it means that one more e8 is not a valid participation.
       const lastCommitment =
         project?.summary !== undefined &&
@@ -246,7 +245,7 @@ export const initiateSnsSwapParticipation = async ({
       }
     }
   } catch (err: unknown) {
-    console.error('[sale]initiateSnsSwapParticipation 2', err);
+    console.error("[sale]initiateSnsSwapParticipation 2", err);
     toastsError(
       toToastError({
         err: err,
@@ -301,7 +300,11 @@ export const participateInSnsSwap = async ({
 }): Promise<{ success: boolean }> => {
   console.debug("Participating in swap: call...");
 
-  console.debug('[sale]participateInSnsSwap:', saleTicket, rootCanisterId.toText());
+  console.debug(
+    "[sale]participateInSnsSwap:",
+    saleTicket,
+    rootCanisterId.toText()
+  );
 
   const {
     amount_icp_e8s: amount,
@@ -347,7 +350,7 @@ export const participateInSnsSwap = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.error('[sale]participateInSnsSwap', err);
+    console.error("[sale]participateInSnsSwap", err);
 
     // TODO(GIX-1271): implement more detailed feedback (based on the table)
 
