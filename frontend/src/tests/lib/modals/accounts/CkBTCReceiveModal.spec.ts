@@ -3,6 +3,7 @@
  */
 
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
+import * as services from "$lib/services/ckbtc-minter.services";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockCkBTCAddress,
@@ -11,7 +12,17 @@ import {
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
+jest.mock("$lib/services/ckbtc-minter.services", () => {
+  return {
+    updateBalance: jest.fn().mockImplementation(() => undefined),
+  };
+});
+
 describe("CkBTCReceiveModal", () => {
+  const reloadAccountSpy = jest.fn();
+
+  afterEach(() => jest.clearAllMocks());
+
   const renderTransactionModal = () =>
     renderModal({
       component: CkBTCReceiveModal,
@@ -19,7 +30,9 @@ describe("CkBTCReceiveModal", () => {
         data: {
           account: mockCkBTCMainAccount,
           btcAddress: mockCkBTCAddress,
+          reloadAccount: reloadAccountSpy,
         },
+        qrCodeRendered: true,
       },
     });
 
@@ -66,7 +79,7 @@ describe("CkBTCReceiveModal", () => {
     await selectCkBTC(container);
 
     await waitFor(() =>
-      expect(getByText(en.ckbtc.ckBTC_receive_note)).toBeInTheDocument()
+      expect(getByText(en.ckbtc.ckbtc_receive_note)).toBeInTheDocument()
     );
   });
 
@@ -84,5 +97,37 @@ describe("CkBTCReceiveModal", () => {
     await waitFor(() =>
       expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.title)
     );
+  });
+
+  it("should update balance", async () => {
+    const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+
+    const { getByTestId } = await renderTransactionModal();
+
+    fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+
+    await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+  });
+
+  it("should reload account after update balance", async () => {
+    const { getByTestId } = await renderTransactionModal();
+
+    fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+
+    await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+  });
+
+  it("should only reload account", async () => {
+    const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+
+    const { getByTestId, container } = await renderTransactionModal();
+
+    await selectCkBTC(container);
+
+    fireEvent.click(getByTestId("reload-ckbtc-account") as HTMLButtonElement);
+
+    expect(spyUpdateBalance).not.toHaveBeenCalled();
+
+    await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
   });
 });
