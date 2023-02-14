@@ -42,11 +42,13 @@ import {
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import { snsParametersStore } from "../../../lib/stores/sns-parameters.store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
   mockSnsNeuron,
+  snsNervousSystemParametersMock,
 } from "../../mocks/sns-neurons.mock";
 import { mockTokenStore } from "../../mocks/sns-projects.mock";
 
@@ -75,6 +77,14 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 
 describe("sns-neurons-services", () => {
   describe("syncSnsNeurons", () => {
+    beforeAll(() => {
+      snsParametersStore.setParameters({
+        rootCanisterId: mockPrincipal,
+        certified: true,
+        parameters: snsNervousSystemParametersMock,
+      });
+    });
+
     beforeEach(() => {
       jest.clearAllMocks();
       snsNeuronsStore.reset();
