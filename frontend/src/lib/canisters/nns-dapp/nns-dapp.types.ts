@@ -1,4 +1,4 @@
-import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
+import type { BlockHeight, E8s } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
@@ -74,20 +74,6 @@ export interface HttpResponse {
 export interface ICPTs {
   e8s: E8s;
 }
-export interface MultiPartTransactionError {
-  error_message: string;
-  block_height: BlockHeight;
-}
-export type MultiPartTransactionStatus =
-  | { Queued: null }
-  | { Error: string }
-  | { Refunded: [BlockHeight, string] }
-  | { CanisterCreated: CanisterId }
-  | { Complete: null }
-  | { NotFound: null }
-  | { NeuronCreated: NeuronId }
-  | { PendingSync: null }
-  | { ErrorWithRefundPending: string };
 export interface Receive {
   fee: ICPTs;
   from: AccountIdentifierString;
@@ -180,13 +166,6 @@ export default interface _SERVICE {
   ) => Promise<DetachCanisterResponse>;
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
-  get_multi_part_transaction_errors: () => Promise<
-    Array<MultiPartTransactionError>
-  >;
-  get_multi_part_transaction_status: (
-    arg_0: Principal,
-    arg_1: BlockHeight
-  ) => Promise<MultiPartTransactionStatus>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   get_transactions: (

@@ -5,14 +5,12 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::multi_part_transactions_processor::{MultiPartTransactionError, MultiPartTransactionStatus};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
-use ic_base_types::PrincipalId;
-use icp_ledger::{AccountIdentifier, BlockIndex};
+use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
 mod assets;
@@ -218,70 +216,6 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
             AddPendingTransactionResponse::NotAuthorized
         }
     })
-}
-
-/// Gets the current status of a 'multi-part' action.
-///
-/// Some actions are 'multi-part' and are handled by background processes, eg. staking a neuron or
-/// topping up a canister, this method can be polled by the front end to check on the statuses of
-/// these actions.
-#[export_name = "canister_query get_multi_part_transaction_status"]
-pub fn get_multi_part_transaction_status() {
-    over(candid, |(principal, block_height): (PrincipalId, BlockIndex)| {
-        get_multi_part_transaction_status_impl(principal, block_height)
-    });
-}
-
-fn get_multi_part_transaction_status_impl(
-    principal: PrincipalId,
-    block_height: BlockIndex,
-) -> MultiPartTransactionStatus {
-    // Returns true if `p2` is a principal of an account owned by `p1`.
-    fn is_principal_in_account(account_owner: PrincipalId, principal: PrincipalId) -> bool {
-        if account_owner == principal {
-            // A principal is part of its own account.
-            return true;
-        }
-
-        // Fetch the account of `account_owner`.
-        let account = STATE
-            .with(|s| s.accounts_store.borrow().get_account(account_owner))
-            .unwrap();
-
-        // Return true if `principal` is the principal of one of the hardware wallet accounts.
-        for hw_account in account.hardware_wallet_accounts {
-            if hw_account.principal == principal {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    let caller = dfn_core::api::caller();
-
-    if !is_principal_in_account(caller, principal) {
-        trap_with(&format!(
-            "Principal {} doesn't have access to the transaction statuses of {}",
-            caller, principal
-        ));
-    }
-
-    STATE.with(|s| {
-        s.accounts_store
-            .borrow()
-            .get_multi_part_transaction_status(principal, block_height)
-    })
-}
-
-/// Returns the list of errors, if any, that have occurred while processing 'multi-part' actions.
-#[export_name = "canister_query get_multi_part_transaction_errors"]
-pub fn get_multi_part_transaction_errors() {
-    over(candid, |()| get_multi_part_transaction_errors_impl());
-}
-
-fn get_multi_part_transaction_errors_impl() -> Vec<MultiPartTransactionError> {
-    STATE.with(|s| s.accounts_store.borrow().get_multi_part_transaction_errors())
 }
 
 /// Returns stats about the canister.

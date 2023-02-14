@@ -36,7 +36,7 @@
     href="https://internetcomputer.org"
     rel="noopener noreferrer"
     target="_blank"
-    alt={$i18n.auth.internetcomputer_dot_org_link}
+    aria-label={$i18n.auth.internetcomputer_dot_org_link}
     ><span>internetcomputer.org</span> <IconNorthEast /></a
   >
 
@@ -45,7 +45,7 @@
     href="https://github.com/dfinity/nns-dapp"
     rel="noopener noreferrer external"
     target="_blank"
-    alt={$i18n.auth.github_link}><IconGitHub /> <span>GitHub</span></a
+    aria-label={$i18n.auth.github_link}><IconGitHub /> <span>GitHub</span></a
   >
 </footer>
 
