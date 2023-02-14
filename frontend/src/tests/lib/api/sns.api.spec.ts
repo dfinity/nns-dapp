@@ -58,7 +58,6 @@ describe("sns-api", () => {
     ],
   };
 
-  // TODO(sale): cleanup after remove participation
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);

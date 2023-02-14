@@ -196,7 +196,7 @@ export const initiateSnsSwapParticipation = async ({
     // The current state might have change since it was loaded.
     // This might prevent transferring funds that will not be accepted as participation and avoid refunds.
 
-    // TODO(sale): reload only if we don't do the transfer
+    // TODO(sale): GIX-1318
     await reloadSnsState(rootCanisterId);
     const project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
@@ -215,7 +215,6 @@ export const initiateSnsSwapParticipation = async ({
         "subAccount" in account ? account.subAccount : undefined;
       const ticket = await newSaleTicket({
         rootCanisterId,
-        // TODO(sale): Uint8Array?
         subaccount: isNullish(subaccount)
           ? undefined
           : Uint8Array.from(subaccount),
