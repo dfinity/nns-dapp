@@ -29,7 +29,6 @@ import {
 } from "$lib/utils/projects.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import { isNullish } from "$lib/utils/utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { TxDuplicateError } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -41,7 +40,7 @@ import {
 } from "@dfinity/sns";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const getOpenTicket = async ({
@@ -330,7 +329,7 @@ export const participateInSnsSwap = async ({
 
   try {
     // Send amount to the ledger
-    const res = await nnsLedger.transfer({
+    await nnsLedger.transfer({
       amount,
       fromSubAccount: isNullish(subaccount)
         ? undefined

@@ -79,6 +79,7 @@ describe("sns-api", () => {
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
     jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
