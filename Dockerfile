@@ -88,6 +88,7 @@ COPY ./frontend /build/frontend
 COPY ./config.sh /build/
 COPY ./build-frontend.sh /build/
 COPY ./dfx.json /build/
+COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
 RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
