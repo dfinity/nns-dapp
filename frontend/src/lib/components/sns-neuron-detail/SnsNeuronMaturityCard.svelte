@@ -17,7 +17,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
   import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_SNS_2 } from "$lib/constants/environment.constants";
 

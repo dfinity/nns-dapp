@@ -23,11 +23,12 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
-import { isDefined, keyOf, keyOfOptional, nonNullish } from "./utils";
+import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]

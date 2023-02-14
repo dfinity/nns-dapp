@@ -13,7 +13,7 @@
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import {
     loadCkBTCAccounts,
     syncCkBTCAccounts,

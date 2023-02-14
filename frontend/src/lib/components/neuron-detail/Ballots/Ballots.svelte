@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import { debounce } from "$lib/utils/utils";
+  import { debounce } from "@dfinity/utils";
 
   export let neuron: NeuronInfo | undefined;
 

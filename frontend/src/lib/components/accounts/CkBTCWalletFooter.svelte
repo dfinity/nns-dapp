@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import {
     WALLET_CONTEXT_KEY,
     type CkBTCWalletContext,

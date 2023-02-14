@@ -36,9 +36,9 @@ import {
 } from "$lib/api/governance.api";
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { isNullish, nonNullish } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 const cacheExpirationDurationSeconds = 5 * SECONDS_IN_MINUTE;
 

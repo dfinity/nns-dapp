@@ -17,7 +17,7 @@
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let token: Token;
   export let rootCanisterId: Principal;
