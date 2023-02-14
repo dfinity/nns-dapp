@@ -7,7 +7,6 @@
   import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { nonNullish } from "$lib/utils/utils";
-  import { browser } from "$app/environment";
 
   export let referrerPath: AppPath | undefined = undefined;
 </script>
