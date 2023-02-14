@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import {
   FEATURE_FLAG_ENVIRONMENT,
   type FeatureFlags,
@@ -9,6 +10,7 @@ import { writableStored } from "./writable-stored";
 type OverrideFeatureFlagsData = Partial<FeatureFlags>;
 export interface OverrideFeatureFlagsStore
   extends Readable<OverrideFeatureFlagsData> {
+  setFlag(flag: keyof FeatureFlags, value: boolean): void;
   reset: () => void;
 }
 
@@ -16,19 +18,32 @@ export interface OverrideFeatureFlagsStore
  * A store that contains the feature flags that have been overridden by the user.
  */
 const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
-  const { subscribe, set } = writableStored<OverrideFeatureFlagsData>({
+  const { subscribe, set, update } = writableStored<OverrideFeatureFlagsData>({
     key: storeLocalStorageKey.FeatureFlags,
     defaultValue: {},
   });
 
   return {
     subscribe,
-    // TODO: Expose a method to change one feature flag that raises error if feature flag does not exist
+
+    setFlag(flag: keyof FeatureFlags, value: boolean) {
+      update((featureFlags) => ({
+        ...featureFlags,
+        [flag]: value,
+      }));
+    },
+
     reset: () => set({}),
   };
 };
 
-const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
+// Exported for testing purposes
+export const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
+
+if (browser) {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
+}
 
 export const featureFlagsStore = derived(
   overrideFeatureFlagsStore,
