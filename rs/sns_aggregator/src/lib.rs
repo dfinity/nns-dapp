@@ -15,7 +15,7 @@ use std::time::Duration;
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use ic_cdk::api::call::{self};
-use ic_cdk::timer::set_timer_interval;
+use ic_cdk::timer::{set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -173,6 +173,17 @@ fn setup(config: Option<Config>) {
             ic_cdk::timer::clear_timer(id);
         }
     });
+    // Get one SNS quickly, so that we don't need to wait for the normal, slow schedule before
+    // there is some sign of life.
+    //
+    // We schedule two calls, one to get a list of SNSs, one to get an SNS from the list.
+    // Getting a list of SNSs typically takes two block heights, so a 4 second delay between
+    // the calls will cover all but the most extremely slow networks.
+    for i in 0..2 {
+        set_timer(Duration::from_secs(i * 4), || {
+            ic_cdk::spawn(crate::upstream::update_cache())
+        });
+    }
 }
 
 // Collects all the API method signatures for export as a candid interface definition.

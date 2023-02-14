@@ -11,17 +11,29 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 ## Local
 
-To run the dapp against canisters deployed locally on a simulated IC network, proceed as following:
+To run the dapp against canisters deployed locally on a simulated IC network, use the steps below, or run `./scripts/dev-local.sh` which guides you through these steps
 
+- Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
 - Deploy the Nns backend canisters locally with `dfx nns install`
-- Once deployed, the canister IDs should be collected and the "local" network of `canister_ids.json` (**TODO**) should be updated accordingly manually
-- Run `DFX_NETWORK=local ./config.sh` to populate the `.env` file (**TODO**)
-- Start `npm run dev` in the `./frontend/` folder to serve the application
+- From the last line of output of `dfx nns install` note down the value url for `nns-dapp`
+- Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
+- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the url you noted down before.
+- Create a file called `canister_ids.json` in `./dfx/local/` with the following content (and make sure to replace the id:
+```
+{
+  "nns-dapp": {
+    "local": "<the id from the url from the output of 'dfx nns install'>"
+  }
+}
+```
+- In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
-**TODO**
+With this setup, you can work on the frontend code without building the
+nns-dapp canister. If you want to change the backend code, you can deploy it
+with `dfx deploy nns-dapp` and it replace the provided canister.
 
-- we need to provide a sample of `canister_ids.json` in the repo or automate the task with a script because currently without it, the all setup isn't developer friendly
-- fix `DFX_NETWORK=local ./config.sh` that does not output the canister ID in `VITE_OWN_CANISTER_ID` and `VITE_OWN_CANISTER_URL` of the `.env` file - i.e. makes unable to work locally
+Once you have a running replica with nns installed and a fixed
+`./frontend/.env` file, don't have to take all the steps every time.
 
 ## Testnet
 
@@ -121,6 +133,28 @@ The index canister does not exist yet on mainnet but, will be proposed soon. Sam
 
 ### Feature flag
 
-Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` per default neither. 
+Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` and `ENABLE_CKBTC_RECEIVE` per default. 
 
-Therefore this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+
+## Mint bitcoin
+
+To mint bitcoin you should set up a local bitcoin network as display in the [documentation](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development).
+
+Once ready, 100 block can be minted to an address. The address can be found in the "ckBTC Receive modal".
+
+Example of command:
+
+```bash
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1q286kjxmad4zmhex2dqus4t6u53z49y3shns028"
+```
+
+Once block minted, the minter should be unblocked to attribute reward. This can be done by minting more blocks to another address.
+
+e.g.
+
+```bash
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf createwallet "test"
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf getnewaddress
+./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1qtq30nuztv40nkncckn70n09tlype96snkxzhmt"
+```

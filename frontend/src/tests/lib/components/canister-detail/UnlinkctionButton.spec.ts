@@ -4,7 +4,7 @@
 
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import DetachActionButtonTest from "./DetachActionButtonTest.svelte";
+import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {
@@ -18,19 +18,19 @@ describe("DissolveActionButton", () => {
   });
 
   it("renders button", () => {
-    const { queryByTestId } = render(DetachActionButtonTest);
-    expect(queryByTestId("detach-canister-button")).toBeInTheDocument();
+    const { queryByTestId } = render(UnlinkActionButtonTest);
+    expect(queryByTestId("unlink-canister-button")).toBeInTheDocument();
   });
 
   it("calls detachCanister when confirming modal", async () => {
-    const { queryByTestId } = render(DetachActionButtonTest);
+    const { queryByTestId } = render(UnlinkActionButtonTest);
 
-    const buttonElement = queryByTestId("detach-canister-button");
+    const buttonElement = queryByTestId("unlink-canister-button");
     expect(buttonElement).not.toBeNull();
 
     buttonElement && (await fireEvent.click(buttonElement));
 
-    const modal = queryByTestId("detach-canister-confirmaation-modal");
+    const modal = queryByTestId("unlink-canister-confirmation-modal");
     expect(modal).toBeInTheDocument();
 
     const confirmButton = queryByTestId("confirm-yes");

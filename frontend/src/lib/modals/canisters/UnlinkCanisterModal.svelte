@@ -15,18 +15,18 @@
 
   const detach = async () => {
     startBusy({
-      initiator: "detach-canister",
+      initiator: "unlink-canister",
     });
 
     const { success } = await detachCanister(canisterId);
 
-    stopBusy("detach-canister");
+    stopBusy("unlink-canister");
 
     dispatch("nnsClose");
 
     if (success) {
       toastsSuccess({
-        labelKey: "canister_detail.detach_success",
+        labelKey: "canister_detail.unlink_success",
       });
 
       await goto(AppPath.Canisters, { replaceState: true });
@@ -35,13 +35,13 @@
 </script>
 
 <ConfirmationModal on:nnsClose on:nnsConfirm={detach}>
-  <div data-tid="detach-canister-confirmaation-modal">
-    <h4>{$i18n.canister_detail.confirm_detach_title}</h4>
+  <div data-tid="unlink-canister-confirmation-modal">
+    <h4>{$i18n.canister_detail.confirm_unlink_title}</h4>
     <p class="description">
-      {$i18n.canister_detail.confirm_detach_description_1}
+      {$i18n.canister_detail.confirm_unlink_description_1}
     </p>
     <p class="description">
-      {$i18n.canister_detail.confirm_detach_description_2}
+      {$i18n.canister_detail.confirm_unlink_description_2}
     </p>
   </div>
 </ConfirmationModal>

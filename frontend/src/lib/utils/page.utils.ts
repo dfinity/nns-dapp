@@ -1,5 +1,5 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
-import { isNullish } from "$lib/utils/utils";
+import { isNullish } from "@dfinity/utils";
 import type { Navigation } from "@sveltejs/kit";
 
 /**

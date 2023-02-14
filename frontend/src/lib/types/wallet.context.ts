@@ -21,4 +21,8 @@ export interface WalletContext {
   store: Writable<WalletStore>;
 }
 
+export interface CkBTCWalletContext extends WalletContext {
+  reloadAccount: () => Promise<void>;
+}
+
 export const WALLET_CONTEXT_KEY = Symbol("wallet");
