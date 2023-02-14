@@ -6,10 +6,7 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
-  import {
-    buildAccountsUrl,
-    buildProposalUrl,
-  } from "$lib/utils/navigation.utils";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import LoginLinks from "$lib/components/login/LoginLinks.svelte";
   import LoginTitle from "$lib/components/login/LoginTitle.svelte";
@@ -21,21 +18,6 @@
       signedIn = isSignedIn(identity);
 
       if (!signedIn) {
-        return;
-      }
-
-      // TODO: to be removed
-      // Backwards compatibility until the dashboard has migrated to the new query parameters URL
-      const { hash } = new URL(window.location.href);
-      if (/#\/proposal\/\d+/.test(hash)) {
-        const { length, [length - 1]: last } = hash.split("/");
-        await goto(
-          buildProposalUrl({
-            universe: OWN_CANISTER_ID_TEXT,
-            proposalId: last,
-          }),
-          { replaceState: true }
-        );
         return;
       }
 

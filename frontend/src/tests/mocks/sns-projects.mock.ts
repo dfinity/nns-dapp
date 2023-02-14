@@ -1,10 +1,10 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
   SnsSwapCommitment,
-  SnsTokenMetadata,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import {
@@ -93,12 +93,15 @@ export const mockSnsParams: SnsParams = {
   sns_token_e8s: BigInt(150000000),
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
+  sale_delay_seconds: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
   neuron_recipes: [],
   cf_participants: [],
   init: [],
+  decentralization_sale_open_timestamp_seconds: undefined,
+  finalize_swap_in_progress: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
@@ -108,6 +111,8 @@ export const mockSwap: SnsSummarySwap = {
 export const mockQuerySwap: SnsSwap = {
   neuron_recipes: [],
   cf_participants: [],
+  decentralization_sale_open_timestamp_seconds: [],
+  finalize_swap_in_progress: [],
   init: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
@@ -128,9 +133,10 @@ export const mockMetadata: SnsSummaryMetadata = {
     "Tagline – Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
 };
 
-export const mockToken: SnsTokenMetadata = {
+export const mockToken: IcrcTokenMetadata = {
   name: "Tetris",
   symbol: "TET",
+  fee: BigInt(0),
 };
 
 export const mockSnsSummaryList: SnsSummary[] = [
@@ -157,6 +163,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Pacman",
       symbol: "PAC",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -175,6 +182,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Mario",
       symbol: "SPM",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -193,6 +201,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Kong",
       symbol: "DKG",
+      fee: BigInt(0),
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -228,11 +237,17 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   description: ["Web3 for the win"],
 };
 
+export const mockSnsToken: IcrcTokenMetadata = {
+  symbol: "TST",
+  name: "Tetris",
+  fee: BigInt(40_000),
+};
+
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
-  [IcrcMetadataResponseEntries.NAME, { Text: "Tetris" }],
-  [IcrcMetadataResponseEntries.SYMBOL, { Text: "TET" }],
-  [IcrcMetadataResponseEntries.FEE, { Nat: BigInt(1000) }],
+  [IcrcMetadataResponseEntries.NAME, { Text: mockSnsToken.name }],
+  [IcrcMetadataResponseEntries.SYMBOL, { Text: mockSnsToken.symbol }],
+  [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
 ];
 
 export const mockQueryMetadata: QuerySnsMetadata = {
@@ -243,6 +258,6 @@ export const mockQueryMetadata: QuerySnsMetadata = {
 };
 
 export const mockTokenStore = (run: Subscriber<Token>) => {
-  run({ symbol: "TST", name: "test" });
+  run(mockSnsToken);
   return () => undefined;
 };

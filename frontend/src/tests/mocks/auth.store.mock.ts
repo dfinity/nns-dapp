@@ -13,6 +13,13 @@ export const mockIdentity = {
   getPrincipal: () => mockPrincipal,
 } as unknown as Identity;
 
+export const createMockIdentity = (p: number) => {
+  const principal = Principal.fromHex(p.toString(16));
+  return {
+    getPrincipal: () => principal,
+  } as Identity;
+};
+
 export const mockIdentityErrorMsg = en.error.missing_identity;
 
 let testIdentity: Identity | null = mockIdentity;
@@ -35,6 +42,14 @@ export const mockAuthStoreSubscribe = (
   run: Subscriber<AuthStore>
 ): (() => void) => {
   run({ identity: mockIdentity });
+
+  return () => undefined;
+};
+
+export const mockAuthStoreNoIdentitySubscribe = (
+  run: Subscriber<AuthStore>
+): (() => void) => {
+  run({ identity: undefined });
 
   return () => undefined;
 };

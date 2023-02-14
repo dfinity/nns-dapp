@@ -25,7 +25,8 @@
     "ic": "Internet Computer",
     "previous": "Previous",
     "next": "Next",
-    "principal_is": "Your principal is"
+    "principal_is": "Your principal is",
+    "done": "Done"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -37,9 +38,9 @@
     "neuron_spawning": "Neuron is spawning, the details are not accessible until it has spawned.",
     "neuron_load": "An error occurred while loading the neuron.",
     "sns_neurons_load": "An error occurred while loading the neurons.",
-    "sns_accounts_load": "An error occurred while loading the accounts.",
+    "accounts_load": "An error occurred while loading the accounts.",
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
-    "sns_token_load": "An error occurred while loading the project token.",
+    "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
@@ -103,10 +104,14 @@
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
+    "token_not_found": "Sorry, there was an error loading the token metadata information.",
     "fetch_transactions": "Sorry, there was an error loading the transactions for this account.",
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
-    "canister_invalid_transaction": "Sorry, there was a problem with the transaction."
+    "adding_permissions": "There was an error adding permissions.",
+    "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
+    "ckbtc_get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
+    "ckbtc_get_btc_no_account": "An account should be provided to execute this feature"
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired."
@@ -133,12 +138,12 @@
     "earn": "Vote & earn rewards",
     "launchpad": "SNS Launch Pad",
     "ic_logo": "Internet Computer logo",
-    "about": "About",
+    "dashboard": "Dashboard",
     "voting_rewards": "Voting rewards",
     "logo": "Network Nervous System logo",
-    "copyright": "© 2023 Internet Computer",
     "github_link": "Link to NNS-dapp repo on GitHub",
-    "background": "An abstract image for design and presentation purpose only"
+    "background": "An abstract image for design and presentation purpose only",
+    "internetcomputer_dot_org_link": "Link to internetcomputer.org"
   },
   "accounts": {
     "main": "Main",
@@ -247,6 +252,9 @@
     "dissolve_delay_title": "Dissolve Delay",
     "no_delay": "0",
     "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "dissolve_delay_label": "Dissolve Delay (in days)",
+    "dissolve_delay_below_minimum": "Dissolve delay is below minimum voting allowance",
+    "dissolve_delay_above_maximum": "Dissolve delay exceeds the maximum allowed delay",
     "voting_power": "Voting Power",
     "skip": "Skip",
     "update_delay": "Update Delay",
@@ -343,7 +351,7 @@
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister ($canisterId) was linked successfully",
-    "attach_canister": "Attach Canister",
+    "link_canister": "Link Canister",
     "enter_canister_id": "Enter Canister ID:",
     "canister_id": "Canister ID",
     "enter_amount": "Enter Amount",
@@ -366,16 +374,16 @@
     "add_cycles": "Add Cycles",
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
-    "detach": "Detach",
-    "confirm_detach_title": "Confirm Detach",
-    "confirm_detach_description_1": "This will remove the canister from your account, it does not change the controller.",
-    "confirm_detach_description_2": "If you control the canister, ensure you have its identifier stored securely.",
+    "unlink": "Unlink",
+    "confirm_unlink_title": "Confirm Unlinking",
+    "confirm_unlink_description_1": "This will unlink the canister from your account, it does not change the controller.",
+    "confirm_unlink_description_2": "If you control the canister, ensure you have its identifier stored securely.",
     "confirm_remove_controller_title": "Confirm Removal of Controller",
     "confirm_remove_controller_description": "Are you sure you want to remove the following controller?",
     "confirm_remove_controller_user_description_1": "Are you sure you want to remove the current user from the controllers?",
     "confirm_remove_controller_user_description_2": "You will lose access to the canister.",
     "confirm_remove_last_controller_description": "This is the last remaining controller. If you remove it, nobody will be able to control the canister.",
-    "detach_success": "Canister detached successfully",
+    "unlink_success": "Canister successfully unlinked",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
@@ -486,13 +494,13 @@
     "voting_power_tooltip_with_stake": "Calculated as: <br/>(ICP staked + maturity staked) x Dissolve Delay Bonus x Age Bonus<br/>($stake + $st4kedMaturity) x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the community fund?",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the community fund?",
-    "participate_community_fund": "Participate in upcoming community fund.",
+    "participate_community_fund": "Participate in community fund.",
     "auto_stake_maturity": "Automatically stake new maturity.",
     "auto_stake_maturity_on": "Are you sure that you would like to automatically stake new maturity of this neuron?",
     "auto_stake_maturity_off": "Are you sure that you would like to stop automatically staking new maturity of this neuron?",
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
-    "community_fund_more_info": "Check <a href=\"https://forum.dfinity.org/t/community-fund-design-proposal/13701\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">here</a> for more information.",
+    "community_fund_more_info": "Join the community fund to support growing projects on the IC. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/community-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">Learn more</a> about how your neurons (un-staked) maturity is used.",
     "maturity_title": "Maturity",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
@@ -551,7 +559,10 @@
     "header": "Launch Pad",
     "committed_projects": "Launched",
     "no_committed_projects": "No launched projects so far.",
+    "no_opening_soon_projects": "No projects opening soon.",
+    "no_projects": "No projects for this state.",
     "open_projects": "Current Launches",
+    "upcoming_projects": "Upcoming Launches",
     "no_open_projects": "Looks like there are no SNS decentralisation sales running right now. Hopefully one is coming soon! <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">Read more about how SNSs are created</a>.",
     "proposals": "Proposals",
     "project_logo": "project logo",
@@ -570,10 +581,12 @@
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
+    "starts": "Starts in",
     "user_commitment": "My Commitment",
     "user_current_commitment": "My Current Commitment",
     "status": "Status",
     "status_open": "Accepting Participation",
+    "status_adopted": "Starting Soon",
     "enter_amount": "Enter Amount",
     "status_committed": "Completed",
     "status_aborted": "Aborted",
@@ -595,6 +608,7 @@
   "sns_neuron_detail": {
     "header": "Neuron",
     "all_topics": "All topics",
+    "community_fund_section": "Community Fund",
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
     "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
   },
@@ -658,13 +672,13 @@
     "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
   },
   "error__canister": {
-    "already_attached": "Canister ($canisterId) is already attached",
+    "already_attached": "Canister ($canisterId) is already linked",
     "name_taken": "The name $name is already in use. Names must be unique.",
     "name_too_long": "The name $name is too long (max. 24 characters). Please, choose a shorter name.",
-    "limit_exceeded": "The limit of canisters that can be attached has been exceeded.",
-    "detach_not_found": "Error detaching, canister ($canisterId) not found.",
-    "unknown_attach": "Error attaching canister.",
-    "unknown_detach": "Error detaching canister.",
+    "limit_exceeded": "The limit of canisters that can be linked has been exceeded.",
+    "unlink_not_found": "Error unlinking, canister ($canisterId) not found.",
+    "unknown_link": "Error linking canister.",
+    "unknown_unlink": "Error unlinking canister.",
     "get_exchange_rate": "Error getting the exchange rate of ICP to Cycles."
   },
   "theme": {
@@ -686,6 +700,7 @@
     "sns_stop_dissolving": "There was an error while stopping dissolving the neuron.",
     "sns_stake": "There was an error while staking the neuron.",
     "sns_increase_stake": "There was an error while increasing the stake of the neuron.",
+    "sns_register_vote": "There was an error while registering vote (Neuron: $neuronId).",
     "sns_neuron_account": "There was an error while staking the neuron.",
     "sns_dissolve_delay_action": "There was an error while updating dissolve delay of the neuron.",
     "project_not_found": "Sorry, the project was not found. Please refresh and try again",
@@ -762,11 +777,18 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total Value Locked"
+    "tvl": "Total ICP Value Locked"
   },
   "ckbtc": {
-    "title": "Chain-key Bitcoin",
+    "title": "ckBTC",
     "ckBTC": "ckBTC",
-    "logo": "Chain-key Bitcoin (ckBTC) logo"
+    "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "receive": "Receive",
+    "address": "Address",
+    "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
+    "ckBTC_receive_note": "ckBTC sent to your ckBTC address is available after a few seconds.",
+    "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
+    "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
+    "bitcoin": "Bitcoin"
   }
 }

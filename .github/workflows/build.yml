@@ -61,8 +61,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mon Jan 16 10:10:47
-          ref: 'e1d7dd4c10fb8a731a534ae2ef4b08474fea5f6b'
+          # Version from Thu Feb 9 with dfx version 0.13.xxx
+          ref: 'bb6e84d52219c46f061728dc1ff4156c4393da8b'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -105,7 +105,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
-          npm run test | tee -a wdio.log
+          SCREENSHOT=1 npm run test | tee -a wdio.log
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
@@ -132,7 +132,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: e2e-screenshots
-          path: screenshots/**/*.png
+          path: e2e-tests/screenshots/**/*.png
+          retention-days: 7
       - name: Remove screenshots until they are stable
         working-directory: e2e-tests
         run: |

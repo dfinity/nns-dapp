@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Deploys a test environment for the sns_aggregator.
+
+	Note: This does NOT deploy the local nns-dapp; it uses the standard published wasm
+	used by dfx nns deploy.
+
+	Note: This script should be integrated in the main deploy.sh and deployed with a flag,
+	      like other components.  There are some complications with that, so this is a simple
+	      alternative until the main deploy.sh has been adapted.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=c long=ic_commit desc="The IC commit to use" variable=DFX_IC_COMMIT default="$(jq -r '.defaults.build.config.IC_COMMIT' "$SOURCE_DIR/../dfx.json")"
+clap.define short=x long=ic_dir desc="Directory containing the ic source code" variable=IC_REPO_DIR default="$HOME/dfn/ic"
+clap.define short=y long=nd_dir desc="Directory containing the nns-dapp source code" variable=ND_REPO_DIR default="$HOME/dfn/nns-dapp"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+: Standard dfx sns demo, with standard canisters, not local nns-dapp, as compiling the local dapp takes time and the canister is not needed.
+dfx-sns-demo --network "$DFX_NETWORK" --ic_commit "$DFX_IC_COMMIT" --ic_dir "$IC_REPO_DIR" --nd_dir "$ND_REPO_DIR"
+
+: Make sure that we are using the expected ID and that it is healthy
+[[ "$(dfx identity whoami)" == "snsdemo8" ]] || dfx identity use snsdemo8
+dfx identity set-wallet "$(
+  cd "$(dirname "$(command -v dfx-sns-demo)")"
+  dfx identity get-wallet
+)"
+dfx wallet balance
+dfx identity get-wallet
+dfx identity get-principal
+
+: "Show all principals, in case the sns_aggregator canister has an unexpected controller"
+dfx-identity-list | while read -r name; do
+  principal="$(echo "" | dfx identity get-principal --identity "$name" 2>/dev/null)"
+  echo "${principal:-                                                               } $name"
+done
+
+: Claim the canister ID reserved for the aggregator by snsdemo
+AGGREGATOR_CANISTER_ID="$(
+  cd "$(dirname "$(command -v dfx-sns-demo)")"
+  dfx canister id sns_aggregator
+)"
+dfx-canister-set-id --canister_name sns_aggregator --canister_id "$AGGREGATOR_CANISTER_ID" --network "$DFX_NETWORK"
+dfx canister info sns_aggregator
+
+: Deploy the aggregator
+RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"

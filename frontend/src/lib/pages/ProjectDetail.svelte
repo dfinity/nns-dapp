@@ -21,6 +21,15 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
+  import { nonNullish } from "$lib/utils/utils";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+
+  export let rootCanisterId: string | undefined | null;
+
+  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
+    loadCommitment(rootCanisterId);
+  }
 
   const loadSummary = (rootCanisterId: string) =>
     loadSnsSummary({
@@ -32,7 +41,7 @@
       },
     });
 
-  const loadSwapState = (rootCanisterId: string) =>
+  const loadCommitment = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
@@ -50,7 +59,7 @@
 
     await Promise.all([
       loadSummary(rootCanisterId),
-      loadSwapState(rootCanisterId),
+      loadCommitment(rootCanisterId),
     ]);
   };
 
@@ -101,8 +110,6 @@
           )?.swapCommitment
         : undefined;
   };
-
-  export let rootCanisterId: string | undefined | null;
 
   /**
    * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.

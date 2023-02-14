@@ -10,11 +10,15 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
-
-  // Neurons are fetch on page load. No need to do it in the route.
+  import { onMount } from "svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
+
+  onMount(() => {
+    listNeurons();
+  });
 
   const goToNeuronDetails = async (id: NeuronId) =>
     await goto(
