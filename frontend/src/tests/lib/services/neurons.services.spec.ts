@@ -60,11 +60,8 @@ const {
   topUpNeuron,
 } = services;
 
-let toasts: ToastMsg[] = [];
-toastsStore.subscribe((t) => (toasts = t));
-
 const expectToastError = (contained: string) =>
-  expect(toasts).toMatchObject([
+  expect(get(toastsStore)).toMatchObject([
     {
       level: "error",
       text: expect.stringContaining(contained),
