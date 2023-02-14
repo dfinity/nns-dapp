@@ -28,12 +28,17 @@
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
-  import { setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
 
   export let neuronIdText: string | undefined | null;
+
+  onMount(() => {
+    listNeurons();
+  });
 
   const mapNeuronId = (
     neuronIdText: string | undefined | null

@@ -114,8 +114,6 @@ interface I18nError {
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
   canister_invalid_transaction: string;
-  ckbtc_get_btc_address: string;
-  ckbtc_get_btc_no_account: string;
 }
 
 interface I18nWarning {
@@ -831,10 +829,20 @@ interface I18nCkbtc {
   receive: string;
   address: string;
   btc_receive_note: string;
-  ckBTC_receive_note: string;
+  ckbtc_receive_note: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
+  ckbtc_balance_updated: string;
+}
+
+interface I18nError__ckbtc {
+  already_process: string;
+  no_new_utxo: string;
+  temporary_unavailable: string;
+  get_btc_address: string;
+  get_btc_no_account: string;
+  update_balance: string;
 }
 
 interface I18nNeuron_state {
@@ -1071,6 +1079,7 @@ interface I18n {
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
+  error__ckbtc: I18nError__ckbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -2,7 +2,7 @@
   import { isNullish } from "@dfinity/utils";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
+    type CkBTCWalletContext,
   } from "$lib/types/wallet.context";
   import { getContext } from "svelte";
   import { busy } from "@dfinity/gix-components";
@@ -13,14 +13,15 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
 
-  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
-  const { store }: WalletContext = context;
+  const context: CkBTCWalletContext =
+    getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
+  const { store, reloadAccount }: CkBTCWalletContext = context;
 
   const openReceive = async () => {
     // Button is disabled if no account anyway
     if (isNullish($store.account)) {
       toastsError({
-        labelKey: "error.ckbtc_get_btc_no_account",
+        labelKey: "error__ckbtc.get_btc_no_account",
       });
       return;
     }
@@ -37,12 +38,12 @@
         message: "ckBTCWalletModal",
         detail: {
           type: "ckbtc-receive",
-          data: { btcAddress, account: $store.account },
+          data: { btcAddress, account: $store.account, reloadAccount },
         },
       });
     } catch (err: unknown) {
       toastsError({
-        labelKey: "error.ckbtc_get_btc_address",
+        labelKey: "error__ckbtc.get_btc_address",
         err,
       });
     }
