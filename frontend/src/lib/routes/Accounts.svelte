@@ -24,7 +24,7 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_CKBTC_LEDGER } from "$lib/stores/feature-flags.store";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -55,7 +55,7 @@
 
   const loadCkBTCAccountsBalances = async () => {
     // ckBTC is not enabled, information shall and cannot be fetched
-    if (!$featureFlagsStore.ENABLE_CKBTC_LEDGER) {
+    if (!$ENABLE_CKBTC_LEDGER) {
       return;
     }
 

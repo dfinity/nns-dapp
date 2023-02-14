@@ -16,9 +16,12 @@ describe("featureFlags store", () => {
   });
 
   it("should set default value to env var FEATURE_FLAG_ENVIRONMENT", () => {
-    const storeData = get(featureFlagsStore);
-
-    expect(storeData).toEqual(FEATURE_FLAG_ENVIRONMENT);
+    let feature: keyof FeatureFlags<boolean>;
+    for (feature in FEATURE_FLAG_ENVIRONMENT) {
+      expect(get(featureFlagsStore[feature])).toEqual(
+        FEATURE_FLAG_ENVIRONMENT[feature]
+      );
+    }
   });
 
   it("should change value when overrideFeatureFlagsStore is updated", () => {
