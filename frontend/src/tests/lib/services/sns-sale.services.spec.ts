@@ -29,7 +29,6 @@ import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-  mockIdentityErrorMsg,
   mockPrincipal,
 } from "../../mocks/auth.store.mock";
 import {

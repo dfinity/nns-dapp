@@ -64,7 +64,7 @@ describe("sns-sale.api", () => {
     });
 
     expect(response).not.toBeNull();
-    expect(response).toEqual(ticket);
+    expect(response).toEqual(ticket.ticket);
   });
 
   it("should create new sale ticket", async () => {
@@ -75,6 +75,6 @@ describe("sns-sale.api", () => {
     });
 
     expect(response).not.toBeNull();
-    expect(response).toEqual(ticket);
+    expect(response).toEqual(ticket.ticket);
   });
 });
