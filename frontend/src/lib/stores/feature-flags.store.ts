@@ -11,8 +11,15 @@ type OverrideFeatureFlagsData = Partial<FeatureFlags>;
 export interface OverrideFeatureFlagsStore
   extends Readable<OverrideFeatureFlagsData> {
   setFlag(flag: keyof FeatureFlags, value: boolean): void;
+  removeFlag(flag: keyof FeatureFlags): void;
   reset: () => void;
 }
+
+const assertFeatureFlag = (flag: keyof FeatureFlags) => {
+  if (!(flag in FEATURE_FLAG_ENVIRONMENT)) {
+    throw new Error(`Unknown feature flag: ${flag}`);
+  }
+};
 
 /**
  * A store that contains the feature flags that have been overridden by the user.
@@ -27,10 +34,20 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     subscribe,
 
     setFlag(flag: keyof FeatureFlags, value: boolean) {
+      assertFeatureFlag(flag);
       update((featureFlags) => ({
         ...featureFlags,
         [flag]: value,
       }));
+    },
+
+    removeFlag(flag: keyof FeatureFlags) {
+      assertFeatureFlag(flag);
+      update((featureFlags) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [flag]: _, ...rest } = featureFlags;
+        return rest;
+      });
     },
 
     reset: () => set({}),
