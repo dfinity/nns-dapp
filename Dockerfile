@@ -68,9 +68,6 @@ SHELL ["bash", "-c"]
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 
-ARG OWN_CANISTER_ID
-RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
-
 # Build
 # ... put only git-tracked files in the build directory
 COPY . /build
