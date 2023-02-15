@@ -72,7 +72,19 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
-          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
+          "local": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium05_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium06_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium07_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium08_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium09_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___medium10_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___large01_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___large02_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___large03_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___large04_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___large05_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai",
+          "https___benchmarklarge_testnet_dfinity_network": "qhbym-qaaaa-aaaaa-aaafq-cai"
         }
       }
     },
@@ -437,6 +449,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://benchmarklarge.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -451,6 +464,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large01.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -465,6 +479,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large02.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -479,6 +494,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large03.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -493,6 +509,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large04.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -507,6 +524,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://large05.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -521,6 +539,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium05.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -535,6 +554,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium06.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -549,6 +569,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium07.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -563,6 +584,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium08.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -577,6 +599,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium09.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
@@ -591,6 +614,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "https://medium10.testnet.dfinity.network",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
