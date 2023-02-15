@@ -19,8 +19,8 @@ export interface FeatureFlags<T> {
   ENABLE_CKBTC_LEDGER: T;
   ENABLE_CKBTC_RECEIVE: T;
   // Used only in tests and set up in jest-setup.ts
-  TEST_FLAG_EDITABLE?: T;
-  TEST_FLAG_NOT_EDITABLE?: T;
+  TEST_FLAG_EDITABLE: T;
+  TEST_FLAG_NOT_EDITABLE: T;
 }
 
 export type FeatureKey = keyof FeatureFlags<boolean>;

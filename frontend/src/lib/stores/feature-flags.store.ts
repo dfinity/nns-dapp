@@ -72,19 +72,15 @@ if (browser) {
   (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
 }
 
-const initFeatureFlagStore = (key: FeatureKey): Readable<boolean | undefined> =>
+const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
   derived(
     overrideFeatureFlagsStore,
     ($overrideFeatureFlagsStore) =>
       $overrideFeatureFlagsStore[key] ?? FEATURE_FLAG_ENVIRONMENT[key]
   );
 
-const initFeatureFlagsStore = (): FeatureFlags<
-  Readable<boolean | undefined>
-> => {
-  const featureFlagStores: Partial<
-    FeatureFlags<Readable<boolean | undefined>>
-  > = {};
+const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
+  const featureFlagStores: Partial<FeatureFlags<Readable<boolean>>> = {};
   let key: FeatureKey;
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     featureFlagStores[key] = initFeatureFlagStore(key);
