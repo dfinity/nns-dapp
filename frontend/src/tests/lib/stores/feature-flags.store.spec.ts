@@ -75,4 +75,55 @@ describe("featureFlags store", () => {
       notEditableError
     );
   });
+
+  describe("console interface", () => {
+    let recordedLogs: Array<string> = [];
+
+    beforeEach(() => {
+      recordedLogs.length = 0;
+      jest
+        .spyOn(console, "log")
+        .mockImplementation((s) => recordedLogs.push(s));
+    });
+
+    it("should list features", () => {
+      const consoleInterface = featureFlagsModule.initConsoleInterface();
+      consoleInterface.list();
+
+      expect(recordedLogs).toEqual(
+        expect.arrayContaining([
+          "TEST_FLAG_EDITABLE true (override undefined default true)",
+        ])
+      );
+    });
+
+    it("should expose override methods", () => {
+      const consoleInterface = featureFlagsModule.initConsoleInterface();
+
+      consoleInterface.TEST_FLAG_EDITABLE.overrideWith(false);
+
+      const expectedOutput =
+        "TEST_FLAG_EDITABLE false (override false default true)";
+      expect(recordedLogs).not.toEqual(
+        expect.arrayContaining([expectedOutput])
+      );
+      consoleInterface.list();
+      expect(recordedLogs).toEqual(expect.arrayContaining([expectedOutput]));
+    });
+
+    it("should expose remove override methods", () => {
+      const consoleInterface = featureFlagsModule.initConsoleInterface();
+
+      consoleInterface.TEST_FLAG_EDITABLE.overrideWith(false);
+      consoleInterface.TEST_FLAG_EDITABLE.removeOverride();
+
+      const expectedOutput =
+        "TEST_FLAG_EDITABLE true (override undefined default true)";
+      expect(recordedLogs).not.toEqual(
+        expect.arrayContaining([expectedOutput])
+      );
+      consoleInterface.list();
+      expect(recordedLogs).toEqual(expect.arrayContaining([expectedOutput]));
+    });
+  });
 });

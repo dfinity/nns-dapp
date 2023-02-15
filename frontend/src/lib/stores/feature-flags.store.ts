@@ -5,7 +5,7 @@ import {
   type FeatureKey,
 } from "$lib/constants/environment.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
-import { derived, type Readable } from "svelte/store";
+import { derived, get, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 type OverrideFeatureFlagsData = Partial<FeatureFlags<boolean>>;
@@ -67,9 +67,55 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
 // Exported for testing purposes
 export const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
 
+interface FeatureFlagConsoleInterface {
+  overrideWith(value: boolean): void;
+  removeOverride(): void;
+}
+
+interface FeatureFlagsConsoleInterface
+  extends FeatureFlags<FeatureFlagConsoleInterface> {
+  list(): void;
+}
+
+const initSingleFeatureConsoleInterface = (
+  key: FeatureKey
+): FeatureFlagConsoleInterface => ({
+  overrideWith: (value: boolean) =>
+    overrideFeatureFlagsStore.setFlag(key, value),
+  removeOverride: () => overrideFeatureFlagsStore.removeFlag(key),
+});
+
+const listFeatureFlagsToConsole = () => {
+  const overrideStates = get(overrideFeatureFlagsStore);
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
+    const override = overrideStates[key];
+    const defaultValue = FEATURE_FLAG_ENVIRONMENT[key];
+    const value = override ?? defaultValue;
+    console.log(
+      `${key} ${value} (override ${override} default ${defaultValue})`
+    );
+  }
+};
+
+// Exported for testing.
+export const initConsoleInterface = (): FeatureFlagsConsoleInterface => {
+  const consoleInterface: Partial<FeatureFlagsConsoleInterface> = {};
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
+    consoleInterface[key] = initSingleFeatureConsoleInterface(key);
+  }
+  return {
+    ...consoleInterface,
+    list: listFeatureFlagsToConsole,
+  } as FeatureFlagsConsoleInterface;
+};
+
 if (browser) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
+  (
+    window as unknown as { __featureFlags: FeatureFlagsConsoleInterface }
+  ).__featureFlags = initConsoleInterface();
 }
 
 const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
