@@ -176,6 +176,7 @@
   .participate {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--padding);
   }
 
