@@ -23,8 +23,11 @@
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
   import type { SnsTicket } from "../../types/sns";
+  import {toastsShow, toastsSuccess} from "../../stores/toasts.store";
+  import {nanoSecondsToDateTime, secondsToDateTime} from "../../utils/date.utils";
+  import {DEFAULT_TOAST_DURATION_MILLIS} from "../../constants/constants";
 
-  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
+  const { store: projectDetailStore, reload } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
@@ -57,6 +60,7 @@
   let ticket: Ticket | undefined;
   let criticalError = false;
 
+
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
     if (
@@ -87,9 +91,31 @@
       saleTicket.ticket !== undefined &&
       saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
     ) {
-      participateInSnsSwap({
+      // TODO(sale): refactor to reuse also in the modal
+
+      toastsShow({
+        level: "info",
+        labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+        substitutions: {
+          $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
+        },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
+      });
+      const { success, retry } = await participateInSnsSwap({
         ticket: saleTicket as Required<SnsTicket>,
       });
+
+      if (success) {
+        toastsSuccess({
+          labelKey: "sns_project_detail.participate_success",
+        });
+      }
+
+      if (retry) {
+        // TODO(sale): GIX-1310 - implement retry logic
+      }
+
+      await reload();
     }
 
     loading = false;

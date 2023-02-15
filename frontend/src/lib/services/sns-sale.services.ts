@@ -46,8 +46,9 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { secondsToDateTime } from "../utils/date.utils";
+import {nanoSecondsToDateTime} from "../utils/date.utils";
 import { formatToken } from "../utils/token.utils";
+import {DEFAULT_TOAST_DURATION_MILLIS} from "../constants/constants";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -154,7 +155,7 @@ export const newSaleTicket = async ({
             level: "info",
             labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
             substitutions: {
-              $time: secondsToDateTime(existingTicket.creation_time),
+              $time: nanoSecondsToDateTime(existingTicket.creation_time),
             },
           });
 
@@ -411,6 +412,7 @@ export const participateInSnsSwap = async ({
         substitutions: {
           $amount: formatToken({ value: icp_accepted_participation_e8s }),
         },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
     }
   } catch (err) {
