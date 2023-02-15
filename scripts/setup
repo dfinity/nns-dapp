@@ -282,6 +282,7 @@ command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
+command -v didc || "install_didc_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
