@@ -31,7 +31,8 @@ jobs:
         include:
           - BUILD_NAME: "mainnet"
             DFX_NETWORK: "mainnet"
-            OWN_CANISTER_ID: ""
+          - BUILD_NAME: "local"
+            DFX_NETWORK: "local"
     steps:
       - uses: actions/checkout@v3
       - name: Set up docker buildx
@@ -44,7 +45,6 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
-            OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out
