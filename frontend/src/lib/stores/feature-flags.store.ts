@@ -104,7 +104,8 @@ const listFeatureFlagsToConsole = () => {
   }
 };
 
-const initConsoleInterface = (): FeatreFlagsConsoleInterface => {
+// Exported for testing.
+export const initConsoleInterface = (): FeatreFlagsConsoleInterface => {
   const consoleInterface: Partial<FeatreFlagsConsoleInterface> = {};
   let key: FeatureKey;
   for (key in FEATURE_FLAG_ENVIRONMENT) {
