@@ -63,9 +63,7 @@ if (browser) {
   (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
 }
 
-const initFeatureFlagStore = (
-  key: FeatureKey
-): Readable<boolean> =>
+const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
   derived(
     overrideFeatureFlagsStore,
     ($overrideFeatureFlagsStore) =>

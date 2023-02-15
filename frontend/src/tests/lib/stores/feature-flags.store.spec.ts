@@ -1,8 +1,8 @@
 import {
   FEATURE_FLAG_ENVIRONMENT,
-  type FeatureFlags,
   type FeatureKey,
 } from "$lib/constants/environment.constants";
+import * as featureFlagsModule from "$lib/stores/feature-flags.store";
 import {
   featureFlagsStore,
   overrideFeatureFlagsStore,
@@ -20,6 +20,15 @@ describe("featureFlags store", () => {
     let feature: FeatureKey;
     for (feature in FEATURE_FLAG_ENVIRONMENT) {
       expect(get(featureFlagsStore[feature])).toEqual(
+        FEATURE_FLAG_ENVIRONMENT[feature]
+      );
+    }
+  });
+
+  it("should export all feature flags on the module as boolean stores", () => {
+    let feature: FeatureKey;
+    for (feature in FEATURE_FLAG_ENVIRONMENT) {
+      expect(get(featureFlagsModule[feature])).toEqual(
         FEATURE_FLAG_ENVIRONMENT[feature]
       );
     }
