@@ -70,14 +70,14 @@ const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
       $overrideFeatureFlagsStore[key] ?? FEATURE_FLAG_ENVIRONMENT[key]
   );
 
-const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> =>
-  Object.keys(FEATURE_FLAG_ENVIRONMENT).reduce(
-    (features, key) => ({
-      ...features,
-      [key]: initFeatureFlagStore(key as FeatureKey),
-    }),
-    {} as Partial<FeatureFlags<Readable<boolean>>>
-  ) as FeatureFlags<Readable<boolean>>;
+const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
+  let featureFlagStores: Partial<FeatureFlags<Readable<boolean>>> = {};
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
+    featureFlagStores[key] = initFeatureFlagStore(key);
+  }
+  return featureFlagStores as FeatureFlags<Readable<boolean>>;
+};
 
 const featureFlagsStore = initFeatureFlagsStore();
 
