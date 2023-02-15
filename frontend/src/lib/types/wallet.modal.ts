@@ -8,15 +8,22 @@ export interface WalletModal {
 }
 
 // CkBTC
-export type CkBTCWalletModalType = "ckbtc-receive";
+export type CkBTCWalletModalType = "ckbtc-receive" | "ckbtc-transaction";
 
 export interface CkBTCWalletModalData {
-  btcAddress: string;
   account: Account;
+}
+
+export interface CkBTCWalletTransactionModalData extends CkBTCWalletModalData {
+  reloadAccountFromStore: () => void;
+}
+
+export interface CkBTCWalletReceiveModalData extends CkBTCWalletModalData {
+  btcAddress: string;
   reloadAccount: () => Promise<void>;
 }
 
 export interface CkBTCWalletModal {
   type: CkBTCWalletModalType;
-  data: CkBTCWalletModalData;
+  data: CkBTCWalletReceiveModalData | CkBTCWalletTransactionModalData;
 }

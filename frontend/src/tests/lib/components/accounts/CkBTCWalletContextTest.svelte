@@ -20,6 +20,9 @@
   setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: walletStore,
     reloadAccount: () => Promise.resolve(),
+    reloadAccountFromStore: () => {
+      // Do nothing here
+    },
   });
 </script>
 
