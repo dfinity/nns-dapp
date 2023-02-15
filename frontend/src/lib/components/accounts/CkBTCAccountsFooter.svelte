@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import {
     ckBTCTokenFeeStore,

@@ -1,9 +1,6 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
-use crate::multi_part_transactions_processor::{
-    MultiPartTransactionError, MultiPartTransactionStatus, MultiPartTransactionToBeProcessed,
-    MultiPartTransactionsProcessor,
-};
+use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::time::time_millis;
 use crate::STATE;
@@ -519,14 +516,7 @@ impl AccountsStore {
             .map(|&(transaction_type, _)| transaction_type)
     }
 
-    pub fn complete_pending_transaction(
-        &mut self,
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        block_height: BlockIndex,
-    ) {
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::Complete);
+    pub fn complete_pending_transaction(&mut self, from: AccountIdentifier, to: AccountIdentifier) {
         self.remove_pending_transaction((from, to));
     }
 
@@ -601,7 +591,6 @@ impl AccountsStore {
                 } else if let Some(neuron_details) = self.neuron_accounts.get(&to) {
                     // Handle the case where people top up their neuron from an external account
                     self.multi_part_transactions_processor.push(
-                        neuron_details.principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
                     );
@@ -770,12 +759,7 @@ impl AccountsStore {
 
     // We skip the checks here since in this scenario we must store the canister otherwise the user
     // won't be able to retrieve its Id.
-    pub fn attach_newly_created_canister(
-        &mut self,
-        principal: PrincipalId,
-        block_height: BlockIndex,
-        canister_id: CanisterId,
-    ) {
+    pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
@@ -785,45 +769,14 @@ impl AccountsStore {
                 canister_id,
             });
             sort_canisters(&mut account.canisters);
-            self.multi_part_transactions_processor
-                .update_status(block_height, MultiPartTransactionStatus::CanisterCreated(canister_id));
         }
     }
 
     pub fn enqueue_transaction_to_be_refunded(&mut self, args: RefundTransactionArgs) {
         self.multi_part_transactions_processor.push(
-            args.recipient_principal,
             args.original_transaction_block_height,
             MultiPartTransactionToBeProcessed::RefundTransaction(args),
         );
-    }
-
-    pub fn process_transaction_refund_completed(
-        &mut self,
-        original_transaction_block_height: BlockIndex,
-        refund_block_height: BlockIndex,
-        error_message: String,
-    ) {
-        self.multi_part_transactions_processor.update_status(
-            original_transaction_block_height,
-            MultiPartTransactionStatus::Refunded(refund_block_height, error_message),
-        );
-    }
-
-    pub fn process_multi_part_transaction_error(
-        &mut self,
-        block_height: BlockIndex,
-        error: String,
-        refund_pending: bool,
-    ) {
-        let status = if refund_pending {
-            MultiPartTransactionStatus::ErrorWithRefundPending(error)
-        } else {
-            MultiPartTransactionStatus::Error(error)
-        };
-
-        self.multi_part_transactions_processor
-            .update_status(block_height, status);
     }
 
     pub fn get_next_transaction_index(&self) -> TransactionIndex {
@@ -837,48 +790,17 @@ impl AccountsStore {
         self.block_height_synced_up_to
     }
 
-    pub fn get_multi_part_transaction_status(
-        &self,
-        caller: PrincipalId,
-        block_height: BlockIndex,
-    ) -> MultiPartTransactionStatus {
-        if self.get_block_height_synced_up_to().unwrap_or(0) < block_height {
-            MultiPartTransactionStatus::PendingSync
-        } else {
-            self.multi_part_transactions_processor.get_status(caller, block_height)
-        }
-    }
-
-    pub fn get_multi_part_transaction_errors(&self) -> Vec<MultiPartTransactionError> {
-        self.multi_part_transactions_processor.get_errors()
-    }
-
     pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.multi_part_transactions_processor.take_next()
     }
 
-    pub fn mark_neuron_created(
-        &mut self,
-        principal: &PrincipalId,
-        block_height: BlockIndex,
-        memo: Memo,
-        neuron_id: NeuronId,
-    ) {
+    pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
         self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::NeuronCreated(neuron_id));
     }
 
-    pub fn mark_neuron_topped_up(&mut self, block_height: BlockIndex) {
+    pub fn mark_neuron_topped_up(&mut self) {
         self.neurons_topped_up_count += 1;
-        self.multi_part_transactions_processor
-            .update_status(block_height, MultiPartTransactionStatus::Complete);
-    }
-
-    pub fn mark_canister_topped_up(&mut self, original_transaction_block_height: BlockIndex) {
-        self.multi_part_transactions_processor
-            .update_status(original_transaction_block_height, MultiPartTransactionStatus::Complete);
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -921,12 +843,10 @@ impl AccountsStore {
 
     pub fn enqueue_multi_part_transaction(
         &mut self,
-        principal: PrincipalId,
         block_height: BlockIndex,
         transaction: MultiPartTransactionToBeProcessed,
     ) {
-        self.multi_part_transactions_processor
-            .push(principal, block_height, transaction);
+        self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
     pub fn get_stats(&self) -> Stats {
@@ -1302,7 +1222,6 @@ impl AccountsStore {
         match transaction_type {
             TransactionType::ParticipateSwap(swap_canister_id) => {
                 self.multi_part_transactions_processor.push(
-                    principal,
                     block_height,
                     MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
                 );
@@ -1316,7 +1235,6 @@ impl AccountsStore {
                 };
                 self.neuron_accounts.insert(to, neuron_details);
                 self.multi_part_transactions_processor.push(
-                    principal,
                     block_height,
                     MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
                 );
@@ -1325,7 +1243,6 @@ impl AccountsStore {
                 if let Some(neuron_account) = self.neuron_accounts.get(&to) {
                     // We need to use the memo from the original stake neuron transaction
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_account.principal, neuron_account.memo),
                     );
@@ -1334,7 +1251,6 @@ impl AccountsStore {
             TransactionType::CreateCanister => {
                 if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&principal).into())) {
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
                     );
@@ -1344,17 +1260,13 @@ impl AccountsStore {
                         amount,
                         refund_address: from,
                     };
-                    self.multi_part_transactions_processor.push(
-                        principal,
-                        block_height,
-                        MultiPartTransactionToBeProcessed::CreateCanister(args),
-                    );
+                    self.multi_part_transactions_processor
+                        .push(block_height, MultiPartTransactionToBeProcessed::CreateCanister(args));
                 }
             }
             TransactionType::TopUpCanister(canister_id) => {
                 if to == AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some((&canister_id.get()).into())) {
                     self.multi_part_transactions_processor.push(
-                        principal,
                         block_height,
                         MultiPartTransactionToBeProcessed::TopUpCanisterV2(principal, canister_id),
                     );
@@ -1365,11 +1277,8 @@ impl AccountsStore {
                         amount,
                         refund_address: from,
                     };
-                    self.multi_part_transactions_processor.push(
-                        principal,
-                        block_height,
-                        MultiPartTransactionToBeProcessed::TopUpCanister(args),
-                    );
+                    self.multi_part_transactions_processor
+                        .push(block_height, MultiPartTransactionToBeProcessed::TopUpCanister(args));
                 }
             }
             _ => {}

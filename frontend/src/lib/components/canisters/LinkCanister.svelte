@@ -19,9 +19,9 @@
       });
       return;
     }
-    startBusy({ initiator: "attach-canister" });
+    startBusy({ initiator: "link-canister" });
     const { success } = await attachCanister(principal);
-    stopBusy("attach-canister");
+    stopBusy("link-canister");
     if (success) {
       toastsSuccess({
         labelKey: "canisters.link_canister_success",

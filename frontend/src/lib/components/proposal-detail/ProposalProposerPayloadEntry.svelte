@@ -2,7 +2,8 @@
   import Json from "../common/Json.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { expandObject, isNullish } from "$lib/utils/utils";
+  import { expandObject } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
 
   // `undefined` means that the payload is not loaded yet
   // `null` means that the payload was not found

@@ -1,4 +1,4 @@
-import { nonNullish } from "$lib/utils/utils";
+import { nonNullish } from "@dfinity/utils";
 
 /**
  * Default format: 123456.789 -> "123'456.79"

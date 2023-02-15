@@ -19,9 +19,14 @@ import type {
   NervousSystemFunction,
   NervousSystemParameters,
 } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
-import { bytesToHexString, isNullish, nonNullish } from "./utils";
+import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
   neurons: SnsNeuron[]

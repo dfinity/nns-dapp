@@ -5,9 +5,7 @@
   import MinButton from "$lib/components/common/MinButton.svelte";
 
   export let days: number | undefined = undefined;
-  export let min: number | undefined = undefined;
   export let max: number | undefined = undefined;
-  export let label: string | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();

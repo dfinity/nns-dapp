@@ -51,6 +51,7 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
+WORKDIR /build
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
@@ -79,8 +80,49 @@ RUN ./build.sh
 
 RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
 
+FROM builder AS build_frontend
+ARG DFX_NETWORK=mainnet
+RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
+SHELL ["bash", "-c"]
+COPY ./frontend /build/frontend
+COPY ./config.sh /build/
+COPY ./build-frontend.sh /build/
+COPY ./dfx.json /build/
+COPY ./scripts/require-dfx-network.sh /build/scripts/
+WORKDIR /build
+RUN ( cd frontend && npm ci )
+RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
+
+FROM builder AS build_nnsdapp
+ARG DFX_NETWORK=mainnet
+RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
+SHELL ["bash", "-c"]
+COPY ./rs /build/rs
+COPY ./config.sh /build/
+COPY ./build-backend.sh /build/
+COPY ./build-rs.sh /build/
+COPY ./Cargo.toml /build/
+COPY ./Cargo.lock /build/
+COPY ./dfx.json /build/
+COPY --from=build_frontend /build/assets.tar.xz /build/
+WORKDIR /build
+RUN export DFX_NETWORK && ./build-backend.sh
+
+FROM builder AS build_aggregate
+SHELL ["bash", "-c"]
+COPY ./rs /build/rs
+COPY ./build-sns-aggregator.sh /build/build-sns-aggregator.sh
+COPY ./build-rs.sh /build/build-rs.sh
+COPY ./Cargo.toml /build/Cargo.toml
+COPY ./Cargo.lock /build/Cargo.lock
+COPY ./dfx.json /build/dfx.json
+WORKDIR /build
+RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
+RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
+RUN ./build-sns-aggregator.sh
+
 FROM scratch AS scratch
-COPY --from=build /build/nns-dapp.wasm /
-COPY --from=build /build/assets.tar.xz /
-COPY --from=build /build-inputs.txt /
-COPY --from=build /build/frontend /frontend
+COPY --from=build_nnsdapp /build/nns-dapp.wasm /
+COPY --from=build_nnsdapp /build/assets.tar.xz /
+COPY --from=build_aggregate /build/sns_aggregator.wasm /
+COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /

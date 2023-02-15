@@ -2,7 +2,8 @@
   import { i18n } from "$lib/stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
-  import { isNullish, keyOf } from "$lib/utils/utils";
+  import { keyOf } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import { snsQueryStore, snsSummariesStore } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
