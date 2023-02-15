@@ -113,7 +113,9 @@ export const initConsoleInterface = (): FeatureFlagsConsoleInterface => {
 
 if (browser) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  (window as any).__featureFlags = initConsoleInterface();
+  (
+    window as unknown as { __featureFlags: FeatureFlagsConsoleInterface }
+  ).__featureFlags = initConsoleInterface();
 }
 
 const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
