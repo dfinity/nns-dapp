@@ -3,9 +3,7 @@ import {
   type FeatureKey,
 } from "$lib/constants/environment.constants";
 import * as featureFlagsModule from "$lib/stores/feature-flags.store";
-import {
-  overrideFeatureFlagsStore,
-} from "$lib/stores/feature-flags.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { get } from "svelte/store";
 
 describe("featureFlags store", () => {
