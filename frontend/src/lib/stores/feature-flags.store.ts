@@ -16,11 +16,19 @@ export interface OverrideFeatureFlagsStore
   reset: () => void;
 }
 
-const assertFeatureFlag = (flag: FeatureKey) => {
+const assertValidFeatureFlag = (flag: FeatureKey) => {
   if (!(flag in FEATURE_FLAG_ENVIRONMENT)) {
     throw new Error(`Unknown feature flag: ${flag}`);
   }
+  if (!EDITABLE_FEATURE_FLAGS.includes(flag)) {
+    throw new Error(`Feature flag is not editable: ${flag}`);
+  }
 };
+
+const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
+  "ENABLE_SNS_AGGREGATOR",
+  "ENABLE_SNS_2",
+];
 
 /**
  * A store that contains the feature flags that have been overridden by the user.
@@ -35,7 +43,7 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     subscribe,
 
     setFlag(flag: FeatureKey, value: boolean) {
-      assertFeatureFlag(flag);
+      assertValidFeatureFlag(flag);
       update((featureFlags) => ({
         ...featureFlags,
         [flag]: value,
@@ -43,7 +51,7 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     },
 
     removeFlag(flag: FeatureKey) {
-      assertFeatureFlag(flag);
+      assertValidFeatureFlag(flag);
       update((featureFlags) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [flag]: _, ...rest } = featureFlags;

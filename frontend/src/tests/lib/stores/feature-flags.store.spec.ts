@@ -8,7 +8,9 @@ import { get } from "svelte/store";
 
 describe("featureFlags store", () => {
   const noKey = "NO_KEY" as FeatureKey;
-  const error = new Error(`Unknown feature flag: ${noKey}`);
+  const noKeyError = `Unknown feature flag: ${noKey}`;
+  const noEditable = "ENABLE_SNS_VOTING" as FeatureKey;
+  const noEditableError = `Feature flag is not editable: ${noEditable}`;
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
   });
@@ -38,8 +40,14 @@ describe("featureFlags store", () => {
 
   it("should throw if a non feature flag is set", () => {
     expect(() => overrideFeatureFlagsStore.setFlag(noKey, false)).toThrowError(
-      error
+      noKeyError
     );
+  });
+
+  it("should throw if a non editable feature flag is set", () => {
+    expect(() =>
+      overrideFeatureFlagsStore.setFlag(noEditable, false)
+    ).toThrowError(noEditableError);
   });
 
   it("should remove feature flags", () => {
@@ -58,6 +66,14 @@ describe("featureFlags store", () => {
   });
 
   it("should throw if a non feature flag is removed", () => {
-    expect(() => overrideFeatureFlagsStore.removeFlag(noKey)).toThrow(error);
+    expect(() => overrideFeatureFlagsStore.removeFlag(noKey)).toThrow(
+      noKeyError
+    );
+  });
+
+  it("should throw if a non editable feature flag is removed", () => {
+    expect(() => overrideFeatureFlagsStore.removeFlag(noEditable)).toThrow(
+      noEditableError
+    );
   });
 });
