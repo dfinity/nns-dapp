@@ -67,19 +67,19 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
 // Exported for testing purposes
 export const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
 
-interface FeatreFlagConsoleInterface {
+interface FeatureFlagConsoleInterface {
   overrideWith(value: boolean): void;
   removeOverride(): void;
 }
 
-interface FeatreFlagsConsoleInterface
-  extends FeatureFlags<FeatreFlagConsoleInterface> {
+interface FeatureFlagsConsoleInterface
+  extends FeatureFlags<FeatureFlagConsoleInterface> {
   list(): void;
 }
 
 const initSingleFeatureConsoleInterface = (
   key: FeatureKey
-): FeatreFlagConsoleInterface => ({
+): FeatureFlagConsoleInterface => ({
   overrideWith: (value: boolean) =>
     overrideFeatureFlagsStore.setFlag(key, value),
   removeOverride: () => overrideFeatureFlagsStore.removeFlag(key),
@@ -87,26 +87,19 @@ const initSingleFeatureConsoleInterface = (
 
 const listFeatureFlagsToConsole = () => {
   const overrideStates = get(overrideFeatureFlagsStore);
-  let key: FeatureKey;
-  for (key in FEATURE_FLAG_ENVIRONMENT) {
+  for (const key in FEATURE_FLAG_ENVIRONMENT) {
     const override = overrideStates[key];
     const defaultValue = FEATURE_FLAG_ENVIRONMENT[key];
     const value = override ?? defaultValue;
     console.log(
-      key,
-      value,
-      "(override",
-      override,
-      "default",
-      defaultValue,
-      ")"
+      `${key} ${value} (override ${override} default ${defaultValue})`
     );
   }
 };
 
 // Exported for testing.
-export const initConsoleInterface = (): FeatreFlagsConsoleInterface => {
-  const consoleInterface: Partial<FeatreFlagsConsoleInterface> = {};
+export const initConsoleInterface = (): FeatureFlagsConsoleInterface => {
+  const consoleInterface: Partial<FeatureFlagsConsoleInterface> = {};
   let key: FeatureKey;
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     consoleInterface[key] = initSingleFeatureConsoleInterface(key);
@@ -114,7 +107,7 @@ export const initConsoleInterface = (): FeatreFlagsConsoleInterface => {
   return {
     ...consoleInterface,
     list: listFeatureFlagsToConsole,
-  } as FeatreFlagsConsoleInterface;
+  } as FeatureFlagsConsoleInterface;
 };
 
 if (browser) {

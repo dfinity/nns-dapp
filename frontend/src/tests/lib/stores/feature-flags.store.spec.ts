@@ -83,9 +83,7 @@ describe("featureFlags store", () => {
       recordedLogs.length = 0;
       jest
         .spyOn(console, "log")
-        .mockImplementation((...args) =>
-          recordedLogs.push(args.map((s) => s ?? "undefined").join(" "))
-        );
+        .mockImplementation((s) => recordedLogs.push(s));
     });
 
     it("should list features", () => {
@@ -94,7 +92,7 @@ describe("featureFlags store", () => {
 
       expect(recordedLogs).toEqual(
         expect.arrayContaining([
-          "TEST_FLAG_EDITABLE true (override undefined default true )",
+          "TEST_FLAG_EDITABLE true (override undefined default true)",
         ])
       );
     });
@@ -105,7 +103,7 @@ describe("featureFlags store", () => {
       consoleInterface.TEST_FLAG_EDITABLE.overrideWith(false);
 
       const expectedOutput =
-        "TEST_FLAG_EDITABLE false (override false default true )";
+        "TEST_FLAG_EDITABLE false (override false default true)";
       expect(recordedLogs).not.toEqual(
         expect.arrayContaining([expectedOutput])
       );
@@ -120,7 +118,7 @@ describe("featureFlags store", () => {
       consoleInterface.TEST_FLAG_EDITABLE.removeOverride();
 
       const expectedOutput =
-        "TEST_FLAG_EDITABLE true (override undefined default true )";
+        "TEST_FLAG_EDITABLE true (override undefined default true)";
       expect(recordedLogs).not.toEqual(
         expect.arrayContaining([expectedOutput])
       );
