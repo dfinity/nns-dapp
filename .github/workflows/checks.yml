@@ -145,6 +145,14 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+                USER_BIN="$HOME/.local/bin"
+                mkdir -p "$USER_BIN"
+                echo "$USER_BIN" >> $GITHUB_PATH
+                curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
       - name: Run the ic_commit code generator
         run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
       - name: Verify that there are no code changes

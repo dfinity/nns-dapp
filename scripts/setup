@@ -245,6 +245,16 @@ install_idl2json() {
   )
 }
 
+install_didc_linux() {
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+}
+install_didc_darwin() {
+  tempfile="$(mktemp ,didc-XXXXXXXX)"
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-macos >"$tempfile"
+  install -m 755 "$tempfile" "$USER_BIN/didc"
+  rm "$tempfile"
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
