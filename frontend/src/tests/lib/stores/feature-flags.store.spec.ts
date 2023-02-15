@@ -9,9 +9,9 @@ import { get } from "svelte/store";
 describe("featureFlags store", () => {
   const noKey = "NO_KEY" as FeatureKey;
   const noKeyError = `Unknown feature flag: ${noKey}`;
-  const notEditable = "TEST_FLAG_NOT_EDITABLE" as FeatureKey;
+  const notEditable: FeatureKey = "TEST_FLAG_NOT_EDITABLE";
   const notEditableError = `Feature flag is not editable: ${notEditable}`;
-  const editableFlag = "TEST_FLAG_EDITABLE" as FeatureKey;
+  const editableFlag: FeatureKey = "TEST_FLAG_EDITABLE";
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
   });
