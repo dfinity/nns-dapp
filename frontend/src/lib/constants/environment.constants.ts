@@ -20,6 +20,8 @@ export interface FeatureFlags<T> {
   ENABLE_CKBTC_RECEIVE: T;
 }
 
+export type FeatureKey = keyof FeatureFlags<boolean>;
+
 /**
  * DO NOT USE DIRECTLY
  *
