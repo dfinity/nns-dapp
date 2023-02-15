@@ -752,7 +752,7 @@ interface I18nError__sns {
   ledger_bad_fee: string;
   ledger_created_future: string;
   _ledger_too_old: string;
-  ledger_unsufficient_funds: string;
+  ledger_insufficient_funds: string;
   sns_add_followee: string;
   sns_remove_followee: string;
   sns_load_functions: string;
