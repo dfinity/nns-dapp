@@ -17,11 +17,11 @@
   } from "$lib/utils/sns-proposals.utils";
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
 
   onMount(async () => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
-    if (!$featureFlagsStore.ENABLE_SNS_VOTING) {
+    if (!$ENABLE_SNS_VOTING) {
       goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
         replaceState: true,
       });
