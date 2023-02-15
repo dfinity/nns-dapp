@@ -258,14 +258,6 @@ export const initiateSnsSwapParticipation = async ({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
-    // TODO(sale): check w/ Llorenç if outdated comment?
-    // TODO: Move the logic to the `catch` for a faster participation.
-    // At the moment we can't move it to the `catch`
-    // because it's hard for us to differentiate when the error comes from stale data or the second notify for the last participation.
-    //
-    // Reload the sale state before validating the participation.
-    // The current state might have change since it was loaded.
-    // This might prevent transferring funds that will not be accepted as participation and avoid refunds.
 
     // TODO(sale): GIX-1318
     await reloadSnsState(rootCanisterId);
@@ -401,12 +393,32 @@ export const participateInSnsSwap = async ({
     }
   }
 
-  // refresh_buyer_tokens
-  await notifyParticipation({ buyer: controller.toText() });
+  try {
+    // endpoint: refresh_buyer_tokens
+    const {
+      icp_accepted_participation_e8s
+    } = await notifyParticipation({ buyer: controller.toText() });
 
-  await syncAccounts();
+    // current_committed ≠ ticket.amount
+    if (icp_accepted_participation_e8s !== saleTicket.amount_icp_e8s) {
+        toastsShow({
+           level: "warn",
+           labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+           substitutions: {
+             $amount: formatToken({ value: icp_accepted_participation_e8s }),
+          },
+        });
+    }
+  } catch (err) {
+    // unexpected error (probably sale is closed)
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+    })
+  }
 
   console.debug("Participating in swap: done");
+
+  await syncAccounts();
 
   return { success: true, retry: false };
 };

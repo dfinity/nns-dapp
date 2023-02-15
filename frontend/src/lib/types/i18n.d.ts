@@ -746,6 +746,7 @@ interface I18nError__sns {
   sns_sale_invalid_amount: string;
   sns_sale_invalid_subaccount: string;
   sns_sale_try_later: string;
+  sns_sale_committed_not_amount: string;
   invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;
   ledger_duplicate: string;
