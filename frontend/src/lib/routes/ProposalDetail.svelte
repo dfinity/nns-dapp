@@ -5,16 +5,16 @@
   import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { nonNullish } from "@dfinity/utils";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
 
   export let referrerPath: AppPath | undefined = undefined;
   export let proposalIdText: string | null | undefined;
 </script>
 
 <main>
-  {#if $isNnsUniverseStore || !$featureFlagsStore.ENABLE_SNS_VOTING}
+  {#if $isNnsUniverseStore || !$ENABLE_SNS_VOTING}
     <NnsProposalDetail {referrerPath} {proposalIdText} />
-  {:else if nonNullish($snsProjectSelectedStore) && $featureFlagsStore.ENABLE_SNS_VOTING}
+  {:else if nonNullish($snsProjectSelectedStore) && $ENABLE_SNS_VOTING}
     <SnsProposalDetail {proposalIdText} />
   {/if}
 </main>

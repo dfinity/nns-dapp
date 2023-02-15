@@ -13,7 +13,7 @@
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
   import type { CkBTCWalletModal } from "../../types/wallet.modal";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_CKBTC_RECEIVE } from "$lib/stores/feature-flags.store";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
@@ -73,7 +73,7 @@
   };
 </script>
 
-<Footer columns={$featureFlagsStore.ENABLE_CKBTC_RECEIVE ? 2 : 1}>
+<Footer columns={$ENABLE_CKBTC_RECEIVE ? 2 : 1}>
   <button
     class="primary"
     on:click={openSend}
@@ -82,7 +82,7 @@
     >{$i18n.accounts.new_transaction}</button
   >
 
-  {#if $featureFlagsStore.ENABLE_CKBTC_RECEIVE}
+  {#if $ENABLE_CKBTC_RECEIVE}
     <button
       class="secondary"
       on:click={openReceive}
