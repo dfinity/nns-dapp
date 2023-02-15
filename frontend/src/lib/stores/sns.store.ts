@@ -1,8 +1,8 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { mapAndSortSnsQueryToSummaries } from "$lib/utils/sns.utils";
-import { isNullish } from "$lib/utils/utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 // ************** Proposals for Launchpad **************

@@ -7,8 +7,8 @@ import type {
   TokensStoreUniverseData,
 } from "$lib/stores/tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { nonNullish } from "$lib/utils/utils";
 import { TokenAmount } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const nnsTokenStore = derived<

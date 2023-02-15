@@ -2,7 +2,7 @@ import type { Principal } from "@dfinity/principal";
 
 export type CanisterDetailModalType =
   | "add-cycles"
-  | "detach"
+  | "unlink"
   | "add-controller"
   | "remove-controller";
 

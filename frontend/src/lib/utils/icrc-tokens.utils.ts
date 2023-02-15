@@ -1,9 +1,9 @@
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { isNullish } from "$lib/utils/utils";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger";
+import { isNullish } from "@dfinity/utils";
 
 /**
  * Token metadata is given only if the properties NNS-dapp needs (name, symbol and fee) are defined.

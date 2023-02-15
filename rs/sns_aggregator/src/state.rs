@@ -112,6 +112,16 @@ impl State {
         let prefix = "/v1";
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
         let root_canister_str = root_canister_id.to_string();
+        // Add this to the list of values from upstream
+        STATE.with(|state| {
+            state
+                .stable
+                .borrow()
+                .sns_cache
+                .borrow_mut()
+                .upstream_data
+                .insert(root_canister_id, upstream_data.clone());
+        });
         // Updates the max index, if needed
         {
             STATE.with(|state| {
@@ -225,16 +235,6 @@ impl State {
             };
             insert_asset(path, asset);
         }
-        // Add this to the list of values from upstream
-        STATE.with(|state| {
-            state
-                .stable
-                .borrow()
-                .sns_cache
-                .borrow_mut()
-                .upstream_data
-                .insert(root_canister_id, upstream_data);
-        });
         Ok(())
     }
 }

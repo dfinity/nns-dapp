@@ -1,6 +1,7 @@
-import { browser } from "$app/environment";
-
-export const isNode = (): boolean => !browser;
+export const isNode = (): boolean =>
+  typeof process !== "undefined" &&
+  process.versions != null &&
+  process.versions.node != null;
 
 /**
  *

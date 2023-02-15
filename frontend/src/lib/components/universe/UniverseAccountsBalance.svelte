@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import { type Token, TokenAmount } from "@dfinity/nns";

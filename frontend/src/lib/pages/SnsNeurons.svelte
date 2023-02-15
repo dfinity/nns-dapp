@@ -19,7 +19,7 @@
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { SnsSummary } from "$lib/types/sns";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,

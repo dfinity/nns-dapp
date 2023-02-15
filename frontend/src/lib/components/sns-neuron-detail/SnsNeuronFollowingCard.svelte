@@ -11,7 +11,7 @@
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
