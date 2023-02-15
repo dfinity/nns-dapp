@@ -87,7 +87,8 @@ const initSingleFeatureConsoleInterface = (
 
 const listFeatureFlagsToConsole = () => {
   const overrideStates = get(overrideFeatureFlagsStore);
-  for (const key in FEATURE_FLAG_ENVIRONMENT) {
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
     const override = overrideStates[key];
     const defaultValue = FEATURE_FLAG_ENVIRONMENT[key];
     const value = override ?? defaultValue;
