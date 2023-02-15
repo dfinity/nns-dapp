@@ -44,7 +44,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
   Principal
 >(
   [pageUniverseIdStore, pageStore, ENABLE_CKBTC_LEDGER],
-  ([canisterId, page, featureFlags]) => {
+  ([canisterId, page]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
     if (ENABLE_CKBTC_LEDGER && pathSupportsCkBTC(page)) {
       return canisterId;

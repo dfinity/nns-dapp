@@ -77,7 +77,7 @@ describe("featureFlags store", () => {
   });
 
   describe("console interface", () => {
-    let recordedLogs: Array<string> = [];
+    const recordedLogs: Array<string> = [];
 
     beforeEach(() => {
       recordedLogs.length = 0;
