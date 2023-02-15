@@ -13,7 +13,7 @@
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import {
     loadCkBTCAccounts,
     syncCkBTCAccounts,
@@ -24,19 +24,14 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
-  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import Footer from "$lib/components/layout/Footer.svelte";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
-
-  let showNewTransactionModal = false;
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -51,9 +46,13 @@
     await loadAccount();
   };
 
+  // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
+  const reloadAccountFromStore = () => setSelectedAccount();
+
   setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
     reloadAccount,
+    reloadAccountFromStore,
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
@@ -66,11 +65,6 @@
       }),
       neurons: [],
     });
-  };
-
-  const onTransferReloadSelectedAccount = () => {
-    setSelectedAccount();
-    showNewTransactionModal = false;
   };
 
   const loadAccount = async (): Promise<{
@@ -151,31 +145,8 @@
   </main>
 
   {#if canMakeTransactions}
-    <Footer columns={$featureFlagsStore.ENABLE_CKBTC_RECEIVE ? 2 : 1}>
-      {#if $featureFlagsStore.ENABLE_CKBTC_RECEIVE}
-        <CkBTCWalletFooter />
-      {/if}
-
-      <button
-        class="primary"
-        on:click={() => (showNewTransactionModal = true)}
-        disabled={isNullish($selectedAccountStore.account) || $busy}
-        data-tid="open-new-ckbtc-transaction"
-        >{$i18n.accounts.new_transaction}</button
-      >
-    </Footer>
+    <CkBTCWalletFooter />
   {/if}
 </Island>
 
 <CkBTCWalletModals />
-
-{#if showNewTransactionModal && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
-  <CkBTCTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
-    on:nnsTransfer={onTransferReloadSelectedAccount}
-    selectedAccount={$selectedAccountStore.account}
-    loadTransactions
-    token={$ckBTCTokenStore.token}
-    transactionFee={$ckBTCTokenFeeStore}
-  />
-{/if}

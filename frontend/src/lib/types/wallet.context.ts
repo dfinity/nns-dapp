@@ -23,6 +23,7 @@ export interface WalletContext {
 
 export interface CkBTCWalletContext extends WalletContext {
   reloadAccount: () => Promise<void>;
+  reloadAccountFromStore: () => void;
 }
 
 export const WALLET_CONTEXT_KEY = Symbol("wallet");

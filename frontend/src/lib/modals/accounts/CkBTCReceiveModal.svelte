@@ -9,7 +9,6 @@
     SegmentButton,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { CkBTCWalletModalData } from "$lib/types/wallet.modal";
   import type { Account } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
@@ -18,8 +17,9 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
+  import type { CkBTCWalletReceiveModalData } from "$lib/types/wallet.modal";
 
-  export let data: CkBTCWalletModalData;
+  export let data: CkBTCWalletReceiveModalData;
 
   let account: Account;
   let btcAddress: string;
