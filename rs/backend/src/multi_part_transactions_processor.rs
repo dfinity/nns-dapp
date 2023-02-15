@@ -1,11 +1,10 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_nns_common::types::NeuronId;
 use icp_ledger::AccountIdentifier;
 use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
-use std::collections::{BTreeMap, VecDeque};
+use std::collections::VecDeque;
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct MultiPartTransactionsProcessor {
@@ -23,25 +22,6 @@ pub enum MultiPartTransactionToBeProcessed {
     TopUpCanisterV2(PrincipalId, CanisterId),
     // ParticipateSwap(buyer_id, from, to, swap_canister_id)
     ParticipateSwap(PrincipalId, AccountIdentifier, AccountIdentifier, CanisterId),
-}
-
-#[derive(Clone, CandidType, Deserialize)]
-pub enum MultiPartTransactionStatus {
-    NeuronCreated(NeuronId),
-    CanisterCreated(CanisterId),
-    Complete,
-    Refunded(BlockIndex, String),
-    Error(String),
-    ErrorWithRefundPending(String),
-    NotFound,
-    PendingSync,
-    Queued,
-}
-
-#[derive(Clone, CandidType, Deserialize)]
-pub struct MultiPartTransactionError {
-    block_height: BlockIndex,
-    error_message: String,
 }
 
 impl MultiPartTransactionsProcessor {
