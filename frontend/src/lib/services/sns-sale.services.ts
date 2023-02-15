@@ -301,11 +301,11 @@ export const initiateSnsSwapParticipation = async ({
 
 /**
  *
- * @param saleTicket
+ * @param snsTicket
  * @param rootCanisterId
  */
 export const participateInSnsSwap = async ({
-  ticket: { ticket: saleTicket, rootCanisterId },
+  ticket: { ticket: snsTicket, rootCanisterId },
 }: {
   ticket: Required<SnsTicket>;
 }): Promise<{ success: boolean; retry: boolean }> => {
@@ -313,7 +313,7 @@ export const participateInSnsSwap = async ({
 
   console.debug(
     "[sale]participateInSnsSwap:",
-    saleTicket,
+    snsTicket,
     rootCanisterId.toText()
   );
 
@@ -322,7 +322,7 @@ export const participateInSnsSwap = async ({
     account,
     creation_time: creationTime,
     ticket_id: ticketId,
-  } = saleTicket as Ticket;
+  } = snsTicket as Ticket;
 
   const ticketAccount = fromDefinedNullable(account);
   const ownerPrincipal = fromDefinedNullable(ticketAccount.owner);
@@ -331,7 +331,11 @@ export const participateInSnsSwap = async ({
 
   // TODO: add HW support
   if (identity.getPrincipal().toText() !== ownerPrincipal.toText()) {
-    throw new Error("identities don't match");
+    console.error("Sale: identities don't match");
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+    });
+    return { success: false, retry: false };
   }
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
@@ -395,25 +399,25 @@ export const participateInSnsSwap = async ({
 
   try {
     // endpoint: refresh_buyer_tokens
-    const {
-      icp_accepted_participation_e8s
-    } = await notifyParticipation({ buyer: controller.toText() });
+    const { icp_accepted_participation_e8s } = await notifyParticipation({
+      buyer: controller.toText(),
+    });
 
     // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== saleTicket.amount_icp_e8s) {
-        toastsShow({
-           level: "warn",
-           labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
-           substitutions: {
-             $amount: formatToken({ value: icp_accepted_participation_e8s }),
-          },
-        });
+    if (icp_accepted_participation_e8s !== snsTicket.amount_icp_e8s) {
+      toastsShow({
+        level: "warn",
+        labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        substitutions: {
+          $amount: formatToken({ value: icp_accepted_participation_e8s }),
+        },
+      });
     }
   } catch (err) {
     // unexpected error (probably sale is closed)
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
-    })
+    });
   }
 
   console.debug("Participating in swap: done");

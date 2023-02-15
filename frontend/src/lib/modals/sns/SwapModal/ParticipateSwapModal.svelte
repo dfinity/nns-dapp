@@ -32,6 +32,7 @@
     initiateSnsSwapParticipation,
     participateInSnsSwap,
   } from "$lib/services/sns-sale.services";
+  import type { SnsTicket } from "../../../types/sns";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -98,24 +99,33 @@
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
+
       const ticket = await initiateSnsSwapParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
-      if (ticket) {
-        const result = await participateInSnsSwap({ ticket });
 
-        await reload();
+      if (ticket && ticket.ticket) {
+        const { success, retry } = await participateInSnsSwap({
+          ticket: ticket as Required<SnsTicket>,
+        });
 
-        if (result.success) {
+        if (success) {
           toastsSuccess({
             labelKey: "sns_project_detail.participate_success",
           });
         }
 
+        if (retry) {
+          // TODO(sale): GIX-1310 - implement retry logic
+        }
+
+        await reload();
+
         dispatcher("nnsClose");
       }
+
       stopBusy("project-participate");
     }
   };
