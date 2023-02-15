@@ -5,15 +5,22 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import {
+  decodeIcrcAccount,
+  encodeIcrcAccount,
+  IcrcLedgerCanister,
+} from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
 import { convertCkBTCToBtc } from "../../../lib/services/ckbtc-convert.services";
 import { loadCkBTCAccountTransactions } from "../../../lib/services/ckbtc-transactions.services";
 import { tokensStore } from "../../../lib/stores/tokens.store";
+import { nowInBigIntNanoSeconds } from "../../../lib/utils/date.utils";
+import { numberToE8s } from "../../../lib/utils/token.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
+  mockCkBTCToken,
 } from "../../mocks/ckbtc-accounts.mock";
 import { mockTokens } from "../../mocks/tokens.mock";
 
@@ -26,15 +33,28 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
 describe("ckbtc-convert-services", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
+  const params = {
+    source: mockCkBTCMainAccount,
+    destinationAddress: mockCkBTCAddress,
+    amount: 1,
+  };
+
+  const convert = async () => await convertCkBTCToBtc(params);
+
   beforeAll(() => {
     jest
       .spyOn(CkBTCMinterCanister, "create")
       .mockImplementation(() => minterCanisterMock);
 
     jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const now = Date.now();
+    jest.useFakeTimers().setSystemTime(now);
   });
 
   beforeEach(() => jest.clearAllMocks());
+
+  afterAll(() => jest.clearAllTimers());
 
   describe("withdrawal account succeed", () => {
     const mockAccount = {
@@ -54,13 +74,9 @@ describe("ckbtc-convert-services", () => {
     const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
     it("should get a withdrawal account", async () => {
-      await convertCkBTCToBtc({
-        source: mockCkBTCMainAccount,
-        destinationAddress: mockCkBTCAddress,
-        amount: 1,
-      });
+      await convert();
 
-      expect(getWithdrawalAccountSpy).toBeCalled();
+      expect(getWithdrawalAccountSpy).toBeCalledWith();
     });
 
     describe("transfer tokens succeed", () => {
@@ -73,14 +89,28 @@ describe("ckbtc-convert-services", () => {
 
       beforeAll(() => tokensStore.setTokens(mockTokens));
 
-      it("should transfer tokens to ledger", async () => {
-        await convertCkBTCToBtc({
-          source: mockCkBTCMainAccount,
-          destinationAddress: mockCkBTCAddress,
-          amount: 1,
-        });
+      const amountE8s = numberToE8s(params.amount);
 
-        expect(transferSpy).toBeCalled();
+      it("should transfer tokens to ledger", async () => {
+        await convert();
+
+        const to = decodeIcrcAccount(
+          encodeIcrcAccount({
+            owner: mockAccount.owner,
+            subaccount: mockAccount.subaccount[0],
+          })
+        );
+
+        expect(transferSpy).toBeCalledWith({
+          amount: amountE8s,
+          created_at_time: nowInBigIntNanoSeconds(),
+          fee: mockCkBTCToken.fee,
+          from_subaccount: undefined,
+          to: {
+            owner: to.owner,
+            subaccount: [to.subaccount],
+          },
+        });
       });
 
       describe("retrieve btc succeed", () => {
@@ -92,22 +122,18 @@ describe("ckbtc-convert-services", () => {
           minterCanisterMock.retrieveBtc.mockResolvedValue(ok);
 
         it("should retrieve btc", async () => {
-          await convertCkBTCToBtc({
-            source: mockCkBTCMainAccount,
-            destinationAddress: mockCkBTCAddress,
-            amount: 1,
-          });
+          await convert();
 
-          expect(retrieveBtcSpy).toBeCalled();
+          expect(retrieveBtcSpy).toBeCalledWith({
+            address: mockCkBTCAddress,
+            amount: amountE8s,
+          });
         });
 
         it("should load transactions", async () => {
-          await convertCkBTCToBtc({
-            source: mockCkBTCMainAccount,
-            destinationAddress: mockCkBTCAddress,
-            amount: 1,
-          });
+          await convert();
 
+          // We only test that the call is made here. Test should be covered by its respective service.
           expect(loadCkBTCAccountTransactions).toBeCalled();
         });
       });
@@ -120,11 +146,7 @@ describe("ckbtc-convert-services", () => {
 
           const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-          await convertCkBTCToBtc({
-            source: mockCkBTCMainAccount,
-            destinationAddress: mockCkBTCAddress,
-            amount: 1,
-          });
+          await convert();
 
           expect(spyOnToastsError).toBeCalled();
         });
@@ -139,11 +161,7 @@ describe("ckbtc-convert-services", () => {
 
         const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-        await convertCkBTCToBtc({
-          source: mockCkBTCMainAccount,
-          destinationAddress: mockCkBTCAddress,
-          amount: 1,
-        });
+        await convert();
 
         expect(spyOnToastsError).toBeCalled();
       });
@@ -158,11 +176,7 @@ describe("ckbtc-convert-services", () => {
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      await convertCkBTCToBtc({
-        source: mockCkBTCMainAccount,
-        destinationAddress: mockCkBTCAddress,
-        amount: 1,
-      });
+      await convert();
 
       expect(spyOnToastsError).toBeCalled();
     });

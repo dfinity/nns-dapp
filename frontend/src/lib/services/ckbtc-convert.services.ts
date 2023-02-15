@@ -52,6 +52,7 @@ export const convertCkBTCToBtc = async ({
   // Account cannot be null here. We add this guard to comply with type safety.
   assertNonNullish(account);
 
+  // For simplicity and compatibility reason with the transferTokens interface we just encode the account here instead of extending the interface to support either account identifier or {owner; subaccount;} object.
   const ledgerAddress = encodeIcrcAccount({
     owner: account.owner,
     subaccount: fromNullable(account.subaccount),
