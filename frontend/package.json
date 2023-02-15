@@ -61,7 +61,7 @@
     "@dfinity/agent": "^0.15.3",
     "@dfinity/auth-client": "^0.15.3",
     "@dfinity/candid": "^0.15.3",
-    "@dfinity/ckbtc": "file:../../ic-js/packages/ckbtc/dfinity-ckbtc-0.0.2.tgz",
+    "@dfinity/ckbtc": "next",
     "@dfinity/cmc": "next",
     "@dfinity/gix-components": "next",
     "@dfinity/identity": "^0.15.3",
