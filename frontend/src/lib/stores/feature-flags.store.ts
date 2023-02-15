@@ -79,7 +79,7 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
   return featureFlagStores as FeatureFlags<Readable<boolean>>;
 };
 
-export const featureFlagsStore = initFeatureFlagsStore();
+const featureFlagsStore = initFeatureFlagsStore();
 
 export const {
   ENABLE_SNS_2,

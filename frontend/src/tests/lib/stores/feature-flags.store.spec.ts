@@ -4,7 +4,6 @@ import {
 } from "$lib/constants/environment.constants";
 import * as featureFlagsModule from "$lib/stores/feature-flags.store";
 import {
-  featureFlagsStore,
   overrideFeatureFlagsStore,
 } from "$lib/stores/feature-flags.store";
 import { get } from "svelte/store";
@@ -16,16 +15,7 @@ describe("featureFlags store", () => {
     overrideFeatureFlagsStore.reset();
   });
 
-  it("should set default value to env var FEATURE_FLAG_ENVIRONMENT", () => {
-    let feature: FeatureKey;
-    for (feature in FEATURE_FLAG_ENVIRONMENT) {
-      expect(get(featureFlagsStore[feature])).toEqual(
-        FEATURE_FLAG_ENVIRONMENT[feature]
-      );
-    }
-  });
-
-  it("should export all feature flags on the module as boolean stores", () => {
+  it("should export all feature flags on the module with default values", () => {
     let feature: FeatureKey;
     for (feature in FEATURE_FLAG_ENVIRONMENT) {
       expect(get(featureFlagsModule[feature])).toEqual(
@@ -35,15 +25,16 @@ describe("featureFlags store", () => {
   });
 
   it("should change value when overrideFeatureFlagsStore is updated", () => {
-    const featureFlag = "ENABLE_SNS_2";
+    const featureKey = "ENABLE_SNS_2";
+    const featureFlag = featureFlagsModule[featureKey];
 
-    overrideFeatureFlagsStore.setFlag(featureFlag, true);
-    const enabledBefore = get(featureFlagsStore[featureFlag]);
+    overrideFeatureFlagsStore.setFlag(featureKey, true);
+    const enabledBefore = get(featureFlag);
     expect(enabledBefore).toEqual(true);
 
-    overrideFeatureFlagsStore.setFlag(featureFlag, false);
+    overrideFeatureFlagsStore.setFlag(featureKey, false);
 
-    const enabledAfter = get(featureFlagsStore[featureFlag]);
+    const enabledAfter = get(featureFlag);
     expect(enabledAfter).toEqual(false);
   });
 
@@ -54,17 +45,17 @@ describe("featureFlags store", () => {
   });
 
   it("should remove feature flags", () => {
-    const featureFlag = "ENABLE_SNS_2";
-    const featureStore = featureFlagsStore[featureFlag];
-    const initialValue = get(featureStore);
+    const featureKey = "ENABLE_SNS_2";
+    const featureFlag = featureFlagsModule[featureKey];
+    const initialValue = get(featureFlag);
 
-    overrideFeatureFlagsStore.setFlag(featureFlag, !initialValue);
+    overrideFeatureFlagsStore.setFlag(featureKey, !initialValue);
 
-    const enabledMid = get(featureStore);
+    const enabledMid = get(featureFlag);
     expect(enabledMid).toEqual(!initialValue);
 
-    overrideFeatureFlagsStore.removeFlag(featureFlag);
-    const enabledAfter = get(featureStore);
+    overrideFeatureFlagsStore.removeFlag(featureKey);
+    const enabledAfter = get(featureFlag);
     expect(enabledAfter).toEqual(initialValue);
   });
 
