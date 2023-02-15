@@ -8,8 +8,8 @@ export type BusyStateInitiatorType =
   | "logout"
   | "stake-neuron"
   | "update-delay"
-  | "attach-canister"
-  | "detach-canister"
+  | "link-canister"
+  | "unlink-canister"
   | "create-canister"
   | "top-up-canister"
   | "add-controller-canister"
@@ -42,7 +42,9 @@ export type BusyStateInitiatorType =
   | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
   | "load-sns-accounts"
-  | "get-btc-address";
+  | "get-btc-address"
+  | "update-ckbtc-balance"
+  | "reload-ckbtc-account";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

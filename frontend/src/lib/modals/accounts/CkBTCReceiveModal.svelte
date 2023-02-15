@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    busy,
     Copy,
     KeyValuePair,
     Modal,
@@ -13,13 +14,18 @@
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import { createEventDispatcher } from "svelte";
 
   export let data: CkBTCWalletModalData;
 
   let account: Account;
   let btcAddress: string;
+  let reloadAccount: () => Promise<void>;
 
-  $: ({ account, btcAddress } = data);
+  $: ({ account, btcAddress, reloadAccount } = data);
 
   let bitcoinSegmentId = Symbol();
   let ckBTCSegmentId = Symbol();
@@ -42,7 +48,47 @@
   let logoArialLabel: string;
   $: logoArialLabel = bitcoin ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
 
-  let qrCodeRendered = false;
+  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
+  export let qrCodeRendered = false;
+
+  const dispatcher = createEventDispatcher();
+
+  // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
+  const updateBalance = async () => {
+    startBusy({
+      initiator: "update-ckbtc-balance",
+    });
+
+    try {
+      await updateBalanceService();
+
+      await reloadAccount();
+
+      toastsSuccess({
+        labelKey: "ckbtc.ckbtc_balance_updated",
+      });
+
+      dispatcher("nnsClose");
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: "error__ckbtc.update_balance",
+        err,
+      });
+    }
+
+    stopBusy("update-ckbtc-balance");
+  };
+
+  const reloadAccountAndClose = async () => {
+    startBusy({
+      initiator: "reload-ckbtc-account",
+    });
+
+    await reloadAccount();
+    dispatcher("nnsClose");
+
+    stopBusy("reload-ckbtc-account");
+  };
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
@@ -99,13 +145,26 @@
     </article>
 
     <p class="description">
-      {bitcoin ? $i18n.ckbtc.btc_receive_note : $i18n.ckbtc.ckBTC_receive_note}
+      {bitcoin ? $i18n.ckbtc.btc_receive_note : $i18n.ckbtc.ckbtc_receive_note}
     </p>
   </div>
 
   <div class="toolbar">
     {#if qrCodeRendered}
-      <button class="primary" type="submit">{$i18n.core.done}</button>
+      {#if bitcoin}
+        <button
+          class="primary"
+          on:click={updateBalance}
+          disabled={$busy}
+          data-tid="update-ckbtc-balance">{$i18n.core.done}</button
+        >
+      {:else}
+        <button
+          class="primary"
+          on:click={reloadAccountAndClose}
+          data-tid="reload-ckbtc-account">{$i18n.core.done}</button
+        >
+      {/if}
     {/if}
   </div>
 </Modal>

@@ -185,25 +185,6 @@ type GetProposalPayloadResponse =
         Err: text;
     };
 
-type MultiPartTransactionStatus =
-    variant {
-        NeuronCreated: NeuronId;
-        CanisterCreated: CanisterId;
-        Complete;
-        Refunded: record { BlockHeight; text; };
-        Error: text;
-        ErrorWithRefundPending: text;
-        NotFound;
-        PendingSync;
-        Queued;
-    };
-
-type MultiPartTransactionError =
-    record {
-        block_height: BlockHeight;
-        error_message: text;
-    };
-
 type Stats =
     record {
         accounts_count: nat64;
@@ -252,8 +233,6 @@ service : {
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
-    get_multi_part_transaction_status: (principal, BlockHeight) -> (MultiPartTransactionStatus) query;
-    get_multi_part_transaction_errors: () -> (vec MultiPartTransactionError) query;
     get_stats: () -> (Stats) query;
     add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingTransactionResponse);
 

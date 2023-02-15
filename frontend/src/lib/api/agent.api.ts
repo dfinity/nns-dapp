@@ -1,7 +1,6 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
-import { nonNullish } from "$lib/utils/utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import { createAgent as createAgentUtil } from "@dfinity/utils";
+import { createAgent as createAgentUtil, nonNullish } from "@dfinity/utils";
 
 type PrincipalAsText = string;
 let agents: Record<PrincipalAsText, HttpAgent> | undefined | null = undefined;

@@ -12,7 +12,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";

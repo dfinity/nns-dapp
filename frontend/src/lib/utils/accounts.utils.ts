@@ -3,10 +3,10 @@ import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
-import { isNullish } from "$lib/utils/utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 
 /*
  * Returns the principal's main or hardware account

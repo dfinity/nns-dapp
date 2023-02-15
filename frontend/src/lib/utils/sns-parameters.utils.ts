@@ -1,4 +1,3 @@
-import { nonNullish } from "$lib/utils/utils";
 import type { SnsNeuronPermissionType } from "@dfinity/sns";
 import type {
   DefaultFollowees,
@@ -7,7 +6,7 @@ import type {
   NeuronPermissionList,
   VotingRewardsParameters,
 } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromDefinedNullable } from "@dfinity/utils";
+import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
 interface DefaultFolloweeMap {
   functionId: bigint;

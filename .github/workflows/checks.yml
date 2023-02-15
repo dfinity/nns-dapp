@@ -158,10 +158,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - name: Checks workflow passes
-        run: |
-          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
-          then echo "You shall not pass:  Some required tests did not succeed"
-               exit 1
-          else echo "Congratulations, young Frodo."
-          fi
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'
