@@ -146,6 +146,27 @@ pub struct CanisterStatusResultV2 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_derived_state_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetDerivedStateResponse {
+  pub  sns_tokens_per_icp: Option<f64>,
+  pub  buyer_total_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_init_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetInitResponse { init: Option<Init> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_lifecycle_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetLifecycleResponse { lifecycle: Option<i32> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct get_state_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -259,6 +280,18 @@ impl SERVICE{
   ) -> CallResult<(CanisterStatusResultV2,)> {
     ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
   }
+  pub async fn get_derived_state(
+    &self,
+    arg0: get_derived_state_arg0,
+  ) -> CallResult<(GetDerivedStateResponse,)> {
+    ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
+  }
+  pub async fn get_init(&self, arg0: get_init_arg0) -> CallResult<
+    (GetInitResponse,)
+  > { ic_cdk::call(self.0, "get_init", (arg0,)).await }
+  pub async fn get_lifecycle(&self, arg0: get_lifecycle_arg0) -> CallResult<
+    (GetLifecycleResponse,)
+  > { ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await }
   pub async fn get_state(&self, arg0: get_state_arg0) -> CallResult<
     (GetStateResponse,)
   > { ic_cdk::call(self.0, "get_state", (arg0,)).await }
