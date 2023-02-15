@@ -245,6 +245,16 @@ install_idl2json() {
   )
 }
 
+install_didc_linux() {
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+}
+install_didc_darwin() {
+  tempfile="$(mktemp ,didc-XXXXXXXX)"
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-macos >"$tempfile"
+  install -m 755 "$tempfile" "$USER_BIN/didc"
+  rm "$tempfile"
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -272,6 +282,7 @@ command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
+command -v didc || "install_didc_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
