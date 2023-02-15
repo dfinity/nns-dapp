@@ -30,7 +30,6 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
-  import { ENABLE_CKBTC_RECEIVE } from "$lib/stores/feature-flags.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
