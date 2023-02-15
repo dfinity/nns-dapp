@@ -93,13 +93,6 @@ export const convertCkBTCToBtc = async ({
 const toastRetrieveBtcError = (
   err: unknown
 ): { labelKey: string; err: unknown } => {
-  if (err instanceof MinterGenericError) {
-    return {
-      labelKey: "error__ckbtc.retrieve_btc",
-      err,
-    };
-  }
-
   if (err instanceof MinterTemporaryUnavailableError) {
     return {
       labelKey: "error__ckbtc.temporary_unavailable",
@@ -131,6 +124,13 @@ const toastRetrieveBtcError = (
   if (err instanceof MinterInsufficientFundsError) {
     return {
       labelKey: "error__ckbtc.insufficient_funds",
+      err,
+    };
+  }
+
+  if (err instanceof MinterGenericError) {
+    return {
+      labelKey: "error__ckbtc.retrieve_btc",
       err,
     };
   }

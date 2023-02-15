@@ -32,10 +32,6 @@ export const updateBalance = async (): Promise<UpdateBalanceResult> => {
 };
 
 const throwUpdateBalanceError = (err: unknown) => {
-  if (err instanceof MinterGenericError) {
-    throw new CkBTCErrorKey(err.message);
-  }
-
   const labels = get(i18n);
 
   if (err instanceof MinterTemporaryUnavailableError) {
@@ -50,5 +46,9 @@ const throwUpdateBalanceError = (err: unknown) => {
 
   if (err instanceof MinterNoNewUtxosError) {
     throw new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
+  }
+
+  if (err instanceof MinterGenericError) {
+    throw new CkBTCErrorKey(err.message);
   }
 };
