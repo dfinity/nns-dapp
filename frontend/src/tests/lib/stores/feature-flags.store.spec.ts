@@ -9,8 +9,9 @@ import { get } from "svelte/store";
 describe("featureFlags store", () => {
   const noKey = "NO_KEY" as FeatureKey;
   const noKeyError = `Unknown feature flag: ${noKey}`;
-  const noEditable = "ENABLE_SNS_VOTING" as FeatureKey;
-  const noEditableError = `Feature flag is not editable: ${noEditable}`;
+  const notEditable = "TEST_FLAG_NOT_EDITABLE" as FeatureKey;
+  const notEditableError = `Feature flag is not editable: ${notEditable}`;
+  const editableFlag = "TEST_FLAG_EDITABLE" as FeatureKey;
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
   });
@@ -25,14 +26,13 @@ describe("featureFlags store", () => {
   });
 
   it("should change value when overrideFeatureFlagsStore is updated", () => {
-    const featureKey = "ENABLE_SNS_2";
-    const featureFlag = featureFlagsModule[featureKey];
+    const featureFlag = featureFlagsModule[editableFlag];
 
-    overrideFeatureFlagsStore.setFlag(featureKey, true);
+    overrideFeatureFlagsStore.setFlag(editableFlag, true);
     const enabledBefore = get(featureFlag);
     expect(enabledBefore).toEqual(true);
 
-    overrideFeatureFlagsStore.setFlag(featureKey, false);
+    overrideFeatureFlagsStore.setFlag(editableFlag, false);
 
     const enabledAfter = get(featureFlag);
     expect(enabledAfter).toEqual(false);
@@ -46,21 +46,20 @@ describe("featureFlags store", () => {
 
   it("should throw if a non editable feature flag is set", () => {
     expect(() =>
-      overrideFeatureFlagsStore.setFlag(noEditable, false)
-    ).toThrowError(noEditableError);
+      overrideFeatureFlagsStore.setFlag(notEditable, false)
+    ).toThrowError(notEditableError);
   });
 
   it("should remove feature flags", () => {
-    const featureKey = "ENABLE_SNS_2";
-    const featureFlag = featureFlagsModule[featureKey];
+    const featureFlag = featureFlagsModule[editableFlag];
     const initialValue = get(featureFlag);
 
-    overrideFeatureFlagsStore.setFlag(featureKey, !initialValue);
+    overrideFeatureFlagsStore.setFlag(editableFlag, !initialValue);
 
     const enabledMid = get(featureFlag);
     expect(enabledMid).toEqual(!initialValue);
 
-    overrideFeatureFlagsStore.removeFlag(featureKey);
+    overrideFeatureFlagsStore.removeFlag(editableFlag);
     const enabledAfter = get(featureFlag);
     expect(enabledAfter).toEqual(initialValue);
   });
@@ -72,8 +71,8 @@ describe("featureFlags store", () => {
   });
 
   it("should throw if a non editable feature flag is removed", () => {
-    expect(() => overrideFeatureFlagsStore.removeFlag(noEditable)).toThrow(
-      noEditableError
+    expect(() => overrideFeatureFlagsStore.removeFlag(notEditable)).toThrow(
+      notEditableError
     );
   });
 });

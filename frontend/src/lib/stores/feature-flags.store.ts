@@ -28,6 +28,7 @@ const assertValidFeatureFlag = (flag: FeatureKey) => {
 const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_SNS_AGGREGATOR",
   "ENABLE_SNS_2",
+  "TEST_FLAG_EDITABLE",
 ];
 
 /**
@@ -71,15 +72,19 @@ if (browser) {
   (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
 }
 
-const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
+const initFeatureFlagStore = (key: FeatureKey): Readable<boolean | undefined> =>
   derived(
     overrideFeatureFlagsStore,
     ($overrideFeatureFlagsStore) =>
       $overrideFeatureFlagsStore[key] ?? FEATURE_FLAG_ENVIRONMENT[key]
   );
 
-const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
-  let featureFlagStores: Partial<FeatureFlags<Readable<boolean>>> = {};
+const initFeatureFlagsStore = (): FeatureFlags<
+  Readable<boolean | undefined>
+> => {
+  const featureFlagStores: Partial<
+    FeatureFlags<Readable<boolean | undefined>>
+  > = {};
   let key: FeatureKey;
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     featureFlagStores[key] = initFeatureFlagStore(key);
@@ -95,4 +100,7 @@ export const {
   ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC_LEDGER,
   ENABLE_CKBTC_RECEIVE,
+  // Used only in tests only
+  TEST_FLAG_EDITABLE,
+  TEST_FLAG_NOT_EDITABLE,
 } = featureFlagsStore;
