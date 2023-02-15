@@ -22,14 +22,11 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import type { SnsTicket } from "$lib/types/sns";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import {
-  commitmentExceedsAmountLeft,
-  validParticipation,
-} from "$lib/utils/projects.utils";
+import { validParticipation } from "$lib/utils/projects.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import { IcrcTransferError } from "@dfinity/ledger";
 import type { TokenAmount } from "@dfinity/nns";
-import { TxDuplicateError } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
@@ -37,10 +34,20 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import type {
+  InvalidUserAmount,
+  Ticket,
+} from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
-import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
+import { secondsToDateTime } from "../utils/date.utils";
+import { formatToken } from "../utils/token.utils";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -65,19 +72,32 @@ export const getOpenTicket = async ({
       ticket,
     };
   } catch (err) {
-    let detail = "";
-
+    // TODO(sale): remove extra logs after tests
     console.error("[sale]getOpenTicket", err);
 
-    if (err instanceof SnsSwapGetOpenTicketError) {
-      // TODO(GIX-1271): display more details in error message
-      detail = GetOpenTicketErrorType[err.errorType];
+    if (!(err instanceof SnsSwapGetOpenTicketError)) {
+      // not expected error
+      toastsError({
+        labelKey: "error__sns.sns_sale_unexpected_error",
+        err,
+      });
+      return;
     }
 
-    toastsShow({
-      labelKey: "error__sns.cannot_participate",
-      level: "error",
-      detail,
+    // handle custom errors
+    const { errorType } = err;
+    switch (errorType) {
+      case GetOpenTicketErrorType.TYPE_SALE_CLOSED:
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+        });
+        return;
+    }
+
+    // generic error
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+      err,
     });
   }
 };
@@ -101,34 +121,84 @@ export const newSaleTicket = async ({
       amount_icp_e8s,
     });
 
+    console.debug("[sale]newSaleTicket: created", ticket);
     return {
       rootCanisterId,
       ticket,
     };
   } catch (err) {
-    let detail = "";
-
     console.error("[sale]newSaleTicket", err);
 
-    if (err instanceof SnsSwapNewTicketError) {
-      // TODO(GIX-1271): display more details in error message
-      switch (err.errorType) {
-        case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS:
-          // TODO(GIX-1271): display notification that existed ticket is used
-          return {
-            rootCanisterId,
-            ticket: err.existingTicket,
-          };
-      }
-
-      detail = NewSaleTicketResponseErrorType[err.errorType];
+    if (!(err instanceof SnsSwapNewTicketError)) {
+      // not expected error
+      toastsError({
+        labelKey: "error__sns.sns_sale_unexpected_error",
+        err,
+      });
+      return;
     }
 
-    toastsShow({
-      labelKey: "error__sns.cannot_participate",
-      level: "error",
-      detail,
-    });
+    // handle custom errors
+    const { errorType } = err;
+    switch (errorType) {
+      case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+          err,
+        });
+        return;
+      case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
+        const existingTicket = (err as SnsSwapNewTicketError).existingTicket;
+        if (nonNullish(existingTicket)) {
+          toastsShow({
+            level: "info",
+            labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+            substitutions: {
+              $time: secondsToDateTime(existingTicket.creation_time),
+            },
+          });
+
+          // Continue the flow with existing ticket (restore the flow)
+          return {
+            rootCanisterId,
+            ticket: existingTicket,
+          };
+        }
+        // break to jump to the generic error message
+        break;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
+        const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
+          err.invalidUserAmount as InvalidUserAmount;
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_amount",
+          substitutions: {
+            $min: formatToken({ value: min_amount_icp_e8s_included }),
+            $max: formatToken({ value: max_amount_icp_e8s_included }),
+          },
+        });
+        return;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_subaccount",
+        });
+        return;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED:
+        {
+          toastsError({
+            labelKey: "error__sns.sns_sale_try_later",
+          });
+          return;
+        }
+
+        // generic error
+        toastsError({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+          err,
+        });
+    }
   }
 };
 
@@ -181,13 +251,14 @@ export const initiateSnsSwapParticipation = async ({
   account: Account;
 }): Promise<SnsTicket | undefined> => {
   console.debug("[sale]initiateSnsSwapParticipation:", amount, account);
-  // validation
   try {
+    // amount validation
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
+    // TODO(sale): check w/ Llorenç if outdated comment?
     // TODO: Move the logic to the `catch` for a faster participation.
     // At the moment we can't move it to the `catch`
     // because it's hard for us to differentiate when the error comes from stale data or the second notify for the last participation.
@@ -209,46 +280,28 @@ export const initiateSnsSwapParticipation = async ({
       throw new LedgerErrorKey(labelKey, substitutions);
     }
 
-    try {
-      // Create a ticket (Sale)
-      const subaccount =
-        "subAccount" in account ? account.subAccount : undefined;
-      const ticket = await newSaleTicket({
-        rootCanisterId,
-        subaccount: isNullish(subaccount)
-          ? undefined
-          : Uint8Array.from(subaccount),
-        amount_icp_e8s: amount.toE8s(),
-      });
+    // Create a sale ticket
+    const subaccount = "subAccount" in account ? account.subAccount : undefined;
+    const ticket = await newSaleTicket({
+      rootCanisterId,
+      subaccount: isNullish(subaccount)
+        ? undefined
+        : Uint8Array.from(subaccount),
+      amount_icp_e8s: amount.toE8s(),
+    });
 
-      if (ticket) {
-        return ticket;
-      }
-    } catch (err: unknown) {
-      console.error("[sale]initiateSnsSwapParticipation 1", err);
-      // The last commitment might trigger this error
-      // because the backend is faster than the frontend at notifying the commitment.
-      // Backend error line: https://github.com/dfinity/ic/blob/6ccf23ec7096b117c476bdcd34caa6fada84a3dd/rs/sns/swap/src/swap.rs#L461
-      const openStateError =
-        err instanceof Error && err.message?.includes("OPEN state") === true;
-      // If it's the last commitment, it means that one more e8 is not a valid participation.
-      const lastCommitment =
-        project?.summary !== undefined &&
-        commitmentExceedsAmountLeft({
-          summary: project?.summary,
-          amountE8s: amount.toE8s() + BigInt(1),
-        });
-
-      if (!(openStateError && lastCommitment)) {
-        throw err;
-      }
+    // no ticket case is covered in `newSaleTicket` function
+    if (ticket) {
+      return ticket;
     }
   } catch (err: unknown) {
     console.error("[sale]initiateSnsSwapParticipation 2", err);
+
+    // TODO(sale): check if needed in this state?
     toastsError(
       toToastError({
         err: err,
-        fallbackErrorLabelKey: "error__sns.cannot_participate",
+        fallbackErrorLabelKey: "error__sns.sns_sale_unexpected_error",
       })
     );
   }
@@ -256,47 +309,14 @@ export const initiateSnsSwapParticipation = async ({
 
 /**
  *
- * @description
- *
- * # Error handling
- *
- * | **Request**          | **Error**                                                                                  | **Actions**                                                               | **Description**                                                                                                                 |
- * |----------------------|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
- * | sale.get_open_ticket | Ok                                                                                         | ticket.account.owner ≠ caller                                            | Must not happen but should be tested                                                                                            |
- * |                      | SaleError::NotOpen                                                                         | generic error, stop_flow, don't_retry                                    | Should be covered by UI (button disabled)                                                                                       |
- * |                      | SaleError::Closed                                                                          | stop_flow, don't_retry                                                   |                                                                                                                                 |
- * |                      | SaleError::TicketNotFound                                                                  | generic error, stop_flow, don't_retry                                    | can not happen                                                                                                                  |
- * |                      | SaleError                                                                                  | generic error, stop_flow, don't_retry                                    | can not happen                                                                                                                  |
- * | sale.new_sale_ticket | Ok                                                                                         |                                                                          | Frontend should warn the user if amount ≠ actual_amount (This can happen towards the end of the sale if amount > max_increment) |
- * |                      | SaleError::NotOpen                                                                         | do nothing                                                               | Should be covered by UI (button disabled)                                                                                       |
- * |                      | SaleError::Closed                                                                          | message: the sale is already closed, stop_flow, don't_retry              |                                                                                                                                 |
- * |                      | SaleError::TicketExists(ticket)                                                            | info: "Tryingtocompletethe existent flow", continue flow                 | Get ticket from the error details                                                                                               |
- * |                      | SaleError::ICPAllowanceNotAvailable                                                        | generic error, stop_flow, don't_retry                                    | Don't exist anymore                                                                                                             |
- * |                      | SaleError::InvalidUserAmount(actual_min_participant_icp, actual_participant_icp_increment) | Error: invalid amount, probably w/ more info out of the error details),  | Ask to retry creating a new ticket. Will the ticket be removed?                                                                 |
- * |                      | SaleError                                                                                  | generic error, stop_flow, don't_retry                                    |                                                                                                                                 |
- * | icp_ledger.transfer  | Ok                                                                                         |                                                                          |                                                                                                                                 |
- * |                      | TransferError::BadFee(expected_fee)                                                        | generic error, stop_flow, don't_retry                                    | must not happen in the current version of the protocol because we do not specify the fee in the transfer request                |
- * |                      | TransferError::InsufficientFunds(balance)                                                  | error: needs more funds, stop_flow, don't_retry                          |                                                                                                                                 |
- * |                      | TransferError::TooOld                                                                      | error: "the ticket is too old", stop_flow, don't retry                   |                                                                                                                                 |
- * |                      | TransferError::CreatedInFuture(ledger_time)                                                | no error, stop_flow, DO_retry                                            | Frontend should wait until time reaches ledger_time before retrying                                                             |
- * |                      | TransferError::Duplicate(block_id)                                                         | no error, continue_flow                                                  |                                                                                                                                 |
- * |                      | TransferError::TemporarilyUnavailable                                                      | error: "ICPledgeris temporary not available", stop_flow, DO_retry        |                                                                                                                                 |
- * |                      | TransferError::GenericError(error_code,message)                                            | display generic error with the error details,  stop_flow, don't_retry    |                                                                                                                                 |
- * | refresh_buyer_tokens | Ok (current_committed,total_committed)                                                     | warn if current_committed ≠ ticket.amount                                |                                                                                                                                 |
- * |                      | SaleError::NotOpen                                                                         |                                                                          | don’texist                                                                                                                      |
- * |                      | SaleError::Closed                                                                          | message: the sale is already closed, stop_flow, don't_retry              |                                                                                                                                 |
- * |                      | SaleError::TicketNotFound                                                                  |                                                                          | don’texist                                                                                                                      |
- * |                      | SaleError::InvalidUserAmount(actual_min_participant_icp, actual_participant_icp_increment) |                                                                          | dapp can’t get it                                                                                                               |
- * |                      | SaleError::ICPAllowanceNotAvailable                                                        |                                                                          | dapp can’t get it                                                                                                               |
- * |                      | SaleError::CommitmentInProgress                                                            |                                                                          | dapp can’t get it                                                                                                               |
- *
  * @param saleTicket
+ * @param rootCanisterId
  */
 export const participateInSnsSwap = async ({
   ticket: { ticket: saleTicket, rootCanisterId },
 }: {
   ticket: Required<SnsTicket>;
-}): Promise<{ success: boolean }> => {
+}): Promise<{ success: boolean; retry: boolean }> => {
   console.debug("Participating in swap: call...");
 
   console.debug(
@@ -351,9 +371,25 @@ export const participateInSnsSwap = async ({
   } catch (err) {
     console.error("[sale]participateInSnsSwap", err);
 
-    // TODO(GIX-1271): implement more detailed feedback (based on the table)
+    if (!(err instanceof IcrcTransferError)) {
+      toastsError({
+        labelKey: "error__sns.sns_sale_unexpected_error",
+      });
+      return { success: false, retry: false };
+    }
 
-    if (!(err instanceof TxDuplicateError)) {
+    let retry = false;
+    const { errorType } = err;
+
+    if (
+      "CreatedInFuture" in errorType ||
+      "TemporarilyUnavailable" in errorType
+    ) {
+      retry = true;
+    }
+
+    // if duplicated transfer, silently continue the flow
+    if (!("Duplicate" in errorType)) {
       toastsError(
         ledgerErrorToToastError({
           fallbackErrorLabelKey: "error.transaction_error",
@@ -361,7 +397,7 @@ export const participateInSnsSwap = async ({
         })
       );
 
-      return { success: false };
+      return { success: false, retry };
     }
   }
 
@@ -372,5 +408,5 @@ export const participateInSnsSwap = async ({
 
   console.debug("Participating in swap: done");
 
-  return { success: true };
+  return { success: true, retry: false };
 };
