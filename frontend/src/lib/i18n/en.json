@@ -796,6 +796,12 @@
     "temporary_unavailable": "The minter is temporary unavailable.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
-    "update_balance": "Sorry, the balance cannot be updated."
+    "update_balance": "Sorry, the balance cannot be updated.",
+    "withdrawal_account": "Sorry, no withdrawal account can be found.",
+    "retrieve_btc": "Sorry, retrieving BTC failed.",
+    "malformed_address": "Address malformed.",
+    "amount_too_low": "Amount too low.",
+    "insufficient_funds": "Insufficient funds.",
+    "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason."
   }
 }

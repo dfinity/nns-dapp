@@ -4,10 +4,12 @@ import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
-  type WithdrawalAccount,
   CkBTCMinterCanister,
-  type MinterParams, type RetrieveBtcOk, type RetrieveBtcParams,
-  type UpdateBalanceResult
+  type MinterParams,
+  type RetrieveBtcOk,
+  type RetrieveBtcParams,
+  type UpdateBalanceResult,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 
 const minterIdentityParams = ({
@@ -71,14 +73,17 @@ export const getWithdrawalAccount = async (params: {
   return result;
 };
 
-export const retrieveBtc = async ({identity, ...params}: {
+export const retrieveBtc = async ({
+  identity,
+  ...params
+}: {
   identity: Identity;
 } & RetrieveBtcParams): Promise<RetrieveBtcOk> => {
   logWithTimestamp("Retrieve BTC: call...");
 
   const {
     canister: { retrieveBtc: retrieveBtcApi },
-  } = await ckBTCMinterCanister({identity});
+  } = await ckBTCMinterCanister({ identity });
 
   const result = await retrieveBtcApi(params);
 

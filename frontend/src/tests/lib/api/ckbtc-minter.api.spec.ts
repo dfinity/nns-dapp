@@ -1,9 +1,12 @@
 import { getBTCAddress, updateBalance } from "$lib/api/ckbtc-minter.api";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
+import {
+  getWithdrawalAccount,
+  retrieveBtc,
+} from "../../../lib/api/ckbtc-minter.api";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
-import { getWithdrawalAccount, retrieveBtc } from "../../../lib/api/ckbtc-minter.api";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
@@ -74,7 +77,7 @@ describe("ckbtc-minter api", () => {
       const mockAccount = {
         owner: mockPrincipal,
         subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
-      }
+      };
 
       const getWithdrawalAccountSpy =
         minterCanisterMock.getWithdrawalAccount.mockResolvedValue(mockAccount);
@@ -86,7 +89,7 @@ describe("ckbtc-minter api", () => {
       expect(getWithdrawalAccountSpy).toBeCalled();
     });
 
-    it("throws an error if issue get withdrawl account", () => {
+    it("throws an error if issue get withdrawal account", () => {
       minterCanisterMock.getWithdrawalAccount.mockImplementation(async () => {
         throw new Error();
       });
@@ -98,12 +101,9 @@ describe("ckbtc-minter api", () => {
   });
 
   describe("retrieveBtc", () => {
-    const bitcoinAddressMock =
-      "bcrt1qu2aqme90t6hpac50x0xw8ljwqs250vn6tzlmsv";
-
     const retrieveParams = {
       ...params,
-      address: bitcoinAddressMock,
+      address: mockCkBTCAddress,
       amount: 123n,
     };
 
