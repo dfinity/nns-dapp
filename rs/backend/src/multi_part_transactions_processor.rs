@@ -10,10 +10,6 @@ use std::collections::{BTreeMap, VecDeque};
 #[derive(Default, CandidType, Deserialize)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
-    // Unused but needs a migration to remove safely.
-    statuses: BTreeMap<BlockIndex, (PrincipalId, MultiPartTransactionStatus)>,
-    // Unused but needs a migration to remove safely.
-    errors: VecDeque<MultiPartTransactionError>,
 }
 
 #[derive(Clone, CandidType, Deserialize)]
