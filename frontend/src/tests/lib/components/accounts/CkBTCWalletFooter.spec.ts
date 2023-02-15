@@ -30,8 +30,6 @@ describe("CkBTCWalletFooter", () => {
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
   });
 
-  afterAll(() => jest.clearAllMocks());
-
   const renderWalletActions = (account?: Account) =>
     render(CkBTCWalletContextTest, {
       props: {
