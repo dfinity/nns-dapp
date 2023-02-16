@@ -42,16 +42,10 @@ fn health_check() -> String {
 #[candid_method(update)]
 #[ic_cdk_macros::update]
 async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
-        let own_canister_id = dfn_core::api::id();
-        let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
-        result.unwrap_or_else(|err| {
-            panic!(
-                "Couldn't get canister_status of {}. Err: {:#?}",
-                own_canister_id, err
-            )
-        })
+    let own_canister_id = dfn_core::api::id();
+    let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
+    result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {}. Err: {:#?}", own_canister_id, err))
 }
-
 
 /// API method to dump stable data, preserved across upgrades, as JSON.
 #[candid_method(query)]
