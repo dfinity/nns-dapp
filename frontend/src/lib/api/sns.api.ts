@@ -1,4 +1,3 @@
-import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
@@ -8,10 +7,8 @@ import type {
 } from "$lib/types/sns.query";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger";
-import type { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsNeuron,
@@ -19,9 +16,6 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
-import { toNullable } from "@dfinity/utils";
-import { ledgerCanister } from "./ledger.api";
-import { nnsDappCanister } from "./nns-dapp.api";
 import { wrapper, wrappers } from "./sns-wrapper.api";
 
 export const queryAllSnsMetadata = async ({
@@ -241,58 +235,6 @@ export const querySnsSwapCommitment = async ({
     rootCanisterId: Principal.fromText(rootCanisterId),
     myCommitment: userCommitment,
   };
-};
-
-export const participateInSnsSwap = async ({
-  amount,
-  controller,
-  identity,
-  rootCanisterId,
-  fromSubAccount,
-}: {
-  amount: TokenAmount;
-  controller: Principal;
-  identity: Identity;
-  rootCanisterId: Principal;
-  fromSubAccount?: SubAccountArray;
-}): Promise<void> => {
-  logWithTimestamp("Participating in swap: call...");
-
-  const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const {
-    canisterIds: { swapCanisterId },
-    notifyParticipation,
-  } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-  const accountIdentifier = getSwapCanisterAccount({
-    swapCanisterId,
-    controller,
-  });
-
-  // If the client disconnects after the transfer, the participation will still be notified.
-  const { canister: nnsDapp } = await nnsDappCanister({ identity });
-  await nnsDapp.addPendingNotifySwap({
-    swap_canister_id: swapCanisterId,
-    buyer: controller,
-    buyer_sub_account: toNullable(fromSubAccount),
-  });
-
-  const createdAt = nowInBigIntNanoSeconds();
-  // Send amount to the ledger
-  await nnsLedger.transfer({
-    amount: amount.toE8s(),
-    fromSubAccount,
-    to: accountIdentifier,
-    createdAt,
-  });
-
-  // Notify participation
-  await notifyParticipation({ buyer: controller.toText() });
-
-  logWithTimestamp("Participating in swap: done");
 };
 
 export const querySnsNeurons = async ({

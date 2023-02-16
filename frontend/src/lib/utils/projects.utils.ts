@@ -102,7 +102,7 @@ export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
 
 const isProjectOpen = (summary: SnsSummary): boolean =>
   summary.swap.lifecycle === SnsSwapLifecycle.Open;
-// Checks whether the amount that the user wants to contiribute is lower than the minimum for the project.
+// Checks whether the amount that the user wants to contribute is lower than the minimum for the project.
 // It takes into account the current commitment of the user.
 const commitmentTooSmall = ({
   project: { summary, swapCommitment },
