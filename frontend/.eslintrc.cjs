@@ -7,7 +7,7 @@ module.exports = {
     "prettier",
   ],
   plugins: ["svelte3", "@typescript-eslint"],
-  ignorePatterns: ["*.cjs"],
+  ignorePatterns: ["*.cjs", "*.idl.js"],
   overrides: [{ files: ["*.svelte"], processor: "svelte3/svelte3" }],
   settings: {
     "svelte3/typescript": () => require("typescript"),
@@ -15,6 +15,15 @@ module.exports = {
   parserOptions: {
     sourceType: "module",
     ecmaVersion: 2020,
+  },
+  rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
   env: {
     browser: true,

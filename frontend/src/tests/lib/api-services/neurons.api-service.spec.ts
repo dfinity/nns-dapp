@@ -170,8 +170,8 @@ describe("neurons api-service", () => {
         .mockImplementation(
           async ({
             neuronId,
-            identity,
-            certified,
+            _identity,
+            _certified,
           }: api.ApiQueryNeuronParams) => {
             const neuron = neurons.find((n) => n.neuronId === neuronId);
             if (!neuron) {
@@ -215,7 +215,7 @@ describe("neurons api-service", () => {
       jest
         .spyOn(api, "queryNeurons")
         .mockImplementation(
-          async ({ identity, certified }: api.ApiQueryParams) => {
+          async ({ identity, _certified }: api.ApiQueryParams) => {
             if (identity === identity1) {
               return [neuron1];
             }
@@ -319,7 +319,7 @@ describe("neurons api-service", () => {
       jest
         .spyOn(api, "queryKnownNeurons")
         .mockImplementation(
-          async ({ identity, certified }: api.ApiQueryParams) => {
+          async ({ identity, _certified }: api.ApiQueryParams) => {
             if (identity === identity1) {
               return [knownNeuron1];
             }
