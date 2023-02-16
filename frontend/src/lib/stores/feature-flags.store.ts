@@ -5,7 +5,7 @@ import {
   type FeatureKey,
 } from "$lib/constants/environment.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
-import { derived, type Readable } from "svelte/store";
+import { derived, get, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 type OverrideFeatureFlagsData = Partial<FeatureFlags<boolean>>;
@@ -16,11 +16,24 @@ export interface OverrideFeatureFlagsStore
   reset: () => void;
 }
 
-const assertFeatureFlag = (flag: FeatureKey) => {
+const assertValidFeatureFlag = (flag: FeatureKey) => {
   if (!(flag in FEATURE_FLAG_ENVIRONMENT)) {
     throw new Error(`Unknown feature flag: ${flag}`);
   }
 };
+
+const assertEditableFeatureFlag = (flag: FeatureKey) => {
+  assertValidFeatureFlag(flag);
+  if (!EDITABLE_FEATURE_FLAGS.includes(flag)) {
+    throw new Error(`Feature flag is not editable: ${flag}`);
+  }
+};
+
+const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
+  "ENABLE_SNS_AGGREGATOR",
+  "ENABLE_SNS_2",
+  "TEST_FLAG_EDITABLE",
+];
 
 /**
  * A store that contains the feature flags that have been overridden by the user.
@@ -35,7 +48,7 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     subscribe,
 
     setFlag(flag: FeatureKey, value: boolean) {
-      assertFeatureFlag(flag);
+      assertValidFeatureFlag(flag);
       update((featureFlags) => ({
         ...featureFlags,
         [flag]: value,
@@ -43,7 +56,7 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     },
 
     removeFlag(flag: FeatureKey) {
-      assertFeatureFlag(flag);
+      assertValidFeatureFlag(flag);
       update((featureFlags) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [flag]: _, ...rest } = featureFlags;
@@ -58,9 +71,60 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
 // Exported for testing purposes
 export const overrideFeatureFlagsStore = initOverrideFeatureFlagsStore();
 
+interface FeatureFlagConsoleInterface {
+  overrideWith(value: boolean): void;
+  removeOverride(): void;
+}
+
+interface FeatureFlagsConsoleInterface
+  extends FeatureFlags<FeatureFlagConsoleInterface> {
+  list(): void;
+}
+
+const initSingleFeatureConsoleInterface = (
+  key: FeatureKey
+): FeatureFlagConsoleInterface => ({
+  overrideWith: (value: boolean) => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.setFlag(key, value);
+  },
+  removeOverride: () => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.removeFlag(key);
+  },
+});
+
+const listFeatureFlagsToConsole = () => {
+  const overrideStates = get(overrideFeatureFlagsStore);
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
+    const override = overrideStates[key];
+    const defaultValue = FEATURE_FLAG_ENVIRONMENT[key];
+    const value = override ?? defaultValue;
+    console.log(
+      `${key} ${value} (override ${override} default ${defaultValue})`
+    );
+  }
+};
+
+// Exported for testing.
+export const initConsoleInterface = (): FeatureFlagsConsoleInterface => {
+  const consoleInterface: Partial<FeatureFlagsConsoleInterface> = {};
+  let key: FeatureKey;
+  for (key in FEATURE_FLAG_ENVIRONMENT) {
+    consoleInterface[key] = initSingleFeatureConsoleInterface(key);
+  }
+  return {
+    ...consoleInterface,
+    list: listFeatureFlagsToConsole,
+  } as FeatureFlagsConsoleInterface;
+};
+
 if (browser) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  (window as any).__featureFlagsStore = overrideFeatureFlagsStore;
+  (
+    window as unknown as { __featureFlags: FeatureFlagsConsoleInterface }
+  ).__featureFlags = initConsoleInterface();
 }
 
 const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
@@ -71,7 +135,7 @@ const initFeatureFlagStore = (key: FeatureKey): Readable<boolean> =>
   );
 
 const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
-  let featureFlagStores: Partial<FeatureFlags<Readable<boolean>>> = {};
+  const featureFlagStores: Partial<FeatureFlags<Readable<boolean>>> = {};
   let key: FeatureKey;
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     featureFlagStores[key] = initFeatureFlagStore(key);
@@ -87,4 +151,7 @@ export const {
   ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC_LEDGER,
   ENABLE_CKBTC_RECEIVE,
+  // Used only in tests only
+  TEST_FLAG_EDITABLE,
+  TEST_FLAG_NOT_EDITABLE,
 } = featureFlagsStore;
