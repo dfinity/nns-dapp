@@ -29,6 +29,8 @@
     secondsToDateTime,
   } from "../../utils/date.utils";
   import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
+  import {isSignedIn} from "../../utils/auth.utils";
+  import {authStore} from "../../stores/auth.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -70,6 +72,7 @@
     ) {
       return;
     }
+
     loading = true;
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
@@ -121,7 +124,10 @@
 
     loading = false;
   };
-  $: rootCanisterId, updateTicket();
+  // skip ticket update if the sns is not open
+  $: if (lifecycle === SnsSwapLifecycle.Open && isSignedIn($authStore.identity)) {
+    updateTicket();
+  }
 
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
