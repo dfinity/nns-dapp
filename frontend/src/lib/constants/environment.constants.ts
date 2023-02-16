@@ -12,6 +12,8 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
     ? undefined
     : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
 
+export const OLD_MAINNET_OWN_CANISTER_URL = "https://nns.ic0.app";
+
 interface FEATURE_FLAGS {
   ENABLE_SNS_2: boolean;
   ENABLE_SNS_VOTING: boolean;
@@ -32,7 +34,7 @@ export const {
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
-  !HOST.includes(".ic0.app");
+  !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
 // TODO: disable TVL display locally until we use the XCR canister to fetch teh ICP<>USD exchange rate and a certified endpoint to fetch the TVL
 export const ENABLE_TVL = !DEV;

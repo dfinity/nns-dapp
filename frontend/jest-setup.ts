@@ -34,7 +34,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   DFX_NETWORK: "testnet",
-  HOST: "https://ic0.app",
+  HOST: "https://icp-api.io",
   DEV: false,
   FETCH_ROOT_KEY: false,
   ENABLE_SNS_2: true,
