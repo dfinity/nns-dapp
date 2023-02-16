@@ -12,7 +12,7 @@ import {
   getOpenTicket,
   initiateSnsSwapParticipation,
   newSaleTicket,
-  participateInSnsSwap,
+  participateInSnsSale,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -435,12 +435,12 @@ describe("sns-api", () => {
     });
   });
 
-  describe("participateInSnsSwap", () => {
-    it("should participateInSnsSwap", async () => {
+  describe("participateInSnsSale", () => {
+    it("should participateInSnsSale", async () => {
       nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
       jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
@@ -464,7 +464,7 @@ describe("sns-api", () => {
         return () => undefined;
       });
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -484,7 +484,7 @@ describe("sns-api", () => {
         })
       );
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -504,7 +504,7 @@ describe("sns-api", () => {
         })
       );
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -526,7 +526,7 @@ describe("sns-api", () => {
 
       expect(spyOnToastsError).not.toBeCalled();
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -544,7 +544,7 @@ describe("sns-api", () => {
 
       expect(spyOnToastsError).not.toBeCalled();
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -562,7 +562,7 @@ describe("sns-api", () => {
 
       expect(spyOnToastsError).not.toBeCalled();
 
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -572,7 +572,7 @@ describe("sns-api", () => {
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -585,9 +585,9 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: true, retry: false });
     });
 
-    it("should display participateInSnsSwap errors", async () => {
+    it("should display participateInSnsSale errors", async () => {
       spyOnNotifyParticipation.mockRejectedValue(new Error());
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -604,7 +604,7 @@ describe("sns-api", () => {
       jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
       spyOnNotifyParticipation.mockRejectedValue(new Error());
-      const result = await participateInSnsSwap({
+      const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
       });
 

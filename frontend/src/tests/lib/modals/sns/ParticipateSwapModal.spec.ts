@@ -52,7 +52,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
   initiateSnsSwapParticipation: jest
     .fn()
     .mockImplementation(() => Promise.resolve(ticket)),
-  participateInSnsSwap: jest.fn().mockResolvedValue({ success: true }),
+  participateInSnsSale: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 describe("ParticipateSwapModal", () => {

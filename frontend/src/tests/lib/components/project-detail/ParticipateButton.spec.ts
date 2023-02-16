@@ -6,7 +6,7 @@ import ParticipateButton from "$lib/components/project-detail/ParticipateButton.
 import {
   getOpenTicket,
   initiateSnsSwapParticipation,
-  participateInSnsSwap,
+  participateInSnsSale,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
@@ -43,7 +43,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
     .mockImplementation(() =>
       Promise.resolve(initiateSnsSwapParticipationTicket)
     ),
-  participateInSnsSwap: jest
+  participateInSnsSale: jest
     .fn()
     .mockResolvedValue({ success: true, retry: false }),
 }));
@@ -63,7 +63,7 @@ describe("ParticipateButton", () => {
     beforeEach(() => {
       (getOpenTicket as jest.MockedFn<any>).mockClear();
       (initiateSnsSwapParticipation as jest.MockedFn<any>).mockClear();
-      (participateInSnsSwap as jest.MockedFn<any>).mockClear();
+      (participateInSnsSale as jest.MockedFn<any>).mockClear();
     });
 
     it("should render a text to increase participation", () => {
@@ -139,7 +139,7 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(button.getAttribute("disabled")).not.toBeNull()
       );
-      expect(participateInSnsSwap).toBeCalledWith({
+      expect(participateInSnsSale).toBeCalledWith({
         ticket: getOpenTicketTicket,
       });
     });
@@ -162,7 +162,7 @@ describe("ParticipateButton", () => {
 
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
       expect(getOpenTicket).toBeCalled();
-      expect(participateInSnsSwap).not.toBeCalled();
+      expect(participateInSnsSale).not.toBeCalled();
     });
 
     it("should disable button if user has committed max already", () => {

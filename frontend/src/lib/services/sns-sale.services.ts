@@ -316,7 +316,7 @@ export const initiateSnsSwapParticipation = async ({
  * @param snsTicket
  * @param rootCanisterId
  */
-export const participateInSnsSwap = async ({
+export const participateInSnsSale = async ({
   ticket: { ticket: snsTicket, rootCanisterId },
 }: {
   ticket: Required<SnsTicket>;
@@ -447,7 +447,7 @@ export const participateInSnsSwap = async ({
     return { success: false, retry: false };
   }
 
-  logWithTimestamp("Participating in swap: done");
+  logWithTimestamp("Participating in sale: done");
 
   await syncAccounts();
 

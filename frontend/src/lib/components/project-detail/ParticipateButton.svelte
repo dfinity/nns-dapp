@@ -18,7 +18,7 @@
   import type { Principal } from "@dfinity/principal";
   import {
     getOpenTicket,
-    participateInSnsSwap,
+    participateInSnsSale,
   } from "$lib/services/sns-sale.services";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
@@ -103,7 +103,7 @@
         },
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
-      const { success, retry } = await participateInSnsSwap({
+      const { success, retry } = await participateInSnsSale({
         ticket: {
           rootCanisterId: saleTicket.rootCanisterId,
           ticket: saleTicket.ticket,

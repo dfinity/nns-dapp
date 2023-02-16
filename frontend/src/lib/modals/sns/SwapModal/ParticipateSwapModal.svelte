@@ -30,7 +30,7 @@
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import {
     initiateSnsSwapParticipation,
-    participateInSnsSwap,
+    participateInSnsSale,
   } from "$lib/services/sns-sale.services";
   import { logWithTimestamp } from "../../../utils/dev.utils";
 
@@ -107,7 +107,7 @@
       });
 
       if (ticket && ticket.ticket) {
-        const { success, retry } = await participateInSnsSwap({
+        const { success, retry } = await participateInSnsSale({
           ticket: {
             rootCanisterId: ticket.rootCanisterId,
             ticket: ticket.ticket,
