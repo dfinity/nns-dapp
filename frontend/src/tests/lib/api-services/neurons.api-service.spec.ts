@@ -167,19 +167,13 @@ describe("neurons api-service", () => {
     beforeEach(() => {
       jest
         .spyOn(api, "queryNeuron")
-        .mockImplementation(
-          async ({
-            neuronId,
-            _identity,
-            _certified,
-          }: api.ApiQueryNeuronParams) => {
-            const neuron = neurons.find((n) => n.neuronId === neuronId);
-            if (!neuron) {
-              throw new Error(`No neuron with id ${neuronId}`);
-            }
-            return neuron;
+        .mockImplementation(async ({ neuronId }: api.ApiQueryNeuronParams) => {
+          const neuron = neurons.find((n) => n.neuronId === neuronId);
+          if (!neuron) {
+            throw new Error(`No neuron with id ${neuronId}`);
           }
-        );
+          return neuron;
+        });
     });
 
     const params = { identity: mockIdentity, certified: true };
@@ -214,17 +208,15 @@ describe("neurons api-service", () => {
     beforeEach(() => {
       jest
         .spyOn(api, "queryNeurons")
-        .mockImplementation(
-          async ({ identity, _certified }: api.ApiQueryParams) => {
-            if (identity === identity1) {
-              return [neuron1];
-            }
-            if (identity === identity2) {
-              return [neuron2];
-            }
-            throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+        .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
+          if (identity === identity1) {
+            return [neuron1];
           }
-        );
+          if (identity === identity2) {
+            return [neuron2];
+          }
+          throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+        });
     });
 
     const params = { certified: true };
@@ -318,17 +310,15 @@ describe("neurons api-service", () => {
     beforeEach(() => {
       jest
         .spyOn(api, "queryKnownNeurons")
-        .mockImplementation(
-          async ({ identity, _certified }: api.ApiQueryParams) => {
-            if (identity === identity1) {
-              return [knownNeuron1];
-            }
-            if (identity === identity2) {
-              return [knownNeuron2];
-            }
-            throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+        .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
+          if (identity === identity1) {
+            return [knownNeuron1];
           }
-        );
+          if (identity === identity2) {
+            return [knownNeuron2];
+          }
+          throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+        });
     });
 
     const params = { certified: true };
