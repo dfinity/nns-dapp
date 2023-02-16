@@ -598,5 +598,22 @@ describe("sns-api", () => {
       );
       expect(result).toEqual({ success: false, retry: false });
     });
+
+    it("should display addPendingNotifySwap errors", async () => {
+      nnsDappMock.addPendingNotifySwap.mockRejectedValue(new Error("test"));
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
+
+      spyOnNotifyParticipation.mockRejectedValue(new Error());
+      const result = await participateInSnsSwap({
+        ticket: testTicket as Required<SnsTicket>,
+      });
+
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+        })
+      );
+      expect(result).toEqual({ success: false, retry: false });
+    });
   });
 });
