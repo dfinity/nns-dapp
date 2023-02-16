@@ -23,7 +23,7 @@ import {
   TokenAmount,
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import {GetOpenTicketErrorType, SnsSwapGetOpenTicketError, SnsSwapLifecycle} from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
@@ -47,6 +47,7 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
+import * as toastsStore from "$lib/stores/toasts.store";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -69,7 +70,9 @@ describe("sns-api", () => {
     ],
   };
 
-  const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
+  const spyOnNotifyParticipation = jest.fn().mockResolvedValue(undefined);
+  const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const ledgerCanisterMock = mock<LedgerCanister>();
   const ticket = snsTicketMock({
     rootCanisterId: rootCanisterIdMock,
@@ -79,6 +82,10 @@ describe("sns-api", () => {
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
+    spyOnToastsShow.mockClear();
+    spyOnToastsError.mockClear();
+    jest.clearAllMocks();
+
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
@@ -130,7 +137,7 @@ describe("sns-api", () => {
         metadata: () =>
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
-        notifyParticipation: notifyParticipationSpy,
+        notifyParticipation: spyOnNotifyParticipation,
         getOpenTicket: getOpenTicketSpy,
         newSaleTicket: newSaleTicketSpy,
       })
@@ -141,19 +148,48 @@ describe("sns-api", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
+  describe('getOpenTicket', () => {
+    it("should return a ticket", async () => {
+      const result = await getOpenTicket({
+        rootCanisterId: ticket.rootCanisterId,
+        certified: true,
+      });
 
-  it("should getOpenTicket", async () => {
-    const result = await getOpenTicket({
-      rootCanisterId: ticket.rootCanisterId,
-      certified: true,
+      expect(getOpenTicketSpy).toBeCalled();
+      expect(result).toEqual(ticket);
     });
 
-    expect(getOpenTicketSpy).toBeCalled();
-    expect(result).toEqual(ticket);
+    it("should display already closed error", async () => {
+      getOpenTicketSpy.mockRejectedValue(new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED));
+
+      const result = await getOpenTicket({
+        rootCanisterId: ticket.rootCanisterId,
+        certified: true,
+      });
+
+      expect(result).toBeUndefined();
+      expect(spyOnToastsError).toBeCalledWith(expect.objectContaining({
+        labelKey: "error__sns.sns_sale_closed"
+      }))
+    });
+
+    it("should display unexpected error on not_closed error", async () => {
+      getOpenTicketSpy.mockRejectedValue(new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED));
+
+      getOpenTicketSpy.mockRejectedValue({
+        errorType: GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN,
+      });
+
+      const result = await getOpenTicket({
+        rootCanisterId: ticket.rootCanisterId,
+        certified: true,
+      });
+
+      expect(result).toBeUndefined();
+      expect(spyOnToastsError).toBeCalledWith(expect.objectContaining({
+        labelKey: "error__sns.sns_sale_unexpected_error"
+      }))
+    });
   });
 
   it("should create newSaleTicket", async () => {
@@ -198,7 +234,7 @@ describe("sns-api", () => {
       ticket,
     });
 
-    expect(notifyParticipationSpy).toBeCalled();
-    expect(result).toEqual({ success: true });
+    expect(spyOnNotifyParticipation).toBeCalled();
+    expect(result).toEqual({ success: true, retry: false });
   });
 });
