@@ -10,7 +10,7 @@ import {
 import * as accountsServices from "$lib/services/accounts.services";
 import {
   getOpenTicket,
-  initiateSnsSwapParticipation,
+  initiateSnsSaleParticipation,
   newSaleTicket,
   participateInSnsSale,
 } from "$lib/services/sns-sale.services";
@@ -378,7 +378,7 @@ describe("sns-api", () => {
     });
   });
 
-  describe("initiateSnsSwapParticipation", () => {
+  describe("initiateSnsSaleParticipation", () => {
     it("should initiate SnsSwapParticipation", async () => {
       const account = {
         ...mockMainAccount,
@@ -388,7 +388,7 @@ describe("sns-api", () => {
         }),
       };
 
-      const result = await initiateSnsSwapParticipation({
+      const result = await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
           amount: 1,
@@ -420,7 +420,7 @@ describe("sns-api", () => {
         }),
       };
 
-      const result = await initiateSnsSwapParticipation({
+      const result = await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
           amount: 1,

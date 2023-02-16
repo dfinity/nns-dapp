@@ -3,7 +3,7 @@
  */
 
 import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
-import { initiateSnsSwapParticipation } from "$lib/services/sns-sale.services";
+import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -28,7 +28,7 @@ import { snsTicketMock } from "../../../mocks/sns.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    initiateSnsSwapParticipation: jest
+    initiateSnsSaleParticipation: jest
       .fn()
       .mockResolvedValue({ success: true }),
     getSwapAccount: jest
@@ -49,7 +49,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
     .mockImplementation(() =>
       Promise.resolve({ ...ticket, ticket: undefined })
     ),
-  initiateSnsSwapParticipation: jest
+  initiateSnsSaleParticipation: jest
     .fn()
     .mockImplementation(() => Promise.resolve(ticket)),
   participateInSnsSale: jest.fn().mockResolvedValue({ success: true }),
@@ -134,7 +134,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(initiateSnsSwapParticipation).toBeCalled());
+      await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
@@ -156,7 +156,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(initiateSnsSwapParticipation).toBeCalled());
+      await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });

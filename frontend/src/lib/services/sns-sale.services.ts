@@ -252,7 +252,7 @@ const getProjectFromStore = (
  * @param rootCanisterId
  * @param account
  */
-export const initiateSnsSwapParticipation = async ({
+export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
@@ -261,7 +261,7 @@ export const initiateSnsSwapParticipation = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<SnsTicket | undefined> => {
-  logWithTimestamp("[sale]initiateSnsSwapParticipation:", amount, account);
+  logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount, account);
   try {
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;

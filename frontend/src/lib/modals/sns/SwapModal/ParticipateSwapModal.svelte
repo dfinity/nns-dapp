@@ -29,7 +29,7 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import {
-    initiateSnsSwapParticipation,
+    initiateSnsSaleParticipation,
     participateInSnsSale,
   } from "$lib/services/sns-sale.services";
   import { logWithTimestamp } from "../../../utils/dev.utils";
@@ -100,7 +100,7 @@
         labelKey: "neurons.may_take_while",
       });
 
-      const ticket = await initiateSnsSwapParticipation({
+      const ticket = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,

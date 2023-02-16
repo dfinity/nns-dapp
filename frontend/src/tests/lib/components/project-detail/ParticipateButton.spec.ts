@@ -5,7 +5,7 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import {
   getOpenTicket,
-  initiateSnsSwapParticipation,
+  initiateSnsSaleParticipation,
   participateInSnsSale,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -31,17 +31,17 @@ import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 let getOpenTicketTicket: SnsTicket | undefined = undefined;
-const initiateSnsSwapParticipationTicket: SnsTicket | undefined = snsTicketMock(
+const initiateSnsSaleParticipationTicket: SnsTicket | undefined = snsTicketMock(
   { rootCanisterId: rootCanisterIdMock, owner: rootCanisterIdMock }
 );
 jest.mock("$lib/services/sns-sale.services", () => ({
   getOpenTicket: jest
     .fn()
     .mockImplementation(() => Promise.resolve(getOpenTicketTicket)),
-  initiateSnsSwapParticipation: jest
+  initiateSnsSaleParticipation: jest
     .fn()
     .mockImplementation(() =>
-      Promise.resolve(initiateSnsSwapParticipationTicket)
+      Promise.resolve(initiateSnsSaleParticipationTicket)
     ),
   participateInSnsSale: jest
     .fn()
@@ -62,7 +62,7 @@ describe("ParticipateButton", () => {
 
     beforeEach(() => {
       (getOpenTicket as jest.MockedFn<any>).mockClear();
-      (initiateSnsSwapParticipation as jest.MockedFn<any>).mockClear();
+      (initiateSnsSaleParticipation as jest.MockedFn<any>).mockClear();
       (participateInSnsSale as jest.MockedFn<any>).mockClear();
     });
 
