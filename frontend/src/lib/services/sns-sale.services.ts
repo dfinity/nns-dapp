@@ -74,9 +74,6 @@ export const getOpenTicket = async ({
       ticket,
     };
   } catch (err) {
-    // TODO(sale): remove extra logs after tests
-    console.error("[sale]getOpenTicket", err);
-
     if (!(err instanceof SnsSwapGetOpenTicketError)) {
       // not expected error
       toastsError({
@@ -129,8 +126,6 @@ export const newSaleTicket = async ({
       ticket,
     };
   } catch (err) {
-    console.error("[sale]newSaleTicket", err);
-
     if (!(err instanceof SnsSwapNewTicketError)) {
       // not expected error
       toastsError({
@@ -262,6 +257,7 @@ export const initiateSnsSwapParticipation = async ({
 
     // TODO(sale): GIX-1318
     await reloadSnsState(rootCanisterId);
+
     const project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
       project,
@@ -288,12 +284,10 @@ export const initiateSnsSwapParticipation = async ({
       return ticket;
     }
   } catch (err: unknown) {
-    console.error("[sale]initiateSnsSwapParticipation", err);
-
     toastsError(
       toToastError({
-        err: err,
         fallbackErrorLabelKey: "error__sns.sns_sale_unexpected_error",
+        err: err,
       })
     );
   }
@@ -309,10 +303,6 @@ export const participateInSnsSwap = async ({
 }: {
   ticket: Required<SnsTicket>;
 }): Promise<{ success: boolean; retry: boolean }> => {
-  // should not happen (for ts)
-  if (snsTicket === undefined) {
-    throw new Error("no ticket");
-  }
   logWithTimestamp(
     "[sale]participateInSnsSwap:",
     snsTicket,
@@ -367,8 +357,6 @@ export const participateInSnsSwap = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.error("[sale]participateInSnsSwap", err);
-
     if (!(err instanceof IcrcTransferError)) {
       toastsError({
         labelKey: "error__sns.sns_sale_unexpected_error",
@@ -417,6 +405,8 @@ export const participateInSnsSwap = async ({
       });
     }
   } catch (err) {
+    console.error("[sale]notifyParticipation", err);
+
     // unexpected error (probably sale is closed)
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
