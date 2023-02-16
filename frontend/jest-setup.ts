@@ -50,6 +50,8 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
     ENABLE_SNS_AGGREGATOR: true,
     ENABLE_CKBTC_LEDGER: true,
     ENABLE_CKBTC_RECEIVE: true,
+    TEST_FLAG_EDITABLE: true,
+    TEST_FLAG_NOT_EDITABLE: true,
   },
   SNS_AGGREGATOR_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
