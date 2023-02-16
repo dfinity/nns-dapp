@@ -421,6 +421,8 @@ export const participateInSnsSwap = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
+
+    return { success: false, retry: false };
   }
 
   logWithTimestamp("Participating in swap: done");

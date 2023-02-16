@@ -7,6 +7,7 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
+import * as accountsServices from "$lib/services/accounts.services";
 import {
   getOpenTicket,
   initiateSnsSwapParticipation,
@@ -18,12 +19,14 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { HttpAgent, Identity } from "@dfinity/agent";
+import { IcrcTransferError } from "@dfinity/ledger";
 import {
   ICPToken,
   LedgerCanister,
   TokenAmount,
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
@@ -56,9 +59,6 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
-import * as projectsUtils from "$lib/utils/projects.utils";
-
-
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -81,7 +81,9 @@ describe("sns-api", () => {
     ],
   };
 
-  const spyOnNotifyParticipation = jest.fn().mockResolvedValue(undefined);
+  const spyOnNotifyParticipation = jest.fn().mockResolvedValue({
+    icp_accepted_participation_e8s: 666n,
+  });
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const ledgerCanisterMock = mock<LedgerCanister>();
@@ -103,6 +105,8 @@ describe("sns-api", () => {
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
+    jest.spyOn(accountsServices, "syncAccounts").mockResolvedValue();
+
     jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
         {
@@ -115,6 +119,8 @@ describe("sns-api", () => {
     const ledgerMock = mock<LedgerCanister>();
     ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
     jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
+
+    ledgerCanisterMock.transfer.mockResolvedValue(13n);
 
     snsQueryStore.setData(
       snsResponsesForLifecycle({
@@ -156,8 +162,6 @@ describe("sns-api", () => {
         newSaleTicket: spyOnNewSaleTicketApi,
       })
     );
-
-
 
     jest
       .spyOn(authStore, "subscribe")
@@ -398,10 +402,9 @@ describe("sns-api", () => {
 
     it("should handle errors", async () => {
       // remove the sns-project
-      jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
-        mockProjectSubscribe([
-        ])
-      );
+      jest
+        .spyOn(snsProjectsStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([]));
 
       const account = {
         ...mockMainAccount,
@@ -426,12 +429,161 @@ describe("sns-api", () => {
     });
   });
 
-  it("should participateInSnsSwap", async () => {
-    const result = await participateInSnsSwap({
-      ticket: testTicket,
+  describe("participateInSnsSwap", () => {
+    it("should participateInSnsSwap", async () => {
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+      const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
+
+      expect(spyOnNotifyParticipation).toBeCalled();
+      expect(result).toEqual({ success: true, retry: false });
+      expect(spyOnSyncAccounts).toBeCalled();
     });
 
-    expect(spyOnNotifyParticipation).toBeCalled();
-    expect(result).toEqual({ success: true, retry: false });
+    it("should display an error in case the ticket principal not equals to the current identity", async () => {
+      // corrupt the current identity principal
+      jest.spyOn(authStore, "subscribe").mockImplementation((run) => {
+        run({
+          identity: {
+            ...mockIdentity,
+            getPrincipal: () => Principal.fromText("aaaaa-aa"),
+          },
+        });
+        return () => undefined;
+      });
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+        })
+      );
+    });
+
+    it("should display transfer api errors", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(
+        new IcrcTransferError({
+          errorType: { BadFee: null },
+        })
+      );
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.ledger_bad_fee",
+        })
+      );
+    });
+
+    it("should display transfer api errors", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(
+        new IcrcTransferError({
+          errorType: { BadFee: null },
+        })
+      );
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.ledger_bad_fee",
+        })
+      );
+    });
+
+    it.only("should ignore Duplicate error", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(
+        new IcrcTransferError({
+          errorType: { Duplicate: { duplicate_of: 100n } },
+        })
+      );
+
+      expect(spyOnToastsError).not.toBeCalled();
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).toBeCalled();
+      expect(spyOnToastsError).not.toBeCalled();
+      expect(result).toEqual({ success: true, retry: false });
+    });
+
+    it.only("should set retry flag on CreatedInFuture error", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(
+        new IcrcTransferError({
+          errorType: { CreatedInFuture: null },
+        })
+      );
+
+      expect(spyOnToastsError).not.toBeCalled();
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
+      expect(result).toEqual({ success: false, retry: true });
+    });
+
+    it.only("should set retry flag on TemporarilyUnavailable error", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(
+        new IcrcTransferError({
+          errorType: { TemporarilyUnavailable: null },
+        })
+      );
+
+      expect(spyOnToastsError).not.toBeCalled();
+
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
+      expect(result).toEqual({ success: false, retry: true });
+    });
+
+    it.only("should display a waring when current_committed ≠ ticket.amount", async () => {
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnToastsShow).toBeCalledWith(
+        expect.objectContaining({
+          level: "warn",
+          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        })
+      );
+    });
+
+    it.only("should display participateInSnsSwap errors", async () => {
+      spyOnNotifyParticipation.mockRejectedValue(new Error());
+      const result = await participateInSnsSwap({
+        ticket: testTicket,
+      });
+
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+        })
+      );
+    });
   });
 });
