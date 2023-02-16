@@ -59,9 +59,9 @@ describe("ParticipateButton", () => {
     });
 
     beforeEach(() => {
-      (getOpenTicket as jest.MockedFn<any>).mockClear();
-      (initiateSnsSwapParticipation as jest.MockedFn<any>).mockClear();
-      (participateInSnsSwap as jest.MockedFn<any>).mockClear();
+      (getOpenTicket as jest.Mock).mockClear();
+      (initiateSnsSwapParticipation as jest.Mock).mockClear();
+      (participateInSnsSwap as jest.Mock).mockClear();
     });
 
     it("should render a text to increase participation", () => {

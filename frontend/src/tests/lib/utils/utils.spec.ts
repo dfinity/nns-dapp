@@ -16,8 +16,6 @@ import {
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
-  let callback: jest.Mock;
-
   beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
