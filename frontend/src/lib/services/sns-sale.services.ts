@@ -46,10 +46,10 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import {nanoSecondsToDateTime} from "../utils/date.utils";
+import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
+import { nanoSecondsToDateTime } from "../utils/date.utils";
+import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
-import {DEFAULT_TOAST_DURATION_MILLIS} from "../constants/constants";
-import {logWithTimestamp} from "../utils/dev.utils";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -187,20 +187,19 @@ export const newSaleTicket = async ({
         });
         return;
       }
-      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED:
-        {
-          toastsError({
-            labelKey: "error__sns.sns_sale_try_later",
-          });
-          return;
-        }
-
-        // generic error
+      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
         toastsError({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-          err,
+          labelKey: "error__sns.sns_sale_try_later",
         });
+        return;
+      }
     }
+
+    // generic error
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+      err,
+    });
   }
 };
 

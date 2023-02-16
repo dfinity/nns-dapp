@@ -23,13 +23,15 @@
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
   import type { SnsTicket } from "../../types/sns";
-  import {toastsShow, toastsSuccess} from "../../stores/toasts.store";
-  import {nanoSecondsToDateTime, secondsToDateTime} from "../../utils/date.utils";
-  import {DEFAULT_TOAST_DURATION_MILLIS} from "../../constants/constants";
+  import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
+  import {
+    nanoSecondsToDateTime,
+    secondsToDateTime,
+  } from "../../utils/date.utils";
+  import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
 
-  const { store: projectDetailStore, reload } = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store: projectDetailStore, reload } =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let lifecycle: number;
   $: ({
@@ -59,7 +61,6 @@
   let loadingTicketRootCanisterId: string | undefined;
   let ticket: Ticket | undefined;
   let criticalError = false;
-
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId

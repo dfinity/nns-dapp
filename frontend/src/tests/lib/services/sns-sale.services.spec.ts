@@ -15,6 +15,7 @@ import {
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
@@ -23,8 +24,16 @@ import {
   TokenAmount,
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
-import {GetOpenTicketErrorType, SnsSwapGetOpenTicketError, SnsSwapLifecycle} from "@dfinity/sns";
+import {
+  GetOpenTicketErrorType,
+  NewSaleTicketResponseErrorType,
+  SnsSwapGetOpenTicketError,
+  SnsSwapLifecycle,
+  SnsSwapNewTicketError,
+} from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
+import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
+import { formatToken } from "../../../lib/utils/token.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
@@ -47,7 +56,6 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
-import * as toastsStore from "$lib/stores/toasts.store";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -74,18 +82,20 @@ describe("sns-api", () => {
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const ticket = snsTicketMock({
+  const testTicket = snsTicketMock({
     rootCanisterId: rootCanisterIdMock,
     owner: mockPrincipal,
   });
-  const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
-  const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const spyOnGetOpenTicketApi = jest.fn();
+  const spyOnNewSaleTicketApi = jest.fn();
 
   beforeEach(() => {
     spyOnToastsShow.mockClear();
     spyOnToastsError.mockClear();
     jest.clearAllMocks();
 
+    spyOnGetOpenTicketApi.mockResolvedValue(testTicket.ticket);
+    spyOnNewSaleTicketApi.mockResolvedValue(testTicket.ticket);
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
@@ -93,7 +103,7 @@ describe("sns-api", () => {
       mockProjectSubscribe([
         {
           ...mockSnsFullProject,
-          rootCanisterId: ticket.rootCanisterId,
+          rootCanisterId: testTicket.rootCanisterId,
         },
       ])
     );
@@ -138,8 +148,8 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: spyOnNotifyParticipation,
-        getOpenTicket: getOpenTicketSpy,
-        newSaleTicket: newSaleTicketSpy,
+        getOpenTicket: spyOnGetOpenTicketApi,
+        newSaleTicket: spyOnNewSaleTicketApi,
       })
     );
 
@@ -148,58 +158,208 @@ describe("sns-api", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  describe('getOpenTicket', () => {
+  describe("getOpenTicket", () => {
     it("should return a ticket", async () => {
       const result = await getOpenTicket({
-        rootCanisterId: ticket.rootCanisterId,
+        rootCanisterId: testTicket.rootCanisterId,
         certified: true,
       });
 
-      expect(getOpenTicketSpy).toBeCalled();
-      expect(result).toEqual(ticket);
+      expect(spyOnGetOpenTicketApi).toBeCalled();
+      expect(result).toEqual(testTicket);
     });
 
     it("should display already closed error", async () => {
-      getOpenTicketSpy.mockRejectedValue(new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED));
+      spyOnGetOpenTicketApi.mockRejectedValue(
+        new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
+      );
 
       const result = await getOpenTicket({
-        rootCanisterId: ticket.rootCanisterId,
+        rootCanisterId: testTicket.rootCanisterId,
         certified: true,
       });
 
       expect(result).toBeUndefined();
-      expect(spyOnToastsError).toBeCalledWith(expect.objectContaining({
-        labelKey: "error__sns.sns_sale_closed"
-      }))
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_closed",
+        })
+      );
     });
 
     it("should display unexpected error on not_closed error", async () => {
-      getOpenTicketSpy.mockRejectedValue(new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED));
+      spyOnGetOpenTicketApi.mockRejectedValue(
+        new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
+      );
 
-      getOpenTicketSpy.mockRejectedValue({
+      spyOnGetOpenTicketApi.mockRejectedValue({
         errorType: GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN,
       });
 
       const result = await getOpenTicket({
-        rootCanisterId: ticket.rootCanisterId,
+        rootCanisterId: testTicket.rootCanisterId,
         certified: true,
       });
 
       expect(result).toBeUndefined();
-      expect(spyOnToastsError).toBeCalledWith(expect.objectContaining({
-        labelKey: "error__sns.sns_sale_unexpected_error"
-      }))
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+        })
+      );
     });
   });
 
-  it("should create newSaleTicket", async () => {
-    const result = await newSaleTicket({
-      rootCanisterId: ticket.rootCanisterId,
-      amount_icp_e8s: 0n,
+  describe("newSaleTicket", () => {
+    it("should create newSaleTicket", async () => {
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(result).toEqual(testTicket);
     });
 
-    expect(newSaleTicketSpy).toBeCalled();
-    expect(result).toEqual(ticket);
+    it("should display sale-closed error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED,
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_closed",
+        })
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it("should reuse the ticket from the ticket-exist error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS,
+          existingTicket: testTicket.ticket,
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsShow).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+          substitutions: {
+            $time: nanoSecondsToDateTime(testTicket.ticket.creation_time),
+          },
+        })
+      );
+      expect(result).toEqual(testTicket);
+    });
+
+    it("should display invalid user amount error", async () => {
+      const min_amount_icp_e8s_included = 123n;
+      const max_amount_icp_e8s_included = 321n;
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT,
+          invalidUserAmount: {
+            min_amount_icp_e8s_included,
+            max_amount_icp_e8s_included,
+          },
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_invalid_amount",
+          substitutions: {
+            $min: formatToken({ value: min_amount_icp_e8s_included }),
+            $max: formatToken({ value: max_amount_icp_e8s_included }),
+          },
+        })
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it("should display invalid sub-account error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT,
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_invalid_subaccount",
+        })
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it("should display retry later error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED,
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_try_later",
+        })
+      );
+      expect(result).toBeUndefined();
+    });
+
+    it.only("should display unknown error for all other error types", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: "dummy type" as unknown as NewSaleTicketResponseErrorType,
+        })
+      );
+
+      const result = await newSaleTicket({
+        rootCanisterId: testTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+        })
+      );
+      expect(result).toBeUndefined();
+    });
   });
 
   it("should initiate SnsSwapParticipation", async () => {
@@ -220,18 +380,18 @@ describe("sns-api", () => {
       account,
     });
 
-    expect(newSaleTicketSpy).toBeCalled();
-    expect(newSaleTicketSpy).toBeCalledWith(
+    expect(spyOnNewSaleTicketApi).toBeCalled();
+    expect(spyOnNewSaleTicketApi).toBeCalledWith(
       expect.objectContaining({
         amount_icp_e8s: 100000000n,
       })
     );
-    expect(result).toEqual(ticket);
+    expect(result).toEqual(testTicket);
   });
 
   it("should participateInSnsSwap", async () => {
     const result = await participateInSnsSwap({
-      ticket,
+      ticket: testTicket,
     });
 
     expect(spyOnNotifyParticipation).toBeCalled();

@@ -134,7 +134,7 @@ export const secondsToDateTime = (seconds: bigint): string =>
 export const nanoSecondsToDateTime = (nanoSeconds: bigint): string => {
   const seconds = Number(nanoSeconds / BigInt(1e9));
   return `${secondsToDate(seconds)} ${secondsToTime(seconds)}`;
-}
+};
 
 export const secondsToDate = (seconds: number): string => {
   const options: Intl.DateTimeFormatOptions = {
