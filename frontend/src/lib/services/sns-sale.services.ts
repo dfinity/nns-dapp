@@ -103,6 +103,83 @@ export const getOpenTicket = async ({
   }
 };
 
+const handleNewSaleTicketError = ({
+  err,
+  rootCanisterId,
+}: {
+  err: unknown;
+  rootCanisterId: Principal;
+}): SnsTicket | undefined => {
+  if (!(err instanceof SnsSwapNewTicketError)) {
+    // not expected error
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+      err,
+    });
+    return;
+  }
+
+  // handle custom errors
+  const { errorType } = err;
+  switch (errorType) {
+    case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
+      toastsError({
+        labelKey: "error__sns.sns_sale_closed",
+        err,
+      });
+      return;
+    case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
+      const existingTicket = (err as SnsSwapNewTicketError).existingTicket;
+      if (nonNullish(existingTicket)) {
+        toastsShow({
+          level: "info",
+          labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+          substitutions: {
+            $time: nanoSecondsToDateTime(existingTicket.creation_time),
+          },
+        });
+
+        // Continue the flow with existing ticket (restore the flow)
+        return {
+          rootCanisterId,
+          ticket: existingTicket,
+        };
+      }
+      // break to jump to the generic error message
+      break;
+    }
+    case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
+      const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
+        err.invalidUserAmount as InvalidUserAmount;
+      toastsError({
+        labelKey: "error__sns.sns_sale_invalid_amount",
+        substitutions: {
+          $min: formatToken({ value: min_amount_icp_e8s_included }),
+          $max: formatToken({ value: max_amount_icp_e8s_included }),
+        },
+      });
+      return;
+    }
+    case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
+      toastsError({
+        labelKey: "error__sns.sns_sale_invalid_subaccount",
+      });
+      return;
+    }
+    case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
+      toastsError({
+        labelKey: "error__sns.sns_sale_try_later",
+      });
+      return;
+    }
+  }
+
+  // generic error
+  toastsError({
+    labelKey: "error__sns.sns_sale_unexpected_error",
+    err,
+  });
+};
 export const newSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
@@ -128,74 +205,9 @@ export const newSaleTicket = async ({
       ticket,
     };
   } catch (err) {
-    if (!(err instanceof SnsSwapNewTicketError)) {
-      // not expected error
-      toastsError({
-        labelKey: "error__sns.sns_sale_unexpected_error",
-        err,
-      });
-      return;
-    }
-
-    // handle custom errors
-    const { errorType } = err;
-    switch (errorType) {
-      case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
-        toastsError({
-          labelKey: "error__sns.sns_sale_closed",
-          err,
-        });
-        return;
-      case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
-        const existingTicket = (err as SnsSwapNewTicketError).existingTicket;
-        if (nonNullish(existingTicket)) {
-          toastsShow({
-            level: "info",
-            labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-            substitutions: {
-              $time: nanoSecondsToDateTime(existingTicket.creation_time),
-            },
-          });
-
-          // Continue the flow with existing ticket (restore the flow)
-          return {
-            rootCanisterId,
-            ticket: existingTicket,
-          };
-        }
-        // break to jump to the generic error message
-        break;
-      }
-      case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
-        const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
-          err.invalidUserAmount as InvalidUserAmount;
-        toastsError({
-          labelKey: "error__sns.sns_sale_invalid_amount",
-          substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
-          },
-        });
-        return;
-      }
-      case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
-        toastsError({
-          labelKey: "error__sns.sns_sale_invalid_subaccount",
-        });
-        return;
-      }
-      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
-        toastsError({
-          labelKey: "error__sns.sns_sale_try_later",
-        });
-        return;
-      }
-    }
-
-    // generic error
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
+    return handleNewSaleTicketError({
       err,
+      rootCanisterId,
     });
   }
 };
@@ -234,7 +246,8 @@ const getProjectFromStore = (
   );
 
 /**
- * Creates a ticket and start participation
+ * Does participation validation and creates an open ticket.
+ *
  * @param amount
  * @param rootCanisterId
  * @param account
@@ -293,6 +306,12 @@ export const initiateSnsSwapParticipation = async ({
 };
 
 /**
+ * Do the participation using sns ticket
+ *
+ * 1. nnsDapp.addPendingNotifySwap
+ * 2. nnsLedger.transfer
+ * 3. snsSale.notifyParticipation (refresh_buyer_tokens)
+ * 4. syncAccounts
  *
  * @param snsTicket
  * @param rootCanisterId
@@ -302,11 +321,7 @@ export const participateInSnsSwap = async ({
 }: {
   ticket: Required<SnsTicket>;
 }): Promise<{ success: boolean; retry: boolean }> => {
-  logWithTimestamp(
-    "[sale]participateInSnsSwap:",
-    snsTicket,
-    rootCanisterId.toText()
-  );
+  logWithTimestamp("[sale]participateInSnsSale:", snsTicket);
 
   const {
     amount_icp_e8s: amount,
