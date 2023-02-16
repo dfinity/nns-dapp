@@ -6,6 +6,7 @@ import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSe
 import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import * as snsSaleApi from "../../../../lib/api/sns-sale.api";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import {
   mockSnsFullProject,
@@ -14,11 +15,12 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectStatusSection", () => {
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+    jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+  });
 
   it("should render subtitle", () => {
     const { container } = renderContextCmp({
