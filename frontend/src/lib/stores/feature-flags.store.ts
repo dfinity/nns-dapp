@@ -20,6 +20,10 @@ const assertValidFeatureFlag = (flag: FeatureKey) => {
   if (!(flag in FEATURE_FLAG_ENVIRONMENT)) {
     throw new Error(`Unknown feature flag: ${flag}`);
   }
+};
+
+const assertEditableFeatureFlag = (flag: FeatureKey) => {
+  assertValidFeatureFlag(flag);
   if (!EDITABLE_FEATURE_FLAGS.includes(flag)) {
     throw new Error(`Feature flag is not editable: ${flag}`);
   }
@@ -80,9 +84,14 @@ interface FeatureFlagsConsoleInterface
 const initSingleFeatureConsoleInterface = (
   key: FeatureKey
 ): FeatureFlagConsoleInterface => ({
-  overrideWith: (value: boolean) =>
-    overrideFeatureFlagsStore.setFlag(key, value),
-  removeOverride: () => overrideFeatureFlagsStore.removeFlag(key),
+  overrideWith: (value: boolean) => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.setFlag(key, value);
+  },
+  removeOverride: () => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.removeFlag(key);
+  },
 });
 
 const listFeatureFlagsToConsole = () => {
