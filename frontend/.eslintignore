@@ -16,3 +16,5 @@ static
 public
 scripts
 jest-setup.ts
+
+src/lib/canisters/nns-dapp/**/*

@@ -172,9 +172,7 @@ describe("sns-proposals services", () => {
 
     it("should handle errors", async () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
-      const registerVoteApiSpy = jest
-        .spyOn(api, "registerVote")
-        .mockRejectedValue(new Error());
+      jest.spyOn(api, "registerVote").mockRejectedValue(new Error());
       const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       const result = await registerVote({
