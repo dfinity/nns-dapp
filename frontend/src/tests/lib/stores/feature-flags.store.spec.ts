@@ -45,10 +45,10 @@ describe("featureFlags store", () => {
     );
   });
 
-  it("should throw if a non editable feature flag is set", () => {
-    expect(() =>
-      overrideFeatureFlagsStore.setFlag(notEditable, false)
-    ).toThrowError(notEditableError);
+  it("should not throw if a non editable feature flag is set", () => {
+    // This is allowed for testing.
+    // Below we test that the user can't set a non-editable feature flag.
+    overrideFeatureFlagsStore.setFlag(notEditable, false);
   });
 
   it("should remove feature flags", () => {
@@ -71,10 +71,10 @@ describe("featureFlags store", () => {
     );
   });
 
-  it("should throw if a non editable feature flag is removed", () => {
-    expect(() => overrideFeatureFlagsStore.removeFlag(notEditable)).toThrow(
-      notEditableError
-    );
+  it("should not throw if a non editable feature flag is removed", () => {
+    // This is allowed for testing.
+    // Below we test that the user can't set a non-editable feature flag.
+    overrideFeatureFlagsStore.removeFlag(notEditable);
   });
 
   describe("console interface", () => {
@@ -125,6 +125,20 @@ describe("featureFlags store", () => {
       );
       consoleInterface.list();
       expect(recordedLogs).toEqual(expect.arrayContaining([expectedOutput]));
+    });
+
+    it("should throw if a non-editable feature flag is set", () => {
+      const consoleInterface = featureFlagsModule.initConsoleInterface();
+      const call = () =>
+        consoleInterface.TEST_FLAG_NOT_EDITABLE.overrideWith(false);
+      expect(call).toThrowError(notEditableError);
+    });
+
+    it("should throw if a non-editable feature flag is removed", () => {
+      const consoleInterface = featureFlagsModule.initConsoleInterface();
+      const call = () =>
+        consoleInterface.TEST_FLAG_NOT_EDITABLE.removeOverride();
+      expect(call).toThrowError(notEditableError);
     });
   });
 });
