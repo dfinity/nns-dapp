@@ -108,7 +108,10 @@
 
       if (ticket && ticket.ticket) {
         const { success, retry } = await participateInSnsSwap({
-          ticket: ticket,
+          ticket: {
+            rootCanisterId: ticket.rootCanisterId,
+            ticket: ticket.ticket,
+          },
         });
 
         if (success) {

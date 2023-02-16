@@ -106,7 +106,10 @@
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
       const { success, retry } = await participateInSnsSwap({
-        ticket: saleTicket,
+        ticket: {
+          rootCanisterId: saleTicket.rootCanisterId,
+          ticket: saleTicket.ticket,
+        },
       });
 
       if (success) {
