@@ -7,8 +7,8 @@ import {
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
+import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
-import {nanoSecondsToDateTime} from "../../../lib/utils/date.utils";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {
@@ -165,8 +165,10 @@ describe("nanoSecondsToDateTime", () => {
 
   it("should return formatted date and time", () => {
     // We only support english for now
-    const march25of2022InSeconds = Math.round(1648200639061 * 1e9 / 1000);
-    const expectedDateText = nanoSecondsToDateTime(BigInt(march25of2022InSeconds));
+    const march25of2022InSeconds = Math.round((1648200639061 * 1e9) / 1000);
+    const expectedDateText = nanoSecondsToDateTime(
+      BigInt(march25of2022InSeconds)
+    );
     expect(expectedDateText).toEqual("Mar 25, 2022 9:30 AM");
   });
 });
