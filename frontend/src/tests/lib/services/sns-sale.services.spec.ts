@@ -59,6 +59,7 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
+import type {SnsTicket} from "../../../lib/types/sns";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -432,7 +433,7 @@ describe("sns-api", () => {
   describe("participateInSnsSwap", () => {
     it("should participateInSnsSwap", async () => {
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
 
@@ -454,7 +455,7 @@ describe("sns-api", () => {
       });
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -474,7 +475,7 @@ describe("sns-api", () => {
       );
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -494,7 +495,7 @@ describe("sns-api", () => {
       );
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -516,7 +517,7 @@ describe("sns-api", () => {
       expect(spyOnToastsError).not.toBeCalled();
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).toBeCalled();
@@ -534,7 +535,7 @@ describe("sns-api", () => {
       expect(spyOnToastsError).not.toBeCalled();
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -552,7 +553,7 @@ describe("sns-api", () => {
       expect(spyOnToastsError).not.toBeCalled();
 
       const result = await participateInSnsSwap({
-        ticket: testTicket,
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -561,8 +562,8 @@ describe("sns-api", () => {
     });
 
     it.only("should display a waring when current_committed ≠ ticket.amount", async () => {
-      const result = await participateInSnsSwap({
-        ticket: testTicket,
+      await participateInSnsSwap({
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnToastsShow).toBeCalledWith(
@@ -575,8 +576,8 @@ describe("sns-api", () => {
 
     it.only("should display participateInSnsSwap errors", async () => {
       spyOnNotifyParticipation.mockRejectedValue(new Error());
-      const result = await participateInSnsSwap({
-        ticket: testTicket,
+      await participateInSnsSwap({
+        ticket: testTicket as Required<SnsTicket>,
       });
 
       expect(spyOnToastsError).toBeCalledWith(
