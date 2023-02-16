@@ -78,8 +78,7 @@
     class="primary"
     on:click={openSend}
     disabled={isNullish($store.account) || $busy}
-    data-tid="open-new-ckbtc-transaction"
-    >{$i18n.accounts.new_transaction}</button
+    data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
   >
 
   {#if $ENABLE_CKBTC_RECEIVE}

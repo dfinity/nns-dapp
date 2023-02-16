@@ -110,7 +110,7 @@
     {governanceCanisterId}
   >
     <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
+      >{title ?? $i18n.accounts.send}</svelte:fragment
     >
     <p slot="description" class="value">
       {replacePlaceholders($i18n.accounts.sns_transaction_description, {

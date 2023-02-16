@@ -103,9 +103,7 @@
   {governanceCanisterId}
   validateAmount={checkMinimumStake}
 >
-  <svelte:fragment slot="title"
-    >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
-  >
+  <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
     {stakeNeuronText}
   </p>
