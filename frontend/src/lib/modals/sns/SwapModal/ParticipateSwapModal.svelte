@@ -33,6 +33,7 @@
     participateInSnsSwap,
   } from "$lib/services/sns-sale.services";
   import type { SnsTicket } from "../../../types/sns";
+  import {logWithTimestamp} from "../../../utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -122,6 +123,8 @@
 
         if (retry) {
           // TODO(sale): GIX-1310 - implement retry logic
+          logWithTimestamp("[sale] retry TBD")
+          return;
         }
 
         await reload();

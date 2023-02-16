@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
+  import {getContext, tick} from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -26,11 +26,11 @@
   import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
   import {
     nanoSecondsToDateTime,
-    secondsToDateTime,
   } from "../../utils/date.utils";
   import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
   import { isSignedIn } from "../../utils/auth.utils";
   import { authStore } from "../../stores/auth.store";
+  import {logWithTimestamp} from "../../utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -116,15 +116,21 @@
         toastsSuccess({
           labelKey: "sns_project_detail.participate_success",
         });
+      } else {
+        criticalError = true;
       }
 
       if (retry) {
         // TODO(sale): GIX-1310 - implement retry logic
+        logWithTimestamp("[sale] retry TBD")
+        return;
       }
 
       await reload();
     }
 
+    // unlock the button
+    ticket = undefined;
     loading = false;
   };
   // skip ticket update if the sns is not open

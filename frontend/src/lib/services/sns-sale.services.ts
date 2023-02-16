@@ -354,6 +354,7 @@ export const participateInSnsSwap = async ({
       memo: ticketId,
     });
   } catch (err) {
+    console.error("[sale]transfer", err);
     if (!(err instanceof IcrcTransferError)) {
       toastsError({
         labelKey: "error__sns.sns_sale_unexpected_error",
