@@ -279,10 +279,7 @@ export const initiateSnsSwapParticipation = async ({
       amount_icp_e8s: amount.toE8s(),
     });
 
-    // no ticket case is covered in `newSaleTicket` function
-    if (ticket) {
-      return ticket;
-    }
+    return ticket;
   } catch (err: unknown) {
     toastsError(
       toToastError({
