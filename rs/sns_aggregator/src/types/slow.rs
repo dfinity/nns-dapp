@@ -110,6 +110,8 @@ pub struct SlowSwap {
     /// When the swap is committed, this field is initialized according
     /// to the outcome of the swap.
     pub open_sns_token_swap_proposal_id: ::core::option::Option<u64>,
+    /// When the sale proposal is executed, this field is initialized accordingly
+    pub decentralization_sale_open_timestamp_seconds: ::core::option::Option<u64>,
 }
 
 impl From<&Swap> for SlowSwap {
@@ -119,6 +121,7 @@ impl From<&Swap> for SlowSwap {
             init: upstream.init.clone(),
             params: upstream.params.clone(),
             open_sns_token_swap_proposal_id: upstream.open_sns_token_swap_proposal_id,
+            decentralization_sale_open_timestamp_seconds: upstream.decentralization_sale_open_timestamp_seconds,
         }
     }
 }

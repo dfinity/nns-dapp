@@ -792,7 +792,10 @@
         "HOST": "https://medium07.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
-          "ENABLE_SNS_VOTING": true
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_RECEIVE": false
         }
       },
       "providers": [

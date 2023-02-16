@@ -212,6 +212,7 @@ pub struct Params {
   pub  sns_token_e8s: u64,
   pub  max_participant_icp_e8s: u64,
   pub  min_icp_e8s: u64,
+  pub sale_delay_seconds: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -224,6 +225,7 @@ pub struct Swap {
   pub  buyers: Vec<(String,BuyerState,)>,
   pub  params: Option<Params>,
   pub  open_sns_token_swap_proposal_id: Option<u64>,
+  pub  decentralization_sale_open_timestamp_seconds: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
