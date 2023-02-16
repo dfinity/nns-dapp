@@ -102,7 +102,7 @@
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
       const { success, retry } = await participateInSnsSwap({
-        ticket: saleTicket as Required<SnsTicket>,
+        ticket: saleTicket,
       });
 
       if (success) {

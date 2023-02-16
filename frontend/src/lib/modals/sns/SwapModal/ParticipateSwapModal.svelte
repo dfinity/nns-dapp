@@ -108,7 +108,7 @@
 
       if (ticket && ticket.ticket) {
         const { success, retry } = await participateInSnsSwap({
-          ticket: ticket as Required<SnsTicket>,
+          ticket: ticket,
         });
 
         if (success) {

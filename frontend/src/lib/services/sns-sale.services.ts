@@ -308,10 +308,12 @@ export const initiateSnsSwapParticipation = async ({
 export const participateInSnsSwap = async ({
   ticket: { ticket: snsTicket, rootCanisterId },
 }: {
-  ticket: Required<SnsTicket>;
+  ticket: SnsTicket;
 }): Promise<{ success: boolean; retry: boolean }> => {
-  console.debug("Participating in swap: call...");
-
+  // should not happen (for ts)
+  if (snsTicket === undefined) {
+    throw new Error("no ticket");
+  }
   console.debug(
     "[sale]participateInSnsSwap:",
     snsTicket,
