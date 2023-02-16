@@ -35,6 +35,7 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
+import type { SnsTicket } from "../../../lib/types/sns";
 import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import { formatToken } from "../../../lib/utils/token.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
@@ -59,7 +60,6 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
-import type {SnsTicket} from "../../../lib/types/sns";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {

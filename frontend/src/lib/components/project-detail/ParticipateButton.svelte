@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import {getContext, tick} from "svelte";
+  import { getContext } from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -24,13 +24,11 @@
   import { nonNullish } from "@dfinity/utils";
   import type { SnsTicket } from "../../types/sns";
   import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
-  import {
-    nanoSecondsToDateTime,
-  } from "../../utils/date.utils";
+  import { nanoSecondsToDateTime } from "../../utils/date.utils";
   import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
   import { isSignedIn } from "../../utils/auth.utils";
   import { authStore } from "../../stores/auth.store";
-  import {logWithTimestamp} from "../../utils/dev.utils";
+  import { logWithTimestamp } from "../../utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -122,7 +120,7 @@
 
       if (retry) {
         // TODO(sale): GIX-1310 - implement retry logic
-        logWithTimestamp("[sale] retry TBD")
+        logWithTimestamp("[sale] retry TBD");
         return;
       }
 

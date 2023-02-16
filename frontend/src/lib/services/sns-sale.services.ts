@@ -44,12 +44,15 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { nnsDappCanister } from "../api/nns-dapp.api";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
+import {NotAuthorizedError} from "../canisters/nns-dapp/nns-dapp.errors";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -341,6 +344,23 @@ export const participateInSnsSwap = async ({
     swapCanisterId,
     controller,
   });
+
+  try {
+    // If the client disconnects after the transfer, the participation will still be notified.
+    const {canister: nnsDapp} = await nnsDappCanister({identity});
+    await nnsDapp.addPendingNotifySwap({
+      swap_canister_id: swapCanisterId,
+      buyer: controller,
+      buyer_sub_account:
+        subaccount === undefined ? [] : toNullable(Array.from(subaccount)),
+    });
+  } catch(err) {
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+      err,
+    });
+    return { success: false, retry: false };
+  }
 
   try {
     // Send amount to the ledger
