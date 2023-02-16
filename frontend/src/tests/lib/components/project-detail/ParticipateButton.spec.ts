@@ -43,7 +43,9 @@ jest.mock("$lib/services/sns-sale.services", () => ({
     .mockImplementation(() =>
       Promise.resolve(initiateSnsSwapParticipationTicket)
     ),
-  participateInSnsSwap: jest.fn(),
+  participateInSnsSwap: jest
+    .fn()
+    .mockResolvedValue({ success: true, retry: false }),
 }));
 
 describe("ParticipateButton", () => {
@@ -142,7 +144,7 @@ describe("ParticipateButton", () => {
       });
     });
 
-    it.only("should enable button if user has not committed max already", async () => {
+    it("should enable button if user has not committed max already", async () => {
       getOpenTicketTicket = {
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,

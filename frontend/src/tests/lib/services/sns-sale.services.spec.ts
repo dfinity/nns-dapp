@@ -35,6 +35,7 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
+import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
 import type { SnsTicket } from "../../../lib/types/sns";
 import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import { formatToken } from "../../../lib/utils/token.utils";
@@ -88,6 +89,7 @@ describe("sns-api", () => {
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const ledgerCanisterMock = mock<LedgerCanister>();
+  const nnsDappMock = mock<NNSDappCanister>();
   const testTicket = snsTicketMock({
     rootCanisterId: rootCanisterIdMock,
     owner: mockPrincipal,
@@ -167,6 +169,9 @@ describe("sns-api", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
+    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
   });
 
   describe("getOpenTicket", () => {
@@ -432,14 +437,19 @@ describe("sns-api", () => {
 
   describe("participateInSnsSwap", () => {
     it("should participateInSnsSwap", async () => {
+      nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
+      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
+
       const result = await participateInSnsSwap({
         ticket: testTicket as Required<SnsTicket>,
       });
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
 
-      expect(spyOnNotifyParticipation).toBeCalled();
+      expect(nnsDappMock.addPendingNotifySwap).toBeCalledTimes(1);
+      expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(result).toEqual({ success: true, retry: false });
-      expect(spyOnSyncAccounts).toBeCalled();
     });
 
     it("should display an error in case the ticket principal not equals to the current identity", async () => {
@@ -507,7 +517,7 @@ describe("sns-api", () => {
       );
     });
 
-    it.only("should ignore Duplicate error", async () => {
+    it("should ignore Duplicate error", async () => {
       ledgerCanisterMock.transfer.mockRejectedValue(
         new IcrcTransferError({
           errorType: { Duplicate: { duplicate_of: 100n } },
@@ -525,7 +535,7 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: true, retry: false });
     });
 
-    it.only("should set retry flag on CreatedInFuture error", async () => {
+    it("should set retry flag on CreatedInFuture error", async () => {
       ledgerCanisterMock.transfer.mockRejectedValue(
         new IcrcTransferError({
           errorType: { CreatedInFuture: null },
@@ -543,7 +553,7 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: false, retry: true });
     });
 
-    it.only("should set retry flag on TemporarilyUnavailable error", async () => {
+    it("should set retry flag on TemporarilyUnavailable error", async () => {
       ledgerCanisterMock.transfer.mockRejectedValue(
         new IcrcTransferError({
           errorType: { TemporarilyUnavailable: null },
@@ -561,8 +571,8 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: false, retry: true });
     });
 
-    it.only("should display a waring when current_committed ≠ ticket.amount", async () => {
-      await participateInSnsSwap({
+    it("should display a waring when current_committed ≠ ticket.amount", async () => {
+      const result = await participateInSnsSwap({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -572,11 +582,12 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         })
       );
+      expect(result).toEqual({ success: true, retry: false });
     });
 
-    it.only("should display participateInSnsSwap errors", async () => {
+    it("should display participateInSnsSwap errors", async () => {
       spyOnNotifyParticipation.mockRejectedValue(new Error());
-      await participateInSnsSwap({
+      const result = await participateInSnsSwap({
         ticket: testTicket as Required<SnsTicket>,
       });
 
@@ -585,6 +596,7 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_unexpected_error",
         })
       );
+      expect(result).toEqual({ success: false, retry: false });
     });
   });
 });
