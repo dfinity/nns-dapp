@@ -288,9 +288,8 @@ export const initiateSnsSwapParticipation = async ({
       return ticket;
     }
   } catch (err: unknown) {
-    console.error("[sale]initiateSnsSwapParticipation 2", err);
+    console.error("[sale]initiateSnsSwapParticipation", err);
 
-    // TODO(sale): check if needed in this state?
     toastsError(
       toToastError({
         err: err,

@@ -56,6 +56,9 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
+import * as projectsUtils from "$lib/utils/projects.utils";
+
+
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -88,6 +91,7 @@ describe("sns-api", () => {
   });
   const spyOnGetOpenTicketApi = jest.fn();
   const spyOnNewSaleTicketApi = jest.fn();
+  // const spyOnValidParticipation = jest.spyOn(projectsUtils, "validParticipation");
 
   beforeEach(() => {
     spyOnToastsShow.mockClear();
@@ -152,6 +156,8 @@ describe("sns-api", () => {
         newSaleTicket: spyOnNewSaleTicketApi,
       })
     );
+
+
 
     jest
       .spyOn(authStore, "subscribe")
@@ -340,7 +346,7 @@ describe("sns-api", () => {
       expect(result).toBeUndefined();
     });
 
-    it.only("should display unknown error for all other error types", async () => {
+    it("should display unknown error for all other error types", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: "dummy type" as unknown as NewSaleTicketResponseErrorType,
@@ -362,31 +368,62 @@ describe("sns-api", () => {
     });
   });
 
-  it("should initiate SnsSwapParticipation", async () => {
-    const account = {
-      ...mockMainAccount,
-      balance: TokenAmount.fromE8s({
-        amount: BigInt(1_000_000_000_000),
-        token: ICPToken,
-      }),
-    };
+  describe("initiateSnsSwapParticipation", () => {
+    it("should initiate SnsSwapParticipation", async () => {
+      const account = {
+        ...mockMainAccount,
+        balance: TokenAmount.fromE8s({
+          amount: BigInt(1_000_000_000_000),
+          token: ICPToken,
+        }),
+      };
 
-    const result = await initiateSnsSwapParticipation({
-      rootCanisterId: rootCanisterIdMock,
-      amount: TokenAmount.fromNumber({
-        amount: 1,
-        token: ICPToken,
-      }),
-      account,
+      const result = await initiateSnsSwapParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        amount: TokenAmount.fromNumber({
+          amount: 1,
+          token: ICPToken,
+        }),
+        account,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnNewSaleTicketApi).toBeCalledWith(
+        expect.objectContaining({
+          amount_icp_e8s: 100000000n,
+        })
+      );
+      expect(result).toEqual(testTicket);
     });
 
-    expect(spyOnNewSaleTicketApi).toBeCalled();
-    expect(spyOnNewSaleTicketApi).toBeCalledWith(
-      expect.objectContaining({
-        amount_icp_e8s: 100000000n,
-      })
-    );
-    expect(result).toEqual(testTicket);
+    it("should handle errors", async () => {
+      // remove the sns-project
+      jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([
+        ])
+      );
+
+      const account = {
+        ...mockMainAccount,
+        balance: TokenAmount.fromE8s({
+          amount: BigInt(1_000_000_000_000),
+          token: ICPToken,
+        }),
+      };
+
+      const result = await initiateSnsSwapParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        amount: TokenAmount.fromNumber({
+          amount: 1,
+          token: ICPToken,
+        }),
+        account,
+      });
+
+      expect(spyOnNewSaleTicketApi).not.toBeCalled();
+      expect(spyOnToastsError).toBeCalled();
+      expect(result).toBeUndefined();
+    });
   });
 
   it("should participateInSnsSwap", async () => {
