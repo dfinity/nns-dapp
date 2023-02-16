@@ -49,6 +49,7 @@ import { get } from "svelte/store";
 import {nanoSecondsToDateTime} from "../utils/date.utils";
 import { formatToken } from "../utils/token.utils";
 import {DEFAULT_TOAST_DURATION_MILLIS} from "../constants/constants";
+import {logWithTimestamp} from "../utils/dev.utils";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -57,7 +58,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsTicket | undefined> => {
-  console.debug("[sale]getOpenTicket start");
+  logWithTimestamp("[sale]getOpenTicket start");
   try {
     const identity = await getCurrentIdentity();
     const ticket = await getOpenTicketApi({
@@ -66,7 +67,7 @@ export const getOpenTicket = async ({
       certified,
     });
 
-    console.debug("[sale]getOpenTicket:", ticket);
+    logWithTimestamp("[sale]getOpenTicket:", ticket);
 
     return {
       rootCanisterId,
@@ -112,7 +113,7 @@ export const newSaleTicket = async ({
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
 }): Promise<SnsTicket | undefined> => {
-  console.debug("[sale]newSaleTicket:", amount_icp_e8s, subaccount);
+  logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, subaccount);
   try {
     const identity = await getCurrentIdentity();
     const ticket = await newSaleTicketApi({
@@ -122,7 +123,7 @@ export const newSaleTicket = async ({
       amount_icp_e8s,
     });
 
-    console.debug("[sale]newSaleTicket: created", ticket);
+    logWithTimestamp("[sale]newSaleTicket: created", ticket);
     return {
       rootCanisterId,
       ticket,
@@ -251,7 +252,7 @@ export const initiateSnsSwapParticipation = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<SnsTicket | undefined> => {
-  console.debug("[sale]initiateSnsSwapParticipation:", amount, account);
+  logWithTimestamp("[sale]initiateSnsSwapParticipation:", amount, account);
   try {
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
@@ -314,7 +315,7 @@ export const participateInSnsSwap = async ({
   if (snsTicket === undefined) {
     throw new Error("no ticket");
   }
-  console.debug(
+  logWithTimestamp(
     "[sale]participateInSnsSwap:",
     snsTicket,
     rootCanisterId.toText()
@@ -424,7 +425,7 @@ export const participateInSnsSwap = async ({
     });
   }
 
-  console.debug("Participating in swap: done");
+  logWithTimestamp("Participating in swap: done");
 
   await syncAccounts();
 
