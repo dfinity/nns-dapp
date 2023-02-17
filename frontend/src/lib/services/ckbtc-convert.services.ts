@@ -70,7 +70,7 @@ export const convertCkBTCToBtc = async ({
     return { success: false };
   }
 
-  // TODO(GIX-1324): how do we handle failure between these steps UX wise since
+  // TODO(GIX-1324): how do we handle failure between these steps UX wise?
 
   try {
     await retrieveBtc({
