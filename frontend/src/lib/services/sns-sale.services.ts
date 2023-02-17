@@ -320,7 +320,11 @@ export const participateInSnsSale = async ({
 }: {
   ticket: Required<SnsTicket>;
 }): Promise<{ success: boolean; retry: boolean }> => {
-  logWithTimestamp("[sale]participateInSnsSale:", snsTicket, rootCanisterId?.toText());
+  logWithTimestamp(
+    "[sale]participateInSnsSale:",
+    snsTicket,
+    rootCanisterId?.toText()
+  );
 
   const {
     amount_icp_e8s: amount,
