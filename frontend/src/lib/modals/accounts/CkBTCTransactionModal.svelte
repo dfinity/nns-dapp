@@ -24,8 +24,8 @@
   let title: string;
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.new_transaction
-      : $i18n.accounts.review_transaction;
+      ? $i18n.accounts.send
+      : $i18n.accounts.you_are_sending;
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
@@ -60,9 +60,7 @@
   {transactionFee}
   sourceAccount={selectedAccount}
 >
-  <svelte:fragment slot="title"
-    >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
-  >
+  <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
     {replacePlaceholders($i18n.accounts.sns_transaction_description, {
       $token: token.symbol,

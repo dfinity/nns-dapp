@@ -150,7 +150,7 @@
       class="primary"
       data-tid="transaction-button-next"
       disabled={disableButton}
-      type="submit">{$i18n.accounts.review_action}</button
+      type="submit">{$i18n.core.continue}</button
     >
   </div>
 </form>
