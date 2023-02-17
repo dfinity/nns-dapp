@@ -1,8 +1,5 @@
 # Changelog
 
-## Proposal XXX
-* Migration to nns.internetcomputer.org.
-
 ## Proposal 105498
 * Remove dashboard routing fallback.
 * Login screen minor changes.
