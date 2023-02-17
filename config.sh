@@ -133,9 +133,9 @@ json=$(HOST=$(api_host) jq -s --sort-keys '
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST |
-  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (env.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
-  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (env.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (env.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
+  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
+  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
+  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data"))
 
