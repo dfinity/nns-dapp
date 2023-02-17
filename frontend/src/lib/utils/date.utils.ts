@@ -130,7 +130,6 @@ export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
 export const secondsToDateTime = (seconds: bigint): string =>
   `${secondsToDate(Number(seconds))} ${secondsToTime(Number(seconds))}`;
 
-// TODO(sale): add tests
 export const nanoSecondsToDateTime = (nanoSeconds: bigint): string => {
   const seconds = Number(nanoSeconds / BigInt(1e9));
   return `${secondsToDate(seconds)} ${secondsToTime(seconds)}`;

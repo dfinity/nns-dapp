@@ -15,7 +15,8 @@ import {
 import { renderContextCmp } from "../../../mocks/sns.mock";
 
 describe("ProjectStatusSection", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);

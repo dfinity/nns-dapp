@@ -19,11 +19,15 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import { IcrcTransferError } from "@dfinity/ledger";
 import {
   ICPToken,
+  InsufficientFundsError,
   LedgerCanister,
   TokenAmount,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
   type SnsWasmCanisterOptions,
 } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -379,7 +383,7 @@ describe("sns-api", () => {
   });
 
   describe("initiateSnsSaleParticipation", () => {
-    it("should initiate SnsSwapParticipation", async () => {
+    it("It should create and return a ticket", async () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
@@ -478,11 +482,7 @@ describe("sns-api", () => {
     });
 
     it("should display transfer api errors", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(
-        new IcrcTransferError({
-          errorType: { BadFee: null },
-        })
-      );
+      ledgerCanisterMock.transfer.mockRejectedValue(new TransferError("test"));
 
       const result = await participateInSnsSale({
         ticket: testTicket as Required<SnsTicket>,
@@ -492,16 +492,14 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: false, retry: false });
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.ledger_bad_fee",
+          labelKey: "error__sns.sns_sale_unexpected_error",
         })
       );
     });
 
-    it("should display transfer api errors", async () => {
+    it("should display InsufficientFundsError errors", async () => {
       ledgerCanisterMock.transfer.mockRejectedValue(
-        new IcrcTransferError({
-          errorType: { BadFee: null },
-        })
+        new InsufficientFundsError(0n)
       );
 
       const result = await participateInSnsSale({
@@ -512,17 +510,29 @@ describe("sns-api", () => {
       expect(result).toEqual({ success: false, retry: false });
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.ledger_bad_fee",
+          labelKey: "error__sns.ledger_insufficient_funds",
+        })
+      );
+    });
+
+    it("should display TooOldError errors", async () => {
+      ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
+
+      const result = await participateInSnsSale({
+        ticket: testTicket as Required<SnsTicket>,
+      });
+
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.ledger_too_old",
         })
       );
     });
 
     it("should ignore Duplicate error", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(
-        new IcrcTransferError({
-          errorType: { Duplicate: { duplicate_of: 100n } },
-        })
-      );
+      ledgerCanisterMock.transfer.mockRejectedValue(new TxDuplicateError(0n));
 
       expect(spyOnToastsError).not.toBeCalled();
 
@@ -537,9 +547,7 @@ describe("sns-api", () => {
 
     it("should set retry flag on CreatedInFuture error", async () => {
       ledgerCanisterMock.transfer.mockRejectedValue(
-        new IcrcTransferError({
-          errorType: { CreatedInFuture: null },
-        })
+        new TxCreatedInFutureError()
       );
 
       expect(spyOnToastsError).not.toBeCalled();
@@ -549,25 +557,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalled();
-      expect(result).toEqual({ success: false, retry: true });
-    });
-
-    it("should set retry flag on TemporarilyUnavailable error", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(
-        new IcrcTransferError({
-          errorType: { TemporarilyUnavailable: null },
-        })
-      );
-
       expect(spyOnToastsError).not.toBeCalled();
-
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
-      });
-
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalled();
       expect(result).toEqual({ success: false, retry: true });
     });
 

@@ -23,9 +23,15 @@ import type { SnsTicket } from "$lib/types/sns";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
-import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { TokenAmount } from "@dfinity/nns";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+} from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
@@ -51,13 +57,6 @@ import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
-import {
-  InsufficientFundsError,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError
-} from "@dfinity/nns";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -372,6 +371,7 @@ export const participateInSnsSale = async ({
     logWithTimestamp("[sale] 1. addPendingNotifySwap");
     // If the client disconnects after the transfer, the participation will still be notified.
     const { canister: nnsDapp } = await nnsDappCanister({ identity });
+    // TODO(sale): create/move to api
     await nnsDapp.addPendingNotifySwap({
       swap_canister_id: swapCanisterId,
       buyer: controller,
@@ -407,11 +407,9 @@ export const participateInSnsSale = async ({
       return { success: false, retry: false };
     }
 
-    let retry = false;
-
     if (err instanceof TxCreatedInFutureError) {
       // no error, just retry
-      retry = true;
+      return { success: false, retry: true };
     }
 
     // if duplicated transfer, silently continue the flow
@@ -430,7 +428,7 @@ export const participateInSnsSale = async ({
         err,
       });
 
-      return { success: false, retry };
+      return { success: false, retry: false };
     }
   }
 
