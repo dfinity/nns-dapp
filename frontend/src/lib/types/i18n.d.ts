@@ -155,10 +155,9 @@ interface I18nAuth {
 interface I18nAccounts {
   main: string;
   balance: string;
-  new_transaction: string;
+  send: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
-  review_action: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -191,6 +190,7 @@ interface I18nAccounts {
   transaction_fee: string;
   new_transaction_fee: string;
   review_transaction: string;
+  you_are_sending: string;
   edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
@@ -208,7 +208,7 @@ interface I18nAccounts {
   current_balance_total: string;
   description: string;
   edit_transaction: string;
-  execute: string;
+  send_now: string;
   select: string;
   manual: string;
   no_account_select: string;
