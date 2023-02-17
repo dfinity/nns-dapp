@@ -360,9 +360,9 @@ export const participateInSnsSale = async ({
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
+  const controller = identity.getPrincipal();
 
   try {
-    const controller = identity.getPrincipal();
     const accountIdentifier = getSwapCanisterAccount({
       swapCanisterId,
       controller,
