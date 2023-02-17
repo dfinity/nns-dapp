@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { busy, Island, Spinner } from "@dfinity/gix-components";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
