@@ -25,7 +25,6 @@ import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import { IcrcTransferError } from "@dfinity/ledger";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -52,6 +51,13 @@ import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError
+} from "@dfinity/nns";
 
 export const getOpenTicket = async ({
   rootCanisterId,
@@ -394,7 +400,7 @@ export const participateInSnsSale = async ({
     });
   } catch (err) {
     console.error("[sale]transfer", err);
-    if (!(err instanceof IcrcTransferError)) {
+    if (!(err instanceof TransferError)) {
       toastsError({
         labelKey: "error__sns.sns_sale_unexpected_error",
       });
@@ -402,23 +408,27 @@ export const participateInSnsSale = async ({
     }
 
     let retry = false;
-    const { errorType } = err;
 
-    if (
-      "CreatedInFuture" in errorType ||
-      "TemporarilyUnavailable" in errorType
-    ) {
+    if (err instanceof TxCreatedInFutureError) {
+      // no error, just retry
       retry = true;
     }
 
     // if duplicated transfer, silently continue the flow
-    if (!("Duplicate" in errorType)) {
-      toastsError(
-        ledgerErrorToToastError({
-          fallbackErrorLabelKey: "error.transaction_error",
-          err,
-        })
-      );
+    if (!(err instanceof TxDuplicateError)) {
+      let labelKey = "error__sns.sns_sale_unexpected_error";
+
+      if (err instanceof InsufficientFundsError) {
+        labelKey = "error__sns.ledger_insufficient_funds";
+      }
+      if (err instanceof TxTooOldError) {
+        labelKey = "error__sns.ledger_too_old";
+      }
+
+      toastsError({
+        labelKey,
+        err,
+      });
 
       return { success: false, retry };
     }
