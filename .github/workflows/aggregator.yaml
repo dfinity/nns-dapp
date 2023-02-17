@@ -122,8 +122,8 @@ jobs:
       - name: Get logs
         run: |
           scripts/sns/aggregator/get_log > ,logs
-          LOG_LINES="$(wc -l ,logs)"
-          (( $LOG_LINES > 10 )) || {
+          LOG_LINES="$(wc -l <,logs)"
+          (( LOG_LINES > 10 )) || {
             echo "ERROR: Expected a non-trivial number of lines to have been logged by now but found only ${LOG_LINES}"
             cat ,logs
             exit 1
