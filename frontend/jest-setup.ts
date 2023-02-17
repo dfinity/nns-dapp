@@ -64,9 +64,18 @@ global.localStorage = localStorageMock;
 const realConsoleLog = console.log;
 const realConsoleDebug = console.debug;
 const realConsoleError = console.error;
-let gotLogs = false;
+let gotLogs;
 
-global.beforeEach(() => {
+global.beforeAll(() => {
+  gotLogs = false;
+  jest.spyOn(console, "log").mockImplementation((...args) => {
+    gotLogs = true;
+    realConsoleLog(...args);
+  });
+  jest.spyOn(console, "debug").mockImplementation((...args) => {
+    gotLogs = true;
+    realConsoleDebug(...args);
+  });
   jest.spyOn(console, "error").mockImplementation((...args) => {
     gotLogs = true;
     realConsoleError(...args);
@@ -74,7 +83,10 @@ global.beforeEach(() => {
 });
 
 global.afterAll(() => {
-  expect(gotLogs).toBe(false);
+  expect(
+    gotLogs,
+    "If you need console output, make sure to silence it in your tests."
+  ).toBe(false);
 });
 
 // testing-library setup
