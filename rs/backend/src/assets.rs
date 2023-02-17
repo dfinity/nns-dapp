@@ -246,13 +246,13 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     // ii-alternative-origins needs to be set as JSON even though it has no file extension
     // https://internetcomputer.org/docs/current/developer-docs/integrations/internet-identity/alternative-origins#listing-origins
     if request_path.ends_with("ii-alternative-origins") {
-        return Some("application/json")
+        return Some("application/json");
     }
     // Mentioned here: https://github.com/dfinity/internet-identity/pull/1230
     // If you follow the official docs https://github.com/r-birkner/portal/blob/rjb/custom-domains-docs-v2/docs/developer-docs/production/custom-domain/custom-domain.md#custom-domains-on-the-boundary-nodes
     // The file is set to type octet-stream
     if request_path.ends_with("ic-domains") {
-        return Some("application/octet-stream")
+        return Some("application/octet-stream");
     }
 
     request_path.split('.').last().and_then(|suffix| match suffix {
