@@ -25,7 +25,7 @@ pub async fn run_periodic_tasks() {
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
             MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id) => {
-                handle_participate_swap(principal, from, to, swap_canister_id).await;
+                handle_participate_swap(block_height, principal, from, to, swap_canister_id).await;
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
@@ -61,6 +61,7 @@ pub async fn run_periodic_tasks() {
 }
 
 async fn handle_participate_swap(
+    block_height: BlockIndex,
     principal: PrincipalId,
     from: AccountIdentifier,
     to: AccountIdentifier,
@@ -69,8 +70,20 @@ async fn handle_participate_swap(
     let request = RefreshBuyerTokensRequest {
         buyer: principal.to_string(),
     };
-    if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
-        STATE.with(|s| s.accounts_store.borrow_mut().complete_pending_transaction(from, to));
+    match swap::notify_swap_participation(swap_canister_id, request).await {
+        Ok(Ok(())) => STATE.with(|s| s.accounts_store.borrow_mut().complete_pending_transaction(from, to)),
+        // The message was received by the sale canister but the sale canister returned
+        // an error. No retries needed in this case because the sale canister will
+        // always return an error
+        Ok(Err(_err)) => {},
+        // There was an error in the communication with the sale canister (e.g. its queue was full).
+        // Requeue the notification so that it can be retried later.
+        Err(_err) => {
+            STATE.with(|s| s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+                block_height,
+                MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id)
+            ))
+        }
     }
 }
 
