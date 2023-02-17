@@ -1,4 +1,3 @@
-import { browser } from "$app/environment";
 import { resetAgents } from "$lib/api/agent.api";
 import {
   IS_TESTNET,
