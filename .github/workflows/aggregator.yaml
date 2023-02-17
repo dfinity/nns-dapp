@@ -52,7 +52,7 @@ jobs:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Thu Fep 9 with dfx 0.13.xxx
-          ref: 'bb6e84d52219c46f061728dc1ff4156c4393da8b'
+          ref: 'b78190b5617cd24a6e7bccf1b94dc1aa31137165'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
