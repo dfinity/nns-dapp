@@ -3,7 +3,6 @@
   import type { Unsubscriber } from "svelte/store";
   import { goto } from "$app/navigation";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { ENABLE_SNS_VOTING } from "$lib/constants/environment.constants";
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import type { SnsProposalData } from "@dfinity/sns";
@@ -18,10 +17,11 @@
   } from "$lib/utils/sns-proposals.utils";
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
 
   onMount(async () => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
-    if (!ENABLE_SNS_VOTING) {
+    if (!$ENABLE_SNS_VOTING) {
       goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
         replaceState: true,
       });

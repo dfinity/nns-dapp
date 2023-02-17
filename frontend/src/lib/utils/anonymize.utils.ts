@@ -28,14 +28,14 @@ import type {
   SnsSwapDerivedState,
   SnsTransferableAmount,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { digestText } from "./dev.utils";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "./sns-neuron.utils";
 import { mapNnsTransaction } from "./transactions.utils";
-import { isNullish, mapPromises, nonNullish } from "./utils";
+import { mapPromises } from "./utils";
 
 const anonymiseAvailability = (value: unknown): "yes" | "no" =>
   nonNullish(value) ? "yes" : "no";
@@ -233,6 +233,8 @@ export const anonymizeSnsNeuron = async (
     voting_power_percentage_multiplier,
     followees,
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   } = snsNeuron;
 
   return {
@@ -258,6 +260,8 @@ export const anonymizeSnsNeuron = async (
       followees.followees.map(({ id }) => subaccountToHexString(id)),
     ]),
     neuron_fees_e8s,
+    vesting_period_seconds,
+    disburse_maturity_in_progress,
   };
 };
 

@@ -1,24 +1,7 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
-
-/* eslint-disable-next-line @typescript-eslint/ban-types */
-export const debounce = (func: Function, timeout?: number) => {
-  let timer: NodeJS.Timer | undefined;
-
-  return (...args: unknown[]) => {
-    const next = () => func(...args);
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(
-      next,
-      timeout !== undefined && timeout > 0 ? timeout : 300
-    );
-  };
-};
 
 export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;
@@ -150,20 +133,6 @@ export const hexStringToBytes = (hexString: string): number[] => {
   }
   return bytes;
 };
-
-/** Is null or undefined */
-export const isNullish = <T>(
-  argument: T | undefined | null
-): argument is undefined | null => argument === null || argument === undefined;
-
-/** Not null and not undefined */
-export const nonNullish = <T>(
-  argument: T | undefined | null
-): argument is NonNullable<T> => !isNullish(argument);
-
-/** Not null and not undefined and not empty */
-export const isStringNonNullishNotEmpty = (value?: string): boolean =>
-  nonNullish(value) && value !== "";
 
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,

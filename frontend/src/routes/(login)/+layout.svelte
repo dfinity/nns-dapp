@@ -8,7 +8,7 @@
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
   import { navigating } from "$app/stores";
-  import { isNullish } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
 
   onMount(async () => await initAppAuth());
 </script>

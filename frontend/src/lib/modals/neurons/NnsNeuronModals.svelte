@@ -19,7 +19,7 @@
     NnsNeuronModalType,
     NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -83,6 +83,6 @@
   {/if}
 {/if}
 
-{#if type === "voting-history" && followee !== undefined}
+{#if type === "voting-history" && nonNullish(followee)}
   <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
 {/if}

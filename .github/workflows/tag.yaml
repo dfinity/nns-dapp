@@ -12,7 +12,7 @@ concurrency:
 jobs:
   tag_tip:
     if: github.event.pull_request.merged
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Tag main as tip
@@ -22,12 +22,9 @@ jobs:
   tag_pass:
     needs: ["tag_tip"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checks workflow passes
-        run: |
-          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
-          then echo "You shall not pass:  Some required tests did not succeed"
-               exit 1
-          else echo "Congratulations, young Frodo."
-          fi
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

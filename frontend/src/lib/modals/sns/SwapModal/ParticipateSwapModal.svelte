@@ -14,12 +14,9 @@
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    getSwapAccount,
-    participateInSwap,
-  } from "$lib/services/sns.services";
+  import { getSwapAccount } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
@@ -31,6 +28,10 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import {
+    initiateSnsSwapParticipation,
+    participateInSnsSwap,
+  } from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -97,17 +98,22 @@
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
-      const { success } = await participateInSwap({
+      const ticket = await initiateSnsSwapParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
-      if (success) {
+      if (ticket) {
+        const result = await participateInSnsSwap({ ticket });
+
         await reload();
 
-        toastsSuccess({
-          labelKey: "sns_project_detail.participate_success",
-        });
+        if (result.success) {
+          toastsSuccess({
+            labelKey: "sns_project_detail.participate_success",
+          });
+        }
+
         dispatcher("nnsClose");
       }
       stopBusy("project-participate");

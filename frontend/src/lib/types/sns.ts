@@ -8,6 +8,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
+import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { PngDataUrl } from "./assets";
 
 export type RootCanisterId = Principal;
@@ -26,6 +27,9 @@ export interface SnsSummaryMetadata {
 export interface SnsSummarySwap {
   neuron_recipes: Array<SnsNeuronRecipe>;
   cf_participants: Array<CfParticipant>;
+  decentralization_sale_open_timestamp_seconds?: bigint;
+  // We don't use it for now and keep it as the candid optional type
+  finalize_swap_in_progress: [] | [boolean];
   // We don't use it for now and keep it as the candid optional type
   init: [] | [SnsSwapInit];
   lifecycle: number;
@@ -65,4 +69,9 @@ export interface SnsSummary {
 export interface SnsSwapCommitment {
   rootCanisterId: RootCanisterId;
   myCommitment: SnsSwapBuyerState | undefined;
+}
+
+export interface SnsTicket {
+  rootCanisterId: Principal;
+  ticket: Ticket | undefined;
 }

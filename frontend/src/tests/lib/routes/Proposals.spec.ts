@@ -40,6 +40,8 @@ jest.mock("$lib/services/$public/sns-proposals.services", () => {
   };
 });
 
+jest.mock("$lib/api/governance.api");
+
 describe("Proposals", () => {
   beforeAll(() =>
     jest

@@ -1,5 +1,5 @@
-import { isStringNonNullishNotEmpty } from "$lib/utils/utils";
 import { Principal } from "@dfinity/principal";
+import { notEmptyString } from "@dfinity/utils";
 
 export const OWN_CANISTER_ID_TEXT = import.meta.env
   .VITE_OWN_CANISTER_ID as string;
@@ -31,12 +31,12 @@ const ENV_CKBTC_INDEX_CANISTER_ID = import.meta.env
   .VITE_CKBTC_INDEX_CANISTER_ID;
 
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
-  isStringNonNullishNotEmpty(ENV_CKBTC_LEDGER_CANISTER_ID)
+  notEmptyString(ENV_CKBTC_LEDGER_CANISTER_ID)
     ? ENV_CKBTC_LEDGER_CANISTER_ID
     : MAINNET_CKBTC_LEDGER_CANISTER_ID
 );
 export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
-  isStringNonNullishNotEmpty(ENV_CKBTC_INDEX_CANISTER_ID)
+  notEmptyString(ENV_CKBTC_INDEX_CANISTER_ID)
     ? ENV_CKBTC_INDEX_CANISTER_ID
     : MAINNET_CKBTC_INDEX_CANISTER_ID
 );

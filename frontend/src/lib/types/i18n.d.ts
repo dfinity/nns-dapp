@@ -29,6 +29,7 @@ interface I18nCore {
   previous: string;
   next: string;
   principal_is: string;
+  done: string;
 }
 
 interface I18nError {
@@ -154,10 +155,9 @@ interface I18nAuth {
 interface I18nAccounts {
   main: string;
   balance: string;
-  new_transaction: string;
+  send: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
-  review_action: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -190,6 +190,7 @@ interface I18nAccounts {
   transaction_fee: string;
   new_transaction_fee: string;
   review_transaction: string;
+  you_are_sending: string;
   edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
@@ -207,7 +208,7 @@ interface I18nAccounts {
   current_balance_total: string;
   description: string;
   edit_transaction: string;
-  execute: string;
+  send_now: string;
   select: string;
   manual: string;
   no_account_select: string;
@@ -362,7 +363,6 @@ interface I18nCanisters {
   link_canister_title: string;
   link_canister_subtitle: string;
   link_canister_success: string;
-  attach_canister: string;
   enter_canister_id: string;
   canister_id: string;
   enter_amount: string;
@@ -386,16 +386,16 @@ interface I18nCanister_detail {
   add_cycles: string;
   top_up_canister: string;
   top_up_successful: string;
-  detach: string;
-  confirm_detach_title: string;
-  confirm_detach_description_1: string;
-  confirm_detach_description_2: string;
+  unlink: string;
+  confirm_unlink_title: string;
+  confirm_unlink_description_1: string;
+  confirm_unlink_description_2: string;
   confirm_remove_controller_title: string;
   confirm_remove_controller_description: string;
   confirm_remove_controller_user_description_1: string;
   confirm_remove_controller_user_description_2: string;
   confirm_remove_last_controller_description: string;
-  detach_success: string;
+  unlink_success: string;
   confirm_new_controller: string;
   enter_controller: string;
   edit_controller: string;
@@ -579,7 +579,10 @@ interface I18nSns_launchpad {
   header: string;
   committed_projects: string;
   no_committed_projects: string;
+  no_opening_soon_projects: string;
+  no_projects: string;
   open_projects: string;
+  upcoming_projects: string;
   no_open_projects: string;
   proposals: string;
   project_logo: string;
@@ -600,10 +603,12 @@ interface I18nSns_project_detail {
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
+  starts: string;
   user_commitment: string;
   user_current_commitment: string;
   status: string;
   status_open: string;
+  status_adopted: string;
   enter_amount: string;
   status_committed: string;
   status_aborted: string;
@@ -626,6 +631,7 @@ interface I18nSns_project_detail {
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
+  community_fund_section: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
@@ -699,9 +705,9 @@ interface I18nError__canister {
   name_taken: string;
   name_too_long: string;
   limit_exceeded: string;
-  detach_not_found: string;
-  unknown_attach: string;
-  unknown_detach: string;
+  unlink_not_found: string;
+  unknown_link: string;
+  unknown_unlink: string;
   get_exchange_rate: string;
 }
 
@@ -725,6 +731,7 @@ interface I18nError__sns {
   sns_stop_dissolving: string;
   sns_stake: string;
   sns_increase_stake: string;
+  sns_register_vote: string;
   sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
@@ -819,6 +826,23 @@ interface I18nCkbtc {
   title: string;
   ckBTC: string;
   logo: string;
+  receive: string;
+  address: string;
+  btc_receive_note: string;
+  ckbtc_receive_note: string;
+  qrcode_aria_label_bitcoin: string;
+  qrcode_aria_label_ckBTC: string;
+  bitcoin: string;
+  ckbtc_balance_updated: string;
+}
+
+interface I18nError__ckbtc {
+  already_process: string;
+  no_new_utxo: string;
+  temporary_unavailable: string;
+  get_btc_address: string;
+  get_btc_no_account: string;
+  update_balance: string;
 }
 
 interface I18nNeuron_state {
@@ -1055,6 +1079,7 @@ interface I18n {
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
+  error__ckbtc: I18nError__ckbtc;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

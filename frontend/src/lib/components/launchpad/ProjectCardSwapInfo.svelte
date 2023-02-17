@@ -5,7 +5,10 @@
     SnsSwapCommitment,
     SnsSummarySwap,
   } from "$lib/types/sns";
-  import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
+  import {
+    durationTillSwapDeadline,
+    durationTillSwapStart,
+  } from "$lib/utils/projects.utils";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
@@ -31,6 +34,9 @@
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 
+  let durationTillStart: bigint | undefined;
+  $: durationTillStart = durationTillSwapStart(swap);
+
   let myCommitment: TokenAmount | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
@@ -48,6 +54,12 @@
   {#if lifecycle === SnsSwapLifecycle.Committed}
     <dt>{$i18n.sns_project_detail.status_completed}</dt>
     <dd class="value">{$i18n.sns_project_detail.completed}</dd>
+  {/if}
+
+  <!-- Sale is adopted -->
+  {#if lifecycle === SnsSwapLifecycle.Adopted && durationTillStart !== undefined}
+    <dt>{$i18n.sns_project_detail.starts}</dt>
+    <dd class="value">{secondsToDuration(durationTillStart)}</dd>
   {/if}
 
   <!-- Sale is open -->

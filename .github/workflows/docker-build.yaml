@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   builder:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       # We use buildx and its GitHub Actions caching support `type=gha`. For
@@ -25,7 +25,7 @@ jobs:
           target: builder
   assets:
     needs: builder
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         include:
@@ -53,6 +53,22 @@ jobs:
         with:
           name: NNS ${{ matrix.BUILD_NAME }} backend wasm module
           path: ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
+      - name: Release
+        run: |
+          cd "${{ matrix.BUILD_NAME }}-out"
+          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz)
+          ls -l "${artefacts[@]}"
+          for tag in $(git tag --points-at HEAD) ; do
+            : Creates or updates a release for the tag
+            if gh release view "$tag"
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" "${artefacts[@]}"
+            fi
+            : If the tag is for a proposal, make it public
+            [[ "$tag" != proposal-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload ${{ matrix.BUILD_NAME }} frontend assets'
         uses: actions/upload-artifact@v3
         with:
@@ -80,19 +96,16 @@ jobs:
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   docker-build:
     needs: assets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Extract assets for verification
         run: echo TODO
   docker-build-passes:
     needs: ["assets", "docker-build"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checks workflow passes
-        run: |
-          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
-          then echo "You shall not pass:  Some required tests did not succeed"
-               exit 1
-          else echo "Congratulations, young Frodo."
-          fi
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

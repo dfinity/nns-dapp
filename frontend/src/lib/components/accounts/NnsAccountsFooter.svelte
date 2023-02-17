@@ -4,7 +4,7 @@
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let modal: "AddAccountModal" | "NewTransaction" | undefined = undefined;
   const openAddAccountModal = () => (modal = "AddAccountModal");
@@ -24,7 +24,7 @@
     <button
       class="primary full-width"
       on:click={openNewTransaction}
-      data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
+      data-tid="open-new-transaction">{$i18n.accounts.send}</button
     >
     <button
       class="secondary full-width"

@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
-  import { BottomSheet } from "@dfinity/gix-components";
+  import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -15,6 +15,13 @@
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import type { Principal } from "@dfinity/principal";
+  import {
+    getOpenTicket,
+    participateInSnsSwap,
+  } from "$lib/services/sns-sale.services";
+  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+  import { nonNullish } from "@dfinity/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -39,6 +46,55 @@
     swapCommitment: $projectDetailStore.swapCommitment,
   });
 
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
+    ? $projectDetailStore?.summary?.rootCanisterId
+    : undefined;
+
+  let loading = true;
+  let loadingTicketRootCanisterId: string | undefined;
+  let ticket: Ticket | undefined;
+  let criticalError = false;
+
+  const updateTicket = async () => {
+    // Avoid second call for the same rootCanisterId
+    if (
+      rootCanisterId === undefined ||
+      loadingTicketRootCanisterId === rootCanisterId.toText()
+    ) {
+      return;
+    }
+    loading = true;
+    loadingTicketRootCanisterId = rootCanisterId.toText();
+
+    const saleTicket = await getOpenTicket({
+      rootCanisterId,
+      certified: true,
+    });
+
+    if (saleTicket === undefined) {
+      loading = false;
+      criticalError = true;
+      // stop the flow
+      return;
+    }
+
+    ticket = saleTicket.ticket;
+
+    // restore purchase
+    if (
+      ticket !== undefined &&
+      saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
+    ) {
+      participateInSnsSwap({
+        ticket: saleTicket,
+      });
+    }
+
+    loading = false;
+  };
+  $: rootCanisterId, updateTicket();
+
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
@@ -51,13 +107,20 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
+            disabled={loading || criticalError || ticket !== undefined}
             on:click={openModal}
-            class="primary"
+            class="primary participate"
             data-tid="sns-project-participate-button"
-            >{userHasParticipatedToSwap
-              ? $i18n.sns_project_detail.increase_participation
-              : $i18n.sns_project_detail.participate}</button
           >
+            {#if loading}
+              <span>
+                <Spinner size="small" inline />
+              </span>
+            {/if}
+            {userHasParticipatedToSwap
+              ? $i18n.sns_project_detail.increase_participation
+              : $i18n.sns_project_detail.participate}
+          </button>
         {:else}
           <Tooltip
             id="sns-project-participate-button-tooltip"
@@ -82,6 +145,12 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
+
+  .participate {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+  }
 
   [role="toolbar"] {
     display: flex;

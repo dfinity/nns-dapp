@@ -9,12 +9,14 @@ import {
   loadSnsSummary,
   loadSnsSwapCommitment,
 } from "$lib/services/sns.services";
+import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
@@ -26,6 +28,10 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 describe("ProjectDetail", () => {
+  const props = {
+    rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
+  };
+
   describe("present project in store", () => {
     page.mock({ data: { universe: null } });
 
@@ -50,20 +56,16 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
     });
 
-    const props = {
-      rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
-    };
-
-    it("should load summary", () => {
+    it("should not load summary", async () => {
       render(ProjectDetail, props);
 
-      waitFor(() => expect(loadSnsSummary).toBeCalled());
+      await waitFor(() => expect(loadSnsSummary).not.toBeCalled());
     });
 
-    it("should load swap state", () => {
+    it("should not load user's commitnemtn", async () => {
       render(ProjectDetail, props);
 
-      waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+      await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
     });
 
     it("should render info section", async () => {
@@ -80,6 +82,20 @@ describe("ProjectDetail", () => {
       await waitFor(() =>
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
       );
+    });
+  });
+
+  describe("logged in user", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+    });
+
+    it("should load user's commitment", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
     });
   });
 

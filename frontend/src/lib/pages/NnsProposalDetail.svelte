@@ -15,9 +15,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
+  import { listNeurons } from "$lib/services/neurons.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { browser } from "$app/environment";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
+
+  $: if (isSignedIn($authStore.identity)) {
+    listNeurons();
+  }
 
   const mapProposalId = (
     proposalIdText: string | undefined | null = undefined
@@ -45,10 +52,15 @@
 
   // BEGIN: loading and navigation
 
-  const goBack = (): Promise<void> =>
-    goto(
+  const goBack = async (): Promise<void> => {
+    if (!browser) {
+      return;
+    }
+
+    return goto(
       referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
     );
+  };
 
   const findProposal = async () => {
     const onError = (certified: boolean) => {

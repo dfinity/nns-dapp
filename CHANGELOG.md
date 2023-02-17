@@ -3,6 +3,12 @@
 ## Proposal 108160
 * Migration to nns.internetcomputer.org
 
+## Proposal 106377
+* Launch ckBTC wallet functionality!
+* Fix bug in transactions list.
+* Introduce GZIP encoding for assets.
+* Fetch data with "query" for not logged in users.
+
 ## Proposal 105498
 * Remove dashboard routing fallback.
 * Login screen minor changes.

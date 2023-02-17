@@ -1,3 +1,4 @@
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
   AccountIdentifierString,
@@ -5,18 +6,36 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-} from "@dfinity/nns";
+import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
+import { ledgerCanister } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
+
+const getOrCreateAccount = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}) => {
+  const { canister } = await nnsDappCanister({ identity });
+
+  try {
+    return await canister.getAccount({ certified });
+  } catch (error) {
+    if (error instanceof AccountNotFoundError) {
+      // Ensure account exists in NNSDapp Canister
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
+      await canister.addAccount();
+      return canister.getAccount({ certified });
+    }
+    throw error;
+  }
+};
 
 export const loadAccounts = async ({
   identity,
@@ -38,20 +57,12 @@ export const loadAccounts = async ({
 
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 
-  const { canister, agent } = await nnsDappCanister({ identity });
-
-  // Ensure account exists in NNSDapp Canister
-  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
-  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
-  await canister.addAccount();
-
-  const mainAccount: AccountDetails = await canister.getAccount({ certified });
-
-  // ACCOUNT BALANCES
-  const ledger: LedgerCanister = LedgerCanister.create({
-    agent,
-    canisterId: LEDGER_CANISTER_ID,
+  const mainAccount: AccountDetails = await getOrCreateAccount({
+    identity,
+    certified,
   });
+
+  const { canister: ledger } = await ledgerCanister({ identity });
 
   const mapAccount =
     (type: AccountType) =>

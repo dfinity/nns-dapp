@@ -227,7 +227,7 @@ fn add_participate_pending_transaction_and_complete() {
     let same_buyer = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let same_from_account_identifier = AccountIdentifier::new(same_buyer, None);
     // Set transaction as complete
-    store.complete_pending_transaction(same_from_account_identifier, to_account_identifier, 1);
+    store.complete_pending_transaction(same_from_account_identifier, to_account_identifier);
 
     // There should be no more pending transactions
     match store.get_pending_transaction(same_from_account_identifier, to_account_identifier) {
@@ -397,7 +397,7 @@ fn add_and_complete_multiple_pending_transactions() {
     }
 
     // Set transaction as complete buyer 1
-    store.complete_pending_transaction(from_account_identifier, to_account_identifier, 1);
+    store.complete_pending_transaction(from_account_identifier, to_account_identifier);
 
     // There should be no more pending transactions
     match store.get_pending_transaction(from_account_identifier, to_account_identifier) {

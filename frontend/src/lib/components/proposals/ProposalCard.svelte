@@ -61,6 +61,8 @@
       </p>
       <Countdown slot="value" {deadlineTimestampSeconds} />
     </KeyValuePair>
+
+    <slot />
   </Card>
 </li>
 

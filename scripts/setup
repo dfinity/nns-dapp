@@ -129,6 +129,15 @@ install_jq_linux() {
   sudo apt-get install jq
 }
 
+install_yq_darwin() {
+  echo "Installing yq..."
+  brew install yq
+}
+install_yq_linux() {
+  echo "Installing yq..."
+  sudo snap install yq
+}
+
 install_npm_darwin() {
   echo "Installing npm"
   brew install node
@@ -236,6 +245,16 @@ install_idl2json() {
   )
 }
 
+install_didc_linux() {
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+}
+install_didc_darwin() {
+  tempfile="$(mktemp ,didc-XXXXXXXX)"
+  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-macos >"$tempfile"
+  install -m 755 "$tempfile" "$USER_BIN/didc"
+  rm "$tempfile"
+}
+
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -251,6 +270,7 @@ is_docker_installed || install_docker
 command -v realpath || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
+command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 command -v xz || "install_xz_$OS"
@@ -262,6 +282,7 @@ command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
+command -v didc || "install_didc_$OS"
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

@@ -17,7 +17,7 @@
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { NervousSystemParameters } from "@dfinity/sns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { nonNullish } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -103,9 +103,7 @@
   {governanceCanisterId}
   validateAmount={checkMinimumStake}
 >
-  <svelte:fragment slot="title"
-    >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
-  >
+  <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
     {stakeNeuronText}
   </p>

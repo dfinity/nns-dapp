@@ -1,7 +1,7 @@
 <script lang="ts">
   export let src: string;
   export let alt: string;
-  export let size: "big" | "medium" | "small" = "small";
+  export let size: "huge" | "big" | "medium" | "small" = "small";
   export let framed = true;
   export let testId: string | undefined = undefined;
 </script>
@@ -12,6 +12,7 @@
   role="presentation"
   loading="lazy"
   data-tid={testId}
+  class:huge={size === "huge"}
   class:big={size === "big"}
   class:medium={size === "medium"}
   class:framed
@@ -31,6 +32,11 @@
     border-radius: 50%;
     background: var(--logo-framed-background, var(--background));
     padding: var(--padding-0_25x);
+  }
+
+  .huge {
+    width: var(--padding-8x);
+    height: var(--padding-8x);
   }
 
   .big {

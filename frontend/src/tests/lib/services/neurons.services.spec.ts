@@ -1,3 +1,4 @@
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
@@ -17,7 +18,6 @@ import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import type { ToastMsg } from "@dfinity/gix-components";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -59,11 +59,8 @@ const {
   topUpNeuron,
 } = services;
 
-let toasts: ToastMsg[] = [];
-toastsStore.subscribe((t) => (toasts = t));
-
 const expectToastError = (contained: string) =>
-  expect(toasts).toMatchObject([
+  expect(get(toastsStore)).toMatchObject([
     {
       level: "error",
       text: expect.stringContaining(contained),
@@ -144,10 +141,6 @@ describe("neurons-services", () => {
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyQueryNeurons = jest
-    .spyOn(api, "queryNeurons")
-    .mockImplementation(() => Promise.resolve(neurons));
-
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
     .mockImplementation(() => Promise.resolve());
@@ -220,6 +213,7 @@ describe("neurons-services", () => {
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
+    resetNeuronsApiService();
   });
 
   describe("stake new neuron", () => {
@@ -319,6 +313,10 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
+    const spyQueryNeurons = jest
+      .spyOn(api, "queryNeurons")
+      .mockResolvedValue(neurons);
+
     it("should list neurons", async () => {
       const oldNeuronsList = get(definedNeuronsStore);
       expect(oldNeuronsList).toEqual([]);
@@ -329,6 +327,26 @@ describe("neurons-services", () => {
 
       const newNeuronsList = get(definedNeuronsStore);
       expect(newNeuronsList).toEqual(neurons);
+    });
+
+    it("should not call api when called twice and cache is not reset", async () => {
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
+
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
     });
 
     it("should not list neurons if no identity", async () => {

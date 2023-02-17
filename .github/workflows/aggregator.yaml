@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   curl_test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
@@ -51,8 +51,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Thu Feb 2 2023, includes a placeholder for the sns_aggregator canister ID.
-          ref: '4bb32a400cf672950616d82a0fcfc37f79b9d3e4'
+          # Version from Thu Fep 9 with dfx 0.13.xxx
+          ref: 'bb6e84d52219c46f061728dc1ff4156c4393da8b'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -61,7 +61,9 @@ jobs:
           dfx-sns-demo-install
       - name: Deploy NNS and SNS canisters
         run: |
-          ./scripts/deploy-snsdemo-testnet
+          ./scripts/deploy-snsdemo-testnet --verbose
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
       - name: 'Upload aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -70,18 +72,56 @@ jobs:
           retention-days: 3
       - name: Wait for the aggregator to get data
         run: sleep 30
-      - name: Get data from the sns aggregator
+      - name: Get the latest data from the sns aggregator
         run: |
-          curl -Lf "http://q4eej-kyaaa-aaaaa-aaaha-cai.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
-          (( $(jq length aggregate-1.json) == 1 ))  || {
-            echo ERROR: Expected to have 1 SNS in the aggregator.
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=1
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Make the aggregator collect data slowly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; })'
+      - name: Create more SNSs
+        run: seq 11 | xargs -I{} dfx-sns-demo-mksns
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
+      - name: Wait for the aggregator to get data
+        run: sleep 30
+      - name: Get the latest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get the first page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get the second page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/1/slow.json" | tee aggregate-1.json
+          expect=2
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
           }
       - name: Stop replica
         run: dfx stop
   aggregator-pass:
     needs: ["curl_test"]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checks workflow passes
         run: |

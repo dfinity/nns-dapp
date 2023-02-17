@@ -14,7 +14,7 @@ describe("icrc-tokens.utils", () => {
     it("should not return token if name is missing", () => {
       const token = mapOptionalToken(
         mockQueryTokenResponse.filter(
-          ([key, _]) => key !== IcrcMetadataResponseEntries.NAME
+          ([key]) => key !== IcrcMetadataResponseEntries.NAME
         )
       );
       expect(token).toBeUndefined();
@@ -23,7 +23,7 @@ describe("icrc-tokens.utils", () => {
     it("should not return token if symbol is missing", () => {
       const token = mapOptionalToken(
         mockQueryTokenResponse.filter(
-          ([key, _]) => key !== IcrcMetadataResponseEntries.SYMBOL
+          ([key]) => key !== IcrcMetadataResponseEntries.SYMBOL
         )
       );
       expect(token).toBeUndefined();
@@ -32,7 +32,7 @@ describe("icrc-tokens.utils", () => {
     it("should not return token if fee is missing", () => {
       const token = mapOptionalToken(
         mockQueryTokenResponse.filter(
-          ([key, _]) => key !== IcrcMetadataResponseEntries.FEE
+          ([key]) => key !== IcrcMetadataResponseEntries.FEE
         )
       );
       expect(token).toBeUndefined();

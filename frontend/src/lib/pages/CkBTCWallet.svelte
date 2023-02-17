@@ -1,36 +1,37 @@
 <script lang="ts">
-  import { busy, Island, Spinner } from "@dfinity/gix-components";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { writable } from "svelte/store";
   import {
     WALLET_CONTEXT_KEY,
-    type WalletContext,
+    type CkBTCWalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { isNullish, nonNullish } from "$lib/utils/utils";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { nonNullish } from "@dfinity/utils";
+  import {
+    loadCkBTCAccounts,
+    syncCkBTCAccounts,
+  } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
-  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import Footer from "$lib/components/layout/Footer.svelte";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
+  import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
+  import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
-
-  let showNewTransactionModal = false;
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -39,8 +40,19 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
-  setContext<WalletContext>(WALLET_CONTEXT_KEY, {
+  // e.g. is called from "Receive" modal after user click "Done"
+  const reloadAccount = async () => {
+    await loadCkBTCAccounts({});
+    await loadAccount();
+  };
+
+  // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
+  const reloadAccountFromStore = () => setSelectedAccount();
+
+  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
+    reloadAccount,
+    reloadAccountFromStore,
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
@@ -53,11 +65,6 @@
       }),
       neurons: [],
     });
-  };
-
-  const onTransferReloadSelectedAccount = () => {
-    setSelectedAccount();
-    showNewTransactionModal = false;
   };
 
   const loadAccount = async (): Promise<{
@@ -138,25 +145,8 @@
   </main>
 
   {#if canMakeTransactions}
-    <Footer columns={1}>
-      <button
-        class="primary"
-        on:click={() => (showNewTransactionModal = true)}
-        disabled={isNullish($selectedAccountStore.account) || $busy}
-        data-tid="open-new-ckbtc-transaction"
-        >{$i18n.accounts.new_transaction}</button
-      >
-    </Footer>
+    <CkBTCWalletFooter />
   {/if}
 </Island>
 
-{#if showNewTransactionModal && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
-  <CkBTCTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
-    on:nnsTransfer={onTransferReloadSelectedAccount}
-    selectedAccount={$selectedAccountStore.account}
-    loadTransactions
-    token={$ckBTCTokenStore.token}
-    transactionFee={$ckBTCTokenFeeStore}
-  />
-{/if}
+<CkBTCWalletModals />

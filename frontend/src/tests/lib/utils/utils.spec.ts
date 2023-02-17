@@ -1,15 +1,11 @@
 import {
   bytesToHexString,
   createChunks,
-  debounce,
   expandObject,
   hexStringToBytes,
   isDefined,
   isHash,
-  isNullish,
   isPngAsset,
-  isStringNonNullishNotEmpty,
-  nonNullish,
   poll,
   PollingLimitExceededError,
   removeKeys,
@@ -20,62 +16,11 @@ import {
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
-  let callback: jest.Mock;
-
   beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   afterAll(() => jest.resetAllMocks());
-
-  beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(global, "setTimeout");
-    callback = jest.fn();
-  });
-
-  afterEach(() => jest.useRealTimers());
-
-  it("should debounce function with timeout", () => {
-    const testDebounce = debounce(callback, 100);
-
-    testDebounce();
-    testDebounce();
-    testDebounce();
-
-    expect(setTimeout).toHaveBeenCalledTimes(3);
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 100);
-    expect(callback).not.toBeCalled();
-
-    jest.runAllTimers();
-
-    expect(callback).toHaveBeenCalledTimes(1);
-  });
-
-  it("should debounce one function call", () => {
-    debounce(callback)();
-
-    expect(callback).not.toBeCalled();
-
-    jest.runAllTimers();
-
-    expect(callback).toBeCalled();
-    expect(callback).toHaveBeenCalledTimes(1);
-  });
-
-  it("should debounce multiple functions call", () => {
-    const anotherCallback = jest.fn();
-
-    const test = debounce(anotherCallback);
-    test();
-    test();
-    test();
-
-    jest.runAllTimers();
-
-    expect(anotherCallback).toBeCalled();
-    expect(anotherCallback).toHaveBeenCalledTimes(1);
-  });
 
   describe("stringifyJson", () => {
     const SAMPLE = { a: 0, b: [1, 2], c: "c" };
@@ -189,48 +134,6 @@ describe("utils", () => {
       expect(hexStringToBytes(bytesToHexString([1, 255, 3, 0]))).toEqual([
         1, 255, 3, 0,
       ]);
-    });
-  });
-
-  describe("isNullish", () => {
-    it("should determine nullable", () => {
-      expect(isNullish(null)).toBeTruthy();
-      expect(isNullish(undefined)).toBeTruthy();
-      expect(isNullish(0)).toBeFalsy();
-      expect(isNullish(1)).toBeFalsy();
-      expect(isNullish("")).toBeFalsy();
-      expect(isNullish([])).toBeFalsy();
-    });
-  });
-
-  describe("nonNullish", () => {
-    it("should determine not nullable", () => {
-      expect(nonNullish(null)).toBeFalsy();
-      expect(nonNullish(undefined)).toBeFalsy();
-      expect(nonNullish(0)).toBeTruthy();
-      expect(nonNullish(1)).toBeTruthy();
-      expect(nonNullish("")).toBeTruthy();
-      expect(nonNullish([])).toBeTruthy();
-    });
-  });
-
-  describe("isNullish", () => {
-    it("should determine nullable", () => {
-      expect(isNullish(null)).toBeTruthy();
-      expect(isNullish(undefined)).toBeTruthy();
-      expect(isNullish(0)).toBeFalsy();
-      expect(isNullish(1)).toBeFalsy();
-      expect(isNullish("")).toBeFalsy();
-      expect(isNullish([])).toBeFalsy();
-    });
-  });
-
-  describe("isStringNonNullishNotEmpty", () => {
-    it("should determine not empty", () => {
-      expect(isStringNonNullishNotEmpty(null)).toBeFalsy();
-      expect(isStringNonNullishNotEmpty(undefined)).toBeFalsy();
-      expect(isStringNonNullishNotEmpty("")).toBeFalsy();
-      expect(isStringNonNullishNotEmpty("test")).toBeTruthy();
     });
   });
 

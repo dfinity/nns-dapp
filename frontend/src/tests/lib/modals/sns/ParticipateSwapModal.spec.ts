@@ -3,7 +3,7 @@
  */
 
 import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
-import { participateInSwap } from "$lib/services/sns.services";
+import { initiateSnsSwapParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -11,7 +11,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -23,10 +23,14 @@ import {
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+import { snsTicketMock } from "../../../mocks/sns.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    participateInSwap: jest.fn().mockResolvedValue({ success: true }),
+    initiateSnsSwapParticipation: jest
+      .fn()
+      .mockResolvedValue({ success: true }),
     getSwapAccount: jest
       .fn()
       .mockImplementation(() =>
@@ -34,6 +38,22 @@ jest.mock("$lib/services/sns.services", () => {
       ),
   };
 });
+
+const ticket: SnsTicket | undefined = snsTicketMock({
+  rootCanisterId: rootCanisterIdMock,
+  owner: rootCanisterIdMock,
+});
+jest.mock("$lib/services/sns-sale.services", () => ({
+  getOpenTicket: jest
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve({ ...ticket, ticket: undefined })
+    ),
+  initiateSnsSwapParticipation: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(ticket)),
+  participateInSnsSwap: jest.fn().mockResolvedValue({ success: true }),
+}));
 
 describe("ParticipateSwapModal", () => {
   beforeAll(() =>
@@ -114,7 +134,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(initiateSnsSwapParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
@@ -136,7 +156,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(initiateSnsSwapParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
