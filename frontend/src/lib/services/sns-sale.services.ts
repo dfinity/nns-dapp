@@ -27,7 +27,6 @@ import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { TokenAmount } from "@dfinity/nns";
 import {
   InsufficientFundsError,
-  TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
@@ -361,13 +360,14 @@ export const participateInSnsSale = async ({
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const controller = identity.getPrincipal();
-  const accountIdentifier = getSwapCanisterAccount({
-    swapCanisterId,
-    controller,
-  });
 
   try {
+    const controller = identity.getPrincipal();
+    const accountIdentifier = getSwapCanisterAccount({
+      swapCanisterId,
+      controller,
+    });
+
     logWithTimestamp("[sale] 1. addPendingNotifySwap");
     // If the client disconnects after the transfer, the participation will still be notified.
     const { canister: nnsDapp } = await nnsDappCanister({ identity });
@@ -378,15 +378,7 @@ export const participateInSnsSale = async ({
       buyer_sub_account:
         subaccount === undefined ? [] : toNullable(Array.from(subaccount)),
     });
-  } catch (err) {
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
-      err,
-    });
-    return { success: false, retry: false };
-  }
 
-  try {
     // Send amount to the ledger
     logWithTimestamp("[sale] 2. transfer (time,id):", creationTime, ticketId);
     await nnsLedger.transfer({
@@ -399,13 +391,7 @@ export const participateInSnsSale = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.error("[sale]transfer", err);
-    if (!(err instanceof TransferError)) {
-      toastsError({
-        labelKey: "error__sns.sns_sale_unexpected_error",
-      });
-      return { success: false, retry: false };
-    }
+    console.error("[sale]error1", err);
 
     if (err instanceof TxCreatedInFutureError) {
       // no error, just retry

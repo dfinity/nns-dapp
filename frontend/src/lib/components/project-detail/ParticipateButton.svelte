@@ -111,6 +111,8 @@
       });
 
       if (success) {
+        await reload();
+
         toastsSuccess({
           labelKey: "sns_project_detail.participate_success",
         });
@@ -123,8 +125,6 @@
         logWithTimestamp("[sale] retry TBD");
         return;
       }
-
-      await reload();
     }
 
     // unlock the button
