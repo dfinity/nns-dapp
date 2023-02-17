@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && npm run lint",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --plugin-search-dir . --check . && eslint --max-warnings 3 .",
+    "lint": "prettier --plugin-search-dir . --check . && eslint --max-warnings 1 .",
     "format": "prettier --plugin-search-dir . --write .",
     "test": "TZ=UTC jest",
     "update:next": "npm update @dfinity/utils @dfinity/ledger @dfinity/nns @dfinity/sns @dfinity/cmc @dfinity/ckbtc",
