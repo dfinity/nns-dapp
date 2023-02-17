@@ -61,6 +61,22 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
 
 global.localStorage = localStorageMock;
 
+const realConsoleLog = console.log;
+const realConsoleDebug = console.debug;
+const realConsoleError = console.error;
+let gotLogs = false;
+
+global.beforeEach(() => {
+  jest.spyOn(console, "error").mockImplementation((...args) => {
+    gotLogs = true;
+    realConsoleError(...args);
+  });
+});
+
+global.afterAll(() => {
+  expect(gotLogs).toBe(false);
+});
+
 // testing-library setup
 configure({
   testIdAttribute: "data-tid",
