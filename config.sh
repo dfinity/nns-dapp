@@ -32,7 +32,7 @@ first_not_null() {
       return
     fi
   done
-  echo "null";
+  echo "null"
 }
 
 static_host() {
