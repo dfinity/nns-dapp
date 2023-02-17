@@ -23,11 +23,6 @@ export interface AuthStore {
 let authClient: AuthClient | undefined | null;
 
 const getIdentityProvider = () => {
-  // If we are not in a browser this probably won't be used anyway, but we return something valid just in case.
-  if (!browser) {
-    return IDENTITY_SERVICE_URL;
-  }
-
   // If we are in mainnet in the old domain, we use the old identity provider.
   if (location.host === "nns.ic0.app") {
     return OLD_MAINNET_IDENTITY_SERVICE_URL;
