@@ -80,7 +80,7 @@
         class="primary"
         data-tid="transaction-button-execute"
         disabled={$busy || disableSubmit}
-        on:click={submit}>{$i18n.accounts.execute}</button
+        on:click={submit}>{$i18n.accounts.send_now}</button
       >
     </SignInGuard>
   </div>
