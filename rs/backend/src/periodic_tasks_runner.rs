@@ -75,15 +75,15 @@ async fn handle_participate_swap(
         // The message was received by the sale canister but the sale canister returned
         // an error. No retries needed in this case because the sale canister will
         // always return an error
-        Ok(Err(_err)) => {},
+        Ok(Err(_err)) => {}
         // There was an error in the communication with the sale canister (e.g. its queue was full).
         // Requeue the notification so that it can be retried later.
-        Err(_err) => {
-            STATE.with(|s| s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
+        Err(_err) => STATE.with(|s| {
+            s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                 block_height,
-                MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id)
-            ))
-        }
+                MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id),
+            )
+        }),
     }
 }
 
