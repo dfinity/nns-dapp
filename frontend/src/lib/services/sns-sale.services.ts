@@ -60,7 +60,6 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsTicket | undefined> => {
-  logWithTimestamp("[sale]getOpenTicket start");
   try {
     const identity = await getCurrentIdentity();
     const ticket = await getOpenTicketApi({
@@ -189,7 +188,7 @@ export const newSaleTicket = async ({
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
 }): Promise<SnsTicket | undefined> => {
-  logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, subaccount);
+  logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, Boolean(subaccount));
   try {
     const identity = await getCurrentIdentity();
     const ticket = await newSaleTicketApi({
@@ -199,7 +198,7 @@ export const newSaleTicket = async ({
       amount_icp_e8s,
     });
 
-    logWithTimestamp("[sale]newSaleTicket: created", ticket);
+    logWithTimestamp("[sale]newSaleTicket:", ticket);
     return {
       rootCanisterId,
       ticket,
@@ -234,7 +233,7 @@ const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
     });
   } catch (err) {
     // Ignore error
-    console.error("Error reloading swap state", err);
+    console.error("Error reloading sale state", err);
   }
 };
 
@@ -261,7 +260,7 @@ export const initiateSnsSaleParticipation = async ({
   rootCanisterId: Principal;
   account: Account;
 }): Promise<SnsTicket | undefined> => {
-  logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount, account);
+  logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
@@ -321,7 +320,7 @@ export const participateInSnsSale = async ({
 }: {
   ticket: Required<SnsTicket>;
 }): Promise<{ success: boolean; retry: boolean }> => {
-  logWithTimestamp("[sale]participateInSnsSale:", snsTicket);
+  logWithTimestamp("[sale]participateInSnsSale:", snsTicket, rootCanisterId?.toText());
 
   const {
     amount_icp_e8s: amount,
@@ -337,7 +336,7 @@ export const participateInSnsSale = async ({
 
   // TODO: add HW support
   if (identity.getPrincipal().toText() !== ownerPrincipal.toText()) {
-    console.error("Sale: identities don't match");
+    console.error("[sale] identities don't match");
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
@@ -360,6 +359,7 @@ export const participateInSnsSale = async ({
   });
 
   try {
+    logWithTimestamp("[sale] 1. addPendingNotifySwap");
     // If the client disconnects after the transfer, the participation will still be notified.
     const { canister: nnsDapp } = await nnsDappCanister({ identity });
     await nnsDapp.addPendingNotifySwap({
@@ -378,6 +378,7 @@ export const participateInSnsSale = async ({
 
   try {
     // Send amount to the ledger
+    logWithTimestamp("[sale] 2. transfer (time,id):", creationTime, ticketId);
     await nnsLedger.transfer({
       amount,
       fromSubAccount: isNullish(subaccount)
@@ -420,6 +421,7 @@ export const participateInSnsSale = async ({
   }
 
   try {
+    logWithTimestamp("[sale] 3. refresh_buyer_tokens");
     // endpoint: refresh_buyer_tokens
     const { icp_accepted_participation_e8s } = await notifyParticipation({
       buyer: controller.toText(),
@@ -447,9 +449,9 @@ export const participateInSnsSale = async ({
     return { success: false, retry: false };
   }
 
-  logWithTimestamp("Participating in sale: done");
-
+  logWithTimestamp("[sale]syncAccounts");
   await syncAccounts();
 
+  logWithTimestamp("[sale] done");
   return { success: true, retry: false };
 };
