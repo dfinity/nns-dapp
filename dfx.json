@@ -223,10 +223,10 @@
     "mainnet": {
       "config": {
         "FETCH_ROOT_KEY": false,
-        "HOST": "https://ic0.app",
+        "HOST": "https://icp-api.io",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
-        "OWN_CANISTER_URL": "https://nns.ic0.app",
-        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
+        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
@@ -236,7 +236,7 @@
         }
       },
       "providers": [
-        "https://ic0.app/"
+        "https://icp-api.io/"
       ],
       "type": "persistent"
     },
