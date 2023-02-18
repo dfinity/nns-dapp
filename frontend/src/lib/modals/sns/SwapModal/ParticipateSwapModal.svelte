@@ -29,9 +29,10 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import {
-    initiateSnsSwapParticipation,
-    participateInSnsSwap,
+    initiateSnsSaleParticipation,
+    participateInSnsSale,
   } from "$lib/services/sns-sale.services";
+  import { logWithTimestamp } from "../../../utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -98,24 +99,38 @@
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
-      const ticket = await initiateSnsSwapParticipation({
+
+      const ticket = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
-      if (ticket) {
-        const result = await participateInSnsSwap({ ticket });
 
-        await reload();
+      if (ticket && ticket.ticket) {
+        const { success, retry } = await participateInSnsSale({
+          ticket: {
+            rootCanisterId: ticket.rootCanisterId,
+            ticket: ticket.ticket,
+          },
+        });
 
-        if (result.success) {
+        if (success) {
+          await reload();
+
           toastsSuccess({
             labelKey: "sns_project_detail.participate_success",
           });
         }
 
+        if (retry) {
+          // TODO(sale): GIX-1310 - implement retry logic
+          logWithTimestamp("[sale] retry TBD");
+          return;
+        }
+
         dispatcher("nnsClose");
       }
+
       stopBusy("project-participate");
     }
   };

@@ -18,14 +18,20 @@
   import type { Principal } from "@dfinity/principal";
   import {
     getOpenTicket,
-    participateInSnsSwap,
+    participateInSnsSale,
   } from "$lib/services/sns-sale.services";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
+  import type { SnsTicket } from "../../types/sns";
+  import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
+  import { nanoSecondsToDateTime } from "../../utils/date.utils";
+  import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
+  import { isSignedIn } from "../../utils/auth.utils";
+  import { authStore } from "../../stores/auth.store";
+  import { logWithTimestamp } from "../../utils/dev.utils";
 
-  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store: projectDetailStore, reload } =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let lifecycle: number;
   $: ({
@@ -64,10 +70,11 @@
     ) {
       return;
     }
+
     loading = true;
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
-    const saleTicket = await getOpenTicket({
+    const saleTicket: SnsTicket | undefined = await getOpenTicket({
       rootCanisterId,
       certified: true,
     });
@@ -83,17 +90,54 @@
 
     // restore purchase
     if (
-      ticket !== undefined &&
+      saleTicket.ticket !== undefined &&
       saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
     ) {
-      participateInSnsSwap({
-        ticket: saleTicket,
+      // TODO(sale): refactor to reuse also in the modal
+
+      toastsShow({
+        level: "info",
+        labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+        substitutions: {
+          $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
+        },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
+      const { success, retry } = await participateInSnsSale({
+        ticket: {
+          rootCanisterId: saleTicket.rootCanisterId,
+          ticket: saleTicket.ticket,
+        },
+      });
+
+      if (success) {
+        await reload();
+
+        toastsSuccess({
+          labelKey: "sns_project_detail.participate_success",
+        });
+      } else {
+        criticalError = true;
+      }
+
+      if (retry) {
+        // TODO(sale): GIX-1310 - implement retry logic
+        logWithTimestamp("[sale] retry TBD");
+        return;
+      }
     }
 
+    // unlock the button
+    ticket = undefined;
     loading = false;
   };
-  $: rootCanisterId, updateTicket();
+  // skip ticket update if the sns is not open
+  $: if (
+    lifecycle === SnsSwapLifecycle.Open &&
+    isSignedIn($authStore.identity)
+  ) {
+    updateTicket();
+  }
 
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
@@ -149,6 +193,7 @@
   .participate {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--padding);
   }
 
