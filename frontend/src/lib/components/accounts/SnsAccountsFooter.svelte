@@ -19,8 +19,7 @@
     <button
       class="primary full-width"
       on:click={openNewTransaction}
-      data-tid="open-new-sns-transaction"
-      >{$i18n.accounts.new_transaction}</button
+      data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
     >
   </Footer>
 {/if}
