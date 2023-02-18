@@ -86,8 +86,7 @@
       class="primary"
       on:click={() => (showNewTransactionModal = true)}
       disabled={$selectedAccountStore.account === undefined || $busy}
-      data-tid="open-new-sns-transaction"
-      >{$i18n.accounts.new_transaction}</button
+      data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
     >
   </Footer>
 </Island>

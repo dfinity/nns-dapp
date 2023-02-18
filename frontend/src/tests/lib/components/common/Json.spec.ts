@@ -146,6 +146,34 @@ describe("Json", () => {
     );
   });
 
+  it("should keep focus on button when collapsed or expanded", async () => {
+    const json = {
+      obj: {
+        first: 1,
+        second: 2,
+      },
+    };
+    const { container, getAllByRole } = render(Json, {
+      props: { json },
+    });
+    const isCollapsed = () =>
+      simplifyJson(container.textContent) === "{obj:{...}}";
+
+    const button = () => getAllByRole("button")[1];
+
+    button().focus();
+    expect(button()).toHaveFocus();
+    expect(isCollapsed()).toBe(false);
+
+    await fireEvent.click(button());
+    expect(isCollapsed()).toBe(true);
+    expect(button()).toHaveFocus();
+
+    await fireEvent.click(button());
+    expect(isCollapsed()).toBe(false);
+    expect(button()).toHaveFocus();
+  });
+
   it("should render role=button", async () => {
     const json = {
       obj: {

@@ -24,7 +24,7 @@
     <button
       class="primary full-width"
       on:click={openNewTransaction}
-      data-tid="open-new-transaction">{$i18n.accounts.new_transaction}</button
+      data-tid="open-new-transaction">{$i18n.accounts.send}</button
     >
     <button
       class="secondary full-width"
