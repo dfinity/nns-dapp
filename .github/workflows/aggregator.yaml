@@ -84,12 +84,12 @@ jobs:
       - name: Make the aggregator collect data slowly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; })'
       - name: Create more SNSs
-        run:
-                seq 11 | while read -r line ; do
-                  dfx identity use snsdemo8 || true
-                  dfx-sns-whitelist-me
-                  dfx-sns-demo-mksns
-                done
+        run: |
+          seq 11 | while read -r line ; do
+            dfx identity use snsdemo8 || true
+            dfx-sns-whitelist-me
+            dfx-sns-demo-mksns
+          done
       - name: Make the aggregator collect data quickly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
       - name: Wait for the aggregator to get data
