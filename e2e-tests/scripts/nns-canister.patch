@@ -1,6 +1,6 @@
 --- a/rs/nns/governance/canister/canister.rs
 +++ b/rs/nns/governance/canister/canister.rs
-@@ -683,6 +683,15 @@ fn get_network_economics_parameters_() -> NetworkEconomics {
+@@ -727,6 +727,15 @@ fn get_network_economics_parameters_() -> NetworkEconomics {
  
  #[export_name = "canister_heartbeat"]
  fn canister_heartbeat() {
@@ -60,14 +60,15 @@ index 2c02d80dc..5a6072dc7 100644
      over(
 --- a/rs/nns/sns-wasm/src/sns_wasm.rs
 +++ b/rs/nns/sns-wasm/src/sns_wasm.rs
-@@ -323,12 +323,14 @@ where
+@@ -484,6 +484,7 @@ where
          deploy_new_sns_payload: DeployNewSnsRequest,
          caller: PrincipalId,
      ) -> DeployNewSnsResponse {
 +        /*
-         if !thread_safe_sns.with(|sns_wasm| sns_wasm.borrow().allowed_to_deploy_sns(caller)) {
-             return validation_deploy_error(
-                 "Caller is not in allowed principals list. Cannot deploy an sns.".to_string(),
+         if !thread_safe_sns
+             .with(|sns_wasm| sns_wasm.borrow_mut().consume_caller_from_whitelist(&caller))
+         {
+@@ -492,6 +493,7 @@ where
              )
              .into();
          }
