@@ -22,13 +22,13 @@
   } from "$lib/services/sns-sale.services";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
-  import type { SnsTicket } from "../../types/sns";
   import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
   import { nanoSecondsToDateTime } from "../../utils/date.utils";
   import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
   import { isSignedIn } from "../../utils/auth.utils";
   import { authStore } from "../../stores/auth.store";
   import { logWithTimestamp } from "../../utils/dev.utils";
+  import { snsTicketsStore } from "../../stores/sns-tickets.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -57,10 +57,19 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  let loading = true;
+  let busy = true;
+  $: busy =
+    rootCanisterId === undefined
+      ? false
+      : undefined === $snsTicketsStore[rootCanisterId.toText()];
+
+  let error = true;
+  $: error =
+    rootCanisterId === undefined
+      ? false
+      : $snsTicketsStore[rootCanisterId.toText()]?.error !== undefined;
+
   let loadingTicketRootCanisterId: string | undefined;
-  let ticket: Ticket | undefined;
-  let criticalError = false;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -71,43 +80,30 @@
       return;
     }
 
-    loading = true;
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
-    const saleTicket: SnsTicket | undefined = await getOpenTicket({
+    await getOpenTicket({
       rootCanisterId,
       certified: true,
     });
 
-    if (saleTicket === undefined) {
-      loading = false;
-      criticalError = true;
-      // stop the flow
-      return;
-    }
-
-    ticket = saleTicket.ticket;
+    let ticket: Ticket | undefined =
+      $snsTicketsStore[rootCanisterId?.toText()]?.ticket;
 
     // restore purchase
-    if (
-      saleTicket.ticket !== undefined &&
-      saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
-    ) {
+    if (ticket !== undefined) {
       // TODO(sale): refactor to reuse also in the modal
 
       toastsShow({
         level: "info",
         labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
         substitutions: {
-          $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
+          $time: nanoSecondsToDateTime(ticket.creation_time),
         },
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
       const { success, retry } = await participateInSnsSale({
-        ticket: {
-          rootCanisterId: saleTicket.rootCanisterId,
-          ticket: saleTicket.ticket,
-        },
+        rootCanisterId,
       });
 
       if (success) {
@@ -116,8 +112,11 @@
         toastsSuccess({
           labelKey: "sns_project_detail.participate_success",
         });
+
+        // remove the ticket when it's complete
+        snsTicketsStore.removeTicket(rootCanisterId);
       } else {
-        criticalError = true;
+        // criticalError = true;
       }
 
       if (retry) {
@@ -126,11 +125,8 @@
         return;
       }
     }
-
-    // unlock the button
-    ticket = undefined;
-    loading = false;
   };
+
   // skip ticket update if the sns is not open
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
@@ -151,12 +147,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loading || criticalError || ticket !== undefined}
+            disabled={busy || error}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loading}
+            {#if busy}
               <span>
                 <Spinner size="small" inline />
               </span>

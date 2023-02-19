@@ -33,6 +33,8 @@
     participateInSnsSale,
   } from "$lib/services/sns-sale.services";
   import { logWithTimestamp } from "../../../utils/dev.utils";
+  import { snsTicketsStore } from "../../../stores/sns-tickets.store";
+  import type { Principal } from "@dfinity/principal";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -95,23 +97,24 @@
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
+      const rootCanisterId: Principal =
+        $projectDetailStore.summary.rootCanisterId;
+
       startBusy({
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
 
-      const ticket = await initiateSnsSaleParticipation({
+      await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
 
-      if (ticket && ticket.ticket) {
+      const ticket = $snsTicketsStore[rootCanisterId?.toText()]?.ticket;
+      if (ticket !== undefined) {
         const { success, retry } = await participateInSnsSale({
-          ticket: {
-            rootCanisterId: ticket.rootCanisterId,
-            ticket: ticket.ticket,
-          },
+          rootCanisterId,
         });
 
         if (success) {

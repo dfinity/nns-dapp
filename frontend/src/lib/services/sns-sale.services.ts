@@ -38,10 +38,7 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
-import type {
-  InvalidUserAmount,
-  Ticket,
-} from "@dfinity/sns/dist/candid/sns_swap";
+import type { InvalidUserAmount } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import {
   fromDefinedNullable,
@@ -53,6 +50,7 @@ import {
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
+import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
@@ -72,12 +70,12 @@ export const getOpenTicket = async ({
       certified,
     });
 
-    logWithTimestamp("[sale]getOpenTicket:", ticket);
-
-    return {
+    snsTicketsStore.setTicket({
       rootCanisterId,
       ticket,
-    };
+    });
+
+    logWithTimestamp("[sale]getOpenTicket:", ticket);
   } catch (err) {
     if (!(err instanceof SnsSwapGetOpenTicketError)) {
       // not expected error
@@ -112,76 +110,73 @@ const handleNewSaleTicketError = ({
 }: {
   err: unknown;
   rootCanisterId: Principal;
-}): SnsTicket | undefined => {
-  if (!(err instanceof SnsSwapNewTicketError)) {
-    // not expected error
+}): void => {
+  try {
+    const newSaleTicketError = err as SnsSwapNewTicketError;
+
+    // handle custom errors
+    switch (newSaleTicketError.errorType) {
+      case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+          err,
+        });
+        return;
+      case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
+        const existingTicket = newSaleTicketError.existingTicket;
+        if (nonNullish(existingTicket)) {
+          toastsShow({
+            level: "info",
+            labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+            substitutions: {
+              $time: nanoSecondsToDateTime(existingTicket.creation_time),
+            },
+          });
+
+          // Continue the flow with existing ticket (restore the flow)
+          snsTicketsStore.setTicket({
+            rootCanisterId,
+            ticket: existingTicket,
+          });
+        }
+        // break to jump to the generic error message
+        break;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
+        const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
+          newSaleTicketError.invalidUserAmount as InvalidUserAmount;
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_amount",
+          substitutions: {
+            $min: formatToken({ value: min_amount_icp_e8s_included }),
+            $max: formatToken({ value: max_amount_icp_e8s_included }),
+          },
+        });
+        return;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_subaccount",
+        });
+        return;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_try_later",
+        });
+        return;
+      }
+    }
+  } catch (unexpectedError) {
+    console.error(unexpectedError);
+    console.error(err);
+
+    // generic error
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
       err,
     });
-    return;
   }
-
-  // handle custom errors
-  const { errorType } = err;
-  switch (errorType) {
-    case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
-      toastsError({
-        labelKey: "error__sns.sns_sale_closed",
-        err,
-      });
-      return;
-    case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
-      const existingTicket = (err as SnsSwapNewTicketError).existingTicket;
-      if (nonNullish(existingTicket)) {
-        toastsShow({
-          level: "info",
-          labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-          substitutions: {
-            $time: nanoSecondsToDateTime(existingTicket.creation_time),
-          },
-        });
-
-        // Continue the flow with existing ticket (restore the flow)
-        return {
-          rootCanisterId,
-          ticket: existingTicket,
-        };
-      }
-      // break to jump to the generic error message
-      break;
-    }
-    case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
-      const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
-        err.invalidUserAmount as InvalidUserAmount;
-      toastsError({
-        labelKey: "error__sns.sns_sale_invalid_amount",
-        substitutions: {
-          $min: formatToken({ value: min_amount_icp_e8s_included }),
-          $max: formatToken({ value: max_amount_icp_e8s_included }),
-        },
-      });
-      return;
-    }
-    case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
-      toastsError({
-        labelKey: "error__sns.sns_sale_invalid_subaccount",
-      });
-      return;
-    }
-    case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
-      toastsError({
-        labelKey: "error__sns.sns_sale_try_later",
-      });
-      return;
-    }
-  }
-
-  // generic error
-  toastsError({
-    labelKey: "error__sns.sns_sale_unexpected_error",
-    err,
-  });
 };
 export const newSaleTicket = async ({
   rootCanisterId,
@@ -191,7 +186,7 @@ export const newSaleTicket = async ({
   rootCanisterId: Principal;
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
-}): Promise<SnsTicket | undefined> => {
+}): Promise<void> => {
   logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, Boolean(subaccount));
   try {
     const identity = await getCurrentIdentity();
@@ -203,12 +198,13 @@ export const newSaleTicket = async ({
     });
 
     logWithTimestamp("[sale]newSaleTicket:", ticket);
-    return {
-      rootCanisterId,
+
+    snsTicketsStore.setTicket({
       ticket,
-    };
+      rootCanisterId,
+    });
   } catch (err) {
-    return handleNewSaleTicketError({
+    handleNewSaleTicketError({
       err,
       rootCanisterId,
     });
@@ -248,6 +244,68 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
+// export const restoreSnsSaleParticipation = async ({rootCanisterId}: {rootCanisterId: Principal}): Promise<void> => {
+//   // get ticket
+//   // tries to participate with existent ticket (if found)
+//
+//   await getOpenTicket({
+//     rootCanisterId,
+//     certified: true,
+//   });
+//
+//   if (saleTicket === undefined) {
+//     loading = false;
+//     criticalError = true;
+//     // stop the flow
+//     return;
+//   }
+//
+//   ticket = saleTicket.ticket;
+//
+//   // restore purchase
+//   if (
+//     saleTicket.ticket !== undefined &&
+//     saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
+//   ) {
+//     // TODO(sale): refactor to reuse also in the modal
+//
+//     toastsShow({
+//       level: "info",
+//       labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+//       substitutions: {
+//         $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
+//       },
+//       duration: DEFAULT_TOAST_DURATION_MILLIS,
+//     });
+//     const { success, retry } = await participateInSnsSale({
+//       ticket: {
+//         rootCanisterId: saleTicket.rootCanisterId,
+//         ticket: saleTicket.ticket,
+//       },
+//     });
+//
+//     if (success) {
+//       await reload();
+//
+//       toastsSuccess({
+//         labelKey: "sns_project_detail.participate_success",
+//       });
+//     } else {
+//       criticalError = true;
+//     }
+//
+//     if (retry) {
+//       // TODO(sale): GIX-1310 - implement retry logic
+//       logWithTimestamp("[sale] retry TBD");
+//       return;
+//     }
+//   }
+//
+//   // unlock the button
+//   ticket = undefined;
+//   loading = false;
+// }
+
 /**
  * Does participation validation and creates an open ticket.
  *
@@ -263,7 +321,7 @@ export const initiateSnsSaleParticipation = async ({
   amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
-}): Promise<SnsTicket | undefined> => {
+}): Promise<void> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
     // amount validation
@@ -289,15 +347,13 @@ export const initiateSnsSaleParticipation = async ({
 
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
-    const ticket = await newSaleTicket({
+    await newSaleTicket({
       rootCanisterId,
       subaccount: isNullish(subaccount)
         ? undefined
         : Uint8Array.from(subaccount),
       amount_icp_e8s: amount.toE8s(),
     });
-
-    return ticket;
   } catch (err: unknown) {
     toastsError(
       toToastError({
@@ -320,13 +376,19 @@ export const initiateSnsSaleParticipation = async ({
  * @param rootCanisterId
  */
 export const participateInSnsSale = async ({
-  ticket: { ticket: snsTicket, rootCanisterId },
+  rootCanisterId,
 }: {
-  ticket: Required<SnsTicket>;
+  rootCanisterId: Principal;
 }): Promise<{ success: boolean; retry: boolean }> => {
+  const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
+  if (!ticket) {
+    console.error("participation w/o ticket");
+    return { success: false, retry: true };
+  }
+
   logWithTimestamp(
     "[sale]participateInSnsSale:",
-    snsTicket,
+    ticket,
     rootCanisterId?.toText()
   );
 
@@ -335,7 +397,7 @@ export const participateInSnsSale = async ({
     account,
     creation_time: creationTime,
     ticket_id: ticketId,
-  } = snsTicket as Ticket;
+  } = ticket;
 
   const ticketAccount = fromDefinedNullable(account);
   const ownerPrincipal = fromDefinedNullable(ticketAccount.owner);
@@ -426,7 +488,7 @@ export const participateInSnsSale = async ({
     });
 
     // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== snsTicket.amount_icp_e8s) {
+    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
