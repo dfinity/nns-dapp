@@ -38,7 +38,10 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
-import type { InvalidUserAmount } from "@dfinity/sns/dist/candid/sns_swap";
+import type {
+  InvalidUserAmount,
+  Ticket,
+} from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import {
   fromDefinedNullable,
@@ -50,12 +53,14 @@ import {
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
+import { startBusy, stopBusy } from "../stores/busy.store";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
+import { toastsSuccess } from "../stores/toasts.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
-export const getOpenTicket = async ({
+export const loadOpenTicket = async ({
   rootCanisterId,
   certified,
 }: {
@@ -75,7 +80,7 @@ export const getOpenTicket = async ({
       ticket,
     });
 
-    logWithTimestamp("[sale]getOpenTicket:", ticket);
+    logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
     if (!(err instanceof SnsSwapGetOpenTicketError)) {
       // not expected error
@@ -178,6 +183,8 @@ const handleNewSaleTicketError = ({
     });
   }
 };
+
+// TODO(sale): rename to loadNewSaleTicket
 export const newSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
@@ -244,67 +251,52 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
-// export const restoreSnsSaleParticipation = async ({rootCanisterId}: {rootCanisterId: Principal}): Promise<void> => {
-//   // get ticket
-//   // tries to participate with existent ticket (if found)
-//
-//   await getOpenTicket({
-//     rootCanisterId,
-//     certified: true,
-//   });
-//
-//   if (saleTicket === undefined) {
-//     loading = false;
-//     criticalError = true;
-//     // stop the flow
-//     return;
-//   }
-//
-//   ticket = saleTicket.ticket;
-//
-//   // restore purchase
-//   if (
-//     saleTicket.ticket !== undefined &&
-//     saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
-//   ) {
-//     // TODO(sale): refactor to reuse also in the modal
-//
-//     toastsShow({
-//       level: "info",
-//       labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-//       substitutions: {
-//         $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
-//       },
-//       duration: DEFAULT_TOAST_DURATION_MILLIS,
-//     });
-//     const { success, retry } = await participateInSnsSale({
-//       ticket: {
-//         rootCanisterId: saleTicket.rootCanisterId,
-//         ticket: saleTicket.ticket,
-//       },
-//     });
-//
-//     if (success) {
-//       await reload();
-//
-//       toastsSuccess({
-//         labelKey: "sns_project_detail.participate_success",
-//       });
-//     } else {
-//       criticalError = true;
-//     }
-//
-//     if (retry) {
-//       // TODO(sale): GIX-1310 - implement retry logic
-//       logWithTimestamp("[sale] retry TBD");
-//       return;
-//     }
-//   }
-//
-//   // unlock the button
-//   ticket = undefined;
-//   loading = false;
-// }
+export const restoreSnsSaleParticipation = async ({
+  rootCanisterId,
+  postprocess,
+}: {
+  rootCanisterId: Principal;
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
+  // avoid concurrent restores
+  if (get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket !== undefined) {
+    return;
+  }
+
+  await loadOpenTicket({
+    rootCanisterId,
+    certified: true,
+  });
+
+  const ticket: Ticket | undefined =
+    get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
+
+  // no open tickets
+  if (ticket === undefined) {
+    return;
+  }
+
+  toastsShow({
+    level: "info",
+    labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+    substitutions: {
+      $time: nanoSecondsToDateTime(ticket.creation_time),
+    },
+    duration: DEFAULT_TOAST_DURATION_MILLIS,
+  });
+
+  startBusy({
+    initiator: "project-participate",
+    labelKey: "neurons.may_take_while",
+  });
+
+  await participateInSnsSale({
+    rootCanisterId,
+    postprocess,
+  });
+
+  stopBusy("project-participate");
+};
 
 /**
  * Does participation validation and creates an open ticket.
@@ -317,13 +309,20 @@ export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
+  postprocess,
 }: {
   amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
+  postprocess: () => Promise<void>;
 }): Promise<void> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
+    startBusy({
+      initiator: "project-participate",
+      labelKey: "neurons.may_take_while",
+    });
+
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -354,6 +353,14 @@ export const initiateSnsSaleParticipation = async ({
         : Uint8Array.from(subaccount),
       amount_icp_e8s: amount.toE8s(),
     });
+
+    const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
+    if (ticket !== undefined) {
+      await participateInSnsSale({
+        rootCanisterId,
+        postprocess,
+      });
+    }
   } catch (err: unknown) {
     toastsError(
       toToastError({
@@ -362,6 +369,8 @@ export const initiateSnsSaleParticipation = async ({
       })
     );
   }
+
+  stopBusy("project-participate");
 };
 
 /**
@@ -377,13 +386,15 @@ export const initiateSnsSaleParticipation = async ({
  */
 export const participateInSnsSale = async ({
   rootCanisterId,
+  postprocess,
 }: {
   rootCanisterId: Principal;
-}): Promise<{ success: boolean; retry: boolean }> => {
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   if (!ticket) {
     console.error("participation w/o ticket");
-    return { success: false, retry: true };
+    return;
   }
 
   logWithTimestamp(
@@ -410,7 +421,7 @@ export const participateInSnsSale = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
-    return { success: false, retry: false };
+    return;
   }
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
@@ -457,7 +468,11 @@ export const participateInSnsSale = async ({
 
     if (err instanceof TxCreatedInFutureError) {
       // no error, just retry
-      return { success: false, retry: true };
+      // return { success: false, retry: true };
+
+      // TODO(sale): retry TBD
+
+      return;
     }
 
     // if duplicated transfer, silently continue the flow
@@ -476,7 +491,7 @@ export const participateInSnsSale = async ({
         err,
       });
 
-      return { success: false, retry: false };
+      return;
     }
   }
 
@@ -506,12 +521,21 @@ export const participateInSnsSale = async ({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
 
-    return { success: false, retry: false };
+    return;
   }
 
   logWithTimestamp("[sale]syncAccounts");
   await syncAccounts();
 
   logWithTimestamp("[sale] done");
-  return { success: true, retry: false };
+
+  // reload
+  await postprocess?.();
+
+  toastsSuccess({
+    labelKey: "sns_project_detail.participate_success",
+  });
+
+  // remove the ticket when it's complete
+  snsTicketsStore.removeTicket(rootCanisterId);
 };

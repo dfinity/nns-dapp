@@ -15,9 +15,7 @@
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { getSwapAccount } from "$lib/services/sns.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
     ValidateAmountFn,
@@ -28,13 +26,7 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import {
-    initiateSnsSaleParticipation,
-    participateInSnsSale,
-  } from "$lib/services/sns-sale.services";
-  import { logWithTimestamp } from "../../../utils/dev.utils";
-  import { snsTicketsStore } from "../../../stores/sns-tickets.store";
-  import type { Principal } from "@dfinity/principal";
+  import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -97,44 +89,15 @@
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
-      const rootCanisterId: Principal =
-        $projectDetailStore.summary.rootCanisterId;
-
-      startBusy({
-        initiator: "project-participate",
-        labelKey: "neurons.may_take_while",
-      });
-
       await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
-      });
-
-      const ticket = $snsTicketsStore[rootCanisterId?.toText()]?.ticket;
-      if (ticket !== undefined) {
-        const { success, retry } = await participateInSnsSale({
-          rootCanisterId,
-        });
-
-        if (success) {
+        postprocess: async () => {
           await reload();
-
-          toastsSuccess({
-            labelKey: "sns_project_detail.participate_success",
-          });
-        }
-
-        if (retry) {
-          // TODO(sale): GIX-1310 - implement retry logic
-          logWithTimestamp("[sale] retry TBD");
-          return;
-        }
-
-        dispatcher("nnsClose");
-      }
-
-      stopBusy("project-participate");
+          dispatcher("nnsClose");
+        },
+      });
     }
   };
 

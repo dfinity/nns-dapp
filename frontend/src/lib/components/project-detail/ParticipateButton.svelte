@@ -16,19 +16,11 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import {
-    getOpenTicket,
-    participateInSnsSale,
-  } from "$lib/services/sns-sale.services";
-  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
-  import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
-  import { nanoSecondsToDateTime } from "../../utils/date.utils";
-  import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
   import { isSignedIn } from "../../utils/auth.utils";
   import { authStore } from "../../stores/auth.store";
-  import { logWithTimestamp } from "../../utils/dev.utils";
   import { snsTicketsStore } from "../../stores/sns-tickets.store";
+  import { restoreSnsSaleParticipation } from "../../services/sns-sale.services";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -82,49 +74,10 @@
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
-    await getOpenTicket({
+    await restoreSnsSaleParticipation({
       rootCanisterId,
-      certified: true,
+      postprocess: reload,
     });
-
-    let ticket: Ticket | undefined =
-      $snsTicketsStore[rootCanisterId?.toText()]?.ticket;
-
-    // restore purchase
-    if (ticket !== undefined) {
-      // TODO(sale): refactor to reuse also in the modal
-
-      toastsShow({
-        level: "info",
-        labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-        substitutions: {
-          $time: nanoSecondsToDateTime(ticket.creation_time),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-      const { success, retry } = await participateInSnsSale({
-        rootCanisterId,
-      });
-
-      if (success) {
-        await reload();
-
-        toastsSuccess({
-          labelKey: "sns_project_detail.participate_success",
-        });
-
-        // remove the ticket when it's complete
-        snsTicketsStore.removeTicket(rootCanisterId);
-      } else {
-        // criticalError = true;
-      }
-
-      if (retry) {
-        // TODO(sale): GIX-1310 - implement retry logic
-        logWithTimestamp("[sale] retry TBD");
-        return;
-      }
-    }
   };
 
   // skip ticket update if the sns is not open
