@@ -63,12 +63,9 @@ COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
 FROM builder AS build_frontend
-ARG DFX_NETWORK=mainnet
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
 COPY ./build-frontend.sh /build/
-COPY ./dfx.json /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
