@@ -49,11 +49,15 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
+  // busy if open ticket available
   let busy = true;
   $: busy =
-    rootCanisterId === undefined
-      ? false
-      : undefined !== $snsTicketsStore[rootCanisterId.toText()]?.ticket;
+    rootCanisterId === undefined || $snsTicketsStore[rootCanisterId?.toText()]?.ticket !== undefined;
+
+  // disabled if data not ready or busy
+  let disabled = true;
+  $: disabled =
+    rootCanisterId === undefined || $snsTicketsStore[rootCanisterId.toText()] === undefined || busy;
 
   let error = true;
   $: error =
@@ -108,7 +112,7 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={busy || error}
+            {disabled}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"

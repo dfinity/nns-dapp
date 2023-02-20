@@ -1,11 +1,9 @@
-import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import { writable } from "svelte/store";
 
 export interface SnsTicketsStoreEntry {
   ticket: Ticket | undefined;
-  error?: boolean | undefined;
 }
 
 export interface SnsTicketsStore {
@@ -40,12 +38,12 @@ const initSnsTicketsStore = () => {
     },
 
     removeTicket(rootCanisterId: Principal) {
-      update((currentState: SnsTicketsStore) =>
-        removeKeys({
-          obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
-        })
-      );
+      update((currentState: SnsTicketsStore) => {
+          if (currentState[rootCanisterId.toText()] !== undefined) {
+            currentState[rootCanisterId.toText()] = {...currentState[rootCanisterId.toText()], ticket: undefined};
+          }
+          return currentState;
+      });
     },
   };
 };
