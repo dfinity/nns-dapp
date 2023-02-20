@@ -57,4 +57,5 @@ const initSnsTicketsStore = () => {
   };
 };
 
+// TODO(sale): rename to openTickets
 export const snsTicketsStore = initSnsTicketsStore();
