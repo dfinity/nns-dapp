@@ -205,7 +205,9 @@
     "manual": "Manual",
     "no_account_select": "No accounts to select",
     "current_balance_detail": "Current balance: $amount $token",
-    "network": "Network"
+    "network": "Network",
+    "network_icp_ckbtc": "Internet Computer (ckBTC)",
+    "network_bitcoin": "Bitcoin (BTC)"
   },
   "neurons": {
     "title": "Neurons",

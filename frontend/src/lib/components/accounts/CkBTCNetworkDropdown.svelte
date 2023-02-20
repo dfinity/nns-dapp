@@ -14,8 +14,8 @@
     testId="select-network-dropdown"
   >
     <option disabled selected value class="hidden"></option>
-    <DropdownItem value="icp">Internet Computer (ckBTC)</DropdownItem>
-    <DropdownItem value="bitcoin">Bitcoin (BTC)</DropdownItem>
+    <DropdownItem value="icp">{$i18n.accounts.network_icp_ckbtc}</DropdownItem>
+    <DropdownItem value="bitcoin">{$i18n.accounts.network_bitcoin}</DropdownItem>
   </Dropdown>
 </div>
 
