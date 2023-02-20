@@ -10,10 +10,6 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Get node version
@@ -75,12 +71,13 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get node version
+        run: sed -nr 's/.* (NODE_VERSION=)/\1/g;ta;b;:a;p;q' Dockerfile >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Provide a config
@@ -106,12 +103,13 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get node version
+        run: sed -nr 's/.* (NODE_VERSION=)/\1/g;ta;b;:a;p;q' Dockerfile >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Provide a config
@@ -134,12 +132,13 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get node version
+        run: sed -nr 's/.* (NODE_VERSION=)/\1/g;ta;b;:a;p;q' Dockerfile >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Provide a config

@@ -33,10 +33,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get node version
+        run: sed -nr 's/.* (NODE_VERSION=)/\1/g;ta;b;:a;p;q' Dockerfile >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
       - name: Update chromedriver
         run: |
           node --version

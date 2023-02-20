@@ -69,10 +69,11 @@ jobs:
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
+      - name: Get node version
+        run: sed -nr 's/.* (NODE_VERSION=)/\1/g;ta;b;:a;p;q' Dockerfile >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
       - name: Deploy NNS and SNS canisters
         run: |
           # Note: This deploys standard NNS canisters but with:
