@@ -18,6 +18,12 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 /// These following services are implicitly covered by their consumers' services testing - i.e. ckbtc-accounts.services.spec and sns-accounts.services.spec
 ///
 
+export interface IcrcTransferTokensUserParams {
+  source: Account;
+  destinationAddress: string;
+  amount: number;
+}
+
 export const transferTokens = async ({
   source,
   destinationAddress,
@@ -26,10 +32,7 @@ export const transferTokens = async ({
   transfer,
   reloadAccounts,
   reloadTransactions,
-}: {
-  source: Account;
-  destinationAddress: string;
-  amount: number;
+}: IcrcTransferTokensUserParams & {
   fee: bigint | undefined;
   transfer: (
     params: {
