@@ -62,6 +62,8 @@ RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs
 COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
+# Title: Image to build the nns-dapp frontend.
+# Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
@@ -71,6 +73,10 @@ WORKDIR /build
 RUN ( cd frontend && npm ci )
 RUN ./build-frontend.sh
 
+# Title: Image to build the nns-dapp backend.
+# Args: DFX_NETWORK env var for enabling/disabling features.
+#       Note:  Better would probably be to take a config so
+#       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
@@ -84,6 +90,11 @@ COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
 RUN ./build-backend.sh
 
+# Title: Image to build the sns aggregator, used to increase performance and reduce load.
+# Args: None.
+#       The SNS aggregator needs to know the canister ID of the
+#       NNS-SNS-wasm canister.  That is hard-wired but should be
+#       configurable
 FROM builder AS build_aggregate
 SHELL ["bash", "-c"]
 COPY ./rs /build/rs
@@ -91,12 +102,12 @@ COPY ./build-sns-aggregator.sh /build/build-sns-aggregator.sh
 COPY ./build-rs.sh /build/build-rs.sh
 COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
-COPY ./dfx.json /build/dfx.json
 WORKDIR /build
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
 RUN ./build-sns-aggregator.sh
 
+# Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
