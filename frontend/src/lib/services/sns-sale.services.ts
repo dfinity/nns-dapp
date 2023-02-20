@@ -53,10 +53,11 @@ import {
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
+import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { toastsSuccess } from "../stores/toasts.store";
-import { nanoSecondsToDateTime } from "../utils/date.utils";
+import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
@@ -276,6 +277,7 @@ export const restoreSnsSaleParticipation = async ({
     return;
   }
 
+  // TODO(sale): recheck why it's there
   toastsShow({
     level: "info",
     labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
@@ -392,8 +394,9 @@ export const participateInSnsSale = async ({
   postprocess: () => Promise<void>;
 }): Promise<void> => {
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
+  // skip if there is no more ticket (e.g. on retry)
   if (!ticket) {
-    console.error("participation w/o ticket");
+    logWithTimestamp("[sale] skip participation - no ticket");
     return;
   }
 
@@ -466,11 +469,26 @@ export const participateInSnsSale = async ({
   } catch (err) {
     console.error("[sale]error1", err);
 
+    // Frontend should wait until time reaches ledger_time before retrying
+    // no error, just retry.
     if (err instanceof TxCreatedInFutureError) {
-      // no error, just retry
-      // return { success: false, retry: true };
+      const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
 
-      // TODO(sale): retry TBD
+      setTimeout(() => {
+        participateInSnsSale({
+          rootCanisterId,
+          postprocess,
+        });
+      }, retryIn * 1000);
+
+      toastsShow({
+        level: "warn",
+        labelKey: "error__sns.sns_sale_retry_in",
+        substitutions: {
+          $time: secondsToDuration(BigInt(retryIn)),
+        },
+        duration: retryIn * 1000,
+      });
 
       return;
     }

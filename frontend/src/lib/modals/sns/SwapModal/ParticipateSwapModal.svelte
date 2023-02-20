@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { createEventDispatcher, getContext, onDestroy } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -27,6 +27,7 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import { snsTicketsStore } from "../../../stores/sns-tickets.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -131,6 +132,15 @@
     // We allow the user to try to participate even though the swap commitment is not yet available.
     return undefined;
   };
+
+  onDestroy(() => {
+    const rootCanisterId = $projectDetailStore.summary?.rootCanisterId;
+    if (rootCanisterId === undefined) {
+      return;
+    }
+    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+    snsTicketsStore.removeTicket(rootCanisterId);
+  });
 </script>
 
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->

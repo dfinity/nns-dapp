@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
+  import { getContext, onDestroy } from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -91,6 +91,14 @@
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
+  });
+
+  onDestroy(() => {
+    if (rootCanisterId === undefined) {
+      return;
+    }
+    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+    snsTicketsStore.removeTicket(rootCanisterId);
   });
 </script>
 
