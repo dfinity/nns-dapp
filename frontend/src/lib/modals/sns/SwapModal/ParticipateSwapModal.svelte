@@ -209,6 +209,6 @@
 
 <style lang="scss">
   .additional-info {
-    padding-top: var(--padding);
+    padding-top: var(--padding-2x);
   }
 </style>

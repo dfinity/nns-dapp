@@ -148,18 +148,15 @@
 
   <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-  </div>
+    <slot name="additional-info" />
 
-  <div class="fee description">
-    <p>
+    <p class="fee description">
       {$i18n.accounts.transaction_fee}: <AmountDisplay
         amount={transactionFee}
         singleLine
       />
     </p>
   </div>
-
-  <slot name="additional-info" />
 
   <div class="toolbar">
     <button
@@ -201,5 +198,10 @@
     p {
       margin: 0;
     }
+  }
+
+  .fee {
+    text-align: right;
+    padding-top: var(--padding-0_5x);
   }
 </style>
