@@ -125,11 +125,6 @@
     {/if}
   </div>
 
-  <div class="wrapper">
-    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    <slot name="additional-info" />
-  </div>
-
   {#if canSelectDestination}
     <SelectDestinationAddress
       {rootCanisterId}
@@ -138,6 +133,20 @@
       bind:showManualAddress
     />
   {/if}
+
+  <div class="wrapper">
+    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
+    <slot name="additional-info" />
+  </div>
+
+  <div class="fee description">
+    <p>
+      {$i18n.accounts.transaction_fee}: <AmountDisplay
+        amount={transactionFee}
+        singleLine
+      />
+    </p>
+  </div>
 
   <div class="toolbar">
     <button
