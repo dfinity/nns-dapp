@@ -11,7 +11,7 @@ jest.mock("$lib/utils/html.utils", () => ({
 describe("ProposalProposerInfoSection", () => {
   const title = "title";
   const summary = "# Some Summary";
-  const url = "https://nns.ic0.app/";
+  const url = "https://nns.internetcomputer.org/";
   const props = { title, summary, url };
 
   it("should render title", () => {

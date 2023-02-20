@@ -25,12 +25,9 @@ export const updateBalance = async (): Promise<UpdateBalanceResult> => {
   try {
     return await updateBalanceAPI({ identity });
   } catch (err: unknown) {
-    if (err instanceof MinterGenericError) {
-      throw new ApiErrorKey(err.message);
-    }
-
     const labels = get(i18n);
 
+    // Specific errors extending MinterGenericError. Therefore, we check them first.
     if (err instanceof MinterTemporaryUnavailableError) {
       throw new ApiErrorKey(
         `${labels.error__ckbtc.temporary_unavailable} (${err.message})`
@@ -43,6 +40,10 @@ export const updateBalance = async (): Promise<UpdateBalanceResult> => {
 
     if (err instanceof MinterNoNewUtxosError) {
       throw new ApiErrorKey(labels.error__ckbtc.no_new_utxo);
+    }
+
+    if (err instanceof MinterGenericError) {
+      throw new ApiErrorKey(err.message);
     }
 
     throw err;

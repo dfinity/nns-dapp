@@ -98,7 +98,7 @@ describe("SnsNeurons", () => {
       );
     });
 
-    it.only("should render one grids", async () => {
+    it("should render one grids", async () => {
       const { container } = render(SnsNeurons);
 
       await waitFor(() =>
