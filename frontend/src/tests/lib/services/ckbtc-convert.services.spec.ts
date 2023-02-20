@@ -41,7 +41,10 @@ describe("ckbtc-convert-services", () => {
 
   const convert = async () => await convertCkBTCToBtc(params);
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
+
     jest
       .spyOn(CkBTCMinterCanister, "create")
       .mockImplementation(() => minterCanisterMock);
@@ -51,10 +54,6 @@ describe("ckbtc-convert-services", () => {
     const now = Date.now();
     jest.useFakeTimers().setSystemTime(now);
   });
-
-  beforeEach(() => jest.clearAllMocks());
-
-  afterAll(() => jest.clearAllTimers());
 
   describe("withdrawal account succeed", () => {
     const mockAccount = {
