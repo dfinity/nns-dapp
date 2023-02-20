@@ -7,7 +7,7 @@ export const isNode = (): boolean =>
  *
  * console.debug with time prefix (e.g. "[15:22:55.438] message text")
  */
-export const logWithTimestamp = <T>(...args: T[]): void => {
+export const logWithTimestamp = (...args: Array<unknown>): void => {
   if (isNode() === true) return;
 
   const time = `[${new Date().toISOString().split("T")[1].replace("Z", "")}]`;

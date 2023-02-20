@@ -122,7 +122,7 @@ const updateCSP = (indexHtml) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self' data: https://nns.ic0.app/ https://nns.raw.ic0.app/ ${
+        img-src 'self' data: https://nns.internetcomputer.org/ https://nns.ic0.app/ https://nns.raw.ic0.app/ ${
           isAggregatorCanisterUrlDefined ? aggregatorCanisterUrl : ""
         };
         child-src 'self';
@@ -144,6 +144,10 @@ const cspConnectSrc = () => {
   // TODO: Use `URL` to check if the URL is valid and not introduce a security issue
   const src = [
     process.env.VITE_IDENTITY_SERVICE_URL,
+    // We move to internetcomputer.org, but if a user access the app with the old URL, we need to allow it
+    "https://identity.ic0.app",
+    // We still allow users to access the app with the old URL
+    "https://nns.ic0.app",
     process.env.VITE_OWN_CANISTER_URL,
     process.env.VITE_HOST,
     process.env.VITE_GOVERNANCE_CANISTER_URL,
