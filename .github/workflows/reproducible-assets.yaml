@@ -35,6 +35,10 @@ jobs:
                   exit 1
                   ;;
           esac
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx

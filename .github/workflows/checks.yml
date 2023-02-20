@@ -10,6 +10,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install rust formatter
@@ -66,6 +70,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -93,6 +101,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -117,6 +129,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
