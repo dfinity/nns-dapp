@@ -190,7 +190,7 @@
   }
 
   .amount {
-    margin-top: var(--padding-1_5x);
+    margin-top: var(--padding);
   }
 
   .account-identifier {
