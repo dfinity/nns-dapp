@@ -1,5 +1,8 @@
 # Changelog
 
+## Proposal 108160
+* Migration to nns.internetcomputer.org
+
 ## Proposal 106377
 * Launch ckBTC wallet functionality!
 * Fix bug in transactions list.
