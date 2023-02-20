@@ -80,17 +80,20 @@ describe("TransactionModal", () => {
     transactionFee,
     rootCanisterId,
     sourceAccount,
+    mustSelectNetwork = false,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
+    mustSelectNetwork?: boolean;
   }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,
       transactionFee,
       rootCanisterId,
+      mustSelectNetwork,
     });
 
     const { queryAllByText, getByTestId, container } = result;
@@ -328,28 +331,11 @@ describe("TransactionModal", () => {
     });
 
     it("should disable next button if network not selected", async () => {
-      const result = await renderTransactionModal({
-        rootCanisterId: OWN_CANISTER_ID,
-        mustSelectNetwork: true,
-        destinationAddress: mockMainAccount.identifier,
-      });
-
-      const { getByTestId, container } = result;
-
-      const participateButton = getByTestId("transaction-button-next");
-      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
-
-      const icpAmount = "10";
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: icpAmount } });
-
-      const toggle = container.querySelector("input[id='toggle']");
-      toggle && fireEvent.click(toggle);
-
       const call = async () =>
-        await waitFor(() =>
-          expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-        );
+        await renderEnter10ICPAndNext({
+          rootCanisterId: OWN_CANISTER_ID,
+          mustSelectNetwork: true,
+        });
 
       expect(call).rejects.toThrowError();
     });
