@@ -55,8 +55,25 @@ dfx canister info sns_aggregator
 RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
 
 : Deploy the ckbtc canisters
-for canister in ckbtc_ledger ckbtc_index ; do
-	dfx canister create "$canister" --network "$DFX_NETWORK"
-	dfx canister install "$canister" --network "$DFX_NETWORK"
+: The manual for deploying is here: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/bitcoin/ckbtc/testnet/README.md
+: TODO: Add the remaining canisters.
+for canister in ckbtc_ledger ckbtc_index; do
+  dfx canister create "$canister" --network "$DFX_NETWORK"
+  case canister in
+  ckbtc_ledger)
+    : "We don't deploy the minter - yet - so use a fixed value"
+    ckbtc_minter_canister_id=ml52i-qqaaa-aaaar-qaaba-cai
+    : "Wallet - I guess the deployer's wallet"
+    : "... First make sure that we have a wallet"
+    dfx wallet balance --network "$DFX_NETWORK"
+    : "... Then get the wallet ID"
+    wallet_id="$(dfx identity get-wallet --network "$DFX_NETWORK")"
+    dfx deploy ckbtc_ledger --network "$DFX_NETWORK" --argument '(record { minting_account = record { owner = principal "'"${ckbtc_minter_canister_id}"'" }; transfer_fee = 10; token_symbol = "ckTESTBTC"; token_name = "Chain key testnet Bitcoin"; metadata = vec {}; initial_balances = vec {}; archive_options = record { num_blocks_to_archive = 1000; trigger_threshold = 2000; max_message_size_bytes = null; cycles_for_archive_creation = opt 1_000_000_000_000; node_max_memory_size_bytes = opt 3_221_225_472; controller_id = principal "'"$wallet_id"'" } })'
+    ;;
+  ckbtc_index)
+    ckbtc_ledger_canister_id="$(dfx canister id ckbtc_ledger --network "$DFX_NETWORK")"
+    dfx deploy index --network "$DFX_NETWORK" --argument '(record { ledger_id = principal "'$(ckbtc_ledger_canister_id)'" })'
+    ;;
+  *) dfx canister install "$canister" --network "$DFX_NETWORK" ;;
+  esac
 done
-
