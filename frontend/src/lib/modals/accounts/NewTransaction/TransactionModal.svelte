@@ -6,7 +6,7 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { TransactionNetwork } from "../../../types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
@@ -90,6 +90,7 @@
       {transactionFee}
       {disableSubmit}
       {token}
+      {selectedNetwork}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose

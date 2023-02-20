@@ -8,11 +8,14 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
   export let transactionFee: TokenAmount;
   export let token: Token;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   let sourceAccount: Account;
   let amount: number;
@@ -60,6 +63,15 @@
         {destinationAddress}
       </p>
     </div>
+
+    {#if nonNullish(selectedNetwork)}
+      <div>
+        <p class="label">{$i18n.accounts.network}</p>
+        <p class="value">
+          {$i18n.accounts[selectedNetwork]}
+        </p>
+      </div>
+    {/if}
 
     <div>
       <p class="label">{$i18n.accounts.description}</p>
