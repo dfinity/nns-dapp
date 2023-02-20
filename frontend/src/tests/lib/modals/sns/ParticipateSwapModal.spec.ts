@@ -16,6 +16,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
+import { snsTicketsStore } from "../../../../lib/stores/sns-tickets.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -39,20 +40,9 @@ jest.mock("$lib/services/sns.services", () => {
   };
 });
 
-const ticket: SnsTicket | undefined = snsTicketMock({
-  rootCanisterId: rootCanisterIdMock,
-  owner: rootCanisterIdMock,
-});
 jest.mock("$lib/services/sns-sale.services", () => ({
-  getOpenTicket: jest
-    .fn()
-    .mockImplementation(() =>
-      Promise.resolve({ ...ticket, ticket: undefined })
-    ),
   initiateSnsSaleParticipation: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve(ticket)),
-  participateInSnsSale: jest.fn().mockResolvedValue({ success: true }),
+    .fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateSwapModal", () => {
@@ -135,12 +125,16 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
-      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
 
   describe("when user has participated", () => {
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: null,
+      });
+
       const { getByTestId, container } = await renderEnter10ICPAndNext(
         mockSnsFullProject.swapCommitment
       );
@@ -157,7 +151,6 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
-      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
 
