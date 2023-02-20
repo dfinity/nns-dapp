@@ -13,6 +13,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { TransactionNetwork } from "$lib/types/transaction";
+  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -67,7 +68,7 @@
   {token}
   {transactionFee}
   sourceAccount={selectedAccount}
-  mustSelectNetwork
+  mustSelectNetwork={$ENABLE_CKBTC_MINTER}
   bind:selectedNetwork
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>

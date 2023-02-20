@@ -232,7 +232,7 @@
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": true,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -249,7 +249,7 @@
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": true,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -266,7 +266,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -283,7 +283,7 @@
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -300,7 +300,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -317,7 +317,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -334,7 +334,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -351,7 +351,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -368,7 +368,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -392,7 +392,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -409,7 +409,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -426,7 +426,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "bind": "127.0.0.1:8080",
@@ -441,7 +441,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -455,7 +455,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -469,7 +469,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -483,7 +483,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -497,7 +497,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -511,7 +511,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -525,7 +525,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -539,7 +539,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -553,7 +553,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -567,7 +567,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -581,7 +581,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -595,7 +595,7 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
