@@ -217,6 +217,7 @@ interface I18nAccounts {
   network: string;
   network_icp_ckbtc: string;
   network_bitcoin: string;
+  select_network: string;
 }
 
 interface I18nNeurons {

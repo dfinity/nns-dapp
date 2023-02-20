@@ -207,7 +207,8 @@
     "current_balance_detail": "Current balance: $amount $token",
     "network": "Network",
     "network_icp_ckbtc": "Internet Computer (ckBTC)",
-    "network_bitcoin": "Bitcoin (BTC)"
+    "network_bitcoin": "Bitcoin (BTC)",
+    "select_network": "Select network"
   },
   "neurons": {
     "title": "Neurons",
