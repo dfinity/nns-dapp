@@ -61,7 +61,7 @@ describe("CkBTCTransactionModal", () => {
   it("should transfer tokens", async () => {
     const result = await renderTransactionModal();
 
-    await testTransferTokens(result);
+    await testTransferTokens({ result, selectedNetwork: true });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
   });
