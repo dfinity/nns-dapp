@@ -19,7 +19,7 @@
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
   import NetworkDropdown from "$lib/components/accounts/NetworkDropdown.svelte";
-  import { TransactionNetwork } from "../../../types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 
   // Tested in the TransactionModal

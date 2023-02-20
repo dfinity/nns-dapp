@@ -32,7 +32,7 @@
     initiateSnsSaleParticipation,
     participateInSnsSale,
   } from "$lib/services/sns-sale.services";
-  import { logWithTimestamp } from "../../../utils/dev.utils";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);

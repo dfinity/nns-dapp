@@ -12,7 +12,7 @@
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { TransactionNetwork } from "../../types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
