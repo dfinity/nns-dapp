@@ -14,6 +14,7 @@ use ic_cdk::api::call::CallResult;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsRootCanister {
   pub  dapp_canister_ids: Vec<candid::Principal>,
+  pub  testflight: bool,
   pub  latest_ledger_archive_poll_timestamp_seconds: Option<u64>,
   pub  archive_canister_ids: Vec<candid::Principal>,
   pub  governance_canister_id: Option<candid::Principal>,
