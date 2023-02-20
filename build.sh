@@ -39,7 +39,7 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Or do we need the exports for the backend as well?
 
 # Assemble the configuration
-. config.sh
+config.sh
 
 set -x
 

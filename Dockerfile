@@ -67,13 +67,12 @@ ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY ./config.sh /build/
 COPY ./build-frontend.sh /build/
 COPY ./dfx.json /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
-RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
+RUN ./build-frontend.sh
 
 FROM builder AS build_nnsdapp
 ARG DFX_NETWORK=mainnet
@@ -88,7 +87,7 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
-RUN export DFX_NETWORK && ./build-backend.sh
+RUN ./build-backend.sh
 
 FROM builder AS build_aggregate
 SHELL ["bash", "-c"]

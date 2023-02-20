@@ -2,13 +2,12 @@
 set -euo pipefail
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Need to know which deployment we are building for:
-. "$TOPLEVEL/scripts/require-dfx-network.sh"
-
-# Should we skip this if we can detect that it's already run from build.sh?
-
-# Assemble the configuration
-. config.sh
+# Verify that we have the configuration
+test  -e frontend/.env || {
+	echo "ERROR: Building the frontend requires a config file."
+	echo "       Please create the config file by running config.sh."
+	exit 1
+} >&2
 
 ###################
 # frontend # (output: frontend/public/)

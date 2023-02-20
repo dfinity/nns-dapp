@@ -10,7 +10,11 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPTS_DIR/.."
 
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
+export DFX_NETWORK
+./config.sh
 
+
+# This should have been deleted.  There was a PR for that.
 case "$DFX_NETWORK" in
 mainnet)
   OWN_CANISTER_ID=""
