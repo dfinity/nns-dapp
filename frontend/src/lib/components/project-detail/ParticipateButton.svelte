@@ -53,7 +53,7 @@
   $: busy =
     rootCanisterId === undefined
       ? false
-      : undefined === $snsTicketsStore[rootCanisterId.toText()];
+      : undefined !== $snsTicketsStore[rootCanisterId.toText()]?.ticket;
 
   let error = true;
   $: error =
