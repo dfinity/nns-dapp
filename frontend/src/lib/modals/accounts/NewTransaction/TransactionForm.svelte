@@ -18,7 +18,7 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
-  import NetworkDropdown from "$lib/components/accounts/NetworkDropdown.svelte";
+  import SelectNetworkDropdown from "$lib/components/accounts/NetworkDropdown.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 
@@ -143,7 +143,7 @@
   {/if}
 
   {#if mustSelectNetwork}
-    <NetworkDropdown bind:selectedNetwork />
+    <SelectNetworkDropdown bind:selectedNetwork />
   {/if}
 
   <div class="amount">
