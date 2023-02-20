@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: 18
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install rust formatter
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: 18
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -104,7 +104,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: 18
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -132,7 +132,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: 18
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
