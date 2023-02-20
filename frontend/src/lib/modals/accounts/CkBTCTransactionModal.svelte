@@ -12,8 +12,7 @@
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import CkBTCNetworkDropdown from "$lib/components/accounts/CkBTCNetworkDropdown.svelte";
-  import type { CkBTCTransactionNetwork } from "../../types/transaction";
+  import { TransactionNetwork } from "../../types/transaction";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -21,7 +20,7 @@
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
-  let selectedNetwork: CkBTCTransactionNetwork | "" | undefined = undefined;
+  let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   let currentStep: WizardStep;
 
@@ -68,6 +67,8 @@
   {token}
   {transactionFee}
   sourceAccount={selectedAccount}
+  mustSelectNetwork
+  bind:selectedNetwork
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
@@ -75,6 +76,4 @@
       $token: token.symbol,
     })}
   </p>
-
-  <CkBTCNetworkDropdown slot="network" bind:selectedNetwork />
 </TransactionModal>

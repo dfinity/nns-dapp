@@ -18,6 +18,9 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
+  import NetworkDropdown from "$lib/components/accounts/NetworkDropdown.svelte";
+  import { TransactionNetwork } from "../../../types/transaction";
+  import { isNullish } from "@dfinity/utils";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -32,6 +35,10 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+
+  export let mustSelectNetwork = false;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
+
   export let validateAmount: (
     amount: number | undefined
   ) => string | undefined = () => undefined;
@@ -58,7 +65,8 @@
     amount === 0 ||
     amount === undefined ||
     invalidAddress(selectedDestinationAddress) ||
-    errorMessage !== undefined;
+    errorMessage !== undefined ||
+    (mustSelectNetwork && isNullish(selectedNetwork));
 
   let errorMessage: string | undefined = undefined;
   $: (() => {
@@ -134,7 +142,9 @@
     />
   {/if}
 
-  <slot name="network" />
+  {#if mustSelectNetwork}
+    <NetworkDropdown bind:selectedNetwork />
+  {/if}
 
   <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />

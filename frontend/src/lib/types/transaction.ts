@@ -51,4 +51,7 @@ export interface Transaction {
   date: Date;
 }
 
-export type CkBTCTransactionNetwork = "icp" | "bitcoin";
+export enum TransactionNetwork {
+  ICP,
+  BITCOIN
+}

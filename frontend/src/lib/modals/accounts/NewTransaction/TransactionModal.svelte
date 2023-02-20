@@ -17,6 +17,7 @@
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
+  export let mustSelectNetwork = false;
   export let validateAmount: (
     amount: number | undefined
   ) => string | undefined = () => undefined;
@@ -71,9 +72,9 @@
       {token}
       on:nnsNext={goNext}
       on:nnsClose
+      {mustSelectNetwork}
     >
       <slot name="additional-info-form" slot="additional-info" />
-      <slot name="network" slot="network" />
     </TransactionForm>
   {/if}
   {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined && selectedDestinationAddress !== undefined}
