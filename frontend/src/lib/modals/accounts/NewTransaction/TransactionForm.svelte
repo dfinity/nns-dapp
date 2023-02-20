@@ -134,7 +134,9 @@
     />
   {/if}
 
-  <div class="wrapper">
+  <slot name="network" />
+
+  <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
   </div>
@@ -167,6 +169,7 @@
 <style lang="scss">
   form {
     --dropdown-width: 100%;
+    gap: var(--padding-2x);
   }
 
   .select-account {
@@ -175,12 +178,8 @@
     gap: var(--padding);
   }
 
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: var(--padding-3x);
+  .amount {
+    margin-top: var(--padding-1_5x);
   }
 
   .account-identifier {

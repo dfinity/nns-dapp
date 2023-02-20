@@ -73,6 +73,7 @@
       on:nnsClose
     >
       <slot name="additional-info-form" slot="additional-info" />
+      <slot name="network" slot="network" />
     </TransactionForm>
   {/if}
   {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined && selectedDestinationAddress !== undefined}

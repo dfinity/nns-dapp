@@ -158,6 +158,7 @@ interface I18nAccounts {
   send: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
+  ckbtc_transaction_description: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -213,6 +214,7 @@ interface I18nAccounts {
   manual: string;
   no_account_select: string;
   current_balance_detail: string;
+  network: string;
 }
 
 interface I18nNeurons {
