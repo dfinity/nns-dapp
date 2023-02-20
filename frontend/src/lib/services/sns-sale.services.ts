@@ -447,13 +447,6 @@ export const participateInSnsSale = async ({
     logWithTimestamp("[sale] 1. addPendingNotifySwap");
     // If the client disconnects after the transfer, the participation will still be notified.
     const { canister: nnsDapp } = await nnsDappCanister({ identity });
-    // TODO(sale): create/move to api
-    await nnsDapp.addPendingNotifySwap({
-      swap_canister_id: swapCanisterId,
-      buyer: controller,
-      buyer_sub_account:
-        subaccount === undefined ? [] : toNullable(Array.from(subaccount)),
-    });
 
     // Send amount to the ledger
     logWithTimestamp("[sale] 2. transfer (time,id):", creationTime, ticketId);
