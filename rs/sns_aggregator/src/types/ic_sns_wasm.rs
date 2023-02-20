@@ -85,7 +85,6 @@ pub struct SnsInitPayload {
   pub  initial_reward_rate_basis_points: Option<u64>,
   pub  wait_for_quiet_deadline_increase_seconds: Option<u64>,
   pub  transaction_fee_e8s: Option<u64>,
-  pub  sns_initialization_parameters: Option<String>,
   pub  max_age_bonus_percentage: Option<u64>,
   pub  initial_token_distribution: Option<InitialTokenDistribution>,
   pub  reward_rate_transition_duration_seconds: Option<u64>,
