@@ -79,8 +79,8 @@ describe("TransactionCard", () => {
 
     const div = getByTestId("transaction-date");
 
-    expect(div?.textContent).toContain("Mar 14, 2021 12:00 AM");
-    expect(div?.textContent).toContain("12:00 AM");
+    expect(div?.textContent).toContain("Mar 14, 2021 12:00\u202FAM");
+    expect(div?.textContent).toContain("12:00\u202FAM");
   });
 
   it("displays identifier for received", () => {

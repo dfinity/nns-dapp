@@ -19,7 +19,7 @@ describe("DateSeconds", () => {
       "Jan 1, 1970"
     );
     expect(container.querySelector(selector)?.textContent).toContain(
-      "12:00 AM"
+      "12:00\u202FAM"
     );
   };
 

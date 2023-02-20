@@ -128,7 +128,7 @@ describe("IcrcTransactionCard", () => {
     const div = getByTestId("transaction-date");
 
     expect(div?.textContent).toContain("Jan 1, 1970");
-    expect(div?.textContent).toContain("12:00 AM");
+    expect(div?.textContent).toContain("12:00\u202FAM");
   });
 
   it("displays identifier for received", () => {
