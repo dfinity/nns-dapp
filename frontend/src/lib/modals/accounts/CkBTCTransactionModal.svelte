@@ -13,12 +13,15 @@
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import CkBTCNetworkDropdown from "$lib/components/accounts/CkBTCNetworkDropdown.svelte";
+  import type { CkBTCTransactionNetwork } from "../../types/transaction";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
+
+  let selectedNetwork: CkBTCTransactionNetwork | "" | undefined = undefined;
 
   let currentStep: WizardStep;
 
@@ -36,6 +39,9 @@
       initiator: "accounts",
     });
 
+    // TODO: if selectedNetwork === bitcoin then convertCkBTCToBtc
+    // else ckBTCTransferTokens
+
     const { success } = await ckBTCTransferTokens({
       source: sourceAccount,
       destinationAddress,
@@ -50,6 +56,8 @@
       dispatcher("nnsTransfer");
     }
   };
+
+  // TODO(GIX-1330): display bitcoin transaction fee
 </script>
 
 <TransactionModal
@@ -68,5 +76,5 @@
     })}
   </p>
 
-  <CkBTCNetworkDropdown slot="network" />
+  <CkBTCNetworkDropdown slot="network" bind:selectedNetwork />
 </TransactionModal>

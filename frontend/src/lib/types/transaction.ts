@@ -50,3 +50,5 @@ export interface Transaction {
   displayAmount: TokenAmount;
   date: Date;
 }
+
+export type CkBTCTransactionNetwork = "icp" | "bitcoin";

@@ -9,7 +9,7 @@
   import type {
     CkBTCWalletReceiveModalData,
     CkBTCWalletTransactionModalData,
-  } from "../../types/wallet.modal";
+  } from "$lib/types/wallet.modal";
 
   let modal: CkBTCWalletModal | undefined;
   const close = () => (modal = undefined);

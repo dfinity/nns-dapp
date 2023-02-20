@@ -1,8 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
+  import type { CkBTCTransactionNetwork } from "$lib/types/transaction";
 
-  let selectedNetwork: string | undefined = undefined;
+  export let selectedNetwork: CkBTCTransactionNetwork | "" | undefined = undefined;
 </script>
 
 <div>

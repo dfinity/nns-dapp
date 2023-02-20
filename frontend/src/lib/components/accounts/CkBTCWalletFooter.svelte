@@ -12,7 +12,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import type { CkBTCWalletModal } from "../../types/wallet.modal";
+  import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
   import { ENABLE_CKBTC_RECEIVE } from "$lib/stores/feature-flags.store";
 
   const context: CkBTCWalletContext =
