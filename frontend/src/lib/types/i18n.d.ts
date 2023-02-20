@@ -849,6 +849,12 @@ interface I18nError__ckbtc {
   get_btc_address: string;
   get_btc_no_account: string;
   update_balance: string;
+  withdrawal_account: string;
+  retrieve_btc: string;
+  malformed_address: string;
+  amount_too_low: string;
+  insufficient_funds: string;
+  retrieve_btc_unknown: string;
 }
 
 interface I18nNeuron_state {
