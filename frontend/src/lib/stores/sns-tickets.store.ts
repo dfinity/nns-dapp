@@ -1,14 +1,19 @@
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import { writable } from "svelte/store";
+import { removeKeys } from "../utils/utils";
 
 export interface SnsTicketsStoreEntry {
-  ticket: Ticket | undefined;
+  /**
+   * undefined: not set
+   * null: no ticket
+   */
+  ticket: Ticket | undefined | null;
 }
 
 export interface SnsTicketsStore {
   // Root canister id is the key to identify the parameters for a specific project.
-  [rootCanisterId: string]: SnsTicketsStoreEntry;
+  [rootCanisterId: string]: SnsTicketsStoreEntry | undefined;
 }
 
 const initSnsTicketsStore = () => {
@@ -17,12 +22,16 @@ const initSnsTicketsStore = () => {
   return {
     subscribe,
 
+    /**
+     * @param rootCanisterId
+     * @param {Ticket | null | undefined} ticket undefined - not set; null - no ticket.
+     */
     setTicket({
       rootCanisterId,
       ticket,
     }: {
       rootCanisterId: Principal;
-      ticket: Ticket | undefined;
+      ticket: Ticket | undefined | null;
     }) {
       update((currentState: SnsTicketsStore) => ({
         ...currentState,
@@ -38,12 +47,12 @@ const initSnsTicketsStore = () => {
     },
 
     removeTicket(rootCanisterId: Principal) {
-      update((currentState: SnsTicketsStore) => {
-          if (currentState[rootCanisterId.toText()] !== undefined) {
-            currentState[rootCanisterId.toText()] = {...currentState[rootCanisterId.toText()], ticket: undefined};
-          }
-          return currentState;
-      });
+      update((currentState: SnsTicketsStore) =>
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [rootCanisterId.toText()],
+        })
+      );
     },
   };
 };

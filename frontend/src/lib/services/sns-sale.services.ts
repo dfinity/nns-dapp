@@ -19,7 +19,6 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import type { SnsTicket } from "$lib/types/sns";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
@@ -48,7 +47,6 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
-  toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nnsDappCanister } from "../api/nns-dapp.api";
@@ -67,7 +65,7 @@ export const loadOpenTicket = async ({
 }: {
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsTicket | undefined> => {
+}): Promise<void> => {
   try {
     const identity = await getCurrentIdentity();
     const ticket = await getOpenTicketApi({
@@ -78,7 +76,8 @@ export const loadOpenTicket = async ({
 
     snsTicketsStore.setTicket({
       rootCanisterId,
-      ticket,
+      // set explicitly null to mark the ticket absence
+      ticket: ticket ?? null,
     });
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
@@ -260,7 +259,7 @@ export const restoreSnsSaleParticipation = async ({
   postprocess: () => Promise<void>;
 }): Promise<void> => {
   // avoid concurrent restores
-  if (get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket !== undefined) {
+  if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
     return;
   }
 
@@ -269,11 +268,11 @@ export const restoreSnsSaleParticipation = async ({
     certified: true,
   });
 
-  const ticket: Ticket | undefined =
+  const ticket: Ticket | undefined | null =
     get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
 
   // no open tickets
-  if (ticket === undefined) {
+  if (isNullish(ticket)) {
     return;
   }
 
@@ -357,7 +356,7 @@ export const initiateSnsSaleParticipation = async ({
     });
 
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
-    if (ticket !== undefined) {
+    if (nonNullish(ticket)) {
       await participateInSnsSale({
         rootCanisterId,
         postprocess,
@@ -450,6 +449,7 @@ export const participateInSnsSale = async ({
 
     // Send amount to the ledger
     logWithTimestamp("[sale] 2. transfer (time,id):", creationTime, ticketId);
+
     await nnsLedger.transfer({
       amount,
       fromSubAccount: isNullish(subaccount)
@@ -475,12 +475,11 @@ export const participateInSnsSale = async ({
       }, retryIn * 1000);
 
       toastsShow({
-        level: "warn",
+        level: "error",
         labelKey: "error__sns.sns_sale_retry_in",
         substitutions: {
           $time: secondsToDuration(BigInt(retryIn)),
         },
-        duration: retryIn * 1000,
       });
 
       return;
@@ -493,8 +492,25 @@ export const participateInSnsSale = async ({
       if (err instanceof InsufficientFundsError) {
         labelKey = "error__sns.ledger_insufficient_funds";
       }
+
+      // after 24h ledger returns TxTooOldError
       if (err instanceof TxTooOldError) {
         labelKey = "error__sns.ledger_too_old";
+        /*
+        TODO(sale): implement plan A. (find the way to differentiate between internal and external errors)
+
+        plan A. on TxTooOldError
+            refresh_buyer_tokens // internal errors are ignored
+            notify_payment_failure
+
+        plan B.
+           ledger balance (accountIdentifier) > swap user balance
+            refresh_buy to delete the ticket
+            // message: success message but about the previous participation
+           else
+            notify_payment_failure // to remove the ticket
+            // error: the previous participation failed
+        */
       }
 
       toastsError({
@@ -548,5 +564,8 @@ export const participateInSnsSale = async ({
   });
 
   // remove the ticket when it's complete
-  snsTicketsStore.removeTicket(rootCanisterId);
+  snsTicketsStore.setTicket({
+    rootCanisterId,
+    ticket: null,
+  });
 };

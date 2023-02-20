@@ -52,19 +52,14 @@
   // busy if open ticket available
   let busy = true;
   $: busy =
-    rootCanisterId === undefined || $snsTicketsStore[rootCanisterId?.toText()]?.ticket !== undefined;
+    rootCanisterId === undefined ||
+    $snsTicketsStore[rootCanisterId.toText()]?.ticket !== null;
 
   // disabled if data not ready or busy
   let disabled = true;
-  $: disabled =
-    rootCanisterId === undefined || $snsTicketsStore[rootCanisterId.toText()] === undefined || busy;
+  $: disabled = rootCanisterId === undefined || busy;
 
-  let error = true;
-  $: error =
-    rootCanisterId === undefined
-      ? false
-      : $snsTicketsStore[rootCanisterId.toText()]?.error !== undefined;
-
+  // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
 
   const updateTicket = async () => {
@@ -101,6 +96,7 @@
     if (rootCanisterId === undefined) {
       return;
     }
+
     // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
     snsTicketsStore.removeTicket(rootCanisterId);
   });

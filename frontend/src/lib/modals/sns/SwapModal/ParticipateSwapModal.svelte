@@ -138,8 +138,6 @@
     if (rootCanisterId === undefined) {
       return;
     }
-    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
-    snsTicketsStore.removeTicket(rootCanisterId);
   });
 </script>
 
