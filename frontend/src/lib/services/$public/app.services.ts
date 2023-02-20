@@ -6,7 +6,7 @@ import {
 } from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
-import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+import { ENABLE_SNS_AGGREGATOR } from "$lib/stores/feature-flags.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { get } from "svelte/store";
@@ -19,11 +19,9 @@ export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];
-  const featureFlags = get(featureFlagsStore);
 
   const initSns: Promise<void>[] = [
-    featureFlags.ENABLE_SNS_AGGREGATOR &&
-    SNS_AGGREGATOR_CANISTER_URL !== undefined
+    get(ENABLE_SNS_AGGREGATOR) && SNS_AGGREGATOR_CANISTER_URL !== undefined
       ? loadSnsProjects()
       : loadSnsSummaries(),
   ];

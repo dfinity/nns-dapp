@@ -26,10 +26,40 @@ JSON_OUT="deployment-config.json"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
 
-# Gets the default URL for a canister based on its ID.
-canister_url_from_id() {
+first_not_null() {
+  for x in "$@"; do
+    if [ "$x" != "null" ]; then
+      echo "$x"
+      return
+    fi
+  done
+  echo "null"
+}
+
+static_host() {
+  first_not_null \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
+}
+
+api_host() {
+  first_not_null \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
+}
+
+# Gets the static content URL for a canister based on its ID.
+# Uses the STATIC_HOST to create the URL, which is appropriate to fetch static content.
+canister_static_url_from_id() {
   : "If we have a canister ID, insert it into HOST as a subdomain."
-  test -z "${1:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${1}.,g"; }
+  test -z "${1:-}" || { static_host | sed -E "s,^(https?://)?,&${1}.,g"; }
+}
+
+# Gets the api URL for a canister based on its ID.
+# Uses the API_HOST to create the URL, which is appropriate for Candid API calls.
+canister_api_url_from_id() {
+  : "If we have a canister ID, insert it into HOST as a subdomain."
+  test -z "${1:-}" || { api_host | sed -E "s,^(https?://)?,&${1}.,g"; }
 }
 
 local_deployment_data="$(
@@ -45,7 +75,7 @@ local_deployment_data="$(
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(
-    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
+    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
   )"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
@@ -61,7 +91,7 @@ local_deployment_data="$(
   : "Try to find the SNS aggregator URL"
   : "- may be deployed locally"
   SNS_AGGREGATOR_URL="$(
-    canister_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
+    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
   )"
   export SNS_AGGREGATOR_URL
   test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
@@ -99,10 +129,11 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-json=$(jq -s --sort-keys '
+json=$(HOST=$(api_host) jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
+  .HOST=env.HOST |
   .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
   .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |

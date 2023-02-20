@@ -62,21 +62,6 @@ RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs
 COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
-# Start the second container
-FROM builder AS build
-SHELL ["bash", "-c"]
-ARG DFX_NETWORK=mainnet
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
-
-# Build
-# ... put only git-tracked files in the build directory
-COPY . /build
-WORKDIR /build
-RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
-RUN ./build.sh
-
-RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
-
 FROM builder AS build_frontend
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"

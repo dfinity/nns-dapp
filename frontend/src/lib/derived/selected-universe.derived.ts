@@ -2,13 +2,12 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import type { FeatureFlags } from "$lib/constants/environment.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
   selectableUniversesStore,
 } from "$lib/derived/selectable-universes.derived";
-import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+import { ENABLE_CKBTC_LEDGER } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
 import {
   isUniverseCkBTC,
@@ -41,13 +40,13 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Principal>, Readable<Page>, Readable<FeatureFlags>],
+  [Readable<Principal>, Readable<Page>, Readable<boolean>],
   Principal
 >(
-  [pageUniverseIdStore, pageStore, featureFlagsStore],
-  ([canisterId, page, featureFlags]) => {
+  [pageUniverseIdStore, pageStore, ENABLE_CKBTC_LEDGER],
+  ([canisterId, page, enableCkbtcLedger]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (featureFlags.ENABLE_CKBTC_LEDGER && pathSupportsCkBTC(page)) {
+    if (enableCkbtcLedger && pathSupportsCkBTC(page)) {
       return canisterId;
     }
 

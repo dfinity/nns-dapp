@@ -64,36 +64,24 @@
 </script>
 
 {#if isExpandable && hasChildren}
-  {#if collapsed}
-    <span
-      data-tid={testId}
-      class="key"
-      class:expanded={!collapsed}
-      class:collapsed
-      class:root
-      class:arrow={isExpandable && hasChildren}
-      role="button"
-      aria-label={$i18n.core.toggle}
-      tabindex="0"
-      on:click|stopPropagation={toggle}
-      >{keyLabel}
+  <button
+    data-tid={testId}
+    class="key"
+    class:expanded={!collapsed}
+    class:collapsed
+    class:root
+    class:arrow={isExpandable && hasChildren}
+    aria-label={$i18n.core.toggle}
+    tabindex="0"
+    on:click|stopPropagation={toggle}
+    >{keyLabel}
+    {#if collapsed}
       <span class="bracket">{openBracket} ... {closeBracket}</span>
-    </span>
-  {:else}
-    <!-- key -->
-    <span
-      data-tid={testId}
-      class="key"
-      class:expanded={!collapsed}
-      class:collapsed
-      class:root
-      class:arrow={isExpandable && hasChildren}
-      role="button"
-      aria-label={$i18n.core.toggle}
-      tabindex="0"
-      on:click|stopPropagation={toggle}
-      >{keyLabel}<span class="bracket open">{openBracket}</span></span
-    >
+    {:else}
+      <span class="bracket open">{openBracket}</span>
+    {/if}
+  </button>
+  {#if !collapsed}
     <!-- children -->
     <ul>
       {#each children as [key, value]}
