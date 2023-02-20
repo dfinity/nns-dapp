@@ -5,8 +5,8 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import {
   getOpenTicket,
-  initiateSnsSwapParticipation,
-  participateInSnsSwap,
+  initiateSnsSaleParticipation,
+  participateInSnsSale,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
@@ -31,19 +31,21 @@ import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 let getOpenTicketTicket: SnsTicket | undefined = undefined;
-const initiateSnsSwapParticipationTicket: SnsTicket | undefined = snsTicketMock(
+const initiateSnsSaleParticipationTicket: SnsTicket | undefined = snsTicketMock(
   { rootCanisterId: rootCanisterIdMock, owner: rootCanisterIdMock }
 );
 jest.mock("$lib/services/sns-sale.services", () => ({
   getOpenTicket: jest
     .fn()
     .mockImplementation(() => Promise.resolve(getOpenTicketTicket)),
-  initiateSnsSwapParticipation: jest
+  initiateSnsSaleParticipation: jest
     .fn()
     .mockImplementation(() =>
-      Promise.resolve(initiateSnsSwapParticipationTicket)
+      Promise.resolve(initiateSnsSaleParticipationTicket)
     ),
-  participateInSnsSwap: jest.fn(),
+  participateInSnsSale: jest
+    .fn()
+    .mockResolvedValue({ success: true, retry: false }),
 }));
 
 describe("ParticipateButton", () => {
@@ -60,8 +62,8 @@ describe("ParticipateButton", () => {
 
     beforeEach(() => {
       (getOpenTicket as jest.Mock).mockClear();
-      (initiateSnsSwapParticipation as jest.Mock).mockClear();
-      (participateInSnsSwap as jest.Mock).mockClear();
+      (initiateSnsSaleParticipation as jest.Mock).mockClear();
+      (participateInSnsSale as jest.Mock).mockClear();
     });
 
     it("should render a text to increase participation", () => {
@@ -137,12 +139,12 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(button.getAttribute("disabled")).not.toBeNull()
       );
-      expect(participateInSnsSwap).toBeCalledWith({
+      expect(participateInSnsSale).toBeCalledWith({
         ticket: getOpenTicketTicket,
       });
     });
 
-    it.only("should enable button if user has not committed max already", async () => {
+    it("should enable button if user has not committed max already", async () => {
       getOpenTicketTicket = {
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
@@ -160,7 +162,7 @@ describe("ParticipateButton", () => {
 
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
       expect(getOpenTicket).toBeCalled();
-      expect(participateInSnsSwap).not.toBeCalled();
+      expect(participateInSnsSale).not.toBeCalled();
     });
 
     it("should disable button if user has committed max already", () => {
