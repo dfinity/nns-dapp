@@ -14,6 +14,14 @@ use ic_cdk::api::call::CallResult;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Value { Int(candid::Int), Nat(candid::Nat), Blob(Vec<u8>), Text(String) }
 
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct UpgradeArgs {
+  pub  token_symbol: Option<String>,
+  pub  transfer_fee: Option<u64>,
+  pub  metadata: Option<Vec<(String,Value,)>>,
+  pub  token_name: Option<String>,
+}
+
 pub type Subaccount = Vec<u8>;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
@@ -38,6 +46,9 @@ pub struct InitArgs {
   pub  archive_options: InitArgs_archive_options,
   pub  token_name: String,
 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum LedgerArg { Upgrade(Option<UpgradeArgs>), Init(InitArgs) }
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
