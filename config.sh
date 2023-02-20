@@ -28,7 +28,7 @@ export DFX_NETWORK
 first_not_null() {
   for x in "$@"; do
     if [ "$x" != "null" ]; then
-      echo $x
+      echo "$x"
       return
     fi
   done
@@ -37,14 +37,14 @@ first_not_null() {
 
 static_host() {
   first_not_null \
-    $(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json) \
-    $(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)
+    "$(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
 }
 
 api_host() {
   first_not_null \
-    $(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json) \
-    $(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)
+    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
 }
 
 # Gets the static content URL for a canister based on its ID.
