@@ -55,10 +55,6 @@
     rootCanisterId === undefined ||
     $snsTicketsStore[rootCanisterId.toText()]?.ticket !== null;
 
-  // disabled if data not ready or busy
-  let disabled = true;
-  $: disabled = rootCanisterId === undefined || busy;
-
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
 
@@ -108,7 +104,7 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            {disabled}
+            disabled={busy}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
@@ -130,7 +126,7 @@
             <button
               class="primary"
               data-tid="sns-project-participate-button"
-              disabled>{$i18n.sns_project_detail.participate}</button
+              disabled>LOL{$i18n.sns_project_detail.participate}</button
             >
           </Tooltip>
         {/if}
