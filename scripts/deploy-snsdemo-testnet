@@ -59,7 +59,7 @@ RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network
 : TODO: Add the remaining canisters.
 for canister in ckbtc_ledger ckbtc_index; do
   dfx canister create "$canister" --network "$DFX_NETWORK"
-  case canister in
+  case "$canister" in
   ckbtc_ledger)
     : "We don't deploy the minter - yet - so use a fixed value"
     ckbtc_minter_canister_id=ml52i-qqaaa-aaaar-qaaba-cai
