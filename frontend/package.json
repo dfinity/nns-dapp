@@ -23,7 +23,7 @@
   },
   "engines": {
     "npm": ">=8.0.0 <9.0.0",
-    "node": ">=16.0.0 <17.0.0"
+    "node": ">=18.13.0 <19.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-inject": "^5.0.3",
