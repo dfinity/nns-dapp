@@ -53,3 +53,10 @@ dfx canister info sns_aggregator
 
 : Deploy the aggregator
 RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
+
+: Deploy the ckbtc canisters
+for canister in ckbtc_ledger ckbtc_index ; do
+	dfx canister create "$canister" --network "$DFX_NETWORK"
+	dfx canister install "$canister" --network "$DFX_NETWORK"
+done
+
