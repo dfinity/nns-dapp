@@ -74,7 +74,7 @@ local_deployment_data="$(
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(
-    canister_api_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
+    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
   )"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
