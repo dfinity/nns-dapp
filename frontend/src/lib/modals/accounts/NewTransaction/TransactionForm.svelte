@@ -18,7 +18,7 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
-  import SelectNetworkDropdown from "$lib/components/accounts/NetworkDropdown.svelte";
+  import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 
