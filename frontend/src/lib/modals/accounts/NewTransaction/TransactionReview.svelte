@@ -66,9 +66,7 @@
       <slot name="description" />
     </div>
 
-    <div class="additional-info">
-      <slot name="additional-info" />
-    </div>
+    <slot name="additional-info" />
   </div>
 
   <div class="toolbar">
@@ -117,9 +115,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .additional-info {
-    padding-top: var(--padding-2x);
   }
 </style>

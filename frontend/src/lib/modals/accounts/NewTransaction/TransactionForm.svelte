@@ -148,7 +148,6 @@
 
   <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    <slot name="additional-info" />
   </div>
 
   <div class="fee description">
@@ -159,6 +158,8 @@
       />
     </p>
   </div>
+
+  <slot name="additional-info" />
 
   <div class="toolbar">
     <button
