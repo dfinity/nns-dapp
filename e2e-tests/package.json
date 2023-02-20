@@ -7,6 +7,10 @@
     "lint": "npx tsc --noEmit true --project . && eslint --max-warnings 0 './**/*.{js,ts}'",
     "format": "prettier --write --plugin-search-dir=. ."
   },
+  "engines" : {
+    "npm" : ">=8.0.0 <9.0.0",
+    "node" : ">=16.0.0 <17.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@wdio/cli": "^7.16.13",
