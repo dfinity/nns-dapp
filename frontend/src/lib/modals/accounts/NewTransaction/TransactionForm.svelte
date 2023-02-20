@@ -104,6 +104,9 @@
   const goNext = () => {
     dispatcher("nnsNext");
   };
+
+  // TODO(GIX-1332): if destination address is selected, select corresponding network
+  // TODO: if network changes, reset destination address or display error?
 </script>
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
