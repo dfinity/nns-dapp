@@ -1,6 +1,6 @@
 # Network Nervous System Dapp
 
-The [NNS front-end Dapp](https://nns.ic0.app/) is a dapp that provides a user friendly way to interact with the NNS of the Internet Computer. With it, you can:
+The [NNS front-end Dapp](https://nns.internetcomputer.org/) is a dapp that provides a user friendly way to interact with the NNS of the Internet Computer. With it, you can:
 
 - Send/receive ICP
 - Stake neurons

@@ -5,7 +5,7 @@
 import { replaceHistory } from "$lib/utils/route.utils";
 
 describe("route-utils", () => {
-  const baseUrl = "https://nns.ic0.app/";
+  const baseUrl = "https://nns.internetcomputer.org/";
 
   it("should replace location", () => {
     const historyIndex = window.history.length - 1;

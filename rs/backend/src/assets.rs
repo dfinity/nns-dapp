@@ -218,6 +218,10 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                     if let Some(content_encoding_header) = content_encoding.header() {
                         headers.push(("Content-Encoding".to_string(), content_encoding_header.to_string()));
                     }
+                    // Assets within .well-known are used by II and should be accessible
+                    if request_path.starts_with("/.well-known") {
+                        headers.push(("Access-Control-Allow-Origin".to_string(), "*".to_string()));
+                    }
 
                     HttpResponse {
                         status_code: 200,
@@ -239,6 +243,18 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
     }
+    // ii-alternative-origins needs to be set as JSON even though it has no file extension
+    // https://internetcomputer.org/docs/current/developer-docs/integrations/internet-identity/alternative-origins#listing-origins
+    if request_path.ends_with("ii-alternative-origins") {
+        return Some("application/json");
+    }
+    // Mentioned here: https://github.com/dfinity/internet-identity/pull/1230
+    // If you follow the official docs https://github.com/r-birkner/portal/blob/rjb/custom-domains-docs-v2/docs/developer-docs/production/custom-domain/custom-domain.md#custom-domains-on-the-boundary-nodes
+    // The file is set to type octet-stream
+    if request_path.ends_with("ic-domains") {
+        return Some("application/octet-stream");
+    }
+
     request_path.split('.').last().and_then(|suffix| match suffix {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
