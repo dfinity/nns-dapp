@@ -14,7 +14,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<Ticket | undefined> => {
-  logWithTimestamp(`getOpenTicket call...`);
+  logWithTimestamp(`[sale]getOpenTicket call...`);
 
   const { getOpenTicket } = await wrapper({
     identity,
@@ -24,7 +24,7 @@ export const getOpenTicket = async ({
 
   const response = await getOpenTicket({});
 
-  logWithTimestamp(`getOpenTicket complete.`);
+  logWithTimestamp(`[sale]getOpenTicket complete.`);
 
   return response;
 };
@@ -40,7 +40,7 @@ export const newSaleTicket = async ({
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
 }): Promise<Ticket> => {
-  logWithTimestamp(`newSaleTicket call...`);
+  logWithTimestamp(`[sale]newSaleTicket call...`);
 
   const { newSaleTicket } = await wrapper({
     identity,
@@ -50,7 +50,7 @@ export const newSaleTicket = async ({
 
   const response = await newSaleTicket({ subaccount, amount_icp_e8s });
 
-  logWithTimestamp(`newSaleTicket complete.`);
+  logWithTimestamp(`[sale]newSaleTicket complete.`);
 
   return response;
 };

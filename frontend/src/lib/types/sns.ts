@@ -73,5 +73,5 @@ export interface SnsSwapCommitment {
 
 export interface SnsTicket {
   rootCanisterId: Principal;
-  ticket: Ticket | undefined;
+  ticket?: Ticket;
 }

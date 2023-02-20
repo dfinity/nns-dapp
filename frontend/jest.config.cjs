@@ -16,7 +16,7 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
   testEnvironmentOptions: {
-    url: "https://nns.ic0.app/",
+    url: "https://nns.internetcomputer.org/",
   },
   transformIgnorePatterns: [
     "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
