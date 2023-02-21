@@ -147,10 +147,7 @@ describe("ParticipateButton", () => {
     });
 
     it("should enable button if user has not committed max already", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: null,
-      });
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
 
       const { queryByTestId } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),

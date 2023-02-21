@@ -11,7 +11,7 @@ import {
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -25,7 +25,6 @@ import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../../mocks/sns.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
@@ -41,8 +40,7 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 jest.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: jest
-    .fn().mockResolvedValue(undefined),
+  initiateSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateSwapModal", () => {
@@ -130,10 +128,7 @@ describe("ParticipateSwapModal", () => {
 
   describe("when user has participated", () => {
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: null,
-      });
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
 
       const { getByTestId, container } = await renderEnter10ICPAndNext(
         mockSnsFullProject.swapCommitment
