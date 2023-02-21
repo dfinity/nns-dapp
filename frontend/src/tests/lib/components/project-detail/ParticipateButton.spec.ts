@@ -128,7 +128,7 @@ describe("ParticipateButton", () => {
       );
     });
 
-    it("should display spinner and disable button when there is no ticket state available", async () => {
+    it("should display spinner and disable button when there is loading", async () => {
       const { queryByTestId, container } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,

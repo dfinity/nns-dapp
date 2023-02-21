@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { createEventDispatcher, getContext, onDestroy } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -137,13 +137,6 @@
     // We allow the user to try to participate even though the swap commitment is not yet available.
     return undefined;
   };
-
-  onDestroy(() => {
-    const rootCanisterId = $projectDetailStore.summary?.rootCanisterId;
-    if (rootCanisterId === undefined) {
-      return;
-    }
-  });
 </script>
 
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->

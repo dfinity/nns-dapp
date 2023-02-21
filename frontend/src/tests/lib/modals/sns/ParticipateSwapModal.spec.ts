@@ -109,6 +109,7 @@ describe("ParticipateSwapModal", () => {
     });
 
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
       const { getByTestId, container } = await renderEnter10ICPAndNext();
 
       const confirmButton = getByTestId("transaction-button-execute");

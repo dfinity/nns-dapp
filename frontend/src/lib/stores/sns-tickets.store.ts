@@ -31,7 +31,7 @@ const initSnsTicketsStore = () => {
       ticket,
     }: {
       rootCanisterId: Principal;
-      ticket: Ticket | undefined | null;
+      ticket: Ticket;
     }) {
       update((currentState: SnsTicketsStore) => ({
         ...currentState,

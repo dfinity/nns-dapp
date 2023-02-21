@@ -80,11 +80,15 @@ export const loadOpenTicket = async ({
       certified,
     });
 
-    snsTicketsStore.setTicket({
-      rootCanisterId,
+    if (ticket === undefined) {
       // set explicitly null to mark the ticket absence
-      ticket: ticket ?? null,
-    });
+      snsTicketsStore.setNoTicket(rootCanisterId);
+    } else {
+      snsTicketsStore.setTicket({
+        rootCanisterId,
+        ticket,
+      });
+    }
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
