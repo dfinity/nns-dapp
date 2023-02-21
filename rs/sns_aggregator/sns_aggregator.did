@@ -38,4 +38,5 @@ service : (opt Config) -> {
   http_request : (HttpRequest) -> (HttpResponse) query;
   reconfigure : (opt Config) -> ();
   stable_data : () -> (text) query;
+  tail_log : (opt nat16) -> (text) query;
 }

@@ -5,6 +5,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   curl_test:
     runs-on: ubuntu-20.04
@@ -121,6 +124,15 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get logs
+        run: |
+          scripts/sns/aggregator/get_log > ,logs
+          LOG_LINES="$(wc -l <,logs)"
+          (( LOG_LINES > 10 )) || {
+            echo "ERROR: Expected a non-trivial number of lines to have been logged by now but found only ${LOG_LINES}"
+            cat ,logs
+            exit 1
           }
       - name: Stop replica
         run: dfx stop
