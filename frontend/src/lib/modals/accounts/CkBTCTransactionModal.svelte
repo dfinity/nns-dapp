@@ -12,12 +12,16 @@
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
+
+  let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   let currentStep: WizardStep;
 
@@ -35,6 +39,9 @@
       initiator: "accounts",
     });
 
+    // TODO: if selectedNetwork === bitcoin then convertCkBTCToBtc
+    // else ckBTCTransferTokens
+
     const { success } = await ckBTCTransferTokens({
       source: sourceAccount,
       destinationAddress,
@@ -49,6 +56,8 @@
       dispatcher("nnsTransfer");
     }
   };
+
+  // TODO(GIX-1330): display bitcoin transaction fee
 </script>
 
 <TransactionModal
@@ -59,10 +68,12 @@
   {token}
   {transactionFee}
   sourceAccount={selectedAccount}
+  mustSelectNetwork={$ENABLE_CKBTC_MINTER}
+  bind:selectedNetwork
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
-    {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+    {replacePlaceholders($i18n.accounts.ckbtc_transaction_description, {
       $token: token.symbol,
     })}
   </p>
