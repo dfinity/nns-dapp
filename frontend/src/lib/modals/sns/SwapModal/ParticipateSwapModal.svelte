@@ -14,7 +14,7 @@
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { getSwapAccount } from "$lib/services/sns.services";
   import type {
     NewTransaction,
@@ -27,7 +27,6 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
 
   const { store: projectDetailStore, reload } =
