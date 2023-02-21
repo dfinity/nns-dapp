@@ -149,6 +149,7 @@
     "send": "Send",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
+    "ckbtc_transaction_description": "$token Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -203,7 +204,11 @@
     "select": "Select",
     "manual": "Manual",
     "no_account_select": "No accounts to select",
-    "current_balance_detail": "Current balance: $amount $token"
+    "current_balance_detail": "Current balance: $amount $token",
+    "network": "Network",
+    "network_icp_ckbtc": "Internet Computer (ckBTC)",
+    "network_bitcoin": "Bitcoin (BTC)",
+    "select_network": "Select network"
   },
   "neurons": {
     "title": "Neurons",

@@ -17,10 +17,10 @@
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
-  import { isSignedIn } from "../../utils/auth.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { snsTicketsStore } from "../../stores/sns-tickets.store";
-  import { restoreSnsSaleParticipation } from "../../services/sns-sale.services";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
