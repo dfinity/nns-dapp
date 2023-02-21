@@ -3,42 +3,37 @@
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
-import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
+import * as authServices from "$lib/services/auth.services";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import { disburse } from "$lib/services/sns-neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { get } from "svelte/store";
+import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import {
-  mockAccountsStoreSubscribe,
-  mockMainAccount,
-  mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+  createMockIdentity,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "../../../mocks/sns-accounts.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../mocks/sns-projects.mock";
+import {
+  mockSnsNeuron,
+  mockSnsNeuronId,
+} from "../../../mocks/sns-neurons.mock";
+import { snsResponseFor } from "../../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    disburse: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
+jest.mock("$lib/api/sns-governance.api");
+jest.mock("$lib/services/sns-accounts.services");
 
-jest.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
+const testIdentity = createMockIdentity(37373);
 
 describe("DisburseSnsNeuronModal", () => {
   const principalString = `${mockSnsMainAccount.principal}`;
@@ -56,10 +51,11 @@ describe("DisburseSnsNeuronModal", () => {
     });
   };
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.resetAllMocks();
     jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
 
     jest
       .spyOn(accountsApi, "loadAccounts")
@@ -67,28 +63,18 @@ describe("DisburseSnsNeuronModal", () => {
         Promise.resolve({ main: mockMainAccount, subAccounts: [] })
       );
 
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
-  });
-
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
-
-  beforeEach(() => {
-    accountsStore.set({
-      ...get(accountsStore),
-      main: mockMainAccount,
-    });
-
     snsAccountsStore.setAccounts({
       rootCanisterId: mockPrincipal,
       accounts: [mockSnsMainAccount, mockSnsSubAccount],
       certified: true,
     });
 
-    (syncSnsAccounts as jest.Mock).mockClear();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockSnsMainAccount.principal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
   });
 
   it("should display modal", async () => {
@@ -118,7 +104,12 @@ describe("DisburseSnsNeuronModal", () => {
     expect(confirmButton).not.toBeNull();
 
     confirmButton && (await fireEvent.click(confirmButton));
-    expect(disburse).toBeCalled();
+    expect(snsGovernanceApi.disburse).toBeCalledTimes(1);
+    expect(snsGovernanceApi.disburse).toBeCalledWith({
+      rootCanisterId: mockSnsMainAccount.principal,
+      identity: testIdentity,
+      neuronId: mockSnsNeuronId,
+    });
   });
 
   it("should call reloadNeuron", async () => {
