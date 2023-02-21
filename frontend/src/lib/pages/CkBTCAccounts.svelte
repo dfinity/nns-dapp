@@ -8,7 +8,7 @@
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -21,7 +21,11 @@
       return;
     }
 
-    if (hasAccounts($icrcAccountsStore[selectedCkBTCUniverseId].accounts)) {
+    if (
+      hasAccounts(
+        $icrcAccountsStore[selectedCkBTCUniverseId.toText()]?.accounts ?? []
+      )
+    ) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;
@@ -33,13 +37,18 @@
   };
 
   $: (async () => syncAccounts($selectedCkBTCUniverseIdStore))();
+
+  let accounts: Account[] = [];
+  $: accounts = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
+    : [];
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
   {#if loading}
     <SkeletonCard size="medium" />
   {:else}
-    {#each $icrcAccountsStore.accounts ?? [] as account}
+    {#each accounts as account}
       <AccountCard
         role="link"
         on:click={() => goToWallet(account)}

@@ -10,6 +10,8 @@
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import type { TokenAmount } from "@dfinity/nns";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -18,17 +20,30 @@
   let canMakeTransactions = false;
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
-    hasAccounts($icrcAccountsStore[$selectedCkBTCUniverseIdStore].accounts) &&
-    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]) &&
-    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]);
+    hasAccounts(
+      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()].accounts
+    ) &&
+    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
+    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
+
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  let transactionFee: TokenAmount | undefined = undefined;
+  $: transactionFee = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 </script>
 
-{#if modal === "NewTransaction" && nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]) && nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore])}
+{#if modal === "NewTransaction" && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token) && nonNullish(transactionFee)}
   <CkBTCTransactionModal
     on:nnsClose={closeModal}
     on:nnsTransfer={closeModal}
-    token={$ckBTCTokenStore[$selectedCkBTCUniverseIdStore].token}
-    transactionFee={$ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]}
+    token={token.token}
+    {transactionFee}
+    universeId={$selectedCkBTCUniverseIdStore}
   />
 {/if}
 

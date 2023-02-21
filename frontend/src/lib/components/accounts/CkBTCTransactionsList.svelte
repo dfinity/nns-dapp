@@ -10,7 +10,9 @@
   } from "$lib/utils/icrc-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
+  export let universeId: UniverseCanisterId;
   export let account: Account;
 
   let loading = true;
@@ -19,6 +21,7 @@
     loading = true;
     await loadCkBTCAccountNextTransactions({
       account,
+      canisterId: universeId,
     });
     loading = false;
   };

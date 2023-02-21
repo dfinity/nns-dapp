@@ -9,6 +9,8 @@
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import type { TokenAmount } from "@dfinity/nns";
 
   export let data: CkBTCWalletTransactionModalData;
 
@@ -24,16 +26,22 @@
     reloadAccountFromStore();
     dispatcher("nnsClose");
   };
+
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = $ckBTCTokenStore[universeId.toText()];
+
+  let transactionFee: TokenAmount | undefined = undefined;
+  $: transactionFee = $ckBTCTokenFeeStore[universeId.toText()];
 </script>
 
-{#if nonNullish($ckBTCTokenStore[universeId]) && nonNullish($ckBTCTokenFeeStore[universeId])}
+{#if nonNullish(token) && nonNullish(transactionFee)}
   <CkBTCTransactionModal
     on:nnsClose
     on:nnsTransfer={onTransferReloadSelectedAccount}
     selectedAccount={account}
     loadTransactions
-    token={$ckBTCTokenStore[universeId].token}
-    transactionFee={$ckBTCTokenFeeStore[universeId]}
+    token={token.token}
+    {transactionFee}
     {universeId}
   />
 {/if}

@@ -68,7 +68,8 @@
       account: findAccount({
         identifier: accountIdentifier,
         accounts: nonNullish($selectedCkBTCUniverseIdStore)
-          ? $icrcAccountsStore[selectedCkBTCUniverseIdStore].accounts
+          ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]
+              ?.accounts ?? []
           : [],
       }),
       neurons: [],
@@ -88,7 +89,7 @@
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    if (hasAccounts($icrcAccountsStore[universeId].accounts)) {
+    if (hasAccounts($icrcAccountsStore[universeId.toText()]?.accounts ?? [])) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
@@ -137,9 +138,11 @@
   let canMakeTransactions = false;
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
-    hasAccounts($icrcAccountsStore[$selectedCkBTCUniverseIdStore].accounts) &&
-    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]) &&
-    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]);
+    hasAccounts(
+      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()].accounts
+    ) &&
+    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
+    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
 </script>
 
 <Island>
@@ -152,8 +155,11 @@
 
         <Separator />
 
-        {#if nonNullish($selectedAccountStore.account)}
-          <CkBTCTransactionsList account={$selectedAccountStore.account} />
+        {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
+          <CkBTCTransactionsList
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+          />
         {/if}
       {:else}
         <Spinner />

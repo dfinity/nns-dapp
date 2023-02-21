@@ -18,7 +18,7 @@
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
-  let universeId: UniverseCanisterId;
+  export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 

@@ -44,7 +44,7 @@
 
     try {
       // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      const btcAddress = await getBTCAddress();
+      const btcAddress = await getBTCAddress($selectedCkBTCUniverseIdStore);
 
       emit<CkBTCWalletModal>({
         message: "ckBTCWalletModal",

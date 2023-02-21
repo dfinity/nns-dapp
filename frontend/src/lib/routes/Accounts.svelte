@@ -25,7 +25,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
-  import { Universe } from "$lib/types/universe";
+  import type { Universe } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
