@@ -23,6 +23,13 @@ describe("snsTicketsStore", () => {
     expect($snsTicketsStore[mockPrincipal.toText()].ticket).toEqual(ticket);
   });
 
+  it("should set no-ticket for a project", () => {
+    snsTicketsStore.setNoTicket(mockPrincipal);
+
+    const $snsTicketsStore = get(snsTicketsStore);
+    expect($snsTicketsStore[mockPrincipal.toText()].ticket).toBeNull();
+  });
+
   it("should remove ticket for a project", () => {
     snsTicketsStore.setTicket({
       rootCanisterId: mockPrincipal,

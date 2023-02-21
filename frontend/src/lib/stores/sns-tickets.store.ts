@@ -41,6 +41,19 @@ const initSnsTicketsStore = () => {
       }));
     },
 
+    /**
+     * Mark that there is currently no open ticket in processing for the rootCanisterIndex
+     * @param rootCanisterId
+     */
+    setNoTicket(rootCanisterId: Principal) {
+      update((currentState: SnsTicketsStore) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          ticket: null,
+        },
+      }));
+    },
+
     // Used in tests
     reset() {
       set({});
