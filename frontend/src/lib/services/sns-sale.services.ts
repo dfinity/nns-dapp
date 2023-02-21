@@ -481,10 +481,9 @@ export const participateInSnsSale = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.error("[sale]error1", err);
+    console.error("[sale] on transfer", err);
 
     // Frontend should wait until time reaches ledger_time before retrying
-    // no error, just retry.
     if (err instanceof TxCreatedInFutureError) {
       const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
 

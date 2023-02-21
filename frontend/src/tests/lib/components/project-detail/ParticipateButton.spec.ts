@@ -27,8 +27,6 @@ import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
 import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
-let restoreSnsSaleParticipationTicket: SnsTicket | undefined = undefined;
-
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
 }));
