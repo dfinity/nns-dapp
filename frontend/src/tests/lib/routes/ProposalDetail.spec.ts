@@ -34,6 +34,7 @@ describe("ProposalDetail", () => {
   afterAll(jest.clearAllMocks);
 
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockSnsFullProject.rootCanisterId,

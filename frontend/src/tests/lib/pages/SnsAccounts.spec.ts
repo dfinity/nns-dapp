@@ -27,6 +27,7 @@ describe("SnsAccounts", () => {
   };
 
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockPrincipal,

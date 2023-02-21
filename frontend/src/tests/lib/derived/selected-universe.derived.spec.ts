@@ -26,6 +26,7 @@ import {
 
 describe("selected universe derived stores", () => {
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockSnsCanisterId,

@@ -2,6 +2,9 @@
  * @jest-environment jsdom
  */
 
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
@@ -55,6 +58,13 @@ describe("SnsNeurons", () => {
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: rootCanisterIdMock,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
   });
 
   afterEach(() => jest.clearAllMocks());

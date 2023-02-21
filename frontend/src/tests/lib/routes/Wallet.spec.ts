@@ -36,6 +36,7 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
 
 describe("Wallet", () => {
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockSnsFullProject.rootCanisterId,

@@ -20,6 +20,7 @@ import { snsResponseFor } from "../../../mocks/sns-response.mock";
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockPrincipal,

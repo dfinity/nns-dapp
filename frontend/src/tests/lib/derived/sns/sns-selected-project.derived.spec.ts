@@ -26,6 +26,7 @@ describe("selected sns project derived stores", () => {
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
+      snsQueryStore.reset();
       snsQueryStore.setData(
         snsResponseFor({
           principal: mockSnsCanisterId,

@@ -43,6 +43,7 @@ describe("SnsProposals", () => {
     )[0];
 
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockPrincipal,

@@ -37,6 +37,7 @@ describe("SnsWallet", () => {
   };
 
   beforeEach(() => {
+    snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
         principal: mockPrincipal,
