@@ -11,6 +11,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { get } from "svelte/store";
+import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
 export const loadCkBTCAccounts = async ({
   handleError,
@@ -56,10 +57,7 @@ export const ckBTCTransferTokens = async ({
   source,
   loadTransactions,
   ...rest
-}: {
-  source: Account;
-  destinationAddress: string;
-  amount: number;
+}: IcrcTransferTokensUserParams & {
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   const fee = get(ckBTCTokenStore)?.token.fee;
