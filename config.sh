@@ -175,8 +175,10 @@ VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
 VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
-echo "Config is available as JSON in '${JSON_OUT}'"
-echo "Frontend config has been defined in '${ENV_FILE}'" >&2
+{
+  echo "Config is available as JSON in '${JSON_OUT}'"
+  echo "Frontend config has been defined in '${ENV_FILE}'"
+} >&2
 
 IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
