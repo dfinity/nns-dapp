@@ -1,5 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {CKBTC_UNIVERSE_CANISTER_ID, CKTESTBTC_UNIVERSE_CANISTER_ID} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
@@ -15,5 +15,4 @@ export const isUniverseNns = (canisterId: Principal): boolean =>
   canisterId.toText() === OWN_CANISTER_ID.toText();
 
 export const isUniverseCkBTC = (canisterId: Principal | string): boolean =>
-  (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
-  CKBTC_UNIVERSE_CANISTER_ID.toText();
+  [CKBTC_UNIVERSE_CANISTER_ID.toText(), CKTESTBTC_UNIVERSE_CANISTER_ID.toText()].includes(typeof canisterId === "string" ? canisterId : canisterId.toText())

@@ -27,6 +27,21 @@ export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
     : MAINNET_CKBTC_INDEX_CANISTER_ID
 );
 
+// TODO: to be remove - ckBTCTest on mainnet
+
+export const CKTESTBTC_MINTER_CANISTER_ID = Principal.fromText(
+  "ml52i-qqaaa-aaaar-qaaba-cai"
+);
+
+export const CKTESTBTC_LEDGER_CANISTER_ID = Principal.fromText(
+  "mc6ru-gyaaa-aaaar-qaaaq-cai"
+);
+
+export const CKTESTBTC_INDEX_CANISTER_ID = Principal.fromText(
+  "q3fc5-haaaa-aaaaa-aaahq-cai"
+);
+
 // Universes
 
 export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;
+export const CKTESTBTC_UNIVERSE_CANISTER_ID = CKTESTBTC_LEDGER_CANISTER_ID;
