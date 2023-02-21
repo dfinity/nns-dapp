@@ -2,9 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { snsQueryStore } from "$lib/stores/sns.store";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
@@ -16,9 +13,11 @@ import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { mockStoreSubscribe } from "../../mocks/commont.mock";
@@ -29,6 +28,7 @@ import {
   createMockSnsNeuron,
 } from "../../mocks/sns-neurons.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
