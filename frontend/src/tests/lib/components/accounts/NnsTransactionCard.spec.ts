@@ -3,7 +3,6 @@
  */
 
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
-import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
@@ -18,6 +17,7 @@ import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "../../../mocks/transaction.mock";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("NnsTransactionCard", () => {
   const renderTransactionCard = (

@@ -3,7 +3,6 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
-import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { ICPToken } from "@dfinity/nns";
@@ -13,6 +12,7 @@ import {
   mockTransactionReceiveDataFromMain,
   mockTransactionSendDataFromMain,
 } from "../../../mocks/transaction.mock";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("TransactionCard", () => {
   const renderTransactionCard = (

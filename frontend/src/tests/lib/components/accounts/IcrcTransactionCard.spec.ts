@@ -4,7 +4,6 @@
 
 import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
-import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
@@ -19,6 +18,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (

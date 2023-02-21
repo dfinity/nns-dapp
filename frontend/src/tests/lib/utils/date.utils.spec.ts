@@ -7,9 +7,9 @@ import {
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
-import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
+import { normalizeWhitespace } from "../../utils/utils.test-utils";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {

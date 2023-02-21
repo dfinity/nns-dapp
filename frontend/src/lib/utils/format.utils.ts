@@ -54,6 +54,3 @@ export const shortenWithMiddleEllipsis = (
     ? `${text.slice(0, splitLength)}...${text.slice(-1 * splitLength)}`
     : text;
 };
-
-export const normalizeWhitespace = (text: string): string =>
-  text.replace(/\s+/g, " ");
