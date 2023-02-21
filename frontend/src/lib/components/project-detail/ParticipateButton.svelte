@@ -126,7 +126,7 @@
             <button
               class="primary"
               data-tid="sns-project-participate-button"
-              disabled>LOL{$i18n.sns_project_detail.participate}</button
+              disabled>{$i18n.sns_project_detail.participate}</button
             >
           </Tooltip>
         {/if}
