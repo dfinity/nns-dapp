@@ -50,7 +50,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
     ENABLE_SNS_VOTING: true,
     ENABLE_SNS_AGGREGATOR: true,
     ENABLE_CKBTC_LEDGER: true,
-    ENABLE_CKBTC_RECEIVE: true,
+    ENABLE_CKBTC_MINTER: true,
     TEST_FLAG_EDITABLE: true,
     TEST_FLAG_NOT_EDITABLE: true,
   },

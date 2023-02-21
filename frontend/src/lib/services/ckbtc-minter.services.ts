@@ -4,7 +4,7 @@ import {
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { i18n } from "$lib/stores/i18n";
-import { ApiErrorKey } from "$lib/types/api.errors";
+import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
@@ -25,27 +25,30 @@ export const updateBalance = async (): Promise<UpdateBalanceResult> => {
   try {
     return await updateBalanceAPI({ identity });
   } catch (err: unknown) {
-    const labels = get(i18n);
-
-    // Specific errors extending MinterGenericError. Therefore, we check them first.
-    if (err instanceof MinterTemporaryUnavailableError) {
-      throw new ApiErrorKey(
-        `${labels.error__ckbtc.temporary_unavailable} (${err.message})`
-      );
-    }
-
-    if (err instanceof MinterAlreadyProcessingError) {
-      throw new ApiErrorKey(labels.error__ckbtc.already_process);
-    }
-
-    if (err instanceof MinterNoNewUtxosError) {
-      throw new ApiErrorKey(labels.error__ckbtc.no_new_utxo);
-    }
-
-    if (err instanceof MinterGenericError) {
-      throw new ApiErrorKey(err.message);
-    }
+    throwUpdateBalanceError(err);
 
     throw err;
+  }
+};
+
+const throwUpdateBalanceError = (err: unknown) => {
+  const labels = get(i18n);
+
+  if (err instanceof MinterTemporaryUnavailableError) {
+    throw new CkBTCErrorKey(
+      `${labels.error__ckbtc.temporary_unavailable} (${err.message})`
+    );
+  }
+
+  if (err instanceof MinterAlreadyProcessingError) {
+    throw new CkBTCErrorKey(labels.error__ckbtc.already_process);
+  }
+
+  if (err instanceof MinterNoNewUtxosError) {
+    throw new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
+  }
+
+  if (err instanceof MinterGenericError) {
+    throw new CkBTCErrorKey(err.message);
   }
 };
