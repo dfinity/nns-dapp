@@ -14,17 +14,13 @@ import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../mocks/sns-projects.mock";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
+jest.mock("$lib/services/sns-accounts.services");
 
 describe("SnsAccounts", () => {
   const goToWallet = async () => {
@@ -32,10 +28,12 @@ describe("SnsAccounts", () => {
   };
 
   describe("when there are accounts in the store", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    beforeEach(() => {
+      snsAccountsStore.setAccounts({
+        rootCanisterId: mockPrincipal,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")
@@ -88,6 +86,9 @@ describe("SnsAccounts", () => {
           return () => undefined;
         });
     });
+
+    // This test seems wrong. I would expect that moving it to the group above
+    // should cause it to fail but it doesn't.
     it("should not render a token amount component nor zero", () => {
       const { container } = render(SnsAccounts, { props: { goToWallet } });
 

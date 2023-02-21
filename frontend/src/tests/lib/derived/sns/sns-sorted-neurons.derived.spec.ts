@@ -16,7 +16,10 @@ import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { createMockSnsNeuron } from "../../../mocks/sns-neurons.mock";
 
 describe("sortedSnsNeuronStore", () => {
-  afterEach(() => snsNeuronsStore.reset());
+  beforeEach(() => {
+    snsNeuronsStore.reset();
+  });
+
   it("returns an empty array if no neurons", () => {
     expect(get(snsSortedNeuronStore).length).toBe(0);
   });
