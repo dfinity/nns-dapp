@@ -188,7 +188,7 @@ export const loadSnsTotalCommitment = async ({
   });
 
 export const getSwapAccount = async (
-  swapCanisterId: Principal | undefined
+  swapCanisterId: Principal
 ): Promise<AccountIdentifier> => {
   const identity = await getAuthenticatedIdentity();
   return getSwapCanisterAccount({
