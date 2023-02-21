@@ -7,6 +7,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 
 export const pathSupportsCkBTC = ({ path }: Page): boolean =>
   isSelectedPath({
@@ -22,3 +23,10 @@ export const isUniverseCkBTC = (canisterId: Principal | string): boolean =>
     CKBTC_UNIVERSE_CANISTER_ID.toText(),
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
   ].includes(typeof canisterId === "string" ? canisterId : canisterId.toText());
+
+export const isUniverseCkTESTBTC = (
+  canisterId: Principal | string | undefined
+): boolean =>
+  nonNullish(canisterId) &&
+  (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
+    CKTESTBTC_UNIVERSE_CANISTER_ID.toText();

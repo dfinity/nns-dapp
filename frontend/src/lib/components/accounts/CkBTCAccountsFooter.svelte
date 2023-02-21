@@ -9,6 +9,7 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -16,7 +17,8 @@
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
-    hasAccounts($icrcAccountsStore.accounts) &&
+    nonNullish($selectedCkBTCUniverseIdStore) &&
+    hasAccounts($icrcAccountsStore[$selectedCkBTCUniverseIdStore].accounts) &&
     nonNullish($ckBTCTokenFeeStore) &&
     nonNullish($ckBTCTokenStore);
 </script>

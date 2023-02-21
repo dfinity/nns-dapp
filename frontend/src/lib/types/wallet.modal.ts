@@ -1,4 +1,5 @@
 import type { Account } from "$lib/types/account";
+import type { UniverseCanisterId } from "$lib/types/universe";
 
 // Nns
 export type WalletModalType = "rename" | "hw-list-neurons";
@@ -12,6 +13,7 @@ export type CkBTCWalletModalType = "ckbtc-receive" | "ckbtc-transaction";
 
 export interface CkBTCWalletModalData {
   account: Account;
+  universeId: UniverseCanisterId;
 }
 
 export interface CkBTCWalletTransactionModalData extends CkBTCWalletModalData {

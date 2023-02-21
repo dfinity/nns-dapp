@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
@@ -7,22 +6,33 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isNullish } from "@dfinity/utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
 
-  onMount(async () => {
-    if (hasAccounts($icrcAccountsStore.accounts)) {
+  const syncAccounts = async (
+    selectedCkBTCUniverseId: UniverseCanisterId | undefined
+  ) => {
+    if (isNullish(selectedCkBTCUniverseId)) {
+      return;
+    }
+
+    if (hasAccounts($icrcAccountsStore[selectedCkBTCUniverseId].accounts)) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;
     }
 
     loading = true;
-    await syncCkBTCAccounts({});
+    await syncCkBTCAccounts({ universeId: selectedCkBTCUniverseId });
     loading = false;
-  });
+  };
+
+  $: (async () => syncAccounts($selectedCkBTCUniverseIdStore))();
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">

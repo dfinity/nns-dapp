@@ -1,20 +1,22 @@
 import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import { get } from "svelte/store";
 
 export const loadCkBTCToken = async ({
   handleError,
+  universeId,
 }: {
   handleError?: () => void;
+  universeId: UniverseCanisterId;
 }) => {
   // Currently we assume the token metadata does not change that often and might never change while the session is active
   // That's why, we load the token for a project only once as long as its data is already certified
   const storeData = get(tokensStore);
-  if (storeData[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.certified) {
+  if (storeData[universeId.toText()]?.certified) {
     return;
   }
 
@@ -23,11 +25,12 @@ export const loadCkBTCToken = async ({
       getCkBTCToken({
         identity,
         certified,
+        canisterId: universeId,
       }),
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({
         certified,
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        canisterId: universeId,
         token,
       }),
     onError: ({ error: err, certified }) => {
@@ -42,7 +45,7 @@ export const loadCkBTCToken = async ({
       });
 
       // Hide unproven data
-      tokensStore.resetUniverse(CKBTC_UNIVERSE_CANISTER_ID);
+      tokensStore.resetUniverse(universeId);
 
       handleError?.();
     },

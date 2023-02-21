@@ -8,13 +8,15 @@
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
   export let data: CkBTCWalletTransactionModalData;
 
+  let universeId: UniverseCanisterId;
   let account: Account;
   let reloadAccountFromStore: () => void;
 
-  $: ({ account, reloadAccountFromStore } = data);
+  $: ({ account, reloadAccountFromStore, universeId } = data);
 
   const dispatcher = createEventDispatcher();
 
@@ -32,5 +34,6 @@
     loadTransactions
     token={$ckBTCTokenStore.token}
     transactionFee={$ckBTCTokenFeeStore}
+    {universeId}
   />
 {/if}

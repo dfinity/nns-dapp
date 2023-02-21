@@ -23,7 +23,7 @@ const loadCkBTCAccountsBalance = (
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,
-        data: {
+        accounts: {
           accounts,
           certified,
         },

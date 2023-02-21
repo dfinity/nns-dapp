@@ -854,6 +854,7 @@ interface I18nError__ckbtc {
   temporary_unavailable: string;
   get_btc_address: string;
   get_btc_no_account: string;
+  get_btc_no_universe: string;
   update_balance: string;
   withdrawal_account: string;
   retrieve_btc: string;

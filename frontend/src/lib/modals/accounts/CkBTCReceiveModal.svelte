@@ -18,14 +18,16 @@
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCWalletReceiveModalData } from "$lib/types/wallet.modal";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
   export let data: CkBTCWalletReceiveModalData;
 
+  let universeId: UniverseCanisterId;
   let account: Account;
   let btcAddress: string;
   let reloadAccount: () => Promise<void>;
 
-  $: ({ account, btcAddress, reloadAccount } = data);
+  $: ({ account, btcAddress, reloadAccount, universeId } = data);
 
   let bitcoinSegmentId = Symbol();
   let ckBTCSegmentId = Symbol();
@@ -60,7 +62,7 @@
     });
 
     try {
-      await updateBalanceService();
+      await updateBalanceService(universeId);
 
       await reloadAccount();
 

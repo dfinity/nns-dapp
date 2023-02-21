@@ -13,7 +13,8 @@
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
-  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
+   import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
@@ -25,6 +26,14 @@
     if (isNullish($store.account)) {
       toastsError({
         labelKey: "error__ckbtc.get_btc_no_account",
+      });
+      return;
+    }
+
+    // Button is disabled if no universe anyway
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
       });
       return;
     }
@@ -41,7 +50,12 @@
         message: "ckBTCWalletModal",
         detail: {
           type: "ckbtc-receive",
-          data: { btcAddress, account: $store.account, reloadAccount },
+          data: {
+            btcAddress,
+            account: $store.account,
+            reloadAccount,
+            universeId: $selectedCkBTCUniverseIdStore,
+          },
         },
       });
     } catch (err: unknown) {
@@ -63,29 +77,50 @@
       return;
     }
 
+    // Button is disabled if no universe anyway
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
+      });
+      return;
+    }
+
     emit<CkBTCWalletModal>({
       message: "ckBTCWalletModal",
       detail: {
         type: "ckbtc-transaction",
-        data: { account: $store.account, reloadAccountFromStore },
+        data: {
+          account: $store.account,
+          reloadAccountFromStore,
+          universeId: $selectedCkBTCUniverseIdStore,
+        },
       },
     });
   };
+
+  let disableButton = true;
+  $: disableButton =
+    isNullish($store.account) ||
+    isNullish($selectedCkBTCUniverseIdStore) ||
+    $busy;
+
+  let minter = false;
+  $: minter = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);
 </script>
 
-<Footer columns={$ENABLE_CKBTC_MINTER ? 2 : 1}>
+<Footer columns={minter ? 2 : 1}>
   <button
     class="primary"
     on:click={openSend}
-    disabled={isNullish($store.account) || $busy}
+    disabled={disableButton}
     data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
   >
 
-  {#if $ENABLE_CKBTC_MINTER}
+  {#if minter}
     <button
       class="secondary"
       on:click={openReceive}
-      disabled={isNullish($store.account) || $busy}
+      disabled={disableButton}
       data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
     >
   {/if}

@@ -12,12 +12,13 @@
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
-  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
+  let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
@@ -47,6 +48,7 @@
       destinationAddress,
       amount,
       loadTransactions,
+      universeId,
     });
 
     stopBusy("accounts");
@@ -61,14 +63,14 @@
 </script>
 
 <TransactionModal
-  rootCanisterId={CKBTC_UNIVERSE_CANISTER_ID}
+  rootCanisterId={universeId}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
   {token}
   {transactionFee}
   sourceAccount={selectedAccount}
-  mustSelectNetwork={$ENABLE_CKBTC_MINTER}
+  mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
   bind:selectedNetwork
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>

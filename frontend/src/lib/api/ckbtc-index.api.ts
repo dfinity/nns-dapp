@@ -4,24 +4,25 @@ import type {
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
 import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
-import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { IcrcIndexCanister } from "@dfinity/ledger";
+import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCTransactions = async ({
   identity,
+  canisterId,
   ...rest
 }: Omit<
   GetTransactionsParams,
-  "getTransactions" | "canisterId"
+  "getTransactions"
 >): Promise<GetTransactionsResponse> => {
   logWithTimestamp("Getting ckBTC accounts transactions: call...");
 
   const {
     canister: { getTransactions },
-  } = await ckBTCIndexCanister({ identity });
+  } = await ckBTCIndexCanister({ identity, canisterId });
 
   const results = await getIcrcTransactions({
     identity,
@@ -36,8 +37,10 @@ export const getCkBTCTransactions = async ({
 
 const ckBTCIndexCanister = async ({
   identity,
+  canisterId,
 }: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<{
   canister: IcrcIndexCanister;
   agent: HttpAgent;
@@ -49,7 +52,7 @@ const ckBTCIndexCanister = async ({
 
   const canister = IcrcIndexCanister.create({
     agent,
-    canisterId: CKBTC_INDEX_CANISTER_ID,
+    canisterId,
   });
 
   return {

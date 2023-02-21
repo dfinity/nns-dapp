@@ -14,7 +14,10 @@ interface IcrcAccounts {
 type IcrcAccountStoreData = Record<UniverseCanisterIdText, IcrcAccounts>;
 
 export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
-  set: (params: { data: IcrcAccounts; universeId: UniverseCanisterId }) => void;
+  set: (params: {
+    accounts: IcrcAccounts;
+    universeId: UniverseCanisterId;
+  }) => void;
   reset: () => void;
 }
 
@@ -31,15 +34,15 @@ export const initIcrcAccountsStore = (): IcrcAccountsStore => {
     subscribe,
 
     set: ({
-      data,
+      accounts,
       universeId,
     }: {
-      data: IcrcAccounts;
+      accounts: IcrcAccounts;
       universeId: UniverseCanisterId;
     }) => {
       update((currentState: IcrcAccountStoreData) => ({
         ...currentState,
-        [universeId.toText()]: data,
+        [universeId.toText()]: accounts,
       }));
     },
 
