@@ -129,9 +129,9 @@ RUN ./build-sns-aggregator.sh
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
+COPY --from=configurator /build/deployment-config.json /
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
-COPY --from=build_frontend /build/deployment-config.json /
 COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
