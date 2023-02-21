@@ -61,11 +61,10 @@ const extractStartScript = (htmlFile) => {
   const indexHtml = readFileSync(htmlFile, "utf-8");
 
   const svelteKitStartScript =
-    /(<script type=\"module\" data-sveltekit-hydrate[\s\S]*?>)([\s\S]*?)(<\/script>)/gm;
+    /(<script>)([\s\S]*?)(<\/script>)/gm;
 
   // 1. extract SvelteKit start script to a separate main.js file
-  const [_script, _scriptStartTag, content, _scriptEndTag] =
-    svelteKitStartScript.exec(indexHtml);
+  const [_script, _scriptStartTag, content, _scriptEndTag] = svelteKitStartScript.exec(indexHtml);
   const inlineScript = content.replace(/^\s*/gm, "");
 
   // Each file needs its own main.js because the script that calls the SvelteKit start function contains information dedicated to the route
