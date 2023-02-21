@@ -162,7 +162,32 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
+                serde_json::to_string(&slow_data).unwrap_or_default()
+            });
+            let asset = Asset {
+                headers: Vec::new(),
+                bytes: json_data.into_bytes(),
+            };
+            insert_asset(path, asset);
+        }
+        // Update the page containing this SNS
+        {
+            let pagenum = upstream_data.index / State::PAGE_SIZE;
+            let path = format!("{prefix}/sns/list/page/{pagenum}/slow.json");
+            let json_data = STATE.with(|s| {
+                let slow_data: Vec<_> = s
+                    .stable
+                    .borrow()
+                    .sns_cache
+                    .borrow()
+                    .upstream_data
+                    .values()
+                    .skip((pagenum * State::PAGE_SIZE) as usize)
+                    .take(State::PAGE_SIZE as usize)
+                    .map(SlowSnsData::from)
+                    .collect();
+                crate::state::log(format!("Page {pagenum} has {} entries.", slow_data.len()));
+                serde_json::to_string(&slow_data).unwrap_or_default()
             });
             let asset = Asset {
                 headers: Vec::new(),
