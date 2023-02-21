@@ -65,7 +65,14 @@ fn tail_log(limit: Option<u16>) -> String {
     let limit = limit.unwrap_or(200) as usize;
     STATE.with(|state| {
         let to_serialize: &VecDeque<String> = &(*state.log.borrow());
-        to_serialize.iter().rev().take(limit).rev().cloned().collect::<Vec<_>>().join("\n")
+        to_serialize
+            .iter()
+            .rev()
+            .take(limit)
+            .rev()
+            .cloned()
+            .collect::<Vec<_>>()
+            .join("\n")
     })
 }
 
