@@ -1,7 +1,5 @@
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import {

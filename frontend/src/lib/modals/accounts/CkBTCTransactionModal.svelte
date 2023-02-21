@@ -8,10 +8,10 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;

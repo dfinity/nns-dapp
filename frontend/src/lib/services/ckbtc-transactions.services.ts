@@ -1,5 +1,5 @@
 import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
   loadIcrcAccountNextTransactions,
   loadIcrcAccountTransactions,

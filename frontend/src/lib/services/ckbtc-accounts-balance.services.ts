@@ -1,5 +1,5 @@
 import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";

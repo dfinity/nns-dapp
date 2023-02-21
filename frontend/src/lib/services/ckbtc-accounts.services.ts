@@ -1,5 +1,5 @@
 import { ckBTCTransfer, getCkBTCAccounts } from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
