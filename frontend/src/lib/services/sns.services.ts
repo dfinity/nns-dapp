@@ -1,4 +1,5 @@
 import {
+  querySnsDerivedState,
   querySnsMetadata,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
@@ -16,6 +17,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -148,6 +150,38 @@ export const loadSnsSwapCommitment = async ({
         );
 
         onError?.();
+      }
+    },
+    logMessage: "Syncing Sns swap commitment",
+  });
+
+export const loadSnsTotalCommitment = async ({
+  rootCanisterId,
+}: {
+  rootCanisterId: string;
+}) =>
+  queryAndUpdate<SnsGetDerivedStateResponse | undefined, unknown>({
+    request: ({ certified, identity }) =>
+      querySnsDerivedState({
+        rootCanisterId,
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: derivedState }) => {
+      if (derivedState !== undefined) {
+        snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
+      }
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified) {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.load_sale_total_commitments",
+          })
+        );
       }
     },
     logMessage: "Syncing Sns swap commitment",
