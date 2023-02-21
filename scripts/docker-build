@@ -13,7 +13,6 @@ DFX_NETWORK=${DFX_NETWORK:-mainnet}
 export DFX_NETWORK
 ./config.sh
 
-
 # This should have been deleted.  There was a PR for that.
 case "$DFX_NETWORK" in
 mainnet)

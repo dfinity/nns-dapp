@@ -3,10 +3,10 @@ set -euo pipefail
 TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Verify that we have the configuration
-test  -e frontend/.env || {
-	echo "ERROR: Building the frontend requires a config file."
-	echo "       Please create the config file by running config.sh."
-	exit 1
+test -e frontend/.env || {
+  echo "ERROR: Building the frontend requires a config file."
+  echo "       Please create the config file by running config.sh."
+  exit 1
 } >&2
 
 ###################
