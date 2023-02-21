@@ -185,8 +185,8 @@ describe("sns-api", () => {
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
-  describe("getOpenTicket", () => {
-    it("should return a ticket", async () => {
+  describe("loadOpenTicket", () => {
+    it("Should load ticket in the store", async () => {
       await loadOpenTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         certified: true,
@@ -239,7 +239,7 @@ describe("sns-api", () => {
 
   describe("newSaleTicket", () => {
     it("should create newSaleTicket", async () => {
-      const result = await newSaleTicket({
+      await newSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -390,7 +390,7 @@ describe("sns-api", () => {
   });
 
   describe("initiateSnsSaleParticipation", () => {
-    it("It should display a busy screen, create a ticket, participate and hide busy screen", async () => {
+    it("It should start successful participation flow", async () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
@@ -417,14 +417,14 @@ describe("sns-api", () => {
       });
 
       expect(startBusySpy).toBeCalledTimes(1);
-      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledWith(
         expect.objectContaining({
           amount_icp_e8s: 100000000n,
         })
       );
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
-      expect(postprocessSpy).toBeCalled();
+      expect(postprocessSpy).toBeCalledTimes(1);
       expect(stopBusySpy).toBeCalledTimes(1);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);

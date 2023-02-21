@@ -14,7 +14,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<Ticket | undefined> => {
-  logWithTimestamp(`[sale]getOpenTicket call...`);
+  logWithTimestamp(`[sale] getOpenTicket call...`);
 
   const { getOpenTicket } = await wrapper({
     identity,
@@ -24,7 +24,7 @@ export const getOpenTicket = async ({
 
   const response = await getOpenTicket({});
 
-  logWithTimestamp(`[sale]getOpenTicket complete.`);
+  logWithTimestamp(`[sale] getOpenTicket complete.`);
 
   return response;
 };

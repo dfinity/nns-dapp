@@ -87,7 +87,9 @@
   let accepted: boolean;
 
   let busy = true;
-  $: busy = hasOpenTicketInProcess($projectDetailStore?.summary.rootCanisterId);
+  $: busy = hasOpenTicketInProcess(
+    $projectDetailStore?.summary?.rootCanisterId
+  );
 
   const dispatcher = createEventDispatcher();
   const participate = async ({
