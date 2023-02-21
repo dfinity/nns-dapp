@@ -32,6 +32,8 @@
   import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -139,10 +141,15 @@
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
     hasAccounts(
-      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()].accounts
+      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
     ) &&
     nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
     nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 </script>
 
 <Island>
@@ -155,10 +162,11 @@
 
         <Separator />
 
-        {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
+        {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
           <CkBTCTransactionsList
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
+            {canisters}
           />
         {/if}
       {:else}

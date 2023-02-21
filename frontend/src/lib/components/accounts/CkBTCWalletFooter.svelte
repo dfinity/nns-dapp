@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import {
     WALLET_CONTEXT_KEY,
     type CkBTCWalletContext,
@@ -15,11 +15,18 @@
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
   const { store, reloadAccount, reloadAccountFromStore }: CkBTCWalletContext =
     context;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 
   const openReceive = async () => {
     // Button is disabled if no account anyway
@@ -31,7 +38,7 @@
     }
 
     // Button is disabled if no universe anyway
-    if (isNullish($selectedCkBTCUniverseIdStore)) {
+    if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
       toastsError({
         labelKey: "error__ckbtc.get_btc_no_universe",
       });
@@ -44,7 +51,7 @@
 
     try {
       // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      const btcAddress = await getBTCAddress($selectedCkBTCUniverseIdStore);
+      const btcAddress = await getBTCAddress(canisters.minterCanisterId);
 
       emit<CkBTCWalletModal>({
         message: "ckBTCWalletModal",
@@ -55,6 +62,7 @@
             account: $store.account,
             reloadAccount,
             universeId: $selectedCkBTCUniverseIdStore,
+            canisters,
           },
         },
       });
@@ -78,7 +86,7 @@
     }
 
     // Button is disabled if no universe anyway
-    if (isNullish($selectedCkBTCUniverseIdStore)) {
+    if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
       toastsError({
         labelKey: "error__ckbtc.get_btc_no_universe",
       });
@@ -93,6 +101,7 @@
           account: $store.account,
           reloadAccountFromStore,
           universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
         },
       },
     });
@@ -102,7 +111,8 @@
   $: disableButton =
     isNullish($store.account) ||
     isNullish($selectedCkBTCUniverseIdStore) ||
-    $busy;
+    isNullish(canisters);
+  $busy;
 
   let minter = false;
   $: minter = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);

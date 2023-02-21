@@ -4,8 +4,8 @@ import {
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { i18n } from "$lib/stores/i18n";
+import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
-import type { UniverseCanisterId } from "$lib/types/universe";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
@@ -16,19 +16,19 @@ import {
 import { get } from "svelte/store";
 
 export const getBTCAddress = async (
-  universeId: UniverseCanisterId
+  minterCanisterId: CanisterId
 ): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
-  return getBTCAddressAPI({ identity, canisterId: universeId });
+  return getBTCAddressAPI({ identity, canisterId: minterCanisterId });
 };
 
 export const updateBalance = async (
-  universeId: UniverseCanisterId
+  minterCanisterId: CanisterId
 ): Promise<UpdateBalanceResult> => {
   const identity = await getAuthenticatedIdentity();
 
   try {
-    return await updateBalanceAPI({ identity, canisterId: universeId });
+    return await updateBalanceAPI({ identity, canisterId: minterCanisterId });
   } catch (err: unknown) {
     throwUpdateBalanceError(err);
 

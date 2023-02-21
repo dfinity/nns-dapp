@@ -1,3 +1,4 @@
+import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { WithdrawalAccount } from "@dfinity/ckbtc";
 import {
@@ -33,7 +34,11 @@ export const convertCkBTCToBtc = async ({
   amount,
   source,
   universeId,
-}: IcrcTransferTokensUserParams & { universeId: UniverseCanisterId }): Promise<{
+  canisters: { minterCanisterId, indexCanisterId },
+}: IcrcTransferTokensUserParams & {
+  universeId: UniverseCanisterId;
+  canisters: CkBTCAdditionalCanisters;
+}): Promise<{
   success: boolean;
 }> => {
   const identity = await getAuthenticatedIdentity();
@@ -41,7 +46,10 @@ export const convertCkBTCToBtc = async ({
   let account: WithdrawalAccount | undefined;
 
   try {
-    account = await getWithdrawalAccount({ identity, canisterId: universeId });
+    account = await getWithdrawalAccount({
+      identity,
+      canisterId: minterCanisterId,
+    });
   } catch (err: unknown) {
     toastsError(
       toToastError({
@@ -69,6 +77,7 @@ export const convertCkBTCToBtc = async ({
     destinationAddress: ledgerAddress,
     loadTransactions: false,
     universeId,
+    indexCanisterId,
   });
 
   if (!transferSuccess) {
@@ -82,7 +91,7 @@ export const convertCkBTCToBtc = async ({
       identity,
       address: bitcoinAddress,
       amount: numberToE8s(amount),
-      canisterId: universeId,
+      canisterId: minterCanisterId,
     });
   } catch (err: unknown) {
     toastsError(toastRetrieveBtcError(err));
@@ -92,6 +101,7 @@ export const convertCkBTCToBtc = async ({
     await loadCkBTCAccountTransactions({
       account: source,
       canisterId: universeId,
+      indexCanisterId,
     });
   }
 

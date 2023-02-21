@@ -12,12 +12,14 @@
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
+  export let canisters: CkBTCAdditionalCanisters;
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
@@ -49,6 +51,7 @@
       amount,
       loadTransactions,
       universeId,
+      indexCanisterId: canisters.indexCanisterId,
     });
 
     stopBusy("accounts");

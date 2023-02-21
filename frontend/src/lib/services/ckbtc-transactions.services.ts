@@ -1,26 +1,41 @@
 import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
+import type {
+  GetTransactionsParams,
+  GetTransactionsResponse,
+} from "$lib/api/icrc-index.api";
 import {
   loadIcrcAccountNextTransactions,
   loadIcrcAccountTransactions,
   type LoadIcrcAccountNextTransactions,
   type LoadIcrcAccountTransactionsParams,
 } from "$lib/services/icrc-transactions.services";
+import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
-export const loadCkBTCAccountTransactions = async (
-  params: Pick<
-    LoadIcrcAccountTransactionsParams,
-    "account" | "start" | "canisterId"
-  >
-) =>
+export const loadCkBTCAccountTransactions = async ({
+  indexCanisterId,
+  ...params
+}: Pick<LoadIcrcAccountTransactionsParams, "account" | "start" | "canisterId"> &
+  Pick<CkBTCAdditionalCanisters, "indexCanisterId">) =>
   loadIcrcAccountTransactions({
     ...params,
-    getTransactions: getCkBTCTransactions,
+    getTransactions: (
+      params: Omit<GetTransactionsParams, "getTransactions" | "canisterId">
+    ): Promise<GetTransactionsResponse> =>
+      getCkBTCTransactions({ ...params, indexCanisterId }),
   });
 
-export const loadCkBTCAccountNextTransactions = async (
-  params: Pick<LoadIcrcAccountNextTransactions, "account" | "canisterId">
-) =>
+export const loadCkBTCAccountNextTransactions = async ({
+  indexCanisterId,
+  ...params
+}: Pick<LoadIcrcAccountNextTransactions, "account" | "canisterId"> &
+  Pick<CkBTCAdditionalCanisters, "indexCanisterId">) =>
   loadIcrcAccountNextTransactions({
     ...params,
-    loadAccountTransactions: loadCkBTCAccountTransactions,
+    loadAccountTransactions: (
+      params: Omit<LoadIcrcAccountTransactionsParams, "getTransactions">
+    ) =>
+      loadCkBTCAccountTransactions({
+        ...params,
+        indexCanisterId,
+      }),
   });

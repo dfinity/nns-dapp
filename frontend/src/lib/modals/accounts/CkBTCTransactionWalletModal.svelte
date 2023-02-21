@@ -11,14 +11,16 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import type { TokenAmount } from "@dfinity/nns";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
   export let data: CkBTCWalletTransactionModalData;
 
+  let canisters: CkBTCAdditionalCanisters;
   let universeId: UniverseCanisterId;
   let account: Account;
   let reloadAccountFromStore: () => void;
 
-  $: ({ account, reloadAccountFromStore, universeId } = data);
+  $: ({ account, reloadAccountFromStore, universeId, canisters } = data);
 
   const dispatcher = createEventDispatcher();
 
@@ -43,5 +45,6 @@
     token={token.token}
     {transactionFee}
     {universeId}
+    {canisters}
   />
 {/if}

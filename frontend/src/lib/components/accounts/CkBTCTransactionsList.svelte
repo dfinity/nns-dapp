@@ -9,9 +9,10 @@
     isIcrcTransactionsCompleted,
   } from "$lib/utils/icrc-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
-  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
+  export let canisters: CkBTCAdditionalCanisters;
   export let universeId: UniverseCanisterId;
   export let account: Account;
 
@@ -22,6 +23,7 @@
     await loadCkBTCAccountNextTransactions({
       account,
       canisterId: universeId,
+      indexCanisterId: canisters.indexCanisterId,
     });
     loading = false;
   };
@@ -31,14 +33,14 @@
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
     store: $icrcTransactionsStore,
-    canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+    canisterId: universeId,
     account,
   });
 
   let completed: boolean;
   $: completed = isIcrcTransactionsCompleted({
     store: $icrcTransactionsStore,
-    canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+    canisterId: universeId,
     account,
   });
 </script>

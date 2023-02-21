@@ -12,12 +12,11 @@ import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCTransactions = async ({
   identity,
-  canisterId,
+  indexCanisterId: canisterId,
   ...rest
-}: Omit<
-  GetTransactionsParams,
-  "getTransactions"
->): Promise<GetTransactionsResponse> => {
+}: Omit<GetTransactionsParams, "getTransactions" | "canisterId"> & {
+  indexCanisterId: Principal;
+}): Promise<GetTransactionsResponse> => {
   logWithTimestamp("Getting ckBTC accounts transactions: call...");
 
   const {

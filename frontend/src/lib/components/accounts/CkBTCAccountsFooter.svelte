@@ -12,6 +12,8 @@
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import type { TokenAmount } from "@dfinity/nns";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -21,7 +23,7 @@
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
     hasAccounts(
-      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()].accounts
+      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
     ) &&
     nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
     nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
@@ -35,15 +37,21 @@
   $: transactionFee = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 </script>
 
-{#if modal === "NewTransaction" && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token) && nonNullish(transactionFee)}
+{#if modal === "NewTransaction" && nonNullish(canisters) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token) && nonNullish(transactionFee)}
   <CkBTCTransactionModal
     on:nnsClose={closeModal}
     on:nnsTransfer={closeModal}
     token={token.token}
     {transactionFee}
     universeId={$selectedCkBTCUniverseIdStore}
+    {canisters}
   />
 {/if}
 
