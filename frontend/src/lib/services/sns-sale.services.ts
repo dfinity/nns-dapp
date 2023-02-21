@@ -2,6 +2,7 @@ import { ledgerCanister } from "$lib/api/ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
+  notifyPaymentFailure,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import { querySnsSwapState } from "$lib/api/sns.api";
@@ -23,6 +24,7 @@ import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import type { Identity } from "@dfinity/agent";
 import type { TokenAmount } from "@dfinity/nns";
 import {
   InsufficientFundsError,
@@ -401,6 +403,79 @@ export const initiateSnsSaleParticipation = async ({
   stopBusy("project-participate");
 };
 
+const notifyParticipationAndRemoveTicket = async ({
+  rootCanisterId,
+  identity,
+  hasTooOldError,
+  ticket,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  hasTooOldError: boolean;
+  ticket: Ticket;
+}): Promise<{ success: boolean }> => {
+  const {
+    canisterIds: { swapCanisterId },
+    notifyParticipation: notifyParticipationApi,
+  } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  try {
+    logWithTimestamp("[sale] 2. refresh_buyer_tokens");
+    const controller = identity.getPrincipal();
+    // endpoint: refresh_buyer_tokens
+    const { icp_accepted_participation_e8s } = await notifyParticipationApi({
+      buyer: controller.toText(),
+    });
+
+    // current_committed ≠ ticket.amount
+    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
+      toastsShow({
+        level: "warn",
+        labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        substitutions: {
+          $amount: formatToken({ value: icp_accepted_participation_e8s }),
+        },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
+      });
+    }
+  } catch (err) {
+    console.error("[sale]notifyParticipation", err);
+
+    // TODO(sale): how to get it?
+    const icError = false;
+
+    // ignore all ic errors in TooOldError mode
+    if (!hasTooOldError || !icError) {
+      // unexpected error (probably sale is closed)
+      toastsError({
+        labelKey: "error__sns.sns_sale_unexpected_error",
+      });
+
+      // enable participate button
+      snsTicketsStore.setNoTicket(rootCanisterId);
+
+      return { success: false };
+    }
+  }
+
+  if (hasTooOldError) {
+    try {
+      await notifyPaymentFailure({
+        identity,
+        rootCanisterId,
+      });
+    } catch (err) {
+      console.error("[sale] notifyPaymentFailure", err);
+    }
+  }
+
+  return { success: true };
+};
+
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -421,6 +496,7 @@ export const participateInSnsSale = async ({
   rootCanisterId: Principal;
   postprocess: () => Promise<void>;
 }): Promise<void> => {
+  let hasTooOldError = false;
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   // skip if there is no more ticket (e.g. on retry)
   if (isNullish(ticket)) {
@@ -518,68 +594,35 @@ export const participateInSnsSale = async ({
         labelKey = "error__sns.ledger_insufficient_funds";
       }
 
-      // after 24h ledger returns TxTooOldError
       if (err instanceof TxTooOldError) {
-        labelKey = "error__sns.ledger_too_old";
-        /*
-        TODO(sale): implement plan A. (find the way to differentiate between internal and external errors)
-        (check snsTicketsStore.setNoTicket(rootCanisterId))?
+        /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
+         * - continue the flow
+         *  - refresh_buyer_tokens // internal errors are ignored
+         *  - notify_payment_failure
+         */
+        hasTooOldError = true;
+      } else {
+        toastsError({
+          labelKey,
+          err,
+        });
 
-        plan A. on TxTooOldError
-            refresh_buyer_tokens // internal errors are ignored
-            notify_payment_failure
+        // enable participate button
+        snsTicketsStore.setNoTicket(rootCanisterId);
 
-        plan B.
-           ledger balance (accountIdentifier) > swap user balance
-            refresh_buy to delete the ticket
-            // message: success message but about the previous participation
-           else
-            notify_payment_failure // to remove the ticket
-            // error: the previous participation failed
-        */
+        return;
       }
-
-      toastsError({
-        labelKey,
-        err,
-      });
-
-      // enable participate button
-      snsTicketsStore.setNoTicket(rootCanisterId);
-
-      return;
     }
   }
 
-  try {
-    logWithTimestamp("[sale] 2. refresh_buyer_tokens");
-    // endpoint: refresh_buyer_tokens
-    const { icp_accepted_participation_e8s } = await notifyParticipation({
-      buyer: controller.toText(),
-    });
+  const { success } = await notifyParticipationAndRemoveTicket({
+    rootCanisterId,
+    identity,
+    hasTooOldError,
+    ticket,
+  });
 
-    // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
-      toastsShow({
-        level: "warn",
-        labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
-        substitutions: {
-          $amount: formatToken({ value: icp_accepted_participation_e8s }),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-    }
-  } catch (err) {
-    console.error("[sale]notifyParticipation", err);
-
-    // unexpected error (probably sale is closed)
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
-    });
-
-    // enable participate button
-    snsTicketsStore.setNoTicket(rootCanisterId);
-
+  if (!success) {
     return;
   }
 
