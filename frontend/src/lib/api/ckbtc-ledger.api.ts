@@ -5,7 +5,7 @@ import {
   icrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
-import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";

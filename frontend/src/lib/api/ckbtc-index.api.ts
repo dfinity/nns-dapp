@@ -4,7 +4,7 @@ import type {
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
 import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
-import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";

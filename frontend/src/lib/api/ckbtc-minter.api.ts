@@ -1,5 +1,5 @@
 import { createAgent } from "$lib/api/agent.api";
-import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
