@@ -16,10 +16,12 @@ describe("currentSnsTokenLabelStore", () => {
     lifecycles: [SnsSwapLifecycle.Open],
     certified: true,
   });
-  afterEach(() => {
+
+  beforeEach(() => {
     snsQueryStore.reset();
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
+
   it("returns token symbol of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
