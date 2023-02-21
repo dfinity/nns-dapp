@@ -1,8 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
-import type { CkBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import type { IcrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   snsAccountsStore,
   type SnsAccountsStore,
@@ -23,19 +22,25 @@ export type UniversesAccountsBalanceReadableStore = Record<
 >;
 
 export const universesAccountsBalance = derived<
-  [AccountsStore, SnsAccountsStore, CkBTCAccountsStore],
+  [AccountsStore, SnsAccountsStore, IcrcAccountsStore],
   UniversesAccountsBalanceReadableStore
 >(
-  [accountsStore, snsAccountsStore, ckBTCAccountsStore],
-  ([$accountsStore, $snsAccountsStore, $ckBTCAccountsStore]) => ({
+  [accountsStore, snsAccountsStore, icrcAccountsStore],
+  ([$accountsStore, $snsAccountsStore, $icrcAccountsStore]) => ({
     [OWN_CANISTER_ID_TEXT]: {
       balance: sumNnsAccounts($accountsStore),
       certified: $accountsStore.certified ?? false,
     },
-    [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-      balance: sumAccounts($ckBTCAccountsStore.accounts),
-      certified: $ckBTCAccountsStore.certified,
-    },
+    ...Object.entries($icrcAccountsStore).reduce(
+      (acc, [canisterId, { accounts, certified }]) => ({
+        ...acc,
+        [canisterId]: {
+          balance: sumAccounts(accounts),
+          certified,
+        },
+      }),
+      {}
+    ),
     ...Object.entries($snsAccountsStore).reduce(
       (acc, [rootCanisterId, { accounts, certified }]) => ({
         ...acc,

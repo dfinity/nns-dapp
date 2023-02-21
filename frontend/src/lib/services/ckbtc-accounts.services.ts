@@ -5,7 +5,7 @@ import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -22,7 +22,7 @@ export const loadCkBTCAccounts = async ({
     request: ({ certified, identity }) =>
       getCkBTCAccounts({ identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
-      ckBTCAccountsStore.set({
+      icrcAccountsStore.set({
         accounts,
         certified,
       }),
@@ -34,7 +34,7 @@ export const loadCkBTCAccounts = async ({
       }
 
       // hide unproven data
-      ckBTCAccountsStore.reset();
+      icrcAccountsStore.reset();
       icrcTransactionsStore.resetUniverse(CKBTC_UNIVERSE_CANISTER_ID);
 
       toastsError(

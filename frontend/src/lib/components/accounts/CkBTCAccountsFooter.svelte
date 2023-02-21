@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
@@ -16,7 +16,7 @@
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
-    hasAccounts($ckBTCAccountsStore.accounts) &&
+    hasAccounts($icrcAccountsStore.accounts) &&
     nonNullish($ckBTCTokenFeeStore) &&
     nonNullish($ckBTCTokenStore);
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
@@ -13,7 +13,7 @@
   let loading = false;
 
   onMount(async () => {
-    if (hasAccounts($ckBTCAccountsStore.accounts)) {
+    if (hasAccounts($icrcAccountsStore.accounts)) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;
@@ -29,7 +29,7 @@
   {#if loading}
     <SkeletonCard size="medium" />
   {:else}
-    {#each $ckBTCAccountsStore.accounts ?? [] as account}
+    {#each $icrcAccountsStore.accounts ?? [] as account}
       <AccountCard
         role="link"
         on:click={() => goToWallet(account)}

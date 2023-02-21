@@ -12,7 +12,7 @@
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { setContext } from "svelte/internal";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
-  import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { nonNullish } from "@dfinity/utils";
   import {
     loadCkBTCAccounts,
@@ -61,7 +61,7 @@
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
-        accounts: $ckBTCAccountsStore.accounts,
+        accounts: $icrcAccountsStore.accounts,
       }),
       neurons: [],
     });
@@ -78,7 +78,7 @@
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    if (hasAccounts($ckBTCAccountsStore.accounts)) {
+    if (hasAccounts($icrcAccountsStore.accounts)) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
@@ -120,7 +120,7 @@
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
-    hasAccounts($ckBTCAccountsStore.accounts) &&
+    hasAccounts($icrcAccountsStore.accounts) &&
     nonNullish($ckBTCTokenFeeStore) &&
     nonNullish($ckBTCTokenStore);
 </script>

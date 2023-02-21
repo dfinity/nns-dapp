@@ -29,6 +29,8 @@ export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
 
 // TODO: to be remove - ckBTCTest on mainnet
 
+// Source: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/testnet/canister_ids.json
+
 export const CKTESTBTC_MINTER_CANISTER_ID = Principal.fromText(
   "ml52i-qqaaa-aaaar-qaaba-cai"
 );
@@ -38,7 +40,7 @@ export const CKTESTBTC_LEDGER_CANISTER_ID = Principal.fromText(
 );
 
 export const CKTESTBTC_INDEX_CANISTER_ID = Principal.fromText(
-  "q3fc5-haaaa-aaaaa-aaahq-cai"
+  "mm444-5iaaa-aaaar-qaabq-cai"
 );
 
 // Universes

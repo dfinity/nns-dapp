@@ -15,36 +15,26 @@ import {
 import type { Universe } from "$lib/types/universe";
 import { isUniverseCkBTC, pathSupportsCkBTC } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
+import {ckBTCUniversesStore} from "$lib/derived/ckbtc-universes.derived";
 
 export const NNS_UNIVERSE: Universe = {
   canisterId: OWN_CANISTER_ID_TEXT,
 };
 
-const CKBTC_UNIVERSE: Universe = {
-  canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-};
-
-const CKTESTBTC_UNIVERSE: Universe = {
-  canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
-};
-
 const universesStore = derived<
   [
     Readable<SnsFullProject[] | undefined>,
-    Readable<boolean>,
-    Readable<boolean>
+    Readable<Universe[]>,
   ],
   Universe[]
 >(
-  [snsProjectsCommittedStore, ENABLE_CKBTC_LEDGER, ENABLE_CKBTC_RECEIVE],
-  ([projects, $ENABLE_CKBTC_LEDGER, $ENABLE_CKBTC_RECEIVE]: [
+  [snsProjectsCommittedStore, ckBTCUniversesStore],
+  ([projects, ckBTCUniverses]: [
     SnsFullProject[] | undefined,
-    boolean,
-    boolean
+      Universe[],
   ]) => [
     NNS_UNIVERSE,
-    ...($ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
-    ...($ENABLE_CKBTC_RECEIVE ? [CKTESTBTC_UNIVERSE] : []),
+    ...ckBTCUniverses,
     ...(projects?.map(({ rootCanisterId, summary }) => ({
       canisterId: rootCanisterId.toText(),
       summary,
