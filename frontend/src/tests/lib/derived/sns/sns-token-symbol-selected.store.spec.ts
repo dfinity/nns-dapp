@@ -13,7 +13,7 @@ import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("currentSnsTokenLabelStore", () => {
   const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Open],
+    lifecycles: [SnsSwapLifecycle.Committed],
     certified: true,
   });
 

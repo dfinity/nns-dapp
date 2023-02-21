@@ -13,11 +13,27 @@ import {
   selectedUniverseIdStore,
 } from "$lib/derived/selected-universe.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
+import {
+  mockSnsCanisterId,
+  mockSnsCanisterIdText,
+} from "../../mocks/sns.api.mock";
 
 describe("selected universe derived stores", () => {
+  beforeEach(() => {
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockSnsCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
+  });
+
   describe("isNnsUniverseStore", () => {
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
@@ -95,6 +111,20 @@ describe("selected universe derived stores", () => {
       expect($store1).toEqual(OWN_CANISTER_ID);
 
       page.mock({ data: { universe: "invalid-principal" } });
+
+      const $store2 = get(selectedUniverseIdStore);
+      expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());
+    });
+
+    it("returns OWN_CANISTER_ID if context is not a selectable universe", () => {
+      const unselectableUniverse = Principal.fromText(
+        "fzm72-3zdem-rsgiz-cgirs-gmy"
+      );
+      const $store1 = get(selectedUniverseIdStore);
+
+      expect($store1).toEqual(OWN_CANISTER_ID);
+
+      page.mock({ data: { universe: unselectableUniverse.toText() } });
 
       const $store2 = get(selectedUniverseIdStore);
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());

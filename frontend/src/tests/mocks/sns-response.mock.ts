@@ -61,6 +61,15 @@ const mergeSnsResponses = (
   return [metadata, swapState];
 };
 
+export const snsResponsesFor = (
+  params: {
+    principal: Principal;
+    lifecycle: SnsSwapLifecycle;
+    certified?: boolean;
+  }[]
+): [QuerySnsMetadata[], QuerySnsSwapState[]] =>
+  mergeSnsResponses(params.map(snsResponseFor));
+
 export const snsResponsesForLifecycle = ({
   certified = false,
   lifecycles,

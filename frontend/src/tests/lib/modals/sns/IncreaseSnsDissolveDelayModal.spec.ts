@@ -8,10 +8,12 @@ import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDi
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
@@ -25,6 +27,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "../../../mocks/sns-neurons.mock";
+import { snsResponseFor } from "../../../mocks/sns-response.mock";
 
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/services/sns-parameters.services");
@@ -70,6 +73,14 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       rootCanisterId: mockPrincipal,
       parameters: snsNervousSystemParametersMock,
     });
+
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
