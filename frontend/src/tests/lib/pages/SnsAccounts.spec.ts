@@ -29,6 +29,7 @@ describe("SnsAccounts", () => {
 
   describe("when there are accounts in the store", () => {
     beforeEach(() => {
+      snsAccountsStore.reset();
       snsAccountsStore.setAccounts({
         rootCanisterId: mockPrincipal,
         accounts: [mockSnsMainAccount],
