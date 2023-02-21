@@ -238,17 +238,25 @@ describe("sns-api", () => {
   });
 
   describe("newSaleTicket", () => {
-    it("should create newSaleTicket", async () => {
+    it("should call newSaleTicket api", async () => {
       await newSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
+    });
+
+    it("should add new ticket to the store", async () => {
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
       expect(ticketFromStore()?.ticket).toEqual(testTicket);
     });
 
-    it("should display sale-closed error", async () => {
+    it("should handle sale-closed error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED,
@@ -294,7 +302,7 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(testTicket);
     });
 
-    it("should display invalid user amount error", async () => {
+    it("should handle invalid user amount error", async () => {
       const min_amount_icp_e8s_included = 123n;
       const max_amount_icp_e8s_included = 321n;
       spyOnNewSaleTicketApi.mockRejectedValue(
@@ -325,7 +333,7 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display invalid sub-account error", async () => {
+    it("should handle invalid sub-account error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT,
@@ -346,7 +354,7 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display retry later error", async () => {
+    it("should handle retry later error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED,
@@ -367,7 +375,7 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display unknown error for all other error types", async () => {
+    it("should handle unknown errors", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: "dummy type" as unknown as NewSaleTicketResponseErrorType,
@@ -390,7 +398,7 @@ describe("sns-api", () => {
   });
 
   describe("initiateSnsSaleParticipation", () => {
-    it("It should start successful participation flow", async () => {
+    it("should start successful participation flow", async () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
