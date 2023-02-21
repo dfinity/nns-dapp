@@ -21,6 +21,7 @@
   import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -51,9 +52,7 @@
 
   // busy if open ticket is available or not requested
   let busy = true;
-  $: busy =
-    rootCanisterId === undefined ||
-    $snsTicketsStore[rootCanisterId.toText()]?.ticket !== null;
+  $: busy = hasOpenTicketInProcess(rootCanisterId);
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;

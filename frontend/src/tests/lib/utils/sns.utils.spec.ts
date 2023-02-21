@@ -7,6 +7,8 @@ import {
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
+import { hasOpenTicketInProcess } from "../../../lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -20,8 +22,13 @@ import {
   principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+import { snsTicketMock } from "../../mocks/sns.mock";
 
 describe("sns-utils", () => {
+  beforeEach(() => {
+    snsTicketsStore.reset();
+  });
+
   describe("concat sns summaries", () => {
     it("should return empty for undefined summary", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
@@ -233,6 +240,40 @@ describe("sns-utils", () => {
         },
       };
       expect(getCommitmentE8s(commitment)).toBeUndefined();
+    });
+  });
+
+  describe("hasOpenTicketInProcess", () => {
+    const testTicket = snsTicketMock({
+      rootCanisterId: rootCanisterIdMock,
+      owner: mockPrincipal,
+    }).ticket;
+
+    it("returns true when the ticket is undefined", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+      });
+
+      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeTruthy();
+    });
+
+    it("returns true when there is an open ticket in the store", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+
+      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeTruthy();
+    });
+
+    it("returns false the open ticket is null (processed)", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: null,
+      });
+
+      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeFalsy();
     });
   });
 });

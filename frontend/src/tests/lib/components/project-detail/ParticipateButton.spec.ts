@@ -5,7 +5,7 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
-import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { snsTicketsStore } from "../../../../lib/stores/sns-tickets.store";
