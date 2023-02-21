@@ -10,14 +10,18 @@ import {
 import * as accountsServices from "$lib/services/accounts.services";
 import {
   initiateSnsSaleParticipation,
+  loadOpenTicket,
   newSaleTicket,
   participateInSnsSale,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
@@ -38,12 +42,9 @@ import {
   SnsSwapLifecycle,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import { loadOpenTicket } from "../../../lib/services/sns-sale.services";
-import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
-import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
-import { formatToken } from "../../../lib/utils/token.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
@@ -73,6 +74,10 @@ jest.mock("$lib/api/agent.api", () => {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
 });
+
+jest.mock("$lib/constants/sns.constants", () => ({
+  SALE_PARTICIPATION_RETRY_SECONDS: 1,
+}));
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
@@ -634,10 +639,18 @@ describe("sns-api", () => {
         postprocess: jest.fn().mockResolvedValue(undefined),
       });
 
-      // TODO(sale): mock retry time and test it's being requested more then once
-
       expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnToastsError).not.toBeCalled();
+
+      await waitFor(() => expect(spyOnToastsShow).toHaveBeenCalledTimes(2), {
+        timeout: 2000,
+      });
+
+      expect(spyOnToastsShow).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_retry_in",
+        })
+      );
+
       // the ticket should stay in the store
       expect(ticketFromStore().ticket).toEqual(testTicket);
     });
