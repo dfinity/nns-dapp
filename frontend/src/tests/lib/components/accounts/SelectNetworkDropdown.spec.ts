@@ -51,6 +51,9 @@ describe("SelectNetworkDropdown", () => {
   it("should bind select to selected network", async () => {
     const { getByTestId, container } = render(SelectNetworkDropdownTest);
 
+    const optionDefault = container.querySelector("option[disabled]");
+    expect(optionDefault).not.toBeNull();
+
     const selectElement = getByTestId(
       "select-network-dropdown"
     ) as HTMLSelectElement | null;
