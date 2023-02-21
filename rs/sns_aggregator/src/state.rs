@@ -130,16 +130,6 @@ impl State {
                 }
             });
         }
-        // Add this to the list of values from upstream
-        STATE.with(|state| {
-            state
-                .stable
-                .borrow()
-                .sns_cache
-                .borrow_mut()
-                .upstream_data
-                .insert(root_canister_id, upstream_data.clone());
-        });
         // Adds the logo
         {
             let path = format!("{prefix}/sns/root/{root_canister_str}/logo.{LOGO_FMT}");
