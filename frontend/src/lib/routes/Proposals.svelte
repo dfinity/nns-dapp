@@ -6,18 +6,18 @@
   import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { nonNullish } from "@dfinity/utils";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
 
   export let referrerPath: AppPath | undefined = undefined;
 </script>
 
 <main>
-  {#if $featureFlagsStore.ENABLE_SNS_VOTING}
+  {#if $ENABLE_SNS_VOTING}
     <SummaryUniverse />
   {/if}
-  {#if $isNnsUniverseStore || !$featureFlagsStore.ENABLE_SNS_VOTING}
+  {#if $isNnsUniverseStore || !$ENABLE_SNS_VOTING}
     <Proposals {referrerPath} />
-  {:else if nonNullish($snsProjectSelectedStore) && $featureFlagsStore.ENABLE_SNS_VOTING}
+  {:else if nonNullish($snsProjectSelectedStore) && $ENABLE_SNS_VOTING}
     <SnsProposals />
   {/if}
 </main>

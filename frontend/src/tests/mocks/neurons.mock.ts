@@ -26,7 +26,7 @@ export const mockFullNeuron: Neuron = {
   followees: [],
 };
 
-export const createMockFullNeuron = (id: number | BigInt) => {
+export const createMockFullNeuron = (id: number | bigint) => {
   if (typeof id === "number") {
     id = BigInt(id);
   }
@@ -49,7 +49,7 @@ export const mockNeuron: NeuronInfo = {
   fullNeuron: mockFullNeuron,
 };
 
-export const createMockNeuron = (id: number | BigInt) => {
+export const createMockNeuron = (id: number | bigint) => {
   if (typeof id === "number") {
     id = BigInt(id);
   }
@@ -66,7 +66,7 @@ export const mockKnownNeuron: KnownNeuron = {
   description: undefined,
 };
 
-export const createMockKnownNeuron = (id: number | BigInt) => {
+export const createMockKnownNeuron = (id: number | bigint) => {
   if (typeof id === "number") {
     id = BigInt(id);
   }

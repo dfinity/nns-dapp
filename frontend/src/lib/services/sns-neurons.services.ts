@@ -236,7 +236,6 @@ export const getSnsNeuron = async ({
 };
 
 // Implement when SNS neurons can be controlled with Hardware wallets
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getSnsNeuronIdentity = (): Promise<Identity> =>
   getAuthenticatedIdentity();
 

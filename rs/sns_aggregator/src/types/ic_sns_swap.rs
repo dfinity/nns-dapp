@@ -42,21 +42,7 @@ pub struct ErrorRefundIcpResponse { result: Option<Result> }
 pub struct finalize_swap_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct GovernanceError { error_message: String, error_type: i32 }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Response { governance_error: Option<GovernanceError> }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterCallError { code: Option<i32>, description: String }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Possibility { Ok(Response), Err(CanisterCallError) }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct SettleCommunityFundParticipationResult {
-  pub  possibility: Option<Possibility>,
-}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct FailedUpdate {
@@ -68,31 +54,51 @@ pub struct FailedUpdate {
 pub struct SetDappControllersResponse { failed_updates: Vec<FailedUpdate> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Possibility_1 { Ok(SetDappControllersResponse), Err(CanisterCallError) }
+pub enum Possibility { Ok(SetDappControllersResponse), Err(CanisterCallError) }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct SetDappControllersCallResult { possibility: Option<Possibility_1> }
+pub struct SetDappControllersCallResult { possibility: Option<Possibility> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Possibility_2 { Err(CanisterCallError) }
+pub struct GovernanceError { error_message: String, error_type: i32 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Response { governance_error: Option<GovernanceError> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Possibility_1 { Ok(Response), Err(CanisterCallError) }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct SettleCommunityFundParticipationResult {
+  pub  possibility: Option<Possibility_1>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Possibility_2 { Ok, Err(CanisterCallError) }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetModeCallResult { possibility: Option<Possibility_2> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct SweepResult { failure: u32, skipped: u32, success: u32 }
+pub struct SweepResult {
+  pub  failure: u32,
+  pub  skipped: u32,
+  pub  invalid: u32,
+  pub  success: u32,
+  pub  global_failures: u32,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct FinalizeSwapResponse {
+  pub  set_dapp_controllers_call_result: Option<SetDappControllersCallResult>,
   pub  settle_community_fund_participation_result: Option<
     SettleCommunityFundParticipationResult
   >,
   pub  error_message: Option<String>,
-  pub  set_dapp_controllers_result: Option<SetDappControllersCallResult>,
-  pub  sns_governance_normal_mode_enabled: Option<SetModeCallResult>,
-  pub  sweep_icp: Option<SweepResult>,
-  pub  sweep_sns: Option<SweepResult>,
-  pub  create_neuron: Option<SweepResult>,
+  pub  set_mode_call_result: Option<SetModeCallResult>,
+  pub  sweep_icp_result: Option<SweepResult>,
+  pub  claim_neuron_result: Option<SweepResult>,
+  pub  sweep_sns_result: Option<SweepResult>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -146,32 +152,60 @@ pub struct CanisterStatusResultV2 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_state_arg0 {}
+pub struct get_derived_state_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct NeuronAttributes { dissolve_delay_seconds: u64, memo: u64 }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct CfInvestment { hotkey_principal: String, nns_neuron_id: u64 }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DirectInvestment { buyer_principal: String }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Investor { CommunityFund(CfInvestment), Direct(DirectInvestment) }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct SnsNeuronRecipe {
-  pub  sns: Option<TransferableAmount>,
-  pub  neuron_attributes: Option<NeuronAttributes>,
-  pub  investor: Option<Investor>,
+pub struct GetDerivedStateResponse {
+  pub  sns_tokens_per_icp: Option<f64>,
+  pub  buyer_total_icp_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
+pub struct get_init_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
+pub struct GetInitResponse { init: Option<Init> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_lifecycle_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetLifecycleResponse {
+  pub  decentralization_sale_open_timestamp_seconds: Option<u64>,
+  pub  lifecycle: Option<i32>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_open_ticket_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Icrc1Account {
+  pub  owner: Option<candid::Principal>,
+  pub  subaccount: Option<Vec<u8>>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Ticket {
+  pub  creation_time: u64,
+  pub  ticket_id: u64,
+  pub  account: Option<Icrc1Account>,
+  pub  amount_icp_e8s: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Ok_1 { ticket: Option<Ticket> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Err_1 { error_type: Option<i32> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Result_1 { Ok(Ok_1), Err(Err_1) }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetOpenTicketResponse { result: Option<Result_1> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_sale_parameters_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct NeuronBasketConstructionParameters {
@@ -189,13 +223,47 @@ pub struct Params {
   pub  swap_due_timestamp_seconds: u64,
   pub  min_participants: u32,
   pub  sns_token_e8s: u64,
+  pub  sale_delay_seconds: Option<u64>,
   pub  max_participant_icp_e8s: u64,
   pub  min_icp_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetSaleParametersResponse { params: Option<Params> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_state_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronAttributes { dissolve_delay_seconds: u64, memo: u64 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct CfInvestment { hotkey_principal: String, nns_neuron_id: u64 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DirectInvestment { buyer_principal: String }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Investor { CommunityFund(CfInvestment), Direct(DirectInvestment) }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct SnsNeuronRecipe {
+  pub  sns: Option<TransferableAmount>,
+  pub  claimed_status: Option<i32>,
+  pub  neuron_attributes: Option<NeuronAttributes>,
+  pub  investor: Option<Investor>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Swap {
   pub  neuron_recipes: Vec<SnsNeuronRecipe>,
+  pub  decentralization_sale_open_timestamp_seconds: Option<u64>,
   pub  finalize_swap_in_progress: Option<bool>,
   pub  cf_participants: Vec<CfParticipant>,
   pub  init: Option<Init>,
@@ -210,6 +278,57 @@ pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: 
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListCommunityFundParticipantsRequest {
+  pub  offset: Option<u64>,
+  pub  limit: Option<u32>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListCommunityFundParticipantsResponse {
+  pub  cf_participants: Vec<CfParticipant>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListDirectParticipantsRequest { offset: Option<u32>, limit: Option<u32> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Participant {
+  pub  participation: Option<BuyerState>,
+  pub  participant_id: Option<candid::Principal>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListDirectParticipantsResponse { participants: Vec<Participant> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListSnsNeuronRecipesRequest { offset: Option<u64>, limit: Option<u32> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ListSnsNeuronRecipesResponse { sns_neuron_recipes: Vec<SnsNeuronRecipe> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NewSaleTicketRequest { subaccount: Option<Vec<u8>>, amount_icp_e8s: u64 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct InvalidUserAmount {
+  pub  min_amount_icp_e8s_included: u64,
+  pub  max_amount_icp_e8s_included: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Err_2 {
+  pub  invalid_user_amount: Option<InvalidUserAmount>,
+  pub  existing_ticket: Option<Ticket>,
+  pub  error_type: i32,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Result_2 { Ok(Ok_1), Err(Err_2) }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NewSaleTicketResponse { result: Option<Result_2> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct OpenRequest {
@@ -259,9 +378,51 @@ impl SERVICE{
   ) -> CallResult<(CanisterStatusResultV2,)> {
     ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
   }
+  pub async fn get_derived_state(
+    &self,
+    arg0: get_derived_state_arg0,
+  ) -> CallResult<(GetDerivedStateResponse,)> {
+    ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
+  }
+  pub async fn get_init(&self, arg0: get_init_arg0) -> CallResult<
+    (GetInitResponse,)
+  > { ic_cdk::call(self.0, "get_init", (arg0,)).await }
+  pub async fn get_lifecycle(&self, arg0: get_lifecycle_arg0) -> CallResult<
+    (GetLifecycleResponse,)
+  > { ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await }
+  pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> CallResult<
+    (GetOpenTicketResponse,)
+  > { ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await }
+  pub async fn get_sale_parameters(
+    &self,
+    arg0: get_sale_parameters_arg0,
+  ) -> CallResult<(GetSaleParametersResponse,)> {
+    ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
+  }
   pub async fn get_state(&self, arg0: get_state_arg0) -> CallResult<
     (GetStateResponse,)
   > { ic_cdk::call(self.0, "get_state", (arg0,)).await }
+  pub async fn list_community_fund_participants(
+    &self,
+    arg0: ListCommunityFundParticipantsRequest,
+  ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
+    ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
+  }
+  pub async fn list_direct_participants(
+    &self,
+    arg0: ListDirectParticipantsRequest,
+  ) -> CallResult<(ListDirectParticipantsResponse,)> {
+    ic_cdk::call(self.0, "list_direct_participants", (arg0,)).await
+  }
+  pub async fn list_sns_neuron_recipes(
+    &self,
+    arg0: ListSnsNeuronRecipesRequest,
+  ) -> CallResult<(ListSnsNeuronRecipesResponse,)> {
+    ic_cdk::call(self.0, "list_sns_neuron_recipes", (arg0,)).await
+  }
+  pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<
+    (NewSaleTicketResponse,)
+  > { ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await }
   pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
     ic_cdk::call(self.0, "open", (arg0,)).await
   }
