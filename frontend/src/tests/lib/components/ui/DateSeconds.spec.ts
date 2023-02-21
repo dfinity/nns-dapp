@@ -4,6 +4,7 @@
 
 import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 import { render } from "@testing-library/svelte";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("DateSeconds", () => {
   const seconds = Number(BigInt("0"));
@@ -15,12 +16,11 @@ describe("DateSeconds", () => {
     selector: "p" | "span";
     container: HTMLElement;
   }) => {
-    expect(container.querySelector(selector)?.textContent).toContain(
-      "Jan 1, 1970"
+    const textContent = normalizeWhitespace(
+      container.querySelector(selector)?.textContent
     );
-    expect(container.querySelector(selector)?.textContent).toContain(
-      "12:00 AM"
-    );
+    expect(textContent).toContain("Jan 1, 1970");
+    expect(textContent).toContain("12:00 AM");
   };
 
   it("displays render date and time", () => {
