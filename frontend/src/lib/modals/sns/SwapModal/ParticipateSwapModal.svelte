@@ -14,7 +14,7 @@
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
-  import {isNullish, nonNullish} from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSwapAccount } from "$lib/services/sns.services";
   import type {
     NewTransaction,
@@ -86,10 +86,11 @@
   let accepted: boolean;
 
   let busy = true;
-  $: busy =
-          isNullish($projectDetailStore.summary) ? true :
-          $projectDetailStore.summary.rootCanisterId === undefined ||
-          $snsTicketsStore[$projectDetailStore.summary.rootCanisterId.toText()]?.ticket !== null;
+  $: busy = isNullish($projectDetailStore.summary)
+    ? true
+    : $projectDetailStore.summary.rootCanisterId === undefined ||
+      $snsTicketsStore[$projectDetailStore.summary.rootCanisterId.toText()]
+        ?.ticket !== null;
 
   const dispatcher = createEventDispatcher();
   const participate = async ({
