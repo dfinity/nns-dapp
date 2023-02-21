@@ -52,10 +52,11 @@ fn stable_data() -> String {
 /// Get most recent log data
 #[candid_method(query)]
 #[ic_cdk_macros::query]
-fn tail_log() -> String {
+fn tail_log(limit: Option<u16>) -> String {
+    let limit = limit.unwrap_or(200) as usize;
     STATE.with(|state| {
         let to_serialize: &VecDeque<String> = &(*state.log.borrow());
-        to_serialize.iter().cloned().collect::<Vec<_>>().join("\n")
+        to_serialize.iter().rev().take(limit).rev().cloned().collect::<Vec<_>>().join("\n")
     })
 }
 
