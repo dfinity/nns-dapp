@@ -6,7 +6,6 @@ import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdow
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { TransactionNetwork } from "../../../../lib/types/transaction";
 import en from "../../../mocks/i18n.mock";
-import SelectNetworkDropdownTest from "./SelectNetworkDropdownTest.svelte";
 
 describe("SelectNetworkDropdown", () => {
   it("should display a network title", () => {
@@ -49,7 +48,7 @@ describe("SelectNetworkDropdown", () => {
   });
 
   it("should bind select to selected network", async () => {
-    const { getByTestId, container } = render(SelectNetworkDropdownTest);
+    const { getByTestId, component, container } = render(SelectNetworkDropdown);
 
     const optionDefault = container.querySelector("option[disabled]");
     expect(optionDefault).not.toBeNull();
@@ -62,10 +61,10 @@ describe("SelectNetworkDropdown", () => {
         target: { value: TransactionNetwork.ICP_CKBTC },
       });
 
-    const div = container.querySelector(".container");
-
     await waitFor(() =>
-      expect(div.classList).toContain(TransactionNetwork.ICP_CKBTC)
+      expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
+        TransactionNetwork.ICP_CKBTC
+      )
     );
   });
 });
