@@ -72,7 +72,7 @@ for canister in ckbtc_ledger ckbtc_index; do
     ;;
   ckbtc_index)
     ckbtc_ledger_canister_id="$(dfx canister id ckbtc_ledger --network "$DFX_NETWORK")"
-    dfx deploy index --network "$DFX_NETWORK" --argument '(record { ledger_id = principal "'$(ckbtc_ledger_canister_id)'" })'
+    dfx deploy index --network "$DFX_NETWORK" --argument '(record { ledger_id = principal "'"${ckbtc_ledger_canister_id}"'" })'
     ;;
   *) dfx canister install "$canister" --network "$DFX_NETWORK" ;;
   esac
