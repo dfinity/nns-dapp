@@ -18,10 +18,12 @@ describe("snsSelectedTransactionFeeStore", () => {
     lifecycles: [SnsSwapLifecycle.Open],
     certified: true,
   });
-  afterEach(() => {
+
+  beforeEach(() => {
     snsQueryStore.reset();
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
+
   it("returns transaction fee of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
