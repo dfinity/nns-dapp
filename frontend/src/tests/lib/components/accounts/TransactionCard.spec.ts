@@ -3,6 +3,7 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { ICPToken } from "@dfinity/nns";
@@ -79,8 +80,10 @@ describe("TransactionCard", () => {
 
     const div = getByTestId("transaction-date");
 
-    expect(div?.textContent).toContain("Mar 14, 2021 12:00\u202FAM");
-    expect(div?.textContent).toContain("12:00\u202FAM");
+    expect(normalizeWhitespace(div?.textContent)).toContain(
+      "Mar 14, 2021 12:00 AM"
+    );
+    expect(normalizeWhitespace(div?.textContent)).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {

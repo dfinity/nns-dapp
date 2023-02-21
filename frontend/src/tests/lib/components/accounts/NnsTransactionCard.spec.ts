@@ -3,6 +3,7 @@
  */
 
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
+import { normalizeWhitespace } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
@@ -85,7 +86,7 @@ describe("NnsTransactionCard", () => {
     const div = getByTestId("transaction-date");
 
     expect(div?.textContent).toContain("Jan 1, 1970");
-    expect(div?.textContent).toContain("12:00\u202FAM");
+    expect(normalizeWhitespace(div?.textContent)).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {
