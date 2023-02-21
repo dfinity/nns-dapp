@@ -9,9 +9,9 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { hasAccounts } from "$lib/utils/accounts.utils";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import type { TokenAmount } from "@dfinity/nns";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");

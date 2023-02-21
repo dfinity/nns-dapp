@@ -11,7 +11,7 @@ import {
   ENABLE_CKBTC_LEDGER,
   ENABLE_CKBTC_MINTER,
 } from "$lib/stores/feature-flags.store";
-import type { Universe } from "$lib/types/universe";
+import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isUniverseCkBTC,
   isUniverseNns,
@@ -82,4 +82,13 @@ export const selectedUniverseStore: Readable<Universe> = derived(
     $selectableUniverses?.find(
       ({ canisterId }) => canisterId === $selectedUniverseIdStore.toText()
     ) ?? NNS_UNIVERSE
+);
+
+export const selectedCkBTCUniverseIdStore = derived<
+  Readable<UniverseCanisterId>,
+  UniverseCanisterId | undefined
+>(selectedUniverseIdStore, ($selectedUniverseIdStore: Principal) =>
+  isUniverseCkBTC($selectedUniverseIdStore)
+    ? $selectedUniverseIdStore
+    : undefined
 );

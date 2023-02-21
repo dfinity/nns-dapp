@@ -6,9 +6,9 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { hasAccounts } from "$lib/utils/accounts.utils";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   export let goToWallet: (account: Account) => Promise<void>;
 

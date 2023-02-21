@@ -2,14 +2,11 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import {
   ENABLE_CKBTC_LEDGER,
   ENABLE_CKBTC_MINTER,
 } from "$lib/stores/feature-flags.store";
-import type { Universe, UniverseCanisterId } from "$lib/types/universe";
-import { isUniverseCkBTC } from "$lib/utils/universe.utils";
-import type { Principal } from "@dfinity/principal";
+import type { Universe } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
 
 const CKBTC_UNIVERSE: Universe = {
@@ -29,13 +26,4 @@ export const ckBTCUniversesStore = derived<
     ...($ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
     ...($ENABLE_CKBTC_MINTER ? [CKTESTBTC_UNIVERSE] : []),
   ]
-);
-
-export const selectedCkBTCUniverseIdStore = derived<
-  Readable<UniverseCanisterId>,
-  UniverseCanisterId | undefined
->(selectedUniverseIdStore, ($selectedUniverseIdStore: Principal) =>
-  isUniverseCkBTC($selectedUniverseIdStore)
-    ? $selectedUniverseIdStore
-    : undefined
 );

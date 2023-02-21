@@ -30,8 +30,8 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
