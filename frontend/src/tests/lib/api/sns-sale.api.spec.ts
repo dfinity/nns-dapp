@@ -8,6 +8,7 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import { notifyPaymentFailure } from "../../../lib/api/sns-sale.api";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -28,8 +29,12 @@ describe("sns-sale.api", () => {
 
   const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const notifyPaymentFailureSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -47,34 +52,40 @@ describe("sns-sale.api", () => {
         },
         getOpenTicket: getOpenTicketSpy,
         newSaleTicket: newSaleTicketSpy,
+        notifyPaymentFailure: notifyPaymentFailureSpy,
       })
     );
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
-
   it("should query open ticket", async () => {
-    const response = await getOpenTicket({
+    const result = await getOpenTicket({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       certified: true,
     });
 
-    expect(response).not.toBeNull();
-    expect(response).toEqual(ticket.ticket);
+    expect(result).not.toBeNull();
+    expect(result).toEqual(ticket.ticket);
   });
 
   it("should create new sale ticket", async () => {
-    const response = await newSaleTicket({
+    const result = await newSaleTicket({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       amount_icp_e8s: 123n,
     });
 
-    expect(response).not.toBeNull();
-    expect(response).toEqual(ticket.ticket);
+    expect(result).not.toBeNull();
+    expect(result).toEqual(ticket.ticket);
+  });
+
+  it("should notify payment failure", async () => {
+    const result = await notifyPaymentFailure({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result).toEqual(ticket.ticket);
   });
 });
