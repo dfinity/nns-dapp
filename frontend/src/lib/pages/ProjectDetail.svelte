@@ -8,6 +8,7 @@
   import {
     loadSnsSummary,
     loadSnsSwapCommitment,
+    loadSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
@@ -30,6 +31,7 @@
 
   $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
     loadCommitment(rootCanisterId);
+    loadTotalCommitments(rootCanisterId);
   }
 
   const loadSummary = (rootCanisterId: string) =>
@@ -51,6 +53,9 @@
         goBack();
       },
     });
+
+  const loadTotalCommitments = (rootCanisterId: string) =>
+    loadSnsTotalCommitment({ rootCanisterId });
 
   const reload = async () => {
     if (rootCanisterId === undefined || rootCanisterId === null) {
