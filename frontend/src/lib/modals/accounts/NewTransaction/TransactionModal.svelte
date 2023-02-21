@@ -6,6 +6,7 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
+  import type { TransactionNetwork } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
@@ -17,6 +18,8 @@
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
+  export let mustSelectNetwork = false;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let validateAmount: (
     amount: number | undefined
   ) => string | undefined = () => undefined;
@@ -71,6 +74,8 @@
       {token}
       on:nnsNext={goNext}
       on:nnsClose
+      {mustSelectNetwork}
+      bind:selectedNetwork
     >
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
@@ -85,6 +90,7 @@
       {transactionFee}
       {disableSubmit}
       {token}
+      {selectedNetwork}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose

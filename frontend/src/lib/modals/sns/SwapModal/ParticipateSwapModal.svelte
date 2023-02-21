@@ -32,7 +32,7 @@
     initiateSnsSaleParticipation,
     participateInSnsSale,
   } from "$lib/services/sns-sale.services";
-  import { logWithTimestamp } from "../../../utils/dev.utils";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -184,13 +184,16 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
-    <AdditionalInfoForm
-      slot="additional-info-form"
-      {minCommitment}
-      {maxCommitment}
-      userHasParticipated={userHasParticipatedToSwap}
-    />
-    <AdditionalInfoReview slot="additional-info-review" bind:accepted />
+    <div class="additional-info" slot="additional-info-form">
+      <AdditionalInfoForm
+        {minCommitment}
+        {maxCommitment}
+        userHasParticipated={userHasParticipatedToSwap}
+      />
+    </div>
+    <div class="additional-info" slot="additional-info-review">
+      <AdditionalInfoReview bind:accepted />
+    </div>
     <p
       slot="destination-info"
       data-tid="sns-swap-participate-project-name"
@@ -203,3 +206,9 @@
     </p>
   </TransactionModal>
 {/if}
+
+<style lang="scss">
+  .additional-info {
+    padding-top: var(--padding-2x);
+  }
+</style>

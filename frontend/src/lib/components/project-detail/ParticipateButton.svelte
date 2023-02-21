@@ -22,13 +22,13 @@
   } from "$lib/services/sns-sale.services";
   import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
-  import type { SnsTicket } from "../../types/sns";
-  import { toastsShow, toastsSuccess } from "../../stores/toasts.store";
-  import { nanoSecondsToDateTime } from "../../utils/date.utils";
-  import { DEFAULT_TOAST_DURATION_MILLIS } from "../../constants/constants";
-  import { isSignedIn } from "../../utils/auth.utils";
-  import { authStore } from "../../stores/auth.store";
-  import { logWithTimestamp } from "../../utils/dev.utils";
+  import type { SnsTicket } from "$lib/types/sns";
+  import { toastsShow, toastsSuccess } from "$lib/stores/toasts.store";
+  import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
+  import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);

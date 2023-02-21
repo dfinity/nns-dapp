@@ -50,3 +50,8 @@ export interface Transaction {
   displayAmount: TokenAmount;
   date: Date;
 }
+
+export enum TransactionNetwork {
+  ICP_CKBTC = "network_icp_ckbtc",
+  BITCOIN = "network_bitcoin",
+}
