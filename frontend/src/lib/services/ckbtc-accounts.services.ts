@@ -72,7 +72,7 @@ export const ckBTCTransferTokens = async ({
   loadTransactions: boolean;
   universeId: UniverseCanisterId;
 }): Promise<{ success: boolean }> => {
-  const fee = get(ckBTCTokenStore)?.token.fee;
+  const fee = get(ckBTCTokenStore)[universeId.toText()]?.token.fee;
 
   return transferTokens({
     source,

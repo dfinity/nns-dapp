@@ -19,16 +19,16 @@
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
     hasAccounts($icrcAccountsStore[$selectedCkBTCUniverseIdStore].accounts) &&
-    nonNullish($ckBTCTokenFeeStore) &&
-    nonNullish($ckBTCTokenStore);
+    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]) &&
+    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]);
 </script>
 
-{#if modal === "NewTransaction" && nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
+{#if modal === "NewTransaction" && nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]) && nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore])}
   <CkBTCTransactionModal
     on:nnsClose={closeModal}
     on:nnsTransfer={closeModal}
-    token={$ckBTCTokenStore.token}
-    transactionFee={$ckBTCTokenFeeStore}
+    token={$ckBTCTokenStore[$selectedCkBTCUniverseIdStore].token}
+    transactionFee={$ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]}
   />
 {/if}
 

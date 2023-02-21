@@ -26,14 +26,14 @@
   };
 </script>
 
-{#if nonNullish($ckBTCTokenStore) && nonNullish($ckBTCTokenFeeStore)}
+{#if nonNullish($ckBTCTokenStore[universeId]) && nonNullish($ckBTCTokenFeeStore[universeId])}
   <CkBTCTransactionModal
     on:nnsClose
     on:nnsTransfer={onTransferReloadSelectedAccount}
     selectedAccount={account}
     loadTransactions
-    token={$ckBTCTokenStore.token}
-    transactionFee={$ckBTCTokenFeeStore}
+    token={$ckBTCTokenStore[universeId].token}
+    transactionFee={$ckBTCTokenFeeStore[universeId]}
     {universeId}
   />
 {/if}

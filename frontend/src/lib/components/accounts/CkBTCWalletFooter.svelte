@@ -13,7 +13,7 @@
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
-   import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/ckbtc-universes.derived";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   const context: CkBTCWalletContext =

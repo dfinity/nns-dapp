@@ -138,8 +138,8 @@
   $: canMakeTransactions =
     nonNullish($selectedCkBTCUniverseIdStore) &&
     hasAccounts($icrcAccountsStore[$selectedCkBTCUniverseIdStore].accounts) &&
-    nonNullish($ckBTCTokenFeeStore) &&
-    nonNullish($ckBTCTokenStore);
+    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore]) &&
+    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore]);
 </script>
 
 <Island>
