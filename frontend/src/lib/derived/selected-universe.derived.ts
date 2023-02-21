@@ -36,15 +36,10 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 
 export const selectedUniverseStore: Readable<Universe> = derived(
   [pageUniverseIdStore, selectableUniversesStore],
-  ([$pageUniverseIdStore, $selectableUniverses]) => {
-    //console.log('dskloetx selected-universe.derived.ts pageUniverseIdStore', $pageUniverseIdStore.toText());
-    //console.log('dskloetx selected-universe.derived.ts $selectableUniverses', $selectableUniverses);
-    return (
-      $selectableUniverses?.find(
-        ({ canisterId }) => canisterId === $pageUniverseIdStore.toText()
-      ) ?? NNS_UNIVERSE
-    );
-  }
+  ([$pageUniverseIdStore, $selectableUniverses]) =>
+    $selectableUniverses?.find(
+      ({ canisterId }) => canisterId === $pageUniverseIdStore.toText()
+    ) ?? NNS_UNIVERSE
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
