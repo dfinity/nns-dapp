@@ -8,6 +8,7 @@ import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import {
   loadSnsSummary,
   loadSnsSwapCommitment,
+  loadSnsTotalCommitment,
 } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -24,6 +25,7 @@ jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -32,7 +34,7 @@ describe("ProjectDetail", () => {
     rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
   };
 
-  describe("present project in store", () => {
+  describe("not logged in user", () => {
     page.mock({ data: { universe: null } });
 
     beforeEach(() => {
@@ -68,6 +70,12 @@ describe("ProjectDetail", () => {
       await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
     });
 
+    it("should not load total commitments", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(loadSnsTotalCommitment).not.toBeCalled());
+    });
+
     it("should render info section", async () => {
       const { queryByTestId } = render(ProjectDetail, props);
 
@@ -96,6 +104,12 @@ describe("ProjectDetail", () => {
       render(ProjectDetail, props);
 
       await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+    });
+
+    it("should load total project's commitment", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(loadSnsTotalCommitment).toBeCalled());
     });
   });
 
