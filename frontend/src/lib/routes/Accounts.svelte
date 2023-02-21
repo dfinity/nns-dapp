@@ -24,7 +24,9 @@
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
-  import { ENABLE_CKBTC_LEDGER } from "$lib/stores/feature-flags.store";
+  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import { Universe } from "$lib/types/universe";
+  import { isArrayEmpty } from "$lib/utils/utils";
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
@@ -53,9 +55,9 @@
     });
   };
 
-  const loadCkBTCAccountsBalances = async () => {
+  const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // ckBTC is not enabled, information shall and cannot be fetched
-    if (!$ENABLE_CKBTC_LEDGER) {
+    if (isArrayEmpty(universes)) {
       return;
     }
 
@@ -73,13 +75,17 @@
 
     loadCkBTCAccountsBalancesRequested = true;
 
-    await uncertifiedLoadCkBTCAccountsBalance();
+    await Promise.all(
+      universes.map(({ canisterId }) =>
+        uncertifiedLoadCkBTCAccountsBalance(canisterId)
+      )
+    );
   };
 
   $: (async () =>
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
-      loadCkBTCAccountsBalances(),
+      loadCkBTCAccountsBalances($ckBTCUniversesStore),
     ]))();
 
   const goToWallet = async ({ identifier }: Account) =>

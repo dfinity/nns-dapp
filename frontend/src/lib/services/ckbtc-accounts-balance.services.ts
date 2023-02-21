@@ -1,12 +1,15 @@
 import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import type { UniverseCanisterId } from "$lib/types/universe";
+import type {
+  UniverseCanisterId,
+  UniverseCanisterIdText,
+} from "$lib/types/universe";
+import { Principal } from "@dfinity/principal";
 
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
@@ -61,15 +64,14 @@ const loadCkBTCToken = (universeId: UniverseCanisterId): Promise<void> => {
  *
  * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when the ckBTC universe is manually selected either through the token navigation switcher or accessed directly via the browser url.
  *
- * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
+ * @param {UniverseCanisterId} universeId The ckBTC (ckBTC or ckTESTBTC) environment for which the balances should be loaded.
  */
-export const uncertifiedLoadCkBTCAccountsBalance = async (): Promise<void> => {
-  // We load only the balances of ckBTC because ckTESTBTC is behind a flag and has test purpose only anyway
-  const ckBTCUniverseID = CKBTC_UNIVERSE_CANISTER_ID;
-
+export const uncertifiedLoadCkBTCAccountsBalance = async (
+  universeId: UniverseCanisterIdText
+): Promise<void> => {
   const results: PromiseSettledResult<void>[] = await Promise.allSettled([
-    loadCkBTCAccountsBalance(ckBTCUniverseID),
-    loadCkBTCToken(ckBTCUniverseID),
+    loadCkBTCAccountsBalance(Principal.fromText(universeId)),
+    loadCkBTCToken(Principal.fromText(universeId)),
   ]);
 
   const error: boolean =
