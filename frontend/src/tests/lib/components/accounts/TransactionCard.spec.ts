@@ -80,10 +80,9 @@ describe("TransactionCard", () => {
 
     const div = getByTestId("transaction-date");
 
-    expect(normalizeWhitespace(div?.textContent)).toContain(
-      "Mar 14, 2021 12:00 AM"
-    );
-    expect(normalizeWhitespace(div?.textContent)).toContain("12:00 AM");
+    const textContent = normalizeWhitespace(div?.textContent);
+    expect(textContent).toContain("Mar 14, 2021 12:00 AM");
+    expect(textContent).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {
