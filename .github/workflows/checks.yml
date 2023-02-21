@@ -10,6 +10,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install rust formatter
@@ -66,6 +70,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -93,6 +101,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -117,6 +129,10 @@ jobs:
     env:
       DFX_NETWORK: mainnet
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dfx
@@ -139,8 +155,30 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+  ic-commit-consistency:
+    needs: formatting
+    name: IC Commit
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Run the ic_commit code generator
+        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+      - name: Verify that there are no code changes
+        run: |
+          if git diff | grep . ; then
+                  echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  exit 1
+          fi
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

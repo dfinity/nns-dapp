@@ -2,7 +2,11 @@ import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { mapAndSortSnsQueryToSummaries } from "$lib/utils/sns.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
-import { isNullish } from "@dfinity/utils";
+import type {
+  SnsGetDerivedStateResponse,
+  SnsSwapDerivedState,
+} from "@dfinity/sns";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 // ************** Proposals for Launchpad **************
@@ -76,6 +80,10 @@ export interface SnsQueryStore extends Readable<SnsQueryStoreData> {
   }) => void;
   updateSwapState: (swap: {
     swapData: QuerySnsSwapState;
+    rootCanisterId: string;
+  }) => void;
+  updateDerivedState: (swap: {
+    derivedState: SnsGetDerivedStateResponse;
     rootCanisterId: string;
   }) => void;
 }
@@ -166,6 +174,45 @@ const initSnsQueryStore = (): SnsQueryStore => {
         metadata: data?.metadata ?? [],
         swaps: (data?.swaps ?? []).map((swap) =>
           swap.rootCanisterId === rootCanisterId ? swapData : swap
+        ),
+      }));
+    },
+
+    /**
+     * Updates only the derived state of a sale.
+     *
+     * @param {Object} params
+     * @param {QuerySnsSwapState} params.swapData new swap data.
+     * @param {string} params.rootCanisterId canister id in text format.
+     */
+    updateDerivedState({
+      derivedState,
+      rootCanisterId,
+    }: {
+      derivedState: SnsGetDerivedStateResponse;
+      rootCanisterId: string;
+    }) {
+      const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
+      const buyer_total_icp_e8s = fromNullable(
+        derivedState.buyer_total_icp_e8s
+      );
+      // We don't update the store if any of the derived state is undefined.
+      if (
+        sns_tokens_per_icp === undefined ||
+        buyer_total_icp_e8s === undefined
+      ) {
+        return;
+      }
+      const newDerivedState: SnsSwapDerivedState = {
+        sns_tokens_per_icp,
+        buyer_total_icp_e8s,
+      };
+      update((data: SnsQueryStoreData) => ({
+        metadata: data?.metadata ?? [],
+        swaps: (data?.swaps ?? []).map((swap) =>
+          swap.rootCanisterId === rootCanisterId
+            ? { ...swap, derived: [newDerivedState] }
+            : swap
         ),
       }));
     },

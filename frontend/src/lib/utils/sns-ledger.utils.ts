@@ -48,7 +48,7 @@ export const ledgerErrorToToastError = ({
     }
     if ("InsufficientFunds" in error.errorType) {
       return {
-        labelKey: "error__sns.ledger_unsufficient_funds",
+        labelKey: "error__sns.ledger_insufficient_funds",
       };
     }
   }

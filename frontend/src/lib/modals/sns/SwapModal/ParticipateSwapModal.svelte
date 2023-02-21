@@ -16,10 +16,7 @@
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    getSwapAccount,
-    participateInSwap,
-  } from "$lib/services/sns.services";
+  import { getSwapAccount } from "$lib/services/sns.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
@@ -31,6 +28,11 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import {
+    initiateSnsSaleParticipation,
+    participateInSnsSale,
+  } from "$lib/services/sns-sale.services";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -97,19 +99,38 @@
         initiator: "project-participate",
         labelKey: "neurons.may_take_while",
       });
-      const { success } = await participateInSwap({
+
+      const ticket = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
-      if (success) {
-        await reload();
 
-        toastsSuccess({
-          labelKey: "sns_project_detail.participate_success",
+      if (ticket && ticket.ticket) {
+        const { success, retry } = await participateInSnsSale({
+          ticket: {
+            rootCanisterId: ticket.rootCanisterId,
+            ticket: ticket.ticket,
+          },
         });
+
+        if (success) {
+          await reload();
+
+          toastsSuccess({
+            labelKey: "sns_project_detail.participate_success",
+          });
+        }
+
+        if (retry) {
+          // TODO(sale): GIX-1310 - implement retry logic
+          logWithTimestamp("[sale] retry TBD");
+          return;
+        }
+
         dispatcher("nnsClose");
       }
+
       stopBusy("project-participate");
     }
   };
@@ -163,13 +184,16 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
-    <AdditionalInfoForm
-      slot="additional-info-form"
-      {minCommitment}
-      {maxCommitment}
-      userHasParticipated={userHasParticipatedToSwap}
-    />
-    <AdditionalInfoReview slot="additional-info-review" bind:accepted />
+    <div class="additional-info" slot="additional-info-form">
+      <AdditionalInfoForm
+        {minCommitment}
+        {maxCommitment}
+        userHasParticipated={userHasParticipatedToSwap}
+      />
+    </div>
+    <div class="additional-info" slot="additional-info-review">
+      <AdditionalInfoReview bind:accepted />
+    </div>
     <p
       slot="destination-info"
       data-tid="sns-swap-participate-project-name"
@@ -182,3 +206,9 @@
     </p>
   </TransactionModal>
 {/if}
+
+<style lang="scss">
+  .additional-info {
+    padding-top: var(--padding-2x);
+  }
+</style>

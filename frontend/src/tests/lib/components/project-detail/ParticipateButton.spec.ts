@@ -3,8 +3,13 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import {
+  getOpenTicket,
+  initiateSnsSaleParticipation,
+  participateInSnsSale,
+} from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
-import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import {
@@ -21,8 +26,27 @@ import {
   principal,
   summaryForLifecycle,
 } from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
+
+let getOpenTicketTicket: SnsTicket | undefined = undefined;
+const initiateSnsSaleParticipationTicket: SnsTicket | undefined = snsTicketMock(
+  { rootCanisterId: rootCanisterIdMock, owner: rootCanisterIdMock }
+);
+jest.mock("$lib/services/sns-sale.services", () => ({
+  getOpenTicket: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(getOpenTicketTicket)),
+  initiateSnsSaleParticipation: jest
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve(initiateSnsSaleParticipationTicket)
+    ),
+  participateInSnsSale: jest
+    .fn()
+    .mockResolvedValue({ success: true, retry: false }),
+}));
 
 describe("ParticipateButton", () => {
   jest
@@ -36,6 +60,12 @@ describe("ParticipateButton", () => {
       });
     });
 
+    beforeEach(() => {
+      (getOpenTicket as jest.Mock).mockClear();
+      (initiateSnsSaleParticipation as jest.Mock).mockClear();
+      (participateInSnsSale as jest.Mock).mockClear();
+    });
+
     it("should render a text to increase participation", () => {
       const { queryByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
@@ -43,7 +73,9 @@ describe("ParticipateButton", () => {
         Component: ParticipateButton,
       });
       expect(
-        queryByTestId("sns-project-participate-button")?.textContent ?? ""
+        (
+          queryByTestId("sns-project-participate-button")?.textContent ?? ""
+        ).trim()
       ).toEqual(en.sns_project_detail.increase_participation);
     });
 
@@ -56,7 +88,9 @@ describe("ParticipateButton", () => {
         Component: ParticipateButton,
       });
       expect(
-        queryByTestId("sns-project-participate-button")?.textContent ?? ""
+        (
+          queryByTestId("sns-project-participate-button")?.textContent ?? ""
+        ).trim()
       ).toEqual(en.sns_project_detail.participate);
     });
 
@@ -84,7 +118,12 @@ describe("ParticipateButton", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should enable button is user has not committed max already", () => {
+    it("should disable the button is user has an open ticket", async () => {
+      getOpenTicketTicket = snsTicketMock({
+        rootCanisterId: rootCanisterIdMock,
+        owner: rootCanisterIdMock,
+      });
+
       const { queryByTestId } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -94,10 +133,39 @@ describe("ParticipateButton", () => {
       const button = queryByTestId(
         "sns-project-participate-button"
       ) as HTMLButtonElement;
-      expect(button.getAttribute("disabled")).toBeNull();
+
+      expect(getOpenTicket).toBeCalled();
+
+      await waitFor(() =>
+        expect(button.getAttribute("disabled")).not.toBeNull()
+      );
+      expect(participateInSnsSale).toBeCalledWith({
+        ticket: getOpenTicketTicket,
+      });
     });
 
-    it("should disable button is user has committed max already", () => {
+    it("should enable button if user has not committed max already", async () => {
+      getOpenTicketTicket = {
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+      };
+
+      const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+
+      await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
+      expect(getOpenTicket).toBeCalled();
+      expect(participateInSnsSale).not.toBeCalled();
+    });
+
+    it("should disable button if user has committed max already", () => {
       const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
 
       const { queryByTestId } = renderContextCmp({

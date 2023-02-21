@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://nns.ic0.app/sitemap.xml
-Host: https://nns.ic0.app
+Sitemap: https://nns.internetcomputer.org/sitemap.xml
+Host: https://nns.internetcomputer.org

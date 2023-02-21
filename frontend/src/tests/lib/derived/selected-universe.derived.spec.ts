@@ -12,6 +12,7 @@ import {
   isNnsUniverseStore,
   selectedUniverseIdStore,
 } from "$lib/derived/selected-universe.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { get } from "svelte/store";
 import { mockSnsCanisterIdText } from "../../mocks/sns.api.mock";
@@ -44,17 +45,25 @@ describe("selected universe derived stores", () => {
       });
     });
 
-    it("should be ckBTC universe", () => {
+    it("should be ckBTC inside ckBTC universe", () => {
       const $store = get(isCkBTCUniverseStore);
 
       expect($store).toEqual(true);
     });
 
-    it("should not be ckBTC universe", () => {
+    it("should not be ckBTC outside ckBTC universe", () => {
       page.mock({ data: { universe: mockSnsCanisterIdText } });
       const $store = get(isCkBTCUniverseStore);
 
       expect($store).toBe(false);
+    });
+
+    it("should not be ckBTC with feature flag disabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
+      expect(get(isCkBTCUniverseStore)).toBe(true);
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", false);
+      expect(get(isCkBTCUniverseStore)).toBe(false);
     });
   });
 

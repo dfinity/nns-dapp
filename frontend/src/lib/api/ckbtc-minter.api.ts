@@ -6,10 +6,13 @@ import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type MinterParams,
+  type RetrieveBtcOk,
+  type RetrieveBtcParams,
   type UpdateBalanceResult,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 
-export const minterParams = ({
+const minterIdentityParams = ({
   identity,
 }: {
   identity: Identity;
@@ -31,7 +34,7 @@ export const getBTCAddress = async (params: {
     canister: { getBtcAddress: getBTCAddressApi },
   } = await ckBTCMinterCanister(params);
 
-  const address = await getBTCAddressApi(minterParams(params));
+  const address = await getBTCAddressApi(minterIdentityParams(params));
 
   logWithTimestamp("Getting BTC address: done");
 
@@ -47,9 +50,44 @@ export const updateBalance = async (params: {
     canister: { updateBalance: updateBalanceApi },
   } = await ckBTCMinterCanister(params);
 
-  const result = await updateBalanceApi(minterParams(params));
+  const result = await updateBalanceApi(minterIdentityParams(params));
 
   logWithTimestamp("Updating ckBTC balance: done");
+
+  return result;
+};
+
+export const getWithdrawalAccount = async (params: {
+  identity: Identity;
+}): Promise<WithdrawalAccount> => {
+  logWithTimestamp("Get ckBTC withdrawal account: call...");
+
+  const {
+    canister: { getWithdrawalAccount: getWithdrawalAccountApi },
+  } = await ckBTCMinterCanister(params);
+
+  const result = await getWithdrawalAccountApi();
+
+  logWithTimestamp("Get ckBTC withdrawal account: done");
+
+  return result;
+};
+
+export const retrieveBtc = async ({
+  identity,
+  ...params
+}: {
+  identity: Identity;
+} & RetrieveBtcParams): Promise<RetrieveBtcOk> => {
+  logWithTimestamp("Retrieve BTC: call...");
+
+  const {
+    canister: { retrieveBtc: retrieveBtcApi },
+  } = await ckBTCMinterCanister({ identity });
+
+  const result = await retrieveBtcApi(params);
+
+  logWithTimestamp("Retrieve BTC: done");
 
   return result;
 };

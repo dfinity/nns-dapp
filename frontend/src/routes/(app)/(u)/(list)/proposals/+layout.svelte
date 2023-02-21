@@ -3,12 +3,10 @@
   import Content from "$lib/components/layout/Content.svelte";
   import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
   import type { SvelteComponent } from "svelte";
-  import { featureFlagsStore } from "$lib/stores/feature-flags.store";
+  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
 
   let cmp: typeof SvelteComponent;
-  $: cmp = $featureFlagsStore.ENABLE_SNS_VOTING
-    ? UniverseSplitContent
-    : Content;
+  $: cmp = $ENABLE_SNS_VOTING ? UniverseSplitContent : Content;
 </script>
 
 <Layout>
