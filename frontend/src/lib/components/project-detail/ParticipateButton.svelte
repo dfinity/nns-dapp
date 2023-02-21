@@ -49,7 +49,7 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  // busy if open ticket available
+  // busy if open ticket is available or not requested
   let busy = true;
   $: busy =
     rootCanisterId === undefined ||

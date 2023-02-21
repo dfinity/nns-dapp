@@ -501,6 +501,7 @@ export const participateInSnsSale = async ({
         substitutions: {
           $time: secondsToDuration(BigInt(retryIn)),
         },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
 
       return;
