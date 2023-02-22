@@ -149,6 +149,7 @@
     "send": "Send",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
+    "ckbtc_transaction_description": "$token Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -203,7 +204,11 @@
     "select": "Select",
     "manual": "Manual",
     "no_account_select": "No accounts to select",
-    "current_balance_detail": "Current balance: $amount $token"
+    "current_balance_detail": "Current balance: $amount $token",
+    "network": "Network",
+    "network_icp_ckbtc": "Internet Computer (ckBTC)",
+    "network_bitcoin": "Bitcoin (BTC)",
+    "select_network": "Select network"
   },
   "neurons": {
     "title": "Neurons",
@@ -690,6 +695,7 @@
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
+    "load_sale_total_commitments": "There was an unexpected error while loading the commitments of the project.",
     "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
     "sns_split_neuron": "There was an error while splitting the neuron.",
