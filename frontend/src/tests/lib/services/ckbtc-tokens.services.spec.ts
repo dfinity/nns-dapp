@@ -36,9 +36,14 @@ describe("ckbtc-tokens-services", () => {
       );
 
       const storeData = get(ckBTCTokenStore);
-      expect(storeData).toEqual({
+
+      const token = {
         token: mockCkBTCToken,
         certified: true,
+      };
+
+      expect(storeData).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: token,
       });
     });
   });
