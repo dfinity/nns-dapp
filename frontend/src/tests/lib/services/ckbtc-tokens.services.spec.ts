@@ -31,6 +31,7 @@ describe("ckbtc-tokens-services", () => {
         expect(spyGetToken).toBeCalledWith({
           identity: mockIdentity,
           certified: true,
+          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
         })
       );
 
