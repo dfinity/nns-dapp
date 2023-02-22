@@ -1,10 +1,10 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { get } from "svelte/store";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
-import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import {
   mockMainAccount,
   mockSubAccount,

@@ -1,19 +1,19 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import {
-  CKBTC_INDEX_CANISTER_ID,
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "../../../lib/constants/ckbtc-canister-ids.constants";
-import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,

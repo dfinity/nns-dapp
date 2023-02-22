@@ -3,15 +3,15 @@
  */
 
 import * as indexApi from "$lib/api/ckbtc-index.api";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import {
-  CKBTC_INDEX_CANISTER_ID,
-  CKBTC_UNIVERSE_CANISTER_ID,
-} from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";

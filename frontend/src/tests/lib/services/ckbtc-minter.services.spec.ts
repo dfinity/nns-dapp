@@ -3,6 +3,7 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import {
@@ -12,7 +13,6 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
-import { CKBTC_MINTER_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 import en from "../../mocks/i18n.mock";

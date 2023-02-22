@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import {
@@ -9,13 +10,12 @@ import {
   syncCkBTCAccounts,
 } from "$lib/services/ckbtc-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
-import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,

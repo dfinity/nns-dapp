@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
 import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../__mocks__/$app/stores";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
-import { AppPath } from "../../../lib/constants/routes.constants";
-import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
 import en from "../../mocks/i18n.mock";
 

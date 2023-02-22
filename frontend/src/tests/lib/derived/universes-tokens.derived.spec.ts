@@ -1,4 +1,8 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import {
   ckBTCTokenFeeStore,
@@ -8,10 +12,6 @@ import {
 import { tokensStore } from "$lib/stores/tokens.store";
 import { TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
 import {
   mockTokensSubscribe,

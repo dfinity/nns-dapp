@@ -1,4 +1,8 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   isUniverseCkBTC,
@@ -6,10 +10,6 @@ import {
   pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "../../../lib/constants/ckbtc-canister-ids.constants";
 
 describe("universes-utils", () => {
   describe("pathSupportsCkBTC", () => {

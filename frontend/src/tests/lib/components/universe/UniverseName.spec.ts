@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 import UniverseName from "$lib/components/universe/UniverseName.svelte";
+import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { render } from "@testing-library/svelte";
-import { CKBTC_UNIVERSE } from "../../../../lib/derived/ckbtc-universes.derived";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsFullProject,

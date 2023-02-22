@@ -3,13 +3,13 @@
  */
 
 import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
-import { AppPath } from "../../../../lib/constants/routes.constants";
-import { tokensStore } from "../../../../lib/stores/tokens.store";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,

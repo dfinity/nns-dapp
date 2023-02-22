@@ -3,12 +3,12 @@
  */
 
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
 

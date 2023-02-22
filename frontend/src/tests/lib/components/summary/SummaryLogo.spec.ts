@@ -4,13 +4,13 @@
 
 import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockStoreSubscribe } from "../../../mocks/commont.mock";
 import en from "../../../mocks/i18n.mock";
 import {

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   importInitSnsWrapper,
@@ -18,6 +19,9 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { SnsTicket } from "$lib/types/sns";
+import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
@@ -39,10 +43,6 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import type { SnsTicket } from "../../../lib/types/sns";
-import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
-import { formatToken } from "../../../lib/utils/token.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,

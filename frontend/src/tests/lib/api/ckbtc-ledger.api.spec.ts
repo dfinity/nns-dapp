@@ -3,9 +3,9 @@ import {
   getCkBTCAccounts,
   getCkBTCToken,
 } from "$lib/api/ckbtc-ledger.api";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
-import { CKBTC_LEDGER_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,

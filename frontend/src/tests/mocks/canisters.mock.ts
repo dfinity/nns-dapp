@@ -3,14 +3,14 @@ import {
   type CanisterDetails,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_MINTER_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import { Principal } from "@dfinity/principal";
 import { writable, type Subscriber } from "svelte/store";
-import {
-  CKBTC_INDEX_CANISTER_ID,
-  CKBTC_MINTER_CANISTER_ID,
-} from "../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "./auth.store.mock";
 
 export const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
