@@ -59,10 +59,10 @@ describe("selected universe derived stores", () => {
     });
 
     it("should not be ckBTC with feature flag disabled", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
       expect(get(isCkBTCUniverseStore)).toBe(true);
 
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", false);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
       expect(get(isCkBTCUniverseStore)).toBe(false);
     });
   });

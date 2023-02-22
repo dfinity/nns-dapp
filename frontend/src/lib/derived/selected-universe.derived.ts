@@ -8,8 +8,8 @@ import {
   selectableUniversesStore,
 } from "$lib/derived/selectable-universes.derived";
 import {
-  ENABLE_CKBTC_LEDGER,
-  ENABLE_CKBTC_MINTER,
+  ENABLE_CKBTC,
+  ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
@@ -46,13 +46,10 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
   [Readable<Principal>, Readable<Page>, Readable<boolean>, Readable<boolean>],
   Principal
 >(
-  [pageUniverseIdStore, pageStore, ENABLE_CKBTC_LEDGER, ENABLE_CKBTC_MINTER],
-  ([canisterId, page, $ENABLE_CKBTC_LEDGER, $ENABLE_CKBTC_MINTER]) => {
+  [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
+  ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (
-      ($ENABLE_CKBTC_LEDGER || $ENABLE_CKBTC_MINTER) &&
-      pathSupportsCkBTC(page)
-    ) {
+    if (($ENABLE_CKBTC || $ENABLE_CKTESTBTC) && pathSupportsCkBTC(page)) {
       return canisterId;
     }
 

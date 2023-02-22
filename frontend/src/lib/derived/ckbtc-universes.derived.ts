@@ -3,8 +3,8 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
-  ENABLE_CKBTC_LEDGER,
-  ENABLE_CKBTC_MINTER,
+  ENABLE_CKBTC,
+  ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
@@ -21,9 +21,9 @@ export const ckBTCUniversesStore = derived<
   [Readable<boolean>, Readable<boolean>],
   Universe[]
 >(
-  [ENABLE_CKBTC_LEDGER, ENABLE_CKBTC_MINTER],
-  ([$ENABLE_CKBTC_LEDGER, $ENABLE_CKBTC_MINTER]: [boolean, boolean]) => [
-    ...($ENABLE_CKBTC_LEDGER ? [CKBTC_UNIVERSE] : []),
-    ...($ENABLE_CKBTC_MINTER ? [CKTESTBTC_UNIVERSE] : []),
+  [ENABLE_CKBTC, ENABLE_CKTESTBTC],
+  ([$ENABLE_CKBTC, $ENABLE_CKTESTBTC]: [boolean, boolean]) => [
+    ...($ENABLE_CKBTC ? [CKBTC_UNIVERSE] : []),
+    ...($ENABLE_CKTESTBTC ? [CKTESTBTC_UNIVERSE] : []),
   ]
 );
