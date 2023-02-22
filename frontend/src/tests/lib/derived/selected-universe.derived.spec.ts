@@ -60,12 +60,27 @@ describe("selected universe derived stores", () => {
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
     });
 
     it("should be ckBTC inside ckBTC universe", () => {
       const $store = get(isCkBTCUniverseStore);
 
       expect($store).toEqual(true);
+    });
+
+    it("should not be ckBTC on unsupported path", () => {
+      page.mock({
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Accounts,
+      });
+      expect(get(isCkBTCUniverseStore)).toEqual(true);
+
+      page.mock({
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Neurons,
+      });
+      expect(get(isCkBTCUniverseStore)).toEqual(false);
     });
 
     it("should not be ckBTC outside ckBTC universe", () => {
@@ -129,6 +144,37 @@ describe("selected universe derived stores", () => {
 
       const $store2 = get(selectedUniverseIdStore);
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());
+    });
+
+    describe("in ckBTC universe", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
+        page.mock({
+          data: {
+            universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+          },
+          routeId: AppPath.Accounts,
+        });
+      });
+
+      it("returns CKBTC_UNIVERSE_CANISTER_ID", () => {
+        expect(get(selectedUniverseIdStore)).toEqual(CKBTC_UNIVERSE_CANISTER_ID);
+      });
+
+      it("returns OWN_CANISTER_ID if universe is ckBTC but flag disabled", () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", false);
+        expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+      });
+
+      it("returns OWN_CANISTER_ID if universe is ckBTC but path not supported", () => {
+        page.mock({
+          data: {
+            universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+          },
+          routeId: AppPath.Neurons,
+        });
+        expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+      });
     });
   });
 });
