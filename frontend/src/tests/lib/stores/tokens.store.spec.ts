@@ -1,12 +1,12 @@
 import { tokensStore } from "$lib/stores/tokens.store";
 import { get } from "svelte/store";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
 import {
   mockSnsFullProject,
   mockSnsToken,
 } from "../../mocks/sns-projects.mock";
 import { mockTokens, mockUniversesTokens } from "../../mocks/tokens.mock";
-import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../lib/constants/ckbtc-canister-ids.constants";
 
 describe("Tokens store", () => {
   afterEach(() => tokensStore.reset());

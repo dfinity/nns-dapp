@@ -14,7 +14,7 @@ import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
@@ -44,7 +44,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
           ],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       return { success: true };
@@ -68,7 +68,7 @@ describe("CkBTCWallet", () => {
       icrcAccountsStore.reset();
 
       page.mock({
-        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
     });
@@ -97,13 +97,13 @@ describe("CkBTCWallet", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockUniversesTokens);
 
       page.mock({
-        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
     });

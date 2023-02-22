@@ -6,10 +6,10 @@ import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.sv
 import { tokensStore } from "$lib/stores/tokens.store";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { icrcAccountsStore } from "../../../../lib/stores/icrc-accounts.store";
 import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
 import { mockTokens } from "../../../mocks/tokens.mock";
-import {icrcAccountsStore} from "../../../../lib/stores/icrc-accounts.store";
-import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../../lib/constants/ckbtc-canister-ids.constants";
 
 describe("CkBTCAccountsFooter", () => {
   afterEach(() => {
@@ -32,7 +32,7 @@ describe("CkBTCAccountsFooter", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       const { getByTestId } = render(CkBTCAccountsFooter);
@@ -56,7 +56,7 @@ describe("CkBTCAccountsFooter", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockTokens);

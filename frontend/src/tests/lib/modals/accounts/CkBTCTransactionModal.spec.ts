@@ -10,6 +10,8 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { icrcAccountsStore } from "../../../../lib/stores/icrc-accounts.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
@@ -17,8 +19,6 @@ import {
 } from "../../../mocks/ckbtc-accounts.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
-import {icrcAccountsStore} from "../../../../lib/stores/icrc-accounts.store";
-import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../../lib/constants/ckbtc-canister-ids.constants";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -52,7 +52,7 @@ describe("CkBTCTransactionModal", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
     });
 
     page.mock({

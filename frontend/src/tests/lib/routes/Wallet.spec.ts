@@ -1,22 +1,20 @@
 /**
  * @jest-environment jsdom
  */
-import {
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   principal,
 } from "../../mocks/sns-projects.mock";
-import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../lib/constants/ckbtc-canister-ids.constants";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
