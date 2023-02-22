@@ -1,5 +1,6 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,
   SnsSwapDerivedState,
@@ -24,28 +25,55 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   },
 ];
 
+export const snsResponseFor = ({
+  principal,
+  lifecycle,
+  certified = false,
+}: {
+  principal: Principal;
+  lifecycle: SnsSwapLifecycle;
+  certified?: boolean;
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
+  [
+    {
+      ...mockQueryMetadata,
+      rootCanisterId: principal.toText(),
+      certified,
+    },
+  ],
+  [
+    {
+      rootCanisterId: principal.toText(),
+      swapCanisterId: swapCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
+      derived: [mockDerived] as [SnsSwapDerivedState],
+      certified,
+    },
+  ],
+];
+
+const mergeSnsResponses = (
+  responses: [QuerySnsMetadata[], QuerySnsSwapState[]][]
+): [QuerySnsMetadata[], QuerySnsSwapState[]] => {
+  const metadata = responses.flatMap(([meta, _]) => meta);
+  const swapState = responses.flatMap(([_, state]) => state);
+  return [metadata, swapState];
+};
+
 export const snsResponsesForLifecycle = ({
   certified = false,
   lifecycles,
 }: {
   lifecycles: SnsSwapLifecycle[];
   certified?: boolean;
-}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
-  [
-    ...lifecycles.map((lifecycle, i) => ({
-      ...mockQueryMetadata,
-      rootCanisterId: principal(i).toText(),
-      certified,
-    })),
-  ],
-  [
-    ...lifecycles.map((lifecycle, i) => ({
-      rootCanisterId: principal(i).toText(),
-      swapCanisterId: swapCanisterIdMock,
-      governanceCanisterId: governanceCanisterIdMock,
-      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
-      derived: [mockDerived] as [SnsSwapDerivedState],
-      certified,
-    })),
-  ],
-];
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] =>
+  mergeSnsResponses(
+    lifecycles.map((lifecycle, i) =>
+      snsResponseFor({
+        principal: principal(i),
+        lifecycle,
+        certified,
+      })
+    )
+  );
