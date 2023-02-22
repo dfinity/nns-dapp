@@ -13,11 +13,15 @@ import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import { poll, pollingLimit } from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
 import type { TokenAmount } from "@dfinity/nns";
 import {
   InsufficientFundsError,
@@ -53,6 +57,80 @@ import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
+const shouldKeepPollingTicket =
+  (showToast = true) =>
+  (err: unknown): boolean => {
+    if (!(err instanceof SnsSwapGetOpenTicketError)) {
+      // Generic error, maybe a network error
+      // We want to keep trying.
+      if (showToast) {
+        toastsShow({
+          labelKey: "",
+          level: "info",
+          spinner: true,
+        });
+        showToast = false;
+      }
+      return false;
+    }
+
+    // handle custom errors
+    const { errorType } = err;
+    switch (errorType) {
+      case GetOpenTicketErrorType.TYPE_SALE_CLOSED: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+        });
+        break;
+      }
+      case GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+        });
+        break;
+      }
+      case GetOpenTicketErrorType.TYPE_UNSPECIFIED: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+          err,
+        });
+        break;
+      }
+    }
+    return true;
+  };
+
+const WAIT_FOR_TICKET_MILLIS = 15 * 1_000;
+const pollGetOpenTicket = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+}): Promise<Ticket | undefined> => {
+  try {
+    return await poll({
+      fn: (): Promise<Ticket | undefined> =>
+        getOpenTicketApi({
+          identity,
+          rootCanisterId,
+          certified,
+        }),
+      shouldExit: shouldKeepPollingTicket(),
+      millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+    });
+  } catch (error: unknown) {
+    // Reset polling toast
+    toastsStore.reset();
+    if (pollingLimit(error)) {
+      throw new ApiErrorKey("error.limit_exceeded_getting_open_ticket");
+    }
+    throw error;
+  }
+};
+
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -69,7 +147,7 @@ export const loadOpenTicket = async ({
 }): Promise<void> => {
   try {
     const identity = await getCurrentIdentity();
-    const ticket = await getOpenTicketApi({
+    const ticket = await pollGetOpenTicket({
       identity,
       rootCanisterId,
       certified,

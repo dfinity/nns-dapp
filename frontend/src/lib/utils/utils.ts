@@ -208,11 +208,13 @@ export const poll = async <T>({
   shouldExit,
   maxAttempts = DEFAUL_MAX_POLLING_ATTEMPTS,
   counter = 0,
+  millisecondsToWait = 500,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
   maxAttempts?: number;
   counter?: number;
+  millisecondsToWait?: number;
 }): Promise<T> => {
   if (counter >= maxAttempts) {
     throw new PollingLimitExceededError();
@@ -226,7 +228,7 @@ export const poll = async <T>({
     // Log swallowed errors
     console.error(`Error polling: ${errorToString(error)}`);
   }
-  await waitForMilliseconds(500);
+  await waitForMilliseconds(millisecondsToWait);
   return poll({
     fn,
     shouldExit,
@@ -234,6 +236,9 @@ export const poll = async <T>({
     counter: counter + 1,
   });
 };
+
+export const pollingLimit = (error: unknown): boolean =>
+  error instanceof PollingLimitExceededError;
 
 /**
  * Use to highlight a placeholder in a text rendered from i18n labels.
