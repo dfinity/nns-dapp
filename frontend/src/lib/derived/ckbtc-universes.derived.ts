@@ -13,7 +13,7 @@ export const CKBTC_UNIVERSE: Universe = {
   canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
 };
 
-const CKTESTBTC_UNIVERSE: Universe = {
+export const CKTESTBTC_UNIVERSE: Universe = {
   canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
 };
 

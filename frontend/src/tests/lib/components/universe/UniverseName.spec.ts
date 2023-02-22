@@ -5,6 +5,7 @@ import UniverseName from "$lib/components/universe/UniverseName.svelte";
 import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { render } from "@testing-library/svelte";
+import { CKTESTBTC_UNIVERSE } from "../../../../lib/derived/ckbtc-universes.derived";
 import en from "../../../mocks/i18n.mock";
 import {
   mockSnsFullProject,
@@ -36,5 +37,12 @@ describe("UniverseName", () => {
       props: { universe: CKBTC_UNIVERSE },
     });
     expect(container.textContent).toEqual(en.ckbtc.title);
+  });
+
+  it("shout render ckTESTBTC", () => {
+    const { container } = render(UniverseName, {
+      props: { universe: CKTESTBTC_UNIVERSE },
+    });
+    expect(container.textContent).toEqual(en.ckbtc.test_title);
   });
 });

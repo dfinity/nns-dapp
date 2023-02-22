@@ -110,13 +110,15 @@ describe("CkBTCWallet", () => {
 
     afterAll(() => jest.clearAllMocks());
 
-    it("should render ckBTC name", async () => {
+    it("should render ckTESTBTC name", async () => {
       const { getByTestId } = render(CkBTCWallet, props);
 
       await waitFor(() => {
         const titleRow = getByTestId("projects-summary");
         expect(titleRow).not.toBeNull();
-        expect(titleRow?.textContent?.includes(en.ckbtc.title)).toBeTruthy();
+        expect(
+          titleRow?.textContent?.includes(en.ckbtc.test_title)
+        ).toBeTruthy();
       });
     });
 
