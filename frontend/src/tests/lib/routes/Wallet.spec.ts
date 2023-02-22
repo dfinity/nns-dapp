@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import {
-  CKBTC_UNIVERSE_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -17,6 +16,7 @@ import {
   mockSnsFullProject,
   principal,
 } from "../../mocks/sns-projects.mock";
+import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../lib/constants/ckbtc-canister-ids.constants";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

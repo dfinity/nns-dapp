@@ -2,12 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
@@ -19,6 +17,8 @@ import {
 } from "../../../mocks/ckbtc-accounts.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
+import {icrcAccountsStore} from "../../../../lib/stores/icrc-accounts.store";
+import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../../lib/constants/ckbtc-canister-ids.constants";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -47,9 +47,12 @@ describe("CkBTCTransactionModal", () => {
   );
 
   beforeAll(() => {
-    ckBTCAccountsStore.set({
-      accounts: [mockCkBTCMainAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      accounts: {
+        accounts: [mockCkBTCMainAccount],
+        certified: true,
+      },
+      universeId: CKBTC_UNIVERSE_CANISTER_ID
     });
 
     page.mock({

@@ -3,18 +3,19 @@
  */
 
 import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
 import { mockTokens } from "../../../mocks/tokens.mock";
+import {icrcAccountsStore} from "../../../../lib/stores/icrc-accounts.store";
+import {CKBTC_UNIVERSE_CANISTER_ID} from "../../../../lib/constants/ckbtc-canister-ids.constants";
 
 describe("CkBTCAccountsFooter", () => {
   afterEach(() => {
     jest.clearAllMocks();
 
-    ckBTCAccountsStore.reset();
+    icrcAccountsStore.reset();
     tokensStore.reset();
   });
 
@@ -26,9 +27,12 @@ describe("CkBTCAccountsFooter", () => {
     });
 
     it("should not render action if only accounts loaded", () => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID
       });
 
       const { getByTestId } = render(CkBTCAccountsFooter);
@@ -47,9 +51,12 @@ describe("CkBTCAccountsFooter", () => {
 
   describe("loaded", () => {
     beforeEach(() => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID
       });
 
       tokensStore.setTokens(mockTokens);
