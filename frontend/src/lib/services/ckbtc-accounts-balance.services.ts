@@ -64,15 +64,30 @@ const loadCkBTCToken = (universeId: UniverseCanisterId): Promise<void> => {
  *
  * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when the ckBTC universe is manually selected either through the token navigation switcher or accessed directly via the browser url.
  *
- * @param {UniverseCanisterId} universeId The ckBTC (ckBTC or ckTESTBTC) environment for which the balances should be loaded.
+ * @param {universeIds: UniverseCanisterId[]; excludeUniverseIds: RootCanisterIdText[] | undefined} params
+ * @param {UniverseCanisterId[]} params.universeIds The ckBTC (ckBTC or ckTESTBTC) environment for which the balances should be loaded.
+ * @param {RootCanisterIdText[] | undefined} params.excludeUniverseIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
-export const uncertifiedLoadCkBTCAccountsBalance = async (
-  universeId: UniverseCanisterIdText
-): Promise<void> => {
-  const results: PromiseSettledResult<void>[] = await Promise.allSettled([
-    loadCkBTCAccountsBalance(Principal.fromText(universeId)),
-    loadCkBTCToken(Principal.fromText(universeId)),
-  ]);
+export const uncertifiedLoadCkBTCAccountsBalance = async ({
+  universeIds,
+  excludeUniverseIds = [],
+}: {
+  universeIds: UniverseCanisterIdText[];
+  excludeUniverseIds: UniverseCanisterIdText[] | undefined;
+}): Promise<void> => {
+  const results: PromiseSettledResult<[void, void]>[] =
+    await Promise.allSettled(
+      (
+        universeIds.filter(
+          (universeId) => !excludeUniverseIds.includes(universeId)
+        ) ?? []
+      ).map((universeId) =>
+        Promise.all([
+          loadCkBTCAccountsBalance(Principal.fromText(universeId)),
+          loadCkBTCToken(Principal.fromText(universeId)),
+        ])
+      )
+    );
 
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
