@@ -57,6 +57,11 @@
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
 
+  let segmentLabel: string;
+  $: segmentLabel = isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_title
+    : $i18n.ckbtc.title;
+
   // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
   export let qrCodeRendered = false;
 
@@ -105,8 +110,10 @@
 
   <div class="receive">
     <Segment bind:selectedSegmentId bind:this={segment}>
-      <SegmentButton segmentId={bitcoinSegmentId}>Bitcoin</SegmentButton>
-      <SegmentButton segmentId={ckBTCSegmentId}>ckBTC</SegmentButton>
+      <SegmentButton segmentId={bitcoinSegmentId}
+        >{$i18n.ckbtc.bitcoin}</SegmentButton
+      >
+      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
     </Segment>
   </div>
 
