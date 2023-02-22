@@ -559,7 +559,8 @@ export const participateInSnsSale = async ({
   } catch (err) {
     console.error("[sale] on transfer", err);
 
-    // Frontend should wait until time reaches ledger_time before retrying
+    // Frontend should auto retry participation
+    // (in theory this error should be gone in a couple of seconds)
     if (err instanceof TxCreatedInFutureError) {
       const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
 
