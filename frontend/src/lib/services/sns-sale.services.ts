@@ -19,7 +19,6 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import type { SnsTicket } from "$lib/types/sns";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
@@ -48,22 +47,31 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
-  toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { nnsDappCanister } from "../api/nns-dapp.api";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
-import { nanoSecondsToDateTime } from "../utils/date.utils";
+import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
+import { startBusy, stopBusy } from "../stores/busy.store";
+import { snsTicketsStore } from "../stores/sns-tickets.store";
+import { toastsSuccess } from "../stores/toasts.store";
+import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
-export const getOpenTicket = async ({
+/**
+ * **SHOULD NOT BE CALLED FROM UI**
+ * (exported only for testing purposes)
+ *
+ * @param rootCanisterId
+ * @param certified
+ */
+export const loadOpenTicket = async ({
   rootCanisterId,
   certified,
 }: {
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsTicket | undefined> => {
+}): Promise<void> => {
   try {
     const identity = await getCurrentIdentity();
     const ticket = await getOpenTicketApi({
@@ -72,13 +80,21 @@ export const getOpenTicket = async ({
       certified,
     });
 
-    logWithTimestamp("[sale]getOpenTicket:", ticket);
+    if (ticket === undefined) {
+      // set explicitly null to mark the ticket absence
+      snsTicketsStore.setNoTicket(rootCanisterId);
+    } else {
+      snsTicketsStore.setTicket({
+        rootCanisterId,
+        ticket,
+      });
+    }
 
-    return {
-      rootCanisterId,
-      ticket,
-    };
+    logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
+    // enable participate button
+    snsTicketsStore.setNoTicket(rootCanisterId);
+
     if (!(err instanceof SnsSwapGetOpenTicketError)) {
       // not expected error
       toastsError({
@@ -112,69 +128,69 @@ const handleNewSaleTicketError = ({
 }: {
   err: unknown;
   rootCanisterId: Principal;
-}): SnsTicket | undefined => {
-  if (!(err instanceof SnsSwapNewTicketError)) {
-    // not expected error
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
-      err,
-    });
-    return;
-  }
+}): void => {
+  // enable participate button
+  snsTicketsStore.setNoTicket(rootCanisterId);
 
-  // handle custom errors
-  const { errorType } = err;
-  switch (errorType) {
-    case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
-      toastsError({
-        labelKey: "error__sns.sns_sale_closed",
-        err,
-      });
-      return;
-    case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
-      const existingTicket = (err as SnsSwapNewTicketError).existingTicket;
-      if (nonNullish(existingTicket)) {
-        toastsShow({
-          level: "info",
-          labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+  try {
+    const newSaleTicketError = err as SnsSwapNewTicketError;
+
+    // handle custom errors
+    switch (newSaleTicketError.errorType) {
+      case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
+        toastsError({
+          labelKey: "error__sns.sns_sale_closed",
+          err,
+        });
+        return;
+      case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
+        const existingTicket = newSaleTicketError.existingTicket;
+        if (nonNullish(existingTicket)) {
+          toastsShow({
+            level: "info",
+            labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+            substitutions: {
+              $time: nanoSecondsToDateTime(existingTicket.creation_time),
+            },
+          });
+
+          // Continue the flow with existing ticket (restore the flow)
+          snsTicketsStore.setTicket({
+            rootCanisterId,
+            ticket: existingTicket,
+          });
+        }
+        // break to jump to the generic error message
+        break;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
+        const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
+          newSaleTicketError.invalidUserAmount as InvalidUserAmount;
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $time: nanoSecondsToDateTime(existingTicket.creation_time),
+            $min: formatToken({ value: min_amount_icp_e8s_included }),
+            $max: formatToken({ value: max_amount_icp_e8s_included }),
           },
         });
-
-        // Continue the flow with existing ticket (restore the flow)
-        return {
-          rootCanisterId,
-          ticket: existingTicket,
-        };
+        return;
       }
-      // break to jump to the generic error message
-      break;
+      case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_invalid_subaccount",
+        });
+        return;
+      }
+      case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_try_later",
+        });
+        return;
+      }
     }
-    case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
-      const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
-        err.invalidUserAmount as InvalidUserAmount;
-      toastsError({
-        labelKey: "error__sns.sns_sale_invalid_amount",
-        substitutions: {
-          $min: formatToken({ value: min_amount_icp_e8s_included }),
-          $max: formatToken({ value: max_amount_icp_e8s_included }),
-        },
-      });
-      return;
-    }
-    case NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT: {
-      toastsError({
-        labelKey: "error__sns.sns_sale_invalid_subaccount",
-      });
-      return;
-    }
-    case NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED: {
-      toastsError({
-        labelKey: "error__sns.sns_sale_try_later",
-      });
-      return;
-    }
+  } catch (unexpectedError) {
+    console.error(unexpectedError);
+    console.error(err);
   }
 
   // generic error
@@ -183,6 +199,16 @@ const handleNewSaleTicketError = ({
     err,
   });
 };
+
+// TODO(sale): rename to loadNewSaleTicket
+/**
+ * **SHOULD NOT BE CALLED FROM UI**
+ * (exported only for testing purposes)
+ *
+ * @param {Principal} rootCanisterId
+ * @param {E8s} amount_icp_e8s
+ * @param {Uint8Array} subaccount
+ */
 export const newSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
@@ -191,7 +217,7 @@ export const newSaleTicket = async ({
   rootCanisterId: Principal;
   amount_icp_e8s: E8s;
   subaccount?: Uint8Array;
-}): Promise<SnsTicket | undefined> => {
+}): Promise<void> => {
   logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, Boolean(subaccount));
   try {
     const identity = await getCurrentIdentity();
@@ -203,12 +229,13 @@ export const newSaleTicket = async ({
     });
 
     logWithTimestamp("[sale]newSaleTicket:", ticket);
-    return {
+
+    snsTicketsStore.setTicket({
       rootCanisterId,
       ticket,
-    };
+    });
   } catch (err) {
-    return handleNewSaleTicketError({
+    handleNewSaleTicketError({
       err,
       rootCanisterId,
     });
@@ -248,6 +275,54 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
+export const restoreSnsSaleParticipation = async ({
+  rootCanisterId,
+  postprocess,
+}: {
+  rootCanisterId: Principal;
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
+  // avoid concurrent restores
+  if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
+    return;
+  }
+
+  await loadOpenTicket({
+    rootCanisterId,
+    certified: true,
+  });
+
+  const ticket: Ticket | undefined | null =
+    get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
+
+  // no open tickets
+  if (isNullish(ticket)) {
+    return;
+  }
+
+  // TODO(sale): recheck why it's there
+  toastsShow({
+    level: "info",
+    labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
+    substitutions: {
+      $time: nanoSecondsToDateTime(ticket.creation_time),
+    },
+    duration: DEFAULT_TOAST_DURATION_MILLIS,
+  });
+
+  startBusy({
+    initiator: "project-participate",
+    labelKey: "neurons.may_take_while",
+  });
+
+  await participateInSnsSale({
+    rootCanisterId,
+    postprocess,
+  });
+
+  stopBusy("project-participate");
+};
+
 /**
  * Does participation validation and creates an open ticket.
  *
@@ -259,13 +334,20 @@ export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
+  postprocess,
 }: {
   amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
-}): Promise<SnsTicket | undefined> => {
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
+    startBusy({
+      initiator: "project-participate",
+      labelKey: "neurons.may_take_while",
+    });
+
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -289,7 +371,7 @@ export const initiateSnsSaleParticipation = async ({
 
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
-    const ticket = await newSaleTicket({
+    await newSaleTicket({
       rootCanisterId,
       subaccount: isNullish(subaccount)
         ? undefined
@@ -297,7 +379,13 @@ export const initiateSnsSaleParticipation = async ({
       amount_icp_e8s: amount.toE8s(),
     });
 
-    return ticket;
+    const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
+    if (nonNullish(ticket)) {
+      await participateInSnsSale({
+        rootCanisterId,
+        postprocess,
+      });
+    }
   } catch (err: unknown) {
     toastsError(
       toToastError({
@@ -305,28 +393,44 @@ export const initiateSnsSaleParticipation = async ({
         err: err,
       })
     );
+
+    // enable participate button
+    snsTicketsStore.setNoTicket(rootCanisterId);
   }
+
+  stopBusy("project-participate");
 };
 
 /**
+ * **SHOULD NOT BE CALLED FROM UI**
+ * (exported only for testing purposes)
+ *
  * Do the participation using sns ticket
  *
- * 1. nnsDapp.addPendingNotifySwap
- * 2. nnsLedger.transfer
- * 3. snsSale.notifyParticipation (refresh_buyer_tokens)
- * 4. syncAccounts
+ * 1. nnsLedger.transfer
+ * 2. snsSale.notifyParticipation (refresh_buyer_tokens)
+ * 3. syncAccounts
  *
  * @param snsTicket
  * @param rootCanisterId
  */
 export const participateInSnsSale = async ({
-  ticket: { ticket: snsTicket, rootCanisterId },
+  rootCanisterId,
+  postprocess,
 }: {
-  ticket: Required<SnsTicket>;
-}): Promise<{ success: boolean; retry: boolean }> => {
+  rootCanisterId: Principal;
+  postprocess: () => Promise<void>;
+}): Promise<void> => {
+  const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
+  // skip if there is no more ticket (e.g. on retry)
+  if (isNullish(ticket)) {
+    logWithTimestamp("[sale] skip participation - no ticket");
+    return;
+  }
+
   logWithTimestamp(
     "[sale]participateInSnsSale:",
-    snsTicket,
+    ticket,
     rootCanisterId?.toText()
   );
 
@@ -335,7 +439,7 @@ export const participateInSnsSale = async ({
     account,
     creation_time: creationTime,
     ticket_id: ticketId,
-  } = snsTicket as Ticket;
+  } = ticket;
 
   const ticketAccount = fromDefinedNullable(account);
   const ownerPrincipal = fromDefinedNullable(ticketAccount.owner);
@@ -348,7 +452,7 @@ export const participateInSnsSale = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
-    return { success: false, retry: false };
+    return;
   }
 
   const { canister: nnsLedger } = await ledgerCanister({ identity });
@@ -368,19 +472,9 @@ export const participateInSnsSale = async ({
       controller,
     });
 
-    logWithTimestamp("[sale] 1. addPendingNotifySwap");
-    // If the client disconnects after the transfer, the participation will still be notified.
-    const { canister: nnsDapp } = await nnsDappCanister({ identity });
-    // TODO(sale): create/move to api
-    await nnsDapp.addPendingNotifySwap({
-      swap_canister_id: swapCanisterId,
-      buyer: controller,
-      buyer_sub_account:
-        subaccount === undefined ? [] : toNullable(Array.from(subaccount)),
-    });
+    logWithTimestamp("[sale] 1. transfer (time,id):", creationTime, ticketId);
 
     // Send amount to the ledger
-    logWithTimestamp("[sale] 2. transfer (time,id):", creationTime, ticketId);
     await nnsLedger.transfer({
       amount,
       fromSubAccount: isNullish(subaccount)
@@ -391,11 +485,29 @@ export const participateInSnsSale = async ({
       memo: ticketId,
     });
   } catch (err) {
-    console.error("[sale]error1", err);
+    console.error("[sale] on transfer", err);
 
+    // Frontend should wait until time reaches ledger_time before retrying
     if (err instanceof TxCreatedInFutureError) {
-      // no error, just retry
-      return { success: false, retry: true };
+      const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
+
+      setTimeout(() => {
+        participateInSnsSale({
+          rootCanisterId,
+          postprocess,
+        });
+      }, retryIn * 1000);
+
+      toastsShow({
+        level: "error",
+        labelKey: "error__sns.sns_sale_retry_in",
+        substitutions: {
+          $time: secondsToDuration(BigInt(retryIn)),
+        },
+        duration: DEFAULT_TOAST_DURATION_MILLIS,
+      });
+
+      return;
     }
 
     // if duplicated transfer, silently continue the flow
@@ -405,8 +517,26 @@ export const participateInSnsSale = async ({
       if (err instanceof InsufficientFundsError) {
         labelKey = "error__sns.ledger_insufficient_funds";
       }
+
+      // after 24h ledger returns TxTooOldError
       if (err instanceof TxTooOldError) {
         labelKey = "error__sns.ledger_too_old";
+        /*
+        TODO(sale): implement plan A. (find the way to differentiate between internal and external errors)
+        (check snsTicketsStore.setNoTicket(rootCanisterId))?
+
+        plan A. on TxTooOldError
+            refresh_buyer_tokens // internal errors are ignored
+            notify_payment_failure
+
+        plan B.
+           ledger balance (accountIdentifier) > swap user balance
+            refresh_buy to delete the ticket
+            // message: success message but about the previous participation
+           else
+            notify_payment_failure // to remove the ticket
+            // error: the previous participation failed
+        */
       }
 
       toastsError({
@@ -414,19 +544,22 @@ export const participateInSnsSale = async ({
         err,
       });
 
-      return { success: false, retry: false };
+      // enable participate button
+      snsTicketsStore.setNoTicket(rootCanisterId);
+
+      return;
     }
   }
 
   try {
-    logWithTimestamp("[sale] 3. refresh_buyer_tokens");
+    logWithTimestamp("[sale] 2. refresh_buyer_tokens");
     // endpoint: refresh_buyer_tokens
     const { icp_accepted_participation_e8s } = await notifyParticipation({
       buyer: controller.toText(),
     });
 
     // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== snsTicket.amount_icp_e8s) {
+    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
@@ -444,12 +577,24 @@ export const participateInSnsSale = async ({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
 
-    return { success: false, retry: false };
+    // enable participate button
+    snsTicketsStore.setNoTicket(rootCanisterId);
+
+    return;
   }
 
-  logWithTimestamp("[sale]syncAccounts");
+  logWithTimestamp("[sale] 3. syncAccounts");
   await syncAccounts();
 
   logWithTimestamp("[sale] done");
-  return { success: true, retry: false };
+
+  // reload
+  await postprocess?.();
+
+  toastsSuccess({
+    labelKey: "sns_project_detail.participate_success",
+  });
+
+  // remove the ticket when it's complete to enable increase participation button
+  snsTicketsStore.setNoTicket(rootCanisterId);
 };
