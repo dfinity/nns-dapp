@@ -18,7 +18,7 @@ export const failTestsThatLogToConsole = () => {
     });
     jest.spyOn(console, "error").mockImplementation((...args) => {
       gotLogs = true;
-      realConsoleError(...args);
+      realConsoleError(...args, new Error().stack);
     });
   });
 
