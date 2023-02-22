@@ -414,10 +414,7 @@ const notifyParticipationAndRemoveTicket = async ({
   hasTooOldError: boolean;
   ticket: Ticket;
 }): Promise<{ success: boolean }> => {
-  const {
-    canisterIds: { swapCanisterId },
-    notifyParticipation: notifyParticipationApi,
-  } = await wrapper({
+  const { notifyParticipation: notifyParticipationApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
@@ -534,7 +531,6 @@ export const participateInSnsSale = async ({
   const { canister: nnsLedger } = await ledgerCanister({ identity });
   const {
     canisterIds: { swapCanisterId },
-    notifyParticipation,
   } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
