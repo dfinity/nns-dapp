@@ -435,6 +435,7 @@ const notifyParticipationAndRemoveTicket = async ({
         // unknown error: ask to refresh and stop the flow
         toastsError({
           labelKey: "error__sns.sns_sale_unexpected_and_refresh",
+          err,
         });
 
         return { success: false };
@@ -444,6 +445,7 @@ const notifyParticipationAndRemoveTicket = async ({
     // unexpected error (probably sale is closed)
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
+      err,
     });
 
     // enable participate button
