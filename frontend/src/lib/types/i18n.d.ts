@@ -216,7 +216,9 @@ interface I18nAccounts {
   current_balance_detail: string;
   network: string;
   network_icp_ckbtc: string;
+  network_icp_cktestbtc: string;
   network_bitcoin: string;
+  network_test_bitcoin: string;
   select_network: string;
 }
 
