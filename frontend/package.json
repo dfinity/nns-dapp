@@ -32,6 +32,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/svelte": "^3.2.2",
     "@types/jest": "^29.4.0",
+    "@types/jest-expect-message": "^1.1.0",
     "@types/marked": "^4.0.8",
     "@types/wicg-file-system-access": "^2020.9.5",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
