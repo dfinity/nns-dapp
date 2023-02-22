@@ -31,7 +31,6 @@ RUN printf "%s" "$NODE_VERSION" > config/node_version
 RUN printf "%s" "$rust_version" > config/rust_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 
-
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
 SHELL ["bash", "-c"]
