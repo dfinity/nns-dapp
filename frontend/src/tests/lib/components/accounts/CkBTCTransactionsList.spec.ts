@@ -3,10 +3,10 @@
  */
 
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { render } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,

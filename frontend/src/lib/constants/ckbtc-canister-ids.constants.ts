@@ -31,6 +31,7 @@ export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
 
 // TODO: to be remove - ckBTCTest on mainnet
 
+// Effective CKTESTBTC canister IDs on mainnet
 // Source: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/testnet/canister_ids.json
 
 export const CKTESTBTC_MINTER_CANISTER_ID = Principal.fromText(

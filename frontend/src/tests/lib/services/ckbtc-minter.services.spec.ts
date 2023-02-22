@@ -12,6 +12,7 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
+import { CKBTC_MINTER_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 import en from "../../mocks/i18n.mock";
@@ -25,11 +26,12 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockCkBTCAddress);
 
-      await services.getBTCAddress();
+      await services.getBTCAddress(CKBTC_MINTER_CANISTER_ID);
 
       await waitFor(() =>
         expect(spyGetAddress).toBeCalledWith({
           identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
         })
       );
     });
@@ -46,11 +48,12 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(ok);
 
-      const result = await services.updateBalance();
+      const result = await services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
       await waitFor(() =>
         expect(spyUpdateBalance).toBeCalledWith({
           identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
         })
       );
 
@@ -71,7 +74,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterGenericError(error);
       });
 
-      const call = () => services.updateBalance();
+      const call = () => services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
       await expect(call).rejects.toThrowError(new ApiErrorKey(error));
     });
@@ -83,7 +86,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterTemporaryUnavailableError(error);
       });
 
-      const call = () => services.updateBalance();
+      const call = () => services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
       await expect(call).rejects.toThrowError(
         new ApiErrorKey(`${en.error__ckbtc.temporary_unavailable} (${error})`)
@@ -95,7 +98,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterAlreadyProcessingError();
       });
 
-      const call = () => services.updateBalance();
+      const call = () => services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
       await expect(call).rejects.toThrowError(
         new ApiErrorKey(en.error__ckbtc.already_process)
@@ -107,7 +110,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterNoNewUtxosError();
       });
 
-      const call = () => services.updateBalance();
+      const call = () => services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
       await expect(call).rejects.toThrowError(
         new ApiErrorKey(en.error__ckbtc.no_new_utxo)

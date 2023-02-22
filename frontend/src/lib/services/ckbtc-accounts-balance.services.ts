@@ -73,7 +73,7 @@ export const uncertifiedLoadCkBTCAccountsBalance = async ({
   excludeUniverseIds = [],
 }: {
   universeIds: UniverseCanisterIdText[];
-  excludeUniverseIds: UniverseCanisterIdText[] | undefined;
+  excludeUniverseIds?: UniverseCanisterIdText[] | undefined;
 }): Promise<void> => {
   const results: PromiseSettledResult<[void, void]>[] =
     await Promise.allSettled(

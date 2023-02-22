@@ -9,7 +9,7 @@ import {
 import type { Universe } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
 
-const CKBTC_UNIVERSE: Universe = {
+export const CKBTC_UNIVERSE: Universe = {
   canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
 };
 

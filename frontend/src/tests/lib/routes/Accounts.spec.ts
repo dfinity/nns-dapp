@@ -2,10 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
@@ -22,6 +19,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";

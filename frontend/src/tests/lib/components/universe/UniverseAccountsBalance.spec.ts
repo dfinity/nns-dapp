@@ -3,19 +3,18 @@
  */
 
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
-import {
-  CKBTC_UNIVERSE,
-  NNS_UNIVERSE,
-} from "$lib/derived/selectable-universes.derived";
+import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_UNIVERSE } from "../../../../lib/derived/ckbtc-universes.derived";
+import { icrcAccountsStore } from "../../../../lib/stores/icrc-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -140,9 +139,12 @@ describe("UniverseAccountsBalance", () => {
     it("should render a total balance for ckBTC", () => {
       const totalBalance = mockCkBTCMainAccount.balance;
 
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       const { getByTestId } = render(ProjectAccountsBalance, {

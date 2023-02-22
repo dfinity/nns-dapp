@@ -1,13 +1,13 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-accounts-balance.services";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
+import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -23,9 +23,13 @@ describe("ckbtc-accounts-balance.services", () => {
   afterEach(() => {
     jest.clearAllMocks();
 
-    ckBTCAccountsStore.reset();
+    icrcAccountsStore.reset();
     tokensStore.reset();
   });
+
+  const params = {
+    universeIds: [CKBTC_UNIVERSE_CANISTER_ID.toText()],
+  };
 
   it("should call api.getCkBTCAccounts and load balance in store", async () => {
     jest
@@ -36,13 +40,13 @@ describe("ckbtc-accounts-balance.services", () => {
       .spyOn(ledgerApi, "getCkBTCAccounts")
       .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
-    await services.uncertifiedLoadCkBTCAccountsBalance();
+    await services.uncertifiedLoadCkBTCAccountsBalance(params);
 
     await tick();
 
     const store = get(universesAccountsBalance);
-    // Nns + ckBTC
-    expect(Object.keys(store)).toHaveLength(2);
+    // Nns + ckBTC + ckTESTBTC
+    expect(Object.keys(store)).toHaveLength(3);
     expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].balance.toE8s()).toEqual(
       mockCkBTCMainAccount.balance.toE8s()
     );
@@ -58,7 +62,7 @@ describe("ckbtc-accounts-balance.services", () => {
       .spyOn(ledgerApi, "getCkBTCAccounts")
       .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
-    await services.uncertifiedLoadCkBTCAccountsBalance();
+    await services.uncertifiedLoadCkBTCAccountsBalance(params);
 
     await tick();
 
@@ -75,7 +79,7 @@ describe("ckbtc-accounts-balance.services", () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
     jest.spyOn(ledgerApi, "getCkBTCAccounts").mockRejectedValue(new Error());
 
-    await services.uncertifiedLoadCkBTCAccountsBalance();
+    await services.uncertifiedLoadCkBTCAccountsBalance(params);
 
     expect(toastsError).toHaveBeenCalled();
   });
