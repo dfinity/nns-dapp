@@ -69,7 +69,7 @@
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm\" -o internet_identity_dev.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
