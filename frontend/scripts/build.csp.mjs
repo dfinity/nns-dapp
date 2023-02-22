@@ -39,7 +39,7 @@ const removeDefaultCspTag = (indexHtml) => {
 const injectScriptLoader = (indexHtml) => {
   return indexHtml.replace(
     "<!-- SCRIPT_LOADER -->",
-    `<script>
+    `<script sveltekit-loader>
       const loader = document.createElement("script");
       loader.type = "module";
       loader.src = "main.js";
@@ -60,21 +60,32 @@ const injectScriptLoader = (indexHtml) => {
 const extractStartScript = (htmlFile) => {
   const indexHtml = readFileSync(htmlFile, "utf-8");
 
-  const svelteKitStartScript =
-    /(<script>)([\s\S]*?)(<\/script>)/gm;
+  const svelteKitStartScript = /(<script>)([\s\S]*?)(<\/script>)/gm;
 
   // 1. extract SvelteKit start script to a separate main.js file
-  const [_script, _scriptStartTag, content, _scriptEndTag] = svelteKitStartScript.exec(indexHtml);
+  const [_script, _scriptStartTag, content, _scriptEndTag] =
+    svelteKitStartScript.exec(indexHtml);
   const inlineScript = content.replace(/^\s*/gm, "");
 
   // Each file needs its own main.js because the script that calls the SvelteKit start function contains information dedicated to the route
   // i.e. the routeId and a particular id for the querySelector use to attach the content
   const folderPath = dirname(htmlFile);
 
-  writeFileSync(join(folderPath, "main.js"), inlineScript, "utf-8");
+  // 2. Extract the SvelteKit script into a separate file
 
-  // 2. replace SvelteKit script tag content with empty
-  return indexHtml.replace(svelteKitStartScript, "$1$3");
+  // We need to replace the document.currentScript.parentElement because the script is added to the head. SvelteKit except the <body /> element as initial parameter.
+  // We also need to attach explicitly to the `window` the __sveltekit_ variables because they are not defined in the global scope but are used as global.
+  const moduleScript = inlineScript
+    .replaceAll(
+      "document.currentScript.parentElement",
+      "document.querySelector('body')"
+    )
+    .replaceAll(/__sveltekit_(.*)\s=/g, "window.$&");
+
+  writeFileSync(join(folderPath, "main.js"), moduleScript, "utf-8");
+
+  // 3. Replace original SvelteKit script tag content with empty
+  return indexHtml.replace(svelteKitStartScript, "");
 };
 
 /**
