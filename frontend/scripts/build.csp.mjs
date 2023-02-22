@@ -18,9 +18,13 @@ const buildCsp = (htmlFile) => {
   const indexHTMLWithScriptLoader = injectScriptLoader(
     indexHTMLWithoutStartScript
   );
-  // 3. remove the content-security-policy tag injected by SvelteKit
-  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithScriptLoader);
-  // 4. We calculate the sha256 values for these scripts and update the CSP
+  // 3. Replace preloaders
+  const indexHTMLWithPreloaders = injectLinkPreloader(
+    indexHTMLWithScriptLoader
+  );
+  // 4. remove the content-security-policy tag injected by SvelteKit
+  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithPreloaders);
+  // 5. We calculate the sha256 values for these scripts and update the CSP
   const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
 
   writeFileSync(htmlFile, indexHTMLWithCSP);
@@ -46,6 +50,48 @@ const injectScriptLoader = (indexHtml) => {
       document.head.appendChild(loader);
     </script>`
   );
+};
+
+/**
+ * Calculating the sh256 value for the preloaded link and whitelisting these seem not to be supported by the Content-Security-Policy.
+ * Instead, we transform these in dynamic scripts and add the sha256 value of the script to the script-src policy of the CSP.
+ */
+const injectLinkPreloader = (indexHtml) => {
+  const preload = /<link rel="preload"[\s\S]*?href="([\s\S]*?)">/gm;
+
+  const links = [];
+
+  let p;
+  while ((p = preload.exec(indexHtml))) {
+    const [linkTag, src] = p;
+
+    links.push({
+      linkTag,
+      src,
+    });
+  }
+
+  // 1. Inject pre-loaders dynamically after load
+  const loader = `<script sveltekit-preloader>
+      const links = [${links.map(({ src }) => `'${src}'`)}];
+      for (const link of links) {
+          const preloadLink = document.createElement("link");
+          preloadLink.href = link;
+          preloadLink.rel = "preload";
+          preloadLink.as = "script";
+          document.head.appendChild(loader);
+      }
+    </script>`;
+
+  let updateIndex = indexHtml.replace("<!-- LINKS_PRELOADER -->", loader);
+
+  // 2. Remove original <link rel="preload" as="script" />
+  for (const url of links) {
+    const { linkTag } = url;
+    updateIndex = updateIndex.replace(linkTag, "");
+  }
+
+  return updateIndex;
 };
 
 /**
