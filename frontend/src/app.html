@@ -85,7 +85,8 @@
     <meta name="theme-color" content="#352652" />
 
     <!-- Init theme as fast as possible -->
-    <script>
+    <!-- We add an id to avoid moving it along with the svelte start script -->
+    <script id="theme-js">
       try {
         const isDarkPreferred = window.matchMedia(
           "(prefers-color-scheme: dark)"
@@ -107,11 +108,13 @@
       }
     </script>
 
-    <!-- SCRIPT_LOADER -->
-
     %sveltekit.head%
   </head>
   <body>
-    <div>%sveltekit.body%</div>
+    <div>
+      %sveltekit.body%
+      <!-- We need to set the script loader here because it needs to access the parent element -->
+      <!-- SCRIPT_LOADER -->
+    </div>
   </body>
 </html>

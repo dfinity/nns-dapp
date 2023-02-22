@@ -3,6 +3,7 @@
 import { createHash } from "crypto";
 import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "fs";
+import { dirname, join } from "path";
 import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
@@ -12,10 +13,22 @@ const isAggregatorCanisterUrlDefined = aggregatorCanisterUrl.length > 0;
 
 const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
-  const html = readFileSync(htmlFile, "utf-8");
-  // 2. remove the content-security-policy tag injected by SvelteKit
-  const indexHTMLNoCSP = removeDefaultCspTag(html);
-  // 3. We calculate the sha256 values for these scripts and update the CSP
+  const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
+
+  // 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
+  const indexHTMLWithScriptLoader = injectScriptLoader(
+    indexHTMLWithoutStartScript
+  );
+
+  // 3. Remove preload tags
+  const indexHTMLWithoutPreloadTags = removePreloadTags(
+    indexHTMLWithScriptLoader
+  );
+
+  // 4. remove the content-security-policy tag injected by SvelteKit
+  const indexHTMLNoCSP = removeDefaultCspTag(indexHTMLWithoutPreloadTags);
+
+  // 5. We calculate the sha256 values for these scripts and update the CSP
   const indexHTMLWithCSP = updateCSP(indexHTMLNoCSP);
 
   writeFileSync(htmlFile, indexHTMLWithCSP);
@@ -26,6 +39,68 @@ const removeDefaultCspTag = (indexHtml) => {
     '<meta http-equiv="content-security-policy" content="">',
     ""
   );
+};
+
+/**
+ * Remove the preload tags from the index.html file.
+ * Not supported by CSP
+ *
+ * Ex: <link rel="preload" as="script" crossorigin="anonymous" href="/_app/immutable/entry/start.03c55b83.mjs">
+ */
+const removePreloadTags = (indexHtml) =>
+  indexHtml.replaceAll(/<link[^>]+as=\"script\"[^>]+>/g, "");
+
+/**
+ * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
+ */
+const injectScriptLoader = (indexHtml) => {
+  // We need to replace the document.currentScript.parentElement with the root element because the script is loaded from a different location
+  return indexHtml.replace(
+    "<!-- SCRIPT_LOADER -->",
+    `<script>
+      document.currentScript.parentElement.setAttribute("id", "root");
+      const loader = document.createElement("script");
+      loader.type = "module";
+      loader.src = "main.js";
+      document.head.appendChild(loader);
+    </script>`
+  );
+};
+
+/**
+ * Using a CSP with 'strict-dynamic' with SvelteKit breaks in Firefox.
+ * Issue: https://github.com/sveltejs/kit/issues/3558
+ *
+ * As workaround:
+ * 1. we extract the start script that is injected by SvelteKit in index.html into a separate main.js
+ * 2. we remove the script content from index.html but, let the script tag as anchor
+ * 3. we use our custom script loader to load the main.js script
+ */
+const extractStartScript = (htmlFile) => {
+  const indexHtml = readFileSync(htmlFile, "utf-8");
+
+  const svelteKitStartScript = /\<script\>([\s\S]*?)\<\/script\>/gm;
+
+  // 1. extract SvelteKit start script to a separate main.js file
+  const [_script, inlineScript] = svelteKitStartScript.exec(indexHtml);
+
+  // Each file needs its own main.js because the script that calls the SvelteKit start function contains information dedicated to the route
+  // i.e. the routeId and a particular id for the querySelector use to attach the content
+  const folderPath = dirname(htmlFile);
+
+  // We need to replace the document.currentScript.parentElement with the root element because the script is loaded from a different location.
+  // We also need to create add explicitly to `window` the __sveltekit_ variables because they are not defined in the global scope but are used as global.
+  const moduleScript = inlineScript
+    .replaceAll(
+      "document.currentScript.parentElement",
+      "document.querySelector('#root')"
+    )
+    .replaceAll(/__sveltekit_(.*)\s=/g, "window.$&");
+
+  writeFileSync(join(folderPath, "main.js"), moduleScript, "utf-8");
+
+  // 2. replace SvelteKit script tag content with empty
+  return indexHtml.replaceAll(svelteKitStartScript, "");
 };
 
 /**
@@ -52,9 +127,6 @@ const removeDefaultCspTag = (indexHtml) => {
  * - style-src 'unsafe-inline' is required because:
  * 1. svelte uses inline style for animation (scale, fly, fade, etc.)
  *    source: https://github.com/sveltejs/svelte/issues/6662
- *
- * - script-src and 'self':
- * Svelte kit now adds script tags to the index.html file. We need to allow 'self' to load these scripts.
  */
 
 const updateCSP = (indexHtml) => {
@@ -80,7 +152,7 @@ const updateCSP = (indexHtml) => {
         };
         child-src 'self';
         manifest-src 'self';
-        script-src 'self' 'unsafe-eval' 'unsafe-inline' ${indexHashes.join(
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
           " "
         )};
         base-uri 'self';
