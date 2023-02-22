@@ -43,9 +43,9 @@ export const selectedUniverseStore: Readable<Universe> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Universe>],
+  Readable<Universe>,
   Principal
->([selectedUniverseStore], ([universe]) =>
+>(selectedUniverseStore, (universe: Universe) =>
   Principal.fromText(universe.canisterId)
 );
 
