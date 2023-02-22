@@ -10,6 +10,8 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPTS_DIR/.."
 
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
+export DFX_NETWORK
+./config.sh
 
 echo "DFX_NETWORK: $DFX_NETWORK"
 echo "PWD: $PWD"
