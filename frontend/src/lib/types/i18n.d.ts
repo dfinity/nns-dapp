@@ -836,7 +836,7 @@ interface I18nMetrics {
 
 interface I18nCkbtc {
   title: string;
-  ckBTC: string;
+  test_title: string;
   logo: string;
   receive: string;
   address: string;

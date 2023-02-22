@@ -19,15 +19,18 @@
   import { createEventDispatcher } from "svelte";
   import type { CkBTCWalletReceiveModalData } from "$lib/types/wallet.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let data: CkBTCWalletReceiveModalData;
 
+  let universeId: UniverseCanisterId;
   let canisters: CkBTCAdditionalCanisters;
   let account: Account;
   let btcAddress: string;
   let reloadAccount: () => Promise<void>;
 
-  $: ({ account, btcAddress, reloadAccount, canisters } = data);
+  $: ({ account, btcAddress, reloadAccount, canisters, universeId } = data);
 
   let bitcoinSegmentId = Symbol();
   let ckBTCSegmentId = Symbol();
@@ -48,7 +51,11 @@
   $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
 
   let logoArialLabel: string;
-  $: logoArialLabel = bitcoin ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
+  $: logoArialLabel = bitcoin
+    ? $i18n.ckbtc.bitcoin
+    : isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_title
+    : $i18n.ckbtc.title;
 
   // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
   export let qrCodeRendered = false;

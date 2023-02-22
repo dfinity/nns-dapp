@@ -791,7 +791,7 @@
   },
   "ckbtc": {
     "title": "ckBTC",
-    "ckBTC": "ckBTC",
+    "test_title": "ckTESTBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo",
     "receive": "Receive",
     "address": "Address",
