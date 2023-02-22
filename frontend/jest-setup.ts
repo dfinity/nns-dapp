@@ -6,9 +6,9 @@ import "jest-expect-message";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
+import { failTestsThatLogToConsole } from "./src/tests/mocks/console.mock";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
-import { failTestsThatLogToConsole } from "./src/tests/mocks/console.mock";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();

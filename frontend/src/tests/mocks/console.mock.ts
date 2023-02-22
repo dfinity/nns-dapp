@@ -27,9 +27,9 @@ export const failTestsThatLogToConsole = () => {
       expect(
         gotLogs,
         "Your tests produced console logs, which is not allowed.\n" +
-        "If you need console output, mock and expect it in your test.\n" +
-        "If this is only for debugging, call allowLoggingInOneTest" +
-        "ForDebugging() from src/tests/mocks/console.mock in your test."
+          "If you need console output, mock and expect it in your test.\n" +
+          "If this is only for debugging, call allowLoggingInOneTest" +
+          "ForDebugging() from src/tests/mocks/console.mock in your test."
       ).toBe(false);
     }
     isLoggingAllowed = false;
