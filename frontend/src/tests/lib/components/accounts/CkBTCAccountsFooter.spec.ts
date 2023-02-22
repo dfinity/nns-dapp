@@ -6,12 +6,21 @@ import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.sv
 import { tokensStore } from "$lib/stores/tokens.store";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { page } from "../../../../../__mocks__/$app/stores";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "../../../../lib/constants/routes.constants";
 import { icrcAccountsStore } from "../../../../lib/stores/icrc-accounts.store";
 import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
 import { mockTokens } from "../../../mocks/tokens.mock";
 
 describe("CkBTCAccountsFooter", () => {
+  beforeAll(() => {
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
 
@@ -32,7 +41,7 @@ describe("CkBTCAccountsFooter", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       const { getByTestId } = render(CkBTCAccountsFooter);
@@ -56,7 +65,7 @@ describe("CkBTCAccountsFooter", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockTokens);

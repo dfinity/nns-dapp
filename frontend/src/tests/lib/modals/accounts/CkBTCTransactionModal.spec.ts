@@ -10,9 +10,10 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
 import { icrcAccountsStore } from "../../../../lib/stores/icrc-accounts.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -37,6 +38,8 @@ describe("CkBTCTransactionModal", () => {
           amount: mockCkBTCToken.fee,
           token: mockCkBTCToken,
         }),
+        canisters: mockCkBTCAdditionalCanisters,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       },
     });
 
@@ -52,11 +55,11 @@ describe("CkBTCTransactionModal", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     });
 
     page.mock({
-      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
   });
