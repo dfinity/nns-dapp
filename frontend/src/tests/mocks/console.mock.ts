@@ -28,8 +28,8 @@ export const failTestsThatLogToConsole = () => {
         gotLogs,
         "Your tests produced console logs, which is not allowed.\n" +
         "If you need console output, mock and expect it in your test.\n" +
-        "If this is only for debugging, call allowLoggingInOneTest() from " +
-        "src/tests/mocks/console.mock in your test."
+        "If this is only for debugging, call allowLoggingInOneTest" +
+        "ForDebugging() from src/tests/mocks/console.mock in your test."
       ).toBe(false);
     }
     isLoggingAllowed = false;
@@ -37,6 +37,6 @@ export const failTestsThatLogToConsole = () => {
 };
 
 // Use this only when debugging but don't commit.
-export const allowLoggingInOneTest = () => {
+export const allowLoggingInOneTestForDebugging = () => {
   isLoggingAllowed = true;
 };
