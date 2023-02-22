@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
-import CurrentBalance from "../../../../lib/components/accounts/CurrentBalance.svelte";
-import { formatICP } from "../../../../lib/utils/icp.utils";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 
@@ -22,10 +22,10 @@ describe("CurrentBalance", () => {
   it("should render a balance in ICP", () => {
     const { getByText, queryByTestId } = render(CurrentBalance, { props });
 
-    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });

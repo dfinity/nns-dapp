@@ -30,11 +30,11 @@ $(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)
 
 ## Wasm Verification
 
-To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
+To build the wasm module yourself and verify its hash, run the following commands from the root of the [nns-dapp repo](https://github.com/dfinity/nns-dapp):
 
 \`\`\`
 git fetch  # to ensure you have the latest changes.
-git checkout \`$(git rev-parse tags/release-candidate)\`
+git checkout "$(git rev-parse tags/release-candidate)"
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
 \`\`\`
@@ -50,7 +50,7 @@ To build the wasm module yourself and verify its hash, run the following command
 
 \`\`\`
 git fetch  # to ensure you have the latest changes.
-git checkout \`$(git rev-parse tags/release-candidate)\`
+git checkout "$(git rev-parse tags/release-candidate)"
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
 \`\`\`

@@ -10,8 +10,8 @@
 FROM ubuntu:20.04 as builder
 SHELL ["bash", "-c"]
 
-ARG rust_version=1.58.1
-ENV NODE_VERSION=16.13.2
+ARG rust_version=1.64.0
+ENV NODE_VERSION=16.17.1
 
 ENV TZ=UTC
 
@@ -51,37 +51,62 @@ RUN cargo install --version 0.3.1 ic-cdk-optimizer
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
+WORKDIR /build
 COPY Cargo.lock .
 COPY Cargo.toml .
-COPY rs/Cargo.toml rs/Cargo.toml
-RUN mkdir -p rs/src && touch rs/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/src
+COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
+COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
+RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src rs/sns_aggregator/src
 
 # Install dfx
 COPY dfx.json dfx.json
 RUN DFX_VERSION="$(jq -cr .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
-# Start the second container
-FROM builder AS build
-SHELL ["bash", "-c"]
+FROM builder AS build_frontend
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
-
-ARG OWN_CANISTER_ID
-RUN echo "OWN_CANISTER_ID: '$OWN_CANISTER_ID'"
-
-ARG REDIRECT_TO_LEGACY
-RUN echo "REDIRECT_TO_LEGACY: '$REDIRECT_TO_LEGACY'"
-
-# Build
-# ... put only git-tracked files in the build directory
-COPY . /build
+SHELL ["bash", "-c"]
+COPY ./frontend /build/frontend
+COPY ./config.sh /build/
+COPY ./build-frontend.sh /build/
+COPY ./dfx.json /build/
+COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
-RUN find . -type f | sed 's/^..//g' > ../build-inputs.txt
-RUN ./build.sh
+RUN ( cd frontend && npm ci )
+RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
 
-RUN ls -sh nns-dapp.wasm; sha256sum nns-dapp.wasm
+FROM builder AS build_nnsdapp
+ARG DFX_NETWORK=mainnet
+RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
+SHELL ["bash", "-c"]
+COPY ./rs /build/rs
+COPY ./config.sh /build/
+COPY ./build-backend.sh /build/
+COPY ./build-rs.sh /build/
+COPY ./Cargo.toml /build/
+COPY ./Cargo.lock /build/
+COPY ./dfx.json /build/
+COPY --from=build_frontend /build/assets.tar.xz /build/
+WORKDIR /build
+RUN export DFX_NETWORK && ./build-backend.sh
+
+FROM builder AS build_aggregate
+SHELL ["bash", "-c"]
+COPY ./rs /build/rs
+COPY ./build-sns-aggregator.sh /build/build-sns-aggregator.sh
+COPY ./build-rs.sh /build/build-rs.sh
+COPY ./Cargo.toml /build/Cargo.toml
+COPY ./Cargo.lock /build/Cargo.lock
+COPY ./dfx.json /build/dfx.json
+WORKDIR /build
+RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
+RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
+RUN ./build-sns-aggregator.sh
 
 FROM scratch AS scratch
-COPY --from=build /build/nns-dapp.wasm /
-COPY --from=build /build/assets.tar.xz /
-COPY --from=build /build-inputs.txt /
+COPY --from=build_nnsdapp /build/nns-dapp.wasm /
+COPY --from=build_nnsdapp /build/assets.tar.xz /
+COPY --from=build_frontend /build/deployment-config.json /
+COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
+COPY --from=build_aggregate /build/sns_aggregator.wasm /
+COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Downloads the internet_identity wasm and installs it in the dfx cache.
+
+	Note: Doing this will set the II version deployed by 'dfx nns install'
+	      to the version specified in our 'dfx.json'.  Our version is usually
+	      newer.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=r long=release desc="The II release to get" variable=II_RELEASE default="use-dfx"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+WASMS_DIR="$(dfx cache show)/wasms"
+LOCAL_II_WASM="$(jq -r '.canisters.internet_identity.wasm' dfx.json)"
+
+: "Get the wasm"
+mkdir -p "$(dirname "$LOCAL_II_WASM")"
+if [[ "$II_RELEASE" == "use-dfx" ]]; then
+  : "I thought this is what 'dfx build' was meant to do but the build does no such thing.  Silly me."
+  jq -r '.canisters.internet_identity.build' dfx.json | bash -euxo pipefail
+else
+  curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/download/release-${II_RELEASE}/internet_identity_dev.wasm" -o internet_identity_dev.wasm
+fi
+
+: "Put the wasm into the cache, for use by 'dfx nns install'"
+mkdir -p "$WASMS_DIR"
+cp "$LOCAL_II_WASM" "$WASMS_DIR"

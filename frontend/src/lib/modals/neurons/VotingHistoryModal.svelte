@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
+  import { Modal } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import Spinner from "../../components/ui/Spinner.svelte";
-  import NeuronCard from "../../components/neurons/NeuronCard.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
+  import { Spinner } from "@dfinity/gix-components";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { createEventDispatcher, onMount } from "svelte";
-  import VotingHistoryCard from "../../components/neurons/VotingHistoryCard.svelte";
-  import { authStore } from "../../stores/auth.store";
-  import { loadNeuron } from "../../services/neurons.services";
+  import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { loadNeuron } from "$lib/services/neurons.services";
 
   export let neuronId: NeuronId;
   let neuron: NeuronInfo | undefined;
@@ -18,7 +18,7 @@
 
   onMount(async () => {
     if (!$authStore.identity) {
-      toastsStore.error({ labelKey: "error.missing_identity" });
+      toastsError({ labelKey: "error.missing_identity" });
       return;
     }
 
@@ -34,12 +34,12 @@
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose size="big">
+<Modal testId="voting-history-modal" on:nnsClose>
   <span slot="title">{$i18n.neuron_detail.title}</span>
 
   {#if neuron !== undefined}
-    <div class="content">
-      <NeuronCard proposerNeuron {neuron} />
+    <div class="content legacy">
+      <NnsNeuronCard proposerNeuron {neuron} />
 
       <VotingHistoryCard {neuron} />
     </div>
@@ -47,9 +47,3 @@
     <Spinner />
   {/if}
 </Modal>
-
-<style lang="scss">
-  .content {
-    padding: var(--padding-2x);
-  }
-</style>

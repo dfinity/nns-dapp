@@ -1,32 +1,16 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { ACCOUNT_ADDRESS_MIN_LENGTH } from "../../constants/accounts.constants";
-  import { invalidAddress } from "../../utils/accounts.utils";
-  import InputWithError from "../ui/InputWithError.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { invalidAddress } from "$lib/utils/accounts.utils";
+  import AddressInput from "./AddressInput.svelte";
 
-  export let address: string = "";
-
-  let showError = false;
-  const showErrorIfAny = () => {
-    showError = address.length > 0 && invalidAddress(address);
-  };
-  // Hide error on change
-  $: address, (showError = false);
+  export let address = "";
 </script>
 
 <article>
   <form on:submit|preventDefault>
-    <InputWithError
-      inputType="text"
-      placeholderLabelKey="accounts.address"
-      name="accounts-address"
-      bind:value={address}
-      minLength={ACCOUNT_ADDRESS_MIN_LENGTH}
-      errorMessage={showError ? $i18n.error.address_not_valid : undefined}
-      on:blur={showErrorIfAny}
-    />
+    <AddressInput bind:address />
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="address-submit-button"
       disabled={invalidAddress(address)}

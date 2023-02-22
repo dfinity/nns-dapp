@@ -1,8 +1,8 @@
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
-import { derived, writable, type Readable } from "svelte/store";
-import { sortSnsNeuronsByCreatedTimestamp } from "../utils/sns-neuron.utils";
-import { snsProjectSelectedStore } from "./projects.store";
+import { writable } from "svelte/store";
 
 export interface ProjectNeuronStore {
   neurons: SnsNeuron[];
@@ -44,6 +44,34 @@ const initSnsNeuronsStore = () => {
       }));
     },
 
+    addNeurons({
+      rootCanisterId,
+      neurons,
+      certified,
+    }: {
+      rootCanisterId: Principal;
+      neurons: SnsNeuron[];
+      certified: boolean | undefined;
+    }) {
+      update((currentState: NeuronsStore) => {
+        const newIds = new Set(
+          neurons.map((neuron) => getSnsNeuronIdAsHexString(neuron))
+        );
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            neurons: [
+              ...neurons,
+              ...(currentState[rootCanisterId.toText()]?.neurons.filter(
+                (neuron) => !newIds.has(getSnsNeuronIdAsHexString(neuron))
+              ) ?? []),
+            ],
+            certified,
+          },
+        };
+      });
+    },
+
     // Used in tests
     reset() {
       set({});
@@ -51,22 +79,13 @@ const initSnsNeuronsStore = () => {
 
     resetProject(rootCanisterId: Principal) {
       update((currentState: NeuronsStore) =>
-        Object.entries(currentState)
-          .filter(([key]) => key !== rootCanisterId.toText())
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+        removeKeys({
+          obj: currentState,
+          keysToRemove: [rootCanisterId.toText()],
+        })
       );
     },
   };
 };
 
 export const snsNeuronsStore = initSnsNeuronsStore();
-
-export const sortedSnsNeuronStore: Readable<SnsNeuron[]> = derived(
-  [snsNeuronsStore, snsProjectSelectedStore],
-  ([store, selectedSnsRootCanisterId]) => {
-    const projectStore = store[selectedSnsRootCanisterId.toText()];
-    return projectStore === undefined
-      ? []
-      : sortSnsNeuronsByCreatedTimestamp(projectStore.neurons);
-  }
-);

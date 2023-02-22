@@ -1,10 +1,10 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { NNSDappCanister } from "../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import type {
   AccountDetails,
   RegisterHardwareWalletRequest,
   SubAccountDetails,
-} from "../../lib/canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { AccountIdentifier } from "@dfinity/nns";
 import {
   mockAccountDetails,
   mockMainAccount,
@@ -15,6 +15,7 @@ import {
 // @ts-ignore: test file
 export class MockNNSDappCanister extends NNSDappCanister {
   constructor() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - we do not use the service for mocking purpose
     super(undefined, undefined);
   }

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import Input from "./Input.svelte";
 
   // Same props as Input
   export let name: string;
   export let inputType: "number" | "text" | "icp" = "number";
-  export let required: boolean = true;
+  export let required = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
-  export let disabled: boolean = false;
+  export let disabled = false;
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
@@ -18,6 +18,7 @@
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
+  export let showInfo = true;
 </script>
 
 <div class="wrapper" class:error>
@@ -32,12 +33,14 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
+    {showInfo}
     bind:value
     on:blur
-    on:input
+    on:nnsInput
   >
+    <slot name="start" slot="start" />
     <slot name="label" slot="label" />
-    <slot name="additional" slot="additional" />
+    <slot name="end" slot="end" />
   </Input>
 
   {#if error}

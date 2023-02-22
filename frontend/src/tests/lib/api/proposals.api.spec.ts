@@ -1,13 +1,13 @@
-import { GovernanceCanister, Vote } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
 import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
   registerVote,
-} from "../../../lib/api/proposals.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+} from "$lib/api/proposals.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { GovernanceCanister, Vote } from "@dfinity/nns";
+import { mock } from "jest-mock-extended";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
 import { mockProposals } from "../../mocks/proposals.store.mock";

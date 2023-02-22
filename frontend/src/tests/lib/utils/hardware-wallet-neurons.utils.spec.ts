@@ -1,4 +1,4 @@
-import { mapHardwareWalletNeuronInfo } from "../../../lib/utils/hardware-wallet-neurons.utils";
+import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import {
   mockNeuronControlled,

@@ -2,30 +2,25 @@
  * @jest-environment jsdom
  */
 
-import { Principal } from "@dfinity/principal";
-import {
-  SnsNeuronPermissionType,
-  SnsSwapLifecycle,
-  type SnsNeuron,
-} from "@dfinity/sns";
+import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { formatToken } from "$lib/utils/token.utils";
+import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import SnsNeuronCard from "../../../../lib/components/sns-neurons/SnsNeuronCard.svelte";
-import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
-import { nowInSeconds } from "../../../../lib/utils/date.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
-import { getSnsNeuronIdAsHexString } from "../../../../lib/utils/sns-neuron.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import { mockTokenStore } from "../../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("SnsNeuronCard", () => {
@@ -33,6 +28,9 @@ describe("SnsNeuronCard", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest
+      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
+      .mockImplementation(mockTokenStore);
   });
 
   const defaultProps = {
@@ -45,14 +43,9 @@ describe("SnsNeuronCard", () => {
   });
   beforeEach(() => {
     snsQueryStore.setData(data);
-    const [snsMetadatas] = data;
-    snsProjectSelectedStore.set(
-      Principal.fromText(snsMetadatas[0].rootCanisterId)
-    );
   });
   afterEach(() => {
     snsQueryStore.reset();
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
   });
   it("renders a Card", () => {
     const { container } = render(SnsNeuronCard, {
@@ -107,10 +100,10 @@ describe("SnsNeuronCard", () => {
     });
     const token = get(snsTokenSymbolSelectedStore);
     expect(token).not.toBeUndefined();
-    token !== undefined && expect(getByText(token)).toBeInTheDocument();
+    token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
 
-    const stakeText = formatICP({
+    const stakeText = formatToken({
       value:
         mockSnsNeuron.cached_neuron_stake_e8s - mockSnsNeuron.neuron_fees_e8s,
       detailed: true,
@@ -157,7 +150,8 @@ describe("SnsNeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
-    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
+    // Add one day of buffer to avoid flakiness
+    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + nowInSeconds() + SECONDS_IN_DAY;
     const { getByText } = render(SnsNeuronCard, {
       props: {
         neuron: {
@@ -176,15 +170,13 @@ describe("SnsNeuronCard", () => {
     expect(getByText(en.time.year, { exact: false })).toBeInTheDocument();
   });
 
-  it("renders the hotkey_control label when user has only voting permissions", async () => {
+  it("renders the hotkey_control label when user has only voting and proposal permissions", async () => {
     const hotkeyneuron: SnsNeuron = {
       ...mockSnsNeuron,
       permissions: [
         {
           principal: [mockIdentity.getPrincipal()],
-          permission_type: [
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-          ],
+          permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
         },
       ],
     };

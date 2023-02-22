@@ -1,32 +1,21 @@
 <script lang="ts">
-  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
+  import { type ProposalInfo, Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import {
-    mapProposalInfo,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { busy } from "../../../stores/busy.store";
-  import type { VoteInProgress } from "../../../stores/voting.store";
-  import Spinner from "../../ui/Spinner.svelte";
-  import { sanitize } from "../../../utils/html.utils";
+  import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import { Spinner, busy } from "@dfinity/gix-components";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
   export let proposalInfo: ProposalInfo;
-  export let voteInProgress: VoteInProgress | undefined = undefined;
-
-  let id: ProposalId | undefined;
-  let topic: string | undefined;
-  let title: string | undefined;
-  $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
+  export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let total: bigint;
-  let disabled: boolean = true;
-  let showConfirmationModal: boolean = false;
+  let disabled = true;
+  let showConfirmationModal = false;
   let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({
@@ -37,7 +26,7 @@
   $: disabled =
     $votingNeuronSelectStore.selectedIds.length === 0 ||
     $busy ||
-    voteInProgress !== undefined;
+    voteRegistration !== undefined;
 
   const showAdoptConfirmation = () => {
     selectedVoteType = Vote.Yes;
@@ -56,22 +45,14 @@
   };
 </script>
 
-<p class="question">
-  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-    $id: `${id ?? ""}`,
-    $title: sanitize(title ?? ""),
-    $topic: sanitize(topic ?? ""),
-  })}
-</p>
-
-<div role="toolbar">
+<div role="toolbar" data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary small"
+    class="success"
   >
-    {#if voteInProgress?.vote === Vote.Yes}
+    {#if voteRegistration?.vote === Vote.Yes}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.adopt}
@@ -81,9 +62,9 @@
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger small"
+    class="danger"
   >
-    {#if voteInProgress?.vote === Vote.No}
+    {#if voteRegistration?.vote === Vote.No}
       <Spinner size="small" />
     {:else}
       {$i18n.proposal_detail__vote.reject}
@@ -101,19 +82,28 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/styles/mixins/media";
+
   [role="toolbar"] {
-    margin-top: var(--padding);
-
     display: flex;
-    gap: var(--padding);
-  }
 
-  .question {
-    margin: 0 0 var(--padding-2x);
-    word-break: break-word;
+    padding: var(--padding-2x) var(--padding-2x) 0;
+    justify-content: center;
+    gap: var(--padding-2x);
+
+    @include media.min-width(large) {
+      padding: 0;
+      justify-content: flex-start;
+      gap: var(--padding);
+    }
   }
 
   button {
     min-width: calc(48px + (2 * var(--padding-2x)));
+    width: calc(100% - (2 * var(--padding)));
+
+    @include media.min-width(small) {
+      width: inherit;
+    }
   }
 </style>

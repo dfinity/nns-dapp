@@ -2,39 +2,36 @@
  * @jest-environment jsdom
  */
 
-import type { HttpAgent } from "@dfinity/agent";
-import { ICP, LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import mock from "jest-mock-extended/lib/Mock";
-import { get } from "svelte/store";
 import {
-  addNeuronPermissions,
-  participateInSnsSwap,
+  getSnsNeuron,
+  increaseStakeNeuron,
   queryAllSnsMetadata,
+  querySnsDerivedState,
   querySnsMetadata,
   querySnsNeuron,
   querySnsNeurons,
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
-  removeNeuronPermissions,
-} from "../../../lib/api/sns.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+  stakeNeuron,
+} from "$lib/api/sns.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
-} from "../../../lib/proxy/api.import.proxy";
-import { snsesCountStore } from "../../../lib/stores/sns.store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+} from "$lib/proxy/api.import.proxy";
+import type { HttpAgent } from "@dfinity/agent";
+import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { SnsNeuronId } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import mock from "jest-mock-extended/lib/Mock";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
 import {
   createBuyersState,
   mockQueryMetadata,
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
-  mockSwapInit,
-  mockSwapState,
+  mockSwap,
 } from "../../mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -44,8 +41,8 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 
-jest.mock("../../../lib/proxy/api.import.proxy");
-jest.mock("../../../lib/utils/agent.utils", () => {
+jest.mock("$lib/proxy/api.import.proxy");
+jest.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
@@ -53,12 +50,7 @@ jest.mock("../../../lib/utils/agent.utils", () => {
 
 describe("sns-api", () => {
   const mockQuerySwap = {
-    swap: [
-      {
-        init: [mockSwapInit],
-        state: [mockSwapState],
-      },
-    ],
+    swap: [mockSwap],
     derived: [
       {
         sns_tokens_per_icp: 1,
@@ -67,14 +59,20 @@ describe("sns-api", () => {
     ],
   };
 
+  const derivedState = {
+    sns_tokens_per_icp: [1],
+    buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+  };
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
+  const getDerivedStateSpy = jest.fn().mockResolvedValue(derivedState);
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
+  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
-  const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
+  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
+  const increaseStakeNeuronSpy = jest.fn();
 
   beforeEach(() => {
     jest
@@ -102,9 +100,11 @@ describe("sns-api", () => {
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
         listNeurons: queryNeuronsSpy,
-        getNeuron: queryNeuronSpy,
-        addNeuronPermissions: addNeuronPermissionsSpy,
-        removeNeuronPermissions: removeNeuronPermissionsSpy,
+        getNeuron: getNeuronSpy,
+        stakeNeuron: stakeNeuronSpy,
+        queryNeuron: queryNeuronSpy,
+        increaseStakeNeuron: increaseStakeNeuronSpy,
+        getDerivedState: getDerivedStateSpy,
       })
     );
   });
@@ -134,17 +134,6 @@ describe("sns-api", () => {
     expect(metadata).not.toBeNull();
     expect(metadata.length).toEqual(1);
     expect(metadata).toEqual([mockQueryMetadata]);
-  });
-
-  it("should update snsesCountStore", async () => {
-    await queryAllSnsMetadata({
-      identity: mockIdentity,
-      certified: true,
-    });
-
-    const $snsesCountStore = get(snsesCountStore);
-
-    expect($snsesCountStore).toEqual(deployedSnsMock.length);
   });
 
   it("should query swap state", async () => {
@@ -181,21 +170,14 @@ describe("sns-api", () => {
     });
   });
 
-  it("should participate in a swap by notifying nnsdapp, transferring and notifying swap", async () => {
-    const nnsDappMock = mock<NNSDappCanister>();
-    nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
-
-    await participateInSnsSwap({
-      amount: ICP.fromString("10") as ICP,
-      rootCanisterId: rootCanisterIdMock,
+  it("should return derived state", async () => {
+    const receivedData = await querySnsDerivedState({
+      rootCanisterId: rootCanisterIdMock.toText(),
       identity: mockIdentity,
-      controller: Principal.fromText("aaaaa-aa"),
+      certified: false,
     });
-
-    expect(nnsDappMock.addPendingNotifySwap).toBeCalled();
-    expect(ledgerCanisterMock.transfer).toBeCalled();
-    expect(notifyParticipationSpy).toBeCalled();
+    expect(getDerivedStateSpy).toBeCalled();
+    expect(receivedData).toEqual(derivedState);
   });
 
   it("should query sns neurons", async () => {
@@ -210,39 +192,57 @@ describe("sns-api", () => {
     expect(queryNeuronsSpy).toBeCalled();
   });
 
-  it("should query one sns neurons", async () => {
+  it("should get one sns neuron", async () => {
+    const neuron = await getSnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(getNeuronSpy).toBeCalled();
+  });
+
+  it("should query one sns neuron", async () => {
     const neuron = await querySnsNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       certified: false,
-      neuronId: { id: [1, 2, 3] },
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
     });
 
     expect(neuron).not.toBeNull();
     expect(queryNeuronSpy).toBeCalled();
   });
 
-  it("should add neuron permissions", async () => {
-    await addNeuronPermissions({
+  it("should stake neuron", async () => {
+    const neuronId = await stakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
-      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      stakeE8s: BigInt(200_000_000),
+      source: {
+        owner: mockPrincipal,
+      },
+      controller: mockPrincipal,
+      fee: BigInt(10000),
     });
 
-    expect(addNeuronPermissionsSpy).toBeCalled();
+    expect(neuronId).toEqual(mockSnsNeuron.id);
+    expect(stakeNeuronSpy).toBeCalled();
   });
 
-  it("should remove neuron permissions", async () => {
-    await removeNeuronPermissions({
+  it("should increase stake neuron", async () => {
+    await increaseStakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      principal: Principal.fromText("aaaaa-aa"),
-      neuronId: { id: [1, 2, 3] },
-      permissions: [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE],
+      stakeE8s: BigInt(200_000_000),
+      source: {
+        owner: mockPrincipal,
+      },
+      neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
     });
 
-    expect(removeNeuronPermissionsSpy).toBeCalled();
+    expect(increaseStakeNeuronSpy).toBeCalled();
   });
 });

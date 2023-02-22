@@ -1,6 +1,11 @@
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { sendICP, transactionFee } from "$lib/api/ledger.api";
+import {
+  AccountIdentifier,
+  ICPToken,
+  LedgerCanister,
+  TokenAmount,
+} from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
-import { sendICP, transactionFee } from "../../../lib/api/ledger.api";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 
@@ -9,11 +14,17 @@ describe("ledger-api", () => {
     let spyTransfer;
 
     const { identifier: accountIdentifier } = mockMainAccount;
-    const amount = ICP.fromE8s(BigInt(11_000));
+    const amount = TokenAmount.fromE8s({
+      amount: BigInt(11_000),
+      token: ICPToken,
+    });
 
+    const now = Date.now();
+    const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
+      jest.useFakeTimers().setSystemTime(now);
 
       jest
         .spyOn(LedgerCanister, "create")
@@ -22,7 +33,10 @@ describe("ledger-api", () => {
       spyTransfer = jest.spyOn(ledgerMock, "transfer");
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => {
+      jest.clearAllMocks();
+      jest.clearAllTimers();
+    });
 
     it("should call ledger to send ICP", async () => {
       await sendICP({
@@ -34,6 +48,7 @@ describe("ledger-api", () => {
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
+        createdAt: nowInBigIntNanoSeconds,
       });
     });
 
@@ -53,6 +68,7 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         fromSubAccount,
+        createdAt: nowInBigIntNanoSeconds,
       });
     });
 
@@ -69,6 +85,26 @@ describe("ledger-api", () => {
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount: amount.toE8s(),
         memo,
+        createdAt: nowInBigIntNanoSeconds,
+      });
+    });
+
+    it("should call ledger to send ICP with createdAt", async () => {
+      const memo = BigInt(444555);
+      const createdAt = BigInt(123456);
+      await sendICP({
+        identity: mockIdentity,
+        to: accountIdentifier,
+        amount,
+        memo,
+        createdAt,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: AccountIdentifier.fromHex(accountIdentifier),
+        amount: amount.toE8s(),
+        memo,
+        createdAt,
       });
     });
   });

@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletInfo from "$lib/components/accounts/HardwareWalletInfo.svelte";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import HardwareWalletInfo from "../../../../lib/components/accounts/HardwareWalletInfo.svelte";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 

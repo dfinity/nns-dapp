@@ -1,7 +1,7 @@
+import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
+import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import type { ResponseVersion } from "@zondax/ledger-icp";
-import { LEDGER_DEFAULT_DERIVE_PATH } from "../../lib/constants/ledger.constants";
-import { LedgerIdentity } from "../../lib/identities/ledger.identity";
-import { Secp256k1PublicKey } from "../../lib/keys/secp256k1";
 
 export const fromHexString = (hexString: string): ArrayBuffer => {
   return new Uint8Array(
@@ -28,6 +28,7 @@ type MockIdentityOptions = {
 // @ts-ignore: test file
 export class MockLedgerIdentity extends LedgerIdentity {
   constructor({ version }: MockIdentityOptions = {}) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - we do not use the service for mocking purpose
     super(
       LEDGER_DEFAULT_DERIVE_PATH,

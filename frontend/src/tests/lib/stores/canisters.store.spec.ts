@@ -1,5 +1,5 @@
+import { canistersStore } from "$lib/stores/canisters.store";
 import { get } from "svelte/store";
-import { canistersStore } from "../../../lib/stores/canisters.store";
 import { mockCanisters } from "../../mocks/canisters.mock";
 
 describe("canisters-store", () => {

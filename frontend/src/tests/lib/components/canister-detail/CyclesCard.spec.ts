@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
+import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
 import { render } from "@testing-library/svelte";
-import CyclesCard from "../../../../lib/components/canister-detail/CyclesCard.svelte";
-import { formatCyclesToTCycles } from "../../../../lib/utils/canisters.utils";
 import en from "../../../mocks/i18n.mock";
 
 describe("CyclesCard", () => {

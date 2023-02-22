@@ -1,7 +1,7 @@
 import {
   mapError,
   UserNotTheControllerError,
-} from "../../../lib/canisters/ic-management/ic-management.errors";
+} from "$lib/canisters/ic-management/ic-management.errors";
 
 describe("IC Management Error utils", () => {
   describe("mapError", () => {

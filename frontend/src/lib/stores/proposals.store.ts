@@ -1,3 +1,12 @@
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import {
+  concatenateUniqueProposals,
+  excludeProposals,
+  preserveNeuronSelectionAfterUpdate,
+  replaceAndConcatenateProposals,
+  replaceProposals,
+} from "$lib/utils/proposals.utils";
 import type {
   NeuronId,
   NeuronInfo,
@@ -8,15 +17,6 @@ import type {
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import { storeLocalStorageKey } from "../constants/stores.constants";
-import {
-  concatenateUniqueProposals,
-  excludeProposals,
-  preserveNeuronSelectionAfterUpdate,
-  replaceAndConcatenateProposals,
-  replaceProposals,
-} from "../utils/proposals.utils";
 import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
@@ -122,7 +122,7 @@ const initProposalsStore = () => {
  * - filterTopics: set the filter topics (enum Topic)
  * - filterRewards: set the filter for the status of the rewards (enum ProposalRewardStatus)
  * - filterStatus: set the filter for the status of the proposals (enum ProposalStatus)
- * - excludeVotedProposals: "Hide "Open" proposals where all your neurons have voted or are ineligible to vote"
+ * - excludeVotedProposals: "Show only proposals you can still vote for"
  *
  */
 const initProposalsFiltersStore = () => {
@@ -169,6 +169,9 @@ const initProposalsFiltersStore = () => {
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
+
+    reload: () =>
+      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 
@@ -204,6 +207,7 @@ const initNeuronSelectStore = () => {
       });
     },
 
+    // Used for testing purpose
     reset() {
       this.set([]);
     },

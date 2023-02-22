@@ -1,0 +1,150 @@
+# Verify that the aggregator gets the required data
+name: Aggregator aggregates
+on:
+  push:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  curl_test:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: set-env
+        run: ./build-config.sh >> $GITHUB_ENV
+      # Cache based on the Cargo.lock
+      # The cache key is always an exact match or no match (i.e. no
+      # "restore-keys"-style matching). Because (in case of an exact match)
+      # GitHub actions won't (re-)upload the cache after the build, it means that
+      # our cache won't just grow forever.
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+      # Cache the ic-cdk-optimizer
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/ic-cdk-optimizer
+          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
+      - name: Install Software
+        run: |
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # Helps with debugging
+      - name: Versions
+        run: |
+          set -x
+          dfx --version
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          ic-cdk-optimizer --version
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from Thu Fep 9 with dfx 0.13.xxx
+          ref: 'b78190b5617cd24a6e7bccf1b94dc1aa31137165'
+      - name: Add SNS scripts to the path
+        run: |
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install SNS script dependencies
+        run: |
+          dfx-sns-demo-install
+      - name: Deploy NNS and SNS canisters
+        run: |
+          ./scripts/deploy-snsdemo-testnet --verbose
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
+      - name: 'Upload aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
+      - name: Wait for the aggregator to get data
+        run: sleep 30
+      - name: Get the latest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=1
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Make the aggregator collect data slowly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; })'
+      - name: Create more SNSs
+        run: |
+          cd "$( dirname "$(command -v snsdemo)" )/.."
+          seq 11 | while read -r line ; do
+            dfx identity use snsdemo8 || true
+            dfx-sns-whitelist-me
+            dfx-sns-demo-mksns
+          done
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
+      - name: Wait for the aggregator to get data
+        run: sleep 30
+      - name: Get the latest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get the first page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get the second page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/1/slow.json" | tee aggregate-1.json
+          expect=2
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get logs
+        run: |
+          scripts/sns/aggregator/get_log > ,logs
+          LOG_LINES="$(wc -l <,logs)"
+          (( LOG_LINES > 10 )) || {
+            echo "ERROR: Expected a non-trivial number of lines to have been logged by now but found only ${LOG_LINES}"
+            cat ,logs
+            exit 1
+          }
+      - name: Stop replica
+        run: dfx stop
+  aggregator-pass:
+    needs: ["curl_test"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checks workflow passes
+        run: |
+          if echo '${{ toJson(needs) }}' | jq 'to_entries[] | select(.value.result != "success")' | grep .
+          then echo "You shall not pass:  Some required tests did not succeed"
+               exit 1
+          else echo "Congratulations, young Frodo."
+          fi

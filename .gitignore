@@ -97,8 +97,6 @@ out
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 
-proxy/build/
-proxy/node_modules
 canister_ids.json
 canister_ids.json.*
 e2e-tests/node_modules
@@ -112,3 +110,5 @@ node_modules/
 web-assets/
 
 **/*.rs.bk
+
+tmp

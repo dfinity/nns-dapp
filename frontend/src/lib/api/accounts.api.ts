@@ -1,17 +1,41 @@
-import type { Identity } from "@dfinity/agent";
-import { AccountIdentifier, ICP, LedgerCanister } from "@dfinity/nns";
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
   AccountIdentifierString,
   HardwareWalletAccountDetails,
   SubAccountDetails,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { LEDGER_CANISTER_ID } from "../constants/canister-ids.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import type { Account, AccountType } from "../types/account";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { Account, AccountType } from "$lib/types/account";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import type { Identity } from "@dfinity/agent";
+import { AccountIdentifier, ICPToken, TokenAmount } from "@dfinity/nns";
+import { ledgerCanister } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
+
+const getOrCreateAccount = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}) => {
+  const { canister } = await nnsDappCanister({ identity });
+
+  try {
+    return await canister.getAccount({ certified });
+  } catch (error) {
+    if (error instanceof AccountNotFoundError) {
+      // Ensure account exists in NNSDapp Canister
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
+      await canister.addAccount();
+      return canister.getAccount({ certified });
+    }
+    throw error;
+  }
+};
 
 export const loadAccounts = async ({
   identity,
@@ -19,32 +43,26 @@ export const loadAccounts = async ({
 }: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStore> => {
+}): Promise<AccountsStoreData> => {
   // Helper
-  const getAccountBalance = async (identifierString: string): Promise<ICP> => {
+  const getAccountBalance = async (
+    identifierString: string
+  ): Promise<TokenAmount> => {
     const e8sBalance = await ledger.accountBalance({
       accountIdentifier: AccountIdentifier.fromHex(identifierString),
       certified,
     });
-    return ICP.fromE8s(e8sBalance);
+    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
   };
 
   logWithTimestamp(`Loading Accounts certified:${certified} call...`);
 
-  const { canister, agent } = await nnsDappCanister({ identity });
-
-  // Ensure account exists in NNSDapp Canister
-  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
-  // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
-  await canister.addAccount();
-
-  const mainAccount: AccountDetails = await canister.getAccount({ certified });
-
-  // ACCOUNT BALANCES
-  const ledger: LedgerCanister = LedgerCanister.create({
-    agent,
-    canisterId: LEDGER_CANISTER_ID,
+  const mainAccount: AccountDetails = await getOrCreateAccount({
+    identity,
+    certified,
   });
+
+  const { canister: ledger } = await ledgerCanister({ identity });
 
   const mapAccount =
     (type: AccountType) =>
@@ -73,6 +91,7 @@ export const loadAccounts = async ({
     main,
     subAccounts,
     hardwareWallets,
+    certified,
   };
 };
 

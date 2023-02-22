@@ -1,5 +1,8 @@
-import { getICPs } from "../../../lib/services/dev.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
+/**
+ * @jest-environment jsdom
+ */
+import { getICPs } from "$lib/services/dev.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { mockAccountsStoreSubscribe } from "../../mocks/accounts.store.mock";
 
 describe("dev-services", () => {

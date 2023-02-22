@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import VotingHistoryModal from "../../../../lib/modals/neurons/VotingHistoryModal.svelte";
-import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";

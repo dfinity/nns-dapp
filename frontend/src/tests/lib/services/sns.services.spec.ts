@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { AccountIdentifier, ICP } from "@dfinity/nns";
+import * as api from "$lib/api/sns.api";
+import * as services from "$lib/services/sns.services";
+import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import * as api from "../../../lib/api/sns.api";
-import { DEFAULT_TRANSACTION_FEE_E8S } from "../../../lib/constants/icp.constants";
-import { syncAccounts } from "../../../lib/services/accounts.services";
-import * as services from "../../../lib/services/sns.services";
-import { snsQueryStore } from "../../../lib/stores/sns.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
+import { fromNullable } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  mockSnsSwapCommitment,
+  principal,
+} from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const { participateInSwap, getSwapAccount } = services;
+const { getSwapAccount, loadSnsSwapCommitments } = services;
 
-let testGetIdentityReturn = Promise.resolve(mockIdentity);
-const setNoAccountIdentity = () =>
-  (testGetIdentityReturn = Promise.reject(undefined));
-const resetAccountIdentity = () =>
-  (testGetIdentityReturn = Promise.resolve(mockIdentity));
+const testGetIdentityReturn = Promise.resolve(mockIdentity);
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     getAccountIdentity: jest
       .fn()
@@ -29,192 +29,112 @@ jest.mock("../../../lib/services/accounts.services", () => {
 });
 
 describe("sns-services", () => {
-  describe("participateInSwap", () => {
-    const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
-      certified: true,
-      lifecycles: [SnsSwapLifecycle.Open],
-    });
-    // Prepare project data
-    querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = BigInt(0);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
-      BigInt(20_000_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
-      BigInt(10_000_000);
-    querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
-      BigInt(200_000_000_000);
-
-    afterEach(() => {
-      jest.clearAllMocks();
-      snsQueryStore.reset();
-    });
-
-    it("should call api.participateInSnsSwap, sync accounts and return success true", async () => {
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(true);
-      expect(spyParticipate).toBeCalled();
-      expect(syncAccounts).toBeCalled();
-    });
-
-    it.only("should return true when last commitment and still sync accounts", async () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(150_000_000);
-      const currentE8s = BigInt(850_000_000);
-      const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
-        certified: true,
-        lifecycles: [SnsSwapLifecycle.Open],
-      });
-      // Prepare project data
-      querySnsSwapStates[0].derived[0]!.buyer_total_icp_e8s = currentE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
-        BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
-        BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s = maxE8s;
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() =>
-          Promise.reject(
-            new Error(
-              "Sorry, There was an unexpected error while participating. Call was rejected: Request ID: a26e17bac91489a89f8b1aef858efeebe9993654ee1ace64efc46a60f3a219c8 Reject code: 5 Reject text: Canister tcvdh-niaaa-aaaaa-aaaoa-cai trapped explicitly: Panicked at 'The token amount can only be refreshed when the canister is in the 'open' state', sns/swap/canister/canister.rs:165:21"
-            )
-          )
-        );
-      const { success } = await participateInSwap({
-        amount: ICP.fromE8s(participationE8s),
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(true);
-      expect(spyParticipate).toBeCalled();
-      expect(syncAccounts).toBeCalled();
-    });
-
-    it("should return success false if api call fails", async () => {
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.reject(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(false);
-      expect(spyParticipate).toBeCalled();
-    });
-
-    it("should return success false and not call api if amount lower than minimum", async () => {
-      // Prepare data
-      const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
-        certified: true,
-        lifecycles: [SnsSwapLifecycle.Open],
-      });
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
-        BigInt(20_000_000_000);
-      const minimumE8s = BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
-        minimumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
-        BigInt(200_000_000_000);
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromE8s(minimumE8s - BigInt(10_000)),
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(false);
-      expect(spyParticipate).not.toBeCalled();
-    });
-
-    it("should return success false and not call api if amount higher than maximum", async () => {
-      // Prepare data
-      const [metadatas, querySnsSwapStates] = snsResponsesForLifecycle({
-        certified: true,
-        lifecycles: [SnsSwapLifecycle.Open],
-      });
-      const maximumE8s = BigInt(20_000_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_participant_icp_e8s =
-        maximumE8s;
-      querySnsSwapStates[0].swap[0]!.init[0]!.min_participant_icp_e8s =
-        BigInt(10_000_000);
-      querySnsSwapStates[0].swap[0]!.init[0]!.max_icp_e8s =
-        BigInt(200_000_000_000);
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromE8s(maximumE8s + BigInt(10_000)),
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(false);
-      expect(spyParticipate).not.toBeCalled();
-    });
-
-    it("should return success false and not call api if not enough amount in account balance", async () => {
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      const account = {
-        ...mockMainAccount,
-        balance: ICP.fromE8s(BigInt(100_000_000)),
-      };
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromE8s(
-          account.balance.toE8s() +
-            BigInt(DEFAULT_TRANSACTION_FEE_E8S) +
-            BigInt(10_000)
-        ),
-        rootCanisterId,
-        account,
-      });
-      expect(success).toBe(false);
-      expect(spyParticipate).not.toBeCalled();
-    });
-
-    it("should return success false if no identity", async () => {
-      const rootCanisterId = Principal.fromText(metadatas[0].rootCanisterId);
-      snsQueryStore.setData([metadatas, querySnsSwapStates]);
-      setNoAccountIdentity();
-      const spyParticipate = jest
-        .spyOn(api, "participateInSnsSwap")
-        .mockImplementation(() => Promise.resolve(undefined));
-      const { success } = await participateInSwap({
-        amount: ICP.fromString("3") as ICP,
-        rootCanisterId,
-        account: mockMainAccount,
-      });
-      expect(success).toBe(false);
-      expect(spyParticipate).not.toBeCalled();
-      resetAccountIdentity();
-    });
-  });
-
   describe("getSwapAccount", () => {
     afterEach(() => jest.clearAllMocks());
     it("should return the swap canister account identifier", async () => {
       const account = await getSwapAccount(mockPrincipal);
       expect(account).toBeInstanceOf(AccountIdentifier);
+    });
+  });
+
+  describe("loadSnsSwapCommitments", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      snsQueryStore.reset();
+    });
+    it("should call api to get commitments and load them in store", async () => {
+      const commitment1 = mockSnsSwapCommitment(principal(0));
+      const commitment2 = mockSnsSwapCommitment(principal(1));
+      const commitments = [commitment1, commitment2];
+      const spy = jest
+        .spyOn(api, "querySnsSwapCommitments")
+        .mockImplementation(() => Promise.resolve(commitments));
+      await loadSnsSwapCommitments();
+      expect(spy).toBeCalled();
+
+      const store = get(snsSwapCommitmentsStore);
+      expect(store).toHaveLength(commitments.length);
+    });
+
+    it("should not call api if they are loaded in store", async () => {
+      const [metadatas, swaps] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
+      });
+      snsQueryStore.setData([metadatas, swaps]);
+      const commitment1 = mockSnsSwapCommitment(
+        Principal.fromText(metadatas[0].rootCanisterId)
+      );
+      const commitment2 = mockSnsSwapCommitment(
+        Principal.fromText(metadatas[1].rootCanisterId)
+      );
+      const commitments = [commitment1, commitment2];
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment1,
+        certified: true,
+      });
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment2,
+        certified: true,
+      });
+      const spy = jest
+        .spyOn(api, "querySnsSwapCommitments")
+        .mockImplementation(() => Promise.resolve(commitments));
+      await loadSnsSwapCommitments();
+      expect(spy).not.toBeCalled();
+    });
+  });
+
+  describe("loadSnsTotalCommitment", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      snsQueryStore.reset();
+    });
+
+    it("should call api to get total commitments and load them in store", async () => {
+      const derivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [1],
+        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+      };
+      const [metadatas, swaps] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
+      });
+      snsQueryStore.setData([metadatas, swaps]);
+      const canisterId = swaps[0].rootCanisterId;
+
+      const spy = jest
+        .spyOn(api, "querySnsDerivedState")
+        .mockImplementation(() => Promise.resolve(derivedState));
+
+      const initStore = get(snsQueryStore);
+      const initState = initStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.derived[0];
+      expect(initState?.buyer_total_icp_e8s).toEqual(
+        initState?.buyer_total_icp_e8s
+      );
+      expect(initState?.sns_tokens_per_icp).toEqual(
+        initState?.sns_tokens_per_icp
+      );
+
+      await services.loadSnsTotalCommitment({
+        rootCanisterId: canisterId,
+      });
+      expect(spy).toBeCalled();
+
+      const updatedStore = get(snsQueryStore);
+      const updatedState = updatedStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.derived[0];
+      expect(updatedState?.buyer_total_icp_e8s).toEqual(
+        fromNullable(derivedState.buyer_total_icp_e8s)
+      );
+      expect(updatedState?.sns_tokens_per_icp).toEqual(
+        fromNullable(derivedState.sns_tokens_per_icp)
+      );
     });
   });
 });

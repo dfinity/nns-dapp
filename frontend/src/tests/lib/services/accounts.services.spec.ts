@@ -1,21 +1,22 @@
-import { ICP } from "@dfinity/nns";
-import { get } from "svelte/store";
-import * as accountsApi from "../../../lib/api/accounts.api";
-import * as ledgerApi from "../../../lib/api/ledger.api";
-import { getLedgerIdentityProxy } from "../../../lib/proxy/ledger.services.proxy";
+/**
+ * @jest-environment jsdom
+ */
+import * as accountsApi from "$lib/api/accounts.api";
+import * as ledgerApi from "$lib/api/ledger.api";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   getAccountTransactions,
   renameSubAccount,
-  routePathAccountIdentifier,
   syncAccounts,
   transferICP,
-} from "../../../lib/services/accounts.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
-import type { TransactionStore } from "../../../lib/types/transaction.context";
+} from "$lib/services/accounts.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import * as toastsFunctions from "$lib/stores/toasts.store";
+import type { NewTransaction } from "$lib/types/transaction";
+import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -30,7 +31,7 @@ import {
 import en from "../../mocks/i18n.mock";
 import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
 
-jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()
@@ -84,7 +85,7 @@ describe("accounts-services", () => {
     });
 
     it("should not add subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -99,10 +100,10 @@ describe("accounts-services", () => {
       resetIdentity();
     });
 
-    const transferICPParams: TransactionStore = {
-      selectedAccount: mockMainAccount,
+    const transferICPParams: NewTransaction = {
+      sourceAccount: mockMainAccount,
       destinationAddress: mockSubAccount.identifier,
-      amount: ICP.fromE8s(BigInt(1)),
+      amount: 1,
     };
 
     it("should transfer ICP", async () => {
@@ -115,31 +116,6 @@ describe("accounts-services", () => {
       await transferICP(transferICPParams);
 
       expect(spyLoadAccounts).toHaveBeenCalled();
-    });
-
-    it("should throw errors if transfer params not provided", async () => {
-      const { err: errSelectedAccount } = await transferICP({
-        ...transferICPParams,
-        selectedAccount: undefined,
-      });
-
-      expect(errSelectedAccount).toEqual("error.transaction_no_source_account");
-
-      const { err: errDestinationAddress } = await transferICP({
-        ...transferICPParams,
-        destinationAddress: undefined,
-      });
-
-      expect(errDestinationAddress).toEqual(
-        "error.transaction_no_destination_address"
-      );
-
-      const { err: errAmount } = await transferICP({
-        ...transferICPParams,
-        amount: undefined,
-      });
-
-      expect(errAmount).toEqual("error.transaction_invalid_amount");
     });
   });
 
@@ -177,7 +153,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -198,7 +174,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no selected account", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -214,7 +190,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if type is not subaccount", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "error");
+      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -227,25 +203,6 @@ describe("accounts-services", () => {
       });
 
       spyToastError.mockClear();
-    });
-  });
-
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get account identifier from valid path", () => {
-      expect(
-        routePathAccountIdentifier(`/#/wallet/${mockMainAccount.identifier}`)
-      ).toEqual({ accountIdentifier: mockMainAccount.identifier });
-    });
-
-    it("should not get account identifier from invalid path", () => {
-      expect(routePathAccountIdentifier("/#/wallet/")).toEqual(undefined);
-      expect(routePathAccountIdentifier(undefined)).toBeUndefined();
     });
   });
 
@@ -293,7 +250,7 @@ describe("accounts-services", () => {
       });
 
       it("should display toast error", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
         await getAccountTransactions({
           accountIdentifier: "",

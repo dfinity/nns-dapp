@@ -1,7 +1,7 @@
+import { sortedProposals } from "$lib/derived/proposals.derived";
+import { proposalsStore } from "$lib/stores/proposals.store";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { sortedProposals } from "../../../lib/derived/proposals.derived";
-import { proposalsStore } from "../../../lib/stores/proposals.store";
 
 describe("proposals-derived", () => {
   it("should derives and sort proposals store", () => {

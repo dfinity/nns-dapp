@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletShowAction from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import HardwareWalletShowAction from "../../../../lib/components/accounts/HardwareWalletShowActionButton.svelte";
-import { showAddressAndPubKeyOnHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletShowActionButton", () => {
   afterEach(() => {

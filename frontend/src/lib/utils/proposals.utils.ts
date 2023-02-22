@@ -1,3 +1,11 @@
+import {
+  PROPOSAL_COLOR,
+  type ProposalStatusColor,
+} from "$lib/constants/proposals.constants";
+import { i18n } from "$lib/stores/i18n";
+import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -15,16 +23,12 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { PROPOSAL_COLOR } from "../constants/proposals.constants";
-import { i18n } from "../stores/i18n";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import type { VoteInProgress } from "../stores/voting.store";
-import type { Color } from "../types/theme";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
-import { isDefined } from "./utils";
+import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
@@ -44,10 +48,13 @@ export const proposalActionFields = (
   if (key === undefined) {
     return [];
   }
-  return Object.entries(proposal.action?.[key] ?? {}).filter(([, value]) => {
+  return Object.entries(
+    keyOfOptional({ obj: proposal.action, key }) ?? {}
+  ).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return value && Object.keys(value).length > 0;
+      case "undefined":
       case "string":
       case "bigint":
       case "boolean":
@@ -68,24 +75,36 @@ export const getNnsFunctionKey = (
   }
 
   // 0 equals Unspecified
-  const { nnsFunctionId }: ExecuteNnsFunction = proposal?.action?.[action] ?? {
+  const { nnsFunctionId }: ExecuteNnsFunction = keyOfOptional({
+    obj: proposal?.action,
+    key: action,
+  }) ?? {
     nnsFunctionId: 0,
   };
 
   return NnsFunction[nnsFunctionId];
 };
 
+/**
+ * Hide proposal that don't match filters
+ *
+ * And check whether we hide it because the user has already voted on it and doesn't want to see them.
+ */
 export const hideProposal = ({
   proposalInfo,
   filters,
   neurons,
+  identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
+  identity: Identity | undefined | null;
 }): boolean =>
   !matchFilters({ proposalInfo, filters }) ||
-  isExcludedVotedProposal({ proposalInfo, filters, neurons });
+  (nonNullish(identity) &&
+    !identity.getPrincipal().isAnonymous() &&
+    isExcludedVotedProposal({ proposalInfo, filters, neurons }));
 
 /**
  * Does the proposal returned by the backend really matches the filter selected by the user?
@@ -113,7 +132,7 @@ const matchFilters = ({
 };
 
 /**
- * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal is OPEN and has at least one UNSPECIFIED ballots' vote.
+ * Hide a proposal if checkbox "excludeVotedProposals" is selected and the proposal's voting period has ended or has no UNSPECIFIED ballots' vote.
  */
 const isExcludedVotedProposal = ({
   proposalInfo,
@@ -138,11 +157,10 @@ const isExcludedVotedProposal = ({
         belongsToValidNeuron(neuronId) && vote === Vote.Unspecified
     ) !== undefined;
 
-  return (
-    excludeVotedProposals &&
-    isProposalOpenForVotes(proposalInfo) &&
-    !containsUnspecifiedBallot()
-  );
+  const isOpen: boolean =
+    isProposalDeadlineInTheFuture(proposalInfo) && containsUnspecifiedBallot();
+
+  return excludeVotedProposals && !isOpen;
 };
 
 /**
@@ -152,10 +170,12 @@ export const hasMatchingProposals = ({
   proposals,
   filters,
   neurons,
+  identity,
 }: {
   proposals: ProposalInfo[];
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
+  identity: Identity | undefined | null;
 }): boolean => {
   if (proposals.length === 0) {
     return false;
@@ -164,7 +184,7 @@ export const hasMatchingProposals = ({
   return (
     proposals.find(
       (proposalInfo: ProposalInfo) =>
-        !hideProposal({ proposalInfo, filters, neurons })
+        !hideProposal({ proposalInfo, filters, neurons, identity })
     ) !== undefined
   );
 };
@@ -326,7 +346,7 @@ export type ProposalInfoMap = {
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  color: Color | undefined;
+  color: ProposalStatusColor | undefined;
 
   created: bigint;
   decided: bigint | undefined;
@@ -375,10 +395,10 @@ export const mapProposalInfo = (
       ? undefined
       : deadlineTimestampSeconds - BigInt(nowInSeconds());
 
-  const topicKey: string = Topic[proposalInfo?.topic];
+  const topicKey = Topic[proposalInfo?.topic];
 
-  const statusKey: string = ProposalStatus[status];
-  const rewardStatusKey: string = ProposalRewardStatus[rewardStatus];
+  const statusKey = ProposalStatus[status];
+  const rewardStatusKey = ProposalRewardStatus[rewardStatus];
 
   return {
     id,
@@ -395,14 +415,17 @@ export const mapProposalInfo = (
     failed: failedTimestampSeconds > 0 ? failedTimestampSeconds : undefined,
     deadline,
 
-    topic: topics[topicKey],
-    topicDescription: topics_description[topicKey],
+    topic: keyOf({ obj: topics, key: topicKey }),
+    topicDescription: keyOf({ obj: topics_description, key: topicKey }),
     status,
-    statusString: statusLabels[statusKey],
-    statusDescription: status_description[statusKey],
+    statusString: keyOf({ obj: statusLabels, key: statusKey }),
+    statusDescription: keyOf({ obj: status_description, key: statusKey }),
     rewardStatus,
-    rewardStatusString: rewards[rewardStatusKey],
-    rewardStatusDescription: rewards_description[rewardStatusKey],
+    rewardStatusString: keyOf({ obj: rewards, key: rewardStatusKey }),
+    rewardStatusDescription: keyOf({
+      obj: rewards_description,
+      key: rewardStatusKey,
+    }),
     ...mapProposalType(proposal),
   };
 };
@@ -433,15 +456,21 @@ const mapProposalType = (
 
   if (nnsFunctionKey !== undefined) {
     return {
-      type: nns_functions[nnsFunctionKey],
-      typeDescription: nns_functions_description[nnsFunctionKey],
+      type: keyOf({ obj: nns_functions, key: nnsFunctionKey }),
+      typeDescription: keyOf({
+        obj: nns_functions_description,
+        key: nnsFunctionKey,
+      }),
     };
   }
 
   const action: string | undefined = proposalFirstActionKey(proposal);
 
   return action !== undefined
-    ? { type: actions[action], typeDescription: actions_description[action] }
+    ? {
+        type: keyOf({ obj: actions, key: action }),
+        typeDescription: keyOf({ obj: actions_description, key: action }),
+      }
     : NO_MATCH;
 };
 
@@ -449,8 +478,9 @@ const mapProposalType = (
  * A proposal can be accepted or declined if the majority votes before its duration expires but, it remains open for voting until then.
  * That is why we should not consider the status "OPEN" to present a proposal as open for voting but consider the duration.
  */
-export const isProposalOpenForVotes = (proposalInfo: ProposalInfo): boolean =>
-  votingPeriodEnd(proposalInfo).getTime() >= new Date().getTime();
+export const isProposalDeadlineInTheFuture = (
+  proposalInfo: ProposalInfo
+): boolean => votingPeriodEnd(proposalInfo).getTime() >= Date.now();
 
 /**
  * Return the voting period end date of a proposal.
@@ -476,10 +506,9 @@ const votingPeriodEndFallback = ({
   proposalTimestampSeconds,
   topic,
 }: ProposalInfo): Date => {
-  const durationInSeconds: number = [
-    Topic.ManageNeuron,
-    Topic.ExchangeRate,
-  ].includes(topic)
+  const durationInSeconds = [Topic.ManageNeuron, Topic.ExchangeRate].includes(
+    topic
+  )
     ? SHORT_VOTING_PERIOD_SECONDS
     : WAIT_FOR_QUIET_THRESHOLD_SECONDS;
 
@@ -564,7 +593,7 @@ export const registerVoteErrorDetails = ({
 };
 
 /** There are neurons in a queue whose vote is not yet been registered */
-export const voteRegistrationActive = (votes: VoteInProgress[]): boolean =>
+export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
   votes.find(
     ({ neuronIds, successfullyVotedNeuronIds }) =>
       neuronIds.length > successfullyVotedNeuronIds.length

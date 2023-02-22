@@ -1,4 +1,3 @@
-import type { Principal } from "@dfinity/principal";
 import {
   attachCanister as attachCanisterApi,
   createCanister as createCanisterApi,
@@ -8,26 +7,26 @@ import {
   queryCanisters,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
-} from "../api/canisters.api";
+} from "$lib/api/canisters.api";
 import type {
   CanisterDetails,
   CanisterSettings,
-} from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
-import { AppPath } from "../constants/routes.constants";
-import { canistersStore } from "../stores/canisters.store";
-import { toastsStore } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import { assertEnoughAccountFunds } from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { isController } from "../utils/canisters.utils";
+} from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { isController } from "$lib/utils/canisters.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
-} from "../utils/error.utils";
-import { convertNumberToICP } from "../utils/icp.utils";
+} from "$lib/utils/error.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, syncAccounts } from "./accounts.services";
-import { getIdentity } from "./auth.services";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({
@@ -53,7 +52,7 @@ export const listCanisters = async ({
       // Explicitly handle only UPDATE errors
       canistersStore.setCanisters({ canisters: [], certified: true });
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.list_canisters",
         err,
       });
@@ -70,7 +69,10 @@ export const createCanister = async ({
   account: Account;
 }): Promise<Principal | undefined> => {
   try {
-    const icpAmount = convertNumberToICP(amount);
+    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+    if (!(icpAmount instanceof TokenAmount)) {
+      throw new LedgerErrorMessage("error.amount_not_valid");
+    }
     assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
@@ -84,8 +86,8 @@ export const createCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return canisterId;
-  } catch (error) {
-    toastsStore.show(
+  } catch (error: unknown) {
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
     return;
@@ -102,7 +104,10 @@ export const topUpCanister = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
-    const icpAmount = convertNumberToICP(amount);
+    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+    if (!(icpAmount instanceof TokenAmount)) {
+      throw new LedgerErrorMessage("error.amount_not_valid");
+    }
     assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
@@ -116,8 +121,8 @@ export const topUpCanister = async ({
     // `syncAccounts` might be slow since it loads all accounts and balances.
     syncAccounts();
     return { success: true };
-  } catch (error) {
-    toastsStore.show(
+  } catch (error: unknown) {
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_top_up_unknown")
     );
     return { success: false };
@@ -132,7 +137,7 @@ export const addController = async ({
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
   if (isController({ controller, canisterDetails })) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error.controller_already_present",
       substitutions: {
         $principal: controller,
@@ -159,7 +164,7 @@ export const removeController = async ({
   canisterDetails: CanisterDetails;
 }): Promise<{ success: boolean }> => {
   if (!isController({ controller, canisterDetails })) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error.controller_not_present",
     });
     return { success: false };
@@ -186,15 +191,15 @@ export const updateSettings = async ({
   canisterId: Principal;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await updateSettingsApi({
       identity,
       canisterId,
       settings,
     });
     return { success: true };
-  } catch (error) {
-    toastsStore.show(
+  } catch (error: unknown) {
+    toastsShow(
       mapCanisterErrorToToastMessage(error, "error.canister_update_settings")
     );
     return { success: false };
@@ -205,7 +210,7 @@ export const attachCanister = async (
   canisterId: Principal
 ): Promise<{ success: boolean }> => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await attachCanisterApi({
       identity,
       canisterId,
@@ -213,10 +218,10 @@ export const attachCanister = async (
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };
   } catch (err) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
-        fallbackErrorLabelKey: "error__canister.unknown_attach",
+        fallbackErrorLabelKey: "error__canister.unknown_link",
       })
     );
     return { success: false };
@@ -228,7 +233,7 @@ export const detachCanister = async (
 ): Promise<{ success: boolean }> => {
   let success = false;
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     await detachCanisterApi({
       identity,
       canisterId,
@@ -237,24 +242,14 @@ export const detachCanister = async (
     await listCanisters({ clearBeforeQuery: false });
     return { success };
   } catch (err) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
-        fallbackErrorLabelKey: "error__canister.unknown_detach",
+        fallbackErrorLabelKey: "error__canister.unknown_unlink",
       })
     );
     return { success };
   }
-};
-
-export const routePathCanisterId = (
-  path: string | undefined
-): string | undefined => {
-  if (!isRoutePath({ path: AppPath.CanisterDetail, routePath: path })) {
-    return undefined;
-  }
-  const canisterId: string | undefined = getLastPathDetail(path);
-  return canisterId !== undefined && canisterId !== "" ? canisterId : undefined;
 };
 
 /**
@@ -268,7 +263,7 @@ export const routePathCanisterId = (
 export const getCanisterDetails = async (
   canisterId: Principal
 ): Promise<CanisterDetails> => {
-  const identity = await getIdentity();
+  const identity = await getAuthenticatedIdentity();
   return queryCanisterDetailsApi({
     canisterId,
     identity,
@@ -279,10 +274,10 @@ export const getIcpToCyclesExchangeRate = async (): Promise<
   bigint | undefined
 > => {
   try {
-    const identity = await getIdentity();
+    const identity = await getAuthenticatedIdentity();
     return await getIcpToCyclesExchangeRateApi(identity);
   } catch (err) {
-    toastsStore.error({
+    toastsError({
       labelKey: "error__canister.get_exchange_rate",
       err,
     });

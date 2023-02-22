@@ -1,11 +1,10 @@
 <script lang="ts">
   import { Vote } from "@dfinity/nns";
-  import IconThumbDown from "../../icons/IconThumbDown.svelte";
-  import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatVotingPower } from "../../utils/neuron.utils";
-  import ConfirmationModal from "../ConfirmationModal.svelte";
+  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
 
   export let voteType: Vote;
   export let votingPower: bigint;

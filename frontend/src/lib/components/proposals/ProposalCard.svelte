@@ -1,115 +1,70 @@
 <script lang="ts">
-  import { Card } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { type NeuronId, ProposalStatus } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import {
-    proposalsFiltersStore,
-    type ProposalsFiltersStore,
-  } from "../../stores/proposals.store";
-  import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
-  import type { ProposalId } from "@dfinity/nns";
-  import ProposalMeta from "./ProposalMeta.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import type { Color } from "../../types/theme";
-  import Tag from "../ui/Tag.svelte";
-  import { voteInProgressStore } from "../../stores/voting.store";
+  import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
+  import Countdown from "./Countdown.svelte";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
-  export let proposalInfo: ProposalInfo;
-  export let hidden: boolean = false;
-  // TODO(L2-965): delete property and use modern
-  export let layout: "modern" | "legacy" = "legacy";
-  import Value from "../ui/Value.svelte";
-
-  let status: ProposalStatus = ProposalStatus.Unknown;
-  let id: ProposalId | undefined;
-  let title: string | undefined;
-  let color: Color | undefined;
-
-  let topic: string | undefined;
-  let proposer: NeuronId | undefined;
-  let type: string | undefined;
-
-  $: ({ status, id, title, color, topic, proposer, type } =
-    mapProposalInfo(proposalInfo));
-
-  const showProposal = () => {
-    routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${id}`,
-    });
-  };
-
-  // HACK:
-  //
-  // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-  // 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
-  // 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-  //
-  // That's why we hide and re-process these proposals delivered by the backend on the client side.
-  //
-  // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
-  let hide: boolean;
-  $: hide =
-    hideProposal({
-      filters: $proposalsFiltersStore as ProposalsFiltersStore,
-      proposalInfo,
-      neurons: $definedNeuronsStore,
-    }) ||
-    // hide proposals that are currently in the voting state
-    $voteInProgressStore.votes.find(
-      ({ proposalId }) => proposalInfo.id === proposalId
-    ) !== undefined;
+  export let hidden = false;
+  export let statusString: string | undefined;
+  export let id: bigint | undefined;
+  export let title: string | undefined;
+  export let color: ProposalStatusColor | undefined;
+  export let topic: string | undefined;
+  export let proposer: string | undefined;
+  export let type: string | undefined = undefined;
+  export let deadlineTimestampSeconds: bigint | undefined;
 </script>
 
-<!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
-{#if !hide}
-  <li class:hidden>
-    {#if layout === "legacy"}
-      <Card role="link" on:click={showProposal} testId="proposal-card">
-        <div slot="start" class="title-container">
-          <p class="title" {title}>{title}</p>
-        </div>
-        <Tag slot="end" {color}
-          >{$i18n.status[ProposalStatus[status]] ?? ""}</Tag
-        >
+<li class:hidden>
+  <Card role="link" on:click testId="proposal-card" icon="arrow">
+    <div class="id" data-proposal-id={id}>
+      <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+    </div>
 
-        <ProposalMeta {proposalInfo} showTopic />
-      </Card>
-    {:else}
-      <Card
-        role="link"
-        on:click={showProposal}
-        testId="proposal-card"
-        withArrow={true}
-      >
-        <div class="card-meta">
-          <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
-          <Value ariaLabel={$i18n.proposal_detail.type_prefix}>{type}</Value>
-        </div>
+    <div class="meta-data">
+      {#if type !== undefined}
+        <KeyValuePair>
+          <span slot="key">{$i18n.proposal_detail.type_prefix}</span>
+          <span
+            slot="value"
+            class="meta-data-value"
+            aria-label={$i18n.proposal_detail.type_prefix}>{type}</span
+          >
+        </KeyValuePair>
+      {/if}
 
-        <div class="card-meta">
-          <span>{$i18n.proposal_detail.topic_prefix}</span>
-          <Value>{topic ?? ""}</Value>
-        </div>
+      {#if topic !== undefined}
+        <KeyValuePair>
+          <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
+          <span slot="value" class="meta-data-value">{topic ?? ""}</span>
+        </KeyValuePair>
+      {/if}
 
-        {#if proposer !== undefined}
-          <div class="card-meta">
-            <span>{$i18n.proposal_detail.proposer_prefix}</span>
-            <Value>{proposer}</Value>
-          </div>
-        {/if}
+      {#if proposer !== undefined}
+        <KeyValuePair>
+          <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
+          <span slot="value" class="meta-data-value"
+            >{shortenWithMiddleEllipsis(proposer, 5)}</span
+          >
+        </KeyValuePair>
+      {/if}
+    </div>
 
-        <p class="title-placeholder description">{title}</p>
+    <blockquote class="title-placeholder">
+      <p class="description">{title}</p>
+    </blockquote>
 
-        <p class={`${color} status`}>
-          {$i18n.status[ProposalStatus[status]] ?? ""}
-        </p>
-      </Card>
-    {/if}
-  </li>
-{/if}
+    <KeyValuePair>
+      <p slot="key" class={`${color ?? ""} status`}>
+        {statusString}
+      </p>
+      <Countdown slot="value" {deadlineTimestampSeconds} />
+    </KeyValuePair>
+
+    <slot />
+  </Card>
+</li>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/text";
@@ -120,48 +75,66 @@
     visibility: hidden;
   }
 
+  .id {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-bottom: var(--padding);
+
+    :global(.value) {
+      color: var(--tertiary);
+    }
+  }
+
+  .meta-data {
+    margin-bottom: var(--padding);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    // Prevent texts that need two lines leave space on the right side
+    & .meta-data-value {
+      text-align: right;
+    }
+  }
+
   .title-container {
     @include card.stacked-title;
   }
 
-  .title {
-    @include text.clamp(3);
-
-    @include media.min-width(small) {
-      margin: 0 var(--padding-2x) 0 0;
-    }
-
-    color: var(--value-color);
-  }
-
-  .card-meta {
-    @include card.meta;
-  }
-
   .title-placeholder {
-    @include text.clamp(6);
-    word-break: break-word;
     flex-grow: 1;
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
   }
 
   /**
    * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
    */
   .status {
-    // Default color: Color.PRIMARY
+    // Default color: ProposalStatusColor.PRIMARY
     --badge-color: var(--primary);
     color: var(--badge-color);
 
     margin-bottom: 0;
 
-    // Color.WARNING
+    // ProposalStatusColor.WARNING
     &.warning {
       --badge-color: var(--warning-emphasis);
     }
 
-    // Color.SUCCESS
+    // ProposalStatusColor.SUCCESS
     &.success {
       --badge-color: var(--positive-emphasis);
+    }
+
+    // ProposalStatusColor.ERROR
+    &.error {
+      --badge-color: var(--negative-emphasis-light);
     }
   }
 </style>

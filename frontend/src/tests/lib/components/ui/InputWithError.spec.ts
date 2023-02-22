@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import InputWithError from "$lib/components/ui/InputWithError.svelte";
 import { render } from "@testing-library/svelte";
-import InputWithError from "../../../../lib/components/ui/InputWithError.svelte";
 
 describe("Input", () => {
   const props = { name: "name", placeholderLabelKey: "test.placeholder" };

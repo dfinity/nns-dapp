@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import Proposer from "$lib/components/proposals/Proposer.svelte";
+import { authStore } from "$lib/stores/auth.store";
 import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import Proposer from "../../../../lib/components/proposals/Proposer.svelte";
-import { authStore } from "../../../../lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
 import en from "../../../mocks/i18n.mock";

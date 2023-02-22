@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
+import type { AccountType } from "$lib/types/add-account.context";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AddAccountType from "../../../../lib/components/accounts/AddAccountType.svelte";
-import type { AccountType } from "../../../../lib/types/add-account.context";
 import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";

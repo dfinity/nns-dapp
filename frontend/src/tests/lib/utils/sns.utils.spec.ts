@@ -1,19 +1,22 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries } from "@dfinity/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
+  getCommitmentE8s,
   getSwapCanisterAccount,
   mapAndSortSnsQueryToSummaries,
-} from "../../../lib/utils/sns.utils";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+} from "$lib/utils/sns.utils";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
+  createBuyersState,
   mockDerived,
   mockQueryMetadata,
   mockQueryMetadataResponse,
+  mockQuerySwap,
+  mockSnsParams,
   mockSnsSummaryList,
   mockSummary,
-  mockSwapInit,
-  mockSwapState,
   principal,
 } from "../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
@@ -38,39 +41,18 @@ describe("sns-utils", () => {
       expect(summaries.length).toEqual(0);
     });
 
-    it("should return empty for undefined swap init", () => {
+    it("should return empty for undefined params property in the swap", () => {
       const summaries = mapAndSortSnsQueryToSummaries({
         metadata: [mockQueryMetadata],
         swaps: [
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                init: [],
-                state: [],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined swap state", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [],
+                ...mockQuerySwap,
+                params: [],
               },
             ],
             derived: [mockDerived],
@@ -89,35 +71,9 @@ describe("sns-utils", () => {
           {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [mockQuerySwap],
             derived: [],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty if no root id are matching between summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
-            derived: [mockDerived],
             certified: true,
           },
         ],
@@ -133,12 +89,8 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -163,12 +115,8 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -183,19 +131,15 @@ describe("sns-utils", () => {
         metadata: [
           {
             ...mockQueryMetadata,
-            token: [[SnsMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
+            token: [[IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
           },
         ],
         swaps: [
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                init: [mockSwapInit],
-                state: [mockSwapState],
-              },
-            ],
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
           },
@@ -217,18 +161,14 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                init: [mockSwapInit],
-                state: [
+                ...mockQuerySwap,
+                params: [
                   {
-                    ...mockSwapState,
-                    open_time_window: [
-                      {
-                        start_timestamp_seconds: BigInt(4),
-                        end_timestamp_seconds: BigInt(5),
-                      },
-                    ],
+                    ...mockSnsParams,
+                    swap_due_timestamp_seconds: BigInt(5),
                   },
                 ],
               },
@@ -239,18 +179,14 @@ describe("sns-utils", () => {
           {
             rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
+            governanceCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
-                init: [mockSwapInit],
-                state: [
+                ...mockQuerySwap,
+                params: [
                   {
-                    ...mockSwapState,
-                    open_time_window: [
-                      {
-                        start_timestamp_seconds: BigInt(1),
-                        end_timestamp_seconds: BigInt(2),
-                      },
-                    ],
+                    ...mockSnsParams,
+                    swap_due_timestamp_seconds: BigInt(2),
                   },
                 ],
               },
@@ -276,6 +212,27 @@ describe("sns-utils", () => {
         controller: mockIdentity.getPrincipal(),
       });
       expect(expectedAccount).toBeInstanceOf(AccountIdentifier);
+    });
+  });
+
+  describe("getCommitmentE8s", () => {
+    it("returns user commitment", () => {
+      const commitmentE8s = BigInt(25 * 100000000);
+      const commitment: SnsSwapCommitment = {
+        rootCanisterId: mockPrincipal,
+        myCommitment: createBuyersState(commitmentE8s),
+      };
+      expect(getCommitmentE8s(commitment)).toEqual(commitmentE8s);
+    });
+
+    it("returns undefined if no user commitment", () => {
+      const commitment: SnsSwapCommitment = {
+        rootCanisterId: mockPrincipal,
+        myCommitment: {
+          icp: [],
+        },
+      };
+      expect(getCommitmentE8s(commitment)).toBeUndefined();
     });
   });
 });

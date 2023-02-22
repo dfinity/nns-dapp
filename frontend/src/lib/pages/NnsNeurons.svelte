@@ -1,48 +1,35 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { authStore } from "../stores/auth.store";
-  import type { AuthStore } from "../stores/auth.store";
-  import { i18n } from "../stores/i18n";
-  import NeuronCard from "../components/neurons/NeuronCard.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { neuronsStore, sortedNeuronStore } from "../stores/neurons.store";
-  import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import Tooltip from "../components/ui/Tooltip.svelte";
-  import { isSpawning } from "../utils/neuron.utils";
-  import Value from "../components/ui/Value.svelte";
+  import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { isSpawning } from "$lib/utils/neuron.utils";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
+  import { onMount } from "svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
 
-  // Neurons are fetch on page load. No need to do it in the route.
-
-  let isLoading: boolean = false;
+  let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
 
-  let principalText: string = "";
+  onMount(() => {
+    listNeurons();
+  });
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ identity }: AuthStore) =>
-      (principalText = identity?.getPrincipal().toText() ?? "")
-  );
-
-  onDestroy(unsubscribe);
-
-  const goToNeuronDetails = (id: NeuronId) => () => {
-    routeStore.navigate({
-      path: `${AppPath.NeuronDetail}/${id}`,
-    });
-  };
+  const goToNeuronDetails = async (id: NeuronId) =>
+    await goto(
+      buildNeuronUrl({
+        universe: $pageStore.universe,
+        neuronId: id,
+      })
+    );
 </script>
 
-<section data-tid="neurons-body">
-  <p class="description">{$i18n.neurons.text}</p>
-
-  <p class="description">
-    {$i18n.neurons.principal_is}
-    <Value>{principalText}</Value>
-  </p>
-
+<div class="card-grid" data-tid="neurons-body">
   {#if isLoading}
     <SkeletonCard />
     <SkeletonCard />
@@ -53,26 +40,24 @@
           id="spawning-neuron-card"
           text={$i18n.neuron_detail.spawning_neuron_info}
         >
-          <NeuronCard
+          <NnsNeuronCard
             disabled
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
             {neuron}
           />
         </Tooltip>
       {:else}
-        <NeuronCard
+        <NnsNeuronCard
           role="link"
           ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
+          on:click={async () => await goToNeuronDetails(neuron.neuronId)}
           {neuron}
         />
       {/if}
     {/each}
   {/if}
-</section>
+</div>
 
-<style lang="scss">
-  p:last-of-type {
-    margin-bottom: var(--padding-3x);
-  }
-</style>
+{#if !isLoading && $sortedNeuronStore.length === 0}
+  <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
+{/if}

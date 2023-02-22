@@ -1,38 +1,21 @@
 <script lang="ts">
-  import type { ProposalId } from "@dfinity/nns";
   import Json from "../common/Json.svelte";
-  import { loadProposalPayload } from "../../services/proposals.services";
-  import { proposalPayloadsStore } from "../../stores/proposals.store";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
-  import type { Proposal } from "@dfinity/nns";
-  import { getNnsFunctionKey } from "../../utils/proposals.utils";
+  import { expandObject } from "$lib/utils/utils";
+  import { isNullish } from "@dfinity/utils";
 
-  export let proposalId: ProposalId | undefined;
-  export let proposal: Proposal | undefined;
-
-  let payload: object | undefined | null;
-
-  $: $proposalPayloadsStore,
-    (payload =
-      proposalId !== undefined
-        ? $proposalPayloadsStore.get(proposalId)
-        : undefined);
-  $: if (
-    proposalId !== undefined &&
-    nnsFunctionKey !== undefined &&
-    !$proposalPayloadsStore.has(proposalId)
-  ) {
-    loadProposalPayload({
-      proposalId,
-    });
-  }
-
-  let nnsFunctionKey: string | undefined;
-  $: nnsFunctionKey = getNnsFunctionKey(proposal);
+  // `undefined` means that the payload is not loaded yet
+  // `null` means that the payload was not found
+  // `object` means that the payload is an object
+  export let payload: object | undefined | null;
+  let expandedPayload: object | undefined | null;
+  $: expandedPayload = isNullish(payload)
+    ? payload
+    : expandObject(payload as Record<string, unknown>);
 </script>
 
-{#if nnsFunctionKey !== undefined && proposalId !== undefined}
+<div class="content-cell-island">
   <h2
     class="content-cell-title"
     data-tid="proposal-proposer-payload-entry-title"
@@ -41,9 +24,10 @@
   </h2>
 
   <div class="content-cell-details">
-    {#if payload !== undefined}
-      <div class="json">
-        <Json json={payload} />
+    <!-- `null` payload should be shown as `null` -->
+    {#if expandedPayload !== undefined}
+      <div class="json" data-tid="json-wrapper">
+        <Json json={expandedPayload} />
       </div>
     {:else}
       <SkeletonText />
@@ -51,11 +35,11 @@
       <SkeletonText />
     {/if}
   </div>
-{/if}
+</div>
 
 <style lang="scss">
-  .content-cell-title {
-    margin-top: var(--padding-8x);
+  .content-cell-island {
+    margin-top: var(--row-gap);
   }
 
   .json {

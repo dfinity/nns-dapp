@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
+import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import DisburseButton from "../../../../../lib/components/neuron-detail/actions/DisburseButton.svelte";
 import en from "../../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../../mocks/neurons.mock";
+import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("DisburseButton", () => {
   afterEach(() => {
@@ -13,19 +14,21 @@ describe("DisburseButton", () => {
   });
 
   it("renders title", () => {
-    const { getByText } = render(DisburseButton, {
+    const { getByText } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: DisburseButton,
       },
     });
 
     expect(getByText(en.neuron_detail.disburse)).toBeInTheDocument();
   });
 
-  it("opens DisburseNeuronModal", async () => {
-    const { container, queryByTestId } = render(DisburseButton, {
+  it("opens disburse nns neuron modal", async () => {
+    const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: DisburseButton,
       },
     });
 

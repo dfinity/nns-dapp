@@ -1,23 +1,15 @@
 <script lang="ts">
-  import AttachCanister from "../../components/canisters/AttachCanister.svelte";
-  import { i18n } from "../../stores/i18n";
-  import Modal from "../Modal.svelte";
+  import LinkCanister from "$lib/components/canisters/LinkCanister.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { Modal } from "@dfinity/gix-components";
 </script>
 
-<Modal on:nnsClose size="big">
+<Modal on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="link-canister-modal-title"
-      >{$i18n.canisters.attach_canister}</span
+      >{$i18n.canisters.link_canister}</span
     ></svelte:fragment
   >
-  <section>
-    <AttachCanister on:nnsClose />
-  </section>
-</Modal>
 
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-  section {
-    @include modal.section;
-  }
-</style>
+  <LinkCanister on:nnsClose />
+</Modal>

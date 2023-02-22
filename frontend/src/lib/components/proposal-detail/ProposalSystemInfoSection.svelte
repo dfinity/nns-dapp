@@ -1,14 +1,16 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { mapProposalInfo } from "../../utils/proposals.utils";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
   import ProposalSystemInfoProposerEntry from "./ProposalSystemInfoProposerEntry.svelte";
-  import { secondsToDateTime } from "../../utils/date.utils";
-  import { i18n } from "../../stores/i18n";
+  import { secondsToDateTime } from "$lib/utils/date.utils";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
+  import type { ProposalId } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 
+  let id: ProposalId | undefined;
   let type: string | undefined;
   let typeDescription: string | undefined;
   let topic: string | undefined;
@@ -39,12 +41,17 @@
     executed,
     failed,
     proposer,
+    id,
   } = mapProposalInfo(proposalInfo));
 </script>
 
 <h1 class="content-cell-title">{type ?? ""}</h1>
 
-<div class="content-cell-details" data-tid="proposal-system-info-details">
+<div
+  class="content-cell-details"
+  data-tid="proposal-system-info-details"
+  data-proposal-id={id}
+>
   {#if type !== undefined}
     <ProposalSystemInfoEntry
       labelKey="type_prefix"

@@ -3,8 +3,12 @@
  *
  * e.g. enum Hello { World = 0; } => [0]
  */
-export const enumValues = <T>(obj: T): number[] => {
-  return Object.values(obj).filter((o: T) => typeof o === "number");
+export const enumValues = <T extends Record<string, unknown>>(
+  obj: T
+): number[] => {
+  return Object.values(obj).filter(
+    (o: unknown) => typeof o === "number"
+  ) as number[];
 };
 
 /**
@@ -12,8 +16,12 @@ export const enumValues = <T>(obj: T): number[] => {
  *
  * e.g. enum Hello { World = 0; } => ['World']
  */
-export const enumKeys = <T>(obj: T): string[] => {
-  return Object.values(obj).filter((o: T) => typeof o === "string");
+export const enumKeys = <T extends Record<string, unknown>>(
+  obj: T
+): string[] => {
+  return Object.values(obj).filter(
+    (o: unknown) => typeof o === "string"
+  ) as string[];
 };
 
 /**
@@ -28,7 +36,9 @@ export const enumsKeys = <T>({
   obj: T;
   values: T[];
 }): string[] => {
-  return values.map((value: T) => obj[value as unknown as string]);
+  return values.map(
+    (value: T) => obj[value as unknown as keyof T]
+  ) as unknown as string[];
 };
 
 /**
@@ -48,9 +58,9 @@ export const enumsExclude = <T>({
     values,
   });
 
-  return enumKeys(obj)
+  return enumKeys(obj as Record<string, unknown>)
     .filter((key: string) => !keys.includes(key))
-    .map((key: string) => obj[key]);
+    .map((key: string) => obj[key as keyof T] as unknown as T);
 };
 
 /**
@@ -58,14 +68,6 @@ export const enumsExclude = <T>({
  *
  * e.g. enum Hello { A = 0; B = 1; C = 2; } => 3
  */
-export const enumSize = <T>(enm: T): number => {
-  return Object.values(enm).filter(isNaN).length;
+export const enumSize = <T extends Record<string, unknown>>(enm: T): number => {
+  return Object.values(enm).filter((value) => isNaN(value as number)).length;
 };
-
-export const enumFromStringExists = <T>({
-  obj,
-  value,
-}: {
-  obj: T;
-  value: string | null;
-}): boolean => Object.values(obj).includes(value);

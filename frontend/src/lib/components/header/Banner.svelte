@@ -1,20 +1,18 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
-  import {
-    IS_TESTNET,
-    ROLLUP_WATCH,
-  } from "../../constants/environment.constants";
+  import { DEV, IS_TESTNET } from "$lib/constants/environment.constants";
+  import { browser } from "$app/environment";
 
-  const localstorageKey: string = "nnsdapp-testnet-banner-display";
+  const localstorageKey = "nnsdapp-testnet-banner-display";
 
-  let visible: boolean = JSON.parse(
-    localStorage.getItem(localstorageKey) ?? "true"
-  ) as boolean;
+  let visible = browser
+    ? (JSON.parse(localStorage.getItem(localstorageKey) ?? "true") as boolean)
+    : false;
 
-  const testnet: boolean = IS_TESTNET;
-  const localEnv: boolean = ROLLUP_WATCH;
-  const banner: boolean = testnet && !localEnv;
+  const testnet = IS_TESTNET;
+  const localEnv = DEV;
+  const banner = testnet && !localEnv;
 
   const close = () => {
     visible = false;
@@ -24,6 +22,10 @@
 
   $: visible,
     (() => {
+      if (!browser) {
+        return;
+      }
+
       if (!banner) {
         // If no banner has to be displayed, setting or removing the header offset can be skipped
         return;
@@ -54,7 +56,7 @@
   @use "@dfinity/gix-components/styles/mixins/text";
 
   div {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -69,8 +71,8 @@
     justify-content: center;
     align-items: center;
 
-    background: var(--negative-emphasis-light);
-    color: var(--negative-emphasis-light-contrast);
+    background: var(--negative-emphasis);
+    color: var(--negative-emphasis-contrast);
 
     :global(:root) {
       --header-offset: 60px;

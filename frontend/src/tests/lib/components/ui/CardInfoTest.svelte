@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CardInfo from "../../../../lib/components/ui/CardInfo.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
 </script>
 
 <CardInfo>

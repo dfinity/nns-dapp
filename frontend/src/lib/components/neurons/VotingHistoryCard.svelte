@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { Card } from "@dfinity/gix-components";
-  import { i18n } from "../../stores/i18n";
-  import Ballots from "../neuron-detail/Ballots/Ballots.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
 
   export let neuron: NeuronInfo;
 </script>

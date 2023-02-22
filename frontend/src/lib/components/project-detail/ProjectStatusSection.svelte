@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
-  import type { SnsSwapCommitment, SnsSummary } from "../../types/sns";
-  import Icp from "../ic/ICP.svelte";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
@@ -11,10 +11,11 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import { isNullish } from "../../utils/utils";
+  } from "$lib/types/project-detail.context";
+  import { isNullish } from "@dfinity/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -24,39 +25,40 @@
   $: swapCommitment = $projectDetailStore.swapCommitment;
 
   let myCommitment: bigint | undefined;
-  $: myCommitment = swapCommitment?.myCommitment?.amount_icp_e8s;
+  $: myCommitment = getCommitmentE8s(swapCommitment);
 
-  let myCommitmentIcp: ICP | undefined;
+  let myCommitmentIcp: TokenAmount | undefined;
   $: myCommitmentIcp =
-    myCommitment !== undefined ? ICP.fromE8s(myCommitment) : undefined;
+    myCommitment !== undefined
+      ? TokenAmount.fromE8s({ amount: myCommitment, token: ICPToken })
+      : undefined;
 
   let loadingSummary: boolean;
   $: loadingSummary = isNullish($projectDetailStore.summary);
-  let loadingSwapState: boolean;
-  $: loadingSwapState = isNullish($projectDetailStore.swapCommitment);
 
   let lifecycle: number;
   $: ({
-    swap: {
-      state: { lifecycle },
-    },
+    swap: { lifecycle },
   } =
     $projectDetailStore.summary ??
     ({
       swap: { state: { lifecycle: SnsSwapLifecycle.Unspecified } },
     } as unknown as SnsSummary));
 
-  let displayStatusSection: boolean = false;
+  let displayStatusSection = false;
   $: displayStatusSection =
     !loadingSummary &&
-    !loadingSwapState &&
-    [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed].includes(lifecycle);
+    [
+      SnsSwapLifecycle.Open,
+      SnsSwapLifecycle.Committed,
+      SnsSwapLifecycle.Adopted,
+    ].includes(lifecycle);
 </script>
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
 {#if displayStatusSection}
-  <div data-tid="sns-project-detail-status">
+  <div data-tid="sns-project-detail-status" class="content-cell-island">
     <ProjectStatus />
 
     <div class="content content-cell-details">
@@ -74,9 +76,7 @@
               summary={$projectDetailStore.summary}
               {swapCommitment}
             />
-            <svelte:fragment slot="value">
-              <Icp icp={myCommitmentIcp} singleLine />
-            </svelte:fragment>
+            <AmountDisplay slot="value" amount={myCommitmentIcp} singleLine />
           </KeyValuePair>
         </div>
       {/if}

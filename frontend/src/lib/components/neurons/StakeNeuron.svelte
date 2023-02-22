@@ -1,23 +1,22 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { syncAccounts } from "../../services/accounts.services";
-  import { stakeNeuron } from "../../services/neurons.services";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
+  import { syncAccounts } from "$lib/services/accounts.services";
+  import { stakeNeuron } from "$lib/services/neurons.services";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     formattedTransactionFeeICP,
     getMaxTransactionAmount,
-  } from "../../utils/icp.utils";
-  import AmountInput from "../ui/AmountInput.svelte";
-  import CurrentBalance from "../accounts/CurrentBalance.svelte";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  } from "$lib/utils/token.utils";
+  import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     mainTransactionFeeStore,
     transactionsFeesStore,
-  } from "../../stores/transaction-fees.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import Value from "../ui/Value.svelte";
+  } from "$lib/stores/transaction-fees.store";
+  import { Value, busy } from "@dfinity/gix-components";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 
   export let account: Account;
   let amount: number;
@@ -50,7 +49,7 @@
     stopBusy("stake-neuron");
   };
 
-  let max: number = 0;
+  let max = 0;
   $: max = getMaxTransactionAmount({
     balance: account.balance.toE8s(),
     fee: $transactionsFeesStore.main,
@@ -59,57 +58,44 @@
   const stakeMaximum = () => (amount = max);
 </script>
 
-<form on:submit|preventDefault={createNeuron} class="wizard-wrapper">
-  <div class="head">
-    <CurrentBalance balance={account.balance} />
-
-    <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
+<form on:submit|preventDefault={createNeuron}>
+  <div class="source">
+    <TransactionSource {account} />
   </div>
+
+  <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
 
   <div>
-    <h5>{$i18n.neurons.source}</h5>
-    <small class="identifier value">{account.identifier}</small>
-  </div>
-  <div class="transaction-fee">
-    <h5>{$i18n.neurons.transaction_fee}</h5>
-    <small>
+    <p class="label">{$i18n.neurons.transaction_fee}</p>
+    <p>
       <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
       <span>ICP</span>
-    </small>
+    </p>
   </div>
 
-  <FooterModal>
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsBack")}
     >
-      {$i18n.neurons.edit_source}
+      {$i18n.neurons.change_source}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="create-neuron-button"
       disabled={amount === undefined || amount <= 0 || $busy}
     >
       {$i18n.neurons.create}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  .head {
-    @include modal.header;
-  }
-
-  small {
-    word-break: break-all;
-    text-align: center;
-  }
-
-  .transaction-fee {
-    flex-grow: 1;
+  .source {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 </style>

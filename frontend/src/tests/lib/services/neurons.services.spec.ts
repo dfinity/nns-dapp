@@ -1,23 +1,30 @@
-import type { Identity } from "@dfinity/agent";
-import { ICP, LedgerCanister, Topic } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { tick } from "svelte/internal";
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/governance.api";
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
   E8S_PER_ICP,
-} from "../../../lib/constants/icp.constants";
-import { getAccountIdentityByPrincipal } from "../../../lib/services/accounts.services";
-import * as services from "../../../lib/services/neurons.services";
-import * as busyStore from "../../../lib/stores/busy.store";
+} from "$lib/constants/icp.constants";
+import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import {
-  definedNeuronsStore,
-  neuronsStore,
-} from "../../../lib/stores/neurons.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
-import { NotAuthorizedNeuronError } from "../../../lib/types/neurons.errors";
+  getAccountIdentityByPrincipal,
+  transferICP,
+} from "$lib/services/accounts.services";
+import * as services from "$lib/services/neurons.services";
+import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import * as busyStore from "$lib/stores/busy.store";
+import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
+import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
+import type { Identity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
+import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
+import { tick } from "svelte/internal";
+import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -29,13 +36,14 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
+import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
   addHotkey,
   addHotkeyForHardwareWalletNeuron,
   addFollowee,
-  routePathNeuronId,
   getIdentityOfControllerByNeuronId,
   toggleCommunityFund,
   listNeurons,
@@ -48,16 +56,16 @@ const {
   updateDelay,
   mergeNeurons,
   reloadNeuron,
+  topUpNeuron,
 } = services;
 
-jest.mock("../../../lib/stores/toasts.store", () => {
-  return {
-    toastsStore: {
-      error: jest.fn(),
-      show: jest.fn(),
+const expectToastError = (contained: string) =>
+  expect(get(toastsStore)).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
     },
-  };
-});
+  ]);
 
 let testIdentity: Identity | null = mockIdentity;
 const setNoAccountIdentity = () => (testIdentity = null);
@@ -65,9 +73,10 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn(),
+    transferICP: jest.fn().mockResolvedValue({ success: true }),
     getAccountIdentityByPrincipal: jest
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
@@ -86,7 +95,7 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()
@@ -95,6 +104,7 @@ jest.mock("../../../lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("neurons-services", () => {
+  jest.spyOn(console, "error").mockImplementation(jest.fn);
   const notControlledNeuron = {
     ...mockNeuron,
     neuronId: BigInt(123),
@@ -131,16 +141,16 @@ describe("neurons-services", () => {
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyQueryNeurons = jest
-    .spyOn(api, "queryNeurons")
-    .mockImplementation(() => Promise.resolve(neurons));
-
   const spyIncreaseDissolveDelay = jest
     .spyOn(api, "increaseDissolveDelay")
     .mockImplementation(() => Promise.resolve());
 
   const spyJoinCommunityFund = jest
     .spyOn(api, "joinCommunityFund")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyAutoStakeMaturity = jest
+    .spyOn(api, "autoStakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spyLeaveCommunityFund = jest
@@ -153,6 +163,10 @@ describe("neurons-services", () => {
 
   const spyMergeMaturity = jest
     .spyOn(api, "mergeMaturity")
+    .mockImplementation(() => Promise.resolve());
+
+  const spyStakeMaturity = jest
+    .spyOn(api, "stakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
   const spySpawnNeuron = jest
@@ -191,15 +205,18 @@ describe("neurons-services", () => {
     .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
 
-  afterEach(() => {
+  beforeEach(() => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
+    neuronsStore.reset();
+    accountsStore.reset();
+    resetIdentity();
+    resetAccountIdentity();
+    toastsStore.reset();
+    resetNeuronsApiService();
   });
 
   describe("stake new neuron", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
     it("should stake a neuron from main account", async () => {
       const newNeuronId = await stakeNeuron({
         amount: 10,
@@ -243,7 +260,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.error).toBeCalled();
+      expectToastError(en.error.amount_not_enough_stake_neuron);
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
@@ -257,7 +274,7 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
+      expectToastError("Invalid number NaN");
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
@@ -271,12 +288,15 @@ describe("neurons-services", () => {
         amount,
         account: {
           ...mockMainAccount,
-          balance: ICP.fromString(String(amount - 1)) as ICP,
+          balance: TokenAmount.fromString({
+            amount: String(amount - 1),
+            token: ICPToken,
+          }) as TokenAmount,
         },
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
+      expectToastError(en.error.insufficient_funds);
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -288,23 +308,45 @@ describe("neurons-services", () => {
       });
 
       expect(response).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
-
-      resetAccountIdentity();
+      expectToastError("Cannot read properties of null");
     });
   });
 
   describe("list neurons", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+    const spyQueryNeurons = jest
+      .spyOn(api, "queryNeurons")
+      .mockResolvedValue(neurons);
+
     it("should list neurons", async () => {
+      const oldNeuronsList = get(definedNeuronsStore);
+      expect(oldNeuronsList).toEqual([]);
+
       await listNeurons();
 
       expect(spyQueryNeurons).toHaveBeenCalled();
 
-      const neuronsList = get(definedNeuronsStore);
-      expect(neuronsList).toEqual(neurons);
+      const newNeuronsList = get(definedNeuronsStore);
+      expect(newNeuronsList).toEqual(neurons);
+    });
+
+    it("should not call api when called twice and cache is not reset", async () => {
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
+
+      await listNeurons();
+
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(2);
     });
 
     it("should not list neurons if no identity", async () => {
@@ -313,16 +355,10 @@ describe("neurons-services", () => {
       const call = async () => await listNeurons();
 
       await expect(call).rejects.toThrow(mockIdentityErrorMsg);
-
-      resetIdentity();
     });
   });
 
   describe("update delay", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update delay", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await updateDelay({
@@ -341,10 +377,8 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update delay if neuron not controlled by user", async () => {
@@ -358,7 +392,7 @@ describe("neurons-services", () => {
         dissolveDelayInSeconds: 12000,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyIncreaseDissolveDelay).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -366,10 +400,6 @@ describe("neurons-services", () => {
   });
 
   describe("toggleCommunityFund", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should call joinCommunity find if neuron is not part yet", async () => {
       const neuron = {
         ...controlledNeuron,
@@ -401,11 +431,9 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(neuron);
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -416,17 +444,113 @@ describe("neurons-services", () => {
 
       await toggleCommunityFund(notControlledNeuron);
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyJoinCommunityFund).not.toHaveBeenCalled();
       expect(spyLeaveCommunityFund).not.toHaveBeenCalled();
     });
   });
 
-  describe("disburse", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
+  describe("toggleAutoStakeMaturity", () => {
+    const buildNeuron = (autoStakeMaturity: boolean | undefined) => ({
+      ...controlledNeuron,
+      fullNeuron: {
+        ...controlledNeuron.fullNeuron,
+        autoStakeMaturity,
+      },
     });
 
+    it("should toggle auto stake maturity if not yet defined", async () => {
+      const neuron = buildNeuron(undefined);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: true,
+        identity: testIdentity,
+      });
+    });
+
+    it("should toggle auto stake maturity if currently set to false", async () => {
+      const neuron = buildNeuron(undefined);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: true,
+        identity: testIdentity,
+      });
+    });
+
+    it("should disable auto stake maturity if already on", async () => {
+      const neuron = buildNeuron(true);
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      await toggleAutoStakeMaturity(neuron);
+
+      expect(spyAutoStakeMaturity).toHaveBeenCalledWith({
+        neuronId: neuron.neuronId,
+        autoStake: false,
+        identity: testIdentity,
+      });
+    });
+
+    it("should not toggle auto stake maturity for neuron if no identity", async () => {
+      const neuron = buildNeuron(true);
+      setNoIdentity();
+
+      await toggleAutoStakeMaturity(neuron);
+
+      expectToastError(en.error.missing_identity);
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
+    });
+
+    it("should not toggle auto stake maturity if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await toggleAutoStakeMaturity(notControlledNeuron);
+
+      expectToastError(en.error.not_authorized_neuron_action);
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
+    });
+
+    it("should not toggle auto stake maturity if hw version is lower than candid parser version", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+
+      await toggleAutoStakeMaturity(neuron);
+
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
+      expect(spyAutoStakeMaturity).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("disburse", () => {
     it("should disburse neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const { success } = await services.disburse({
@@ -446,11 +570,9 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
-
-      resetIdentity();
     });
 
     it("should not disburse neuron if not controlled by user", async () => {
@@ -464,17 +586,13 @@ describe("neurons-services", () => {
         toAccountId: mockMainAccount.identifier,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyDisburse).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
   });
 
   describe("mergeMaturity", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should merge maturity of the neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const { success } = await services.mergeMaturity({
@@ -494,11 +612,9 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
-
-      resetIdentity();
     });
 
     it("should not merge maturity if not controlled by user", async () => {
@@ -512,17 +628,91 @@ describe("neurons-services", () => {
         percentageToMerge: 50,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyMergeMaturity).not.toHaveBeenCalled();
       expect(success).toBe(false);
     });
   });
 
-  describe("spawnNeuron", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
+  describe("stakeMaturity", () => {
+    it("should stake maturity of the neuron", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      const { success } = await services.stakeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expect(spyStakeMaturity).toHaveBeenCalled();
+      expect(success).toBe(true);
     });
 
+    it("should not stake maturity if no identity", async () => {
+      setNoIdentity();
+
+      const { success } = await services.stakeMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expectToastError(en.error.missing_identity);
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+
+    it("should not stake maturity if lower HW version than required", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+
+      const { success } = await services.stakeMaturity({
+        neuronId: neuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+
+    it("should not stake maturity if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      const { success } = await services.stakeMaturity({
+        neuronId: notControlledNeuron.neuronId,
+        percentageToStake: 50,
+      });
+
+      expectToastError(en.error.not_authorized_neuron_action);
+      expect(spyStakeMaturity).not.toHaveBeenCalled();
+      expect(success).toBe(false);
+    });
+  });
+
+  describe("spawnNeuron", () => {
     it("should spawn a neuron from maturity", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const newNeuronId = await services.spawnNeuron({
@@ -542,11 +732,9 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
-
-      resetIdentity();
     });
 
     it("should not spawn neuron if not controlled by user", async () => {
@@ -560,19 +748,14 @@ describe("neurons-services", () => {
         percentageToSpawn: 50,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySpawnNeuron).not.toHaveBeenCalled();
       expect(newNeuronId).toBeUndefined();
     });
   });
 
   describe("mergeNeurons", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
-
-    it("should update neuron", async () => {
+    it("should merge neurons", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await mergeNeurons({
         sourceNeuronId: neurons[0].neuronId,
@@ -582,7 +765,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).toHaveBeenCalled();
     });
 
-    it("should not update neuron if no identity", async () => {
+    it("should not merge neurons if no identity", async () => {
       setNoIdentity();
 
       await mergeNeurons({
@@ -590,12 +773,11 @@ describe("neurons-services", () => {
         targetNeuronId: neurons[1].neuronId,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyMergeNeurons).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
-    it("should not update neuron if different controllers", async () => {
+
+    it("should not merge neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
         neuronId: BigInt(5555),
@@ -614,16 +796,67 @@ describe("neurons-services", () => {
         targetNeuronId: neuron.neuronId,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.merge_neurons_not_same_controller);
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+
+    it("should not merge neurons if lower HW version than required", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 1,
+        minor: 9,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const hwAccount = {
+        ...mockHardwareWalletAccount,
+        principal: smallerVersionIdentity.getPrincipal(),
+      };
+      accountsStore.set({
+        main: mockMainAccount,
+        hardwareWallets: [hwAccount],
+      });
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(5556),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
+
+      await mergeNeurons({
+        sourceNeuronId: neuron1.neuronId,
+        targetNeuronId: neuron2.neuronId,
+      });
+
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.2.1",
+          $currentVersion: "1.9.9",
+        })
+      );
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
 
   describe("addHotkey", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await addHotkey({
@@ -642,10 +875,8 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyAddHotkey).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -659,7 +890,7 @@ describe("neurons-services", () => {
         principal: Principal.fromText("aaaaa-aa"),
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyAddHotkey).not.toHaveBeenCalled();
     });
   });
@@ -713,10 +944,6 @@ describe("neurons-services", () => {
   });
 
   describe("removeHotkey", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await removeHotkey({
@@ -760,10 +987,8 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -777,16 +1002,12 @@ describe("neurons-services", () => {
         principalString: "aaaaa-aa",
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyRemoveHotkey).not.toHaveBeenCalled();
     });
   });
 
   describe("startDissolving", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await startDissolving(controlledNeuron.neuronId);
@@ -799,10 +1020,8 @@ describe("neurons-services", () => {
 
       await startDissolving(BigInt(10));
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyStartDissolving).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -813,16 +1032,12 @@ describe("neurons-services", () => {
 
       await startDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStartDissolving).not.toHaveBeenCalled();
     });
   });
 
   describe("stopDissolving", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await stopDissolving(controlledNeuron.neuronId);
@@ -835,10 +1050,8 @@ describe("neurons-services", () => {
 
       await stopDissolving(BigInt(10));
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spyStopDissolving).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -849,16 +1062,12 @@ describe("neurons-services", () => {
 
       await stopDissolving(notControlledNeuron.neuronId);
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyStopDissolving).not.toHaveBeenCalled();
     });
   });
 
   describe("splitNeuron", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await services.splitNeuron({
@@ -873,7 +1082,9 @@ describe("neurons-services", () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
       const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
-      const amountWithFee = amount + transactionFee;
+      // To avoid rounding errors, we round the amount with the fee to the nearest 8 decimals
+      const amountWithFee =
+        Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
       await services.splitNeuron({
         neuronId: controlledNeuron.neuronId,
         amount,
@@ -882,7 +1093,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: ICP.fromE8s(BigInt(Math.round(amountWithFee * E8S_PER_ICP))),
+        amount: numberToE8s(amountWithFee),
       });
     });
 
@@ -895,10 +1106,8 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySplitNeuron).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not update neuron if not controlled by user", async () => {
@@ -912,7 +1121,7 @@ describe("neurons-services", () => {
         amount: 2.2,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySplitNeuron).not.toHaveBeenCalled();
 
       neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -920,10 +1129,6 @@ describe("neurons-services", () => {
   });
 
   describe("add followee", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should add the followee to next call", async () => {
       const followee = BigInt(8);
       neuronsStore.setNeurons({ neurons, certified: true });
@@ -953,7 +1158,7 @@ describe("neurons-services", () => {
         followee: controlledNeuron.neuronId,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expectToastError(en.new_followee.same_neuron);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -975,7 +1180,7 @@ describe("neurons-services", () => {
         followee: followee,
       });
 
-      expect(toastsStore.error).toHaveBeenCalled();
+      expectToastError(en.new_followee.already_followed);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -992,9 +1197,8 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
-      resetIdentity();
     });
 
     it("should not call api if not controlled by user nor hotkey", async () => {
@@ -1011,7 +1215,7 @@ describe("neurons-services", () => {
         followee,
       });
 
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1065,10 +1269,6 @@ describe("neurons-services", () => {
   });
 
   describe("remove followee", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     const followee = BigInt(8);
     const topic = Topic.ExchangeRate;
     const neuronFollowing = {
@@ -1114,10 +1314,8 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.missing_identity);
       expect(spySetFollowees).not.toHaveBeenCalled();
-
-      resetIdentity();
     });
 
     it("should not call api if user not controller nor hotkey", async () => {
@@ -1140,7 +1338,7 @@ describe("neurons-services", () => {
         topic,
         followee,
       });
-      expect(toastsStore.show).toHaveBeenCalled();
+      expectToastError(en.error.not_authorized_neuron_action);
       expect(spySetFollowees).not.toHaveBeenCalled();
     });
 
@@ -1193,28 +1391,7 @@ describe("neurons-services", () => {
     });
   });
 
-  describe("details", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-    it("should get neuronId from valid path", async () => {
-      expect(routePathNeuronId("/#/neuron/123")).toBe(BigInt(123));
-      expect(routePathNeuronId("/#/neuron/0")).toBe(BigInt(0));
-    });
-
-    it("should not get neuronId from invalid path", async () => {
-      expect(routePathNeuronId("/#/neuron/")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/1.5")).toBeUndefined();
-      expect(routePathNeuronId("/#/neuron/123n")).toBeUndefined();
-      expect(routePathNeuronId("/#/neurons/")).toBeUndefined();
-      expect(routePathNeuronId("/#/accounts/")).toBeUndefined();
-    });
-  });
-
   describe("load neuron", () => {
-    afterEach(() => jest.clearAllMocks());
     it("should get neuron from neurons store if presented and not call queryNeuron", async () => {
       neuronsStore.pushNeurons({ neurons: [mockNeuron], certified: true });
       await loadNeuron({
@@ -1257,10 +1434,6 @@ describe("neurons-services", () => {
   });
 
   describe("reloadNeuron", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should call the api", async () => {
       await reloadNeuron(mockNeuron.neuronId);
       expect(spyGetNeuron).toBeCalled();
@@ -1281,10 +1454,6 @@ describe("neurons-services", () => {
   });
 
   describe("getIdentityOfControllerByNeuronId", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
-    });
     it("should return identity from authStore first", async () => {
       const controlledNeuron = {
         ...mockNeuron,
@@ -1321,7 +1490,6 @@ describe("neurons-services", () => {
       );
       expect(identity).toBe(newIdentity);
       expect(getAccountIdentityByPrincipal).toBeCalled();
-      resetIdentity();
     });
 
     it("should raise NotAuthorizedNeuronError if fullNeuron is not defined", () => {
@@ -1347,7 +1515,56 @@ describe("neurons-services", () => {
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
       expect(call).rejects.toThrow(NotAuthorizedNeuronError);
-      resetAccountIdentity();
+    });
+  });
+
+  describe("topUpNeuron", () => {
+    it("should transfer ICPs, claim neuron and get the neuron info", async () => {
+      const { success } = await topUpNeuron({
+        neuron: mockNeuron,
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(true);
+      expect(transferICP).toBeCalled();
+      expect(spyClaimOrRefresh).toBeCalled();
+      expect(spyGetNeuron).toBeCalled();
+    });
+
+    it("should fail if neuron has no account identifier", async () => {
+      const { success } = await topUpNeuron({
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: undefined,
+        },
+        amount: 2,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(transferICP).not.toBeCalled();
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
+    });
+
+    it("should fail if amount and neuron stake are not enough", async () => {
+      const { success } = await topUpNeuron({
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+          },
+        },
+        amount: 0.01,
+        sourceAccount: mockMainAccount,
+      });
+
+      expect(success).toBe(false);
+      expect(transferICP).not.toBeCalled();
+      expect(spyClaimOrRefresh).not.toBeCalled();
+      expect(spyGetNeuron).not.toBeCalled();
     });
   });
 });

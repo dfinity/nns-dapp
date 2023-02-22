@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { secondsToDate, secondsToTime } from "../../utils/date.utils";
+  import { secondsToDate, secondsToTime } from "$lib/utils/date.utils";
 
   export let tagName: "p" | "dd" | "span" = "p";
   export let seconds: number;

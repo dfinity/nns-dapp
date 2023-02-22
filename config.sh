@@ -19,11 +19,48 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
-JSON_CONFIG_FILE="$PWD/deployment-config.json"
+ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
+JSON_OUT="deployment-config.json"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
+
+first_not_null() {
+  for x in "$@"; do
+    if [ "$x" != "null" ]; then
+      echo "$x"
+      return
+    fi
+  done
+  echo "null"
+}
+
+static_host() {
+  first_not_null \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
+}
+
+api_host() {
+  first_not_null \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
+    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
+}
+
+# Gets the static content URL for a canister based on its ID.
+# Uses the STATIC_HOST to create the URL, which is appropriate to fetch static content.
+canister_static_url_from_id() {
+  : "If we have a canister ID, insert it into HOST as a subdomain."
+  test -z "${1:-}" || { static_host | sed -E "s,^(https?://)?,&${1}.,g"; }
+}
+
+# Gets the api URL for a canister based on its ID.
+# Uses the API_HOST to create the URL, which is appropriate for Candid API calls.
+canister_api_url_from_id() {
+  : "If we have a canister ID, insert it into HOST as a subdomain."
+  test -z "${1:-}" || { api_host | sed -E "s,^(https?://)?,&${1}.,g"; }
+}
 
 local_deployment_data="$(
   set -euo pipefail
@@ -38,10 +75,7 @@ local_deployment_data="$(
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(
-    set -euo pipefail
-    id="$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
-    : "If we have a canister ID, insert it into HOST as a subdomain."
-    test -z "${id:-}" || { jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json | sed -E "s,^(https?://)?,&${id}.,g"; }
+    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
   )"
   export IDENTITY_SERVICE_URL
   test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
@@ -54,6 +88,22 @@ local_deployment_data="$(
   test -n "${WASM_CANISTER_ID:-}" || WASM_CANISTER_ID="$LOCALLY_DEPLOYED_WASM_CANISTER_ID"
   export WASM_CANISTER_ID
 
+  : "Try to find the SNS aggregator URL"
+  : "- may be deployed locally"
+  SNS_AGGREGATOR_URL="$(
+    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
+  )"
+  export SNS_AGGREGATOR_URL
+  test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
+
+  : "Try to find the ckBTC canister IDs"
+  CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"
+  export CKBTC_LEDGER_CANISTER_ID
+  test -n "${CKBTC_LEDGER_CANISTER_ID:-}" || unset CKBTC_LEDGER_CANISTER_ID
+  CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
+  export CKBTC_INDEX_CANISTER_ID
+  test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -62,6 +112,9 @@ local_deployment_data="$(
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
+    SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
+    CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
+    CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'
@@ -76,50 +129,90 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-jq -s --sort-keys '
+json=$(HOST=$(api_host) jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
+  .HOST=env.HOST |
   .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
   .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
-' dfx.json <(echo "$local_deployment_data") | tee "$JSON_CONFIG_FILE"
-echo "Config has been defined in '${JSON_CONFIG_FILE}'" >&2
+' dfx.json <(echo "$local_deployment_data"))
 
-: "Export values used by bash:"
-get_var() {
-  var_name="$1" jq -r '.[env.var_name] | if (. == null) or (. == "") then "ERROR: Undefined config item: \(env.var_name)\n" | halt_error(1) else . end' "$JSON_CONFIG_FILE"
-}
+dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
+cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
+wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
+governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
+governanceCanisterUrl=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_URL")
+ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
+ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
+ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
+ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
+fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
+featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
+host=$(echo "$json" | jq -r ".HOST")
+identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
+aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
+ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
+ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
-IDENTITY_SERVICE_URL="$(get_var IDENTITY_SERVICE_URL)"
+echo "VITE_DFX_NETWORK=$dfxNetwork
+VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
+VITE_WASM_CANISTER_ID=$wasmCanisterId
+VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
+VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
+VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
+VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
+VITE_OWN_CANISTER_ID=$ownCanisterId
+VITE_OWN_CANISTER_URL=$ownCanisterUrl
+VITE_FETCH_ROOT_KEY=$fetchRootKey
+VITE_FEATURE_FLAGS=$featureFlags
+VITE_HOST=$host
+VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
+VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
+VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
+
+echo "$json" >"$JSON_OUT"
+{
+  echo "Config is available as JSON in '${JSON_OUT}'"
+  echo "Frontend config has been defined in '${ENV_FILE}'"
+} >&2
+
+IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
 
-GOVERNANCE_CANISTER_ID="$(get_var GOVERNANCE_CANISTER_ID)"
+SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
+export SNS_AGGREGATOR_URL
+
+CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
+export CKBTC_LEDGER_CANISTER_ID
+CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
+export CKBTC_INDEX_CANISTER_ID
+
+GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
-GOVERNANCE_CANISTER_URL="$(get_var GOVERNANCE_CANISTER_URL)"
+GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
 export GOVERNANCE_CANISTER_URL
 
-LEDGER_CANISTER_ID="$(get_var LEDGER_CANISTER_ID)"
+LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
-LEDGER_CANISTER_URL="$(get_var LEDGER_CANISTER_URL)"
+LEDGER_CANISTER_URL="$ledgerCanisterUrl"
 export LEDGER_CANISTER_URL
 
-OWN_CANISTER_ID="$(get_var OWN_CANISTER_ID)"
+OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID
-OWN_CANISTER_URL="$(get_var OWN_CANISTER_URL)"
+OWN_CANISTER_URL="$ownCanisterUrl"
 export OWN_CANISTER_URL
 
-HOST="$(get_var HOST)"
+HOST="$host"
 export HOST
 
-FETCH_ROOT_KEY="$(get_var FETCH_ROOT_KEY)"
+FETCH_ROOT_KEY="$fetchRootKey"
 export FETCH_ROOT_KEY
 
-REDIRECT_TO_LEGACY="$(get_var REDIRECT_TO_LEGACY)"
-export REDIRECT_TO_LEGACY
-
-WASM_CANISTER_ID="$(get_var WASM_CANISTER_ID)"
+WASM_CANISTER_ID="$wasmCanisterId"
 export WASM_CANISTER_ID
 
 : "Return to the original working directory."

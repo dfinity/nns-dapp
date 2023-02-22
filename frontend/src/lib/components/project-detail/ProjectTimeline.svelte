@@ -3,17 +3,16 @@
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
-  import ProgressBar from "../ui/ProgressBar.svelte";
-  import { i18n } from "../../stores/i18n";
+  } from "$lib/types/project-detail.context";
+  import type { SnsSummary, SnsSummarySwap } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
   import {
     durationTillSwapDeadline,
     durationTillSwapStart,
-    swapDuration,
-  } from "../../utils/projects.utils";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import Value from "../ui/Value.svelte";
+  } from "$lib/utils/projects.utils";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { Value, KeyValuePair } from "@dfinity/gix-components";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -23,40 +22,31 @@
   // type safety validation is done in ProjectStatusSection component
   $: ({ swap } = $projectDetailStore.summary as SnsSummary);
 
-  let durationTillStart: bigint | undefined;
-  $: durationTillStart = durationTillSwapStart(swap);
-  let durationSeconds: bigint | undefined;
-  $: durationSeconds = swapDuration(swap);
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
+
+  let durationTillStart: bigint | undefined;
+  $: durationTillStart = durationTillSwapStart(swap);
 </script>
 
-{#if durationTillDeadline !== undefined && durationSeconds !== undefined && durationTillStart !== undefined}
-  <div>
-    <ProgressBar
-      value={Number(durationTillStart)}
-      max={Number(durationSeconds)}
-      color="blue"
-    >
-      <p slot="top" class="push-apart">
-        <span>
-          {$i18n.sns_project_detail.deadline}
-        </span>
-        <Value>
-          {secondsToDuration(durationTillDeadline)}
-        </Value>
-      </p>
-    </ProgressBar>
-  </div>
+{#if durationTillDeadline && swap.lifecycle === SnsSwapLifecycle.Open}
+  <KeyValuePair>
+    <span slot="key">
+      {$i18n.sns_project_detail.deadline}
+    </span>
+    <Value slot="value">
+      {secondsToDuration(durationTillDeadline)}
+    </Value>
+  </KeyValuePair>
 {/if}
 
-<style lang="scss">
-  p {
-    margin: 0;
-  }
-
-  .push-apart {
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
+{#if durationTillStart && swap.lifecycle === SnsSwapLifecycle.Adopted}
+  <KeyValuePair>
+    <span slot="key">
+      {$i18n.sns_project_detail.starts}
+    </span>
+    <Value slot="value">
+      {secondsToDuration(durationTillStart)}
+    </Value>
+  </KeyValuePair>
+{/if}

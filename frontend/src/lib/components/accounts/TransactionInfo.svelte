@@ -1,39 +1,47 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import Value from "../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import { Value } from "@dfinity/gix-components";
+  import type { TokenAmount } from "@dfinity/nns";
 
-  export let feeOnly: boolean = false;
+  export let feeOnly = false;
   export let source: string;
   export let destination: string;
-  export let hardwareWallet: boolean = false;
+  export let hardwareWallet = false;
+  export let fee: TokenAmount | undefined = undefined;
 </script>
 
 {#if !feeOnly}
-  <h5>
-    {$i18n.accounts.source}{hardwareWallet
-      ? ` – ${$i18n.accounts.hardware_wallet_text}`
-      : ""}
-  </h5>
-  <p class="value">{source}</p>
+  <div>
+    <p class="label">
+      {$i18n.accounts.source}{hardwareWallet
+        ? ` – ${$i18n.accounts.hardware_wallet_text}`
+        : ""}
+    </p>
+    <p class="value">{source}</p>
+  </div>
 
-  <h5>{$i18n.accounts.destination}</h5>
-  <p class="value">{destination}</p>
+  <div>
+    <p class="label">{$i18n.accounts.destination}</p>
+    <p class="value">{destination}</p>
+  </div>
 {/if}
 
-<h5>{$i18n.accounts.transaction_fee}</h5>
+<div>
+  <p class="label">{$i18n.accounts.transaction_fee}</p>
 
-<p class="fee">
-  <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
-  {$i18n.core.icp}
-</p>
+  <p class="fee">
+    <Value
+      >{formattedTransactionFeeICP(
+        fee?.toE8s() ?? $mainTransactionFeeStore
+      )}</Value
+    >
+    {fee?.token.symbol ?? $i18n.core.icp}
+  </p>
+</div>
 
 <style lang="scss">
-  h5 {
-    margin: 0;
-  }
-
   p {
     margin: 0 0 var(--padding-0_5x);
     word-wrap: break-word;

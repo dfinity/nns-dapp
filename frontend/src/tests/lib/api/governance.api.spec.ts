@@ -1,8 +1,6 @@
-import { GovernanceCanister, ICP, LedgerCanister, Topic } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
 import {
   addHotkey,
+  autoStakeMaturity,
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -16,17 +14,30 @@ import {
   setFollowees,
   spawnNeuron,
   splitNeuron,
+  stakeMaturity,
   stakeNeuron,
   startDissolving,
   stopDissolving,
-} from "../../../lib/api/governance.api";
+} from "$lib/api/governance.api";
+import type { HttpAgent } from "@dfinity/agent";
+import { GovernanceCanister, LedgerCanister, Topic } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockNeuron } from "../../mocks/neurons.mock";
 
+jest.mock("$lib/api/agent.api", () => {
+  return {
+    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+  };
+});
+
 describe("neurons-api", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
+    jest.resetAllMocks();
+
     mockGovernanceCanister.listNeurons.mockImplementation(
       jest.fn().mockResolvedValue([])
     );
@@ -42,17 +53,13 @@ describe("neurons-api", () => {
       .mockImplementation(() => mockGovernanceCanister);
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("stakeNeuron creates a new neuron", async () => {
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => mock<LedgerCanister>());
 
     await stakeNeuron({
-      stake: ICP.fromString("2") as ICP,
+      stake: BigInt(20_000_000),
       controller: mockIdentity.getPrincipal(),
       ledgerCanisterIdentity: mockIdentity,
       identity: mockIdentity,
@@ -288,6 +295,110 @@ describe("neurons-api", () => {
     });
   });
 
+  describe("stakeMaturity", () => {
+    it("stake the maturity of a neuron successfully", async () => {
+      mockGovernanceCanister.stakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await stakeMaturity({
+        identity: mockIdentity,
+        percentageToStake: 50,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.stakeMaturity).toBeCalled();
+    });
+
+    it("throws error when stakeMaturity fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.stakeMaturity.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        stakeMaturity({
+          identity: mockIdentity,
+          percentageToStake: 50,
+          neuronId: BigInt(10),
+        });
+
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("autoStakeMaturity", () => {
+    it("auto stake the maturity of a neuron successfully", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        autoStake: true,
+        neuronId: BigInt(10),
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalled();
+    });
+
+    it("throws error when autoStakeMaturity fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        autoStakeMaturity({
+          identity: mockIdentity,
+          autoStake: true,
+          neuronId: BigInt(10),
+        });
+
+      await expect(call).rejects.toThrow(error);
+    });
+
+    it("should enable auto stake the maturity of a neuron", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      const expected = {
+        autoStake: true,
+        neuronId: BigInt(10),
+      };
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        ...expected,
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalledWith(expected);
+    });
+
+    it("should disable auto stake the maturity of a neuron", async () => {
+      mockGovernanceCanister.autoStakeMaturity.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      const expected = {
+        autoStake: false,
+        neuronId: BigInt(10),
+      };
+
+      await autoStakeMaturity({
+        identity: mockIdentity,
+        ...expected,
+      });
+
+      expect(mockGovernanceCanister.autoStakeMaturity).toBeCalledWith(expected);
+    });
+  });
+
   describe("spawnNeuron", () => {
     it("spawn a neuron from a percentage of the maturity successfully", async () => {
       const newNeuronId = BigInt(12333);
@@ -485,6 +596,7 @@ describe("neurons-api", () => {
   });
 
   describe("splitNeuron", () => {
+    const amount = BigInt(220_000_000);
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.splitNeuron.mockImplementation(
         jest.fn().mockResolvedValue(BigInt(11))
@@ -493,7 +605,7 @@ describe("neurons-api", () => {
       await splitNeuron({
         identity: mockIdentity,
         neuronId: BigInt(10),
-        amount: ICP.fromString("2.2") as ICP,
+        amount,
       });
 
       expect(mockGovernanceCanister.splitNeuron).toBeCalled();
@@ -511,7 +623,7 @@ describe("neurons-api", () => {
         splitNeuron({
           identity: mockIdentity,
           neuronId: BigInt(10),
-          amount: ICP.fromString("2.2") as ICP,
+          amount,
         });
       expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
       await expect(call).rejects.toThrow(error);

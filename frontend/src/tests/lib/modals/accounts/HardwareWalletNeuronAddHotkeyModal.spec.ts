@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import * as api from "$lib/api/governance.api";
+import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import * as api from "../../../../lib/api/governance.api";
-import HardwareWalletNeuronAddHotkeyModal from "../../../../lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
-import { getLedgerIdentityProxy } from "../../../../lib/proxy/ledger.services.proxy";
-import { authStore } from "../../../../lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -20,7 +20,7 @@ import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };

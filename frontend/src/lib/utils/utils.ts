@@ -1,23 +1,7 @@
+import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
-
-/* eslint-disable-next-line @typescript-eslint/ban-types */
-export const debounce = (func: Function, timeout?: number) => {
-  let timer: NodeJS.Timer | undefined;
-
-  return (...args: unknown[]) => {
-    const next = () => func(...args);
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(
-      next,
-      timeout !== undefined && timeout > 0 ? timeout : 300
-    );
-  };
-};
 
 export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;
@@ -47,6 +31,11 @@ export const stringifyJson = (
             const asText = value.toString();
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
+          }
+
+          // optimistic hash stringifying
+          if (Array.isArray(value) && isHash(value)) {
+            return bytesToHexString(value);
           }
 
           if (value instanceof Promise) {
@@ -145,16 +134,6 @@ export const hexStringToBytes = (hexString: string): number[] => {
   return bytes;
 };
 
-/** Is null or undefined */
-export const isNullish = <T>(
-  argument: T | undefined | null
-): argument is undefined | null => argument === null || argument === undefined;
-
-/** Not null and not undefined */
-export const nonNullish = <T>(
-  argument: T | undefined | null
-): argument is NonNullable<T> => !isNullish(argument);
-
 export const mapPromises = async <T, R>(
   items: Array<T> | undefined,
   fun: (args: T) => Promise<R>
@@ -231,7 +210,7 @@ export const poll = async <T>({
   counter = 0,
 }: {
   fn: () => Promise<T>;
-  shouldExit: (err: Error) => boolean;
+  shouldExit: (err: unknown) => boolean;
   maxAttempts?: number;
   counter?: number;
 }): Promise<T> => {
@@ -240,7 +219,7 @@ export const poll = async <T>({
   }
   try {
     return await fn();
-  } catch (error) {
+  } catch (error: unknown) {
     if (shouldExit(error)) {
       throw error;
     }
@@ -262,3 +241,82 @@ export const poll = async <T>({
  */
 export const valueSpan = (text: string): string =>
   `<span class="value">${text}</span>`;
+
+/**
+ * Removes entries from an object given a list of keys.
+ *
+ * @param {Object} params
+ * @param {Object} params.obj object to remove entries from
+ * @param {string[]} params.keysToRemove keys to remove
+ * @returns new object with entries removed
+ */
+export const removeKeys = <T extends Record<string, unknown>>({
+  obj,
+  keysToRemove,
+}: {
+  obj: T;
+  keysToRemove: string[];
+}): T =>
+  Object.entries(obj)
+    .filter(([key]) => keysToRemove.indexOf(key) === -1)
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {} as T);
+
+/**
+ * Access an object key with an index as string.
+ * Cast to avoid issue "No index signature with a parameter of type 'string' was found on type '...'"
+ */
+export const keyOf = <T>({
+  obj,
+  key,
+}: {
+  obj: T;
+  key: string | keyof T;
+}): T[keyof T] => obj[key as keyof T];
+export const keyOfOptional = <T>({
+  obj,
+  key,
+}: {
+  obj: T | undefined;
+  key: string | keyof T;
+}): T[keyof T] | undefined => obj?.[key as keyof T];
+
+/**
+ * Returns whether an asset is PNG or not.
+ *
+ * @param {string} asset
+ * @returns boolean
+ */
+export const isPngAsset = (
+  asset: string | undefined | PngDataUrl
+): asset is PngDataUrl =>
+  nonNullish(asset) &&
+  (asset.startsWith("data:image/png;base64,") || asset.endsWith(".png"));
+
+/**
+ * Takes an object and tries to parse inner string as JSON.
+ * If it fails, it returns the original string value.
+ *
+ * For example: {b: '{"c":"d"}'} becomes {b: {c: 'd'}}
+ *
+ * @param obj
+ * @returns parsed object
+ */
+export const expandObject = (
+  obj: Record<string, unknown>
+): Record<string, unknown> =>
+  Object.keys(obj).reduce((acc, key) => {
+    const value = obj[key];
+    if (typeof value === "string") {
+      try {
+        acc[key] = JSON.parse(value);
+      } catch (e) {
+        acc[key] = value;
+      }
+    } else if (typeof value === "object") {
+      acc[key] =
+        value !== null ? expandObject(value as Record<string, unknown>) : value;
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as Record<string, unknown>);

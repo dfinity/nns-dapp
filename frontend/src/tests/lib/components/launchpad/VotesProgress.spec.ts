@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import VotesProgress from "$lib/components/launchpad/VotesProgress.svelte";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { formatNumber } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";
-import VotesProgress from "../../../../lib/components/launchpad/VotesProgress.svelte";
-import { E8S_PER_ICP } from "../../../../lib/constants/icp.constants";
-import { formatNumber } from "../../../../lib/utils/format.utils";
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("VotesProgress", () => {

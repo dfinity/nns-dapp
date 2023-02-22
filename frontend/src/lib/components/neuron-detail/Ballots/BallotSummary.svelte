@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { loadProposal } from "../../../services/proposals.services";
+  import { loadProposal } from "$lib/services/$public/proposals.services";
   import { Vote } from "@dfinity/nns";
-  import { i18n } from "../../../stores/i18n";
-  import ProposalSummary from "../../proposal-detail/ProposalDetailCard/ProposalSummary.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
+  import { keyOf } from "$lib/utils/utils";
 
   export let ballot: Required<BallotInfo>;
 
@@ -25,10 +26,12 @@
 {#if proposal?.proposal !== undefined}
   <p class="value">{proposal.id}</p>
 
-  <p class="vote value">{$i18n.core[Vote[ballot.vote].toLowerCase()]}</p>
+  <p class="vote value">
+    {keyOf({ obj: $i18n.core, key: Vote[ballot.vote].toLowerCase() })}
+  </p>
 
   <div class="summary">
-    <ProposalSummary proposal={proposal.proposal} />
+    <ProposalSummary summary={proposal.proposal.summary} />
   </div>
 {:else}
   <SkeletonText />

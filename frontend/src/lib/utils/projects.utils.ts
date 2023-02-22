@@ -1,38 +1,34 @@
-import type { ICP } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
-import { OWN_CANISTER_ID } from "../constants/canister-ids.constants";
-import type { SnsFullProject } from "../stores/projects.store";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type {
   SnsSummary,
   SnsSummarySwap,
   SnsSwapCommitment,
-} from "../types/sns";
+} from "$lib/types/sns";
+import type { TokenAmount } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
-import { formatICP } from "./icp.utils";
+import { getCommitmentE8s } from "./sns.utils";
+import { formatToken } from "./token.utils";
 
-const filterProjectsStatus = ({
+export const filterProjectsStatus = ({
   swapLifecycle,
   projects,
 }: {
   swapLifecycle: SnsSwapLifecycle;
   projects: SnsFullProject[] | undefined;
-}) =>
+}): SnsFullProject[] | undefined =>
   projects?.filter(
     ({
       summary: {
-        swap: {
-          state: { lifecycle },
-        },
+        swap: { lifecycle },
       },
     }) => swapLifecycle === lifecycle
   );
 
 export const filterCommittedProjects = (
   projects: SnsFullProject[] | undefined
-) =>
+): SnsFullProject[] | undefined =>
   filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Committed,
     projects,
@@ -49,71 +45,35 @@ export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
   projects?.filter(
     ({
       summary: {
-        swap: {
-          state: { lifecycle, open_time_window },
-        },
+        swap: { lifecycle },
       },
     }) =>
-      [SnsSwapLifecycle.Committed, SnsSwapLifecycle.Open].includes(lifecycle) ||
-      (SnsSwapLifecycle.Pending === lifecycle && open_time_window.length)
+      [
+        SnsSwapLifecycle.Committed,
+        SnsSwapLifecycle.Open,
+        SnsSwapLifecycle.Adopted,
+      ].includes(lifecycle)
   );
-
-export const openTimeWindow = ({
-  state: { open_time_window },
-}: SnsSummarySwap): SnsSwapTimeWindow | undefined =>
-  fromNullable(open_time_window);
 
 /**
  * Duration in seconds until the end of the swap if defined.
  * @param swap
  */
-export const durationTillSwapDeadline = (
-  swap: SnsSummarySwap
-): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { end_timestamp_seconds } = timeWindow;
-  return end_timestamp_seconds - BigInt(nowInSeconds());
-};
+export const durationTillSwapDeadline = ({
+  params: { swap_due_timestamp_seconds },
+}: SnsSummarySwap): bigint | undefined =>
+  swap_due_timestamp_seconds - BigInt(nowInSeconds());
 
 /**
- * If defined the duration of the swap in seconds - i.e. the duration from start till end
+ * Duration in seconds until the start of the swap if defined.
  * @param swap
  */
-export const swapDuration = (swap: SnsSummarySwap): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { start_timestamp_seconds, end_timestamp_seconds } = timeWindow;
-  return end_timestamp_seconds - start_timestamp_seconds;
-};
-
-/**
- * If defined the duration until the swap start in seconds
- * @param swap
- */
-export const durationTillSwapStart = (
-  swap: SnsSummarySwap
-): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { start_timestamp_seconds } = timeWindow;
-  return BigInt(nowInSeconds()) - start_timestamp_seconds;
-};
+export const durationTillSwapStart = ({
+  decentralization_sale_open_timestamp_seconds,
+}: SnsSummarySwap): bigint | undefined =>
+  decentralization_sale_open_timestamp_seconds !== undefined
+    ? decentralization_sale_open_timestamp_seconds - BigInt(nowInSeconds())
+    : undefined;
 
 /**
  * Returns the minimum between:
@@ -128,38 +88,38 @@ export const currentUserMaxCommitment = ({
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): bigint => {
   const remainingProjectCommitment =
-    swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+    swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
   const remainingUserCommitment =
-    swap.init.max_participant_icp_e8s -
-    (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
+    swap.params.max_participant_icp_e8s -
+    (getCommitmentE8s(swapCommitment) ?? BigInt(0));
   return remainingProjectCommitment < remainingUserCommitment
     ? remainingProjectCommitment
     : remainingUserCommitment;
 };
 
 export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
-  swap.init.max_icp_e8s - derived.buyer_total_icp_e8s;
+  swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
 
 const isProjectOpen = (summary: SnsSummary): boolean =>
-  summary.swap.state.lifecycle === SnsSwapLifecycle.Open;
-// Checks whether the amount that the user wants to contiribute is lower than the minimum for the project.
+  summary.swap.lifecycle === SnsSwapLifecycle.Open;
+// Checks whether the amount that the user wants to contribute is lower than the minimum for the project.
 // It takes into account the current commitment of the user.
 const commitmentTooSmall = ({
   project: { summary, swapCommitment },
   amount,
 }: {
   project: SnsFullProject;
-  amount: ICP;
+  amount: TokenAmount;
 }): boolean =>
-  summary.swap.init.min_participant_icp_e8s >
-  amount.toE8s() + (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0));
+  summary.swap.params.min_participant_icp_e8s >
+  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
 const commitmentTooLarge = ({
   summary,
   amountE8s,
 }: {
   summary: SnsSummary;
   amountE8s: bigint;
-}): boolean => summary.swap.init.max_participant_icp_e8s < amountE8s;
+}): boolean => summary.swap.params.max_participant_icp_e8s < amountE8s;
 // Checks whether the amount that the user wants to contribute
 // plus the amount that all users have contributed so far
 // exceeds the maximum amount that the project can accept.
@@ -185,8 +145,7 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const myCommitment: bigint =
-    swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
 
   return (
     summary !== undefined &&
@@ -201,15 +160,14 @@ export const hasUserParticipatedToSwap = ({
   swapCommitment,
 }: {
   swapCommitment: SnsSwapCommitment | undefined | null;
-}): boolean =>
-  (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) > BigInt(0);
+}): boolean => (getCommitmentE8s(swapCommitment) ?? BigInt(0)) > BigInt(0);
 
 export const validParticipation = ({
   project,
   amount,
 }: {
   project: SnsFullProject | undefined;
-  amount: ICP;
+  amount: TokenAmount;
 }): {
   valid: boolean;
   labelKey?: string;
@@ -229,15 +187,14 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.not_enough_amount",
       substitutions: {
-        $amount: formatICP({
-          value: project.summary.swap.init.min_participant_icp_e8s,
+        $amount: formatToken({
+          value: project.summary.swap.params.min_participant_icp_e8s,
         }),
       },
     };
   }
   const totalCommitment =
-    (project.swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) +
-    amount.toE8s();
+    (getCommitmentE8s(project.swapCommitment) ?? BigInt(0)) + amount.toE8s();
   if (
     commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
   ) {
@@ -245,9 +202,12 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
-        $maxCommitment: formatICP({
-          value: project.summary.swap.init.max_participant_icp_e8s,
+        $newCommitment: formatToken({ value: amount.toE8s() }),
+        $currentCommitment: formatToken({
+          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        }),
+        $maxCommitment: formatToken({
+          value: project.summary.swap.params.max_participant_icp_e8s,
         }),
       },
     };
@@ -262,10 +222,10 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
-        $commitment: formatICP({ value: totalCommitment }),
-        $remainingCommitment: formatICP({
+        $commitment: formatToken({ value: totalCommitment }),
+        $remainingCommitment: formatToken({
           value:
-            project.summary.swap.init.max_icp_e8s -
+            project.summary.swap.params.max_icp_e8s -
             project.summary.derived.buyer_total_icp_e8s,
         }),
       },
@@ -273,6 +233,3 @@ export const validParticipation = ({
   }
   return { valid: true };
 };
-
-export const isNnsProject = (canisterId: Principal): boolean =>
-  canisterId.toText() === OWN_CANISTER_ID.toText();

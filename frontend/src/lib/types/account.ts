@@ -1,13 +1,17 @@
-import type { ICP } from "@dfinity/nns";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
 
 export type AccountType = "main" | "subAccount" | "hardwareWallet";
 export interface Account {
   identifier: string;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
-  balance: ICP;
+  /**
+   * TODO: integrate ckBTC fee
+   * @deprecated to be replaced with balanceE8s - token to be handled with tokensStore
+   */
+  balance: TokenAmount;
   // Subaccounts and HardwareWallets have name and subAccount
   name?: string;
   subAccount?: SubAccountArray;

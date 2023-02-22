@@ -9,6 +9,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const AddPendingTransactionResponse = IDL.Variant({
     Ok: IDL.Null,
+    NotAuthorized: IDL.Null,
   });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
@@ -57,23 +58,8 @@ export const idlFactory = ({ IDL }) => {
     canister_id: IDL.Principal,
   });
   const BlockHeight = IDL.Nat64;
-  const MultiPartTransactionError = IDL.Record({
-    error_message: IDL.Text,
-    block_height: BlockHeight,
-  });
   const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
-  const MultiPartTransactionStatus = IDL.Variant({
-    Queued: IDL.Null,
-    Error: IDL.Text,
-    Refunded: IDL.Tuple(BlockHeight, IDL.Text),
-    CanisterCreated: CanisterId,
-    Complete: IDL.Null,
-    NotFound: IDL.Null,
-    NeuronCreated: NeuronId,
-    PendingSync: IDL.Null,
-    ErrorWithRefundPending: IDL.Text,
-  });
   const GetProposalPayloadResponse = IDL.Variant({
     Ok: IDL.Text,
     Err: IDL.Text,
@@ -192,16 +178,6 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], []),
-    get_multi_part_transaction_errors: IDL.Func(
-      [],
-      [IDL.Vec(MultiPartTransactionError)],
-      []
-    ),
-    get_multi_part_transaction_status: IDL.Func(
-      [IDL.Principal, BlockHeight],
-      [MultiPartTransactionStatus],
-      []
-    ),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],

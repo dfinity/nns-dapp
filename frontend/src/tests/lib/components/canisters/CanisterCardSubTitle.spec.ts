@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
 import { render } from "@testing-library/svelte";
-import CanisterCardSubTitle from "../../../../lib/components/canisters/CanisterCardSubTitle.svelte";
 import { mockCanister } from "../../../mocks/canisters.mock";
 
 describe("CanisterCardSubTitle", () => {
@@ -37,7 +37,7 @@ describe("CanisterCardSubTitle", () => {
     const button = queryByRole("button");
 
     expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+      `Copy to clipboard: ${mockCanister.canister_id.toText()}`
     );
   });
 });

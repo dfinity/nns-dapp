@@ -1,11 +1,17 @@
-import type { Identity } from "@dfinity/agent";
-import type { AuthClient } from "@dfinity/auth-client";
-import { writable } from "svelte/store";
+import { resetAgents } from "$lib/api/agent.api";
+import {
+  IS_TESTNET,
+  OLD_MAINNET_OWN_CANISTER_URL,
+} from "$lib/constants/environment.constants";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
-} from "../constants/identity.constants";
-import { createAuthClient } from "../utils/auth.utils";
+  OLD_MAINNET_IDENTITY_SERVICE_URL,
+} from "$lib/constants/identity.constants";
+import { createAuthClient } from "$lib/utils/auth.utils";
+import type { Identity } from "@dfinity/agent";
+import type { AuthClient } from "@dfinity/auth-client";
+import { writable } from "svelte/store";
 
 export interface AuthStore {
   identity: Identity | undefined | null;
@@ -13,7 +19,16 @@ export interface AuthStore {
 
 // We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
 // @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
-let authClient: AuthClient | undefined;
+let authClient: AuthClient | undefined | null;
+
+const getIdentityProvider = () => {
+  // If we are in mainnet in the old domain, we use the old identity provider.
+  if (location.host === "nns.ic0.app") {
+    return OLD_MAINNET_IDENTITY_SERVICE_URL;
+  }
+
+  return IDENTITY_SERVICE_URL;
+};
 
 /**
  * A store to handle authentication and the identity of the user.
@@ -43,41 +58,41 @@ const initAuthStore = () => {
 
     sync: async () => {
       authClient = authClient ?? (await createAuthClient());
-      const isAuthenticated: boolean = await authClient.isAuthenticated();
+      const isAuthenticated = await authClient.isAuthenticated();
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,
       });
     },
 
-    signIn: () =>
-      new Promise<void>((resolve, reject) => {
-        // This is unlikely to happen because above `sync` function of the store is the main function that is called before any components of the UI is rendered
-        // @see `Guard.svelte`
-        if (authClient === undefined) {
-          reject();
-          return;
-        }
+    signIn: async (onError: (error?: string) => void) => {
+      authClient = authClient ?? (await createAuthClient());
 
-        authClient?.login({
-          identityProvider: IDENTITY_SERVICE_URL,
-          maxTimeToLive: AUTH_SESSION_DURATION,
-          onSuccess: () => {
-            update((state: AuthStore) => ({
-              ...state,
-              identity: authClient?.getIdentity(),
-            }));
-
-            resolve();
-          },
-          onError: reject,
-        });
-      }),
+      await authClient?.login({
+        identityProvider: getIdentityProvider(),
+        derivationOrigin: IS_TESTNET ? undefined : OLD_MAINNET_OWN_CANISTER_URL,
+        maxTimeToLive: AUTH_SESSION_DURATION,
+        onSuccess: () => {
+          update((state: AuthStore) => ({
+            ...state,
+            identity: authClient?.getIdentity(),
+          }));
+        },
+        onError,
+      });
+    },
 
     signOut: async () => {
       const client: AuthClient = authClient ?? (await createAuthClient());
 
       await client.logout();
+
+      resetAgents();
+
+      // We currently do not have issue because the all screen is reloaded after sign-out.
+      // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
+      // This fix a "sign in -> sign out -> sign in again" flow without window reload.
+      authClient = null;
 
       update((state: AuthStore) => ({
         ...state,

@@ -2,28 +2,35 @@
  * @jest-environment jsdom
  */
 
-import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import ParticipateSwapModal from "../../../../lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
-import { participateInSwap } from "../../../../lib/services/sns.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
+import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
   type ProjectDetailStore,
-} from "../../../../lib/types/project-detail.context";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
+} from "$lib/types/project-detail.context";
+import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import { AccountIdentifier } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+import { snsTicketMock } from "../../../mocks/sns.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/sns.services", () => {
   return {
-    participateInSwap: jest.fn().mockResolvedValue({ success: true }),
+    initiateSnsSaleParticipation: jest
+      .fn()
+      .mockResolvedValue({ success: true }),
     getSwapAccount: jest
       .fn()
       .mockImplementation(() =>
@@ -32,7 +39,29 @@ jest.mock("../../../../lib/services/sns.services", () => {
   };
 });
 
+const ticket: SnsTicket | undefined = snsTicketMock({
+  rootCanisterId: rootCanisterIdMock,
+  owner: rootCanisterIdMock,
+});
+jest.mock("$lib/services/sns-sale.services", () => ({
+  getOpenTicket: jest
+    .fn()
+    .mockImplementation(() =>
+      Promise.resolve({ ...ticket, ticket: undefined })
+    ),
+  initiateSnsSaleParticipation: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(ticket)),
+  participateInSnsSale: jest.fn().mockResolvedValue({ success: true }),
+}));
+
 describe("ParticipateSwapModal", () => {
+  beforeAll(() =>
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
+  );
+
   const reload = jest.fn();
   const renderSwapModal = (
     swapCommitment: SnsSwapCommitment | undefined = undefined
@@ -51,7 +80,7 @@ describe("ParticipateSwapModal", () => {
 
   const renderEnter10ICPAndNext = async (
     swapCommitment: SnsSwapCommitment | undefined = undefined
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderSwapModal(swapCommitment);
 
     const { queryByText, getByTestId, container } = result;
@@ -105,7 +134,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
@@ -127,7 +156,7 @@ describe("ParticipateSwapModal", () => {
 
       fireEvent.click(confirmButton);
 
-      await waitFor(() => expect(participateInSwap).toBeCalled());
+      await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
       await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });

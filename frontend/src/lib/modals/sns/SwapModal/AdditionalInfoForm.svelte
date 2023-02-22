@@ -1,42 +1,33 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
-  import Icp from "../../../components/ic/ICP.svelte";
-  import IcpText from "../../../components/ic/ICPText.svelte";
-  import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsIcp } from "../../../stores/transaction-fees.store";
+  import type { TokenAmount } from "@dfinity/nns";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import IcpText from "$lib/components/ic/ICPText.svelte";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let userHasParticipated: boolean;
-  export let minCommitment: ICP;
-  export let maxCommitment: ICP;
+  export let minCommitment: TokenAmount;
+  export let maxCommitment: TokenAmount;
 </script>
 
 {#if userHasParticipated}
   <p class="right">
     {$i18n.sns_project_detail.max_left}
-    <Icp singleLine icp={maxCommitment} />
+    <AmountDisplay singleLine amount={maxCommitment} />
   </p>
 {:else}
   <KeyValuePair>
-    <IcpText slot="key" icp={minCommitment}>
-      {$i18n.core.min}
+    <IcpText slot="key" amount={minCommitment}>
+      <span class="description">{$i18n.core.min}</span>
     </IcpText>
-    <IcpText slot="value" icp={maxCommitment}>
-      {$i18n.core.max}
+    <IcpText slot="value" amount={maxCommitment}>
+      <span class="description">{$i18n.core.max}</span>
     </IcpText>
   </KeyValuePair>
 {/if}
-<p class="right">
-  <span>{$i18n.accounts.transaction_fee}</span>
-  <Icp singleLine icp={$mainTransactionFeeStoreAsIcp} />
-</p>
 
 <style lang="scss">
   p {
     margin: 0;
-  }
-
-  .right {
-    text-align: right;
   }
 </style>

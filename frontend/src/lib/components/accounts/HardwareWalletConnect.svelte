@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { LedgerConnectionState } from "../../constants/ledger.constants";
+  import { i18n } from "$lib/stores/i18n";
+  import { LedgerConnectionState } from "$lib/constants/ledger.constants";
   import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { registerHardwareWalletProxy } from "../../proxy/ledger.services.proxy";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { registerHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
+  } from "$lib/types/add-account.context";
   import { createEventDispatcher, getContext } from "svelte";
-  import type { LedgerIdentity } from "../../identities/ledger.identity";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -28,7 +28,7 @@
 
   const onSubmit = async () => {
     if (disabled) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error__attach_wallet.connect",
       });
       return;
@@ -50,32 +50,24 @@
   $: disabled = connectionState !== LedgerConnectionState.CONNECTED || $busy;
 </script>
 
-<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+<form on:submit|preventDefault={onSubmit}>
   <div>
     <HardwareWalletConnectAction bind:connectionState bind:ledgerIdentity />
   </div>
 
   {#if !disabled}
-    <FooterModal>
-      <button class="secondary small" type="button" on:click={back}>
+    <div class="toolbar">
+      <button class="secondary" type="button" on:click={back}>
         {$i18n.accounts.edit_name}
       </button>
       <button
-        class="primary small"
+        class="primary"
         type="submit"
         {disabled}
         data-tid="ledger-attach-button"
       >
         {$i18n.accounts.attach_wallet}
       </button>
-    </FooterModal>
+    </div>
   {/if}
 </form>
-
-<style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
-  }
-</style>

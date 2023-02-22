@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
-  import { canUserParticipateToSwap } from "../../utils/projects.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import { canUserParticipateToSwap } from "$lib/utils/projects.utils";
 
   export let summary: SnsSummary | undefined | null;
   export let swapCommitment: SnsSwapCommitment | undefined | null;

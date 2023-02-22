@@ -1,30 +1,33 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import IconSouth from "../../../icons/IconSouth.svelte";
-  import FooterModal from "../../FooterModal.svelte";
-  import { busy } from "../../../stores/busy.store";
-  import { i18n } from "../../../stores/i18n";
-  import { mainTransactionFeeStoreAsIcp } from "../../../stores/transaction-fees.store";
-  import type { Account } from "../../../types/account";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
-  import { valueSpan } from "../../../utils/utils";
-  import Icp from "../../../components/ic/ICP.svelte";
-  import KeyValuePair from "../../../components/ui/KeyValuePair.svelte";
-  import { sanitize } from "../../../utils/html.utils";
-  import type { NewTransaction } from "../../../types/transaction.context";
+  import { IconSouth, busy } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import type { NewTransaction } from "$lib/types/transaction";
+  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
+  export let transactionFee: TokenAmount;
+  export let token: Token;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   let sourceAccount: Account;
   let amount: number;
   let destinationAddress: string;
   $: ({ sourceAccount, amount, destinationAddress } = transaction);
 
-  let icpAmount: ICP;
-  $: icpAmount = convertNumberToICP(amount);
+  // If we made it this far, the number is valid.
+  let tokenAmount: TokenAmount;
+  $: tokenAmount = TokenAmount.fromNumber({
+    amount,
+    token,
+  });
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -38,59 +41,65 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <KeyValuePair>
-      <span slot="key">{$i18n.accounts.source}</span>
-      <Icp slot="value" singleLine icp={sourceAccount.balance} />
-    </KeyValuePair>
-    <div>
-      <p data-tid="transaction-review-source-account">
-        {@html replacePlaceholders($i18n.accounts.main_account, {
-          $identifier: valueSpan(sanitize(destinationAddress)),
-        })}
-      </p>
-    </div>
+    <TransactionSource account={sourceAccount} />
+
     <div class="highlight">
       <span class="icon">
         <IconSouth />
       </span>
       <div class="align-right">
-        <Icp icp={icpAmount} inline />
+        <AmountDisplay amount={tokenAmount} inline />
         <span>
-          <Icp icp={$mainTransactionFeeStoreAsIcp} singleLine />
+          <AmountDisplay amount={transactionFee} singleLine />
           {$i18n.accounts.new_transaction_fee}
         </span>
       </div>
     </div>
+
     <div>
-      <h5>{$i18n.accounts.destination}</h5>
-      <slot name="destination-info" />
-      <p class="value">{destinationAddress}</p>
+      <p class="label">{$i18n.accounts.destination}</p>
+      <p class="account-identifier value">
+        <slot name="destination-info" />
+        {destinationAddress}
+      </p>
     </div>
+
+    {#if nonNullish(selectedNetwork)}
+      <div>
+        <p class="label">{$i18n.accounts.network}</p>
+        <p class="value">
+          {$i18n.accounts[selectedNetwork]}
+        </p>
+      </div>
+    {/if}
+
     <div>
-      <h5>{$i18n.accounts.description}</h5>
+      <p class="label">{$i18n.accounts.description}</p>
       <slot name="description" />
     </div>
-  </div>
-  <div class="actions">
+
     <slot name="additional-info" />
-    <FooterModal>
+  </div>
+
+  <div class="toolbar">
+    <button class="secondary" data-tid="transaction-button-back" on:click={back}
+      >{$i18n.accounts.edit_transaction}</button
+    >
+    <SignInGuard>
       <button
-        class="small secondary"
-        data-tid="transaction-button-back"
-        on:click={back}>{$i18n.accounts.edit_transaction}</button
-      >
-      <button
-        class="small primary"
+        class="primary"
         data-tid="transaction-button-execute"
         disabled={$busy || disableSubmit}
-        on:click={submit}>{$i18n.accounts.execute}</button
+        on:click={submit}>{$i18n.accounts.send_now}</button
       >
-    </FooterModal>
+    </SignInGuard>
   </div>
 </div>
 
 <style lang="scss">
-  @use "../../../themes/mixins/modal";
+  .account-identifier {
+    word-break: break-all;
+  }
 
   .highlight {
     padding: var(--padding-2x);
@@ -118,15 +127,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-  }
-
-  .actions {
-    margin-top: var(--padding-4x);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    --select-padding: var(--padding-2x) 0;
   }
 </style>

@@ -1,173 +1,125 @@
 name: CI Checks
-
 on:
   push:
-    branches:
-      - main
-  pull_request:
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-
   formatting:
     runs-on: ubuntu-20.04
     env:
       DFX_NETWORK: mainnet
-
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+      - name: Install rust formatter
+        run: rustup component add rustfmt
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
+      - name: Install yq
+        run: sudo snap install yq
+      - name: Format
+        run: ./scripts/fmt
+      - name: Check formatted
         run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
-
-      - name: Format dfx.json
-        run: cat <<<$(jq . dfx.json) > dfx.json
-
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v7.2.0
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
-
-  clippy:
-    needs: formatting
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Noop
-        run: echo clippy is run by the formatting step
-
-
+          test -z "$(git status --porcelain)" || {
+                  echo "FIX: Please run ./scripts/fmt"
+                  git diff
+                  exit 1
+          }
   cargo-tests:
     needs: formatting
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: [ '1.58.1' ]
-        os: [ ubuntu-20.04 ]
-
+        rust: ["1.64.0"]
+        os: [ubuntu-20.04]
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
-
       - name: Install Rust
         run: |
           rustup update ${{ matrix.rust }} --no-self-update
           rustup default ${{ matrix.rust }}
           rustup target add wasm32-unknown-unknown
           rustup component add clippy
-
-      - name: Create fake assets
-        run : |
-          touch assets.tar.xz
-
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features -- -D warnings
-
+      - name: Lint rust code
+        run: ./scripts/lint-rs
       - name: Run Tests
         shell: bash
         run: |
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
-
   svelte-tests:
     needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-      REDIRECT_TO_LEGACY: svelte
-
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
+      - name: Provide a config
+        run: ./config.sh
       - name: Install dependencies
         run: npm ci
-
+        working-directory: ./frontend
       - name: Compile typescript
         run: npm run build
-
+        working-directory: ./frontend
       # Temporarily disabled:
       #- name: Run linter
       #  run: npm run check
-
       - name: Test
         run: npm run test
-
+        working-directory: ./frontend
   svelte-lint:
     needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
+      - name: Provide a config
+        run: ./config.sh
       - name: Install dependencies
         run: npm ci
-
+        working-directory: ./frontend
       - name: Compile typescript
         run: npm run build
-
+        working-directory: ./frontend
       - name: Run linter
         run: npm run check
-
+        working-directory: ./frontend
   e2e-lint:
     needs: formatting
     runs-on: ubuntu-20.04
@@ -176,41 +128,61 @@ jobs:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          # Note: The node version SHOULD match the dockerfile
+          node-version: 16
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./e2e-tests
-
       - name: Run e2e linter
         run: npm run lint
         working-directory: ./e2e-tests
-
-
-
   shell-checks:
     needs: formatting
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      env:
-        SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
-
-  checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+  ic-commit-consistency:
+    needs: formatting
+    name: IC Commit
     runs-on: ubuntu-20.04
     steps:
-       - name: Checks workflow passes
-         run: echo OK
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Run the ic_commit code generator
+        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+      - name: Verify that there are no code changes
+        run: |
+          if git diff | grep . ; then
+                  echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  exit 1
+          fi
+  checks-pass:
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

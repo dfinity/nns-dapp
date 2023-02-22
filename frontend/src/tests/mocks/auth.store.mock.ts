@@ -1,7 +1,7 @@
+import type { AuthStore } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
-import type { AuthStore } from "../../lib/stores/auth.store";
 import en from "./i18n.mock";
 
 export const mockPrincipalText =
@@ -12,6 +12,13 @@ export const mockPrincipal = Principal.fromText(mockPrincipalText);
 export const mockIdentity = {
   getPrincipal: () => mockPrincipal,
 } as unknown as Identity;
+
+export const createMockIdentity = (p: number) => {
+  const principal = Principal.fromHex(p.toString(16));
+  return {
+    getPrincipal: () => principal,
+  } as Identity;
+};
 
 export const mockIdentityErrorMsg = en.error.missing_identity;
 
@@ -35,6 +42,14 @@ export const mockAuthStoreSubscribe = (
   run: Subscriber<AuthStore>
 ): (() => void) => {
   run({ identity: mockIdentity });
+
+  return () => undefined;
+};
+
+export const mockAuthStoreNoIdentitySubscribe = (
+  run: Subscriber<AuthStore>
+): (() => void) => {
+  run({ identity: undefined });
 
   return () => undefined;
 };

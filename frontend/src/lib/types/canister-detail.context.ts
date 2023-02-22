@@ -1,7 +1,7 @@
+import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Principal } from "@dfinity/principal";
 import type { Writable } from "svelte/store";
-import type { CanisterDetails } from "../canisters/ic-management/ic-management.canister.types";
-import type { CanisterDetails as CanisterInfo } from "../canisters/nns-dapp/nns-dapp.types";
 
 /**
  * A store that contains canister info and detail.

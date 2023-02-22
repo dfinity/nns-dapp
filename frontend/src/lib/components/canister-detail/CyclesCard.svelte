@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { formatCyclesToTCycles } from "../../utils/canisters.utils";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
 
   export let cycles: bigint;
 </script>
@@ -22,7 +22,7 @@
   }
 
   .cycles {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: var(--font-size-h3);
   }
 </style>

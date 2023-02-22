@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
+import { formatToken } from "$lib/utils/token.utils";
 import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render } from "@testing-library/svelte";
-import HardwareWalletNeurons from "../../../../lib/components/accounts/HardwareWalletNeurons.svelte";
-import { formatICP } from "../../../../lib/utils/icp.utils";
 import { mockNeuronStake } from "../../../mocks/hardware-wallet-neurons.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
@@ -43,14 +43,14 @@ describe("HardwareWalletNeurons", () => {
 
     expect(
       getByText(
-        formatICP({
+        formatToken({
           value: (mockNeuron.fullNeuron as Neuron).cachedNeuronStake,
         })
       )
     ).toBeInTheDocument();
     expect(
       getByText(
-        formatICP({
+        formatToken({
           value: (mockNeuronStake.fullNeuron as Neuron).cachedNeuronStake,
         })
       )

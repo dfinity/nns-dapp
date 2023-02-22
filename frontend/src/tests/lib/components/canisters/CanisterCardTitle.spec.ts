@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
 import { render } from "@testing-library/svelte";
-import CanisterCardTitle from "../../../../lib/components/canisters/CanisterCardTitle.svelte";
 import { mockCanister } from "../../../mocks/canisters.mock";
 
 describe("CanisterCardTitle", () => {
@@ -39,13 +39,13 @@ describe("CanisterCardTitle", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("renders title as h3 per default", async () => {
+  it("renders title as h4 per default", async () => {
     const { container } = render(CanisterCardTitle, {
       props: {
         canister: mockCanister,
       },
     });
-    expect(container.querySelector("h3")).not.toBeNull();
+    expect(container.querySelector("h4")).not.toBeNull();
   });
 
   it("renders title as h1", async () => {

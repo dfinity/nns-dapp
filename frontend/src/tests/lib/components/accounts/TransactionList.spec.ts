@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
+import TransactionList from "$lib/components/accounts/TransactionList.svelte";
+import {
+  WALLET_CONTEXT_KEY,
+  type WalletContext,
+  type WalletStore,
+} from "$lib/types/wallet.context";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
-import TransactionList from "../../../../lib/components/accounts/TransactionList.svelte";
-import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { mockReceivedFromMainAccountTransaction } from "../../../mocks/transaction.mock";
@@ -19,13 +19,14 @@ describe("TransactionList", () => {
   const renderTransactionList = (account, transactions) =>
     render(ContextWrapperTest, {
       props: {
-        contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+        contextKey: WALLET_CONTEXT_KEY,
         contextValue: {
-          store: writable<SelectedAccountStore>({
+          store: writable<WalletStore>({
             account,
-            transactions,
+            neurons: [],
           }),
-        } as SelectedAccountContext,
+        } as WalletContext,
+        props: { transactions },
         Component: TransactionList,
       },
     });

@@ -1,13 +1,22 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import VotesCard from "./VotesCard.svelte";
+  import VotesResults from "./VotesResults.svelte";
   import VotingCard from "./VotingCard/VotingCard.svelte";
-  import IneligibleNeuronsCard from "./IneligibleNeuronsCard.svelte";
+  import { ProposalRewardStatus } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
+
+  let rewardStatus: ProposalRewardStatus;
+  $: ({ rewardStatus } = proposalInfo);
+
+  let settled: boolean;
+  $: settled = rewardStatus === ProposalRewardStatus.Settled;
 </script>
 
-<VotesCard {proposalInfo} />
-<VotingCard {proposalInfo} />
-<IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />
+<div class="content-cell-island">
+  <VotesResults {proposalInfo} />
+
+  {#if !settled}
+    <VotingCard {proposalInfo} />
+  {/if}
+</div>

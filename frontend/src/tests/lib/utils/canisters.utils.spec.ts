@@ -1,12 +1,15 @@
-import { Principal } from "@dfinity/principal";
+import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import {
+  canisterStatusToText,
   formatCyclesToTCycles,
   getCanisterFromStore,
   isController,
   isUserController,
-} from "../../../lib/utils/canisters.utils";
+} from "$lib/utils/canisters.utils";
+import { Principal } from "@dfinity/principal";
 import { mockIdentity } from "../../mocks/auth.store.mock";
 import { mockCanisterDetails, mockCanisters } from "../../mocks/canisters.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("canister-utils", () => {
   describe("getCanisterFromStore", () => {
@@ -152,5 +155,20 @@ describe("canister-utils", () => {
         })
       ).toBe(false);
     });
+  });
+
+  describe("canisterStatusToText", () => {
+    it("should map stopped", () =>
+      expect(canisterStatusToText(CanisterStatus.Stopped)).toEqual(
+        en.canister_detail.status_stopped
+      ));
+    it("should map stopping", () =>
+      expect(canisterStatusToText(CanisterStatus.Stopping)).toEqual(
+        en.canister_detail.status_stopping
+      ));
+    it("should map running", () =>
+      expect(canisterStatusToText(CanisterStatus.Running)).toEqual(
+        en.canister_detail.status_running
+      ));
   });
 });

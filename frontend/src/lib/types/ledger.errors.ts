@@ -1,4 +1,4 @@
-import type { I18nSubstitutions } from "../utils/i18n.utils";
+import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 
 export class LedgerErrorKey extends Error {
   // Optional substitutions values that can be used to fill the error message

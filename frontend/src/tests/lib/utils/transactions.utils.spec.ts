@@ -1,16 +1,16 @@
-import { ICP } from "@dfinity/nns";
-import type { Transaction } from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { enumKeys } from "../../../lib/utils/enum.utils";
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { AccountTransactionType } from "$lib/types/transaction";
+import { enumKeys } from "$lib/utils/enum.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
-  accountName,
-  AccountTransactionType,
+  mapNnsTransaction,
   mapToSelfTransaction,
-  mapTransaction,
   showTransactionFee,
   transactionDisplayAmount,
   transactionName,
   transactionType,
-} from "../../../lib/utils/transactions.utils";
+} from "$lib/utils/transactions.utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -149,6 +149,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionType({
           ...mockSentToSubAccountTransaction,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore-line: test
           transaction_type: [{ Unknown: null }],
         })
@@ -193,10 +194,10 @@ describe("transactions-utils", () => {
     });
   });
 
-  describe("mapTransaction", () => {
+  describe("mapNnsTransaction", () => {
     it("should map Send transaction", () => {
       const { type, isReceive, isSend, from, to, displayAmount, date } =
-        mapTransaction({
+        mapNnsTransaction({
           transaction: mockSentToSubAccountTransaction,
           account: mockMainAccount,
         });
@@ -215,8 +216,8 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: true,
-          amount: ICP.fromE8s(amount),
-          fee: ICP.fromE8s(fee),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(+date).toBe(
@@ -229,7 +230,7 @@ describe("transactions-utils", () => {
 
     it("should map Receive transaction", () => {
       const { type, isReceive, isSend, from, to, displayAmount, date } =
-        mapTransaction({
+        mapNnsTransaction({
           transaction: mockReceivedFromMainAccountTransaction,
           account: mockSubAccount,
         });
@@ -250,8 +251,8 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: ICP.fromE8s(amount),
-          fee: ICP.fromE8s(fee),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(+date).toBe(
@@ -263,7 +264,7 @@ describe("transactions-utils", () => {
     });
 
     it("should support toSelfTransaction", () => {
-      const { isReceive, isSend, displayAmount } = mapTransaction({
+      const { isReceive, isSend, displayAmount } = mapNnsTransaction({
         transaction: mockSentToSubAccountTransaction,
         account: mockSubAccount,
         toSelfTransaction: true,
@@ -278,41 +279,12 @@ describe("transactions-utils", () => {
       expect(displayAmount.toE8s()).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: ICP.fromE8s(amount),
-          fee: ICP.fromE8s(fee),
+          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
       expect(isSend).toBeFalsy();
       expect(isReceive).toBeTruthy();
-    });
-  });
-
-  describe("accountName", () => {
-    it("returns subAccount name", () => {
-      expect(
-        accountName({
-          account: mockSubAccount,
-          mainName: "main",
-        })
-      ).toBe(mockSubAccount.name);
-    });
-
-    it("returns main account name", () => {
-      expect(
-        accountName({
-          account: mockMainAccount,
-          mainName: "main",
-        })
-      ).toBe("main");
-    });
-
-    it('returns "" if no account', () => {
-      expect(
-        accountName({
-          account: undefined,
-          mainName: "main",
-        })
-      ).toBe("");
     });
   });
 
@@ -321,8 +293,8 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: true,
-          amount: ICP.fromE8s(BigInt(222)),
-          fee: ICP.fromE8s(BigInt(333)),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
         }).toE8s()
       ).toBe(BigInt(222 + 333));
     });
@@ -331,8 +303,8 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: false,
-          amount: ICP.fromE8s(BigInt(222)),
-          fee: ICP.fromE8s(BigInt(333)),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
+          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
         }).toE8s()
       ).toBe(BigInt(222));
     });
@@ -341,7 +313,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionDisplayAmount({
           useFee: true,
-          amount: ICP.fromE8s(BigInt(222)),
+          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
           fee: undefined,
         })
       ).toThrow();
@@ -356,8 +328,14 @@ describe("transactions-utils", () => {
             type: key as AccountTransactionType,
             isReceive: false,
             labels: en.transaction_names,
+            tokenSymbol: ICPToken.symbol,
           })
-        ).toBe(en.transaction_names[key as AccountTransactionType]);
+        ).toBe(
+          replacePlaceholders(
+            en.transaction_names[key as AccountTransactionType],
+            { $tokenSymbol: ICPToken.symbol }
+          )
+        );
       }
     });
 
@@ -367,8 +345,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
           labels: en.transaction_names,
+          tokenSymbol: ICPToken.symbol,
         })
-      ).toBe(en.transaction_names.receive);
+      ).toBe(
+        replacePlaceholders(en.transaction_names.receive, {
+          $tokenSymbol: ICPToken.symbol,
+        })
+      );
     });
 
     it("returns raw type if not label", () => {
@@ -377,6 +360,7 @@ describe("transactions-utils", () => {
           type: "test" as AccountTransactionType,
           isReceive: true,
           labels: en.transaction_names,
+          tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
     });

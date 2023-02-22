@@ -1,28 +1,19 @@
 <script lang="ts">
-  import type { NeuronInfo } from "@dfinity/nns";
-  import { makeDummyProposals } from "../../services/neurons.services";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import { Spinner } from "@dfinity/gix-components";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
-  export let neuron: NeuronInfo;
-
-  let loading: boolean = false;
-
-  const makeProposals = async () => {
-    loading = true;
-    await makeDummyProposals(neuron.neuronId);
-    loading = false;
-  };
+  export let loading = false;
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <CardInfo>
-  <h3 slot="start">Proposals</h3>
+  <h3 slot="start">Proposals TESTNET ONLY</h3>
 
   <div>
     <button
-      on:click={makeProposals}
-      class={`primary small ${loading ? "icon-only" : ""}`}
+      on:click
+      class={`primary ${loading ? "icon-only" : ""}`}
       disabled={loading}
     >
       {#if loading}
@@ -34,7 +25,13 @@
   </div>
 </CardInfo>
 
+<Separator />
+
 <style lang="scss">
+  h3 {
+    line-height: var(--line-height-standard);
+  }
+
   div {
     display: flex;
     justify-content: flex-start;

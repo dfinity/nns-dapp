@@ -1,2 +1,5 @@
 /test.js
 /screenshots
+.env
+.env.*
+!.env.example

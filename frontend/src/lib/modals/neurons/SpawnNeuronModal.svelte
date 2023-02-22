@@ -1,48 +1,61 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
-  import { stopBusy } from "../../stores/busy.store";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import {
+    WizardModal,
+    Html,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
+  import { spawnNeuron } from "$lib/services/neurons.services";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import {
+    formattedMaturity,
+    isEnoughMaturityToSpawn,
+    isNeuronControlledByHardwareWallet,
+  } from "$lib/utils/neuron.utils";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   export let neuron: NeuronInfo;
-  export let controlledByHardwareWallet: boolean;
 
-  const hardwareWalletSteps: Steps = [
+  let controlledByHardwareWallet: boolean;
+  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $accountsStore,
+  });
+
+  const hardwareWalletSteps: WizardSteps = [
     {
       name: "ConfirmSpawn",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const nnsDappAccountSteps: Steps = [
+  const nnsDappAccountSteps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
-      title: $i18n.neuron_detail.spawn_maturity_modal_title,
+      title: $i18n.neuron_detail.spawn_neuron_modal_title,
     },
     {
       name: "ConfirmSpawn",
-      showBackButton: true,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: Steps = controlledByHardwareWallet
+
+  let steps: WizardSteps;
+  $: steps = controlledByHardwareWallet
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
 
-  let percentageToSpawn: number = 0;
+  let percentageToSpawn = 0;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
@@ -52,6 +65,7 @@
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
+
   const spawnNeuronFromMaturity = async () => {
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
 
@@ -62,15 +76,16 @@
         : percentageToSpawn,
     });
     if (newNeuronId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
-        labelKey: "neuron_detail.spawn_maturity_success",
+        labelKey: "neuron_detail.spawn_neuron_success",
         substitutions: {
           $neuronId: String(newNeuronId),
         },
       });
       close();
-      routeStore.navigate({ path: AppPath.Neurons });
+
+      await goto(AppPath.Neurons);
     }
 
     stopBusy("spawn-neuron");
@@ -79,29 +94,36 @@
 
 <WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
-    >{currentStep?.title ??
-      $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
+    >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
   {#if currentStep.name === "SelectPercentage"}
-    <SelectPercentage
-      {neuron}
+    <NeuronSelectPercentage
+      formattedMaturity={formattedMaturity(neuron)}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
-      on:nnsBack={close}
+      on:nnsCancel={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
-      <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
-      <div slot="description" class="description">
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
+      <svelte:fragment slot="text"
+        >{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment
+      >
+      <svelte:fragment slot="description">
+        <p class="description">
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
         </p>
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
+        <p class="description">
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
         </p>
-      </div>
-    </SelectPercentage>
+      </svelte:fragment>
+    </NeuronSelectPercentage>
   {:else if currentStep.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
 </WizardModal>
+
+<style lang="scss">
+  .description:first-of-type {
+    margin-top: var(--padding-2x);
+  }
+</style>

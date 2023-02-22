@@ -2,16 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
-import WalletSummary from "../../../../lib/components/accounts/WalletSummary.svelte";
+import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
+import { dispatchIntersecting } from "$lib/directives/intersection.directives";
+import { layoutTitleStore } from "$lib/stores/layout.store";
 import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountContext,
-  type SelectedAccountStore,
-} from "../../../../lib/types/selected-account.context";
-import { replacePlaceholders } from "../../../../lib/utils/i18n.utils";
-import { formatICP } from "../../../../lib/utils/icp.utils";
+  WALLET_CONTEXT_KEY,
+  type WalletContext,
+  type WalletStore,
+} from "$lib/types/wallet.context";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatToken } from "$lib/utils/token.utils";
+import { render, waitFor } from "@testing-library/svelte";
+import { get, writable } from "svelte/store";
 import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import en from "../../../mocks/i18n.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
@@ -20,13 +22,13 @@ describe("WalletSummary", () => {
   const renderWalletSummary = () =>
     render(ContextWrapperTest, {
       props: {
-        contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+        contextKey: WALLET_CONTEXT_KEY,
         contextValue: {
-          store: writable<SelectedAccountStore>({
+          store: writable<WalletStore>({
             account: mockMainAccount,
-            transactions: undefined,
+            neurons: [],
           }),
-        } as SelectedAccountContext,
+        } as WalletContext,
         Component: WalletSummary,
       },
     });
@@ -48,10 +50,10 @@ describe("WalletSummary", () => {
   it("should render a balance in ICP", () => {
     const { getByText, queryByTestId } = renderWalletSummary();
 
-    const icp: HTMLSpanElement | null = queryByTestId("icp-value");
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatICP({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });
@@ -71,11 +73,39 @@ describe("WalletSummary", () => {
 
     expect(icp?.textContent).toEqual(
       replacePlaceholders(en.accounts.current_balance_detail, {
-        $amount: `${formatICP({
+        $amount: `${formatToken({
           value: mockMainAccount.balance.toE8s(),
           detailed: true,
         })}`,
+        $token: en.core.icp,
       })
     );
   });
+
+  const testTitle = async ({
+    intersecting,
+    text,
+  }: {
+    intersecting: boolean;
+    text: string;
+  }) => {
+    const { getByTestId } = renderWalletSummary();
+
+    const element = getByTestId("wallet-summary") as HTMLElement;
+    dispatchIntersecting({ element, intersecting });
+
+    const title = get(layoutTitleStore);
+    await waitFor(() => expect(title).toEqual(text));
+  };
+
+  it("should render account name and balance if title not intersecting viewport", async () =>
+    await testTitle({
+      intersecting: false,
+      text: `${en.accounts.main} – ${formatToken({
+        value: mockMainAccount.balance.toE8s(),
+      })} ${mockMainAccount.balance.token.symbol}`,
+    }));
+
+  it("should render a static title if title is intersecting viewport", async () =>
+    await testTitle({ intersecting: true, text: en.wallet.title }));
 });

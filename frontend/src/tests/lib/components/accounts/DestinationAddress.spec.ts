@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { render } from "@testing-library/svelte";
-import DestinationAddress from "../../../../lib/components/accounts/DestinationAddress.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -14,7 +14,7 @@ import {
 describe("DestinationAddress", () => {
   const mockSubAccount2 = {
     ...mockSubAccount,
-    identifier: `test-identifier`,
+    identifier: `test-subaccount2-identifier`,
   };
 
   jest

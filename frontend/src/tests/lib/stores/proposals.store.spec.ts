@@ -1,12 +1,12 @@
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { get } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
   votingNeuronSelectStore,
-} from "../../../lib/stores/proposals.store";
+} from "$lib/stores/proposals.store";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { get } from "svelte/store";
 import { mockNeuron } from "../../mocks/neurons.mock";
 import { generateMockProposals } from "../../mocks/proposal.mock";
 
@@ -172,6 +172,20 @@ describe("proposals-store", () => {
         lastAppliedFilter: "excludeVotedProposals",
         excludeVotedProposals: false,
       });
+    });
+
+    it("should reload filters", () => {
+      const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
+      proposalsFiltersStore.filterTopics(filter);
+
+      proposalsFiltersStore.reload();
+
+      const filters = get(proposalsFiltersStore);
+      expect(filters).toEqual({
+        ...DEFAULT_PROPOSALS_FILTERS,
+        topics: filter,
+      });
+      expect(filters.lastAppliedFilter).toBeUndefined();
     });
   });
 

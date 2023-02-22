@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Propose to populate the SNS-WASM canister with a subnet it can deploy to.
+# This requires testnet NNS Governance to be setup with the test-neuron-proposer.
+# This ic-admin command targets the fixed canister id of the SNS-WASM canister (qaa6y-5yaaa-aaaaa-aaafa-cai).
+
+SNS_SUBNET="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '.[0]')"
+set ic-admin --nns-url "$NNS_URL" propose-to-update-sns-subnet-ids-in-sns-wasm --test-neuron-proposer --sns-subnet-ids-to-add "$SNS_SUBNET"

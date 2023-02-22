@@ -1,16 +1,16 @@
+import {
+  ExtendedLedgerError,
+  LEDGER_SIGNATURE_LENGTH,
+  type AllLedgerError,
+} from "$lib/constants/ledger.constants";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { i18n } from "$lib/stores/i18n";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import type { Signature } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
-import {
-  ExtendedLedgerError,
-  LEDGER_SIGNATURE_LENGTH,
-  type AllLedgerError,
-} from "../constants/ledger.constants";
-import { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
 import { replacePlaceholders } from "./i18n.utils";
 
 export const decodePublicKey = ({

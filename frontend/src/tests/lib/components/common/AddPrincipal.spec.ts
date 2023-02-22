@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import AddPrincipal from "../../../../lib/components/common/AddPrincipal.svelte";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 
 describe("PrincipalInput", () => {

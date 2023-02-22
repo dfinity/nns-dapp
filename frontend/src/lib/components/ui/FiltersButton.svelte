@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import IconFilter from "../../icons/IconFilter.svelte";
+  import { IconFilter } from "@dfinity/gix-components";
 
   /**
    * How many filters are available and how many are currently active?
@@ -12,7 +12,7 @@
   const filter = () => dispatch("nnsFilter");
 </script>
 
-<button data-tid={testId} on:click={filter} class="primary small"
+<button data-tid={testId} on:click={filter} class="secondary"
   ><IconFilter /><slot />
   <small>{`(${activeFilters}/${totalFilters})`}</small></button
 >

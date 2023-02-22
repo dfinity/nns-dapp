@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
 import { render } from "@testing-library/svelte";
-import FiltersButton from "../../../../lib/components/ui/FiltersButton.svelte";
 
 describe("FiltersButton", () => {
   it("should render a button", () => {

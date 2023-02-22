@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Icon/Arrow/Down_grey</title>
-    <g id="Icon/Arrow/Down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
-        <path d="M2.32475812,6.32025801 C1.89174729,6.74626866 1.89174729,7.43628591 2.32475812,7.86229656 L11.2139803,17.680542 C11.6479912,18.1075527 12.3520088,18.1075527 12.7860197,17.680542 L21.6752419,7.86229656 C22.1082527,7.43628591 22.1082527,6.74626866 21.6752419,6.32025801 C21.241231,5.89324733 20.5372134,5.89324733 20.1032026,6.32025801 L12,15.3664842 L3.89679742,6.32025801 C3.46278657,5.89324733 2.75876897,5.89324733 2.32475812,6.32025801 Z" id="Path" fill="#ffffff"></path>
-    </g>
-</svg>

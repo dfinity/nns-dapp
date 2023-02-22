@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { authStore } from "$lib/stores/auth.store";
 import { render } from "@testing-library/svelte";
-import NeuronJoinFundCard from "../../../../lib/components/neuron-detail/NeuronJoinFundCard.svelte";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { authStore } from "../../../../lib/stores/auth.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -13,6 +13,7 @@ import {
 } from "../../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NeuronJoinFundCard", () => {
   const neuron = {
@@ -21,9 +22,6 @@ describe("NeuronJoinFundCard", () => {
       ...mockFullNeuron,
       controller: mockMainAccount.principal?.toText() as string,
     },
-  };
-  const props = {
-    neuron,
   };
 
   beforeAll(() => {
@@ -40,26 +38,28 @@ describe("NeuronJoinFundCard", () => {
 
   it("renders join community fund checkbox", () => {
     // Checkbox is tested separately
-    const { queryByTestId } = render(NeuronJoinFundCard, {
-      props,
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NeuronJoinFundCard,
+      },
     });
 
     expect(queryByTestId("checkbox")).toBeInTheDocument();
   });
 
   it("renders no checkbox if user is not controller", () => {
-    const props = {
-      neuron: {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          controller: "not-controller",
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            controller: "not-controller",
+          },
         },
+        testComponent: NeuronJoinFundCard,
       },
-    };
-
-    const { queryByTestId } = render(NeuronJoinFundCard, {
-      props,
     });
 
     expect(queryByTestId("checkbox")).not.toBeInTheDocument();

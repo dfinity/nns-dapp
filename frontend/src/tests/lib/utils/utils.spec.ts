@@ -1,77 +1,26 @@
 import {
   bytesToHexString,
   createChunks,
-  debounce,
+  expandObject,
   hexStringToBytes,
   isDefined,
   isHash,
-  isNullish,
-  nonNullish,
+  isPngAsset,
   poll,
   PollingLimitExceededError,
+  removeKeys,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
-} from "../../../lib/utils/utils";
+} from "$lib/utils/utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
-  let callback: jest.Mock;
-
   beforeAll(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   afterAll(() => jest.resetAllMocks());
-
-  beforeEach(() => {
-    jest.useFakeTimers("modern");
-    jest.spyOn(global, "setTimeout");
-    callback = jest.fn();
-  });
-
-  afterEach(() => jest.useRealTimers());
-
-  it("should debounce function with timeout", () => {
-    const testDebounce = debounce(callback, 100);
-
-    testDebounce();
-    testDebounce();
-    testDebounce();
-
-    expect(setTimeout).toHaveBeenCalledTimes(3);
-    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 100);
-    expect(callback).not.toBeCalled();
-
-    jest.runAllTimers();
-
-    expect(callback).toHaveBeenCalledTimes(1);
-  });
-
-  it("should debounce one function call", () => {
-    debounce(callback)();
-
-    expect(callback).not.toBeCalled();
-
-    jest.runAllTimers();
-
-    expect(callback).toBeCalled();
-    expect(callback).toHaveBeenCalledTimes(1);
-  });
-
-  it("should debounce multiple functions call", () => {
-    const anotherCallback = jest.fn();
-
-    const test = debounce(anotherCallback);
-    test();
-    test();
-    test();
-
-    jest.runAllTimers();
-
-    expect(anotherCallback).toBeCalled();
-    expect(anotherCallback).toHaveBeenCalledTimes(1);
-  });
 
   describe("stringifyJson", () => {
     const SAMPLE = { a: 0, b: [1, 2], c: "c" };
@@ -185,28 +134,6 @@ describe("utils", () => {
       expect(hexStringToBytes(bytesToHexString([1, 255, 3, 0]))).toEqual([
         1, 255, 3, 0,
       ]);
-    });
-  });
-
-  describe("isNullish", () => {
-    it("should determine nullable", () => {
-      expect(isNullish(null)).toBeTruthy();
-      expect(isNullish(undefined)).toBeTruthy();
-      expect(isNullish(0)).toBeFalsy();
-      expect(isNullish(1)).toBeFalsy();
-      expect(isNullish("")).toBeFalsy();
-      expect(isNullish([])).toBeFalsy();
-    });
-  });
-
-  describe("nonNullish", () => {
-    it("should determine not nullable", () => {
-      expect(nonNullish(null)).toBeFalsy();
-      expect(nonNullish(undefined)).toBeFalsy();
-      expect(nonNullish(0)).toBeTruthy();
-      expect(nonNullish(1)).toBeTruthy();
-      expect(nonNullish("")).toBeTruthy();
-      expect(nonNullish([])).toBeTruthy();
     });
   });
 
@@ -393,6 +320,76 @@ describe("utils", () => {
       // Without the `await`, the line didn't wait the `poll` to throw to move to the next line
       await expect(call).rejects.toThrowError(PollingLimitExceededError);
       expect(counter).toBe(maxAttempts);
+    });
+  });
+
+  describe("removeKeys", () => {
+    it("removes the keys passed", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+        c: 3,
+      };
+      const expected = {
+        a: 1,
+        c: 3,
+      };
+      expect(removeKeys({ obj, keysToRemove: ["b"] })).toEqual(expected);
+      expect(
+        Object.keys(removeKeys({ obj, keysToRemove: ["b", "a", "c"] })).length
+      ).toBe(0);
+    });
+
+    it("should ignore keys that are not present", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+        c: 3,
+      };
+      const expected = {
+        a: 1,
+        c: 3,
+      };
+      expect(removeKeys({ obj, keysToRemove: ["b", "d"] })).toEqual(expected);
+    });
+  });
+
+  describe("isPngAsset", () => {
+    it("returns true for png assets", () => {
+      const png1 =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const png2 =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const pngFile = "file.png";
+      expect(isPngAsset(png1)).toBe(true);
+      expect(isPngAsset(png2)).toBe(true);
+      expect(isPngAsset(pngFile)).toBe(true);
+    });
+
+    it("returns false for non png assets", () => {
+      const svg1 =
+        "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const jpg1 =
+        "data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const pngFake =
+        "data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5Edata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcasdfafdaCklEQVR42mP8z8BQDwAEhQGAhKmMIwAAAABJRU5ErkJggg==";
+      const svgFile = "file.svg";
+      expect(isPngAsset(svg1)).toBe(false);
+      expect(isPngAsset(jpg1)).toBe(false);
+      expect(isPngAsset(pngFake)).toBe(false);
+      expect(isPngAsset(svgFile)).toBe(false);
+    });
+  });
+
+  describe("expandObject", () => {
+    it("should not do anything in strings that are not JSON", () => {
+      const obj = { a: "a string" };
+      expect(expandObject(obj)).toEqual(obj);
+    });
+
+    it("should parse JSON strings", () => {
+      const obj = { a: JSON.stringify({ b: "c" }) };
+      expect(expandObject(obj)).toEqual({ a: { b: "c" } });
     });
   });
 });

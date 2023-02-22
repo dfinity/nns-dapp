@@ -47,8 +47,8 @@ export class ICManagementCanister {
         response: rawResponse,
         canisterId,
       });
-    } catch (e) {
-      throw mapError(e);
+    } catch (error: unknown) {
+      throw mapError(error);
     }
   };
 
@@ -86,8 +86,8 @@ export class ICManagementCanister {
           compute_allocation: wrapWithArray(computeAllocation),
         },
       });
-    } catch (e) {
-      throw mapError(e);
+    } catch (error: unknown) {
+      throw mapError(error);
     }
   };
 }

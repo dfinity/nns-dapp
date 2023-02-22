@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { E8S_PER_ICP } from "../../constants/icp.constants";
-  import { formatNumber } from "../../utils/format.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { formatNumber } from "$lib/utils/format.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -65,7 +65,7 @@
     .progressbar {
       position: relative;
       height: var(--padding-1_5x);
-      background: var(--negative-emphasis-light);
+      background: var(--negative-emphasis);
 
       border-radius: var(--padding);
       overflow: hidden;

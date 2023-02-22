@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://nns.internetcomputer.org/sitemap.xml
+Host: https://nns.internetcomputer.org

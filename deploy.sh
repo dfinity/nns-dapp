@@ -7,7 +7,7 @@ help_text() {
 
 	Deploys the nns-dapp to a network or to local dfx:
 	- Starts dfx (optional)
-	- Installs goverance canisters (optional)
+	- Installs governance canisters (optional)
 	- Installs Internet Identity (optional)
 	- Installs the NNS Dapp
 	- Opens the NNS dapp in a browser (optional)
@@ -73,7 +73,7 @@ help_text() {
 	  Create an SNS canister set.
 
 	--nns-dapp
-	  Depoy the NNS dapp.
+	  Deploy the NNS dapp.
 
 	--populate
 	  Create sample users with ICP, neurons and follow relationships.
@@ -88,10 +88,10 @@ help_text() {
 }
 
 #
-GUESS="true"                           # figure out which steps to run, as opposed to just performing the requested steps.
-DRY_RUN="false"                        # print what would be done but don't do anything
-DFX_NETWORK=local                      # which network to deploy to
-CONFIG_FILE="./deployment-config.json" # the location of the app config, computed from dfx.json for the specific network.
+GUESS="true"                  # figure out which steps to run, as opposed to just performing the requested steps.
+DRY_RUN="false"               # print what would be done but don't do anything
+DFX_NETWORK=local             # which network to deploy to
+CONFIG_FILE="./frontend/.env" # the location of the dapp .env config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 DELETE_CANISTER_IDS="false"
@@ -286,7 +286,7 @@ fi
 # Note: On mainnet SNS are created much later and have unpredictable canister IDs, however
 # until an index canister exists we need the SNS to exist at a predictable address, so we install it now.
 # Note: There may be multiple SNS canister sets; at present this can be done in a somewhat clunky way by
-# adding numbers to SNS canister names, however in fiture versions of dfx, it will be possible to have
+# adding numbers to SNS canister names, however in future versions of dfx, it will be possible to have
 # several dfx.json, so we can have one dfx.json per SNS and one for the nns-dapp project, without weird names.
 if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
   # If the wasm canister has not been installed already, install it.
@@ -301,11 +301,11 @@ if test -n "${DEPLOY_SNS_WASM_CANISTER:-}"; then
     echo "Deploying SNS wasm canister..."
     NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "$DFX_NETWORK")"
     SNS_SUBNETS="$(ic-admin --nns-url "$NNS_URL" get-subnet-list | jq -r '. | map("principal \"" + . + "\"") | join("; ")')"
-    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; } )' --no-wallet
+    dfx deploy --network "$DFX_NETWORK" nns-sns-wasm --argument '( record { sns_subnet_ids = vec { '"$SNS_SUBNETS"' }; access_controls_enabled = false; allowed_principals = vec {}; } )' --no-wallet
     SNS_WASM_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-sns-wasm)"
     echo "SNS wasm/management canister installed at: $SNS_WASM_CANISTER_ID"
     echo "Uploading wasms to the wasm canister"
-    for canister in root governance ledger swap; do
+    for canister in root governance ledger swap archive index; do
       ./target/ic/sns add-sns-wasm-for-tests \
         --network "$DFX_NETWORK" \
         --override-sns-wasm-canister-id-for-tests "${SNS_WASM_CANISTER_ID}" \
@@ -323,19 +323,16 @@ fi
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
-  #        to deploy these other canisters as well, but you probbaly don't.
+  #        to deploy these other canisters as well, but you probably don't.
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
   dfx deploy --network "$DFX_NETWORK" nns-dapp --no-wallet
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
+  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Deployed to: $OWN_CANISTER_URL"
 fi
 
 if [[ "$POPULATE" == "true" ]]; then
-  echo Setting the cycles exchange rate...
-  ./scripts/propose --to propose-xdr-icp-conversion-rate --dfx-network "$DFX_NETWORK" --jfdi
-
   # Allow the cmc canister to create canisters anywhere.
-  # Note: The proposal is acepted and executed immediately because there are no neurons apart from the test user.
+  # Note: The proposal is accepted and executed immediately because there are no neurons apart from the test user.
   # Note: Local dfx has no subnets.
   [[ "$DFX_NETWORK" == "local" ]] || {
     echo Setting the list of subnets CMC is authorized to create canisters in...
@@ -344,15 +341,12 @@ if [[ "$POPULATE" == "true" ]]; then
 
   # Create users and neurons
   # Note: Cannot be used with flutter.
-  REDIRECT_TO_LEGACY="$(jq -re .REDIRECT_TO_LEGACY "$CONFIG_FILE")"
-  [[ "$REDIRECT_TO_LEGACY" == "flutter" ]] || {
-    echo Creating users and neurons...
-    pushd e2e-tests
-    npm ci
-    printf '%s\n' user-N01-neuron-created.e2e.ts |
-      SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
-    popd
-  }
+  echo Creating users and neurons...
+  pushd e2e-tests
+  npm ci
+  printf '%s\n' user-N01-neuron-created.e2e.ts |
+    SCREENSHOT=1 xargs -I {} npm run test -- --spec "./specs/{}"
+  popd
 fi
 
 if [[ "$DEPLOY_SNS" == "true" ]]; then
@@ -380,7 +374,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
     jq -s '.[1] * .[0]' - canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
 
-  # Note: This must come afetr the canister_ids has been updated.
+  # Note: This must come after the canister_ids has been updated.
   echo "SNS state after creation"
   dfx canister --network "$DFX_NETWORK" call sns_swap get_state '( record {} )'
   echo "Tell the swap canister to get tokens"
@@ -390,7 +384,7 @@ if [[ "$DEPLOY_SNS" == "true" ]]; then
 fi
 
 if [[ "$OPEN_NNS_DAPP" == "true" ]]; then
-  OWN_CANISTER_URL="$(jq -r .OWN_CANISTER_URL "$CONFIG_FILE")"
+  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Opening: $OWN_CANISTER_URL"
   case "$(uname)" in
   Linux) xdg-open "$OWN_CANISTER_URL" ;;

@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import HardwareWalletName from "../../../../lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
 import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";

@@ -1,7 +1,10 @@
-import { startBusyNeuron } from "../../../lib/services/busy.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import * as busyStore from "../../../lib/stores/busy.store";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
+/**
+ * @jest-environment jsdom
+ */
+import { startBusyNeuron } from "$lib/services/busy.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import * as busyStore from "$lib/stores/busy.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,

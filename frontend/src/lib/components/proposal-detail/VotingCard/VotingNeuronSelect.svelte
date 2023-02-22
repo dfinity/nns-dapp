@@ -1,163 +1,119 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
+  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
-    getVotingPower,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
-  import { formatVotingPower } from "../../../utils/neuron.utils";
-  import Checkbox from "../../ui/Checkbox.svelte";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import Value from "../../ui/Value.svelte";
-  import type { VoteInProgress } from "../../../stores/voting.store";
+    IconExpandCircleDown,
+    Collapsible,
+    Value,
+  } from "@dfinity/gix-components";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let voteInProgress: VoteInProgress | undefined = undefined;
+  export let voteRegistration: VoteRegistration | undefined = undefined;
 
-  let total: bigint;
-  let disabled: boolean = false;
+  let totalNeuronsVotingPower: bigint;
+  let disabled = false;
 
-  $: disabled = voteInProgress !== undefined;
+  $: disabled = voteRegistration !== undefined;
 
-  $: total = selectedNeuronsVotingPower({
+  $: totalNeuronsVotingPower = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
     proposal: proposalInfo,
   });
 
-  const toggleSelection = (neuronId: bigint) =>
-    votingNeuronSelectStore.toggleSelection(neuronId);
+  let toggleContent: () => void;
+  let expanded: boolean;
+
+  let totalVotingNeurons: number;
+  $: totalVotingNeurons = $votingNeuronSelectStore.neurons.length;
+
+  let selectedVotingNeurons: number;
+  $: selectedVotingNeurons = $votingNeuronSelectStore.selectedIds.length;
+
+  let displayNeuronsInfo: boolean;
+  $: displayNeuronsInfo = totalVotingNeurons > 0;
 </script>
 
-{#if $votingNeuronSelectStore.neurons.length > 0}
-  <p class="headline">
-    <span>{$i18n.proposal_detail__vote.neurons}</span>
-    <span>{$i18n.proposal_detail__vote.voting_power}</span>
-  </p>
+<Collapsible
+  expandButton={false}
+  externalToggle={true}
+  bind:toggleContent
+  bind:expanded
+  wrapHeight
+>
+  <div slot="header" class="total" class:expanded>
+    <div class="total-neurons">
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons"
+        >{$i18n.proposal_detail__vote
+          .neurons}{#if displayNeuronsInfo}&nbsp;({selectedVotingNeurons}/{totalVotingNeurons})
+        {/if}
+      </span>
+      <button
+        class="icon"
+        class:expanded
+        on:click|stopPropagation={toggleContent}
+      >
+        <IconExpandCircleDown />
+      </button>
+    </div>
 
-  <ul>
-    {#each $votingNeuronSelectStore.neurons as neuron}
-      <li>
-        <Checkbox
-          inputId={`${neuron.neuronId}`}
-          checked={$votingNeuronSelectStore.selectedIds.includes(
-            neuron.neuronId
-          )}
-          on:nnsChange={() => toggleSelection(neuron.neuronId)}
-          text="block"
-          selector="neuron-checkbox"
-          {disabled}
+    {#if displayNeuronsInfo}
+      <div
+        class="total-voting-power"
+        data-tid="voting-collapsible-toolbar-voting-power"
+      >
+        <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+        <Value
+          >{formatVotingPower(
+            totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
+          )}</Value
         >
-          <span
-            class="neuron-id value"
-            aria-label={replacePlaceholders(
-              $i18n.proposal_detail__vote.cast_vote_neuronId,
-              {
-                $neuronId: `${neuron.neuronId}`,
-              }
-            )}>{`${neuron.neuronId}`}</span
-          >
-          <span
-            class="neuron-voting-power value"
-            aria-label={replacePlaceholders(
-              $i18n.proposal_detail__vote.cast_vote_votingPower,
-              {
-                $votingPower: formatVotingPower(
-                  getVotingPower({ neuron, proposal: proposalInfo })
-                ),
-              }
-            )}
-            >{`${formatVotingPower(
-              getVotingPower({ neuron, proposal: proposalInfo })
-            )}`}</span
-          >
-        </Checkbox>
-      </li>
-    {/each}
-  </ul>
+      </div>
+    {/if}
+  </div>
 
-  <p class="total">
-    <span>{$i18n.proposal_detail__vote.total}</span>
-    <Value>{formatVotingPower(total === undefined ? 0n : total)}</Value>
-  </p>
-{/if}
+  <VotingNeuronSelectContainer {proposalInfo} {disabled} />
+</Collapsible>
 
 <style lang="scss">
   @use "@dfinity/gix-components/styles/mixins/media";
 
-  .headline {
-    padding: var(--padding-0_5x) var(--padding) var(--padding-0_5x)
-      calc(4.25 * var(--padding));
+  .total {
     display: flex;
     justify-content: space-between;
+    gap: var(--padding);
+    width: 100%;
+    margin-top: var(--padding-3x);
+    padding: var(--padding) var(--padding-2x);
 
-    border-bottom: 1px solid var(--line);
-
-    // hide voting-power-headline because of the layout
-    :last-child {
-      display: none;
-
-      @include media.min-width(small) {
-        display: initial;
-      }
+    @include media.min-width(large) {
+      padding: 0 var(--padding) 0 0;
     }
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-
-    // checkbox restyling
-    :global(.neuron-checkbox) {
-      padding: var(--padding);
-    }
-    :global(input[type="checkbox"]) {
-      margin-left: 0;
-    }
-    :global(label) {
-      margin-left: var(--padding-0_5x);
-
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-
-      order: 1;
-
-      @include media.min-width(small) {
-        flex-direction: row;
-        align-items: center;
-      }
-    }
-
-    .neuron-voting-power {
-      font-size: var(--font-size-ultra-small);
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-small);
-      }
-    }
-  }
-
-  .total {
-    margin-top: var(--padding);
-    padding: var(--padding);
-
+  .total-neurons,
+  .total-voting-power {
     display: flex;
     align-items: center;
-    justify-content: end;
+    gap: var(--padding);
+  }
 
-    border-top: 1px solid var(--line);
+  .icon {
+    color: var(--tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 
-    text-align: right;
+    transition: transform ease-in var(--animation-time-normal);
 
-    span {
-      margin-right: var(--padding);
-      font-size: var(--font-size-ultra-small);
-
-      @include media.min-width(medium) {
-        font-size: var(--font-size-small);
-      }
+    &.expanded {
+      transform: rotate(-180deg);
     }
   }
 </style>

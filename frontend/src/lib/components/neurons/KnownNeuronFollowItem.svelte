@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { addFollowee, removeFollowee } from "../../services/neurons.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
+  import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let knownNeuron: KnownNeuron;
   export let topic: Topic;
   export let neuronId: NeuronId;
-  export let isFollowed: boolean = false;
+  export let isFollowed = false;
 
   const dispatcher = createEventDispatcher();
   const toggleKnownNeuronFollowee = async () => {
@@ -29,11 +30,7 @@
 <div data-tid={`known-neuron-item-${knownNeuron.id}`}>
   <p class="value">{knownNeuron.name}</p>
   <!-- TODO: Fix style while loading - https://dfinity.atlassian.net/browse/L2-404 -->
-  <button
-    class="primary small"
-    disabled={$busy}
-    on:click={toggleKnownNeuronFollowee}
-  >
+  <button class="primary" disabled={$busy} on:click={toggleKnownNeuronFollowee}>
     {#if isFollowed}
       {$i18n.new_followee.unfollow}
     {:else}

@@ -1,13 +1,16 @@
-import { ProposalStatus } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   openSnsProposalsStore,
   snsProposalsStore,
   snsQueryStore,
   snsSwapCommitmentsStore,
-} from "../../../lib/stores/sns.store";
-import type { SnsSwapCommitment } from "../../../lib/types/sns";
+  type SnsQueryStoreData,
+} from "$lib/stores/sns.store";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { QuerySnsSwapState } from "$lib/types/sns.query";
+import { ProposalStatus } from "@dfinity/nns";
+import { SnsSwapLifecycle, type SnsSwapDerivedState } from "@dfinity/sns";
+import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
+import { get } from "svelte/store";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
 import {
   mockSnsSummaryList,
@@ -159,32 +162,193 @@ describe("sns.store", () => {
         )
       ).toEqual(swaps[0]);
     });
+
+    it("should filter the data", () => {
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
+
+      snsQueryStore.setData(data);
+
+      const rootCanisterId = data[0][0].rootCanisterId;
+
+      snsQueryStore.updateData({
+        data: [undefined, undefined],
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      expect(
+        updatedStore?.metadata.find(
+          (summary) => summary.rootCanisterId === rootCanisterId
+        )
+      ).toBeUndefined();
+
+      expect(
+        updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId
+        )
+      ).toBeUndefined();
+    });
   });
 
-  it("should filter the data", () => {
-    const data = snsResponsesForLifecycle({
-      lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Pending],
-      certified: true,
+  describe("updateSwapState", () => {
+    it("should update the swap state", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
+
+      snsQueryStore.setData([metadatas, swapDatas]);
+
+      const rootCanisterId = metadatas[0].rootCanisterId;
+
+      const updatedSwapData: QuerySnsSwapState = {
+        ...swapDatas[0],
+        swap: [
+          {
+            ...swapDatas[0].swap[0],
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ],
+      };
+
+      const initStore = get(snsQueryStore);
+      expect(
+        initStore?.swaps.find((swap) => swap.rootCanisterId === rootCanisterId)
+          ?.swap[0]?.lifecycle
+      ).toBe(SnsSwapLifecycle.Pending);
+
+      snsQueryStore.updateSwapState({
+        swapData: updatedSwapData,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      expect(
+        updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId
+        )
+      ).toEqual(updatedSwapData);
+    });
+  });
+
+  describe("updateDerivedState", () => {
+    const derivedState = ({
+      rootCanisterId,
+      store,
+    }: {
+      rootCanisterId: string;
+      store: SnsQueryStoreData | undefined;
+    }): SnsSwapDerivedState | undefined =>
+      store?.swaps.find((swap) => swap.rootCanisterId === rootCanisterId)
+        ?.derived[0];
+
+    it("should update the derived state", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
+
+      snsQueryStore.setData([metadatas, swapDatas]);
+
+      const rootCanisterId = metadatas[0].rootCanisterId;
+
+      const updatedBuyerTotalIcps = BigInt(1000_000_000);
+      const updatedSnsTokensPerIcp = 10_000;
+      const updatedDerivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [updatedSnsTokensPerIcp],
+        buyer_total_icp_e8s: [updatedBuyerTotalIcps],
+      };
+
+      const initStore = get(snsQueryStore);
+      const initState = derivedState({ rootCanisterId, store: initStore });
+      expect(initState?.buyer_total_icp_e8s).not.toBe(updatedBuyerTotalIcps);
+      expect(initState?.sns_tokens_per_icp).not.toBe(updatedSnsTokensPerIcp);
+
+      snsQueryStore.updateDerivedState({
+        derivedState: updatedDerivedState,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      const updatedState = derivedState({
+        rootCanisterId,
+        store: updatedStore,
+      });
+      expect(updatedState?.buyer_total_icp_e8s).toEqual(updatedBuyerTotalIcps);
+      expect(updatedState?.sns_tokens_per_icp).toEqual(updatedSnsTokensPerIcp);
     });
 
-    snsQueryStore.setData(data);
+    it("should NOT update the derived state if sns_tokens_per_icp undefined", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
 
-    const rootCanisterId = data[0][0].rootCanisterId;
+      snsQueryStore.setData([metadatas, swapDatas]);
 
-    snsQueryStore.updateData({
-      data: [undefined, undefined],
-      rootCanisterId: rootCanisterId,
+      const rootCanisterId = metadatas[0].rootCanisterId;
+
+      const updatedBuyerTotalIcps = BigInt(1000_000_000);
+      const updatedDerivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [],
+        buyer_total_icp_e8s: [updatedBuyerTotalIcps],
+      };
+
+      const initStore = get(snsQueryStore);
+      const initState = derivedState({ rootCanisterId, store: initStore });
+      const initValueBuyers = initState?.buyer_total_icp_e8s;
+      const initValueTokens = initState?.sns_tokens_per_icp;
+
+      snsQueryStore.updateDerivedState({
+        derivedState: updatedDerivedState,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      const updatedState = derivedState({
+        rootCanisterId,
+        store: updatedStore,
+      });
+      expect(updatedState?.buyer_total_icp_e8s).toEqual(initValueBuyers);
+      expect(updatedState?.sns_tokens_per_icp).toEqual(initValueTokens);
     });
 
-    const updatedStore = get(snsQueryStore);
-    expect(
-      updatedStore?.metadata.find(
-        (summary) => summary.rootCanisterId === rootCanisterId
-      )
-    ).toBeUndefined();
+    it("should NOT update the derived state if buyer_total_icp_e8s undefined", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
 
-    expect(
-      updatedStore?.swaps.find((swap) => swap.rootCanisterId === rootCanisterId)
-    ).toBeUndefined();
+      snsQueryStore.setData([metadatas, swapDatas]);
+
+      const rootCanisterId = metadatas[0].rootCanisterId;
+
+      const updatedSnsTokensPerIcp = 10_000;
+      const updatedDerivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [updatedSnsTokensPerIcp],
+        buyer_total_icp_e8s: [],
+      };
+
+      const initStore = get(snsQueryStore);
+      const initState = derivedState({ rootCanisterId, store: initStore });
+      const initValueBuyers = initState?.buyer_total_icp_e8s;
+      const initValueTokens = initState?.sns_tokens_per_icp;
+
+      snsQueryStore.updateDerivedState({
+        derivedState: updatedDerivedState,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      const updatedState = derivedState({
+        rootCanisterId,
+        store: updatedStore,
+      });
+      expect(updatedState?.buyer_total_icp_e8s).toEqual(initValueBuyers);
+      expect(updatedState?.sns_tokens_per_icp).toEqual(initValueTokens);
+    });
   });
 });

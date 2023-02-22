@@ -2,7 +2,7 @@ import {
   formatNumber,
   formatPercentage,
   shortenWithMiddleEllipsis,
-} from "../../../lib/utils/format.utils";
+} from "$lib/utils/format.utils";
 
 describe("format.utils", () => {
   it("should format number", () => {
@@ -23,6 +23,17 @@ describe("format.utils", () => {
     expect(
       formatNumber(0.123456789, { minFraction: 3, maxFraction: 3 })
     ).toEqual("0.123");
+
+    expect(
+      formatNumber(1360290803.9988282, { minFraction: 0, maxFraction: 0 })
+    ).toEqual("1’360’290’804");
+    expect(
+      formatNumber(1360290803.9988282, {
+        minFraction: 0,
+        maxFraction: 0,
+        maximumSignificantDigits: 7,
+      })
+    ).toEqual("1’360’291’000");
   });
 
   it("should format percentage", () => {
@@ -60,6 +71,20 @@ describe("format.utils", () => {
 
     expect(shortenWithMiddleEllipsis("123456789012345678901234")).toEqual(
       "1234567...8901234"
+    );
+  });
+
+  it("should format with ellipsis in the middle with split custom length", () => {
+    expect(shortenWithMiddleEllipsis("123456789", 5)).toEqual("123456789");
+    expect(shortenWithMiddleEllipsis("123456789", 2)).toEqual("12...89");
+    expect(shortenWithMiddleEllipsis("1234567890123456", 8)).toEqual(
+      "1234567890123456"
+    );
+    expect(shortenWithMiddleEllipsis("1234567890123456", 7)).toEqual(
+      "1234567890123456"
+    );
+    expect(shortenWithMiddleEllipsis("1234567890123456", 6)).toEqual(
+      "123456...123456"
     );
   });
 });

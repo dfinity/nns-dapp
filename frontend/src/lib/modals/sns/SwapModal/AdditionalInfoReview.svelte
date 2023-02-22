@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Checkbox from "../../../components/ui/Checkbox.svelte";
-  import { ICON_SIZE_LARGE } from "../../../constants/style.constants";
-  import IconWarning from "../../../icons/IconWarning.svelte";
-  import { i18n } from "../../../stores/i18n";
+  import { Checkbox } from "@dfinity/gix-components";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
+  import { IconWarning } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
-  export let accepted: boolean = false;
+  export let accepted = false;
   const toggelAccept = () => (accepted = !accepted);
 </script>
 
@@ -27,7 +27,6 @@
   .additional-info-review {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
 
     .warning {
       display: grid;

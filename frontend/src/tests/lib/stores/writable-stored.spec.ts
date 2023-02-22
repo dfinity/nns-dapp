@@ -1,9 +1,16 @@
 /**
  * @jest-environment jsdom
  */
+import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
-import { storeLocalStorageKey } from "../../../lib/constants/stores.constants";
-import { writableStored } from "../../../lib/stores/writable-stored";
+
+jest.mock("../../../../__mocks__/$app/environment", () => {
+  return {
+    browser: true,
+    prerender: false,
+  };
+});
 
 describe("writableStored", () => {
   afterEach(() => {

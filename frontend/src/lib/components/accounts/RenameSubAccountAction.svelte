@@ -1,23 +1,21 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import { i18n } from "../../stores/i18n";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
-  import { renameSubAccount } from "../../services/accounts.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import type { Account } from "../../types/account";
+  import { renameSubAccount } from "$lib/services/accounts.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
+  import type { Account } from "$lib/types/account";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-  import FooterModal from "../../modals/FooterModal.svelte";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
   $: selectedAccount = $store.account;
 
-  let newAccountName: string = $store.account?.name ?? "";
+  let newAccountName = $store.account?.name ?? "";
 
   let dispatcher = createEventDispatcher();
 
@@ -35,9 +33,9 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount} class="wizard-wrapper">
+<form on:submit|preventDefault={createNewSubAccount}>
   <div>
-    <h4 class="balance">{$i18n.accounts.rename_account_enter_new_name}</h4>
+    <p class="label">{$i18n.accounts.rename_account_enter_new_name}</p>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.rename_new_name_placeholder"
@@ -46,16 +44,17 @@
       disabled={$busy}
     />
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsClose")}
     >
       {$i18n.core.cancel}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       data-tid="rename-subaccount-button"
       disabled={newAccountName.length === 0 ||
@@ -64,13 +63,11 @@
     >
       {$i18n.accounts.rename}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
   }
 </style>

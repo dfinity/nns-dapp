@@ -1,31 +1,38 @@
 <script lang="ts">
-  import { i18n } from "../../../stores/i18n";
-  import type { Step } from "../../../stores/steps.state";
-  import { ICP } from "@dfinity/nns";
+  import { i18n } from "$lib/stores/i18n";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../../types/project-detail.context";
-  import type { SnsSwapInit } from "@dfinity/sns";
+  } from "$lib/types/project-detail.context";
+  import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
-    projectRemainingAmount,
-  } from "../../../utils/projects.utils";
-  import type { SnsSummary, SnsSwapCommitment } from "../../../types/sns";
-  import TransactionModal from "../../accounts/NewTransaction/TransactionModal.svelte";
-  import { nonNullish } from "../../../utils/utils";
-  import { startBusy, stopBusy } from "../../../stores/busy.store";
-  import {
-    getSwapAccount,
-    participateInSwap,
-  } from "../../../services/sns.services";
-  import { toastsStore } from "../../../stores/toasts.store";
-  import type { NewTransaction } from "../../../types/transaction.context";
-  import { convertNumberToICP } from "../../../utils/icp.utils";
+    validParticipation,
+  } from "$lib/utils/projects.utils";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
+  import { nonNullish } from "@dfinity/utils";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { getSwapAccount } from "$lib/services/sns.services";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type {
+    NewTransaction,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type { WizardStep } from "@dfinity/gix-components";
+  import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import {
+    initiateSnsSaleParticipation,
+    participateInSnsSale,
+  } from "$lib/services/sns-sale.services";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -35,7 +42,7 @@
   // type safety validation is done in ProjectDetail component
   $: summary = $projectDetailStore.summary as SnsSummary;
   $: swapCommitment = $projectDetailStore.swapCommitment;
-  let userHasParticipatedToSwap: boolean = false;
+  let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment,
   });
@@ -50,12 +57,12 @@
         : undefined;
   })();
 
-  let init: SnsSwapInit;
+  let params: SnsParams;
   $: ({
-    swap: { init },
+    swap: { params },
   } = summary);
 
-  let currentStep: Step;
+  let currentStep: WizardStep;
   let title: string | undefined;
   $: title =
     currentStep?.name === "Form"
@@ -64,18 +71,22 @@
         : $i18n.sns_project_detail.participate
       : $i18n.accounts.review_transaction;
 
-  let maxCommitment: ICP;
-  $: maxCommitment = ICP.fromE8s(
-    currentUserMaxCommitment({
+  let maxCommitment: TokenAmount;
+  $: maxCommitment = TokenAmount.fromE8s({
+    amount: currentUserMaxCommitment({
       summary,
       swapCommitment,
-    })
-  );
+    }),
+    token: ICPToken,
+  });
 
-  let minCommitment: ICP;
-  $: minCommitment = ICP.fromE8s(
-    userHasParticipatedToSwap ? BigInt(0) : init.min_participant_icp_e8s
-  );
+  let minCommitment: TokenAmount;
+  $: minCommitment = TokenAmount.fromE8s({
+    amount: userHasParticipatedToSwap
+      ? BigInt(0)
+      : params.min_participant_icp_e8s,
+    token: ICPToken,
+  });
 
   let accepted: boolean;
 
@@ -86,56 +97,118 @@
     if (nonNullish($projectDetailStore.summary)) {
       startBusy({
         initiator: "project-participate",
+        labelKey: "neurons.may_take_while",
       });
-      const { success } = await participateInSwap({
+
+      const ticket = await initiateSnsSaleParticipation({
         account: sourceAccount,
-        amount: convertNumberToICP(amount),
+        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
       });
-      if (success) {
-        await reload();
 
-        toastsStore.success({
-          labelKey: "sns_project_detail.participate_success",
+      if (ticket && ticket.ticket) {
+        const { success, retry } = await participateInSnsSale({
+          ticket: {
+            rootCanisterId: ticket.rootCanisterId,
+            ticket: ticket.ticket,
+          },
         });
+
+        if (success) {
+          await reload();
+
+          toastsSuccess({
+            labelKey: "sns_project_detail.participate_success",
+          });
+        }
+
+        if (retry) {
+          // TODO(sale): GIX-1310 - implement retry logic
+          logWithTimestamp("[sale] retry TBD");
+          return;
+        }
+
         dispatcher("nnsClose");
       }
+
       stopBusy("project-participate");
     }
+  };
+
+  // Used for form inline validation
+  let validateAmount: ValidateAmountFn;
+  $: validateAmount = (amount: number | undefined) => {
+    if (
+      swapCommitment !== undefined &&
+      swapCommitment !== null &&
+      amount !== undefined
+    ) {
+      try {
+        const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+        const { valid, labelKey, substitutions } = validParticipation({
+          project: {
+            rootCanisterId: summary.rootCanisterId,
+            summary,
+            swapCommitment,
+          },
+          amount: tokenAmount,
+        });
+        // `validParticipation` does not return `valid` as `false` without a labelKey.
+        // But we need to check because of type safety.
+        return valid || labelKey === undefined
+          ? undefined
+          : replacePlaceholders(translate({ labelKey }), substitutions ?? {});
+      } catch (error) {
+        return $i18n.error.amount_not_valid;
+      }
+    }
+    // We allow the user to try to participate even though the swap commitment is not yet available.
+    return undefined;
   };
 </script>
 
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
 {#if destinationAddress !== undefined}
   <TransactionModal
+    rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
     on:nnsClose
     on:nnsSubmit={participate}
+    {validateAmount}
     {destinationAddress}
     disableSubmit={!accepted}
-    maxAmount={projectRemainingAmount(summary)}
+    skipHardwareWallets
+    transactionFee={$mainTransactionFeeStoreAsToken}
+    maxAmount={currentUserMaxCommitment({ summary, swapCommitment })}
   >
     <svelte:fragment slot="title"
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
-    <AdditionalInfoForm
-      slot="additional-info-form"
-      {minCommitment}
-      {maxCommitment}
-      userHasParticipated={userHasParticipatedToSwap}
-    />
-    <AdditionalInfoReview slot="additional-info-review" bind:accepted />
-    <p slot="destination-info" data-tid="sns-swap-participate-project-name">
+    <div class="additional-info" slot="additional-info-form">
+      <AdditionalInfoForm
+        {minCommitment}
+        {maxCommitment}
+        userHasParticipated={userHasParticipatedToSwap}
+      />
+    </div>
+    <div class="additional-info" slot="additional-info-review">
+      <AdditionalInfoReview bind:accepted />
+    </div>
+    <p
+      slot="destination-info"
+      data-tid="sns-swap-participate-project-name"
+      class="value"
+    >
       {$projectDetailStore.summary?.metadata.name}
     </p>
-    <p slot="description">
+    <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
   </TransactionModal>
 {/if}
 
 <style lang="scss">
-  p {
-    margin: 0;
+  .additional-info {
+    padding-top: var(--padding-2x);
   }
 </style>

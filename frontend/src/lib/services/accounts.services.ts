@@ -1,39 +1,36 @@
-import type { Identity } from "@dfinity/agent";
-import { get } from "svelte/store";
 import {
   createSubAccount,
   getTransactions,
   loadAccounts,
   renameSubAccount as renameSubAccountApi,
-} from "../api/accounts.api";
-import { sendICP } from "../api/ledger.api";
+} from "$lib/api/accounts.api";
+import { sendICP } from "$lib/api/ledger.api";
 import type {
   AccountIdentifierString,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
-import { AppPath } from "../constants/routes.constants";
-import type { LedgerIdentity } from "../identities/ledger.identity";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import type { AccountsStore } from "../stores/accounts.store";
-import { accountsStore } from "../stores/accounts.store";
-import { toastsStore } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import type { TransactionStore } from "../types/transaction.context";
-import {
-  getAccountByPrincipal,
-  getAccountFromStore,
-} from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { toToastError } from "../utils/error.utils";
-import { getIdentity } from "./auth.services";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import type { Account } from "$lib/types/account";
+import type { NewTransaction } from "$lib/types/transaction";
+import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import { toToastError } from "$lib/utils/error.utils";
+import type { Identity } from "@dfinity/agent";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 /**
  * - sync: load the account data using the ledger and the nns dapp canister itself
  */
 export const syncAccounts = (): Promise<void> => {
-  return queryAndUpdate<AccountsStore, unknown>({
+  return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error: err, certified }) => {
@@ -46,7 +43,7 @@ export const syncAccounts = (): Promise<void> => {
       // Explicitly handle only UPDATE errors
       accountsStore.reset();
 
-      toastsStore.error(
+      toastsError(
         toToastError({
           err,
           fallbackErrorLabelKey: "error.accounts_not_found",
@@ -63,13 +60,13 @@ export const addSubAccount = async ({
   name: string;
 }): Promise<void> => {
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await createSubAccount({ name, identity });
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
         fallbackErrorLabelKey: "error__account.create_subaccount",
@@ -79,30 +76,23 @@ export const addSubAccount = async ({
 };
 
 export const transferICP = async ({
-  selectedAccount,
+  sourceAccount,
   destinationAddress: to,
   amount,
-}: TransactionStore): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
-    return transferError({ labelKey: "error.transaction_no_source_account" });
-  }
-
-  if (to === undefined) {
-    return transferError({
-      labelKey: "error.transaction_no_destination_address",
-    });
-  }
-
-  if (!amount) {
-    return transferError({ labelKey: "error.transaction_invalid_amount" });
-  }
-
+}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
   try {
-    const { identifier, subAccount } = selectedAccount;
+    const { identifier, subAccount } = sourceAccount;
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    await sendICP({ identity, to, fromSubAccount: subAccount, amount });
+    const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
+
+    await sendICP({
+      identity,
+      to,
+      fromSubAccount: subAccount,
+      amount: tokenAmount,
+    });
 
     await syncAccounts();
 
@@ -119,7 +109,7 @@ const transferError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,
@@ -127,27 +117,6 @@ const transferError = ({
   );
 
   return { success: false, err: labelKey };
-};
-
-/**
- * @param path current route path
- * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
- */
-export const routePathAccountIdentifier = (
-  path: string | undefined
-): { accountIdentifier: string | undefined } | undefined => {
-  if (!isRoutePath({ path: AppPath.Wallet, routePath: path })) {
-    return undefined;
-  }
-
-  const accountIdentifier: string | undefined = getLastPathDetail(path);
-
-  return {
-    accountIdentifier:
-      accountIdentifier !== undefined && accountIdentifier !== ""
-        ? accountIdentifier
-        : undefined,
-  };
 };
 
 export const getAccountTransactions = async ({
@@ -181,7 +150,7 @@ export const getAccountTransactions = async ({
         return;
       }
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.transactions_not_found",
         err,
       });
@@ -192,16 +161,16 @@ export const getAccountTransactions = async ({
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
-  const account: Account | undefined = getAccountFromStore({
+  const account: Account | undefined = findAccount({
     identifier,
-    accountsStore: get(accountsStore),
+    accounts: get(nnsAccountsListStore),
   });
 
   if (account?.type === "hardwareWallet") {
     return getLedgerIdentityProxy(identifier);
   }
 
-  return getIdentity();
+  return getAuthenticatedIdentity();
 };
 
 export const getAccountIdentityByPrincipal = async (
@@ -236,7 +205,7 @@ export const renameSubAccount = async ({
   }
 
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await renameSubAccountApi({
       newName,
@@ -259,7 +228,7 @@ const renameError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,
