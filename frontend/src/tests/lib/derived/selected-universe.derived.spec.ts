@@ -158,7 +158,9 @@ describe("selected universe derived stores", () => {
       });
 
       it("returns CKBTC_UNIVERSE_CANISTER_ID", () => {
-        expect(get(selectedUniverseIdStore)).toEqual(CKBTC_UNIVERSE_CANISTER_ID);
+        expect(get(selectedUniverseIdStore)).toEqual(
+          CKBTC_UNIVERSE_CANISTER_ID
+        );
       });
 
       it("returns OWN_CANISTER_ID if universe is ckBTC but flag disabled", () => {
