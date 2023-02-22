@@ -23,7 +23,10 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
-import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import {
+  getSwapCanisterAccount,
+  isInternalRefreshBuyerTokensError,
+} from "$lib/utils/sns.utils";
 import type { Identity } from "@dfinity/agent";
 import type { TokenAmount } from "@dfinity/nns";
 import {
@@ -403,6 +406,11 @@ export const initiateSnsSaleParticipation = async ({
   stopBusy("project-participate");
 };
 
+/**
+ * Calls notifyParticipation (refresh_buyer_tokens api) and handles response errors.
+ * Should be called to refresh the amount of ICP a buyer has contributed from the ICP ledger canister.
+ * It is assumed that prior to calling this method, tokens have been transfer by the buyer to a subaccount of the swap canister on the ICP ledger.
+ */
 const notifyParticipationAndRemoveTicket = async ({
   rootCanisterId,
   identity,
@@ -440,36 +448,45 @@ const notifyParticipationAndRemoveTicket = async ({
       });
     }
   } catch (err) {
-    console.error("[sale]notifyParticipation", err);
+    console.error("[sale] notifyParticipation", err);
+    const internalError = isInternalRefreshBuyerTokensError(err);
 
-    // TODO(sale): how to get it?
-    const icError = false;
+    // process `TxTooOldError`
+    if (hasTooOldError) {
+      if (internalError) {
+        try {
+          // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
+          // force to remove ticket
+          await notifyPaymentFailure({
+            rootCanisterId,
+            identity,
+          });
+        } catch (err) {
+          console.error("[sale] notifyPaymentFailure", err);
+        }
+        // jump to unexpected_error
+      } else {
+        // unknown error: ask to refresh and stop the flow
+        toastsError({
+          labelKey: "error__sns.sns_sale_unexpected_and_refresh",
+        });
 
-    // ignore all ic errors in TooOldError mode
-    if (!hasTooOldError || !icError) {
-      // unexpected error (probably sale is closed)
-      toastsError({
-        labelKey: "error__sns.sns_sale_unexpected_error",
-      });
-
-      // enable participate button
-      snsTicketsStore.setNoTicket(rootCanisterId);
-
-      return { success: false };
+        return { success: false };
+      }
     }
+
+    // unexpected error (probably sale is closed)
+    toastsError({
+      labelKey: "error__sns.sns_sale_unexpected_error",
+    });
+
+    // enable participate button
+    snsTicketsStore.setNoTicket(rootCanisterId);
+
+    return { success: false };
   }
 
-  if (hasTooOldError) {
-    try {
-      await notifyPaymentFailure({
-        identity,
-        rootCanisterId,
-      });
-    } catch (err) {
-      console.error("[sale] notifyPaymentFailure", err);
-    }
-  }
-
+  // At this point the participation is done and the open ticket is removed
   return { success: true };
 };
 
@@ -593,7 +610,7 @@ export const participateInSnsSale = async ({
 
       if (err instanceof TxTooOldError) {
         /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
-         * - continue the flow
+         * - continue the flow:
          *  - refresh_buyer_tokens // internal errors are ignored
          *  - notify_payment_failure
          */
