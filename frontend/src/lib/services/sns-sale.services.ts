@@ -4,17 +4,12 @@ import {
   newSaleTicket as newSaleTicketApi,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
-import { querySnsSwapState } from "$lib/api/sns.api";
 import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import { syncAccounts } from "$lib/services/accounts.services";
-import {
-  getAuthenticatedIdentity,
-  getCurrentIdentity,
-} from "$lib/services/auth.services";
-import { snsQueryStore } from "$lib/stores/sns.store";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -215,32 +210,6 @@ export const newSaleTicket = async ({
   }
 };
 
-/**
- * Requests swap state and loads it in the store.
- * Ignores possible undefined. This is used only to recheck the data with up-to-date information.
- * This should be used only when the data is already in the store.
- * That's why if an error happens, we want to rely on the data that it's already in the store.
- *
- * @param {Principal} rootCanisterId Root canister id of the project.
- */
-const reloadSnsState = async (rootCanisterId: Principal): Promise<void> => {
-  try {
-    const identity = await getAuthenticatedIdentity();
-    const swapData = await querySnsSwapState({
-      rootCanisterId: rootCanisterId.toText(),
-      identity,
-      certified: true,
-    });
-    snsQueryStore.updateSwapState({
-      swapData,
-      rootCanisterId: rootCanisterId.toText(),
-    });
-  } catch (err) {
-    // Ignore error
-    console.error("Error reloading sale state", err);
-  }
-};
-
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
@@ -272,9 +241,6 @@ export const initiateSnsSaleParticipation = async ({
       account,
       amountE8s: amount.toE8s() + transactionFee,
     });
-
-    // TODO(sale): GIX-1318
-    await reloadSnsState(rootCanisterId);
 
     const project = getProjectFromStore(rootCanisterId);
     const { valid, labelKey, substitutions } = validParticipation({
