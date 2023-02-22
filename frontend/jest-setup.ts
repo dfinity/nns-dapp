@@ -8,6 +8,7 @@ import "jest-expect-message";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { failTestsThatLogToConsole } from "./src/tests/mocks/console.mock";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -61,33 +62,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
 
 global.localStorage = localStorageMock;
 
-const realConsoleLog = console.log;
-const realConsoleDebug = console.debug;
-const realConsoleError = console.error;
-let gotLogs;
-
-global.beforeAll(() => {
-  gotLogs = false;
-  jest.spyOn(console, "log").mockImplementation((...args) => {
-    gotLogs = true;
-    realConsoleLog(...args);
-  });
-  jest.spyOn(console, "debug").mockImplementation((...args) => {
-    gotLogs = true;
-    realConsoleDebug(...args);
-  });
-  jest.spyOn(console, "error").mockImplementation((...args) => {
-    gotLogs = true;
-    realConsoleError(...args);
-  });
-});
-
-global.afterAll(() => {
-  expect(
-    gotLogs,
-    "If you need console output, make sure to silence it in your tests."
-  ).toBe(false);
-});
+failTestsThatLogToConsole();
 
 // testing-library setup
 configure({
