@@ -6,7 +6,10 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "../../../lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import {
   mockCkBTCMainAccount,
@@ -28,7 +31,10 @@ describe("ckbtc-accounts-balance.services", () => {
   });
 
   const params = {
-    universeIds: [CKBTC_UNIVERSE_CANISTER_ID.toText()],
+    universeIds: [
+      CKBTC_UNIVERSE_CANISTER_ID.toText(),
+      CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
+    ],
   };
 
   it("should call api.getCkBTCAccounts and load balance in store", async () => {
@@ -67,9 +73,13 @@ describe("ckbtc-accounts-balance.services", () => {
     await tick();
 
     const store = get(ckBTCTokenStore);
-    expect(store).toEqual({
+    const token = {
       token: mockCkBTCToken,
       certified: false,
+    };
+    expect(store).toEqual({
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: token,
+      [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: token,
     });
 
     expect(spyQuery).toBeCalled();

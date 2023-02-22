@@ -11,6 +11,7 @@ import { get } from "svelte/store";
 import {
   CKBTC_INDEX_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "../../../lib/constants/ckbtc-canister-ids.constants";
 import { icrcAccountsStore } from "../../../lib/stores/icrc-accounts.store";
 import {
@@ -95,9 +96,7 @@ describe("ckbtc-accounts-services", () => {
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
       const store = get(icrcAccountsStore);
-      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts).toHaveLength(
-        0
-      );
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toBeUndefined();
 
       const transactionsStore = get(icrcTransactionsStore);
       expect(
@@ -137,8 +136,11 @@ describe("ckbtc-accounts-services", () => {
 
       const tokenStore = get(ckBTCTokenStore);
       expect(tokenStore).toEqual({
-        token: mockCkBTCToken,
-        certified: true,
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+          token: mockCkBTCToken,
+          certified: true,
+        },
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: undefined,
       });
     });
   });

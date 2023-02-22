@@ -20,9 +20,9 @@ describe("selectable universes derived stores", () => {
 
   afterAll(() => jest.clearAllMocks());
 
-  it("should return Nns and ckBTC per default", () => {
+  it("should return Nns, ckBTC and ckTESTBTC (flag for test is true) per default", () => {
     const store = get(selectableUniversesStore);
-    expect(store.length).toEqual(2);
+    expect(store.length).toEqual(3);
     expect(store[0].summary).toBeUndefined();
     expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
     expect(store[1].summary).toBeUndefined();
@@ -52,11 +52,11 @@ describe("selectable universes derived stores", () => {
 
     afterAll(jest.clearAllMocks);
 
-    it("should return Nns, ckBTC and another project", () => {
+    it("should return Nns, ckBTC, ckTESTBTC (flag for test is true) and another project", () => {
       const store = get(selectableUniversesStore);
-      expect(store.length).toEqual(3);
-      expect(store[2].summary).not.toBeUndefined();
-      expect(store[2].canisterId).toEqual(
+      expect(store.length).toEqual(4);
+      expect(store[3].summary).not.toBeUndefined();
+      expect(store[3].canisterId).toEqual(
         mockSnsFullProject.rootCanisterId.toText()
       );
     });

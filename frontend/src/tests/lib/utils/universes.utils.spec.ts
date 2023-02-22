@@ -1,7 +1,4 @@
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   isUniverseCkBTC,
@@ -9,6 +6,10 @@ import {
   pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "../../../lib/constants/ckbtc-canister-ids.constants";
 
 describe("universes-utils", () => {
   describe("pathSupportsCkBTC", () => {
@@ -58,10 +59,14 @@ describe("universes-utils", () => {
   describe("isUniverseCkBTC", () => {
     it("returns true if ckBTC canister id", () => {
       expect(isUniverseCkBTC(CKBTC_UNIVERSE_CANISTER_ID)).toBeTruthy();
+      expect(isUniverseCkBTC(CKTESTBTC_UNIVERSE_CANISTER_ID)).toBeTruthy();
     });
 
     it("returns true if ckBTC canister id text", () => {
       expect(isUniverseCkBTC(CKBTC_UNIVERSE_CANISTER_ID.toText())).toBeTruthy();
+      expect(
+        isUniverseCkBTC(CKTESTBTC_UNIVERSE_CANISTER_ID.toText())
+      ).toBeTruthy();
     });
 
     it("returns false if not ckBTC canister id", () => {
