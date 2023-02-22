@@ -2,37 +2,40 @@
  * @jest-environment jsdom
  */
 
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
-import { updateDelay } from "$lib/services/sns-neurons.services";
+import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import {
+  createMockIdentity,
+  mockPrincipal,
+} from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "../../../mocks/sns-neurons.mock";
+import { snsResponseFor } from "../../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    updateDelay: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
+jest.mock("$lib/api/sns-governance.api");
+jest.mock("$lib/services/sns-parameters.services");
 
-jest.mock("$lib/services/sns-parameters.services", () => {
-  return {
-    loadSnsParameters: jest.fn().mockResolvedValue(undefined),
-  };
-});
+const testIdentity = createMockIdentity(10023);
+
+const roundUpSecondsToWholeDays = (seconds: number): number =>
+  daysToSeconds(secondsToDays(seconds));
 
 describe("IncreaseSnsDissolveDelayModal", () => {
   const neuron: SnsNeuron = {
@@ -58,20 +61,28 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     });
   };
 
-  beforeAll(() => {
-    page.mock({ data: { universe: mockPrincipal.toText() } });
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
 
+    snsParametersStore.reset();
     snsParametersStore.setParameters({
       certified: true,
       rootCanisterId: mockPrincipal,
       parameters: snsNervousSystemParametersMock,
     });
-  });
 
-  beforeEach(reloadNeuron.mockClear);
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
 
-  afterAll(() => {
-    snsParametersStore.reset();
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
   it("should display modal", async () => {
@@ -129,7 +140,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    await waitFor(() => expect(updateDelay).toBeCalled());
+    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
   });
 
   it("should be able to change dissolve delay in the confirmation screen using input", async () => {
@@ -139,9 +150,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       expect(queryByTestId("input-ui-element")).toBeInTheDocument()
     );
 
-    const dissolveDelaySeconds = daysToSeconds(
-      secondsToDays(SECONDS_IN_YEAR * 2)
-    );
+    const dissolveDelaySeconds = roundUpSecondsToWholeDays(SECONDS_IN_YEAR * 2);
     const inputElement = queryByTestId("input-ui-element");
 
     inputElement &&
@@ -175,13 +184,11 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    await waitFor(() => expect(updateDelay).toBeCalled());
-    await waitFor(() =>
-      expect(updateDelay).toBeCalledWith(
-        expect.objectContaining({
-          dissolveDelaySeconds,
-        })
-      )
+    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
+    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledWith(
+      expect.objectContaining({
+        additionalDissolveDelaySeconds: dissolveDelaySeconds,
+      })
     );
   });
 

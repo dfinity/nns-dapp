@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
+  import { getContext, onDestroy } from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -16,19 +16,12 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import {
-    getOpenTicket,
-    participateInSnsSale,
-  } from "$lib/services/sns-sale.services";
-  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
-  import type { SnsTicket } from "$lib/types/sns";
-  import { toastsShow, toastsSuccess } from "$lib/stores/toasts.store";
-  import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
-  import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { logWithTimestamp } from "$lib/utils/dev.utils";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -57,10 +50,12 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  let loading = true;
+  // busy if open ticket is available or not requested
+  let busy = true;
+  $: busy = hasOpenTicketInProcess(rootCanisterId);
+
+  // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
-  let ticket: Ticket | undefined;
-  let criticalError = false;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -71,66 +66,14 @@
       return;
     }
 
-    loading = true;
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
-    const saleTicket: SnsTicket | undefined = await getOpenTicket({
+    await restoreSnsSaleParticipation({
       rootCanisterId,
-      certified: true,
+      postprocess: reload,
     });
-
-    if (saleTicket === undefined) {
-      loading = false;
-      criticalError = true;
-      // stop the flow
-      return;
-    }
-
-    ticket = saleTicket.ticket;
-
-    // restore purchase
-    if (
-      saleTicket.ticket !== undefined &&
-      saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
-    ) {
-      // TODO(sale): refactor to reuse also in the modal
-
-      toastsShow({
-        level: "info",
-        labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-        substitutions: {
-          $time: nanoSecondsToDateTime(saleTicket.ticket.creation_time),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-      const { success, retry } = await participateInSnsSale({
-        ticket: {
-          rootCanisterId: saleTicket.rootCanisterId,
-          ticket: saleTicket.ticket,
-        },
-      });
-
-      if (success) {
-        await reload();
-
-        toastsSuccess({
-          labelKey: "sns_project_detail.participate_success",
-        });
-      } else {
-        criticalError = true;
-      }
-
-      if (retry) {
-        // TODO(sale): GIX-1310 - implement retry logic
-        logWithTimestamp("[sale] retry TBD");
-        return;
-      }
-    }
-
-    // unlock the button
-    ticket = undefined;
-    loading = false;
   };
+
   // skip ticket update if the sns is not open
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
@@ -143,6 +86,15 @@
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
   });
+
+  onDestroy(() => {
+    if (rootCanisterId === undefined) {
+      return;
+    }
+
+    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+    snsTicketsStore.removeTicket(rootCanisterId);
+  });
 </script>
 
 {#if lifecycle === SnsSwapLifecycle.Open}
@@ -151,12 +103,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loading || criticalError || ticket !== undefined}
+            disabled={busy}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loading}
+            {#if busy}
               <span>
                 <Spinner size="small" inline />
               </span>

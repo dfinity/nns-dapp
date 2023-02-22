@@ -69,7 +69,7 @@
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -190,7 +190,12 @@
       ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
+        }
+      }
     },
     "ckbtc_ledger": {
       "build": [
@@ -223,7 +228,8 @@
     "mainnet": {
       "config": {
         "FETCH_ROOT_KEY": false,
-        "HOST": "https://icp-api.io",
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
         "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
         "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
@@ -421,6 +427,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,

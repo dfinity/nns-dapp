@@ -1,4 +1,5 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
@@ -21,7 +22,8 @@ import type {
   SnsSwap,
   SnsSwapDerivedState,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { isPngAsset } from "./utils";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
@@ -198,3 +200,10 @@ export const getCommitmentE8s = (
 ): bigint | undefined =>
   fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
   undefined;
+
+export const hasOpenTicketInProcess = (
+  rootCanisterId?: Principal | null
+): boolean =>
+  isNullish(rootCanisterId)
+    ? true
+    : get(snsTicketsStore)[rootCanisterId.toText()]?.ticket !== null;

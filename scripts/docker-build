@@ -11,22 +11,7 @@ cd "$SCRIPTS_DIR/.."
 
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
 
-case "$DFX_NETWORK" in
-mainnet)
-  OWN_CANISTER_ID=""
-  ;;
-"local")
-  OWN_CANISTER_ID=${OWN_CANISTER_ID:-rwlgt-iiaaa-aaaaa-aaaaa-cai}
-  ;;
-*)
-  echo "don't know how to set OWN_CANISTER_ID for DFX_NETWORK $DFX_NETWORK"
-  echo "please set the environment variable OWN_CANISTER_ID"
-  exit 1
-  ;;
-esac
-
 echo "DFX_NETWORK: $DFX_NETWORK"
-echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
 echo "PWD: $PWD"
 
 image_name="nns-dapp-$DFX_NETWORK"
@@ -46,7 +31,6 @@ set -x
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
-  --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
   -t "$image_name" \
   -o "$OUTDIR" . \
   "${@+${@}}"

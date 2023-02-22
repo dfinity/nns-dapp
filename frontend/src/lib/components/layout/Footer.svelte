@@ -42,11 +42,15 @@
 
       gap: calc(var(--padding) * 2 / 3);
 
+      min-width: 100%;
+
       @include media.min-width(small) {
         grid-template-columns: repeat(
           var(--footer-columns),
           minmax(calc(var(--footer-main-inner-width) / 2), 180px)
         );
+
+        min-width: auto;
       }
 
       @include media.min-width(medium) {
