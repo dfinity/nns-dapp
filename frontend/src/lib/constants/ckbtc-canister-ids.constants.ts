@@ -1,5 +1,3 @@
-import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { Principal } from "@dfinity/principal";
 import { notEmptyString } from "@dfinity/utils";
 
@@ -50,17 +48,3 @@ export const CKTESTBTC_INDEX_CANISTER_ID = Principal.fromText(
 
 export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;
 export const CKTESTBTC_UNIVERSE_CANISTER_ID = CKTESTBTC_LEDGER_CANISTER_ID;
-
-export const CKBTC_ADDITIONAL_CANISTERS: Record<
-  UniverseCanisterIdText,
-  CkBTCAdditionalCanisters
-> = {
-  [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-    indexCanisterId: CKBTC_INDEX_CANISTER_ID,
-    minterCanisterId: CKBTC_MINTER_CANISTER_ID,
-  },
-  [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
-    indexCanisterId: CKTESTBTC_INDEX_CANISTER_ID,
-    minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
-  },
-};

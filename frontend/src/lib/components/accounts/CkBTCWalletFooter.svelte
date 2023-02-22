@@ -15,8 +15,8 @@
   import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);

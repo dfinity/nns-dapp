@@ -13,7 +13,7 @@
   import type { TokenAmount } from "@dfinity/nns";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");

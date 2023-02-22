@@ -33,7 +33,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-canister-ids.constants";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
