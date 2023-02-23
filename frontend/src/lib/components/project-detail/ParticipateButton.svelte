@@ -18,7 +18,10 @@
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import {
+    hidePollingToast,
+    restoreSnsSaleParticipation,
+  } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
@@ -105,7 +108,7 @@
     });
 
     // Hide toasts when moving away from the page
-    toastsStore.reset();
+    hidePollingToast();
   });
 </script>
 

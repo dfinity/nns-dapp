@@ -60,7 +60,9 @@ const initSnsTicketsStore = () => {
     },
 
     /**
-     * Enable polling for the ticket
+     * Disable polling for the ticket
+     *
+     * This is used for testing purposes only at the moment.
      *
      * @param rootCanisterId
      */

@@ -58,6 +58,13 @@ import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
 let toastId: symbol | undefined;
+export const hidePollingToast = (): void => {
+  if (nonNullish(toastId)) {
+    toastsStore.hide(toastId);
+    toastId = undefined;
+  }
+};
+
 const shouldStopPollingTicket =
   (rootCanisterId: Principal) =>
   (err: unknown): boolean => {
@@ -83,14 +90,19 @@ const shouldStopPollingTicket =
   };
 
 const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
+// TODO: Solve problem with importing from sns.constants.ts
+const MAX_ATTEMPS_FOR_TICKET = 50;
+// Export for testing purposes
 const pollGetOpenTicket = async ({
   rootCanisterId,
   identity,
   certified,
+  maxAttempts,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
+  maxAttempts?: number;
 }): Promise<Ticket | undefined> => {
   // Reset polling toast
   toastId = undefined;
@@ -104,6 +116,7 @@ const pollGetOpenTicket = async ({
         }),
       shouldExit: shouldStopPollingTicket(rootCanisterId),
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+      maxAttempts,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -129,9 +142,11 @@ const getTicketErrorMapper: Record<GetOpenTicketErrorType, string> = {
 export const loadOpenTicket = async ({
   rootCanisterId,
   certified,
+  maxAttempts = MAX_ATTEMPS_FOR_TICKET,
 }: {
   rootCanisterId: Principal;
   certified: boolean;
+  maxAttempts?: number;
 }): Promise<void> => {
   try {
     const identity = await getCurrentIdentity();
@@ -139,12 +154,10 @@ export const loadOpenTicket = async ({
       identity,
       rootCanisterId,
       certified,
+      maxAttempts,
     });
     // Reset the polling toast
-    if (nonNullish(toastId)) {
-      toastsStore.hide(toastId);
-      toastId = undefined;
-    }
+    hidePollingToast();
 
     if (ticket === undefined) {
       // set explicitly null to mark the ticket absence
@@ -161,11 +174,7 @@ export const loadOpenTicket = async ({
     const store = get(snsTicketsStore)[rootCanisterId.toText()];
     // Do not show errors if the user has stopped polling.
     if (!store?.keepPolling) {
-      // Reset toastId
-      if (nonNullish(toastId)) {
-        toastsStore.hide(toastId);
-        toastId = undefined;
-      }
+      hidePollingToast();
       return;
     }
 
@@ -198,10 +207,7 @@ export const loadOpenTicket = async ({
     // There is an issue with toastStore.hide if we show a new toast right after.
     // The workaround was to show the error toast first and then hide the info toast.
     // TODO: solve the issue with toastStore.hide
-    if (nonNullish(toastId)) {
-      toastsStore.hide(toastId);
-      toastId = undefined;
-    }
+    hidePollingToast();
   }
 };
 

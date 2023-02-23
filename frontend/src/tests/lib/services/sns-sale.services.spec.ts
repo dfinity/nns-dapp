@@ -244,26 +244,28 @@ describe("sns-api", () => {
       });
 
       it("should stop retrying after max attempts and set ticket to null", async () => {
+        const maxAttempts = 10;
         spyOnGetOpenTicketApi.mockRejectedValue(new Error("network error"));
         loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
           certified: true,
+          maxAttempts,
         });
 
         let counter = 0;
-        while (counter <= DEFAULT_MAX_POLLING_ATTEMPTS) {
+        while (counter <= maxAttempts) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
           counter += 1;
           jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
 
           await waitFor(() =>
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-              Math.min(counter, DEFAULT_MAX_POLLING_ATTEMPTS)
+              Math.min(counter, maxAttempts)
             )
           );
         }
 
-        expect(counter).toBe(DEFAULT_MAX_POLLING_ATTEMPTS + 1);
+        expect(counter).toBe(maxAttempts + 1);
         await waitFor(() =>
           expect(
             ticketFromStore(testSnsTicket.rootCanisterId).ticket

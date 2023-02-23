@@ -29,6 +29,7 @@ import { clickByTestId } from "../../../utils/utils.test-utils";
 
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
+  hidePollingToast: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateButton", () => {
