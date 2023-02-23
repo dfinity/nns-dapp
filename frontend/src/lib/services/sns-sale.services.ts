@@ -481,7 +481,7 @@ const pollNotifyParticipation = async ({
       fn: (): Promise<RefreshBuyerTokensResponse> =>
         notifyParticipation({ buyer, rootCanisterId, identity }),
       shouldExit: isInternalRefreshBuyerTokensError,
-      millisecondsToWait: WAIT_FOR_TICKET_MILLIS / 10000,
+      millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
