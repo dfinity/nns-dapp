@@ -67,6 +67,7 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
+import {toastsSuccess} from "../../../lib/stores/toasts.store";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -97,6 +98,7 @@ describe("sns-api", () => {
     icp_accepted_participation_e8s: 666n,
   });
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const ledgerCanisterMock = mock<LedgerCanister>();
   const testRootCanisterId = rootCanisterIdMock;
@@ -113,6 +115,7 @@ describe("sns-api", () => {
   beforeEach(() => {
     spyOnToastsShow.mockClear();
     spyOnToastsError.mockClear();
+    spyOnToastsSuccess.mockClear();
     jest.clearAllMocks();
 
     snsTicketsStore.reset();
@@ -436,6 +439,10 @@ describe("sns-api", () => {
       expect(stopBusySpy).toBeCalledTimes(1);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith(expect.objectContaining({
+        labelKey: "sns_project_detail.participate_success",
+      }));
       // no errors
       expect(spyOnToastsError).not.toBeCalled();
     });
@@ -591,7 +598,7 @@ describe("sns-api", () => {
       expect(ticketFromStore().ticket).toEqual(null);
     });
 
-    it("should display TooOldError errors", async () => {
+    it("should process TooOldError when notify participation succeed", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -603,12 +610,12 @@ describe("sns-api", () => {
         postprocess: jest.fn().mockResolvedValue(undefined),
       });
 
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.ledger_too_old",
-        })
-      );
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnToastsError).not.toBeCalled();
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith(expect.objectContaining({
+        labelKey: "sns_project_detail.participate_success",
+      }));
       expect(ticketFromStore().ticket).toEqual(null);
     });
 

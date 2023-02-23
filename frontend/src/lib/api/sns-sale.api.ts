@@ -3,7 +3,6 @@ import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
-import { fromNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
@@ -71,8 +70,7 @@ export const notifyPaymentFailure = async ({
     certified: true,
   });
 
-  const response = await notifyPaymentFailure();
-  const ticket = fromNullable(response?.ticket);
+  const ticket = await notifyPaymentFailure();
 
   logWithTimestamp(`[sale] notifyPaymentFailure complete.`);
 
