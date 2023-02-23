@@ -18,7 +18,10 @@
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import {
+    hidePollingToast,
+    restoreSnsSaleParticipation,
+  } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
@@ -52,7 +55,10 @@
 
   // busy if open ticket is available or not requested
   let busy = true;
-  $: busy = hasOpenTicketInProcess(rootCanisterId);
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
@@ -65,6 +71,8 @@
     ) {
       return;
     }
+
+    snsTicketsStore.enablePolling(rootCanisterId);
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
@@ -93,7 +101,14 @@
     }
 
     // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
-    snsTicketsStore.removeTicket(rootCanisterId);
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: undefined,
+      keepPolling: false,
+    });
+
+    // Hide toasts when moving away from the page
+    hidePollingToast();
   });
 </script>
 
