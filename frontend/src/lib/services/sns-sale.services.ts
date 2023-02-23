@@ -431,25 +431,16 @@ const notifyParticipationAndRemoveTicket = async ({
           console.error("[sale] notifyPaymentFailure", err);
         }
         // jump to unexpected_error
-      } else {
-        // unknown error: ask to refresh and stop the flow
-        toastsError({
-          labelKey: "error__sns.sns_sale_unexpected_and_refresh",
-          err,
-        });
-
-        return { success: false };
       }
     }
 
     // unexpected error (probably sale is closed)
+    // do not remove the ticket to not enable the button
+    // unknown error: ask to refresh and stop the flow
     toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
+      labelKey: "error__sns.sns_sale_unexpected_and_refresh",
       err,
     });
-
-    // enable participate button
-    snsTicketsStore.setNoTicket(rootCanisterId);
 
     return { success: false };
   }
