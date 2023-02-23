@@ -235,7 +235,14 @@ pub struct GetSaleParametersResponse { params: Option<Params> }
 pub struct get_state_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct NeuronAttributes { dissolve_delay_seconds: u64, memo: u64 }
+pub struct NeuronId { id: Vec<u8> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronAttributes {
+  pub  dissolve_delay_seconds: u64,
+  pub  memo: u64,
+  pub  followees: Vec<NeuronId>,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CfInvestment { hotkey_principal: String, nns_neuron_id: u64 }
@@ -263,11 +270,14 @@ pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Swap {
   pub  neuron_recipes: Vec<SnsNeuronRecipe>,
+  pub  next_ticket_id: Option<u64>,
   pub  decentralization_sale_open_timestamp_seconds: Option<u64>,
   pub  finalize_swap_in_progress: Option<bool>,
   pub  cf_participants: Vec<CfParticipant>,
   pub  init: Option<Init>,
+  pub  purge_old_tickets_last_completion_timestamp_nanoseconds: Option<u64>,
   pub  lifecycle: i32,
+  pub  purge_old_tickets_next_principal: Option<Vec<u8>>,
   pub  buyers: Vec<(String,BuyerState,)>,
   pub  params: Option<Params>,
   pub  open_sns_token_swap_proposal_id: Option<u64>,
@@ -329,6 +339,9 @@ pub enum Result_2 { Ok(Ok_1), Err(Err_2) }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NewSaleTicketResponse { result: Option<Result_2> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct notify_payment_failure_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct OpenRequest {
@@ -423,6 +436,12 @@ impl SERVICE{
   pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<
     (NewSaleTicketResponse,)
   > { ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await }
+  pub async fn notify_payment_failure(
+    &self,
+    arg0: notify_payment_failure_arg0,
+  ) -> CallResult<(Ok_1,)> {
+    ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
+  }
   pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
     ic_cdk::call(self.0, "open", (arg0,)).await
   }
