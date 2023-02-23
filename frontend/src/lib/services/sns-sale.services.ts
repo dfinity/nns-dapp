@@ -413,6 +413,9 @@ const notifyParticipationAndRemoveTicket = async ({
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
     }
+
+    // At this point the participation is done and the open ticket is removed
+    return { success: true };
   } catch (err) {
     console.error("[sale] notifyParticipation", err);
     const internalError = isInternalRefreshBuyerTokensError(err);
@@ -444,9 +447,6 @@ const notifyParticipationAndRemoveTicket = async ({
 
     return { success: false };
   }
-
-  // At this point the participation is done and the open ticket is removed
-  return { success: true };
 };
 
 /**

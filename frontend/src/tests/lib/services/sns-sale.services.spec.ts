@@ -93,9 +93,7 @@ describe("sns-api", () => {
     ],
   };
 
-  const spyOnNotifyParticipation = jest.fn().mockResolvedValue({
-    icp_accepted_participation_e8s: 666n,
-  });
+  const spyOnNotifyParticipation = jest.fn();
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
@@ -619,6 +617,7 @@ describe("sns-api", () => {
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
         expect(spyOnToastsError).not.toBeCalled();
         expect(spyOnToastsSuccess).toBeCalledTimes(1);
         expect(spyOnToastsSuccess).toBeCalledWith(
@@ -626,10 +625,11 @@ describe("sns-api", () => {
             labelKey: "sns_project_detail.participate_success",
           })
         );
+        // to enable the button/increase_participation
         expect(ticketFromStore().ticket).toEqual(null);
       });
 
-      it("should stop the error flow on unknown error", async () => {
+      it("should handle refresh_buyer_tokens unknown errors", async () => {
         snsTicketsStore.setTicket({
           rootCanisterId: rootCanisterIdMock,
           ticket: testTicket,
@@ -643,6 +643,7 @@ describe("sns-api", () => {
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
         expect(spyOnToastsError).toBeCalledTimes(1);
         expect(spyOnToastsError).toBeCalledWith(
           expect.objectContaining({
@@ -650,10 +651,11 @@ describe("sns-api", () => {
           })
         );
         expect(spyOnToastsSuccess).not.toBeCalled();
+        // the button/increase_participation should not be enabled
         expect(ticketFromStore().ticket).toEqual(testTicket);
       });
 
-      it("should manually remove the ticket on internal error", async () => {
+      it("should handle refresh_buyer_tokens internal errors and manually remove the ticket", async () => {
         snsTicketsStore.setTicket({
           rootCanisterId: rootCanisterIdMock,
           ticket: testTicket,
@@ -679,6 +681,7 @@ describe("sns-api", () => {
           })
         );
         expect(spyOnToastsSuccess).not.toBeCalled();
+        // the button/increase_participation should not be enabled
         expect(ticketFromStore().ticket).not.toBeNull();
       });
     });
