@@ -204,6 +204,9 @@ export const getCommitmentE8s = (
  * Tests the error message against `refresh_buyer_token` canister function.
  * This is the workaround before the api call provides nice error details.
  *
+ * @example
+ * Sorry, There was an unexpected error while participating. Please refresh and try again Call was rejected: Request ID: b89029662eb71f2470add43a1ab09b524036292a760308ddd846ec60a9047a74 Reject code: 5 Reject text: Canister 7phha-wiaaa-aaaaa-qaapa-cai trapped explicitly: Panicked at 'The available balance to be topped up (150000000) by the buyer is smaller than the amount requested (300000000).', rs/sns/swap/canister/canister.rs:178:21
+ *
  * @param err
  */
 export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
@@ -212,20 +215,26 @@ export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
   }
 
   const { message } = err;
-  return [
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs
-    "The token amount can only be refreshed when the canister is in the OPEN state",
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L611
-    "The ICP target for this token swap has already been reached.",
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L649
-    "The swap has already reached its target",
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L658
-    "Amount transferred:",
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L697
-    "New balance:",
-    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
-    "The available balance to be topped up",
-  ].some((text) => message.startsWith(text));
+
+  return (
+    message.startsWith(
+      "Sorry, There was an unexpected error while participating"
+    ) ||
+    [
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs
+      "The token amount can only be refreshed when the canister is in the OPEN state",
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L611
+      "The ICP target for this token swap has already been reached.",
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L649
+      "The swap has already reached its target",
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L658
+      "Amount transferred:",
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L697
+      "New balance:",
+      // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
+      "The available balance to be topped up",
+    ].some((text) => message.includes(text))
+  );
 };
 
 export const hasOpenTicketInProcess = ({

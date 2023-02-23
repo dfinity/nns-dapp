@@ -320,9 +320,29 @@ describe("sns-utils", () => {
   });
 
   describe("isInternalRefreshBuyerTokensError", () => {
-    it("returns true on known error", () => {
-      const error = new Error("The swap has already reached its target");
+    it("returns true if starts with known prefix", () => {
+      const error = new Error(
+        "Sorry, There was an unexpected error while participating. Please refresh and try again Call was rejected: Request ID: b89029662eb71f2470add43a1ab09b524036292a760308ddd846ec60a9047a74 Reject code: 5 Reject text: Canister 7phha-wiaaa-aaaaa-qaapa-cai trapped explicitly: Panicked at 'The available balance to be topped up (150000000) by the buyer is smaller than the amount requested (300000000).', rs/sns/swap/canister/canister.rs:178:21"
+      );
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns true when contains speciefic parts", () => {
+      expect(
+        isInternalRefreshBuyerTokensError(
+          new Error("... The swap has already reached its target ...")
+        )
+      ).toBeTruthy();
+      expect(
+        isInternalRefreshBuyerTokensError(
+          new Error('... "The available balance to be topped up" ...')
+        )
+      ).toBeTruthy();
+      expect(
+        isInternalRefreshBuyerTokensError(
+          new Error("... The swap has already reached its target ...")
+        )
+      ).toBeTruthy();
     });
 
     it("returns false on unknown error", () => {
