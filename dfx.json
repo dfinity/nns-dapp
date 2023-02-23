@@ -109,8 +109,8 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-ledger.did",
-      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "candid": "tmp/ledger.did",
+      "wasm": "tmp/ledger_canister.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -118,12 +118,20 @@
         }
       }
     },
+    "ckbtc_minter": {
+      "build": [
+        "true"
+      ],
+      "candid": "tmp/minter.did",
+      "wasm": "tmp/ckbtc_minter.wasm",
+      "type": "custom"
+    },
     "ckbtc_index": {
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-index.did",
-      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "candid": "tmp/index.did",
+      "wasm": "tmp/index_canister.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -157,7 +165,7 @@
     "staging": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://nnsdapp.testnet.dfinity.network",
+        "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
