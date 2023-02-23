@@ -3,47 +3,51 @@
  */
 
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../mocks/sns-accounts.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
+jest.mock("$lib/services/sns-accounts.services");
 
 describe("SnsAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
   };
 
+  beforeEach(() => {
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
+  });
+
   describe("when there are accounts in the store", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    beforeEach(() => {
+      snsAccountsStore.reset();
+      snsAccountsStore.setAccounts({
+        rootCanisterId: mockPrincipal,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
-
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
       page.mock({ data: { universe: mockPrincipal.toText() } });
     });
@@ -88,6 +92,9 @@ describe("SnsAccounts", () => {
           return () => undefined;
         });
     });
+
+    // This test seems wrong. I would expect that moving it to the group above
+    // should cause it to fail but it doesn't.
     it("should not render a token amount component nor zero", () => {
       const { container } = render(SnsAccounts, { props: { goToWallet } });
 

@@ -19,15 +19,11 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq
+        git jq npm
 
 # Install node
-RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN npm install -g n
+RUN n "${NODE_VERSION}"
 RUN node --version
 RUN npm --version
 
@@ -106,5 +102,7 @@ RUN ./build-sns-aggregator.sh
 FROM scratch AS scratch
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
+COPY --from=build_frontend /build/deployment-config.json /
+COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /

@@ -4,17 +4,16 @@
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import Neurons from "$lib/routes/Neurons.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -43,16 +42,17 @@ describe("Neurons", () => {
       .mockImplementation(mockAuthStoreSubscribe)
   );
 
-  jest
-    .spyOn(snsProjectsStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-
   beforeEach(() => {
     // Reset to default value
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neurons,
     });
+
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Committed] })
+    );
   });
 
   it("should render NnsNeurons by default", () => {

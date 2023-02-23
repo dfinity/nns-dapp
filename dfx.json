@@ -69,7 +69,7 @@
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -427,6 +427,7 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
