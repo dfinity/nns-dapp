@@ -20,7 +20,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
 # Note: This can be done in the builder but is slow because unrelated changes to dfx.json can cause a rebuild.
 #
 # Note: Here we play a bit with the idea of storing config in files, one file per parameter.
-from base as tool_versions
+FROM base as tool_versions
 SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
