@@ -6,14 +6,17 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
 } from "../../mocks/sns-accounts.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
@@ -32,6 +35,16 @@ describe("SnsWallet", () => {
   const props = {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
+
+  beforeEach(() => {
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
+  });
 
   describe("accounts not loaded", () => {
     beforeEach(() => {
