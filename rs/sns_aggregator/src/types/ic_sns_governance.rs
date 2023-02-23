@@ -112,6 +112,7 @@ pub struct ProposalId { id: u64 }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RewardEvent {
   pub  actual_timestamp_seconds: u64,
+  pub  end_timestamp_seconds: Option<u64>,
   pub  distributed_e8s_equivalent: u64,
   pub  round: u64,
   pub  settled_proposals: Vec<ProposalId>,
@@ -215,6 +216,7 @@ pub struct ProposalData {
   pub  ballots: Vec<(String,Ballot,)>,
   pub  reward_event_round: u64,
   pub  failed_timestamp_seconds: u64,
+  pub  reward_event_end_timestamp_seconds: Option<u64>,
   pub  proposal_creation_timestamp_seconds: u64,
   pub  initial_voting_period_seconds: u64,
   pub  reject_cost_e8s: u64,
@@ -393,6 +395,7 @@ pub struct NeuronParameters {
   pub  dissolve_delay_seconds: Option<u64>,
   pub  source_nns_neuron_id: Option<u64>,
   pub  stake_e8s: Option<u64>,
+  pub  followees: Vec<NeuronId>,
   pub  hotkey: Option<candid::Principal>,
   pub  neuron_id: Option<NeuronId>,
 }
