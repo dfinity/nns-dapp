@@ -260,6 +260,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
         "js" => Some("application/javascript"),
+        "mjs" => Some("application/javascript"),
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
