@@ -5,5 +5,5 @@ export const isNnsAlternativeOrigin = (): boolean => {
     location: { origin },
   } = window;
 
-  return origin.includes(NNS_IC_ORG_ALTERNATIVE_ORIGIN);
+  return origin === NNS_IC_ORG_ALTERNATIVE_ORIGIN;
 };
