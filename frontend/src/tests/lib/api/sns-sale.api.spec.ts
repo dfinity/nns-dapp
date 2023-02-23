@@ -2,7 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { getOpenTicket, newSaleTicket } from "$lib/api/sns-sale.api";
+import {
+  getOpenTicket,
+  newSaleTicket,
+  notifyParticipation,
+} from "$lib/api/sns-sale.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -30,6 +34,12 @@ describe("sns-sale.api", () => {
   const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const notifyPaymentFailureSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const participationResponse = {
+    icp_accepted_participation_e8s: 666n,
+  };
+  const notifyParticipationSpy = jest
+    .fn()
+    .mockResolvedValue(participationResponse);
 
   beforeEach(() => {
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
@@ -50,6 +60,7 @@ describe("sns-sale.api", () => {
         getOpenTicket: getOpenTicketSpy,
         newSaleTicket: newSaleTicketSpy,
         notifyPaymentFailure: notifyPaymentFailureSpy,
+        notifyParticipation: notifyParticipationSpy,
       })
     );
   });
@@ -89,5 +100,16 @@ describe("sns-sale.api", () => {
 
     expect(result).not.toBeNull();
     expect(result).toEqual(ticket.ticket);
+  });
+
+  it("should notify participation", async () => {
+    const result = await notifyParticipation({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      buyer: mockPrincipal,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result).toEqual(participationResponse);
   });
 });

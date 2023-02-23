@@ -727,6 +727,11 @@ describe("sns-api", () => {
   });
 
   describe("participateInSnsSale", () => {
+    beforeEach(() => {
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
     it("should call postprocess and APIs", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
@@ -744,6 +749,52 @@ describe("sns-api", () => {
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(ticketFromStore().ticket).toEqual(null);
+      expect(postprocessSpy).toBeCalledTimes(1);
+    });
+
+    it("should poll refresh_buyer_tokens until successful", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockResolvedValue({
+          icp_accepted_participation_e8s: 666n,
+        });
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        postprocess: postprocessSpy,
+      });
+
+      let counter = 0;
+      const retriesBeforeSuccess = 4;
+      while (counter < retriesBeforeSuccess) {
+        expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
+        counter += 1;
+        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+
+        await waitFor(() =>
+          expect(spyOnNotifyParticipation).toBeCalledTimes(counter)
+        );
+      }
+      expect(counter).toBe(retriesBeforeSuccess);
+
+      await waitFor(() => expect(ticketFromStore().ticket).toEqual(null));
+
+      expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
       expect(postprocessSpy).toBeCalledTimes(1);
     });
 

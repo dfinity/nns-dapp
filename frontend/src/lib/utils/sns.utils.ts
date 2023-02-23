@@ -228,6 +228,18 @@ export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
   ].some((text) => message.startsWith(text));
 };
 
+export const isRetryRefreshBuyerToken = (err: unknown): boolean => {
+  if (!(err instanceof Error)) {
+    return false;
+  }
+
+  const { message } = err;
+  return [
+    "Error calling method 'account_balance_pb'",
+    "Failed to add buyer",
+  ].some((text) => message.startsWith(text));
+};
+
 export const hasOpenTicketInProcess = ({
   rootCanisterId,
   ticketsStore,

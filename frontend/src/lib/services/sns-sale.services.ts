@@ -2,6 +2,7 @@ import { ledgerCanister } from "$lib/api/ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
+  notifyParticipation,
   notifyPaymentFailure,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
@@ -22,6 +23,7 @@ import { validParticipation } from "$lib/utils/projects.utils";
 import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
+  isRetryRefreshBuyerToken,
 } from "$lib/utils/sns.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -42,6 +44,7 @@ import {
 } from "@dfinity/sns";
 import type {
   InvalidUserAmount,
+  RefreshBuyerTokensResponse,
   Ticket,
 } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
@@ -465,6 +468,33 @@ export const initiateSnsSaleParticipation = async ({
   stopBusy("project-participate");
 };
 
+const shouldStopPollingNotify = (err: unknown) =>
+  !isRetryRefreshBuyerToken(err);
+
+const pollNotifyParticipation = async ({
+  buyer,
+  identity,
+  rootCanisterId,
+}: {
+  buyer: Principal;
+  rootCanisterId: Principal;
+  identity: Identity;
+}) => {
+  try {
+    return await poll({
+      fn: (): Promise<RefreshBuyerTokensResponse> =>
+        notifyParticipation({ buyer, rootCanisterId, identity }),
+      shouldExit: shouldStopPollingNotify,
+      millisecondsToWait: WAIT_FOR_TICKET_MILLIS / 10000,
+    });
+  } catch (error: unknown) {
+    if (pollingLimit(error)) {
+      throw new ApiErrorKey("error.limit_exceeded_getting_open_ticket");
+    }
+    throw error;
+  }
+};
+
 /**
  * Calls notifyParticipation (refresh_buyer_tokens api) and handles response errors.
  * Should be called to refresh the amount of ICP a buyer has contributed from the ICP ledger canister.
@@ -481,18 +511,14 @@ const notifyParticipationAndRemoveTicket = async ({
   hasTooOldError: boolean;
   ticket: Ticket;
 }): Promise<{ success: boolean }> => {
-  const { notifyParticipation: notifyParticipationApi } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-
   try {
     logWithTimestamp("[sale] 2. refresh_buyer_tokens");
     const controller = identity.getPrincipal();
     // endpoint: refresh_buyer_tokens
-    const { icp_accepted_participation_e8s } = await notifyParticipationApi({
-      buyer: controller.toText(),
+    const { icp_accepted_participation_e8s } = await pollNotifyParticipation({
+      buyer: controller,
+      rootCanisterId,
+      identity,
     });
 
     // current_committed ≠ ticket.amount
