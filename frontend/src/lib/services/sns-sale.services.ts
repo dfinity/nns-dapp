@@ -82,7 +82,7 @@ const shouldStopPollingTicket =
     return false;
   };
 
-const WAIT_FOR_TICKET_MILLIS = 1 * 1_000;
+const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 const pollGetOpenTicket = async ({
   rootCanisterId,
   identity,
