@@ -23,7 +23,6 @@ import { validParticipation } from "$lib/utils/projects.utils";
 import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
-  isRetryRefreshBuyerToken,
 } from "$lib/utils/sns.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
@@ -468,9 +467,6 @@ export const initiateSnsSaleParticipation = async ({
   stopBusy("project-participate");
 };
 
-const shouldStopPollingNotify = (err: unknown) =>
-  !isRetryRefreshBuyerToken(err);
-
 const pollNotifyParticipation = async ({
   buyer,
   identity,
@@ -484,7 +480,7 @@ const pollNotifyParticipation = async ({
     return await poll({
       fn: (): Promise<RefreshBuyerTokensResponse> =>
         notifyParticipation({ buyer, rootCanisterId, identity }),
-      shouldExit: shouldStopPollingNotify,
+      shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS / 10000,
     });
   } catch (error: unknown) {

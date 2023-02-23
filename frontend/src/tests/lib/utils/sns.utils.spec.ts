@@ -2,7 +2,6 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
   getSwapCanisterAccount,
-  isRetryRefreshBuyerToken,
   mapAndSortSnsQueryToSummaries,
 } from "$lib/utils/sns.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
@@ -326,6 +325,13 @@ describe("sns-utils", () => {
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
     });
 
+    it("returns true on known error", () => {
+      const error = new Error(
+        "This is the beginning of the error. The swap has already reached its target ..."
+      );
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
     it("returns false on unknown error", () => {
       const error = new Error("Fake the swap has already reached its target");
       expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
@@ -338,28 +344,6 @@ describe("sns-utils", () => {
         isInternalRefreshBuyerTokensError(
           "The swap has already reached its target"
         )
-      ).toBeFalsy();
-    });
-  });
-
-  describe("isRetryRefreshBuyerToken", () => {
-    it("returns true on known error", () => {
-      const error1 = new Error("Error calling method 'account_balance_pb'...");
-      expect(isRetryRefreshBuyerToken(error1)).toBeTruthy();
-      const error2 = new Error("Failed to add buyer...");
-      expect(isRetryRefreshBuyerToken(error2)).toBeTruthy();
-    });
-
-    it("returns false on unknown error", () => {
-      const error = new Error("Fake the swap has already reached its target");
-      expect(isRetryRefreshBuyerToken(error)).toBeFalsy();
-    });
-
-    it("returns false on not error argument", () => {
-      expect(isRetryRefreshBuyerToken(null)).toBeFalsy();
-      expect(isRetryRefreshBuyerToken(undefined)).toBeFalsy();
-      expect(
-        isRetryRefreshBuyerToken("The swap has already reached its target")
       ).toBeFalsy();
     });
   });
