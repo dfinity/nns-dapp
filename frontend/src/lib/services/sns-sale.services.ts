@@ -57,50 +57,32 @@ import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
-const shouldKeepPollingTicket =
-  (showToast = true) =>
+let toastId: symbol | undefined;
+const shouldStopPollingTicket =
+  (rootCanisterId: Principal) =>
   (err: unknown): boolean => {
-    if (!(err instanceof SnsSwapGetOpenTicketError)) {
-      // Generic error, maybe a network error
-      // We want to keep trying.
-      if (showToast) {
-        toastsShow({
-          labelKey: "",
-          level: "info",
-          spinner: true,
-        });
-        showToast = false;
-      }
-      return false;
+    const store = get(snsTicketsStore)[rootCanisterId.toText()];
+    // Exit if polling is not enabled
+    if (nonNullish(store) && !store.keepPolling) {
+      return true;
     }
-
-    // handle custom errors
-    const { errorType } = err;
-    switch (errorType) {
-      case GetOpenTicketErrorType.TYPE_SALE_CLOSED: {
-        toastsError({
-          labelKey: "error__sns.sns_sale_closed",
-        });
-        break;
-      }
-      case GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN: {
-        toastsError({
-          labelKey: "error__sns.sns_sale_closed",
-        });
-        break;
-      }
-      case GetOpenTicketErrorType.TYPE_UNSPECIFIED: {
-        toastsError({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-          err,
-        });
-        break;
-      }
+    // We want to stop polling if the error is a known error
+    if (err instanceof SnsSwapGetOpenTicketError) {
+      return true;
     }
-    return true;
+    // Generic error, maybe a network error
+    // We want to keep trying.
+    if (isNullish(toastId)) {
+      toastId = toastsShow({
+        labelKey: "sns_project_detail.getting_sns_open_ticket",
+        level: "info",
+        spinner: true,
+      });
+    }
+    return false;
   };
 
-const WAIT_FOR_TICKET_MILLIS = 15 * 1_000;
+const WAIT_FOR_TICKET_MILLIS = 1 * 1_000;
 const pollGetOpenTicket = async ({
   rootCanisterId,
   identity,
@@ -110,6 +92,8 @@ const pollGetOpenTicket = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<Ticket | undefined> => {
+  // Reset polling toast
+  toastId = undefined;
   try {
     return await poll({
       fn: (): Promise<Ticket | undefined> =>
@@ -118,17 +102,21 @@ const pollGetOpenTicket = async ({
           rootCanisterId,
           certified,
         }),
-      shouldExit: shouldKeepPollingTicket(),
+      shouldExit: shouldStopPollingTicket(rootCanisterId),
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     });
   } catch (error: unknown) {
-    // Reset polling toast
-    toastsStore.reset();
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_getting_open_ticket");
     }
     throw error;
   }
+};
+
+const getTicketErrorMapper: Record<GetOpenTicketErrorType, string> = {
+  [GetOpenTicketErrorType.TYPE_SALE_CLOSED]: "error__sns.sns_sale_closed",
+  [GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN]: "error__sns.sns_sale_not_open",
+  [GetOpenTicketErrorType.TYPE_UNSPECIFIED]: "error__sns.sns_sale_final_error",
 };
 
 /**
@@ -152,6 +140,11 @@ export const loadOpenTicket = async ({
       rootCanisterId,
       certified,
     });
+    // Reset the polling toast
+    if (nonNullish(toastId)) {
+      toastsStore.hide(toastId);
+      toastId = undefined;
+    }
 
     if (ticket === undefined) {
       // set explicitly null to mark the ticket absence
@@ -165,33 +158,45 @@ export const loadOpenTicket = async ({
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
-    // enable participate button
-    snsTicketsStore.setNoTicket(rootCanisterId);
+    const store = get(snsTicketsStore)[rootCanisterId.toText()];
 
-    if (!(err instanceof SnsSwapGetOpenTicketError)) {
-      // not expected error
-      toastsError({
-        labelKey: "error__sns.sns_sale_unexpected_error",
-        err,
-      });
+    // Do not show errors if the user has stopped polling.
+    if (!store?.keepPolling) {
+      // Reset toastId
+      if (nonNullish(toastId)) {
+        toastsStore.hide(toastId);
+        toastId = undefined;
+      }
       return;
     }
 
-    // handle custom errors
-    const { errorType } = err;
-    switch (errorType) {
-      case GetOpenTicketErrorType.TYPE_SALE_CLOSED:
-        toastsError({
-          labelKey: "error__sns.sns_sale_closed",
-        });
-        return;
+    snsTicketsStore.stopPolling(rootCanisterId);
+
+    if (err instanceof SnsSwapGetOpenTicketError) {
+      // handle custom errors
+      const { errorType } = err;
+      const labelKey = getTicketErrorMapper[errorType];
+      toastsError({
+        labelKey,
+      });
+    } else if (err instanceof ApiErrorKey) {
+      toastsError({
+        labelKey: err.message,
+      });
+    } else {
+      toastsError({
+        labelKey: "error__sns.sns_sale_final_error",
+        err,
+      });
     }
 
-    // generic error
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
-      err,
-    });
+    // There is an issue with toastStore.hide if we show a new toast right after.
+    // The workaround was to show the error toast first and then hide the info toast.
+    // TODO: solve the issue with toastStore.hide
+    if (nonNullish(toastId)) {
+      toastsStore.hide(toastId);
+      toastId = undefined;
+    }
   }
 };
 

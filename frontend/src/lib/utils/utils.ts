@@ -234,6 +234,7 @@ export const poll = async <T>({
     shouldExit,
     maxAttempts,
     counter: counter + 1,
+    millisecondsToWait,
   });
 };
 

@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Spinner } from "@dfinity/gix-components";
+  import { BottomSheet, Spinner, toastsStore } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -52,7 +52,10 @@
 
   // busy if open ticket is available or not requested
   let busy = true;
-  $: busy = hasOpenTicketInProcess(rootCanisterId);
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
@@ -65,6 +68,8 @@
     ) {
       return;
     }
+
+    snsTicketsStore.enablePolling(rootCanisterId);
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
@@ -93,7 +98,14 @@
     }
 
     // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
-    snsTicketsStore.removeTicket(rootCanisterId);
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: undefined,
+      keepPolling: false,
+    });
+
+    // Hide toasts when moving away from the page
+    toastsStore.reset();
   });
 </script>
 

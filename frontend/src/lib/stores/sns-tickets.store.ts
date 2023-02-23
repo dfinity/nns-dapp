@@ -1,7 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import { writable } from "svelte/store";
-import { removeKeys } from "../utils/utils";
 
 export interface SnsTicketsStoreEntry {
   /**
@@ -9,6 +8,7 @@ export interface SnsTicketsStoreEntry {
    * null: no ticket
    */
   ticket: Ticket | undefined | null;
+  keepPolling: boolean;
 }
 
 export interface SnsTicketsStore {
@@ -24,19 +24,52 @@ const initSnsTicketsStore = () => {
 
     /**
      * @param rootCanisterId
-     * @param {Ticket | null | undefined} ticket undefined - not set; null - no ticket.
+     * @param {Ticket} ticket undefined - not set; null - no ticket.
      */
     setTicket({
       rootCanisterId,
       ticket,
+      keepPolling,
     }: {
       rootCanisterId: Principal;
-      ticket: Ticket;
+      ticket: Ticket | undefined | null;
+      keepPolling?: boolean;
     }) {
       update((currentState: SnsTicketsStore) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           ticket,
+          keepPolling: keepPolling || false,
+        },
+      }));
+    },
+
+    /**
+     * Enable polling for the ticket
+     *
+     * @param rootCanisterId
+     */
+    enablePolling(rootCanisterId: Principal) {
+      update((currentState: SnsTicketsStore) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          ticket: currentState[rootCanisterId.toText()]?.ticket,
+          keepPolling: true,
+        },
+      }));
+    },
+
+    /**
+     * Enable polling for the ticket
+     *
+     * @param rootCanisterId
+     */
+    stopPolling(rootCanisterId: Principal) {
+      update((currentState: SnsTicketsStore) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          ticket: currentState[rootCanisterId.toText()]?.ticket,
+          keepPolling: false,
         },
       }));
     },
@@ -50,6 +83,8 @@ const initSnsTicketsStore = () => {
         ...currentState,
         [rootCanisterId.toText()]: {
           ticket: null,
+          keepPolling:
+            currentState[rootCanisterId.toText()]?.keepPolling ?? false,
         },
       }));
     },
@@ -57,15 +92,6 @@ const initSnsTicketsStore = () => {
     // Used in tests
     reset() {
       set({});
-    },
-
-    removeTicket(rootCanisterId: Principal) {
-      update((currentState: SnsTicketsStore) =>
-        removeKeys({
-          obj: currentState,
-          keysToRemove: [rootCanisterId.toText()],
-        })
-      );
     },
   };
 };
