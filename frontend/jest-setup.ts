@@ -6,7 +6,7 @@ import "jest-expect-message";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
-import { failTestsThatLogToConsole } from "./src/tests/mocks/console.mock";
+import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 
