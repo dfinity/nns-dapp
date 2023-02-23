@@ -6,8 +6,7 @@ export class IntersectionObserverPassive implements IntersectionObserver {
   public readonly rootMargin: string;
   public readonly thresholds: ReadonlyArray<number>;
   public takeRecords: () => IntersectionObserverEntry[];
-  constructor() {}
-  observe = (element: HTMLElement) => null;
+  observe = () => null;
   disconnect = () => null;
   unobserve = () => null;
 }
