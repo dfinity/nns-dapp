@@ -225,7 +225,7 @@ export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
     "New balance:",
     // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
     "The available balance to be topped up",
-  ].some((text) => message.startsWith(text));
+  ].some((text) => message.includes(text));
 };
 
 export const isRetryRefreshBuyerToken = (err: unknown): boolean => {
@@ -237,7 +237,7 @@ export const isRetryRefreshBuyerToken = (err: unknown): boolean => {
   return [
     "Error calling method 'account_balance_pb'",
     "Failed to add buyer",
-  ].some((text) => message.startsWith(text));
+  ].some((text) => message.includes(text));
 };
 
 export const hasOpenTicketInProcess = ({
