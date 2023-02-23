@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Spinner, toastsStore } from "@dfinity/gix-components";
+  import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
