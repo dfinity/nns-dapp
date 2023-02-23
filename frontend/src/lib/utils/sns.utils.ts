@@ -1,5 +1,5 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
-import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import type { SnsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
@@ -22,8 +22,7 @@ import type {
   SnsSwap,
   SnsSwapDerivedState,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
-import { get } from "svelte/store";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { isPngAsset } from "./utils";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
@@ -201,13 +200,6 @@ export const getCommitmentE8s = (
   fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
   undefined;
 
-export const hasOpenTicketInProcess = (
-  rootCanisterId?: Principal | null
-): boolean =>
-  isNullish(rootCanisterId)
-    ? true
-    : get(snsTicketsStore)[rootCanisterId.toText()]?.ticket !== null;
-
 /**
  * Tests the error message against `refresh_buyer_token` canister function.
  * This is the workaround before the api call provides nice error details.
@@ -234,4 +226,34 @@ export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
     // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
     "The available balance to be topped up",
   ].some((text) => message.startsWith(text));
+};
+
+export const hasOpenTicketInProcess = ({
+  rootCanisterId,
+  ticketsStore,
+}: {
+  rootCanisterId?: Principal | null;
+  ticketsStore: SnsTicketsStore;
+}): boolean => {
+  if (isNullish(rootCanisterId)) {
+    return true;
+  }
+  const projectTicketData = ticketsStore[rootCanisterId.toText()];
+
+  if (isNullish(projectTicketData)) {
+    return true;
+  }
+
+  // If we have a ticket, we have an open ticket in process.
+  if (nonNullish(projectTicketData.ticket)) {
+    return true;
+  }
+
+  // `null` means that the user has no open tickets.
+  if (projectTicketData.ticket === null) {
+    return false;
+  }
+
+  // `undefined` means that we could still be polling for the ticket.
+  return projectTicketData.keepPolling;
 };

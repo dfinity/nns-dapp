@@ -14,6 +14,7 @@ import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -22,7 +23,9 @@ import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
 } from "$lib/utils/sns.utils";
+import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
 import type { TokenAmount } from "@dfinity/nns";
 import {
   InsufficientFundsError,
@@ -58,6 +61,81 @@ import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
+let toastId: symbol | undefined;
+export const hidePollingToast = (): void => {
+  if (nonNullish(toastId)) {
+    toastsStore.hide(toastId);
+    toastId = undefined;
+  }
+};
+
+const shouldStopPollingTicket =
+  (rootCanisterId: Principal) =>
+  (err: unknown): boolean => {
+    const store = get(snsTicketsStore)[rootCanisterId.toText()];
+    // Exit if polling is not enabled
+    if (nonNullish(store) && !store.keepPolling) {
+      return true;
+    }
+    // We want to stop polling if the error is a known error
+    if (err instanceof SnsSwapGetOpenTicketError) {
+      return true;
+    }
+    // Generic error, maybe a network error
+    // We want to keep trying.
+    if (isNullish(toastId)) {
+      toastId = toastsShow({
+        labelKey: "sns_project_detail.getting_sns_open_ticket",
+        level: "info",
+        spinner: true,
+      });
+    }
+    return false;
+  };
+
+const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
+// TODO: Solve problem with importing from sns.constants.ts
+const MAX_ATTEMPS_FOR_TICKET = 50;
+// Export for testing purposes
+const pollGetOpenTicket = async ({
+  rootCanisterId,
+  identity,
+  certified,
+  maxAttempts,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  maxAttempts?: number;
+}): Promise<Ticket | undefined> => {
+  // Reset polling toast
+  toastId = undefined;
+  try {
+    return await poll({
+      fn: (): Promise<Ticket | undefined> =>
+        getOpenTicketApi({
+          identity,
+          rootCanisterId,
+          certified,
+        }),
+      shouldExit: shouldStopPollingTicket(rootCanisterId),
+      millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+      maxAttempts,
+    });
+  } catch (error: unknown) {
+    if (pollingLimit(error)) {
+      throw new ApiErrorKey("error.limit_exceeded_getting_open_ticket");
+    }
+    throw error;
+  }
+};
+
+const getTicketErrorMapper: Record<GetOpenTicketErrorType, string> = {
+  [GetOpenTicketErrorType.TYPE_SALE_CLOSED]: "error__sns.sns_sale_closed",
+  [GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN]: "error__sns.sns_sale_not_open",
+  [GetOpenTicketErrorType.TYPE_UNSPECIFIED]: "error__sns.sns_sale_final_error",
+};
+
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -68,17 +146,22 @@ import { formatToken } from "../utils/token.utils";
 export const loadOpenTicket = async ({
   rootCanisterId,
   certified,
+  maxAttempts = MAX_ATTEMPS_FOR_TICKET,
 }: {
   rootCanisterId: Principal;
   certified: boolean;
+  maxAttempts?: number;
 }): Promise<void> => {
   try {
     const identity = await getCurrentIdentity();
-    const ticket = await getOpenTicketApi({
+    const ticket = await pollGetOpenTicket({
       identity,
       rootCanisterId,
       certified,
+      maxAttempts,
     });
+    // Reset the polling toast
+    hidePollingToast();
 
     if (ticket === undefined) {
       // set explicitly null to mark the ticket absence
@@ -92,33 +175,43 @@ export const loadOpenTicket = async ({
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
-    // enable participate button
-    snsTicketsStore.setNoTicket(rootCanisterId);
-
-    if (!(err instanceof SnsSwapGetOpenTicketError)) {
-      // not expected error
-      toastsError({
-        labelKey: "error__sns.sns_sale_unexpected_error",
-        err,
-      });
+    const store = get(snsTicketsStore)[rootCanisterId.toText()];
+    // Do not show errors if the user has stopped polling.
+    if (!store?.keepPolling) {
+      hidePollingToast();
       return;
     }
 
-    // handle custom errors
-    const { errorType } = err;
-    switch (errorType) {
-      case GetOpenTicketErrorType.TYPE_SALE_CLOSED:
-        toastsError({
-          labelKey: "error__sns.sns_sale_closed",
-        });
-        return;
+    // Set explicitly `null` to mark the ticket absence
+    // Stop polling
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: null,
+      keepPolling: false,
+    });
+
+    if (err instanceof SnsSwapGetOpenTicketError) {
+      // handle custom errors
+      const { errorType } = err;
+      const labelKey = getTicketErrorMapper[errorType];
+      toastsError({
+        labelKey,
+      });
+    } else if (err instanceof ApiErrorKey) {
+      toastsError({
+        labelKey: err.message,
+      });
+    } else {
+      toastsError({
+        labelKey: "error__sns.sns_sale_final_error",
+        err,
+      });
     }
 
-    // generic error
-    toastsError({
-      labelKey: "error__sns.sns_sale_unexpected_error",
-      err,
-    });
+    // There is an issue with toastStore.hide if we show a new toast right after.
+    // The workaround was to show the error toast first and then hide the info toast.
+    // TODO: solve the issue with toastStore.hide
+    hidePollingToast();
   }
 };
 
