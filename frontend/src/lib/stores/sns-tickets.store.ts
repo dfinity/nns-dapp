@@ -64,7 +64,7 @@ const initSnsTicketsStore = () => {
      *
      * @param rootCanisterId
      */
-    stopPolling(rootCanisterId: Principal) {
+    disablePolling(rootCanisterId: Principal) {
       update((currentState: SnsTicketsStore) => ({
         ...currentState,
         [rootCanisterId.toText()]: {

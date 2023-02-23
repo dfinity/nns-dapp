@@ -159,7 +159,6 @@ export const loadOpenTicket = async ({
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
     const store = get(snsTicketsStore)[rootCanisterId.toText()];
-
     // Do not show errors if the user has stopped polling.
     if (!store?.keepPolling) {
       // Reset toastId
@@ -170,7 +169,13 @@ export const loadOpenTicket = async ({
       return;
     }
 
-    snsTicketsStore.stopPolling(rootCanisterId);
+    // Set explicitly `null` to mark the ticket absence
+    // Stop polling
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: null,
+      keepPolling: false,
+    });
 
     if (err instanceof SnsSwapGetOpenTicketError) {
       // handle custom errors

@@ -28,6 +28,7 @@
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -86,9 +87,10 @@
   let accepted: boolean;
 
   let busy = true;
-  $: busy = hasOpenTicketInProcess(
-    $projectDetailStore?.summary?.rootCanisterId
-  );
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
 
   const dispatcher = createEventDispatcher();
   const participate = async ({

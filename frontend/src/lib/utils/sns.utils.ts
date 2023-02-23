@@ -22,7 +22,7 @@ import type {
   SnsSwap,
   SnsSwapDerivedState,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { isPngAsset } from "./utils";
 
 type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
@@ -216,7 +216,16 @@ export const hasOpenTicketInProcess = ({
     return true;
   }
 
-  return (
-    projectTicketData.ticket !== null && projectTicketData.keepPolling === true
-  );
+  // If we have a ticket, we have an open ticket in process.
+  if (nonNullish(projectTicketData.ticket)) {
+    return true;
+  }
+
+  // `null` means that the user has no open tickets.
+  if (projectTicketData.ticket === null) {
+    return false;
+  }
+
+  // `undefined` means that we could still be polling for the ticket.
+  return projectTicketData.keepPolling;
 };
