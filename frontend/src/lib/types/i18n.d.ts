@@ -748,6 +748,7 @@ interface I18nError__sns {
   commitment_too_large: string;
   commitment_exceeds_current_allowed: string;
   sns_sale_unexpected_error: string;
+  sns_sale_unexpected_and_refresh: string;
   sns_sale_final_error: string;
   sns_sale_proceed_with_existing_ticket: string;
   sns_sale_closed: string;

@@ -54,3 +54,25 @@ export const newSaleTicket = async ({
 
   return response;
 };
+
+export const notifyPaymentFailure = async ({
+  identity,
+  rootCanisterId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+}): Promise<Ticket | undefined> => {
+  logWithTimestamp(`[sale] notifyPaymentFailure call...`);
+
+  const { notifyPaymentFailure } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  const ticket = await notifyPaymentFailure();
+
+  logWithTimestamp(`[sale] notifyPaymentFailure complete.`);
+
+  return ticket;
+};

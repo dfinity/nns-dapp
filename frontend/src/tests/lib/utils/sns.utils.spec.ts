@@ -9,7 +9,10 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
-import { hasOpenTicketInProcess } from "../../../lib/utils/sns.utils";
+import {
+  hasOpenTicketInProcess,
+  isInternalRefreshBuyerTokensError,
+} from "../../../lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -312,6 +315,28 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
+      ).toBeFalsy();
+    });
+  });
+
+  describe("isInternalRefreshBuyerTokensError", () => {
+    it("returns true on known error", () => {
+      const error = new Error("The swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns false on unknown error", () => {
+      const error = new Error("Fake the swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
+    });
+
+    it("returns false on not error argument", () => {
+      expect(isInternalRefreshBuyerTokensError(null)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(undefined)).toBeFalsy();
+      expect(
+        isInternalRefreshBuyerTokensError(
+          "The swap has already reached its target"
+        )
       ).toBeFalsy();
     });
   });
