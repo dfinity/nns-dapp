@@ -67,7 +67,6 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
-import {toastsSuccess} from "../../../lib/stores/toasts.store";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -109,6 +108,7 @@ describe("sns-api", () => {
   const testTicket = testSnsTicket.ticket;
   const spyOnGetOpenTicketApi = jest.fn();
   const spyOnNewSaleTicketApi = jest.fn();
+  const spyOnNotifyPaymentFailureApi = jest.fn();
   const ticketFromStore = (rootCanisterId = testRootCanisterId) =>
     get(snsTicketsStore)[rootCanisterId.toText()];
 
@@ -122,6 +122,7 @@ describe("sns-api", () => {
 
     spyOnGetOpenTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
+    spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
@@ -166,6 +167,9 @@ describe("sns-api", () => {
       }),
     });
 
+    spyOnNotifyParticipation.mockResolvedValue({
+      icp_accepted_participation_e8s: 666n,
+    });
     (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
@@ -180,6 +184,7 @@ describe("sns-api", () => {
         notifyParticipation: spyOnNotifyParticipation,
         getOpenTicket: spyOnGetOpenTicketApi,
         newSaleTicket: spyOnNewSaleTicketApi,
+        notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
       })
     );
 
@@ -440,9 +445,11 @@ describe("sns-api", () => {
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
       expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith(expect.objectContaining({
-        labelKey: "sns_project_detail.participate_success",
-      }));
+      expect(spyOnToastsSuccess).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "sns_project_detail.participate_success",
+        })
+      );
       // no errors
       expect(spyOnToastsError).not.toBeCalled();
     });
@@ -598,25 +605,82 @@ describe("sns-api", () => {
       expect(ticketFromStore().ticket).toEqual(null);
     });
 
-    it("should process TooOldError when notify participation succeed", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-      ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
+    describe("TooOldError", () => {
+      it("should succeed when no errors on notify participation", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
+        ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
 
-      await participateInSnsSale({
-        rootCanisterId: testRootCanisterId,
-        postprocess: jest.fn().mockResolvedValue(undefined),
+        await participateInSnsSale({
+          rootCanisterId: testRootCanisterId,
+          postprocess: jest.fn().mockResolvedValue(undefined),
+        });
+
+        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnToastsError).not.toBeCalled();
+        expect(spyOnToastsSuccess).toBeCalledTimes(1);
+        expect(spyOnToastsSuccess).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "sns_project_detail.participate_success",
+          })
+        );
+        expect(ticketFromStore().ticket).toEqual(null);
       });
 
-      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
-      expect(spyOnToastsError).not.toBeCalled();
-      expect(spyOnToastsSuccess).toBeCalledTimes(1);
-      expect(spyOnToastsSuccess).toBeCalledWith(expect.objectContaining({
-        labelKey: "sns_project_detail.participate_success",
-      }));
-      expect(ticketFromStore().ticket).toEqual(null);
+      it("should stop the error flow on unknown error", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
+        spyOnNotifyParticipation.mockRejectedValue(new Error("unknown error"));
+        ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
+
+        await participateInSnsSale({
+          rootCanisterId: testRootCanisterId,
+          postprocess: jest.fn().mockResolvedValue(undefined),
+        });
+
+        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_unexpected_and_refresh",
+          })
+        );
+        expect(spyOnToastsSuccess).not.toBeCalled();
+        expect(ticketFromStore().ticket).toEqual(testTicket);
+      });
+
+      it("should manually remove the ticket on internal error", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
+        spyOnNotifyParticipation.mockRejectedValue(
+          new Error(
+            "The token amount can only be refreshed when the canister is in the OPEN state"
+          )
+        );
+        ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
+
+        await participateInSnsSale({
+          rootCanisterId: testRootCanisterId,
+          postprocess: jest.fn().mockResolvedValue(undefined),
+        });
+
+        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_unexpected_and_refresh",
+          })
+        );
+        expect(spyOnToastsSuccess).not.toBeCalled();
+        expect(ticketFromStore().ticket).not.toBeNull();
+      });
     });
 
     it("should ignore Duplicate error", async () => {
@@ -702,10 +766,10 @@ describe("sns-api", () => {
 
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
+          labelKey: "error__sns.sns_sale_unexpected_and_refresh",
         })
       );
-      expect(ticketFromStore().ticket).toEqual(null);
+      expect(ticketFromStore().ticket).not.toBeNull();
     });
   });
 });
