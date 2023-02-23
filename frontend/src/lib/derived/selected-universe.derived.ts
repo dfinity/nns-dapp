@@ -2,13 +2,18 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { pageStore } from "$lib/derived/page.derived";
+import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
   selectableUniversesStore,
 } from "$lib/derived/selectable-universes.derived";
+import { ENABLE_CKBTC_LEDGER } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
-import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+import {
+  isUniverseCkBTC,
+  isUniverseNns,
+  pathSupportsCkBTC,
+} from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
 
@@ -28,25 +33,24 @@ const pageUniverseIdStore: Readable<Principal> = derived(
         // Ignore error as we redirect to default Nns or ckBTC
       }
     }
-
     // Consider NNS as default project
     return OWN_CANISTER_ID;
   }
 );
 
-export const selectedUniverseStore: Readable<Universe> = derived(
-  [pageUniverseIdStore, selectableUniversesStore],
-  ([$pageUniverseIdStore, $selectableUniverses]) =>
-    $selectableUniverses?.find(
-      ({ canisterId }) => canisterId === $pageUniverseIdStore.toText()
-    ) ?? NNS_UNIVERSE
-);
-
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  Readable<Universe>,
+  [Readable<Principal>, Readable<Page>, Readable<boolean>],
   Principal
->(selectedUniverseStore, (universe: Universe) =>
-  Principal.fromText(universe.canisterId)
+>(
+  [pageUniverseIdStore, pageStore, ENABLE_CKBTC_LEDGER],
+  ([canisterId, page, enableCkbtcLedger]) => {
+    // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
+    if (enableCkbtcLedger && pathSupportsCkBTC(page)) {
+      return canisterId;
+    }
+
+    return isUniverseCkBTC(canisterId) ? OWN_CANISTER_ID : canisterId;
+  }
 );
 
 /**
@@ -56,11 +60,18 @@ export const isNnsUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseNns($selectedProjectId)
 );
-
 /**
  * Is the selected universe ckBTC?
  */
 export const isCkBTCUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
+);
+
+export const selectedUniverseStore: Readable<Universe> = derived(
+  [selectedUniverseIdStore, selectableUniversesStore],
+  ([$selectedUniverseIdStore, $selectableUniverses]) =>
+    $selectableUniverses?.find(
+      ({ canisterId }) => canisterId === $selectedUniverseIdStore.toText()
+    ) ?? NNS_UNIVERSE
 );

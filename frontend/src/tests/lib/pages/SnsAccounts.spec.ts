@@ -10,8 +10,10 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
+import { nonNullish } from "@dfinity/utils";
+import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
+import type { ComponentProps } from "svelte/types/runtime";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockStoreSubscribe } from "../../mocks/commont.mock";
 import en from "../../mocks/i18n.mock";
@@ -25,6 +27,25 @@ describe("SnsAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
   };
+
+  const isLoading = (container: HTMLElement) => {
+    const skeleton = container.querySelector(".skeleton-text");
+    return nonNullish(skeleton);
+  };
+
+  const renderAndFinishLoading = async (
+    props: ComponentProps<SnsAccounts>
+  ): Promise<RenderResult<SnsAccounts>> => {
+    const result = render(SnsAccounts, props);
+    const { container } = result;
+    // Make sure we detect loading correctly so we wait for the right thing below.
+    expect(isLoading(container)).toBe(true);
+    await waitFor(() => expect(isLoading(container)).toBe(false));
+    return result;
+  };
+
+  const hasAmountRendered = (container: HTMLElement): boolean =>
+    nonNullish(container.querySelector(".value"));
 
   beforeEach(() => {
     snsQueryStore.reset();
@@ -53,33 +74,33 @@ describe("SnsAccounts", () => {
     });
 
     it("should load accounts and transaction fee", () => {
-      render(SnsAccounts, { props: { goToWallet } });
+      render(SnsAccounts, { goToWallet });
 
       expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = render(SnsAccounts, { props: { goToWallet } });
-
-      await waitFor(() =>
-        expect(getByText(en.accounts.main)).toBeInTheDocument()
-      );
+      const { getByText } = await renderAndFinishLoading({ goToWallet });
+      expect(getByText(en.accounts.main)).toBeInTheDocument();
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(SnsAccounts, { props: { goToWallet } });
+      const { getAllByTestId } = await renderAndFinishLoading({ goToWallet });
 
-      await waitFor(() =>
-        expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
-      );
+      expect(getAllByTestId("account-card").length).toBeGreaterThan(0);
     });
 
     it("should load sns accounts of the project", () => {
-      render(SnsAccounts, { props: { goToWallet } });
+      render(SnsAccounts, { goToWallet });
 
       expect(syncSnsAccounts).toHaveBeenCalledWith({
         rootCanisterId: mockPrincipal,
       });
+    });
+
+    it("should render a token amount component", async () => {
+      const { container } = await renderAndFinishLoading({ goToWallet });
+      expect(hasAmountRendered(container)).toBe(true);
     });
   });
 
@@ -93,15 +114,9 @@ describe("SnsAccounts", () => {
         });
     });
 
-    // This test seems wrong. I would expect that moving it to the group above
-    // should cause it to fail but it doesn't.
-    it("should not render a token amount component nor zero", () => {
-      const { container } = render(SnsAccounts, { props: { goToWallet } });
-
-      // Tooltip wraps the amount
-      expect(
-        container.querySelector(".tooltip-wrapper")
-      ).not.toBeInTheDocument();
+    it("should not render a token amount component nor zero", async () => {
+      const { container } = await renderAndFinishLoading({ goToWallet });
+      expect(hasAmountRendered(container)).toBe(false);
     });
   });
 });
