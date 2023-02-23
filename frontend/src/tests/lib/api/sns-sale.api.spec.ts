@@ -32,9 +32,6 @@ describe("sns-sale.api", () => {
   const notifyPaymentFailureSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -55,6 +52,11 @@ describe("sns-sale.api", () => {
         notifyPaymentFailure: notifyPaymentFailureSpy,
       })
     );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   it("should query open ticket", async () => {
