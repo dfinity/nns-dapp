@@ -325,6 +325,13 @@ describe("sns-utils", () => {
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
     });
 
+    it("returns true on known error", () => {
+      const error = new Error(
+        "This is the beginning of the error. The swap has already reached its target ..."
+      );
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
     it("returns false on unknown error", () => {
       const error = new Error("Fake the swap has already reached its target");
       expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();

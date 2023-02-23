@@ -727,6 +727,11 @@ describe("sns-api", () => {
   });
 
   describe("participateInSnsSale", () => {
+    beforeEach(() => {
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
     it("should call postprocess and APIs", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
@@ -745,6 +750,92 @@ describe("sns-api", () => {
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(ticketFromStore().ticket).toEqual(null);
       expect(postprocessSpy).toBeCalledTimes(1);
+    });
+
+    it("should poll refresh_buyer_tokens until successful", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockRejectedValueOnce(
+          new Error("Error calling method 'account_balance_pb'...")
+        )
+        .mockResolvedValue({
+          icp_accepted_participation_e8s: 666n,
+        });
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        postprocess: postprocessSpy,
+      });
+
+      let counter = 0;
+      const retriesBeforeSuccess = 4;
+      while (counter < retriesBeforeSuccess) {
+        expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
+        counter += 1;
+        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+
+        await waitFor(() =>
+          expect(spyOnNotifyParticipation).toBeCalledTimes(counter)
+        );
+      }
+      expect(counter).toBe(retriesBeforeSuccess);
+
+      await waitFor(() => expect(ticketFromStore().ticket).toEqual(null));
+
+      expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
+      expect(postprocessSpy).toBeCalledTimes(1);
+    });
+
+    it("should show error if known error is thrown", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation.mockRejectedValue(
+        new Error(
+          "The token amount can only be refreshed when the canister is in the OPEN state"
+        )
+      );
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        postprocess: postprocessSpy,
+      });
+
+      let counter = 0;
+      const retriesBeforeSuccess = 4;
+      const expectedRetries = 1;
+      while (counter < retriesBeforeSuccess) {
+        expect(spyOnNotifyParticipation).toBeCalledTimes(
+          Math.min(expectedRetries, counter)
+        );
+        counter += 1;
+        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+
+        await waitFor(() =>
+          expect(spyOnNotifyParticipation).toBeCalledTimes(
+            Math.min(expectedRetries, counter)
+          )
+        );
+      }
+      expect(counter).toBe(retriesBeforeSuccess);
+      expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(expectedRetries);
+      expect(postprocessSpy).not.toBeCalled();
     });
 
     it("should do nothing if there is no ticket (important for auto retry feature)", async () => {
@@ -864,32 +955,6 @@ describe("sns-api", () => {
         expect(ticketFromStore().ticket).toEqual(null);
       });
 
-      it("should handle refresh_buyer_tokens unknown errors", async () => {
-        snsTicketsStore.setTicket({
-          rootCanisterId: rootCanisterIdMock,
-          ticket: testTicket,
-        });
-        spyOnNotifyParticipation.mockRejectedValue(new Error("unknown error"));
-        ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
-
-        await participateInSnsSale({
-          rootCanisterId: testRootCanisterId,
-          postprocess: jest.fn().mockResolvedValue(undefined),
-        });
-
-        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
-        expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-        expect(spyOnToastsError).toBeCalledTimes(1);
-        expect(spyOnToastsError).toBeCalledWith(
-          expect.objectContaining({
-            labelKey: "error__sns.sns_sale_unexpected_and_refresh",
-          })
-        );
-        expect(spyOnToastsSuccess).not.toBeCalled();
-        // the button/increase_participation should not be enabled
-        expect(ticketFromStore().ticket).toEqual(testTicket);
-      });
-
       it("should handle refresh_buyer_tokens internal errors and manually remove the ticket", async () => {
         snsTicketsStore.setTicket({
           rootCanisterId: rootCanisterIdMock,
@@ -989,25 +1054,6 @@ describe("sns-api", () => {
         })
       );
       expect(ticketFromStore().ticket).toEqual(null);
-    });
-
-    it("should display participateInSnsSale errors", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-      spyOnNotifyParticipation.mockRejectedValue(new Error());
-      await participateInSnsSale({
-        rootCanisterId: testRootCanisterId,
-        postprocess: jest.fn().mockResolvedValue(undefined),
-      });
-
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_and_refresh",
-        })
-      );
-      expect(ticketFromStore().ticket).not.toBeNull();
     });
   });
 });
