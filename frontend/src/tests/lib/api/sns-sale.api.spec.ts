@@ -29,7 +29,7 @@ describe("sns-sale.api", () => {
   const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
 
-  beforeEach(() => {
+  beforeAll(() => {
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -51,7 +51,7 @@ describe("sns-sale.api", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });
