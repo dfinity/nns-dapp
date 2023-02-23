@@ -236,7 +236,7 @@
     "source": "Source",
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
-    "may_take_while": "This may take up to one minute",
+    "may_take_while": "This may take more than a minute",
     "create": "Create",
     "change_source": "Change Source Account",
     "community_fund": "Community fund",
