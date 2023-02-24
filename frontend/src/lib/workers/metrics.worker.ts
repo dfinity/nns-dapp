@@ -1,10 +1,10 @@
+import type { TvlResult } from "$lib/canisters/tvl/tvl";
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
+import { queryTVL } from "$lib/services/$public/tvl.service";
 import type {
   PostMessage,
   PostMessageDataRequest,
 } from "$lib/types/post-messages";
-import type {TvlResult} from "$lib/canisters/tvl/tvl";
-import {queryTVL} from "$lib/services/$public/tvl.service";
 
 onmessage = async ({
   data,
@@ -56,9 +56,14 @@ const syncMetrics = async () => {
 
   syncInProgress = true;
 
-  const tvl = await queryTVL()
+  try {
+    const tvl = await queryTVL();
 
-  emitCanister(tvl);
+    emitCanister(tvl);
+  } catch (err: unknown) {
+    // We silence the error here as it is not an information crucial for the usage of the dapp
+    console.error(err);
+  }
 
   syncInProgress = false;
 };
@@ -68,7 +73,7 @@ const emitCanister = (tvl: TvlResult) =>
     msg: "nnsSyncMetrics",
     data: {
       metrics: {
-        tvl
-      }
+        tvl,
+      },
     },
   });
