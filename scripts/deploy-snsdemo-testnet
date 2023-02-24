@@ -57,6 +57,9 @@ RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network
 : Deploy the ckbtc canisters
 : The manual for deploying is here: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/bitcoin/ckbtc/testnet/README.md
 : TODO: Add the remaining canisters.
+: ... get the canister wasms and did files
+./e2e-tests/scripts/nns-canister-download
+./e2e-tests/scripts/nns-canister-build
 for canister in ckbtc_ledger ckbtc_index; do
   dfx canister create "$canister" --network "$DFX_NETWORK"
   case "$canister" in
