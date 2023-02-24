@@ -9,6 +9,7 @@ import type {
   PostMessageDataRequest,
 } from "$lib/types/post-messages";
 import { AnonymousIdentity } from "@dfinity/agent";
+import type {TvlResult} from "$lib/canisters/tvl/tvl";
 
 onmessage = async ({
   data,
@@ -60,30 +61,22 @@ const syncMetrics = async () => {
 
   syncInProgress = true;
 
-  // TODO: use result
   const tvl = await queryTVL({
     identity: new AnonymousIdentity(),
     certified: false,
   });
-  console.log(tvl);
 
-  const [avgPrice, dissolvingNeurons] = await Promise.all([
-    exchangeRateICPToUsd(),
-    totalDissolvingNeurons(),
-  ]);
-
-  emitCanister({ avgPrice, dissolvingNeurons });
+  emitCanister(tvl);
 
   syncInProgress = false;
 };
 
-const emitCanister = (metrics: {
-  avgPrice: BinanceAvgPrice | null;
-  dissolvingNeurons: DissolvingNeurons | null;
-}) =>
+const emitCanister = (tvl: TvlResult) =>
   postMessage({
     msg: "nnsSyncMetrics",
     data: {
-      metrics,
+      metrics: {
+        tvl
+      }
     },
   });
