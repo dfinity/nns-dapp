@@ -8,7 +8,11 @@ import {
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsSwapState } from "$lib/types/sns.query";
 import { ProposalStatus } from "@dfinity/nns";
-import { SnsSwapLifecycle, type SnsSwapDerivedState } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsSwap,
+  type SnsSwapDerivedState,
+} from "@dfinity/sns";
 import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { get } from "svelte/store";
 import { mockProposalInfo } from "../../mocks/proposal.mock";
@@ -349,6 +353,83 @@ describe("sns.store", () => {
       });
       expect(updatedState?.buyer_total_icp_e8s).toEqual(initValueBuyers);
       expect(updatedState?.sns_tokens_per_icp).toEqual(initValueTokens);
+    });
+  });
+
+  describe("updateLifecycle", () => {
+    const swapState = ({
+      rootCanisterId,
+      store,
+    }: {
+      rootCanisterId: string;
+      store: SnsQueryStoreData | undefined;
+    }): SnsSwap | undefined =>
+      store?.swaps.find((swap) => swap.rootCanisterId === rootCanisterId)
+        ?.swap[0];
+    const lifecycle = ({
+      rootCanisterId,
+      store,
+    }: {
+      rootCanisterId: string;
+      store: SnsQueryStoreData | undefined;
+    }): SnsSwapLifecycle | undefined =>
+      swapState({ rootCanisterId, store }).lifecycle;
+
+    it("should update the lifecycle", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
+
+      snsQueryStore.setData([metadatas, swapDatas]);
+
+      const rootCanisterId = metadatas[0].rootCanisterId;
+      const initLifecycle = swapDatas[0].swap[0].lifecycle;
+
+      const initStore = get(snsQueryStore);
+      const initState = lifecycle({ rootCanisterId, store: initStore });
+      expect(initState).toBe(initLifecycle);
+
+      const newLifecycle = SnsSwapLifecycle.Open;
+      snsQueryStore.updateLifecycle({
+        lifecycle: newLifecycle,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const updatedStore = get(snsQueryStore);
+      expect(lifecycle({ rootCanisterId, store: updatedStore })).toEqual(
+        newLifecycle
+      );
+    });
+
+    it("should not change the rest of the state", () => {
+      const [metadatas, swapDatas] = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Pending, SnsSwapLifecycle.Pending],
+        certified: true,
+      });
+
+      snsQueryStore.setData([metadatas, swapDatas]);
+
+      const rootCanisterId = metadatas[0].rootCanisterId;
+      const initState = swapDatas[0].swap[0];
+
+      const initStore = get(snsQueryStore);
+      const initStateInStore = swapState({ rootCanisterId, store: initStore });
+      expect(initStateInStore).toBe(initState);
+
+      const newLifecycle = SnsSwapLifecycle.Open;
+      snsQueryStore.updateLifecycle({
+        lifecycle: newLifecycle,
+        rootCanisterId: rootCanisterId,
+      });
+
+      const expectedState = {
+        ...initState,
+        lifecycle: newLifecycle,
+      };
+      const updatedStore = get(snsQueryStore);
+      const stateInStore = swapState({ rootCanisterId, store: updatedStore });
+      expect(stateInStore).toEqual(expectedState);
     });
   });
 });

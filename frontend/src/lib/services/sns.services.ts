@@ -1,9 +1,8 @@
 import {
   querySnsDerivedState,
-  querySnsMetadata,
+  querySnsLifecycle,
   querySnsSwapCommitment,
   querySnsSwapCommitments,
-  querySnsSwapState,
 } from "$lib/api/sns.api";
 import {
   snsQueryStore,
@@ -12,12 +11,15 @@ import {
 } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
+import type {
+  SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
+} from "@dfinity/sns";
+import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -83,45 +85,6 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
   });
 };
 
-/** Combined request: querySnsSummary + querySnsSwapState */
-export const loadSnsSummary = async ({
-  rootCanisterId,
-  onError,
-}: {
-  rootCanisterId: string;
-  onError: () => void;
-}) =>
-  queryAndUpdate<
-    [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined],
-    unknown
-  >({
-    request: ({ certified, identity }) =>
-      Promise.all([
-        querySnsMetadata({
-          rootCanisterId,
-          identity,
-          certified,
-        }),
-        querySnsSwapState({ rootCanisterId, identity, certified }),
-      ]),
-    onLoad: ({ response: data }) =>
-      snsQueryStore.updateData({ data, rootCanisterId }),
-    onError: ({ error: err, certified, identity }) => {
-      console.error(err);
-      if (certified || identity.getPrincipal().isAnonymous()) {
-        toastsError(
-          toToastError({
-            err,
-            fallbackErrorLabelKey: "error__sns.load_summary",
-          })
-        );
-
-        onError();
-      }
-    },
-    logMessage: "Syncing Sns summary",
-  });
-
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
@@ -185,6 +148,39 @@ export const loadSnsTotalCommitment = async ({
       }
     },
     logMessage: "Syncing Sns swap commitment",
+  });
+
+export const loadSnsLifecycle = async ({
+  rootCanisterId,
+}: {
+  rootCanisterId: string;
+}) =>
+  queryAndUpdate<SnsGetLifecycleResponse | undefined, unknown>({
+    request: ({ certified, identity }) =>
+      querySnsLifecycle({
+        rootCanisterId,
+        identity,
+        certified,
+      }),
+    onLoad: ({ response: lifecycleResponse }) => {
+      const lifecycle = fromNullable(lifecycleResponse?.lifecycle ?? []);
+      if (nonNullish(lifecycle)) {
+        snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
+      }
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified) {
+        toastsError(
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__sns.load_sale_lifecycle",
+          })
+        );
+      }
+    },
+    logMessage: "Syncing Sns lifecycle",
   });
 
 export const getSwapAccount = async (
