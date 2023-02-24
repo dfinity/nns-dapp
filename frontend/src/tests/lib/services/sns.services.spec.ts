@@ -5,7 +5,10 @@ import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
+import type {
+  GetDerivedStateResponse,
+  GetLifecycleResponse,
+} from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -135,6 +138,50 @@ describe("sns-services", () => {
       expect(updatedState?.sns_tokens_per_icp).toEqual(
         fromNullable(derivedState.sns_tokens_per_icp)
       );
+    });
+
+    describe("loadSnsLifecycle", () => {
+      afterEach(() => {
+        jest.clearAllMocks();
+        snsSwapCommitmentsStore.reset();
+        snsQueryStore.reset();
+      });
+
+      it("should call api to get lifecycle and load them in store", async () => {
+        const newLifeCycle = SnsSwapLifecycle.Committed;
+        const lifeCycleResponse: GetLifecycleResponse = {
+          lifecycle: [newLifeCycle],
+          decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+        };
+        const dataLifecycle = SnsSwapLifecycle.Open;
+        const [metadatas, swaps] = snsResponsesForLifecycle({
+          certified: true,
+          lifecycles: [dataLifecycle, SnsSwapLifecycle.Open],
+        });
+        snsQueryStore.setData([metadatas, swaps]);
+        const canisterId = swaps[0].rootCanisterId;
+
+        const spy = jest
+          .spyOn(api, "querySnsLifecycle")
+          .mockImplementation(() => Promise.resolve(lifeCycleResponse));
+
+        const initStore = get(snsQueryStore);
+        const initLifecycle = initStore?.swaps.find(
+          (swap) => swap.rootCanisterId === canisterId
+        )?.swap[0].lifecycle;
+        expect(initLifecycle).toEqual(dataLifecycle);
+
+        await services.loadSnsLifecycle({
+          rootCanisterId: canisterId,
+        });
+        expect(spy).toBeCalled();
+
+        const updatedStore = get(snsQueryStore);
+        const updatedLifecycle = updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === canisterId
+        )?.swap[0].lifecycle;
+        expect(updatedLifecycle).toEqual(newLifeCycle);
+      });
     });
   });
 });

@@ -19,7 +19,6 @@ import {
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });

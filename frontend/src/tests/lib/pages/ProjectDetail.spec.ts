@@ -5,11 +5,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
-import {
-  loadSnsSummary,
-  loadSnsSwapCommitment,
-  loadSnsTotalCommitment,
-} from "$lib/services/sns.services";
+import { loadSnsSwapCommitment } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -23,7 +19,6 @@ import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
   };
@@ -58,22 +53,10 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
     });
 
-    it("should not load summary", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsSummary).not.toBeCalled());
-    });
-
     it("should not load user's commitnemtn", async () => {
       render(ProjectDetail, props);
 
       await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
-    });
-
-    it("should not load total commitments", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsTotalCommitment).not.toBeCalled());
     });
 
     it("should render info section", async () => {
@@ -104,12 +87,6 @@ describe("ProjectDetail", () => {
       render(ProjectDetail, props);
 
       await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
-    });
-
-    it("should load total project's commitment", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsTotalCommitment).toBeCalled());
     });
   });
 

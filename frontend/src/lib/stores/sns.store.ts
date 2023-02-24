@@ -5,8 +5,9 @@ import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
   SnsSwapDerivedState,
+  SnsSwapLifecycle,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 // ************** Proposals for Launchpad **************
@@ -84,6 +85,10 @@ export interface SnsQueryStore extends Readable<SnsQueryStoreData> {
   }) => void;
   updateDerivedState: (swap: {
     derivedState: SnsGetDerivedStateResponse;
+    rootCanisterId: string;
+  }) => void;
+  updateLifecycle: (swap: {
+    lifecycle: SnsSwapLifecycle;
     rootCanisterId: string;
   }) => void;
 }
@@ -214,6 +219,42 @@ const initSnsQueryStore = (): SnsQueryStore => {
             ? { ...swap, derived: [newDerivedState] }
             : swap
         ),
+      }));
+    },
+
+    /**
+     * Updates only the derived state of a sale.
+     *
+     * @param {Object} params
+     * @param {QuerySnsSwapState} params.swapData new swap data.
+     * @param {string} params.rootCanisterId canister id in text format.
+     */
+    updateLifecycle({
+      lifecycle,
+      rootCanisterId,
+    }: {
+      lifecycle: SnsSwapLifecycle;
+      rootCanisterId: string;
+    }) {
+      update((data: SnsQueryStoreData) => ({
+        metadata: data?.metadata ?? [],
+        swaps: (data?.swaps ?? []).map((swapData): QuerySnsSwapState => {
+          if (swapData.rootCanisterId === rootCanisterId) {
+            const swap = fromNullable(swapData.swap);
+            if (nonNullish(swap)) {
+              return {
+                ...swapData,
+                swap: [
+                  {
+                    ...swap,
+                    lifecycle,
+                  },
+                ],
+              };
+            }
+          }
+          return swapData;
+        }),
       }));
     },
   };
