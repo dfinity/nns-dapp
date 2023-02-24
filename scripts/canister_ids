@@ -15,8 +15,6 @@ if ! [ -f "$ids_file" ]; then
 	exit 1
 fi
 
-canisters=$(jq -r 'keys|join(" ")' "$ids_file")
-
 command="${1-}"
 
 if [ "$command" = "export" ]; then
