@@ -232,22 +232,28 @@ describe("sns-api", () => {
         });
 
         let counter = 0;
-        while (counter < retriesUntilSuccess) {
-          expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
+        const extraRetries = 4;
+        while (counter < retriesUntilSuccess + extraRetries) {
+          expect(spyOnGetOpenTicketApi).toBeCalledTimes(
+            Math.min(counter, retriesUntilSuccess)
+          );
           counter += 1;
           jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
 
           await waitFor(() =>
-            expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter)
+            expect(spyOnGetOpenTicketApi).toBeCalledTimes(
+              Math.min(counter, retriesUntilSuccess)
+            )
           );
         }
-        expect(counter).toBe(retriesUntilSuccess);
+        expect(counter).toBe(retriesUntilSuccess + extraRetries);
 
         await waitFor(() =>
           expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
             testTicket
           )
         );
+        expect(spyOnGetOpenTicketApi).toBeCalledTimes(retriesUntilSuccess);
       });
 
       it("should stop retrying after max attempts and set ticket to null", async () => {
@@ -592,17 +598,22 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      while (counter < retriesUntilSuccess) {
-        expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+      const extraRetries = 4;
+      while (counter < retriesUntilSuccess + extraRetries) {
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(
+          Math.min(counter, extraRetries)
+        );
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
 
         await waitFor(() =>
-          expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
+          expect(spyOnNewSaleTicketApi).toBeCalledTimes(
+            Math.min(counter, extraRetries)
+          )
         );
       }
-      expect(counter).toBe(retriesUntilSuccess);
-      expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+      expect(counter).toBe(retriesUntilSuccess + extraRetries);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(retriesUntilSuccess);
     });
 
     it("should retry unknown errors until known error", async () => {
@@ -624,17 +635,22 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      while (counter < retriesUntilKnownError) {
-        expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+      const extraRetries = 4;
+      while (counter < retriesUntilKnownError + extraRetries) {
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(
+          Math.min(counter, extraRetries)
+        );
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
 
         await waitFor(() =>
-          expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
+          expect(spyOnNewSaleTicketApi).toBeCalledTimes(
+            Math.min(counter, extraRetries)
+          )
         );
       }
-      expect(counter).toBe(retriesUntilKnownError);
-      expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+      expect(counter).toBe(retriesUntilKnownError + extraRetries);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(retriesUntilKnownError);
     });
   });
 
@@ -826,21 +842,27 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      while (counter < retriesUntilSuccess) {
-        expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
+      // We add a few more times but it should not trigger more calls
+      const extraRetries = 4;
+      while (counter < retriesUntilSuccess + extraRetries) {
+        expect(spyOnNotifyParticipation).toBeCalledTimes(
+          Math.min(counter, retriesUntilSuccess)
+        );
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
 
         await waitFor(() =>
-          expect(spyOnNotifyParticipation).toBeCalledTimes(counter)
+          expect(spyOnNotifyParticipation).toBeCalledTimes(
+            Math.min(counter, retriesUntilSuccess)
+          )
         );
       }
-      expect(counter).toBe(retriesUntilSuccess);
+      expect(counter).toBe(retriesUntilSuccess + extraRetries);
 
       await waitFor(() => expect(ticketFromStore().ticket).toEqual(null));
 
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
-      expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(retriesUntilSuccess);
       expect(postprocessSpy).toBeCalledTimes(1);
     });
 
