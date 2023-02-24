@@ -219,6 +219,8 @@ describe("sns-api", () => {
       });
 
       it("should retry until gets an open ticket", async () => {
+        // Success in the fourth attempt
+        const retriesUntilSuccess = 4;
         spyOnGetOpenTicketApi
           .mockRejectedValueOnce(new Error("network error"))
           .mockRejectedValueOnce(new Error("network error"))
@@ -230,8 +232,7 @@ describe("sns-api", () => {
         });
 
         let counter = 0;
-        const retriesBeforeSuccess = 4;
-        while (counter < retriesBeforeSuccess) {
+        while (counter < retriesUntilSuccess) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
           counter += 1;
           jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
@@ -240,7 +241,7 @@ describe("sns-api", () => {
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter)
           );
         }
-        expect(counter).toBe(retriesBeforeSuccess);
+        expect(counter).toBe(retriesUntilSuccess);
 
         await waitFor(() =>
           expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
@@ -577,6 +578,8 @@ describe("sns-api", () => {
     });
 
     it("should retry unknown errors until successful", async () => {
+      // Success on the 4th try
+      const retriesUntilSuccess = 4;
       spyOnNewSaleTicketApi
         .mockRejectedValueOnce(new Error("connection error"))
         .mockRejectedValueOnce(new Error("connection error"))
@@ -589,8 +592,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      const retriesBeforeSuccess = 4;
-      while (counter < retriesBeforeSuccess) {
+      while (counter < retriesUntilSuccess) {
         expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
@@ -599,11 +601,13 @@ describe("sns-api", () => {
           expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
         );
       }
-      expect(counter).toBe(retriesBeforeSuccess);
+      expect(counter).toBe(retriesUntilSuccess);
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
     });
 
     it("should retry unknown errors until known error", async () => {
+      // Known error on the 4th try
+      const retriesUntilKnownError = 4;
       spyOnNewSaleTicketApi
         .mockRejectedValueOnce(new Error("connection error"))
         .mockRejectedValueOnce(new Error("connection error"))
@@ -620,8 +624,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      const retriesBeforeSuccess = 4;
-      while (counter < retriesBeforeSuccess) {
+      while (counter < retriesUntilKnownError) {
         expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
@@ -630,7 +633,7 @@ describe("sns-api", () => {
           expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
         );
       }
-      expect(counter).toBe(retriesBeforeSuccess);
+      expect(counter).toBe(retriesUntilKnownError);
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
     });
   });
@@ -795,6 +798,8 @@ describe("sns-api", () => {
     });
 
     it("should poll refresh_buyer_tokens until successful", async () => {
+      // Success on the fourth try
+      const retriesUntilSuccess = 4;
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -821,8 +826,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
-      const retriesBeforeSuccess = 4;
-      while (counter < retriesBeforeSuccess) {
+      while (counter < retriesUntilSuccess) {
         expect(spyOnNotifyParticipation).toBeCalledTimes(counter);
         counter += 1;
         jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
@@ -831,7 +835,7 @@ describe("sns-api", () => {
           expect(spyOnNotifyParticipation).toBeCalledTimes(counter)
         );
       }
-      expect(counter).toBe(retriesBeforeSuccess);
+      expect(counter).toBe(retriesUntilSuccess);
 
       await waitFor(() => expect(ticketFromStore().ticket).toEqual(null));
 
