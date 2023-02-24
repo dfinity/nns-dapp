@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  echo "Usage: $0 export <network> (outputs to stdout)"
+  echo "       $0 import           (reads from stdin)"
+}
+
+top_dir=$(git rev-parse --show-toplevel)
+ids_file="$top_dir/canister_ids.json"
+
+if ! [ -f "$ids_file" ]; then
+  echo "$ids_file is missing."
+  exit 1
+fi
+
+command="${1-}"
+
+if [ "$command" = "export" ]; then
+  network="${2-}"
+  if [ -z "$network" ]; then
+    usage
+    exit 1
+  fi
+
+  # This whole block can be done in a single line of jq script but it woudn't
+  # be readable.
+  canisters=$(jq -r 'keys|join(" ")' "$ids_file")
+  output="{}"
+  for canister in $canisters; do
+    id=$(jq -r ".[\"$canister\"][\"$network\"]?" "$ids_file")
+    if [ "$id" != "null" ]; then
+      new_output=$(echo "$output" | jq ".[\"$canister\"][\"$network\"]=\"$id\"")
+      output="$new_output"
+    fi
+  done
+  echo "$output"
+  exit
+fi
+
+if [ "$command" = "import" ]; then
+  echo "Reading from stdin..."
+  input="$(cat)"
+  output="$(jq --argjson input "$input" '. * $input' "$ids_file")"
+  echo "$output" >"$ids_file"
+  exit
+fi
+
+usage
