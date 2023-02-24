@@ -3,7 +3,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type {
+    NewTransaction,
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
@@ -12,8 +16,8 @@
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import type { TransactionNetwork } from "$lib/types/transaction";
   import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
+  import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -57,7 +61,13 @@
     }
   };
 
-  // TODO(GIX-1330): display bitcoin transaction fee
+  let userAmount: number | undefined = undefined;
+  const validateAmount: ValidateAmountFn = (
+    amount: number | undefined
+  ): string | undefined => {
+    userAmount = amount;
+    return undefined;
+  };
 </script>
 
 <TransactionModal
@@ -70,6 +80,7 @@
   sourceAccount={selectedAccount}
   mustSelectNetwork={$ENABLE_CKBTC_MINTER}
   bind:selectedNetwork
+  {validateAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
@@ -77,4 +88,9 @@
       $token: token.symbol,
     })}
   </p>
+  <BitcoinEstimatedFee
+    slot="additional-info-form"
+    {selectedNetwork}
+    amount={userAmount}
+  />
 </TransactionModal>

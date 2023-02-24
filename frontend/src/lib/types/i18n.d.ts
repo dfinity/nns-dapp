@@ -219,6 +219,7 @@ interface I18nAccounts {
   network_icp_ckbtc: string;
   network_bitcoin: string;
   select_network: string;
+  estimated_bitcoin_transaction_fee: string;
 }
 
 interface I18nNeurons {

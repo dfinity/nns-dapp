@@ -1,18 +1,18 @@
 import {
+  estimateFee as estimateFeeAPI,
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
-  estimateFee as estimateFeeAPI,
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { i18n } from "$lib/stores/i18n";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
 import {
-  type EstimateFeeParams,
   MinterAlreadyProcessingError,
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
+  type EstimateFeeParams,
 } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
@@ -21,7 +21,9 @@ export const getBTCAddress = async (): Promise<string> => {
   return getBTCAddressAPI({ identity });
 };
 
-export const estimateFee = async (params: EstimateFeeParams): Promise<bigint> => {
+export const estimateFee = async (
+  params: EstimateFeeParams
+): Promise<bigint> => {
   const identity = await getAuthenticatedIdentity();
   return estimateFeeAPI({ identity, ...params });
 };
