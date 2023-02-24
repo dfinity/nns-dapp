@@ -1,4 +1,4 @@
-import type { TvlResult } from "$lib/canisters/tvl/tvl";
+import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 
 export interface MetricsSync {
   tvl?: TvlResult;

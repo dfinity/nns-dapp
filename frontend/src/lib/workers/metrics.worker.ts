@@ -1,4 +1,4 @@
-import type { TvlResult } from "$lib/canisters/tvl/tvl";
+import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import type {

@@ -1,11 +1,14 @@
-import type { TvlResult } from "$lib/canisters/tvl/tvl";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
+import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST_IC0_APP } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import { createAgent } from "@dfinity/utils";
+/**
+ * HTTP-Agent explicit CJS import for compatibility with web worker - avoid Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
+ */
+import { HttpAgent } from "@dfinity/agent/lib/cjs/index";
 
 export const queryTVL = async ({
   identity,
@@ -34,10 +37,9 @@ const canister = async ({
   identity: Identity;
   canisterId: Principal;
 }): Promise<TVLCanister> => {
-  const agent = await createAgent({
+  const agent = new HttpAgent({
     identity,
     host: HOST_IC0_APP,
-    fetchRootKey: false,
   });
 
   return TVLCanister.create({

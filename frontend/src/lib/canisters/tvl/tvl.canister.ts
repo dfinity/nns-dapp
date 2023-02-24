@@ -1,8 +1,8 @@
 import type { TVLCanisterOptions } from "$lib/canisters/tvl/tvl.canister.types";
 import { Actor } from "@dfinity/agent";
-import type { TvlResult, _SERVICE as TVLService } from "./tvl";
 import { idlFactory as certifiedIdlFactory } from "./tvl.certified.idl";
 import { idlFactory } from "./tvl.idl";
+import type { TvlResult, _SERVICE as TVLService } from "./tvl.types";
 
 export class TVLCanister {
   private constructor(
