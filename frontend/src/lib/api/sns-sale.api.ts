@@ -1,7 +1,10 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import type {
+  RefreshBuyerTokensResponse,
+  Ticket,
+} from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
@@ -14,7 +17,7 @@ export const getOpenTicket = async ({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<Ticket | undefined> => {
-  logWithTimestamp(`[sale]getOpenTicket call...`);
+  logWithTimestamp(`[sale] getOpenTicket call...`);
 
   const { getOpenTicket } = await wrapper({
     identity,
@@ -24,7 +27,7 @@ export const getOpenTicket = async ({
 
   const response = await getOpenTicket({});
 
-  logWithTimestamp(`[sale]getOpenTicket complete.`);
+  logWithTimestamp(`[sale] getOpenTicket complete.`);
 
   return response;
 };
@@ -51,6 +54,52 @@ export const newSaleTicket = async ({
   const response = await newSaleTicket({ subaccount, amount_icp_e8s });
 
   logWithTimestamp(`[sale]newSaleTicket complete.`);
+
+  return response;
+};
+
+export const notifyPaymentFailure = async ({
+  identity,
+  rootCanisterId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+}): Promise<Ticket | undefined> => {
+  logWithTimestamp(`[sale] notifyPaymentFailure call...`);
+
+  const { notifyPaymentFailure } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  const ticket = await notifyPaymentFailure();
+
+  logWithTimestamp(`[sale] notifyPaymentFailure complete.`);
+
+  return ticket;
+};
+
+export const notifyParticipation = async ({
+  identity,
+  rootCanisterId,
+  buyer,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  buyer: Principal;
+}): Promise<RefreshBuyerTokensResponse> => {
+  logWithTimestamp(`[sale] notifyParticipation call...`);
+
+  const { notifyParticipation: notifyParticipationApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  const response = await notifyParticipationApi({ buyer: buyer.toText() });
+
+  logWithTimestamp(`[sale] notifyParticipation complete.`);
 
   return response;
 };

@@ -112,6 +112,7 @@ pub struct ProposalId { id: u64 }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RewardEvent {
   pub  actual_timestamp_seconds: u64,
+  pub  end_timestamp_seconds: Option<u64>,
   pub  distributed_e8s_equivalent: u64,
   pub  round: u64,
   pub  settled_proposals: Vec<ProposalId>,
@@ -153,6 +154,7 @@ pub struct TransferSnsTreasuryFunds {
 pub struct UpgradeSnsControlledCanister {
   pub  new_canister_wasm: Vec<u8>,
   pub  canister_id: Option<candid::Principal>,
+  pub  canister_upgrade_arg: Option<Vec<u8>>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -214,6 +216,7 @@ pub struct ProposalData {
   pub  ballots: Vec<(String,Ballot,)>,
   pub  reward_event_round: u64,
   pub  failed_timestamp_seconds: u64,
+  pub  reward_event_end_timestamp_seconds: Option<u64>,
   pub  proposal_creation_timestamp_seconds: u64,
   pub  initial_voting_period_seconds: u64,
   pub  reject_cost_e8s: u64,
@@ -390,20 +393,28 @@ pub struct Governance {
 pub struct NeuronParameters {
   pub  controller: Option<candid::Principal>,
   pub  dissolve_delay_seconds: Option<u64>,
-  pub  memo: Option<u64>,
   pub  source_nns_neuron_id: Option<u64>,
   pub  stake_e8s: Option<u64>,
+  pub  followees: Vec<NeuronId>,
   pub  hotkey: Option<candid::Principal>,
+  pub  neuron_id: Option<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimSwapNeuronsRequest { neuron_parameters: Vec<NeuronParameters> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct SwapNeuron { id: Option<NeuronId>, status: i32 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ClaimedSwapNeurons { swap_neurons: Vec<SwapNeuron> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum ClaimSwapNeuronsResult { Ok(ClaimedSwapNeurons), Err(i32) }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimSwapNeuronsResponse {
-  pub  skipped_claims: u32,
-  pub  successful_claims: u32,
-  pub  failed_claims: u32,
+  pub  claim_swap_neurons_result: Option<ClaimSwapNeuronsResult>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -416,6 +427,12 @@ pub struct GetMetadataResponse {
   pub  name: Option<String>,
   pub  description: Option<String>,
 }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_mode_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetModeResponse { mode: Option<i32> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNeuron { neuron_id: Option<NeuronId> }
@@ -585,6 +602,9 @@ impl SERVICE{
   pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<
     (GetMetadataResponse,)
   > { ic_cdk::call(self.0, "get_metadata", (arg0,)).await }
+  pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<
+    (GetModeResponse,)
+  > { ic_cdk::call(self.0, "get_mode", (arg0,)).await }
   pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<
     (NervousSystemParameters,)
   > { ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await }

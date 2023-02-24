@@ -12,13 +12,27 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { mockSnsSwapCommitment } from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
-import { mockSnsCanisterIdText } from "../../../mocks/sns.api.mock";
+import {
+  snsResponseFor,
+  snsResponsesForLifecycle,
+} from "../../../mocks/sns-response.mock";
+import {
+  mockSnsCanisterId,
+  mockSnsCanisterIdText,
+} from "../../../mocks/sns.api.mock";
 
 describe("selected sns project derived stores", () => {
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+      snsQueryStore.reset();
+      snsQueryStore.setData(
+        snsResponseFor({
+          principal: mockSnsCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        })
+      );
     });
 
     it("should be set by default undefined", () => {

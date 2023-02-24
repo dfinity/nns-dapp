@@ -12,6 +12,7 @@ import {
   mockTransactionReceiveDataFromMain,
   mockTransactionSendDataFromMain,
 } from "../../../mocks/transaction.mock";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("TransactionCard", () => {
   const renderTransactionCard = (
@@ -79,8 +80,9 @@ describe("TransactionCard", () => {
 
     const div = getByTestId("transaction-date");
 
-    expect(div?.textContent).toContain("Mar 14, 2021 12:00 AM");
-    expect(div?.textContent).toContain("12:00 AM");
+    const textContent = normalizeWhitespace(div?.textContent);
+    expect(textContent).toContain("Mar 14, 2021 12:00 AM");
+    expect(textContent).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {

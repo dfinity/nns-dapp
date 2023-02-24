@@ -6,8 +6,9 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import {
-    loadSnsSummary,
+    loadSnsLifecycle,
     loadSnsSwapCommitment,
+    loadSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
@@ -32,16 +33,6 @@
     loadCommitment(rootCanisterId);
   }
 
-  const loadSummary = (rootCanisterId: string) =>
-    loadSnsSummary({
-      rootCanisterId,
-      onError: () => {
-        // Set to not found
-        $projectDetailStore.summary = undefined;
-        goBack();
-      },
-    });
-
   const loadCommitment = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
       rootCanisterId,
@@ -59,7 +50,8 @@
     }
 
     await Promise.all([
-      loadSummary(rootCanisterId),
+      loadSnsTotalCommitment({ rootCanisterId }),
+      loadSnsLifecycle({ rootCanisterId }),
       loadCommitment(rootCanisterId),
     ]);
   };

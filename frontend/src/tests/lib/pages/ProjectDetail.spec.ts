@@ -5,10 +5,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
-import {
-  loadSnsSummary,
-  loadSnsSwapCommitment,
-} from "$lib/services/sns.services";
+import { loadSnsSwapCommitment } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -22,8 +19,8 @@ import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSummary: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -32,7 +29,7 @@ describe("ProjectDetail", () => {
     rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
   };
 
-  describe("present project in store", () => {
+  describe("not logged in user", () => {
     page.mock({ data: { universe: null } });
 
     beforeEach(() => {
@@ -54,12 +51,6 @@ describe("ProjectDetail", () => {
       snsQueryStore.reset();
       snsSwapCommitmentsStore.reset();
       jest.clearAllMocks();
-    });
-
-    it("should not load summary", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsSummary).not.toBeCalled());
     });
 
     it("should not load user's commitnemtn", async () => {

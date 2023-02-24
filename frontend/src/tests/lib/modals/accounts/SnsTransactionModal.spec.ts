@@ -66,7 +66,7 @@ describe("SnsTransactionModal", () => {
   it("should transfer tokens", async () => {
     const result = await renderTransactionModal();
 
-    await testTransferTokens(result);
+    await testTransferTokens({ result });
 
     await waitFor(() => expect(snsTransferTokens).toBeCalled());
   });

@@ -18,6 +18,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "../../../mocks/sns-projects.mock";
+import { normalizeWhitespace } from "../../../utils/utils.test-utils";
 
 describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (
@@ -128,7 +129,7 @@ describe("IcrcTransactionCard", () => {
     const div = getByTestId("transaction-date");
 
     expect(div?.textContent).toContain("Jan 1, 1970");
-    expect(div?.textContent).toContain("12:00 AM");
+    expect(normalizeWhitespace(div?.textContent)).toContain("12:00 AM");
   });
 
   it("displays identifier for received", () => {
