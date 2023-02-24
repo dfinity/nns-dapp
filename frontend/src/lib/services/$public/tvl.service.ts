@@ -1,9 +1,9 @@
 import { queryTVL as queryTVLApi } from "$lib/api/tvl.api";
 import type { TvlResult } from "$lib/canisters/tvl/tvl";
-import { AnonymousIdentity } from "@dfinity/agent";
+import {getAnonymousIdentity} from "$lib/services/auth.services";
 
 export const queryTVL = (): Promise<TvlResult> =>
   queryTVLApi({
-    identity: new AnonymousIdentity(),
+    identity: getAnonymousIdentity(),
     certified: false,
   });
