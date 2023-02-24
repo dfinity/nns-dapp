@@ -434,6 +434,11 @@ describe("sns-api", () => {
   });
 
   describe("newSaleTicket", () => {
+    beforeEach(() => {
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
     it("should call newSaleTicket api", async () => {
       await newSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
@@ -571,25 +576,62 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should handle unknown errors", async () => {
-      spyOnNewSaleTicketApi.mockRejectedValue(
-        new SnsSwapNewTicketError({
-          errorType: "dummy type" as unknown as NewSaleTicketResponseErrorType,
-        })
-      );
+    it("should retry unknown errors until successful", async () => {
+      spyOnNewSaleTicketApi
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockResolvedValue(testSnsTicket.ticket);
 
-      await newSaleTicket({
+      newSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
-      expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-        })
-      );
-      expect(ticketFromStore()?.ticket).toEqual(null);
+      let counter = 0;
+      const retriesBeforeSuccess = 4;
+      while (counter < retriesBeforeSuccess) {
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+        counter += 1;
+        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+
+        await waitFor(() =>
+          expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
+        );
+      }
+      expect(counter).toBe(retriesBeforeSuccess);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+    });
+
+    it("should retry unknown errors until known error", async () => {
+      spyOnNewSaleTicketApi
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValue(
+          new SnsSwapNewTicketError({
+            errorType: NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED,
+          })
+        );
+
+      newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      let counter = 0;
+      const retriesBeforeSuccess = 4;
+      while (counter < retriesBeforeSuccess) {
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
+        counter += 1;
+        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+
+        await waitFor(() =>
+          expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter)
+        );
+      }
+      expect(counter).toBe(retriesBeforeSuccess);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(counter);
     });
   });
 
