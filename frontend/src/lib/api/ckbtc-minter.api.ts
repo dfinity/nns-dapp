@@ -5,7 +5,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
-  type EstimatedFeeParams,
+  type EstimateFeeParams,
   type MinterParams,
   type RetrieveBtcOk,
   type RetrieveBtcParams,
@@ -93,19 +93,19 @@ export const retrieveBtc = async ({
   return result;
 };
 
-export const estimatedFee = async ({
+export const estimateFee = async ({
   identity,
   ...params
 }: {
   identity: Identity;
-} & EstimatedFeeParams): Promise<bigint> => {
+} & EstimateFeeParams): Promise<bigint> => {
   logWithTimestamp("Estimated fee: call...");
 
   const {
-    canister: { estimatedFee: estimatedFeeApi },
+    canister: { estimateFee: estimateFeeApi },
   } = await ckBTCMinterCanister({ identity });
 
-  const result = await estimatedFeeApi(params);
+  const result = await estimateFeeApi(params);
 
   logWithTimestamp("Estimated fee: done");
 

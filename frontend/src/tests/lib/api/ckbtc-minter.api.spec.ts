@@ -2,7 +2,7 @@ import { getBTCAddress, updateBalance } from "$lib/api/ckbtc-minter.api";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
 import {
-  estimatedFee,
+  estimateFee,
   getWithdrawalAccount,
   retrieveBtc,
 } from "../../../lib/api/ckbtc-minter.api";
@@ -134,7 +134,7 @@ describe("ckbtc-minter api", () => {
     });
   });
 
-  describe("estimatedFee", () => {
+  describe("estimateFee", () => {
     const feeParams = {
       ...params,
       amount: 123n,
@@ -143,22 +143,22 @@ describe("ckbtc-minter api", () => {
     it("returns estimated fee", async () => {
       const expectedResult = 123456n;
 
-      const estimatedFeeSpy =
-        minterCanisterMock.estimatedFee.mockResolvedValue(expectedResult);
+      const estimateFeeSpy =
+        minterCanisterMock.estimateFee.mockResolvedValue(expectedResult);
 
-      const result = await estimatedFee(feeParams);
+      const result = await estimateFee(feeParams);
 
       expect(result).toEqual(expectedResult);
 
-      expect(estimatedFeeSpy).toBeCalled();
+      expect(estimateFeeSpy).toBeCalled();
     });
 
     it("bubble errors", () => {
-      minterCanisterMock.estimatedFee.mockImplementation(async () => {
+      minterCanisterMock.estimateFee.mockImplementation(async () => {
         throw new Error();
       });
 
-      const call = () => estimatedFee(feeParams);
+      const call = () => estimateFee(feeParams);
 
       expect(call).rejects.toThrowError();
     });

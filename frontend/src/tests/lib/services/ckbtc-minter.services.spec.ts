@@ -114,4 +114,23 @@ describe("ckbtc-minter-services", () => {
       );
     });
   });
+
+  describe("estimateFee", () => {
+    it("should call estimate fee", async () => {
+      const spyEstimateFee = jest
+          .spyOn(minterApi, "estimateFee")
+          .mockResolvedValue(123n);
+
+      const params = {certified: true, amount: 456n};
+
+      await services.estimateFee(params);
+
+      await waitFor(() =>
+          expect(spyEstimateFee).toBeCalledWith({
+            identity: mockIdentity,
+            ...params
+          })
+      );
+    });
+  });
 });
