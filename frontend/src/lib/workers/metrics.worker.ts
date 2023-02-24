@@ -1,15 +1,10 @@
-import { queryTVL } from "$lib/api/tvl.api";
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
-import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
-import { totalDissolvingNeurons } from "$lib/services/$public/governance-metrics.services";
-import type { BinanceAvgPrice } from "$lib/types/binance";
-import type { DissolvingNeurons } from "$lib/types/governance-metrics";
 import type {
   PostMessage,
   PostMessageDataRequest,
 } from "$lib/types/post-messages";
-import { AnonymousIdentity } from "@dfinity/agent";
 import type {TvlResult} from "$lib/canisters/tvl/tvl";
+import {queryTVL} from "$lib/services/$public/tvl.service";
 
 onmessage = async ({
   data,
@@ -61,10 +56,7 @@ const syncMetrics = async () => {
 
   syncInProgress = true;
 
-  const tvl = await queryTVL({
-    identity: new AnonymousIdentity(),
-    certified: false,
-  });
+  const tvl = await queryTVL()
 
   emitCanister(tvl);
 
