@@ -35,9 +35,7 @@ if [ "$command" = "export" ]; then
 			output="$new_output"
 		fi
 	done
-
 	echo "$output"
-
 	exit
 fi
 
