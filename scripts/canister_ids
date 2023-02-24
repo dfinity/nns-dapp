@@ -26,8 +26,8 @@ if [ "$command" = "export" ]; then
 		exit 1
 	fi
 
-	# This whole block can be done in a single line of jq script but it woudn't
-	# be readable.
+        # This whole block can be done in a single line of jq script but it
+        # woudn't be readable.
 	canisters=$(jq -r 'keys|join(" ")' "$ids_file")
 	output="{}"
 	for canister in $canisters; do
