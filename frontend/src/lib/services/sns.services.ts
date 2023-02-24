@@ -19,7 +19,7 @@ import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -164,7 +164,7 @@ export const loadSnsLifecycle = async ({
       }),
     onLoad: ({ response: lifecycleResponse }) => {
       const lifecycle = fromNullable(lifecycleResponse?.lifecycle ?? []);
-      if (lifecycle !== undefined) {
+      if (nonNullish(lifecycle)) {
         snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
       }
     },

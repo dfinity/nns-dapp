@@ -187,7 +187,7 @@ const initSnsQueryStore = (): SnsQueryStore => {
      * Updates only the derived state of a sale.
      *
      * @param {Object} params
-     * @param {QuerySnsSwapState} params.swapData new swap data.
+     * @param {SnsGetDerivedStateResponse} params.derivedState new derived state.
      * @param {string} params.rootCanisterId canister id in text format.
      */
     updateDerivedState({
@@ -223,10 +223,10 @@ const initSnsQueryStore = (): SnsQueryStore => {
     },
 
     /**
-     * Updates only the derived state of a sale.
+     * Updates only the lifecycle of a sale.
      *
      * @param {Object} params
-     * @param {QuerySnsSwapState} params.swapData new swap data.
+     * @param {SnsSwapLifecycle} params.lifecycle new lifecycle.
      * @param {string} params.rootCanisterId canister id in text format.
      */
     updateLifecycle({
