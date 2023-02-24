@@ -1,3 +1,4 @@
+import { queryTVL } from "$lib/api/tvl.api";
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
 import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
 import { totalDissolvingNeurons } from "$lib/services/$public/governance-metrics.services";
@@ -7,6 +8,7 @@ import type {
   PostMessage,
   PostMessageDataRequest,
 } from "$lib/types/post-messages";
+import { AnonymousIdentity } from "@dfinity/agent";
 
 onmessage = async ({
   data,
@@ -57,6 +59,13 @@ const syncMetrics = async () => {
   }
 
   syncInProgress = true;
+
+  // TODO: use result
+  const tvl = await queryTVL({
+    identity: new AnonymousIdentity(),
+    certified: false,
+  });
+  console.log(tvl);
 
   const [avgPrice, dissolvingNeurons] = await Promise.all([
     exchangeRateICPToUsd(),
