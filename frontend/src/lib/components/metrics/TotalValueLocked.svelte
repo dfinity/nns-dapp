@@ -10,7 +10,6 @@
   import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
