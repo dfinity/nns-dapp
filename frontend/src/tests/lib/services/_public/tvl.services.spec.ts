@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as tvlApi from "$lib/api/tvl.api";
+import * as tvlApi from "$lib/api/tvl.api.cjs";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
