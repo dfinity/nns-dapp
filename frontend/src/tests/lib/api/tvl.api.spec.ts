@@ -1,11 +1,15 @@
-import { queryTVL } from "$lib/api/tvl.api";
+import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
-import { AnonymousIdentity, HttpAgent } from "@dfinity/agent";
+import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 
-jest.mock("@dfinity/utils", () => {
+jest.mock("@dfinity/agent", () => {
+  const agent = jest.requireActual("@dfinity/agent");
   return {
-    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+    ...agent,
+    HttpAgent: jest.fn().mockImplementation(() => {
+      return {};
+    }),
   };
 });
 
