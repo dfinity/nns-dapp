@@ -5,11 +5,15 @@ import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-man
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity, ManagementCanisterRecord } from "@dfinity/agent";
-/**
- * HTTP-Agent explicit CJS import for compatibility with web worker - avoid "window undefined" issues
- */
-import { getManagementCanister, HttpAgent } from "@dfinity/agent/lib/cjs/index";
+import { getManagementCanister, HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
+
+/**
+ * We still use a custom API for the worker because otherwise we face following error with `npm run build`:
+ * > Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
+ *
+ * Most probably linked with https://github.com/vitejs/vite/issues/9369#issuecomment-1196392031
+ */
 
 export const queryCanisterDetails = async ({
   identity,

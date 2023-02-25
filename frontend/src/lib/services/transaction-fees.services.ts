@@ -1,7 +1,7 @@
 import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import type { Principal } from "@dfinity/principal/lib/cjs";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
