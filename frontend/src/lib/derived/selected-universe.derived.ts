@@ -33,7 +33,6 @@ const pageUniverseIdStore: Readable<Principal> = derived(
         // Ignore error as we redirect to default Nns or ckBTC
       }
     }
-
     // Consider NNS as default project
     return OWN_CANISTER_ID;
   }
@@ -61,7 +60,6 @@ export const isNnsUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseNns($selectedProjectId)
 );
-
 /**
  * Is the selected universe ckBTC?
  */

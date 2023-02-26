@@ -4,16 +4,15 @@
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/api/governance.api");
 
@@ -34,6 +33,16 @@ describe("ProposalDetail", () => {
 
   afterAll(jest.clearAllMocks);
 
+  beforeEach(() => {
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
+  });
+
   it("should render NnsProposalDetail by default", () => {
     const { queryByTestId } = render(ProposalDetail, {
       props: {
@@ -46,10 +55,6 @@ describe("ProposalDetail", () => {
 
   describe("SnsProposalDetail", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectsStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Proposal,

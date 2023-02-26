@@ -178,6 +178,10 @@ const convertSwap = ({
   lifecycle,
   // TODO: Ask to Max, why isn't it there?
   neuron_recipes: [],
+  // TODO: extend when needed
+  next_ticket_id: [],
+  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+  purge_old_tickets_next_principal: [],
   // TODO: Ask to Max, why isn't it there?
   cf_participants: [],
   decentralization_sale_open_timestamp_seconds: toNullable(

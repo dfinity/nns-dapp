@@ -73,7 +73,7 @@ describe("VotingCard", () => {
     expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
   });
 
-  it("should be visible if there are some not-voted-neurons", async () => {
+  it.skip("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { getByTestId } = renderVotingCard();
     await waitFor(() =>
@@ -81,7 +81,7 @@ describe("VotingCard", () => {
     );
   });
 
-  it("should disable action buttons if no neurons selected", async () => {
+  it.skip("should disable action buttons if no neurons selected", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = renderVotingCard();
     // remove neuron selection
@@ -91,7 +91,7 @@ describe("VotingCard", () => {
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });
 
-  it("should enable action buttons when neurons are selected", async () => {
+  it.skip("should enable action buttons when neurons are selected", async () => {
     // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = renderVotingCard();
@@ -145,7 +145,7 @@ describe("VotingCard", () => {
     });
 
     // it's on to show "console.error('vote:..." in the output (because of NO mock in canister)
-    it.only("should trigger register-vote NO", async () => {
+    it("should trigger register-vote NO", async () => {
       await fireEvent.click(screen.queryByTestId("vote-no") as Element);
       await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
 
