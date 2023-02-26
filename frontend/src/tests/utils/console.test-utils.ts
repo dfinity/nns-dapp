@@ -23,14 +23,13 @@ export const failTestsThatLogToConsole = () => {
   });
 
   global.afterEach(() => {
-    if (!isLoggingAllowed) {
-      expect(
-        gotLogs,
+    if (!isLoggingAllowed && gotLogs) {
+      throw new Error(
         "Your tests produced console logs, which is not allowed.\n" +
           "If you need console output, mock and expect it in your test.\n" +
           "If this is only for debugging, call allowLoggingInOneTest" +
-          "ForDebugging() from src/tests/mocks/console.mock in your test."
-      ).toBe(false);
+          "ForDebugging() from src/tests/utils/console.test-utils in your test."
+      );
     }
     isLoggingAllowed = false;
   });
