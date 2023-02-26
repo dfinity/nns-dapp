@@ -21,6 +21,8 @@ use std::str::FromStr;
 pub struct State {
     /// Scheduler for getting data from upstream
     pub timer_id: RefCell<Option<TimerId>>,
+    /// Scheduler for updating data on SNSs with active swaps
+    pub update_timer_id: RefCell<Option<TimerId>>,
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
     pub stable: RefCell<StableState>,

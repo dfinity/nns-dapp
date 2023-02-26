@@ -143,3 +143,11 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     crate::state::log(format!("Getting SNS index {index}... DONE"));
     Ok(())
 }
+
+/// Gets data for live sales
+#[deny(clippy::panic)]
+#[deny(clippy::expect_used)]
+#[deny(clippy::unwrap_used)]
+async fn get_fast_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Result<()> {
+    unimplemented!()
+}

@@ -9,6 +9,7 @@ mod upstream;
 
 #[cfg(test)]
 mod tests;
+mod update_scheduler;
 
 use std::collections::VecDeque;
 use std::time::Duration;
