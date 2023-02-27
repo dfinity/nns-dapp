@@ -22,7 +22,7 @@
     } as ProgressStep,
     {
       step: "reload",
-      text: "Updating UI balances",
+      text: "Refreshing UI Balances",
       state: "next",
     } as ProgressStep,
   ];
