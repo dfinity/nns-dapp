@@ -4,6 +4,8 @@
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import * as nnsdappApi from "$lib/api/nns-dapp.api";
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import {
@@ -11,6 +13,7 @@ import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   getAccountTransactions,
+  getOrCreateAccount,
   loadAccounts,
   renameSubAccount,
   syncAccounts,
@@ -46,16 +49,57 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
   };
 });
 
+jest.mock("$lib/api/nns-dapp.api");
+
 describe("accounts-services", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest.clearAllMocks();
   });
 
+  describe("getOrCreateAccount", () => {
+    it("should not call nnsdapp addAccount if getAccount already returns account", async () => {
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+
+      await getOrCreateAccount({ identity: mockIdentity, certified: true });
+
+      expect(queryAccountSpy).toBeCalledTimes(1);
+      expect(addAccountSpy).not.toBeCalled();
+    });
+
+    it("should throw if getAccount fails with other error than AccountNotFoundError", async () => {
+      const error = new Error("test");
+
+      jest.spyOn(nnsdappApi, "queryAccount").mockRejectedValueOnce(error);
+      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+
+      const call = () =>
+        getOrCreateAccount({ identity: mockIdentity, certified: true });
+
+      await expect(call).rejects.toThrowError(error);
+      expect(addAccountSpy).not.toBeCalled();
+    });
+
+    it("should addAccount if queryAccount throws AccountNotFoundError", async () => {
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValueOnce(new AccountNotFoundError("test"))
+        .mockResolvedValue(mockAccountDetails);
+      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+
+      await getOrCreateAccount({ identity: mockIdentity, certified: true });
+      expect(addAccountSpy).toBeCalledTimes(1);
+      expect(queryAccountSpy).toBeCalledTimes(2);
+    });
+  });
+
   describe("loadAccounts", () => {
     it("should call ledger and nnsdapp to get account and balance", async () => {
-      const getOrCreateAccountSpy = jest
-        .spyOn(nnsDappApi, "getOrCreateAccount")
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -63,7 +107,7 @@ describe("accounts-services", () => {
       const certified = true;
       await loadAccounts({ identity: mockIdentity, certified });
 
-      expect(getOrCreateAccountSpy).toBeCalled();
+      expect(queryAccountSpy).toBeCalled();
       expect(queryAccountBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified,
@@ -72,14 +116,11 @@ describe("accounts-services", () => {
     });
 
     it("should get balances of subaccounts", async () => {
-      // NNSDapp mock
       const accountDetails: AccountDetails = {
         ...mockAccountDetails,
         sub_accounts: [mockSubAccountDetails],
       };
-      jest
-        .spyOn(nnsDappApi, "getOrCreateAccount")
-        .mockResolvedValue(accountDetails);
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
@@ -105,9 +146,7 @@ describe("accounts-services", () => {
         ...mockAccountDetails,
         hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
       };
-      jest
-        .spyOn(nnsDappApi, "getOrCreateAccount")
-        .mockResolvedValue(accountDetails);
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
@@ -133,15 +172,15 @@ describe("accounts-services", () => {
     const mainBalanceE8s = BigInt(10_000_000);
 
     let queryAccountBalanceSpy: jest.SpyInstance;
-    let getOrCreateAccountSpy: jest.SpyInstance;
+    let queryAccountSpy: jest.SpyInstance;
     let spyCreateSubAccount: jest.SpyInstance;
     let spySendICP: jest.SpyInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      getOrCreateAccountSpy = jest
-        .spyOn(nnsDappApi, "getOrCreateAccount")
+      queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       spyCreateSubAccount = jest
         .spyOn(accountsApi, "createSubAccount")
@@ -166,7 +205,7 @@ describe("accounts-services", () => {
       };
       await syncAccounts();
 
-      expect(getOrCreateAccountSpy).toHaveBeenCalledTimes(2);
+      expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
         accountIdentifier: mockAccountDetails.account_identifier,
@@ -230,7 +269,7 @@ describe("accounts-services", () => {
     it("should sync accounts after transfer ICP", async () => {
       await transferICP(transferICPParams);
 
-      expect(getOrCreateAccountSpy).toHaveBeenCalled();
+      expect(queryAccountSpy).toHaveBeenCalled();
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
         accountIdentifier: mockAccountDetails.account_identifier,
@@ -246,14 +285,14 @@ describe("accounts-services", () => {
 
   describe("rename", () => {
     let queryAccountBalanceSpy: jest.SpyInstance;
-    let getOrCreateAccountSpy: jest.SpyInstance;
+    let queryAccountSpy: jest.SpyInstance;
     let spyRenameSubAccount: jest.SpyInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
-      getOrCreateAccountSpy = jest
-        .spyOn(nnsDappApi, "getOrCreateAccount")
+      queryAccountSpy = jest
+        .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       spyRenameSubAccount = jest
         .spyOn(accountsApi, "renameSubAccount")
@@ -275,7 +314,7 @@ describe("accounts-services", () => {
         selectedAccount: mockSubAccount,
       });
 
-      expect(getOrCreateAccountSpy).toHaveBeenCalled();
+      expect(queryAccountSpy).toHaveBeenCalled();
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
         accountIdentifier: mockAccountDetails.account_identifier,

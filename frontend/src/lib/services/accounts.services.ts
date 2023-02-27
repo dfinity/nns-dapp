@@ -4,7 +4,8 @@ import {
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
 import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
-import { getOrCreateAccount } from "$lib/api/nns-dapp.api";
+import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
   AccountIdentifierString,
@@ -28,6 +29,28 @@ import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+
+// Exported for testing purposes
+export const getOrCreateAccount = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountDetails> => {
+  try {
+    return await queryAccount({ certified, identity });
+  } catch (error) {
+    if (error instanceof AccountNotFoundError) {
+      // Ensure account exists in NNSDapp Canister
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
+      await addAccount(identity);
+      return queryAccount({ certified, identity });
+    }
+    throw error;
+  }
+};
 
 // Exported for testing
 export const loadAccounts = async ({

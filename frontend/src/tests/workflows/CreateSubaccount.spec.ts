@@ -31,7 +31,7 @@ jest.mock("$lib/api/nns-dapp.api");
 
 describe("Accounts", () => {
   let queryAccountBalanceSpy: jest.SpyInstance;
-  let getOrCreateAccountSpy: jest.SpyInstance;
+  let queryAccountSpy: jest.SpyInstance;
   beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
@@ -40,8 +40,8 @@ describe("Accounts", () => {
     queryAccountBalanceSpy = jest
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(BigInt(0));
-    getOrCreateAccountSpy = jest
-      .spyOn(nnsDappApi, "getOrCreateAccount")
+    queryAccountSpy = jest
+      .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
   });
 
@@ -79,7 +79,7 @@ describe("Accounts", () => {
     createButton && (await fireEvent.click(createButton));
 
     await waitFor(() => expect(createSubAccount).toHaveBeenCalled());
-    await waitFor(() => expect(getOrCreateAccountSpy).toBeCalled());
+    await waitFor(() => expect(queryAccountSpy).toBeCalled());
     await waitFor(() => expect(queryAccountBalanceSpy).toBeCalled());
   });
 });
