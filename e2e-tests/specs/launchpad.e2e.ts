@@ -38,9 +38,10 @@ describe("View launchpad when logged in", () => {
 
   LAUNCHPAD_PATHS.forEach((path, index) =>
     it(`Views ${path} while logged in`, async () => {
-      await browser.url("/launchpad/");
+      await browser.url(path);
       await waitForLoad(browser);
       await waitForImages(browser);
+      await browser.$("//h4[text()='Launch Pad']").waitForExist();
       await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
       await browser["screenshot"](`launchpad-v${index}-while-logged-in`);
     })
