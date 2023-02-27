@@ -273,7 +273,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "woff2" => Some("font/woff2"),
         "txt" => Some("text/plain"),
         path if path == suffix => Some("text/html"), // Path has no suffix.  E.g. /launchpad
-        _ => None, // Path has an unrecognised suffix.
+        _ => None,                                   // Path has an unrecognised suffix.
     })
 }
 
