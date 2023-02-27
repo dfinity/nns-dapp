@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 109947
 * Performance improvements by delaying requests when needed.
 * Setup caching layer for neurons.
 * Payment flow upgrade.
