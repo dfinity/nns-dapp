@@ -6,7 +6,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 
-  export let amount: number | undefined;
+  export let amount: number | undefined = undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -34,7 +34,7 @@
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}
-  <p class="fee description">
+  <p class="fee description" data-tid="bitcoin-estimated-fee">
     {$i18n.accounts.estimated_bitcoin_transaction_fee}:
     <span class="value">{formatEstimatedFee(bitcoinEstimatedFee)}</span>
     <span class="label">{$i18n.ckbtc.btc}</span>
