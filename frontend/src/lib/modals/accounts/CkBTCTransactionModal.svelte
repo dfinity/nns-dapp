@@ -18,6 +18,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
+  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -26,6 +27,7 @@
   export let transactionFee: TokenAmount;
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
+  let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep;
 
@@ -92,5 +94,7 @@
     slot="additional-info-form"
     {selectedNetwork}
     amount={userAmount}
+    bind:bitcoinEstimatedFee
   />
+  <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} slot="additional-info-review" />
 </TransactionModal>

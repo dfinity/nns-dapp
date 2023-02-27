@@ -210,7 +210,7 @@
     "network_icp_ckbtc": "Internet Computer (ckBTC)",
     "network_bitcoin": "Bitcoin (BTC)",
     "select_network": "Select network",
-    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee:"
+    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
   },
   "neurons": {
     "title": "Neurons",

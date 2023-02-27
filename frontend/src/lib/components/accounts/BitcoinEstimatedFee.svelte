@@ -4,11 +4,12 @@
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
+  import {formatEstimatedFee} from "$lib/utils/bitcoin.utils";
 
   export let amount: number | undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
-  let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+  export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
   const estimateFee = async () => {
     if (selectedNetwork !== TransactionNetwork.BITCOIN) {
@@ -32,8 +33,8 @@
 
 {#if nonNullish(bitcoinEstimatedFee)}
   <p class="fee description">
-    {$i18n.accounts.estimated_bitcoin_transaction_fee}
-    <span class="value">{Number(bitcoinEstimatedFee) / 100_000_000}</span>
+    {$i18n.accounts.estimated_bitcoin_transaction_fee}:
+    <span class="value">{formatEstimatedFee(bitcoinEstimatedFee)}</span>
     <span class="label">{$i18n.ckbtc.btc}</span>
   </p>
 {/if}
