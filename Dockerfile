@@ -68,25 +68,37 @@ WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
 
-FROM builder AS build_frontend
+# Title: Gets the deployment configuration
+# Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+FROM builder AS configurator
+SHELL ["bash", "-c"]
+COPY dfx.json config.sh .df[x] canister_ids.jso[n] /build/
+WORKDIR /build
 ARG DFX_NETWORK=mainnet
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
+RUN mkdir -p frontend
+RUN ./config.sh
+
+# Title: Image to build the nns-dapp frontend.
+# Args: A file with env vars at frontend/.env created by config.sh
+FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY ./config.sh /build/
+COPY --from=configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
-COPY ./dfx.json /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
-RUN export DFX_NETWORK && . config.sh && ./build-frontend.sh
+RUN ./build-frontend.sh
 
+# Title: Image to build the nns-dapp backend.
+# Args: DFX_NETWORK env var for enabling/disabling features.
+#       Note:  Better would probably be to take a config so
+#       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs /build/rs
-COPY ./config.sh /build/
 COPY ./build-backend.sh /build/
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
@@ -94,8 +106,13 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
-RUN export DFX_NETWORK && ./build-backend.sh
+RUN ./build-backend.sh
 
+# Title: Image to build the sns aggregator, used to increase performance and reduce load.
+# Args: None.
+#       The SNS aggregator needs to know the canister ID of the
+#       NNS-SNS-wasm canister.  That is hard-wired but should be
+#       configurable
 FROM builder AS build_aggregate
 SHELL ["bash", "-c"]
 COPY ./rs /build/rs
@@ -109,10 +126,11 @@ RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
 RUN ./build-sns-aggregator.sh
 
+# Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
+COPY --from=configurator /build/deployment-config.json /
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
-COPY --from=build_frontend /build/deployment-config.json /
 COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
