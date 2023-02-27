@@ -62,7 +62,13 @@
     modal.set(steps.findIndex(({ name }) => name === "Progress"));
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  disablePointerEvents={currentStep?.name === "Progress"}
+>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
