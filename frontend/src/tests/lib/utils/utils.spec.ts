@@ -332,7 +332,8 @@ describe("utils", () => {
             shouldExit: () => false,
             maxAttempts,
           });
-        // Without the `await`, the line didn't wait the `poll` to throw to move to the next line
+        // Without the `await`, the line didn't wait the `poll` to throw to
+        // move to the next line
         await expect(call).rejects.toThrowError(PollingLimitExceededError);
         expect(counter).toBe(maxAttempts);
       });
