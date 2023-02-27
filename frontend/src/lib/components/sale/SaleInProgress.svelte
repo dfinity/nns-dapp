@@ -7,22 +7,22 @@
   let steps: [ProgressStep, ...ProgressStep[]] = [
     {
       step: "initialization",
-      text: "Connection with sale canister",
+      text: "Connecting with sale canister",
       state: "next",
     } as ProgressStep,
     {
       step: "transfer",
-      text: "Sending tokens",
+      text: "Sending ICP",
       state: "next",
     } as ProgressStep,
     {
       step: "notify",
-      text: "Confirming your participation",
+      text: "Confirming participation",
       state: "next",
     } as ProgressStep,
     {
       step: "reload",
-      text: "Updating your data",
+      text: "Updating UI balances",
       state: "next",
     } as ProgressStep,
   ];
