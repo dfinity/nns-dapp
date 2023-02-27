@@ -140,6 +140,8 @@ describe("ckbtc-minter-services", () => {
       );
 
       expect(callback).toHaveBeenCalledWith(result);
+      // Query + Update
+      expect(callback).toHaveBeenCalledTimes(2);
     });
   });
 });
