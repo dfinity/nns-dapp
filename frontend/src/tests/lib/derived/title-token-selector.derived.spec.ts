@@ -33,7 +33,7 @@ describe("title token selector derived store", () => {
     expect($store3).toEqual(en.universe.select_token);
   });
 
-  it("should return select nervous system text if path is not related to neurons", () => {
+  it("should return select nervous system text if path is related to neurons", () => {
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neuron,
