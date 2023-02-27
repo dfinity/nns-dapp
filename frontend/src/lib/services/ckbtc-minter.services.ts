@@ -38,12 +38,12 @@ export const estimateFee = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
+      // hide fee on any error
+      callback(null);
+
       if (certified !== true) {
         return;
       }
-
-      // hide unproven data
-      callback(null);
 
       toastsError(
         toToastError({

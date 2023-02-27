@@ -16,20 +16,15 @@
       return;
     }
 
-    try {
-      const callback = (fee: bigint | null) => (bitcoinEstimatedFee = fee);
+    const callback = (fee: bigint | null) => (bitcoinEstimatedFee = fee);
 
-      await estimateFeeService({
-        params: {
-          amount: nonNullish(amount) ? numberToE8s(amount) : undefined,
-          certified: false,
-        },
-        callback,
-      });
-    } catch (err: unknown) {
-      // TODO: display error
-      console.error(err);
-    }
+    await estimateFeeService({
+      params: {
+        amount: nonNullish(amount) ? numberToE8s(amount) : undefined,
+        certified: false,
+      },
+      callback,
+    });
   };
 
   $: selectedNetwork, amount, (async () => estimateFee())();
