@@ -105,6 +105,7 @@ interface I18nError {
   not_canister_controller_to_update: string;
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
+  limit_exceeded_getting_open_ticket: string;
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
@@ -632,6 +633,7 @@ interface I18nSns_project_detail {
   sale_end: string;
   max_left: string;
   max_user_commitment_reached: string;
+  getting_sns_open_ticket: string;
   sign_in: string;
 }
 
@@ -731,6 +733,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   load_sale_total_commitments: string;
+  load_sale_lifecycle: string;
   load_parameters: string;
   sns_remove_hotkey: string;
   sns_split_neuron: string;
@@ -748,11 +751,15 @@ interface I18nError__sns {
   commitment_too_large: string;
   commitment_exceeds_current_allowed: string;
   sns_sale_unexpected_error: string;
+  sns_sale_unexpected_and_refresh: string;
+  sns_sale_final_error: string;
   sns_sale_proceed_with_existing_ticket: string;
   sns_sale_closed: string;
+  sns_sale_not_open: string;
   sns_sale_invalid_amount: string;
   sns_sale_invalid_subaccount: string;
   sns_sale_try_later: string;
+  sns_sale_retry_in: string;
   sns_sale_committed_not_equal_to_amount: string;
   invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;

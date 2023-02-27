@@ -15,9 +15,7 @@
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { getSwapAccount } from "$lib/services/sns.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
     ValidateAmountFn,
@@ -28,11 +26,9 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import {
-    initiateSnsSaleParticipation,
-    participateInSnsSale,
-  } from "$lib/services/sns-sale.services";
-  import { logWithTimestamp } from "$lib/utils/dev.utils";
+  import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -90,48 +86,26 @@
 
   let accepted: boolean;
 
+  let busy = true;
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
+
   const dispatcher = createEventDispatcher();
   const participate = async ({
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
-      startBusy({
-        initiator: "project-participate",
-        labelKey: "neurons.may_take_while",
-      });
-
-      const ticket = await initiateSnsSaleParticipation({
+      await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
-      });
-
-      if (ticket && ticket.ticket) {
-        const { success, retry } = await participateInSnsSale({
-          ticket: {
-            rootCanisterId: ticket.rootCanisterId,
-            ticket: ticket.ticket,
-          },
-        });
-
-        if (success) {
+        postprocess: async () => {
           await reload();
-
-          toastsSuccess({
-            labelKey: "sns_project_detail.participate_success",
-          });
-        }
-
-        if (retry) {
-          // TODO(sale): GIX-1310 - implement retry logic
-          logWithTimestamp("[sale] retry TBD");
-          return;
-        }
-
-        dispatcher("nnsClose");
-      }
-
-      stopBusy("project-participate");
+          dispatcher("nnsClose");
+        },
+      });
     }
   };
 
@@ -176,7 +150,7 @@
     on:nnsSubmit={participate}
     {validateAmount}
     {destinationAddress}
-    disableSubmit={!accepted}
+    disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
     maxAmount={currentUserMaxCommitment({ summary, swapCommitment })}

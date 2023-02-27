@@ -4,17 +4,15 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-  principal,
-} from "../../mocks/sns-projects.mock";
+import { mockSnsFullProject, principal } from "../../mocks/sns-projects.mock";
+import { snsResponseFor } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -35,6 +33,16 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
 });
 
 describe("Wallet", () => {
+  beforeEach(() => {
+    snsQueryStore.reset();
+    snsQueryStore.setData(
+      snsResponseFor({
+        principal: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      })
+    );
+  });
+
   beforeAll(() =>
     jest
       .spyOn(authStore, "subscribe")
@@ -56,10 +64,6 @@ describe("Wallet", () => {
 
   describe("sns context", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectsStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Wallet,

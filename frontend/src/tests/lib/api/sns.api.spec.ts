@@ -7,6 +7,7 @@ import {
   increaseStakeNeuron,
   queryAllSnsMetadata,
   querySnsDerivedState,
+  querySnsLifecycle,
   querySnsMetadata,
   querySnsNeuron,
   querySnsNeurons,
@@ -21,7 +22,11 @@ import {
 } from "$lib/proxy/api.import.proxy";
 import type { HttpAgent } from "@dfinity/agent";
 import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
-import type { SnsNeuronId } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsGetLifecycleResponse,
+  type SnsNeuronId,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
@@ -63,10 +68,15 @@ describe("sns-api", () => {
     sns_tokens_per_icp: [1],
     buyer_total_icp_e8s: [BigInt(1_000_000_000)],
   };
+  const lifecycleResponse: SnsGetLifecycleResponse = {
+    lifecycle: [SnsSwapLifecycle.Open],
+    decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+  };
   const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
   const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
   const getDerivedStateSpy = jest.fn().mockResolvedValue(derivedState);
+  const getLifecycleSpy = jest.fn().mockResolvedValue(lifecycleResponse);
   const ledgerCanisterMock = mock<LedgerCanister>();
   const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
   const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
@@ -105,6 +115,7 @@ describe("sns-api", () => {
         queryNeuron: queryNeuronSpy,
         increaseStakeNeuron: increaseStakeNeuronSpy,
         getDerivedState: getDerivedStateSpy,
+        getLifecycle: getLifecycleSpy,
       })
     );
   });
@@ -178,6 +189,16 @@ describe("sns-api", () => {
     });
     expect(getDerivedStateSpy).toBeCalled();
     expect(receivedData).toEqual(derivedState);
+  });
+
+  it("should return lifecycle state", async () => {
+    const receivedData = await querySnsLifecycle({
+      rootCanisterId: rootCanisterIdMock.toText(),
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(getLifecycleSpy).toBeCalled();
+    expect(receivedData).toEqual(lifecycleResponse);
   });
 
   it("should query sns neurons", async () => {
