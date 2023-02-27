@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
-  import type {SaleStep} from "$lib/types/sale";
+  import type { SaleStep } from "$lib/types/sale";
 
   export let progressStep: SaleStep;
 
@@ -28,16 +28,23 @@
   ];
 
   const updateSteps = () => {
-    const progressIndex = steps.findIndex(({step}) => step === progressStep);
+    const progressIndex = steps.findIndex(({ step }) => step === progressStep);
 
-    steps = steps.map((step, index) => step.step === progressStep ? {
-      ...step,
-      state: "in_progress"
-    } : {
-      ...step,
-      state: index < progressIndex ? "completed" : "next"
-    })
-  }
+    steps = steps.map((step, index) =>
+      step.step === progressStep
+        ? {
+            ...step,
+            state: "in_progress",
+          }
+        : {
+            ...step,
+            state:
+              index < progressIndex || progressStep === "done"
+                ? "completed"
+                : "next",
+          }
+    );
+  };
 
   $: progressStep, (() => updateSteps())();
 </script>

@@ -30,7 +30,7 @@
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-  import type {SaleStep} from "$lib/types/sale";
+  import type { SaleStep } from "$lib/types/sale";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -106,20 +106,28 @@
     if (nonNullish($projectDetailStore.summary)) {
       modal?.goProgress();
 
-      const updateProgress = (step: SaleStep) => progressStep = step;
+      const updateProgress = (step: SaleStep) => (progressStep = step);
 
-      await initiateSnsSaleParticipation({
+      const { success } = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
         postprocess: async () => {
           await reload();
         },
-        updateProgress
+        updateProgress,
       });
 
-      // We close the modal here anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
-      dispatcher("nnsClose");
+      // We close the modal anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
+      if (!success) {
+        dispatcher("nnsClose");
+        return;
+      }
+
+      // We defer the closing of the modal a bit to let the user notice the last step was successful
+      setTimeout(() => {
+        dispatcher("nnsClose");
+      }, 1000);
     }
   };
 

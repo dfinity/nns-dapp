@@ -81,7 +81,7 @@
       postprocess: reload,
       updateProgress: () => {
         // TODO: implement progress UI
-      }
+      },
     });
   };
 

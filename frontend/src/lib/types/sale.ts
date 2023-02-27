@@ -1,1 +1,6 @@
-export type SaleStep = "initialization" | "transfer" | "notify" | "reload";
+export type SaleStep =
+  | "initialization"
+  | "transfer"
+  | "notify"
+  | "reload"
+  | "done";
