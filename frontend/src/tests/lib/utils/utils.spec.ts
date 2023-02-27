@@ -16,11 +16,10 @@ import {
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("utils", () => {
-  beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
-  );
-
-  afterAll(() => jest.resetAllMocks());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+  });
 
   describe("stringifyJson", () => {
     const SAMPLE = { a: 0, b: [1, 2], c: "c" };

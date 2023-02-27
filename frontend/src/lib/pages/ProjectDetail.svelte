@@ -6,7 +6,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import {
-    loadSnsSummary,
+    loadSnsLifecycle,
     loadSnsSwapCommitment,
     loadSnsTotalCommitment,
   } from "$lib/services/sns.services";
@@ -31,18 +31,7 @@
 
   $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
     loadCommitment(rootCanisterId);
-    loadTotalCommitments(rootCanisterId);
   }
-
-  const loadSummary = (rootCanisterId: string) =>
-    loadSnsSummary({
-      rootCanisterId,
-      onError: () => {
-        // Set to not found
-        $projectDetailStore.summary = undefined;
-        goBack();
-      },
-    });
 
   const loadCommitment = (rootCanisterId: string) =>
     loadSnsSwapCommitment({
@@ -54,9 +43,6 @@
       },
     });
 
-  const loadTotalCommitments = (rootCanisterId: string) =>
-    loadSnsTotalCommitment({ rootCanisterId });
-
   const reload = async () => {
     if (rootCanisterId === undefined || rootCanisterId === null) {
       // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
@@ -64,7 +50,8 @@
     }
 
     await Promise.all([
-      loadSummary(rootCanisterId),
+      loadSnsTotalCommitment({ rootCanisterId }),
+      loadSnsLifecycle({ rootCanisterId }),
       loadCommitment(rootCanisterId),
     ]);
   };

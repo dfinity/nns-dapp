@@ -13,7 +13,7 @@ jest.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("Markdown", () => {
-  beforeAll(silentConsoleErrors);
+  beforeEach(silentConsoleErrors);
   afterAll(() => jest.clearAllMocks());
 
   it("should render html content", async () => {

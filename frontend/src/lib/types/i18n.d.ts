@@ -732,6 +732,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   load_sale_total_commitments: string;
+  load_sale_lifecycle: string;
   load_parameters: string;
   sns_remove_hotkey: string;
   sns_split_neuron: string;

@@ -288,12 +288,28 @@ const handleNewSaleTicketError = ({
     console.error(err);
   }
 
-  // generic error
+  // generic error and polling limit reached
   toastsError({
     labelKey: "error__sns.sns_sale_unexpected_error",
     err,
   });
 };
+
+// Any known error we stop polling
+const shoulStopPollingNewTicket = (err: unknown): boolean =>
+  err instanceof SnsSwapNewTicketError;
+
+const pollNewSaleTicket = async (params: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  amount_icp_e8s: E8s;
+  subaccount?: Uint8Array;
+}) =>
+  poll({
+    fn: (): Promise<Ticket> => newSaleTicketApi(params),
+    shouldExit: shoulStopPollingNewTicket,
+    millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+  });
 
 // TODO(sale): rename to loadNewSaleTicket
 /**
@@ -316,7 +332,7 @@ export const newSaleTicket = async ({
   logWithTimestamp("[sale]newSaleTicket:", amount_icp_e8s, Boolean(subaccount));
   try {
     const identity = await getCurrentIdentity();
-    const ticket = await newSaleTicketApi({
+    const ticket = await pollNewSaleTicket({
       identity,
       rootCanisterId,
       subaccount,
