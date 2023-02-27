@@ -105,6 +105,8 @@ pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// List of content encodings supported by the assets database.
     const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
+    /// List of suffix changes that may be made.
+    const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
@@ -125,16 +127,18 @@ impl Assets {
     ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
-        for (old_suffix, new_suffix) in [("/", "/index.html")] {
+        for (old_suffix, new_suffix) in Self::SUFFIX_REWRITES {
             if let Some(root) = path.strip_suffix(old_suffix) {
                 let new_path = root.to_string() + new_suffix;
-                return self.get(&new_path);
+                if let Some(ans) = Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
+                    self.get_with_encoding(*content_encoding, &new_path)
+                        .map(|asset| (*content_encoding, asset))
+                }) {
+                    return Some(ans);
+                }
             }
         }
-        Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
-            self.get_with_encoding(*content_encoding, path)
-                .map(|asset| (*content_encoding, asset))
-        })
+        None
     }
     /// Gets the given URL path from the assets, with the given encoding.
     fn get_with_encoding(&self, content_encoding: ContentEncoding, path: &str) -> Option<&Asset> {
@@ -163,14 +167,13 @@ impl Assets {
             // Add the directory, with trailing slash, as an alternative path.
             // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
             .flat_map(|path| {
-                if let Some(root) = path.strip_suffix("/index.html") {
-                    ["/", "/index.html"]
-                        .iter()
-                        .map(|suffix| root.to_string() + suffix)
-                        .collect::<Vec<String>>()
-                } else {
-                    vec![path]
-                }
+                Self::SUFFIX_REWRITES
+                    .iter()
+                    .filter_map(|(new_suffix, original_suffix)| {
+                        path.strip_suffix(original_suffix)
+                            .map(|root| root.to_string() + new_suffix)
+                    })
+                    .collect::<Vec<String>>()
             })
             .collect()
     }
