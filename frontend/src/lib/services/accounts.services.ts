@@ -1,12 +1,15 @@
 import {
   createSubAccount,
   getTransactions,
-  loadAccounts,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
-import { sendICP } from "$lib/api/ledger.api";
+import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
+import { getOrCreateAccount } from "$lib/api/nns-dapp.api";
 import type {
+  AccountDetails,
   AccountIdentifierString,
+  HardwareWalletAccountDetails,
+  SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
@@ -16,7 +19,7 @@ import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { Account } from "$lib/types/account";
+import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -25,6 +28,60 @@ import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+
+// Exported for testing
+export const loadAccounts = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountsStoreData> => {
+  // Helper
+  const getAccountBalance = async (
+    identifierString: string
+  ): Promise<TokenAmount> => {
+    const e8sBalance = await queryAccountBalance({
+      identity,
+      certified,
+      accountIdentifier: identifierString,
+    });
+    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
+  };
+
+  const mainAccount: AccountDetails = await getOrCreateAccount({
+    identity,
+    certified,
+  });
+
+  const mapAccount =
+    (type: AccountType) =>
+    async (
+      account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
+    ): Promise<Account> => ({
+      identifier: account.account_identifier,
+      balance: await getAccountBalance(account.account_identifier),
+      type,
+      ...("sub_account" in account && { subAccount: account.sub_account }),
+      ...("name" in account && { name: account.name }),
+      ...("principal" in account && { principal: account.principal }),
+    });
+
+  const [main, subAccounts, hardwareWallets] = await Promise.all([
+    mapAccount("main")(mainAccount),
+    Promise.all(mainAccount.sub_accounts.map(mapAccount("subAccount"))),
+    Promise.all(
+      mainAccount.hardware_wallet_accounts.map(mapAccount("hardwareWallet"))
+    ),
+  ]);
+
+  return {
+    main,
+    subAccounts,
+    hardwareWallets,
+    certified,
+  };
+};
 
 /**
  * - sync: load the account data using the ledger and the nns dapp canister itself

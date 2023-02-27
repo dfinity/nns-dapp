@@ -1,4 +1,8 @@
-import { sendICP, transactionFee } from "$lib/api/ledger.api";
+import {
+  queryAccountBalance,
+  sendICP,
+  transactionFee,
+} from "$lib/api/ledger.api";
 import {
   AccountIdentifier,
   ICPToken,
@@ -124,6 +128,34 @@ describe("ledger-api", () => {
       const actualFee = await transactionFee({ identity: mockIdentity });
       expect(actualFee).toEqual(fee);
       expect(ledgerMock.transactionFee).toBeCalled();
+    });
+  });
+
+  describe("queryAccountBalance", () => {
+    const balance = BigInt(10_000_000);
+    const ledgerMock = mock<LedgerCanister>();
+    ledgerMock.accountBalance.mockResolvedValue(balance);
+
+    beforeEach(() => {
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation((): LedgerCanister => ledgerMock);
+    });
+
+    it("gets accounts balance from LedgerCanister", async () => {
+      const certified = true;
+      const actualFee = await queryAccountBalance({
+        identity: mockIdentity,
+        certified,
+        accountIdentifier: mockMainAccount.identifier,
+      });
+      expect(actualFee).toEqual(balance);
+      expect(ledgerMock.accountBalance).toBeCalledWith({
+        certified,
+        accountIdentifier: AccountIdentifier.fromHex(
+          mockMainAccount.identifier
+        ),
+      });
     });
   });
 });

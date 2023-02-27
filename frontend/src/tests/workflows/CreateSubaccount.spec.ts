@@ -2,7 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { createSubAccount, loadAccounts } from "$lib/api/accounts.api";
+import { createSubAccount } from "$lib/api/accounts.api";
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -10,29 +12,37 @@ import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockMainAccount, mockSubAccount } from "../mocks/accounts.store.mock";
+import {
+  mockAccountDetails,
+  mockMainAccount,
+} from "../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
 import { clickByTestId } from "../utils/utils.test-utils";
 
 jest.mock("$lib/api/accounts.api", () => {
   return {
     createSubAccount: jest.fn().mockResolvedValue(undefined),
-    loadAccounts: jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        main: mockMainAccount,
-        subAccounts: [mockSubAccount],
-        hardwareWallets: [],
-      })
-    ),
   };
 });
 
+jest.mock("$lib/api/ledger.api");
+
+jest.mock("$lib/api/nns-dapp.api");
+
 describe("Accounts", () => {
+  let queryAccountBalanceSpy: jest.SpyInstance;
+  let getOrCreateAccountSpy: jest.SpyInstance;
   beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
     jest.spyOn(console, "error").mockImplementation(jest.fn);
+    queryAccountBalanceSpy = jest
+      .spyOn(ledgerApi, "queryAccountBalance")
+      .mockResolvedValue(BigInt(0));
+    getOrCreateAccountSpy = jest
+      .spyOn(nnsDappApi, "getOrCreateAccount")
+      .mockResolvedValue(mockAccountDetails);
   });
 
   it("should create a subaccount in NNS", async () => {
@@ -69,6 +79,7 @@ describe("Accounts", () => {
     createButton && (await fireEvent.click(createButton));
 
     await waitFor(() => expect(createSubAccount).toHaveBeenCalled());
-    await waitFor(() => expect(loadAccounts).toBeCalled());
+    await waitFor(() => expect(getOrCreateAccountSpy).toBeCalled());
+    await waitFor(() => expect(queryAccountBalanceSpy).toBeCalled());
   });
 });

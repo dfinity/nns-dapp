@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import * as accountsApi from "$lib/api/accounts.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import * as authServices from "$lib/services/auth.services";
@@ -14,7 +13,6 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockPrincipal,
@@ -56,12 +54,6 @@ describe("DisburseSnsNeuronModal", () => {
     jest
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockResolvedValue(testIdentity);
-
-    jest
-      .spyOn(accountsApi, "loadAccounts")
-      .mockImplementation(() =>
-        Promise.resolve({ main: mockMainAccount, subAccounts: [] })
-      );
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockPrincipal,
