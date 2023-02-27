@@ -140,11 +140,6 @@ describe("sns-api", () => {
       ])
     );
 
-    // const ledgerMock = mock<LedgerCanister>();
-    // ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    // jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
-
-    // sendICPSpy.mockResolvedValue(13n);
     sendICPSpy.mockResolvedValue(13n);
 
     snsQueryStore.setData(
