@@ -46,7 +46,7 @@
                 ? "completed"
                 : "next",
           }
-    );
+    ) as [ProgressStep, ...ProgressStep[]];
   };
 
   $: progressStep, (() => updateSteps())();
