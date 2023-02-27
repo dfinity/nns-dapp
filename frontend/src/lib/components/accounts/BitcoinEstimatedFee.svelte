@@ -28,8 +28,6 @@
   };
 
   $: selectedNetwork, amount, (async () => estimateFee())();
-
-  // TODO: conversion bitcoinEstimatedFee -> display
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}
