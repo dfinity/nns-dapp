@@ -144,12 +144,12 @@ describe("ledger-api", () => {
 
     it("gets accounts balance from LedgerCanister", async () => {
       const certified = true;
-      const actualFee = await queryAccountBalance({
+      const actualBalance = await queryAccountBalance({
         identity: mockIdentity,
         certified,
         accountIdentifier: mockMainAccount.identifier,
       });
-      expect(actualFee).toEqual(balance);
+      expect(actualBalance).toEqual(balance);
       expect(ledgerMock.accountBalance).toBeCalledWith({
         certified,
         accountIdentifier: AccountIdentifier.fromHex(
