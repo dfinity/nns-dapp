@@ -1,10 +1,10 @@
 <script lang="ts">
   import { TransactionNetwork } from "$lib/types/transaction";
   import { estimateFee as estimateFeeService } from "$lib/services/ckbtc-minter.services";
-  import {debounce, nonNullish} from "@dfinity/utils";
+  import { debounce, nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
-  import {formatEstimatedFee} from "$lib/utils/bitcoin.utils";
+  import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 
   export let amount: number | undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;

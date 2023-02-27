@@ -96,5 +96,8 @@
     amount={userAmount}
     bind:bitcoinEstimatedFee
   />
-  <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} slot="additional-info-review" />
+  <BitcoinEstimatedFeeDisplay
+    {bitcoinEstimatedFee}
+    slot="additional-info-review"
+  />
 </TransactionModal>

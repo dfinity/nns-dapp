@@ -123,7 +123,12 @@ describe("ckbtc-minter-services", () => {
 
       const params = { certified: true, amount: 456n };
 
-      await services.estimateFee(params);
+      await services.estimateFee({
+        params,
+        callback: () => {
+          // Nothing here
+        },
+      });
 
       await waitFor(() =>
         expect(spyEstimateFee).toBeCalledWith({
