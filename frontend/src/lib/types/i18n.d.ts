@@ -802,6 +802,7 @@ interface I18nAuth_sns {
 
 interface I18nUniverse {
   select_token: string;
+  select_nervous_system: string;
   select: string;
 }
 
