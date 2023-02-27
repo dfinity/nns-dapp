@@ -7,7 +7,7 @@
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}
-  <div>
+  <div data-tid="bitcoin-estimated-fee-display">
     <p class="label">{$i18n.accounts.estimated_bitcoin_transaction_fee}</p>
     <p class="value">
       {formatEstimatedFee(bitcoinEstimatedFee)}
