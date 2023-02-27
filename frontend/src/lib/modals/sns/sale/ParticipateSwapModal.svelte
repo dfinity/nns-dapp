@@ -108,26 +108,26 @@
 
       const updateProgress = (step: SaleStep) => (progressStep = step);
 
-      // const { success } = await initiateSnsSaleParticipation({
-      //   account: sourceAccount,
-      //   amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
-      //   rootCanisterId: $projectDetailStore.summary.rootCanisterId,
-      //   postprocess: async () => {
-      //     await reload();
-      //   },
-      //   updateProgress,
-      // });
-      //
-      // // We close the modal anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
-      // if (!success) {
-      //   dispatcher("nnsClose");
-      //   return;
-      // }
-      //
-      // // We defer the closing of the modal a bit to let the user notice the last step was successful
-      // setTimeout(() => {
-      //   dispatcher("nnsClose");
-      // }, 1000);
+      const { success } = await initiateSnsSaleParticipation({
+        account: sourceAccount,
+        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+        rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        postprocess: async () => {
+          await reload();
+        },
+        updateProgress,
+      });
+
+      // We close the modal anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
+      if (!success) {
+        dispatcher("nnsClose");
+        return;
+      }
+
+      // We defer the closing of the modal a bit to let the user notice the last step was successful
+      setTimeout(() => {
+        dispatcher("nnsClose");
+      }, 1000);
     }
   };
 
