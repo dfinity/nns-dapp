@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXX
+* Performance improvements by delaying requests when needed.
+* Setup caching layer for neurons.
+* Payment flow upgrade.
+* SNS Aggregator improvements.
+* Derived state api.
+* Fixes and UI improvements.
+
 ## Proposal 108160
 * Migration to nns.internetcomputer.org
 
