@@ -633,7 +633,14 @@ interface I18nSns_project_detail {
   max_user_commitment_reached: string;
   getting_sns_open_ticket: string;
   sign_in: string;
+}
+
+interface I18nSns_sale {
   participation_in_progress: string;
+  step_initialization: string;
+  step_transfer: string;
+  step_notify: string;
+  step_reload: string;
 }
 
 interface I18nSns_neuron_detail {
@@ -1084,6 +1091,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
   time: I18nTime;

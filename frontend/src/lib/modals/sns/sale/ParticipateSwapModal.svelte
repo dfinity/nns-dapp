@@ -68,7 +68,7 @@
         ? $i18n.sns_project_detail.increase_participation
         : $i18n.sns_project_detail.participate
       : currentStep?.name === "Progress"
-      ? $i18n.sns_project_detail.participation_in_progress
+      ? $i18n.sns_sale.participation_in_progress
       : $i18n.accounts.review_transaction;
 
   let maxCommitment: TokenAmount;

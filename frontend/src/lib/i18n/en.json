@@ -608,8 +608,14 @@
     "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached",
     "getting_sns_open_ticket": "We're connecting with the SNS sale. This might take more than a minute.",
-    "sign_in": "Sign in to participate",
-    "participation_in_progress": "Participating in sale"
+    "sign_in": "Sign in to participate"
+  },
+  "sns_sale": {
+    "participation_in_progress": "Participating in sale",
+    "step_initialization": "Connecting with sale canister",
+    "step_transfer": "Sending ICP",
+    "step_notify": "Confirming participation",
+    "step_reload": "Refreshing UI Balances"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
