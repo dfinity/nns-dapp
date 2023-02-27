@@ -34,6 +34,10 @@
       name: "Review",
       title: "",
     },
+    {
+      name: "Progress",
+      title: "",
+    },
   ];
 
   let modal: WizardModal;
@@ -54,6 +58,8 @@
   const goBack = () => {
     modal.back();
   };
+  export const goProgress = () =>
+    modal.set(steps.findIndex(({ name }) => name === "Progress"));
 </script>
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
@@ -99,5 +105,8 @@
       <slot name="destination-info" slot="destination-info" />
       <slot name="description" slot="description" />
     </TransactionReview>
+  {/if}
+  {#if currentStep?.name === "Progress"}
+    <slot name="in_progress" />
   {/if}
 </WizardModal>

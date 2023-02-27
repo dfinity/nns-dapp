@@ -428,11 +428,6 @@ export const initiateSnsSaleParticipation = async ({
 }): Promise<void> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
-    startBusy({
-      initiator: "project-participate",
-      labelKey: "neurons.may_take_while",
-    });
-
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -451,6 +446,7 @@ export const initiateSnsSaleParticipation = async ({
       throw new LedgerErrorKey(labelKey, substitutions);
     }
 
+    // Step 1.
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
     await newSaleTicket({
@@ -463,6 +459,7 @@ export const initiateSnsSaleParticipation = async ({
 
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
+      // Step 2. to finish
       await participateInSnsSale({
         rootCanisterId,
         postprocess,
@@ -653,6 +650,7 @@ export const participateInSnsSale = async ({
 
     logWithTimestamp("[sale] 1. transfer (time,id):", creationTime, ticketId);
 
+    // Step 2.
     // Send amount to the ledger
     await nnsLedger.transfer({
       amount,
@@ -719,6 +717,7 @@ export const participateInSnsSale = async ({
     }
   }
 
+  // Step 3.
   const { success } = await notifyParticipationAndRemoveTicket({
     rootCanisterId,
     identity,
@@ -730,6 +729,7 @@ export const participateInSnsSale = async ({
     return;
   }
 
+  // Step 4.
   logWithTimestamp("[sale] 3. syncAccounts");
   await syncAccounts();
 

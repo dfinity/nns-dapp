@@ -20,8 +20,8 @@
     NewTransaction,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
-  import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
+  import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
+  import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
@@ -29,6 +29,7 @@
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -65,6 +66,8 @@
       ? userHasParticipatedToSwap
         ? $i18n.sns_project_detail.increase_participation
         : $i18n.sns_project_detail.participate
+      : currentStep?.name === "Progress"
+      ? $i18n.sns_project_detail.participation_in_progress
       : $i18n.accounts.review_transaction;
 
   let maxCommitment: TokenAmount;
@@ -92,20 +95,24 @@
     ticketsStore: $snsTicketsStore,
   });
 
+  let modal: TransactionModal;
+
   const dispatcher = createEventDispatcher();
   const participate = async ({
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
-      await initiateSnsSaleParticipation({
-        account: sourceAccount,
-        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
-        rootCanisterId: $projectDetailStore.summary.rootCanisterId,
-        postprocess: async () => {
-          await reload();
-          dispatcher("nnsClose");
-        },
-      });
+      modal?.goProgress();
+      // TODO: uncomment
+      // await initiateSnsSaleParticipation({
+      //   account: sourceAccount,
+      //   amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+      //   rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+      //   postprocess: async () => {
+      //     await reload();
+      //     dispatcher("nnsClose");
+      //   },
+      // });
     }
   };
 
@@ -146,6 +153,7 @@
   <TransactionModal
     rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
+    bind:this={modal}
     on:nnsClose
     on:nnsSubmit={participate}
     {validateAmount}
@@ -178,6 +186,7 @@
     <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
+    <SaleInProgress slot="in_progress" />
   </TransactionModal>
 {/if}
 

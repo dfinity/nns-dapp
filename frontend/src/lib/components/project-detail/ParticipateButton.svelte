@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+  import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,

@@ -633,6 +633,7 @@ interface I18nSns_project_detail {
   max_user_commitment_reached: string;
   getting_sns_open_ticket: string;
   sign_in: string;
+  participation_in_progress: string;
 }
 
 interface I18nSns_neuron_detail {
