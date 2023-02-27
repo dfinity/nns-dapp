@@ -4,9 +4,11 @@
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
-import { render, waitFor } from "@testing-library/svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
+import { render, waitFor } from "@testing-library/svelte";
+import { numberToE8s } from "../../../../lib/utils/token.utils";
+import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
 describe("BitcoinEstimatedFee", () => {
@@ -61,5 +63,21 @@ describe("BitcoinEstimatedFee", () => {
     ).toBeTruthy();
     expect(content.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
     expect(content.includes(en.ckbtc.btc)).toBeTruthy();
+  });
+
+  it("should call service with amount E8s", async () => {
+    const amount = 456;
+
+    render(BitcoinEstimatedFee, {
+      props: { selectedNetwork: TransactionNetwork.BITCOIN, amount },
+    });
+
+    await waitFor(() =>
+      expect(spyEstimateFee).toHaveBeenCalledWith({
+        amount: numberToE8s(amount),
+        certified: false,
+        identity: mockIdentity,
+      })
+    );
   });
 });
