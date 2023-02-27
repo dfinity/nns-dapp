@@ -60,7 +60,7 @@ describe("selected universe derived stores", () => {
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
     });
 
     it("should be ckBTC inside ckBTC universe", () => {
@@ -150,7 +150,7 @@ describe("selected universe derived stores", () => {
 
     describe("in ckBTC universe", () => {
       beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", true);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
         page.mock({
           data: {
             universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
@@ -166,7 +166,7 @@ describe("selected universe derived stores", () => {
       });
 
       it("returns OWN_CANISTER_ID if universe is ckBTC but flag disabled", () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_LEDGER", false);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
         expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
       });
 
