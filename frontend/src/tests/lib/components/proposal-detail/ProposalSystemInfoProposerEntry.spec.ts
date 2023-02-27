@@ -13,7 +13,9 @@ import {
 import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("ProposalMeta", () => {
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
+  beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(jest.fn);
+  });
 
   jest
     .spyOn(authStore, "subscribe")

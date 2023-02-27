@@ -2,7 +2,7 @@ import { governanceMetrics } from "$lib/rest/governance-metrics.rest";
 import { governanceMetricsText } from "../../mocks/metrics.mock";
 
 describe("Governance metrics", () => {
-  beforeAll(() =>
+  beforeEach(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
