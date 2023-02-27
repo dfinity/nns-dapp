@@ -193,6 +193,7 @@ export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
 export class PollingLimitExceededError extends Error {}
 // Exported for testing purposes
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
+const DEFAULT_WAIT_TIME_MS = 500;
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
  *
@@ -200,7 +201,6 @@ export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
  * @param {fn} params.fn Function to call
  * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
  * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
- * @param {counter} params.counter Param to check how many times it has polled.
  *
  * @returns
  */
@@ -209,13 +209,15 @@ export const poll = async <T>({
   shouldExit,
   maxAttempts = DEFAULT_MAX_POLLING_ATTEMPTS,
   counter = 0,
-  millisecondsToWait = 500,
+  millisecondsToWait = DEFAULT_WAIT_TIME_MS,
+  useExponentialBackoff = false,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
   maxAttempts?: number;
   counter?: number;
   millisecondsToWait?: number;
+  useExponentialBackoff?: boolean;
 }): Promise<T> => {
   if (counter >= maxAttempts) {
     throw new PollingLimitExceededError();
@@ -230,12 +232,16 @@ export const poll = async <T>({
     console.error(`Error polling: ${errorToString(error)}`);
   }
   await waitForMilliseconds(millisecondsToWait);
+  if (useExponentialBackoff) {
+    millisecondsToWait *= 2;
+  }
   return poll({
     fn,
     shouldExit,
     maxAttempts,
     counter: counter + 1,
     millisecondsToWait,
+    useExponentialBackoff,
   });
 };
 
