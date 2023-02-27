@@ -3,18 +3,22 @@ import { waitForImages } from "../common/waitForImages";
 import { waitForLoad } from "../common/waitForLoad";
 import { skipUnlessBrowserIs } from "../common/test";
 
+const LAUNCHPAD_PATHS = ["/launchpad", "/launchpad/", "/launch.pink"];
+
 describe("View launchpad while logged out", () => {
   before(function () {
     skipUnlessBrowserIs.bind(this)(["chrome", "firefox"]);
   });
 
-  it("Views the launchpad whil elogged out", async () => {
-    await browser.url("/launchpad/");
-    await waitForLoad(browser);
-    await waitForImages(browser);
-    await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
-    await browser["screenshot"]("launchpad-while-logged-out");
-  });
+  LAUNCHPAD_PATHS.forEach((path, index) =>
+    it(`Views ${path} while logged out`, async () => {
+      await browser.url(path);
+      await waitForLoad(browser);
+      await waitForImages(browser);
+      await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
+      await browser["screenshot"](`launchpad-v${index}-while-logged-out`);
+    })
+  );
 });
 
 describe("View launchpad when logged in", () => {
@@ -31,11 +35,13 @@ describe("View launchpad when logged in", () => {
     await browser["screenshot"]("launchpad-login");
   });
 
-  it("Views the launchpad while logged in", async () => {
-    await browser.url("/launchpad/");
-    await waitForLoad(browser);
-    await waitForImages(browser);
-    await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
-    await browser["screenshot"]("launchpad-while-logged-in");
-  });
+  LAUNCHPAD_PATHS.forEach((path, index) =>
+    it(`Views ${path} while logged in`, async () => {
+      await browser.url("/launchpad/");
+      await waitForLoad(browser);
+      await waitForImages(browser);
+      await browser.pause(2000); // Wait for content.  Placeholder for real content tests.
+      await browser["screenshot"](`launchpad-v${index}-while-logged-in`);
+    })
+  );
 });
