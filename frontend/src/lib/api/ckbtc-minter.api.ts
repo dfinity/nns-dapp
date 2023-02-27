@@ -99,7 +99,7 @@ export const estimateFee = async ({
 }: {
   identity: Identity;
 } & EstimateFeeParams): Promise<bigint> => {
-  logWithTimestamp("Estimated fee: call...");
+  logWithTimestamp("Bitcoin estimated fee: call...");
 
   const {
     canister: { estimateFee: estimateFeeApi },
@@ -107,7 +107,7 @@ export const estimateFee = async ({
 
   const result = await estimateFeeApi(params);
 
-  logWithTimestamp("Estimated fee: done");
+  logWithTimestamp("Bitcoin estimated fee: done");
 
   return result;
 };
