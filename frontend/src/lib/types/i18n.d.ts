@@ -847,6 +847,7 @@ interface I18nCkbtc {
   title: string;
   test_title: string;
   logo: string;
+  test_logo: string;
   receive: string;
   address: string;
   btc_receive_note: string;

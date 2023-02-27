@@ -802,6 +802,7 @@
     "title": "ckBTC",
     "test_title": "ckTESTBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
     "address": "Address",
     "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
