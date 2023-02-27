@@ -869,6 +869,7 @@ interface I18nError__ckbtc {
   amount_too_low: string;
   insufficient_funds: string;
   retrieve_btc_unknown: string;
+  estimated_fee: string;
 }
 
 interface I18nNeuron_state {

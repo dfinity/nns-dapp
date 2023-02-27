@@ -4,8 +4,11 @@ import {
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
+import { toastsError } from "$lib/stores/toasts.store";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
+import { toToastError } from "$lib/utils/error.utils";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
@@ -21,11 +24,36 @@ export const getBTCAddress = async (): Promise<string> => {
   return getBTCAddressAPI({ identity });
 };
 
-export const estimateFee = async (
-  params: EstimateFeeParams
-): Promise<bigint> => {
-  const identity = await getAuthenticatedIdentity();
-  return estimateFeeAPI({ identity, ...params });
+export const estimateFee = async ({
+  params,
+  callback,
+}: {
+  params: EstimateFeeParams;
+  callback: (fee: bigint | null) => void;
+}): Promise<void> => {
+  return queryAndUpdate<bigint, unknown>({
+    request: ({ certified, identity }) =>
+      estimateFeeAPI({ identity, certified, ...params }),
+    onLoad: ({ response: fee }) => callback(fee),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // hide unproven data
+      callback(null);
+
+      toastsError(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__ckbtc.estimated_fee",
+        })
+      );
+    },
+    logMessage: "Getting Bitcoin estimated fee",
+  });
 };
 
 export const updateBalance = async (): Promise<UpdateBalanceResult> => {

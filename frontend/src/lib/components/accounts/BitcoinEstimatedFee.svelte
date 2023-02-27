@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import { estimateFee as estimateFeeService } from "$lib/services/ckbtc-minter.services";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
@@ -11,16 +11,20 @@
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
   const estimateFee = async () => {
-    // TODO: uncomment
-    // if (selectedNetwork !== TransactionNetwork.BITCOIN) {
-    //     bitcoinEstimatedFee = null;
-    //     return;
-    // }
+    if (selectedNetwork !== TransactionNetwork.BITCOIN) {
+      bitcoinEstimatedFee = null;
+      return;
+    }
 
     try {
-      bitcoinEstimatedFee = await estimateFeeService({
-        amount: nonNullish(amount) ? numberToE8s(amount) : undefined,
-        certified: false,
+      const callback = (fee: bigint | null) => (bitcoinEstimatedFee = fee);
+
+      await estimateFeeService({
+        params: {
+          amount: nonNullish(amount) ? numberToE8s(amount) : undefined,
+          certified: false,
+        },
+        callback,
       });
     } catch (err: unknown) {
       // TODO: display error
