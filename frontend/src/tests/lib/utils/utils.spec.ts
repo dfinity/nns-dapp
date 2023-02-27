@@ -264,80 +264,79 @@ describe("utils", () => {
 
   describe("poll", () => {
     describe("without timers", () => {
-    // TODO proper indent before merge. Left it like this for easy reviewing.
-    beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
-      // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
-    });
-
-    it("should recall the function until `fn` succeeds", async () => {
-      const maxCalls = 3;
-      let calls = 0;
-      await poll({
-        fn: async () => {
-          calls += 1;
-          if (calls < maxCalls) {
-            throw new Error();
-          }
-          return calls;
-        },
-        shouldExit: () => false,
+      beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+        // Avoid to print errors during test
+        jest.spyOn(console, "log").mockImplementation(() => undefined);
       });
-      expect(calls).toBe(maxCalls);
-    });
 
-    it("should recall the function until `shouldExit` is true", async () => {
-      const maxCalls = 3;
-      let calls = 0;
-      const pollCall = () =>
-        poll({
+      it("should recall the function until `fn` succeeds", async () => {
+        const maxCalls = 3;
+        let calls = 0;
+        await poll({
           fn: async () => {
             calls += 1;
-            throw new Error("fn failed");
-          },
-          shouldExit: () => calls >= maxCalls,
-        });
-      await expect(pollCall).rejects.toThrow("fn failed");
-      expect(calls).toBe(maxCalls);
-    });
-
-    it("should return the value of `fn` when it doesn't throw", async () => {
-      const result = 10;
-      const expected = await poll({
-        fn: async () => result,
-        shouldExit: () => false,
-      });
-      expect(expected).toBe(result);
-    });
-
-    it("should throw when `shouldExit` returns true", async () => {
-      const result = 10;
-      const expected = await poll({
-        fn: async () => result,
-        shouldExit: () => true,
-      });
-      expect(expected).toBe(result);
-    });
-
-    it("should throw after `maxAttempts`", async () => {
-      let counter = 0;
-      const maxAttempts = 5;
-      const call = () =>
-        poll({
-          fn: async () => {
-            counter += 1;
-            throw new Error();
+            if (calls < maxCalls) {
+              throw new Error();
+            }
+            return calls;
           },
           shouldExit: () => false,
-          maxAttempts,
         });
-      // Without the `await`, the line didn't wait the `poll` to throw to
-      // move to the next line
-      await expect(call).rejects.toThrowError(PollingLimitExceededError);
-      expect(counter).toBe(maxAttempts);
-    });
+        expect(calls).toBe(maxCalls);
+      });
+
+      it("should recall the function until `shouldExit` is true", async () => {
+        const maxCalls = 3;
+        let calls = 0;
+        const pollCall = () =>
+          poll({
+            fn: async () => {
+              calls += 1;
+              throw new Error("fn failed");
+            },
+            shouldExit: () => calls >= maxCalls,
+          });
+        await expect(pollCall).rejects.toThrow("fn failed");
+        expect(calls).toBe(maxCalls);
+      });
+
+      it("should return the value of `fn` when it doesn't throw", async () => {
+        const result = 10;
+        const expected = await poll({
+          fn: async () => result,
+          shouldExit: () => false,
+        });
+        expect(expected).toBe(result);
+      });
+
+      it("should throw when `shouldExit` returns true", async () => {
+        const result = 10;
+        const expected = await poll({
+          fn: async () => result,
+          shouldExit: () => true,
+        });
+        expect(expected).toBe(result);
+      });
+
+      it("should throw after `maxAttempts`", async () => {
+        let counter = 0;
+        const maxAttempts = 5;
+        const call = () =>
+          poll({
+            fn: async () => {
+              counter += 1;
+              throw new Error();
+            },
+            shouldExit: () => false,
+            maxAttempts,
+          });
+        // Without the `await`, the line didn't wait the `poll` to throw to
+        // move to the next line
+        await expect(call).rejects.toThrowError(PollingLimitExceededError);
+        expect(counter).toBe(maxAttempts);
+      });
     });
 
     describe("with fake timers", () => {

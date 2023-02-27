@@ -202,7 +202,7 @@ const DEFAULT_WAIT_TIME_MS = 500;
  * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
  * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
  * @param {counter} params.counter Param to check how many times it has polled.
- * @param {millisecondsToWait} params.millisecondsToWait How long to wait between (the first 2, in case of exponential backoff) calls
+ * @param {millisecondsToWait} params.millisecondsToWait How long to wait between calls, or the base for the exponential backoff if that's enabled
  * @param {useExponentialBackoff} params.useExponentialBackoff Whether to use exponential backoff instead of waiting the same time between retries
  *
  * @returns
