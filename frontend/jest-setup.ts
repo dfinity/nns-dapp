@@ -7,6 +7,7 @@ import { configure } from "@testing-library/svelte";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -60,6 +61,8 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
 }));
 
 global.localStorage = localStorageMock;
+
+failTestsThatLogToConsole();
 
 // testing-library setup
 configure({
