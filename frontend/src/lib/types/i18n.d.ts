@@ -852,6 +852,7 @@ interface I18nCkbtc {
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
+  btc: string;
   ckbtc_balance_updated: string;
 }
 

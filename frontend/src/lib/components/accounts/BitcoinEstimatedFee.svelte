@@ -36,7 +36,8 @@
 {#if nonNullish(bitcoinEstimatedFee)}
   <p class="fee description">
     {$i18n.accounts.estimated_bitcoin_transaction_fee}
-    <span class="value">{bitcoinEstimatedFee}</span>
+    <span class="value">{Number(bitcoinEstimatedFee) / 100_000_000}</span>
+    <span class="label">{$i18n.ckbtc.btc}</span>
   </p>
 {/if}
 
