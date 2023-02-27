@@ -79,6 +79,9 @@
     await restoreSnsSaleParticipation({
       rootCanisterId,
       postprocess: reload,
+      updateProgress: () => {
+        // TODO: implement progress UI
+      }
     });
   };
 

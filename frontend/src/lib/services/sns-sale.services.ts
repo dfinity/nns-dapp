@@ -62,6 +62,7 @@ import { toastsSuccess } from "../stores/toasts.store";
 import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
+import type {SaleStep} from "$lib/types/sale";
 
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
@@ -360,13 +361,17 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
+export interface ParticipateInSnsSaleParameters {
+  rootCanisterId: Principal;
+  postprocess: () => Promise<void>;
+  updateProgress: (step: SaleStep) => void;
+}
+
 export const restoreSnsSaleParticipation = async ({
   rootCanisterId,
   postprocess,
-}: {
-  rootCanisterId: Principal;
-  postprocess: () => Promise<void>;
-}): Promise<void> => {
+  updateProgress
+}: ParticipateInSnsSaleParameters): Promise<void> => {
   // avoid concurrent restores
   if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
     return;
@@ -403,6 +408,7 @@ export const restoreSnsSaleParticipation = async ({
   await participateInSnsSale({
     rootCanisterId,
     postprocess,
+    updateProgress
   });
 
   stopBusy("project-participate");
@@ -420,14 +426,18 @@ export const initiateSnsSaleParticipation = async ({
   rootCanisterId,
   account,
   postprocess,
+  updateProgress
 }: {
   amount: TokenAmount;
   rootCanisterId: Principal;
   account: Account;
   postprocess: () => Promise<void>;
+  updateProgress: (step: SaleStep) => void;
 }): Promise<void> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
+    updateProgress("initialization");
+
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
@@ -463,6 +473,7 @@ export const initiateSnsSaleParticipation = async ({
       await participateInSnsSale({
         rootCanisterId,
         postprocess,
+        updateProgress
       });
     }
   } catch (err: unknown) {
@@ -593,10 +604,8 @@ const notifyParticipationAndRemoveTicket = async ({
 export const participateInSnsSale = async ({
   rootCanisterId,
   postprocess,
-}: {
-  rootCanisterId: Principal;
-  postprocess: () => Promise<void>;
-}): Promise<void> => {
+  updateProgress
+}: ParticipateInSnsSaleParameters): Promise<void> => {
   let hasTooOldError = false;
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   // skip if there is no more ticket (e.g. on retry)
@@ -610,6 +619,8 @@ export const participateInSnsSale = async ({
     ticket,
     rootCanisterId?.toText()
   );
+
+  updateProgress("transfer");
 
   const {
     amount_icp_e8s: amount,
@@ -673,6 +684,7 @@ export const participateInSnsSale = async ({
         participateInSnsSale({
           rootCanisterId,
           postprocess,
+          updateProgress
         });
       }, retryIn * 1000);
 
@@ -718,6 +730,8 @@ export const participateInSnsSale = async ({
   }
 
   // Step 3.
+  updateProgress("notify");
+
   const { success } = await notifyParticipationAndRemoveTicket({
     rootCanisterId,
     identity,
@@ -731,6 +745,9 @@ export const participateInSnsSale = async ({
 
   // Step 4.
   logWithTimestamp("[sale] 3. syncAccounts");
+
+  updateProgress("reload");
+
   await syncAccounts();
 
   logWithTimestamp("[sale] done");

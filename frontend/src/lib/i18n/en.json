@@ -609,7 +609,7 @@
     "max_user_commitment_reached": "Maximum commitment reached",
     "getting_sns_open_ticket": "We're connecting with the SNS sale. This might take more than a minute.",
     "sign_in": "Sign in to participate",
-    "participation_in_progress": "Participating in sale..."
+    "participation_in_progress": "Participating in sale"
   },
   "sns_neuron_detail": {
     "header": "Neuron",

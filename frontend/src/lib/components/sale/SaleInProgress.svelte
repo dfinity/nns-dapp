@@ -1,28 +1,45 @@
 <script lang="ts">
-  import { ProgressSteps } from "@dfinity/gix-components";
+  import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
+  import type {SaleStep} from "$lib/types/sale";
 
-  let steps = [
+  export let progressStep: SaleStep;
+
+  let steps: [ProgressStep, ...ProgressStep[]] = [
     {
-      id: Symbol(1),
+      step: "initialization",
       text: "Connection with sale canister",
-      state: "completed",
-    },
+      state: "next",
+    } as ProgressStep,
     {
-      id: Symbol(2),
+      step: "transfer",
       text: "Sending tokens",
-      state: "completed",
-    },
+      state: "next",
+    } as ProgressStep,
     {
-      id: Symbol(3),
-      text: "Confirming your participation...",
-      state: "in_progress",
-    },
+      step: "notify",
+      text: "Confirming your participation",
+      state: "next",
+    } as ProgressStep,
     {
-      id: Symbol(4),
+      step: "reload",
       text: "Updating your data",
       state: "next",
-    },
+    } as ProgressStep,
   ];
+
+  const updateSteps = () => {
+    const progressIndex = steps.findIndex(({step}) => step === progressStep);
+
+    steps = steps.map((step, index) => step.step === progressStep ? {
+      ...step,
+      state: "in_progress"
+    } : {
+      ...step,
+      state: index < progressIndex ? "completed" : "next"
+    })
+  }
+
+  $: progressStep, (() => updateSteps())();
 </script>
 
 <div class="warning">

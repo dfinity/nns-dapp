@@ -30,6 +30,7 @@
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import type {SaleStep} from "$lib/types/sale";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -96,6 +97,7 @@
   });
 
   let modal: TransactionModal;
+  let progressStep: SaleStep = "initialization";
 
   const dispatcher = createEventDispatcher();
   const participate = async ({
@@ -103,16 +105,21 @@
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
       modal?.goProgress();
-      // TODO: uncomment
-      // await initiateSnsSaleParticipation({
-      //   account: sourceAccount,
-      //   amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
-      //   rootCanisterId: $projectDetailStore.summary.rootCanisterId,
-      //   postprocess: async () => {
-      //     await reload();
-      //     dispatcher("nnsClose");
-      //   },
-      // });
+
+      const updateProgress = (step: SaleStep) => progressStep = step;
+
+      await initiateSnsSaleParticipation({
+        account: sourceAccount,
+        amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+        rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        postprocess: async () => {
+          await reload();
+        },
+        updateProgress
+      });
+
+      // We close the modal here anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
+      dispatcher("nnsClose");
     }
   };
 
@@ -186,7 +193,7 @@
     <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
-    <SaleInProgress slot="in_progress" />
+    <SaleInProgress slot="in_progress" {progressStep} />
   </TransactionModal>
 {/if}
 
