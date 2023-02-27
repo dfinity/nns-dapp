@@ -117,17 +117,19 @@ describe("ckbtc-minter-services", () => {
 
   describe("estimateFee", () => {
     it("should call estimate fee", async () => {
+      const result = 123n;
+
       const spyEstimateFee = jest
         .spyOn(minterApi, "estimateFee")
-        .mockResolvedValue(123n);
+        .mockResolvedValue(result);
 
       const params = { certified: true, amount: 456n };
 
+      const callback = jest.fn();
+
       await services.estimateFee({
         params,
-        callback: () => {
-          // Nothing here
-        },
+        callback,
       });
 
       await waitFor(() =>
@@ -136,6 +138,8 @@ describe("ckbtc-minter-services", () => {
           ...params,
         })
       );
+
+      expect(callback).toHaveBeenCalledWith(result);
     });
   });
 });
