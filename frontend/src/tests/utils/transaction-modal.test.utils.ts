@@ -1,13 +1,14 @@
-import { TransactionNetwork } from "$lib/types/transaction";
+import type { TransactionNetwork } from "$lib/types/transaction";
+import { nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
 export const testTransferTokens = async ({
   result: { getByTestId, container, queryAllByText },
-  selectedNetwork = false,
+  selectedNetwork = undefined,
 }: {
   result: RenderResult<SvelteComponent>;
-  selectedNetwork?: boolean;
+  selectedNetwork?: TransactionNetwork;
 }) => {
   await waitFor(() =>
     expect(getByTestId("transaction-step-1")).toBeInTheDocument()
@@ -27,13 +28,13 @@ export const testTransferTokens = async ({
   addressInput &&
     fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
 
-  if (selectedNetwork) {
+  if (nonNullish(selectedNetwork)) {
     const selectElement = getByTestId(
       "select-network-dropdown"
     ) as HTMLSelectElement | null;
     selectElement &&
       fireEvent.change(selectElement, {
-        target: { value: TransactionNetwork.ICP_CKBTC },
+        target: { value: selectedNetwork },
       });
   }
   await waitFor(() =>
