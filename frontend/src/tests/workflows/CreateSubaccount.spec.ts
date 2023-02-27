@@ -28,7 +28,7 @@ jest.mock("$lib/api/accounts.api", () => {
 });
 
 describe("Accounts", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);

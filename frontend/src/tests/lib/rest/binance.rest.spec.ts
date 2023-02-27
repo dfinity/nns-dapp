@@ -2,13 +2,9 @@ import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
 import type { BinanceAvgPrice } from "$lib/types/binance";
 
 describe("Binance Rest API", () => {
-  beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
-  );
-
-  afterAll(() => {
-    jest.clearAllMocks();
+  beforeEach(() => {
     jest.resetAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("should return an average price", async () => {

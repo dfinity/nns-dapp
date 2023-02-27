@@ -104,7 +104,6 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("neurons-services", () => {
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
   const notControlledNeuron = {
     ...mockNeuron,
     neuronId: BigInt(123),
@@ -1406,6 +1405,7 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
         setNeuron: jest.fn(),
