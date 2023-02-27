@@ -30,7 +30,6 @@ import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
   InsufficientFundsError,
-  LedgerCanister,
   TokenAmount,
   TransferError,
   TxCreatedInFutureError,
@@ -105,7 +104,6 @@ describe("sns-api", () => {
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
-  const ledgerCanisterMock = mock<LedgerCanister>();
   const testRootCanisterId = rootCanisterIdMock;
   const testSnsTicket = snsTicketMock({
     rootCanisterId: testRootCanisterId,
