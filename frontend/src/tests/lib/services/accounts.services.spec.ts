@@ -40,6 +40,11 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("accounts-services", () => {
+  beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    jest.clearAllMocks();
+  });
+
   describe("services", () => {
     const mockAccounts = { main: mockMainAccount, subAccounts: [] };
 
@@ -54,10 +59,6 @@ describe("accounts-services", () => {
     const spySendICP = jest
       .spyOn(ledgerApi, "sendICP")
       .mockImplementation(() => Promise.resolve(BigInt(0)));
-
-    beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
-
-    afterAll(() => jest.clearAllMocks());
 
     it("should sync accounts", async () => {
       await syncAccounts();
@@ -129,10 +130,6 @@ describe("accounts-services", () => {
     const spyRenameSubAccount = jest
       .spyOn(accountsApi, "renameSubAccount")
       .mockImplementation(() => Promise.resolve());
-
-    beforeAll(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
-
-    afterAll(() => jest.clearAllMocks());
 
     it("should rename a subaccount", async () => {
       await renameSubAccount({
