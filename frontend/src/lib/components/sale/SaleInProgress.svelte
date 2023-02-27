@@ -51,8 +51,8 @@
 </script>
 
 <div class="warning">
-  <p class="value">This may take a few minutes</p>
-  <p class="description">Please do not close your browser tab</p>
+  <p class="value">{$i18n.sns_sale.this_may_take_a_few_minutes}</p>
+  <p class="description">{$i18n.sns_sale.do_not_close}</p>
 </div>
 
 <ProgressSteps {steps} />

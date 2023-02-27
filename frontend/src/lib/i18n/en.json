@@ -615,7 +615,9 @@
     "step_initialization": "Connecting with sale canister",
     "step_transfer": "Sending ICP",
     "step_notify": "Confirming participation",
-    "step_reload": "Refreshing UI Balances"
+    "step_reload": "Refreshing UI Balances",
+    "this_may_take_a_few_minutes": "This may take a few minutes",
+    "do_not_close": "Please do not close your browser tab"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
