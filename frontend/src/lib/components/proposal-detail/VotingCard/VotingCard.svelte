@@ -26,6 +26,7 @@
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -51,6 +52,9 @@
         isProposalDeadlineInTheFuture(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
+
+    console.log('HERE', initialSelectionDone, votableNeurons())
+
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -115,8 +119,7 @@
           <VotingNeuronSelect {proposalInfo} {voteRegistration} />
         {:else}
           <div class="loader">
-            <span class="spinner"><Spinner inline size="small" /></span>
-            <span> <small>{$i18n.proposal_detail.loading_neurons}</small></span>
+            <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
           </div>
         {/if}
       {/if}
@@ -146,11 +149,5 @@
     @include media.min-width(large) {
       padding: var(--padding-3x) 0;
     }
-  }
-
-  .spinner {
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
   }
 </style>

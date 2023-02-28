@@ -644,6 +644,7 @@ interface I18nSns_sale {
   step_reload: string;
   this_may_take_a_few_minutes: string;
   do_not_close: string;
+  connecting_sale_canister: string;
 }
 
 interface I18nSns_neuron_detail {
