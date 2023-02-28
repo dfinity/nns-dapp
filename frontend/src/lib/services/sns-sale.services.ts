@@ -61,7 +61,6 @@ import {
 import { get } from "svelte/store";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
-import { startBusy, stopBusy } from "../stores/busy.store";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { toastsSuccess } from "../stores/toasts.store";
 import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
@@ -396,28 +395,11 @@ export const restoreSnsSaleParticipation = async ({
     return;
   }
 
-  // TODO(sale): recheck why it's there
-  toastsShow({
-    level: "info",
-    labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-    substitutions: {
-      $time: nanoSecondsToDateTime(ticket.creation_time),
-    },
-    duration: DEFAULT_TOAST_DURATION_MILLIS,
-  });
-
-  startBusy({
-    initiator: "project-participate",
-    labelKey: "neurons.may_take_while",
-  });
-
   await participateInSnsSale({
     rootCanisterId,
     postprocess,
     updateProgress,
   });
-
-  stopBusy("project-participate");
 };
 
 /**
