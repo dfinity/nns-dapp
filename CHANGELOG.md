@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 110166
 * Enable SNS aggregator.
 * Switch to TVL canister.
 * Sale process improvement.
