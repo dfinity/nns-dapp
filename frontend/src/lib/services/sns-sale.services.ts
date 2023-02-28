@@ -368,12 +368,14 @@ const getProjectFromStore = (
 
 export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;
+  userCommitment: bigint | undefined;
   postprocess: () => Promise<void>;
   updateProgress: (step: SaleStep) => void;
 }
 
 export const restoreSnsSaleParticipation = async ({
   rootCanisterId,
+  userCommitment,
   postprocess,
   updateProgress,
 }: ParticipateInSnsSaleParameters): Promise<void> => {
@@ -397,6 +399,7 @@ export const restoreSnsSaleParticipation = async ({
 
   await participateInSnsSale({
     rootCanisterId,
+    userCommitment,
     postprocess,
     updateProgress,
   });
@@ -404,23 +407,17 @@ export const restoreSnsSaleParticipation = async ({
 
 /**
  * Does participation validation and creates an open ticket.
- *
- * @param amount
- * @param rootCanisterId
- * @param account
  */
 export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
+  userCommitment,
   postprocess,
   updateProgress,
-}: {
+}: ParticipateInSnsSaleParameters & {
   amount: TokenAmount;
-  rootCanisterId: Principal;
   account: Account;
-  postprocess: () => Promise<void>;
-  updateProgress: (step: SaleStep) => void;
 }): Promise<{ success: boolean }> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
@@ -460,6 +457,7 @@ export const initiateSnsSaleParticipation = async ({
       // Step 2. to finish
       await participateInSnsSale({
         rootCanisterId,
+        userCommitment,
         postprocess,
         updateProgress,
       });
@@ -540,11 +538,13 @@ const notifyParticipationAndRemoveTicket = async ({
   identity,
   hasTooOldError,
   ticket,
+                                                    userCommitment,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   hasTooOldError: boolean;
   ticket: Ticket;
+  userCommitment: bigint;
 }): Promise<{ success: boolean }> => {
   try {
     logWithTimestamp("[sale] 2. refresh_buyer_tokens");
@@ -556,8 +556,8 @@ const notifyParticipationAndRemoveTicket = async ({
       identity,
     });
 
-    // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
+    // current_committed (the sum of all) ≠ ticket.amount + previous commitment
+    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s + userCommitment) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
@@ -647,6 +647,7 @@ const pollTransfer = ({
 export const participateInSnsSale = async ({
   rootCanisterId,
   postprocess,
+  userCommitment,
   updateProgress,
 }: ParticipateInSnsSaleParameters): Promise<void> => {
   let hasTooOldError = false;
@@ -771,6 +772,7 @@ export const participateInSnsSale = async ({
     identity,
     hasTooOldError,
     ticket,
+    userCommitment,
   });
 
   if (!success) {

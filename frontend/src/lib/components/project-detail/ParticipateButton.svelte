@@ -24,7 +24,10 @@
   } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import {
+    getCommitmentE8s,
+    hasOpenTicketInProcess,
+  } from "$lib/utils/sns.utils";
   import type { TicketStatus } from "$lib/types/sale";
   import type { SaleStep } from "$lib/types/sale";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
@@ -50,6 +53,12 @@
     summary: $projectDetailStore.summary,
     swapCommitment: $projectDetailStore.swapCommitment,
   });
+
+  let userCommitment: undefined | bigint;
+  $: userCommitment =
+    $projectDetailStore.swapCommitment === null
+      ? undefined
+      : getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
@@ -88,6 +97,7 @@
 
     await restoreSnsSaleParticipation({
       rootCanisterId,
+      userCommitment,
       postprocess: reload,
       updateProgress,
     });
@@ -96,7 +106,8 @@
   // skip ticket update if the sns is not open
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
-    isSignedIn($authStore.identity)
+    isSignedIn($authStore.identity) &&
+    userCommitment !== undefined
   ) {
     updateTicket();
   }
