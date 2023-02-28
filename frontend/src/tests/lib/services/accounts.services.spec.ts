@@ -276,10 +276,12 @@ describe("accounts-services", () => {
 
       await syncAccounts();
 
-      const toastsData = get(toastsStore);
-      const toast = toastsData[0];
-      expect(toast.text).toEqual(`${en.error.accounts_not_found} ${errorTest}`);
-      expect(toast.level).toEqual("error");
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `${en.error.accounts_not_found} ${errorTest}`,
+        },
+      ]);
     });
 
     it("should use handler passed", async () => {

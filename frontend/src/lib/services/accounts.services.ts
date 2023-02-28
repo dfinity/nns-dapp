@@ -106,13 +106,18 @@ export const loadAccounts = async ({
   };
 };
 
+type SyncAccontsErrorHandler = (params: {
+  err: unknown;
+  certified: boolean;
+}) => void;
+
 /**
  * Default error handler for syncAccounts.
  *
  * Ignores non-certified errors.
  * Resets accountsStore and shows toast for certified errors.
  */
-const defaultErrorHandlerAccounts = ({
+const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
   err,
   certified,
 }: {
@@ -137,7 +142,7 @@ const defaultErrorHandlerAccounts = ({
  * Loads the account data using the ledger and the nns dapp canister.
  */
 export const syncAccounts = (
-  errorHandler: typeof defaultErrorHandlerAccounts = defaultErrorHandlerAccounts
+  errorHandler: SyncAccontsErrorHandler = defaultErrorHandlerAccounts
 ): Promise<void> => {
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
@@ -151,7 +156,8 @@ export const syncAccounts = (
   });
 };
 
-const ignoreErrors = () => undefined;
+const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
+
 /**
  * This function is called on app load to sync the accounts.
  *
