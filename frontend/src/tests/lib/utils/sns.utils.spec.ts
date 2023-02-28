@@ -1,18 +1,16 @@
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
   getSwapCanisterAccount,
+  hasOpenTicketInProcess,
+  isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
 } from "$lib/utils/sns.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
-import {
-  hasOpenTicketInProcess,
-  isInternalRefreshBuyerTokensError,
-} from "../../../lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -265,24 +263,24 @@ describe("sns-utils", () => {
       const store = get(snsTicketsStore);
 
       expect(
-          hasOpenTicketInProcess({
-            rootCanisterId: principal(2),
-            ticketsStore: store,
-          })
+        hasOpenTicketInProcess({
+          rootCanisterId: principal(2),
+          ticketsStore: store,
+        })
       ).toEqual({ status: "unknown" });
 
       expect(
-          hasOpenTicketInProcess({
-            rootCanisterId: null,
-            ticketsStore: store,
-          })
+        hasOpenTicketInProcess({
+          rootCanisterId: null,
+          ticketsStore: store,
+        })
       ).toEqual({ status: "unknown" });
 
       expect(
-          hasOpenTicketInProcess({
-            rootCanisterId: undefined,
-            ticketsStore: store,
-          })
+        hasOpenTicketInProcess({
+          rootCanisterId: undefined,
+          ticketsStore: store,
+        })
       ).toEqual({ status: "unknown" });
     });
 
