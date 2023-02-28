@@ -256,6 +256,36 @@ describe("sns-utils", () => {
       owner: mockPrincipal,
     }).ticket;
 
+    it("returns unknown", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+        keepPolling: true,
+      });
+      const store = get(snsTicketsStore);
+
+      expect(
+          hasOpenTicketInProcess({
+            rootCanisterId: principal(2),
+            ticketsStore: store,
+          })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+          hasOpenTicketInProcess({
+            rootCanisterId: null,
+            ticketsStore: store,
+          })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+          hasOpenTicketInProcess({
+            rootCanisterId: undefined,
+            ticketsStore: store,
+          })
+      ).toEqual({ status: "unknown" });
+    });
+
     it("returns polling when the ticket is undefined and we keep polling", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
