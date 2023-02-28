@@ -236,7 +236,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC_LEDGER": true,
           "ENABLE_CKBTC_MINTER": false
         }
