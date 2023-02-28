@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
-  import type { SaleStep } from "$lib/types/sale";
+  import { SaleStep } from "$lib/types/sale";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -9,22 +9,22 @@
 
   let steps: [ProgressStep, ...ProgressStep[]] = [
     {
-      step: "initialization",
+      step: SaleStep.INITIALIZATION,
       text: $i18n.sns_sale.step_initialization,
       state: "next",
     } as ProgressStep,
     {
-      step: "transfer",
+      step: SaleStep.TRANSFER,
       text: $i18n.sns_sale.step_transfer,
       state: "next",
     } as ProgressStep,
     {
-      step: "notify",
+      step: SaleStep.NOTIFY,
       text: $i18n.sns_sale.step_notify,
       state: "next",
     } as ProgressStep,
     {
-      step: "reload",
+      step: SaleStep.RELOAD,
       text: $i18n.sns_sale.step_reload,
       state: "next",
     } as ProgressStep,

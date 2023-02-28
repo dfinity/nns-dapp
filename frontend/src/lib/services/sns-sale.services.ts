@@ -17,7 +17,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
-import type { SaleStep } from "$lib/types/sale";
+import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
@@ -436,7 +436,7 @@ export const initiateSnsSaleParticipation = async ({
 }): Promise<{ success: boolean }> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
-    updateProgress("initialization");
+    updateProgress(SaleStep.INITIALIZATION);
 
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
@@ -622,7 +622,7 @@ export const participateInSnsSale = async ({
     rootCanisterId?.toText()
   );
 
-  updateProgress("transfer");
+  updateProgress(SaleStep.TRANSFER);
 
   const {
     amount_icp_e8s: amount,
@@ -733,7 +733,7 @@ export const participateInSnsSale = async ({
   }
 
   // Step 3.
-  updateProgress("notify");
+  updateProgress(SaleStep.NOTIFY);
 
   const { success } = await notifyParticipationAndRemoveTicket({
     rootCanisterId,
@@ -749,7 +749,7 @@ export const participateInSnsSale = async ({
   // Step 4.
   logWithTimestamp("[sale] 3. syncAccounts");
 
-  updateProgress("reload");
+  updateProgress(SaleStep.RELOAD);
 
   await syncAccounts();
 
@@ -765,5 +765,5 @@ export const participateInSnsSale = async ({
   // remove the ticket when it's complete to enable increase participation button
   snsTicketsStore.setNoTicket(rootCanisterId);
 
-  updateProgress("done");
+  updateProgress(SaleStep.DONE);
 };

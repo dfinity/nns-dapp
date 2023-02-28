@@ -30,7 +30,7 @@
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-  import type { SaleStep } from "$lib/types/sale";
+  import { SaleStep } from "$lib/types/sale";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -97,7 +97,7 @@
   });
 
   let modal: TransactionModal;
-  let progressStep: SaleStep = "initialization";
+  let progressStep: SaleStep = SaleStep.INITIALIZATION;
 
   const dispatcher = createEventDispatcher();
   const participate = async ({

@@ -1,6 +1,7 @@
-export type SaleStep =
-  | "initialization"
-  | "transfer"
-  | "notify"
-  | "reload"
-  | "done";
+export enum SaleStep {
+  INITIALIZATION = "initialization",
+  TRANSFER = "transfer",
+  NOTIFY = "notify",
+  RELOAD = "reload",
+  DONE = "done",
+}
