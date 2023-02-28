@@ -52,9 +52,6 @@
         isProposalDeadlineInTheFuture(proposalInfo)));
 
   const unsubscribe = definedNeuronsStore.subscribe(() => {
-
-    console.log('HERE', initialSelectionDone, votableNeurons())
-
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
