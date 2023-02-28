@@ -999,7 +999,7 @@ describe("sns-api", () => {
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
-        updateProgress: updateProgressSpy
+        updateProgress: updateProgressSpy,
       });
 
       let counter = 0;
