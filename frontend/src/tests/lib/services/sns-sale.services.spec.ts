@@ -965,7 +965,9 @@ describe("sns-api", () => {
       const retriesUntilSuccess = 4;
       sendICPSpy
         .mockRejectedValueOnce(new Error("Connection error"))
-        .mockRejectedValueOnce(new Error("Connection error"))
+        .mockRejectedValueOnce(
+          new TxCreatedInFutureError("Created in future error")
+        )
         .mockRejectedValueOnce(new Error("Connection error"))
         .mockResolvedValue(13n);
 
@@ -1116,37 +1118,6 @@ describe("sns-api", () => {
       expect(spyOnNotifyParticipation).toBeCalled();
       expect(spyOnToastsError).not.toBeCalled();
       expect(ticketFromStore().ticket).toEqual(null);
-    });
-
-    it("should set retry flag on CreatedInFuture error", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-      sendICPSpy.mockRejectedValue(new TxCreatedInFutureError());
-
-      expect(spyOnToastsError).not.toBeCalled();
-
-      await participateInSnsSale({
-        rootCanisterId: testRootCanisterId,
-        postprocess: jest.fn().mockResolvedValue(undefined),
-      });
-
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-
-      await waitFor(() => expect(spyOnToastsShow).toHaveBeenCalledTimes(2), {
-        timeout: 2000,
-      });
-
-      expect(spyOnToastsShow).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_retry_in",
-        })
-      );
-
-      // the ticket should stay in the store
-      expect(ticketFromStore().ticket).toEqual(testTicket);
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {

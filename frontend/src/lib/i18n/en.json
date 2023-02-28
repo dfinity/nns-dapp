@@ -724,7 +724,6 @@
     "sns_sale_invalid_amount": "Can't participate with the selected amount. Please participate with a different amount ($min - $max).",
     "sns_sale_invalid_subaccount": "Can't participate with the selected subaccount.",
     "sns_sale_try_later": "Sorry, there was an unexpected error while participating. Please try again later.",
-    "sns_sale_retry_in": "Sorry, there was an error. Next attempt to participate will be made in $time.",
     "sns_sale_committed_not_equal_to_amount": "Your total committed: $amount ICP",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
     "ledger_temporarily_unavailable": "Sorry, the ledger is not available at the moment. Please try again later.",

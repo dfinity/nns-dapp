@@ -63,7 +63,7 @@ import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { startBusy, stopBusy } from "../stores/busy.store";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { toastsSuccess } from "../stores/toasts.store";
-import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
+import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
@@ -517,18 +517,24 @@ const pollNotifyParticipation = async ({
  * @param rootCanisterId
  * @param identity
  */
-const removeOpenTicket = async ({rootCanisterId, identity}: {rootCanisterId: Principal, identity: Identity}): Promise<void> => {
-      try {
-        // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
-        // force to remove ticket
-        await notifyPaymentFailureApi({
-          rootCanisterId,
-          identity,
-        });
-      } catch (err) {
-        console.error("[sale] notifyPaymentFailure", err);
-      }
-}
+const removeOpenTicket = async ({
+  rootCanisterId,
+  identity,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  try {
+    // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
+    // force to remove ticket
+    await notifyPaymentFailureApi({
+      rootCanisterId,
+      identity,
+    });
+  } catch (err) {
+    console.error("[sale] notifyPaymentFailure", err);
+  }
+};
 
 /**
  * Calls notifyParticipation (refresh_buyer_tokens api) and handles response errors.
@@ -624,7 +630,10 @@ const pollTransfer = ({
         createdAt,
         memo,
       }),
-    shouldExit: isTransferError,
+    // Should still just retry in case of TxCreatedInFutureError
+    // (this error should be gone in a couple of seconds)
+    shouldExit: (err: unknown) =>
+      isTransferError(err) && !(err instanceof TxCreatedInFutureError),
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
   });
 
@@ -713,31 +722,6 @@ export const participateInSnsSale = async ({
     });
   } catch (err) {
     console.error("[sale] on transfer", err);
-
-    // TODO(Maks): refactor after discussion w/ Mario
-    // Frontend should auto retry participation
-    // (in theory this error should be gone in a couple of seconds)
-    if (err instanceof TxCreatedInFutureError) {
-      const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
-
-      setTimeout(() => {
-        participateInSnsSale({
-          rootCanisterId,
-          postprocess,
-        });
-      }, retryIn * 1000);
-
-      toastsShow({
-        level: "error",
-        labelKey: "error__sns.sns_sale_retry_in",
-        substitutions: {
-          $time: secondsToDuration(BigInt(retryIn)),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-
-      return;
-    }
 
     // TODO(Maks): refactor w/ a switch
     // if duplicated transfer, silently continue the flow
