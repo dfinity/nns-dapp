@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Spinner } from "@dfinity/gix-components";
+  import { BottomSheet } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -28,6 +28,7 @@
   import type { TicketStatus } from "$lib/types/sale";
   import type { SaleStep } from "$lib/types/sale";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
+  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -128,21 +129,24 @@
     <div role="toolbar">
       <SignInGuard>
         {#if userCanParticipateToSwap}
-          <button
-            disabled={busy}
-            on:click={openModal}
-            class="primary participate"
-            data-tid="sns-project-participate-button"
-          >
-            {#if busy}
-              <span>
-                <Spinner size="small" inline />
-              </span>
-            {/if}
-            {userHasParticipatedToSwap
-              ? $i18n.sns_project_detail.increase_participation
-              : $i18n.sns_project_detail.participate}
-          </button>
+          {#if busy}
+            <div class="loader" data-tid="connecting_sale_canister">
+              <SpinnerText
+                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+              >
+            </div>
+          {:else}
+            <button
+              disabled={busy}
+              on:click={openModal}
+              class="primary participate"
+              data-tid="sns-project-participate-button"
+            >
+              {userHasParticipatedToSwap
+                ? $i18n.sns_project_detail.increase_participation
+                : $i18n.sns_project_detail.participate}
+            </button>
+          {/if}
         {:else}
           <Tooltip
             id="sns-project-participate-button-tooltip"
@@ -196,5 +200,9 @@
       justify-content: flex-start;
       padding: 0;
     }
+  }
+
+  .loader {
+    padding: var(--padding) 0 0;
   }
 </style>
