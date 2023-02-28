@@ -4,6 +4,8 @@ export const DEV = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean =
   import.meta.env.VITE_FETCH_ROOT_KEY === "true";
 
+export const HOST_IC0_APP = "https://ic0.app";
+
 // TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
 // Local development needs `.raw` to avoid CORS issues for now.
 // TODO: Fix CORS issues

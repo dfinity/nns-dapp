@@ -10,7 +10,6 @@
   import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
@@ -34,15 +33,8 @@
   const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
     metricsStore.set(data);
 
-  let totalNeurons: number | undefined;
-  $: totalNeurons =
-    ($metricsStore?.dissolvingNeurons?.totalDissolvingNeurons ?? 0) +
-    ($metricsStore?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
-
   let total: number | undefined;
-  $: total =
-    ((totalNeurons ?? 0) / E8S_PER_ICP) *
-    Number($metricsStore?.avgPrice?.price ?? "0");
+  $: total = Number($metricsStore?.tvl?.tvl ?? "0");
 
   const format = (n: number): string =>
     formatNumber(n, {

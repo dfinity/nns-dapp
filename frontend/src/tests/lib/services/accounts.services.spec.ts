@@ -14,6 +14,7 @@ import {
   getAccountIdentityByPrincipal,
   getAccountTransactions,
   getOrCreateAccount,
+  initAccounts,
   loadAccounts,
   renameSubAccount,
   syncAccounts,
@@ -22,6 +23,7 @@ import {
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
+import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import {
@@ -164,6 +166,140 @@ describe("accounts-services", () => {
         accountIdentifier: mockHardwareWalletAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
+      });
+    });
+  });
+
+  describe("initAccounts", () => {
+    beforeEach(() => {
+      toastsStore.reset();
+    });
+
+    it("should sync accounts", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const mockAccounts = {
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      };
+      await initAccounts();
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(2);
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+
+      const accounts = get(accountsStore);
+      expect(accounts).toEqual(mockAccounts);
+    });
+
+    it("should not show toast errors", async () => {
+      jest.spyOn(ledgerApi, "queryAccountBalance");
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValue(new Error("test"));
+
+      await initAccounts();
+
+      const toastsData = get(toastsStore);
+      expect(toastsData).toEqual([]);
+    });
+  });
+
+  describe("syncAccounts", () => {
+    it("should sync accounts", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const mockAccounts = {
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      };
+      await syncAccounts();
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(2);
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+
+      const accounts = get(accountsStore);
+      expect(accounts).toEqual(mockAccounts);
+    });
+
+    it("should show toast on error if no handler is passed", async () => {
+      const errorTest = "test";
+      jest.spyOn(ledgerApi, "queryAccountBalance");
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValue(new Error(errorTest));
+
+      await syncAccounts();
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: `${en.error.accounts_not_found} ${errorTest}`,
+        },
+      ]);
+    });
+
+    it("should use handler passed", async () => {
+      const errorTest = new Error("test");
+      jest.spyOn(ledgerApi, "queryAccountBalance");
+      jest.spyOn(nnsdappApi, "queryAccount").mockRejectedValue(errorTest);
+
+      const handler = jest.fn();
+      await syncAccounts(handler);
+
+      expect(handler).toBeCalledTimes(2);
+      expect(handler).toBeCalledWith({
+        err: errorTest,
+        certified: false,
+      });
+      expect(handler).toBeCalledWith({
+        err: errorTest,
+        certified: true,
       });
     });
   });
