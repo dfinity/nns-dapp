@@ -2,12 +2,12 @@ import { Principal } from "@dfinity/principal";
 import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
-import "jest-expect-message";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -42,7 +42,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   DFX_NETWORK: "testnet",
-  HOST: "https://ic0.app",
+  HOST: "https://icp-api.io",
   DEV: false,
   FETCH_ROOT_KEY: false,
   FEATURE_FLAG_ENVIRONMENT: {
@@ -50,7 +50,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
     ENABLE_SNS_VOTING: true,
     ENABLE_SNS_AGGREGATOR: true,
     ENABLE_CKBTC_LEDGER: true,
-    ENABLE_CKBTC_RECEIVE: true,
+    ENABLE_CKBTC_MINTER: true,
     TEST_FLAG_EDITABLE: true,
     TEST_FLAG_NOT_EDITABLE: true,
   },
@@ -60,6 +60,8 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
 }));
 
 global.localStorage = localStorageMock;
+
+failTestsThatLogToConsole();
 
 // testing-library setup
 configure({

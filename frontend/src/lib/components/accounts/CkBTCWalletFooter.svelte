@@ -12,8 +12,8 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import type { CkBTCWalletModal } from "../../types/wallet.modal";
-  import { ENABLE_CKBTC_RECEIVE } from "$lib/stores/feature-flags.store";
+  import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
+  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
@@ -73,16 +73,15 @@
   };
 </script>
 
-<Footer columns={$ENABLE_CKBTC_RECEIVE ? 2 : 1}>
+<Footer columns={$ENABLE_CKBTC_MINTER ? 2 : 1}>
   <button
     class="primary"
     on:click={openSend}
     disabled={isNullish($store.account) || $busy}
-    data-tid="open-new-ckbtc-transaction"
-    >{$i18n.accounts.new_transaction}</button
+    data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
   >
 
-  {#if $ENABLE_CKBTC_RECEIVE}
+  {#if $ENABLE_CKBTC_MINTER}
     <button
       class="secondary"
       on:click={openReceive}

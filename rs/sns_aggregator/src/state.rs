@@ -13,6 +13,7 @@ use crate::{
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::timer::TimerId;
 use std::cell::RefCell;
+use std::collections::VecDeque;
 use std::str::FromStr;
 
 /// Semi-Persistent state, not guaranteed to be preserved across upgrades but persistent enough to store a cache.
@@ -28,6 +29,8 @@ pub struct State {
     /// Note: It would be nice to store the asset hashes in stable memory, however RBTree does not support
     /// the required macros for serialization and deserialization.  Instead, we recompute this after upgrade.
     pub asset_hashes: RefCell<AssetHashes>,
+    /// Log errors when getting data from upstream
+    pub log: RefCell<VecDeque<String>>,
 }
 
 /// State that is saved across canister upgrades.
@@ -71,6 +74,17 @@ impl StableState {
 thread_local! {
     /// Single global container for state
     pub static STATE: State = State::default();
+}
+
+/// Log to console and store for retrieval by query calls.
+pub fn log(message: String) {
+    ic_cdk::api::print(&message);
+    STATE.with(|state| {
+        state.log.borrow_mut().push_back(message);
+        if state.log.borrow().len() > 200 {
+            state.log.borrow_mut().pop_front();
+        }
+    });
 }
 
 impl State {

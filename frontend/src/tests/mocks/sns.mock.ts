@@ -37,10 +37,12 @@ export const renderContextCmp = ({
   Component,
   summary,
   swapCommitment,
+  reload,
 }: {
   summary?: SnsSummary;
   swapCommitment?: SnsSwapCommitment;
   Component: typeof SvelteComponent;
+  reload?: () => void;
 }) =>
   render(ContextWrapperTest, {
     props: {
@@ -50,6 +52,7 @@ export const renderContextCmp = ({
           summary,
           swapCommitment,
         }),
+        reload: reload === undefined ? jest.fn() : reload,
       } as ProjectDetailContext,
       Component,
     },

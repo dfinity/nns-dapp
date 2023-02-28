@@ -12,3 +12,7 @@ export const clickByTestId = async (
 
   element && fireEvent.click(element);
 };
+
+export const normalizeWhitespace = (
+  text: string | undefined
+): string | undefined => text && text.replace(/\s+/g, " ");

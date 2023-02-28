@@ -1,11 +1,14 @@
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { TransactionNetwork } from "../../lib/types/transaction";
 
 export const testTransferTokens = async ({
-  getByTestId,
-  container,
-  queryAllByText,
-}: RenderResult<SvelteComponent>) => {
+  result: { getByTestId, container, queryAllByText },
+  selectedNetwork = false,
+}: {
+  result: RenderResult<SvelteComponent>;
+  selectedNetwork?: boolean;
+}) => {
   await waitFor(() =>
     expect(getByTestId("transaction-step-1")).toBeInTheDocument()
   );
@@ -23,6 +26,16 @@ export const testTransferTokens = async ({
   );
   addressInput &&
     fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
+
+  if (selectedNetwork) {
+    const selectElement = getByTestId(
+      "select-network-dropdown"
+    ) as HTMLSelectElement | null;
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: TransactionNetwork.ICP_CKBTC },
+      });
+  }
   await waitFor(() =>
     expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
   );

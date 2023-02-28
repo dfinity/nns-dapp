@@ -181,6 +181,7 @@ describe("ckbtc-accounts-services", () => {
     });
 
     it("should show toast and return success false if transfer fails", async () => {
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
       tokensStore.setTokens(mockTokens);
 
       const spyTransfer = jest

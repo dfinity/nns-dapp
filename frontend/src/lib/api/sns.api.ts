@@ -11,6 +11,8 @@ import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
   SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
@@ -235,6 +237,64 @@ export const querySnsSwapCommitment = async ({
     rootCanisterId: Principal.fromText(rootCanisterId),
     myCommitment: userCommitment,
   };
+};
+
+export const querySnsDerivedState = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: QueryRootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsGetDerivedStateResponse | undefined> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap derived state certified:${certified} call...`
+  );
+
+  const { getDerivedState }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const derivedState: SnsGetDerivedStateResponse | undefined =
+    await getDerivedState({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap derived state certified:${certified} done.`
+  );
+
+  return derivedState;
+};
+
+export const querySnsLifecycle = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: QueryRootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsGetLifecycleResponse | undefined> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} call...`
+  );
+
+  const { getLifecycle }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const lifecycleResponse: SnsGetLifecycleResponse | undefined =
+    await getLifecycle({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} done.`
+  );
+
+  return lifecycleResponse;
 };
 
 export const querySnsNeurons = async ({

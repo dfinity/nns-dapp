@@ -11,6 +11,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
@@ -71,11 +72,8 @@ export const snsTransferTokens = async ({
   source,
   loadTransactions,
   ...rest
-}: {
+}: IcrcTransferTokensUserParams & {
   rootCanisterId: Principal;
-  source: Account;
-  destinationAddress: string;
-  amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;

@@ -127,6 +127,9 @@ export const aggregatorSnsMock: CachedSns = {
         },
       ],
       open_sns_token_swap_proposal_id: [BigInt(120)],
+      next_ticket_id: [],
+      purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+      purge_old_tickets_next_principal: [],
     },
     derived: {
       buyer_total_icp_e8s: BigInt(314100000000),

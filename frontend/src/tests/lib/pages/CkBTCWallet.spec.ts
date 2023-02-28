@@ -167,7 +167,7 @@ describe("CkBTCWallet", () => {
       ) as HTMLButtonElement;
       await fireEvent.click(button);
 
-      await testTransferTokens(result);
+      await testTransferTokens({ result, selectedNetwork: true });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## Proposal 109947
+* Performance improvements by delaying requests when needed.
+* Setup caching layer for neurons.
+* Payment flow upgrade.
+* SNS Aggregator improvements.
+* Derived state api.
+* Fixes and UI improvements.
+
+## Proposal 108160
+* Migration to nns.internetcomputer.org
+
 ## Proposal 106377
 * Launch ckBTC wallet functionality!
 * Fix bug in transactions list.

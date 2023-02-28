@@ -7,7 +7,9 @@ import {
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
+import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
+import { normalizeWhitespace } from "../../utils/utils.test-utils";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {
@@ -146,14 +148,37 @@ describe("secondsToDate", () => {
 
 describe("secondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(secondsToDateTime(BigInt(0))).toEqual("Jan 1, 1970 12:00 AM");
+    expect(normalizeWhitespace(secondsToDateTime(BigInt(0)))).toEqual(
+      "Jan 1, 1970 12:00 AM"
+    );
   });
 
   it("should return formatted date and time", () => {
     // We only support english for now
     const march25of2022InSeconds = Math.round(1648200639061 / 1000);
     const expectedDateText = secondsToDateTime(BigInt(march25of2022InSeconds));
-    expect(expectedDateText).toEqual("Mar 25, 2022 9:30 AM");
+    expect(normalizeWhitespace(expectedDateText)).toEqual(
+      "Mar 25, 2022 9:30 AM"
+    );
+  });
+});
+
+describe("nanoSecondsToDateTime", () => {
+  it("should return formatted start date and time in 1970", () => {
+    expect(normalizeWhitespace(nanoSecondsToDateTime(BigInt(0)))).toEqual(
+      "Jan 1, 1970 12:00 AM"
+    );
+  });
+
+  it("should return formatted date and time", () => {
+    // We only support english for now
+    const march25of2022InSeconds = Math.round((1648200639061 * 1e9) / 1000);
+    const expectedDateText = nanoSecondsToDateTime(
+      BigInt(march25of2022InSeconds)
+    );
+    expect(normalizeWhitespace(expectedDateText)).toEqual(
+      "Mar 25, 2022 9:30 AM"
+    );
   });
 });
 

@@ -15,9 +15,7 @@
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { getSwapAccount } from "$lib/services/sns.services";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type {
     NewTransaction,
     ValidateAmountFn,
@@ -28,10 +26,9 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import {
-    initiateSnsSwapParticipation,
-    participateInSnsSwap,
-  } from "$lib/services/sns-sale.services";
+  import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -89,34 +86,26 @@
 
   let accepted: boolean;
 
+  let busy = true;
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
+
   const dispatcher = createEventDispatcher();
   const participate = async ({
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
-      startBusy({
-        initiator: "project-participate",
-        labelKey: "neurons.may_take_while",
-      });
-      const ticket = await initiateSnsSwapParticipation({
+      await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        postprocess: async () => {
+          await reload();
+          dispatcher("nnsClose");
+        },
       });
-      if (ticket) {
-        const result = await participateInSnsSwap({ ticket });
-
-        await reload();
-
-        if (result.success) {
-          toastsSuccess({
-            labelKey: "sns_project_detail.participate_success",
-          });
-        }
-
-        dispatcher("nnsClose");
-      }
-      stopBusy("project-participate");
     }
   };
 
@@ -161,7 +150,7 @@
     on:nnsSubmit={participate}
     {validateAmount}
     {destinationAddress}
-    disableSubmit={!accepted}
+    disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
     maxAmount={currentUserMaxCommitment({ summary, swapCommitment })}
@@ -169,13 +158,16 @@
     <svelte:fragment slot="title"
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
-    <AdditionalInfoForm
-      slot="additional-info-form"
-      {minCommitment}
-      {maxCommitment}
-      userHasParticipated={userHasParticipatedToSwap}
-    />
-    <AdditionalInfoReview slot="additional-info-review" bind:accepted />
+    <div class="additional-info" slot="additional-info-form">
+      <AdditionalInfoForm
+        {minCommitment}
+        {maxCommitment}
+        userHasParticipated={userHasParticipatedToSwap}
+      />
+    </div>
+    <div class="additional-info" slot="additional-info-review">
+      <AdditionalInfoReview bind:accepted />
+    </div>
     <p
       slot="destination-info"
       data-tid="sns-swap-participate-project-name"
@@ -188,3 +180,9 @@
     </p>
   </TransactionModal>
 {/if}
+
+<style lang="scss">
+  .additional-info {
+    padding-top: var(--padding-2x);
+  }
+</style>

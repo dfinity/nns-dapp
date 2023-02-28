@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext } from "svelte";
+  import { getContext, onDestroy } from "svelte";
   import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -16,16 +16,18 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import {
-    getOpenTicket,
-    participateInSnsSwap,
-  } from "$lib/services/sns-sale.services";
-  import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
   import { nonNullish } from "@dfinity/utils";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import {
+    hidePollingToast,
+    restoreSnsSaleParticipation,
+  } from "$lib/services/sns-sale.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
 
-  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
-    PROJECT_DETAIL_CONTEXT_KEY
-  );
+  const { store: projectDetailStore, reload } =
+    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let lifecycle: number;
   $: ({
@@ -51,10 +53,15 @@
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  let loading = true;
+  // busy if open ticket is available or not requested
+  let busy = true;
+  $: busy = hasOpenTicketInProcess({
+    rootCanisterId,
+    ticketsStore: $snsTicketsStore,
+  });
+
+  // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
-  let ticket: Ticket | undefined;
-  let criticalError = false;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -64,40 +71,44 @@
     ) {
       return;
     }
-    loading = true;
+
+    snsTicketsStore.enablePolling(rootCanisterId);
+
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
-    const saleTicket = await getOpenTicket({
+    await restoreSnsSaleParticipation({
       rootCanisterId,
-      certified: true,
+      postprocess: reload,
     });
-
-    if (saleTicket === undefined) {
-      loading = false;
-      criticalError = true;
-      // stop the flow
-      return;
-    }
-
-    ticket = saleTicket.ticket;
-
-    // restore purchase
-    if (
-      ticket !== undefined &&
-      saleTicket?.rootCanisterId.toText() === rootCanisterId.toText()
-    ) {
-      participateInSnsSwap({
-        ticket: saleTicket,
-      });
-    }
-
-    loading = false;
   };
-  $: rootCanisterId, updateTicket();
+
+  // skip ticket update if the sns is not open
+  $: if (
+    lifecycle === SnsSwapLifecycle.Open &&
+    isSignedIn($authStore.identity)
+  ) {
+    updateTicket();
+  }
 
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
+  });
+
+  onDestroy(() => {
+    if (rootCanisterId === undefined) {
+      return;
+    }
+
+    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: undefined,
+      keepPolling: false,
+    });
+
+    // Hide toasts when moving away from the page
+    hidePollingToast();
   });
 </script>
 
@@ -107,12 +118,12 @@
       <SignInGuard>
         {#if userCanParticipateToSwap}
           <button
-            disabled={loading || criticalError || ticket !== undefined}
+            disabled={busy}
             on:click={openModal}
             class="primary participate"
             data-tid="sns-project-participate-button"
           >
-            {#if loading}
+            {#if busy}
               <span>
                 <Spinner size="small" inline />
               </span>
@@ -149,6 +160,7 @@
   .participate {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--padding);
   }
 

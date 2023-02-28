@@ -105,6 +105,7 @@ interface I18nError {
   not_canister_controller_to_update: string;
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
+  limit_exceeded_getting_open_ticket: string;
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
@@ -155,10 +156,10 @@ interface I18nAuth {
 interface I18nAccounts {
   main: string;
   balance: string;
-  new_transaction: string;
+  send: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
-  review_action: string;
+  ckbtc_transaction_description: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -191,6 +192,7 @@ interface I18nAccounts {
   transaction_fee: string;
   new_transaction_fee: string;
   review_transaction: string;
+  you_are_sending: string;
   edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
@@ -208,11 +210,15 @@ interface I18nAccounts {
   current_balance_total: string;
   description: string;
   edit_transaction: string;
-  execute: string;
+  send_now: string;
   select: string;
   manual: string;
   no_account_select: string;
   current_balance_detail: string;
+  network: string;
+  network_icp_ckbtc: string;
+  network_bitcoin: string;
+  select_network: string;
 }
 
 interface I18nNeurons {
@@ -625,6 +631,7 @@ interface I18nSns_project_detail {
   sale_end: string;
   max_left: string;
   max_user_commitment_reached: string;
+  getting_sns_open_ticket: string;
   sign_in: string;
 }
 
@@ -723,6 +730,8 @@ interface I18nError__sns {
   load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
+  load_sale_total_commitments: string;
+  load_sale_lifecycle: string;
   load_parameters: string;
   sns_remove_hotkey: string;
   sns_split_neuron: string;
@@ -739,14 +748,24 @@ interface I18nError__sns {
   not_enough_amount: string;
   commitment_too_large: string;
   commitment_exceeds_current_allowed: string;
-  cannot_participate: string;
+  sns_sale_unexpected_error: string;
+  sns_sale_unexpected_and_refresh: string;
+  sns_sale_final_error: string;
+  sns_sale_proceed_with_existing_ticket: string;
+  sns_sale_closed: string;
+  sns_sale_not_open: string;
+  sns_sale_invalid_amount: string;
+  sns_sale_invalid_subaccount: string;
+  sns_sale_try_later: string;
+  sns_sale_retry_in: string;
+  sns_sale_committed_not_equal_to_amount: string;
   invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;
   ledger_duplicate: string;
   ledger_bad_fee: string;
   ledger_created_future: string;
   ledger_too_old: string;
-  ledger_unsufficient_funds: string;
+  ledger_insufficient_funds: string;
   sns_add_followee: string;
   sns_remove_followee: string;
   sns_load_functions: string;
@@ -783,6 +802,7 @@ interface I18nAuth_sns {
 
 interface I18nUniverse {
   select_token: string;
+  select_nervous_system: string;
   select: string;
 }
 
@@ -843,6 +863,12 @@ interface I18nError__ckbtc {
   get_btc_address: string;
   get_btc_no_account: string;
   update_balance: string;
+  withdrawal_account: string;
+  retrieve_btc: string;
+  malformed_address: string;
+  amount_too_low: string;
+  insufficient_funds: string;
+  retrieve_btc_unknown: string;
 }
 
 interface I18nNeuron_state {

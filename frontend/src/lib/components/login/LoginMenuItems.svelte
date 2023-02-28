@@ -26,7 +26,7 @@
   </MenuItem>
 </div>
 
-<div class="theme" on:click|stopPropagation>
+<div class="theme" on:click|stopPropagation on:keypress|stopPropagation>
   <span>{$i18n.theme.switch_theme}</span><ThemeToggle />
 </div>
 

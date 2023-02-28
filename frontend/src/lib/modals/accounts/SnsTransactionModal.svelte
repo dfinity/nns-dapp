@@ -22,8 +22,8 @@
 
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.new_transaction
-      : $i18n.accounts.review_transaction;
+      ? $i18n.accounts.send
+      : $i18n.accounts.you_are_sending;
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
@@ -61,7 +61,7 @@
     sourceAccount={selectedAccount}
   >
     <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
+      >{title ?? $i18n.accounts.send}</svelte:fragment
     >
     <p slot="description" class="value">
       {replacePlaceholders($i18n.accounts.sns_transaction_description, {
@@ -74,7 +74,7 @@
   <!-- TODO: replace with busy spinner pattern as in <SnsIncreateStakeNeuronModal /> -->
   <Modal on:nnsClose>
     <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.new_transaction}</svelte:fragment
+      >{title ?? $i18n.accounts.send}</svelte:fragment
     ><Spinner /></Modal
   >
 {/if}
