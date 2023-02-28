@@ -137,11 +137,11 @@ impl Assets {
         for (old_suffix, new_suffix) in Self::SUFFIX_REWRITES {
             if let Some(root) = path.strip_suffix(old_suffix) {
                 let new_path = root.to_string() + new_suffix;
-                if let Some(ans) = Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
+                if let Some(asset_with_encoding) = Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
                     self.get_with_encoding(*content_encoding, &new_path)
                         .map(|asset| (*content_encoding, asset))
                 }) {
-                    return Some(ans);
+                    return Some(asset_with_encoding);
                 }
             }
         }
