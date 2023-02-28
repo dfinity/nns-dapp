@@ -285,7 +285,7 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeFalsy();
+      ).toEqual({ status: "none" });
     });
 
     it("returns true when there is an open ticket in the store", () => {
@@ -315,7 +315,7 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeFalsy();
+      ).toEqual({ status: "none" });
     });
   });
 

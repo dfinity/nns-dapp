@@ -664,12 +664,6 @@ describe("sns-api", () => {
       spyOnGetOpenTicketApi.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
-      const startBusySpy = jest
-        .spyOn(busyStore, "startBusy")
-        .mockImplementation(jest.fn());
-      const stopBusySpy = jest
-        .spyOn(busyStore, "stopBusy")
-        .mockImplementation(jest.fn());
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
@@ -677,14 +671,12 @@ describe("sns-api", () => {
         updateProgress: updateProgressSpy,
       });
 
-      expect(startBusySpy).toBeCalledTimes(1);
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(postprocessSpy).toBeCalledTimes(1);
 
       // All steps called
       expect(updateProgressSpy).toBeCalledTimes(4);
 
-      expect(stopBusySpy).toBeCalledTimes(1);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
       // no errors
