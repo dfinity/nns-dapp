@@ -1,5 +1,5 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
-import type { SnsTicketsStore } from "$lib/stores/sns-tickets.store";
+import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
@@ -233,7 +233,7 @@ export const hasOpenTicketInProcess = ({
   ticketsStore,
 }: {
   rootCanisterId?: Principal | null;
-  ticketsStore: SnsTicketsStore;
+  ticketsStore: SnsTicketsStoreData;
 }): boolean => {
   if (isNullish(rootCanisterId)) {
     return true;
