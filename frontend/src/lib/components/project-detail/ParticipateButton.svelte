@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Modal, Spinner } from "@dfinity/gix-components";
+  import { BottomSheet, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -26,8 +26,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import type { TicketStatus } from "$lib/types/sale";
-  import { SaleStep } from "$lib/types/sale";
-  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import type { SaleStep } from "$lib/types/sale";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
 
   const { store: projectDetailStore, reload } =
