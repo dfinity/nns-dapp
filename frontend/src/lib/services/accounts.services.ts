@@ -13,7 +13,10 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import {
+  SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+  SYNC_ACCOUNTS_RETRY_SECONDS,
+} from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
@@ -361,8 +364,7 @@ const pollLoadAccounts = async (params: {
     // Any error is an unknown error and worth a retry
     shouldExit: () => false,
     useExponentialBackoff: true,
-    // TODO: This should be a constant
-    maxAttempts: 50,
+    maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
     millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
   });
 
