@@ -3,7 +3,7 @@ import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
   notifyParticipation,
-  notifyPaymentFailure,
+  notifyPaymentFailure as notifyPaymentFailureApi,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -63,7 +63,7 @@ import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { toastsSuccess } from "../stores/toasts.store";
-import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
+import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
@@ -507,6 +507,30 @@ const pollNotifyParticipation = async ({
 };
 
 /**
+ * Manually remove the open ticket
+ *
+ * @param rootCanisterId
+ * @param identity
+ */
+const removeOpenTicket = async ({
+  rootCanisterId,
+  identity,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  try {
+    // force to remove ticket
+    await notifyPaymentFailureApi({
+      rootCanisterId,
+      identity,
+    });
+  } catch (err) {
+    console.error("[sale] notifyPaymentFailure", err);
+  }
+};
+
+/**
  * Calls notifyParticipation (refresh_buyer_tokens api) and handles response errors.
  * Should be called to refresh the amount of ICP a buyer has contributed from the ICP ledger canister.
  * It is assumed that prior to calling this method, tokens have been transfer by the buyer to a subaccount of the swap canister on the ICP ledger.
@@ -553,16 +577,10 @@ const notifyParticipationAndRemoveTicket = async ({
     // process `TxTooOldError`
     if (hasTooOldError) {
       if (internalError) {
-        try {
-          // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
-          // force to remove ticket
-          await notifyPaymentFailure({
-            rootCanisterId,
-            identity,
-          });
-        } catch (err) {
-          console.error("[sale] notifyPaymentFailure", err);
-        }
+        await removeOpenTicket({
+          rootCanisterId,
+          identity,
+        });
         // jump to unexpected_error
       }
     }
@@ -605,7 +623,10 @@ const pollTransfer = ({
         createdAt,
         memo,
       }),
-    shouldExit: isTransferError,
+    // Should still just retry in case of TxCreatedInFutureError
+    // (this error should be gone in a couple of seconds)
+    shouldExit: (err: unknown) =>
+      isTransferError(err) && !(err instanceof TxCreatedInFutureError),
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
   });
@@ -697,56 +718,46 @@ export const participateInSnsSale = async ({
   } catch (err) {
     console.error("[sale] on transfer", err);
 
-    // Frontend should auto retry participation
-    // (in theory this error should be gone in a couple of seconds)
-    if (err instanceof TxCreatedInFutureError) {
-      const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
-
-      // TODO: todo remove this or await it to sync the progress and modal close
-      setTimeout(() => {
-        participateInSnsSale({
+    switch ((err as object)?.constructor) {
+      // if duplicated transfer, silently continue the flow
+      case TxDuplicateError:
+        break;
+      case InsufficientFundsError: {
+        await removeOpenTicket({
           rootCanisterId,
-          postprocess,
-          updateProgress,
+          identity,
         });
-      }, retryIn * 1000);
 
-      toastsShow({
-        level: "error",
-        labelKey: "error__sns.sns_sale_retry_in",
-        substitutions: {
-          $time: secondsToDuration(BigInt(retryIn)),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-
-      return;
-    }
-
-    // if duplicated transfer, silently continue the flow
-    if (!(err instanceof TxDuplicateError)) {
-      let labelKey = "error__sns.sns_sale_unexpected_error";
-
-      if (err instanceof InsufficientFundsError) {
-        labelKey = "error__sns.ledger_insufficient_funds";
-      }
-
-      if (err instanceof TxTooOldError) {
-        /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
-         * - continue the flow:
-         *  - refresh_buyer_tokens // internal errors are ignored
-         *  - notify_payment_failure
-         */
-        hasTooOldError = true;
-      } else {
         toastsError({
-          labelKey,
+          labelKey: "error__sns.ledger_insufficient_funds",
           err,
         });
 
         // enable participate button
         snsTicketsStore.setNoTicket(rootCanisterId);
 
+        // stop the flow since the ticket was removed
+        return;
+      }
+      case TxTooOldError: {
+        /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
+         * - continue the flow:
+         *  - refresh_buyer_tokens // internal errors are ignored
+         *  - notify_payment_failure
+         */
+        hasTooOldError = true;
+        break;
+      }
+      default: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+          err,
+        });
+
+        // enable participate button
+        snsTicketsStore.setNoTicket(rootCanisterId);
+
+        // stop the flow since the ticket was removed
         return;
       }
     }

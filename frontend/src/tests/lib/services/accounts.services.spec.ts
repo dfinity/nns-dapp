@@ -663,9 +663,11 @@ describe("accounts-services", () => {
     beforeEach(() => {
       accountsStore.reset();
       jest.clearAllTimers();
+      jest.clearAllMocks();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
     });
+
     it("calls apis and sets accountsStore", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
 
@@ -703,7 +705,7 @@ describe("accounts-services", () => {
       expect(accounts).toEqual(mockAccounts);
     });
 
-    it("polls if queryAccount failes", async () => {
+    it("polls if queryAccount fails", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
 
       jest
@@ -741,9 +743,11 @@ describe("accounts-services", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
+        // Make sure the timers are set before we advance time.
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
-
         await waitFor(() =>
           expect(queryAccountSpy).toBeCalledTimes(
             Math.min(counter, retriesUntilSuccess)

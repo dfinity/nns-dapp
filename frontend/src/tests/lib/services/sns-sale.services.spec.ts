@@ -805,6 +805,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(ticketFromStore().ticket).toEqual(null);
       expect(postprocessSpy).toBeCalledTimes(1);
@@ -867,6 +868,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(retriesUntilSuccess);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(postprocessSpy).toBeCalledTimes(1);
 
       // All steps called
@@ -914,6 +916,7 @@ describe("sns-api", () => {
       expect(counter).toBe(retriesBeforeSuccess);
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(expectedRetries);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
 
       // Initialization and transfer steps
@@ -934,6 +937,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).not.toBeCalled();
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnSyncAccounts).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
       expect(updateProgressSpy).not.toBeCalled();
@@ -962,6 +966,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
@@ -971,7 +976,7 @@ describe("sns-api", () => {
       expect(ticketFromStore().ticket).not.toEqual(null);
     });
 
-    it("should poll transfer during unknown issues", async () => {
+    it("should poll transfer during unknown issues or TxCreatedInFutureError", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -984,7 +989,9 @@ describe("sns-api", () => {
       const retriesUntilSuccess = 4;
       sendICPSpy
         .mockRejectedValueOnce(new Error("Connection error"))
-        .mockRejectedValueOnce(new Error("Connection error"))
+        .mockRejectedValueOnce(
+          new TxCreatedInFutureError("Created in future error")
+        )
         .mockRejectedValueOnce(new Error("Connection error"))
         .mockResolvedValue(13n);
 
@@ -1022,7 +1029,7 @@ describe("sns-api", () => {
       expect(updateProgressSpy).toBeCalledTimes(4);
     });
 
-    it("should display transfer api errors", async () => {
+    it("should display transfer api unknown errors", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -1036,6 +1043,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
@@ -1058,6 +1066,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.ledger_insufficient_funds",
@@ -1143,37 +1152,6 @@ describe("sns-api", () => {
       expect(spyOnNotifyParticipation).toBeCalled();
       expect(spyOnToastsError).not.toBeCalled();
       expect(ticketFromStore().ticket).toEqual(null);
-    });
-
-    it("should set retry flag on CreatedInFuture error", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-      sendICPSpy.mockRejectedValue(new TxCreatedInFutureError());
-
-      expect(spyOnToastsError).not.toBeCalled();
-
-      await participateInSnsSale({
-        rootCanisterId: testRootCanisterId,
-        postprocess: jest.fn().mockResolvedValue(undefined),
-        updateProgress: jest.fn().mockResolvedValue(undefined),
-      });
-
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-
-      await waitFor(() => expect(spyOnToastsShow).toHaveBeenCalledTimes(2), {
-        timeout: 2000,
-      });
-
-      expect(spyOnToastsShow).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_retry_in",
-        })
-      );
-
-      // the ticket should stay in the store
-      expect(ticketFromStore().ticket).toEqual(testTicket);
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {
