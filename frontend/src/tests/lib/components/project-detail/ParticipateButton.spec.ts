@@ -106,7 +106,6 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(getByTestId("transaction-step-1")).toBeInTheDocument()
       );
-      accountsStore.reset();
     });
 
     it("should hide button is state is not open", () => {

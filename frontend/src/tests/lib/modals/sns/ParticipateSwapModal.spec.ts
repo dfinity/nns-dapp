@@ -24,10 +24,7 @@ import {
   mockAccountsStoreData,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "../../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
@@ -239,24 +236,22 @@ describe("ParticipateSwapModal", () => {
     beforeEach(() => {
       accountsStore.reset();
     });
-    it("show request accounts", async () => {
+    it("loads accounts and renders account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-
-      const queryAccountBalanceSpy = jest
+      jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const queryAccountSpy = jest
+      jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      await renderSwapModal();
+      const { queryByTestId } = await renderSwapModal();
 
-      await waitFor(() => expect(queryAccountSpy).toBeCalledTimes(1));
-      expect(queryAccountBalanceSpy).toBeCalledTimes(1);
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        accountIdentifier: mockMainAccount.identifier,
-        certified: true,
-        identity: mockIdentity,
-      });
+      expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
+
+      // Component is rendered after the accounts are loaded
+      await waitFor(() =>
+        expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
+      );
     });
   });
 });
