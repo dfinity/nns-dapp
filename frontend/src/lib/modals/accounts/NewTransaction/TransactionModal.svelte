@@ -25,7 +25,7 @@
   ) => string | undefined = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
-  const STEP_PROGRESS = "Progress" as const;
+  const STEP_PROGRESS = "Progress";
 
   const steps: WizardSteps = [
     {
