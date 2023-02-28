@@ -25,7 +25,7 @@ export const failTestsThatLogToConsole = () => {
   global.afterEach(() => {
     if (!isLoggingAllowed && gotLogs) {
       throw new Error(
-        "Your tests produced console logs, which is not allowed.\n" +
+        "Your test passed but produced console logs, which is not allowed.\n" +
           "If you need console output, mock and expect it in your test.\n" +
           "If this is only for debugging, call allowLoggingInOneTest" +
           "ForDebugging() from src/tests/utils/console.test-utils in your test."

@@ -1,4 +1,4 @@
-import { ledgerCanister } from "$lib/api/ledger.api";
+import { sendICP } from "$lib/api/ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
@@ -6,6 +6,7 @@ import {
   notifyPaymentFailure,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   snsProjectsStore,
   type SnsFullProject,
@@ -28,12 +29,15 @@ import {
 import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import type { TokenAmount } from "@dfinity/nns";
 import {
+  ICPToken,
   InsufficientFundsError,
+  TokenAmount,
+  TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
+  type BlockHeight,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -124,6 +128,7 @@ const pollGetOpenTicket = async ({
       shouldExit: shouldStopPollingTicket(rootCanisterId),
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
+      useExponentialBackoff: true,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -310,6 +315,7 @@ const pollNewSaleTicket = async (params: {
     fn: (): Promise<Ticket> => newSaleTicketApi(params),
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+    useExponentialBackoff: true,
   });
 
 // TODO(sale): rename to loadNewSaleTicket
@@ -508,6 +514,7 @@ const pollNotifyParticipation = async ({
         notifyParticipation({ buyer, rootCanisterId, identity }),
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+      useExponentialBackoff: true,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -590,6 +597,37 @@ const notifyParticipationAndRemoveTicket = async ({
   }
 };
 
+const isTransferError = (err: unknown): boolean => err instanceof TransferError;
+const pollTransfer = ({
+  identity,
+  to,
+  amount,
+  fromSubAccount,
+  memo,
+  createdAt,
+}: {
+  identity: Identity;
+  to: string;
+  amount: TokenAmount;
+  fromSubAccount?: SubAccountArray | undefined;
+  memo?: bigint;
+  createdAt?: bigint;
+}) =>
+  poll({
+    fn: (): Promise<BlockHeight> =>
+      sendICP({
+        identity,
+        to,
+        amount,
+        fromSubAccount,
+        createdAt,
+        memo,
+      }),
+    shouldExit: isTransferError,
+    millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+    useExponentialBackoff: true,
+  });
+
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -645,7 +683,6 @@ export const participateInSnsSale = async ({
     return;
   }
 
-  const { canister: nnsLedger } = await ledgerCanister({ identity });
   const {
     canisterIds: { swapCanisterId },
   } = await wrapper({
@@ -665,14 +702,15 @@ export const participateInSnsSale = async ({
 
     // Step 2.
     // Send amount to the ledger
-    await nnsLedger.transfer({
-      amount,
+    await pollTransfer({
+      amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
       fromSubAccount: isNullish(subaccount)
         ? undefined
         : Array.from(subaccount),
-      to: accountIdentifier,
+      to: accountIdentifier.toHex(),
       createdAt: creationTime,
       memo: ticketId,
+      identity,
     });
   } catch (err) {
     console.error("[sale] on transfer", err);
