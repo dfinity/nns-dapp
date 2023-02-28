@@ -2,7 +2,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Spinner } from "@dfinity/gix-components";
+  import { BottomSheet, Modal, Spinner } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -25,6 +25,9 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import type { TicketStatus } from "$lib/types/sale";
+  import { SaleStep } from "$lib/types/sale";
+  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -54,14 +57,19 @@
     : undefined;
 
   // busy if open ticket is available or not requested
-  let busy = true;
-  $: busy = hasOpenTicketInProcess({
+  let status: TicketStatus = "unknown";
+  $: ({ status } = hasOpenTicketInProcess({
     rootCanisterId,
     ticketsStore: $snsTicketsStore,
-  });
+  }));
+
+  let busy = true;
+  $: busy = status !== "none";
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
+
+  let progressStep: SaleStep | undefined = undefined;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -76,12 +84,12 @@
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
+    const updateProgress = (step: SaleStep) => (progressStep = step);
+
     await restoreSnsSaleParticipation({
       rootCanisterId,
       postprocess: reload,
-      updateProgress: () => {
-        // TODO: implement progress UI
-      },
+      updateProgress,
     });
   };
 
@@ -151,6 +159,12 @@
       </SignInGuard>
     </div>
   </BottomSheet>
+{/if}
+
+{#if status === "open"}
+  <Modal>
+    <SaleInProgress {progressStep} />
+  </Modal>
 {/if}
 
 {#if showModal}
