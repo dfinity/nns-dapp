@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
   import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
+  import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
 
   let innerWidth = 0;
   let list = false;
@@ -14,7 +14,7 @@
 
 <Nav>
   <p class="title" slot="title" data-tid="select-universe-nav-title">
-    {$i18n.universe.select_token}
+    {$titleTokenSelectorStore}
   </p>
 
   {#if list}
