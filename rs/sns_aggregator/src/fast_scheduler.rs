@@ -1,7 +1,7 @@
 use std::{borrow::Borrow, time::Duration};
 use ic_cdk::timer::{TimerId, set_timer_interval};
 use crate::{
-    state::STATE,
+    state::{STATE, State},
     types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse}, convert_canister_id,
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
@@ -63,7 +63,7 @@ impl FastScheduler {
     }
     /// Gets data
     async fn update(index: SnsIndex) {
-        crate::state::log(format!("Updating SNS index {index}... get_state"));
+        crate::state::log(format!("Updating SNS index {index} swap state..."));
         let swap_canister_id = STATE.with(|state| convert_canister_id!(state.swap_canister_from_index(index)));
         let root_canister_id = STATE.with(|state| convert_canister_id!(state.root_canister_from_index(index)));
         let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
@@ -71,19 +71,32 @@ impl FastScheduler {
             .map(|response: (_,)| response.0)
             .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
             .unwrap_or_default();
+        // Save the state
         STATE.with(|state| {
             state.stable.borrow().sns_cache.borrow_mut().upstream_data.entry(root_canister_id).and_modify(|entry| {
                 entry.swap_state = swap_state;
             });
         });
+        // Update affected assets
+        let slow_data = STATE.with(|state| {
+            state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone()
+        });
+        State::insert_sns(index, slow_data)
+        .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
+        .unwrap_or_default();
+        crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
     /// Gets the next SNS in need of updating, if any
     async fn update_next() {
-        Self::next().map(Self::update);
+        if let Some(next) = Self::next(){
+            Self::update(next).await;
+        } else {
+            crate::state::log(format!("No SNS to update."));
+        }
     }
 
     /// Starts the update timer.
-    fn start(&mut self) {
+    pub fn start() {
         let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
         crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
         STATE.with(|state| {

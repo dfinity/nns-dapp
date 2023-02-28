@@ -16,6 +16,7 @@ use std::time::Duration;
 
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
+use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
 use ic_cdk::timer::{set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
@@ -205,6 +206,8 @@ fn setup(config: Option<Config>) {
             ic_cdk::timer::clear_timer(id);
         }
     });
+    // Schedule fast collection of swap state
+    FastScheduler::start();
     // Get one SNS quickly, so that we don't need to wait for the normal, slow schedule before
     // there is some sign of life.
     //
