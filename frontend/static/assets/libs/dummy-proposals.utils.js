@@ -406,6 +406,8 @@ adstas patrios, nescio quam coepit!
 [quicquam paternis]: http://visasit.com/dumque
 [vultu]: http://lentas-petitur.com/`;
 
+const url = "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only"
+
 export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId }) => {
   try {
     // Used only on testnet
@@ -414,7 +416,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
       title:
           "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
       neuronId,
-      url: "https://www.google.com/search?q=The+world%E2%80%99s+fastest+general-purpose+blockchain+to+build+the+future+of+Web3",
+      url,
       summary: DEMO_SUMMARY,
     });
     console.log("Motion Proposal...");
@@ -422,14 +424,14 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
     const request2 = makeNetworkEconomicsDummyProposalRequest({
       neuronId,
       title: "Increase minimum neuron stake",
-      url: "https://www.lipsum.com/",
+      url,
       summary: "Increase minimum neuron stake",
     });
     console.log("Netowrk Economics Proposal...");
     await canister.makeProposal(request2);
     const request3 = makeRewardNodeProviderDummyProposal({
       neuronId,
-      url: "https://www.lipsum.com/",
+      url,
       title: "Reward for Node Provider 'ABC'",
       summary: "Reward for Node Provider 'ABC'",
     });
@@ -438,7 +440,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
     const request4 = makeExecuteNnsFunctionDummyProposalRequest({
       neuronId,
       title: "Add node(s) to subnet 10",
-      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210928T1140Z.md",
+      url,
       summary: "Add node(s) to subnet 10",
       nnsFunction: 2,
       payload: addNodeToSubnetPayload,
@@ -460,7 +462,7 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
       neuronId,
       title:
           "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-      url: "https://github.com/ic-association/nns-proposals/blob/main/proposals/subnet_management/20210930T0728Z.md",
+      url,
       summary:
           "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
       nnsFunction: 11,
