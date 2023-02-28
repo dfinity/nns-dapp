@@ -33,6 +33,7 @@ import { get } from "svelte/store";
 import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
+import {resetNeuronsApiService} from "$lib/api-services/neurons.api-service";
 
 /**
  * Create Makes multiple registerVote calls (1 per neuronId).
@@ -378,6 +379,9 @@ const updateAfterVoteRegistration = async (
         strategy: "update",
       })
     );
+
+  // We need to list the neurons with the very last ballots because the user just voted
+  resetNeuronsApiService();
 
   return Promise.all([
     listNeurons({
