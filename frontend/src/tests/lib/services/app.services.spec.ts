@@ -3,17 +3,19 @@
  */
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { toastsStore } from "@dfinity/gix-components";
+import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
+import { get } from "svelte/store";
 import { mockAccountDetails } from "../../mocks/accounts.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
   const mockNNSDappCanister = mock<NNSDappCanister>();
-  const mockGovernanceCanister = mock<GovernanceCanister>();
 
   beforeEach(() => {
+    toastsStore.reset();
+    jest.clearAllMocks();
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => mockLedgerCanister);
@@ -22,24 +24,12 @@ describe("app-services", () => {
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    mockCanisters();
-  });
-
-  const mockCanisters = () => {
-    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    mockGovernanceCanister.listNeurons.mockResolvedValue([mockNeuron]);
-  };
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("should init Nns", async () => {
+    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     await initAppPrivateData();
 
     // query + update calls
@@ -52,5 +42,23 @@ describe("app-services", () => {
     await expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
       numberOfCalls
     );
+  });
+
+  it("should not show errors if loading accounts fails", async () => {
+    mockNNSDappCanister.getAccount.mockRejectedValue(new Error("test"));
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    await initAppPrivateData();
+
+    // query + update calls
+    const numberOfCalls = 2;
+
+    await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
+      numberOfCalls
+    );
+
+    await expect(mockLedgerCanister.accountBalance).not.toBeCalled();
+
+    const toastData = get(toastsStore);
+    expect(toastData).toHaveLength(0);
   });
 });
