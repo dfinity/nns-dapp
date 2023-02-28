@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
-import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
@@ -16,7 +17,6 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import { snsTicketsStore } from "../../../../lib/stores/sns-tickets.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -40,7 +40,7 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 jest.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
+  initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 describe("ParticipateSwapModal", () => {
@@ -108,10 +108,10 @@ describe("ParticipateSwapModal", () => {
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
     });
 
-    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-      snsTicketsStore.setNoTicket(rootCanisterIdMock);
-      const { getByTestId, container } = await renderEnter10ICPAndNext();
-
+    const participate = async ({
+      getByTestId,
+      container,
+    }: RenderResult<SvelteComponent>) => {
       const confirmButton = getByTestId("transaction-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
 
@@ -122,8 +122,26 @@ describe("ParticipateSwapModal", () => {
       );
 
       fireEvent.click(confirmButton);
+    };
+
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
+    });
+
+    it("should render progress when participating", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
+
+      await waitFor(
+        expect(result.getByTestId("sale-in-progress-warning")).not.toBeNull
+      );
     });
   });
 

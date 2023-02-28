@@ -3,12 +3,14 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import type { ParticipateInSnsSaleParameters } from "$lib/services/sns-sale.services";
 import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import { SaleStep } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
-import { snsTicketsStore } from "../../../../lib/stores/sns-tickets.store";
 import {
   authStoreMock,
   mockIdentity,
@@ -28,7 +30,13 @@ import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
 
 jest.mock("$lib/services/sns-sale.services", () => ({
-  restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
+  restoreSnsSaleParticipation: jest
+    .fn()
+    .mockImplementation(
+      ({ updateProgress }: ParticipateInSnsSaleParameters) => {
+        updateProgress(SaleStep.INITIALIZATION);
+      }
+    ),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
 }));
 
@@ -106,7 +114,7 @@ describe("ParticipateButton", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should disable the button is user has an open ticket", async () => {
+    it("should disable the button if user has an open ticket", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -127,6 +135,37 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(button.getAttribute("disabled")).not.toBeNull()
       );
+    });
+
+    it("should show progress modal if user has an open ticket", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+
+      const { getByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
+
+      await waitFor(() =>
+        expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
+      );
+    });
+
+    it("should not show progress modal if user has no no ticket", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { getByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(() => getByTestId("sale-in-progress-modal")).toThrow();
     });
 
     it("should display spinner and disable button when there is loading", async () => {
