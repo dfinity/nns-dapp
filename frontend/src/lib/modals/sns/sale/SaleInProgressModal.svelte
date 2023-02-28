@@ -9,7 +9,7 @@
 
 <Modal disablePointerEvents>
   <svelte:fragment slot="title"
-    >{$i18n.sns_sale.retry_participation_in_progress}</svelte:fragment
+    >{$i18n.sns_sale.participation_in_progress}</svelte:fragment
   >
   <SaleInProgress {progressStep} />
 </Modal>

@@ -643,7 +643,6 @@ interface I18nSns_sale {
   step_reload: string;
   this_may_take_a_few_minutes: string;
   do_not_close: string;
-  retry_participation_in_progress: string;
 }
 
 interface I18nSns_neuron_detail {

@@ -269,7 +269,7 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toEqual({status: "polling"})
+      ).toEqual({ status: "polling" });
     });
 
     it("returns none when the ticket is undefined and we stopped keep polling", () => {
