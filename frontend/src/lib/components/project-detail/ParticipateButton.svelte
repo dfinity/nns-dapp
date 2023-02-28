@@ -162,7 +162,7 @@
   </BottomSheet>
 {/if}
 
-{#if status === "open"}
+{#if status === "open" && nonNullish(progressStep)}
   <SaleInProgressModal {progressStep} />
 {/if}
 

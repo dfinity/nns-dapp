@@ -4,7 +4,7 @@
   import { SaleStep } from "$lib/types/sale";
   import { i18n } from "$lib/stores/i18n";
 
-  export let progressStep: SaleStep | undefined = undefined;
+  export let progressStep: SaleStep;
 </script>
 
 <Modal disablePointerEvents>
