@@ -106,6 +106,13 @@ impl Assets {
     /// List of content encodings supported by the assets database.
     const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
     /// List of suffix changes that may be made.
+    ///
+    /// - "" -> "" A path may be served unchanged.
+    /// - "/" -> "/index.html" Given the path to a directory, e.g, `/launchpad/`, the index for that
+    ///   directory may be returned, e.g. `/launchpad/index.html`
+    /// - "" -> "/index.html" A directory does not need a trailing slash.  E.g. `/launchpad` may
+    ///   serve `/launchpad/index.html`.  Please note that if this is done, relative URLs in
+    ///   index.html will break so be careful if using this much requested but error-prone option.
     const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
