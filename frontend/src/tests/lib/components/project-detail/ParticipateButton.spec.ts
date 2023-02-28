@@ -63,6 +63,8 @@ describe("ParticipateButton", () => {
     });
 
     it("should render a text to increase participation", () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
       const { queryByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -75,7 +77,9 @@ describe("ParticipateButton", () => {
       ).toEqual(en.sns_project_detail.increase_participation);
     });
 
-    it("should render a text to participate", () => {
+    it("should render a text to participate", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
       const { queryByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
         swapCommitment: mockSnsSwapCommitment(
@@ -83,19 +87,27 @@ describe("ParticipateButton", () => {
         ) as SnsSwapCommitment,
         Component: ParticipateButton,
       });
-      expect(
-        (
-          queryByTestId("sns-project-participate-button")?.textContent ?? ""
-        ).trim()
-      ).toEqual(en.sns_project_detail.participate);
+      await waitFor(() =>
+        expect(
+          (
+            queryByTestId("sns-project-participate-button")?.textContent ?? ""
+          ).trim()
+        ).toEqual(en.sns_project_detail.participate)
+      );
     });
 
     it("should open swap participation modal on participate click", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
+
+      await waitFor(() =>
+        expect(getByTestId("sns-project-participate-button")).not.toBeNull()
+      );
 
       await clickByTestId(getByTestId, "sns-project-participate-button");
       await waitFor(() =>
@@ -114,27 +126,25 @@ describe("ParticipateButton", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should disable the button if user has an open ticket", async () => {
+    it("should display a spinner if user has an open ticket", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
       });
 
-      const { queryByTestId } = renderContextCmp({
+      const { queryByTestId, getByTestId } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
 
-      const button = queryByTestId(
-        "sns-project-participate-button"
-      ) as HTMLButtonElement;
-
       expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
 
       await waitFor(() =>
-        expect(button.getAttribute("disabled")).not.toBeNull()
+        expect(getByTestId("connecting_sale_canister")).not.toBeNull()
       );
+
+      expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
     it("should show progress modal if user has an open ticket", async () => {
@@ -168,20 +178,17 @@ describe("ParticipateButton", () => {
       expect(() => getByTestId("sale-in-progress-modal")).toThrow();
     });
 
-    it("should display spinner and disable button when there is loading", async () => {
-      const { queryByTestId, container } = renderContextCmp({
+    it("should display spinner and hide button when there is loading", async () => {
+      const { queryByTestId, getByTestId, container } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
 
-      const button = queryByTestId(
-        "sns-project-participate-button"
-      ) as HTMLButtonElement;
-
       expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
       expect(container.querySelector("svg.small")).toBeInTheDocument();
-      expect(button.getAttribute("disabled")).not.toBeNull();
+      expect(getByTestId("connecting_sale_canister")).not.toBeNull();
+      expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
     it("should enable button if user has not committed max already", async () => {

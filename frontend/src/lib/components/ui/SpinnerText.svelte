@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Spinner} from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
 </script>
 
 <span class="spinner description"><Spinner inline size="small" /></span>

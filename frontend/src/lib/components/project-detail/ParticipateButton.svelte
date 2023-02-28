@@ -129,21 +129,22 @@
     <div role="toolbar">
       <SignInGuard>
         {#if userCanParticipateToSwap}
-
           {#if busy}
-              <div class="loader">
-                <SpinnerText>{$i18n.sns_sale.connecting_sale_canister}</SpinnerText>
-              </div>
-            {:else}
+            <div class="loader" data-tid="connecting_sale_canister">
+              <SpinnerText
+                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+              >
+            </div>
+          {:else}
             <button
-                    disabled={busy}
-                    on:click={openModal}
-                    class="primary participate"
-                    data-tid="sns-project-participate-button"
+              disabled={busy}
+              on:click={openModal}
+              class="primary participate"
+              data-tid="sns-project-participate-button"
             >
               {userHasParticipatedToSwap
-                      ? $i18n.sns_project_detail.increase_participation
-                      : $i18n.sns_project_detail.participate}
+                ? $i18n.sns_project_detail.increase_participation
+                : $i18n.sns_project_detail.participate}
             </button>
           {/if}
         {:else}
