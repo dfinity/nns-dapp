@@ -127,6 +127,7 @@ const pollGetOpenTicket = async ({
       shouldExit: shouldStopPollingTicket(rootCanisterId),
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
+      useExponentialBackoff: true,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -313,6 +314,7 @@ const pollNewSaleTicket = async (params: {
     fn: (): Promise<Ticket> => newSaleTicketApi(params),
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+    useExponentialBackoff: true,
   });
 
 // TODO(sale): rename to loadNewSaleTicket
@@ -502,6 +504,7 @@ const pollNotifyParticipation = async ({
         notifyParticipation({ buyer, rootCanisterId, identity }),
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+      useExponentialBackoff: true,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -635,6 +638,7 @@ const pollTransfer = ({
     shouldExit: (err: unknown) =>
       isTransferError(err) && !(err instanceof TxCreatedInFutureError),
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
+    useExponentialBackoff: true,
   });
 
 /**

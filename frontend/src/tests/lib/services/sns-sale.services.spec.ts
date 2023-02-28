@@ -227,13 +227,15 @@ describe("sns-api", () => {
         });
 
         let counter = 0;
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
         const extraRetries = 4;
         while (counter < retriesUntilSuccess + extraRetries) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(
             Math.min(counter, retriesUntilSuccess)
           );
           counter += 1;
-          jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+          jest.advanceTimersByTime(retryDelay);
+          retryDelay *= 2;
 
           await waitFor(() =>
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(
@@ -261,10 +263,12 @@ describe("sns-api", () => {
         });
 
         let counter = 0;
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
         while (counter <= maxAttempts) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
           counter += 1;
-          jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+          jest.advanceTimersByTime(retryDelay);
+          retryDelay *= 2;
 
           await waitFor(() =>
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(
@@ -405,6 +409,7 @@ describe("sns-api", () => {
         });
 
         let counter = 0;
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
         const retriesBeforeStopPolling = 4;
         // We loop until 10 advancing time, but the polling should stop after `retriesBeforeStopPolling` + 1
         while (counter < DEFAULT_MAX_POLLING_ATTEMPTS) {
@@ -412,7 +417,8 @@ describe("sns-api", () => {
             Math.min(counter, retriesBeforeStopPolling + 1)
           );
           counter += 1;
-          jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+          jest.advanceTimersByTime(retryDelay);
+          retryDelay *= 2;
 
           await waitFor(() =>
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(
@@ -593,13 +599,15 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
       const extraRetries = 4;
       while (counter < retriesUntilSuccess + extraRetries) {
         expect(spyOnNewSaleTicketApi).toBeCalledTimes(
           Math.min(counter, extraRetries)
         );
         counter += 1;
-        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
 
         await waitFor(() =>
           expect(spyOnNewSaleTicketApi).toBeCalledTimes(
@@ -630,13 +638,15 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
       const extraRetries = 4;
       while (counter < retriesUntilKnownError + extraRetries) {
         expect(spyOnNewSaleTicketApi).toBeCalledTimes(
           Math.min(counter, extraRetries)
         );
         counter += 1;
-        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
 
         await waitFor(() =>
           expect(spyOnNewSaleTicketApi).toBeCalledTimes(
@@ -838,6 +848,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
       // We add a few more times but it should not trigger more calls
       const extraRetries = 4;
       while (counter < retriesUntilSuccess + extraRetries) {
@@ -845,7 +856,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
-        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
 
         await waitFor(() =>
           expect(spyOnNotifyParticipation).toBeCalledTimes(
@@ -882,6 +894,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
       const retriesBeforeSuccess = 4;
       const expectedRetries = 1;
       while (counter < retriesBeforeSuccess) {
@@ -889,7 +902,8 @@ describe("sns-api", () => {
           Math.min(expectedRetries, counter)
         );
         counter += 1;
-        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
 
         await waitFor(() =>
           expect(spyOnNotifyParticipation).toBeCalledTimes(
@@ -977,6 +991,7 @@ describe("sns-api", () => {
       });
 
       let counter = 0;
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
       // We add a few more times but it should not trigger more calls
       const extraRetries = 4;
       while (counter < retriesUntilSuccess + extraRetries) {
@@ -984,7 +999,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
-        jest.advanceTimersByTime(SALE_PARTICIPATION_RETRY_SECONDS * 1000);
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
 
         await waitFor(() =>
           expect(sendICPSpy).toBeCalledTimes(

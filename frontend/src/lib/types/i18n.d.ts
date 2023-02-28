@@ -60,6 +60,7 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  accounts_not_found_poll: string;
   account_not_found: string;
   transactions_not_found: string;
   canister_not_found: string;
@@ -801,6 +802,7 @@ interface I18nAuth_sns {
 
 interface I18nUniverse {
   select_token: string;
+  select_nervous_system: string;
   select: string;
 }
 
