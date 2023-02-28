@@ -354,6 +354,7 @@ const renameError = ({
   return { success: false, err: labelKey };
 };
 
+const ACCOUNTS_RETYR_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
@@ -364,7 +365,7 @@ const pollLoadAccounts = async (params: {
     shouldExit: () => false,
     useExponentialBackoff: true,
     maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
-    millisecondsToWait: SYNC_ACCOUNTS_RETRY_SECONDS,
+    millisecondsToWait: ACCOUNTS_RETYR_MILLIS,
   });
 
 /**
