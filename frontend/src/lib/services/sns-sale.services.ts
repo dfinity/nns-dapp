@@ -528,7 +528,6 @@ const removeOpenTicket = async ({
   identity: Identity;
 }): Promise<void> => {
   try {
-    // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
     // force to remove ticket
     await notifyPaymentFailureApi({
       rootCanisterId,
@@ -586,7 +585,6 @@ const notifyParticipationAndRemoveTicket = async ({
     // process `TxTooOldError`
     if (hasTooOldError) {
       if (internalError) {
-        // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
         await removeOpenTicket({
           rootCanisterId,
           identity,
@@ -731,7 +729,6 @@ export const participateInSnsSale = async ({
     // if duplicated transfer, silently continue the flow
     if (!(err instanceof TxDuplicateError)) {
       if (err instanceof InsufficientFundsError) {
-        // TODO(sale): to test
         await removeOpenTicket({
           rootCanisterId,
           identity,
