@@ -4,7 +4,7 @@ use crate::convert_canister_id;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
-use crate::types::upstream::UpstreamData;
+use crate::types::upstream::{SnsIndex, UpstreamData};
 use crate::types::{CandidType, Deserialize, Serialize};
 use crate::{
     assets::{AssetHashes, Assets},
@@ -33,6 +33,22 @@ pub struct State {
     pub asset_hashes: RefCell<AssetHashes>,
     /// Log errors when getting data from upstream
     pub log: RefCell<VecDeque<String>>,
+}
+impl State {
+    /// Util to get a swap canister ID
+    pub fn swap_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
+        self
+            .stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .all_sns
+            .get(index as usize)
+            .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
+            .1
+            .swap_canister_id
+            .ok_or_else(|| format!("SNS {index} has no known swap canister"))
+    }
 }
 
 /// State that is saved across canister upgrades.
