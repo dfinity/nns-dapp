@@ -228,7 +228,7 @@ export const poll = async <T>({
     if (counter > 0) {
       if (
         nonNullish(failuresBeforeHighLoadMessage) &&
-        counter == failuresBeforeHighLoadMessage
+        counter === failuresBeforeHighLoadMessage
       ) {
         toastsError({
           labelKey: "error.high_load_retrying",
