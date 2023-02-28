@@ -61,7 +61,7 @@
 
   ul {
     list-style: none;
-    padding: 0 0 var(--padding-1_5x);
+    padding: var(--padding-1_5x) 0;
 
     // checkbox restyling
     --checkbox-padding: var(--padding);

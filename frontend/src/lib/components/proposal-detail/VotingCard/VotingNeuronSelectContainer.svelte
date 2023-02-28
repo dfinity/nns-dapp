@@ -25,10 +25,12 @@
     max-height: var(--voting-bottom-sheet-content-max-height);
     overflow-y: auto;
 
+    position: relative;
+
     &:before {
       content: "";
       position: absolute;
-      top: 0;
+      top: var(--padding-1_5x);
       right: 50%;
       border-top: 1px solid var(--tertiary);
       width: calc(100% - (4 * var(--padding)));
