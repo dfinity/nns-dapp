@@ -368,7 +368,7 @@ const getProjectFromStore = (
 
 export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;
-  userCommitment: bigint | undefined;
+  userCommitment: bigint;
   postprocess: () => Promise<void>;
   updateProgress: (step: SaleStep) => void;
 }
@@ -538,7 +538,7 @@ const notifyParticipationAndRemoveTicket = async ({
   identity,
   hasTooOldError,
   ticket,
-                                                    userCommitment,
+  userCommitment,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
@@ -557,7 +557,10 @@ const notifyParticipationAndRemoveTicket = async ({
     });
 
     // current_committed (the sum of all) ≠ ticket.amount + previous commitment
-    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s + userCommitment) {
+    if (
+      icp_accepted_participation_e8s !==
+      ticket.amount_icp_e8s + userCommitment
+    ) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",

@@ -16,7 +16,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish } from "@dfinity/utils";
+  import { assertNonNullish, nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     hidePollingToast,
@@ -88,6 +88,8 @@
     ) {
       return;
     }
+
+    assertNonNullish(userCommitment);
 
     snsTicketsStore.enablePolling(rootCanisterId);
 
