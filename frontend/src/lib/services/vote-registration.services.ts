@@ -380,6 +380,7 @@ const updateAfterVoteRegistration = async (
       })
     );
 
+  // TODO(JIRA-1975): improve quick fix
   // We need to list the neurons with the very last ballots because the user just voted
   resetNeuronsApiService();
 
