@@ -67,7 +67,7 @@
     "@dfinity/candid": "^0.15.3",
     "@dfinity/ckbtc": "next",
     "@dfinity/cmc": "next",
-    "@dfinity/gix-components": "file:../../gix-components/package",
+    "@dfinity/gix-components": "file:../../gix-components/package/dfinity-gix-components-2.3.0.tgz",
     "@dfinity/identity": "^0.15.3",
     "@dfinity/ledger": "next",
     "@dfinity/nns": "next",

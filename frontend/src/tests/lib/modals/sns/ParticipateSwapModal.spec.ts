@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -40,7 +40,7 @@ jest.mock("$lib/services/sns.services", () => {
 });
 
 jest.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
+  initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 describe("ParticipateSwapModal", () => {

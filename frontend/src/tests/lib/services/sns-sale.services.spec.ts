@@ -658,6 +658,7 @@ describe("sns-api", () => {
     it("should perform successful participation flow if open ticket", async () => {
       spyOnGetOpenTicketApi.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
       const startBusySpy = jest
         .spyOn(busyStore, "startBusy")
         .mockImplementation(jest.fn());
@@ -668,11 +669,16 @@ describe("sns-api", () => {
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
       expect(startBusySpy).toBeCalledTimes(1);
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
       expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(updateProgressSpy).toBeCalledTimes(4);
+
       expect(stopBusySpy).toBeCalledTimes(1);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
@@ -683,6 +689,7 @@ describe("sns-api", () => {
     it("should not start flow if no open tickeet", async () => {
       spyOnGetOpenTicketApi.mockResolvedValue(undefined);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
       const startBusySpy = jest
         .spyOn(busyStore, "startBusy")
         .mockImplementation(jest.fn());
@@ -690,11 +697,13 @@ describe("sns-api", () => {
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
       expect(startBusySpy).not.toBeCalled();
       expect(ledgerCanisterMock.transfer).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
+      expect(updateProgressSpy).not.toBeCalled();
       expect(ticketFromStore().ticket).toEqual(null);
     });
   });
@@ -709,12 +718,7 @@ describe("sns-api", () => {
         }),
       };
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
-      const startBusySpy = jest
-        .spyOn(busyStore, "startBusy")
-        .mockImplementation(jest.fn());
-      const stopBusySpy = jest
-        .spyOn(busyStore, "stopBusy")
-        .mockImplementation(jest.fn());
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
@@ -724,9 +728,9 @@ describe("sns-api", () => {
         }),
         account,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
-      expect(startBusySpy).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledWith(
         expect.objectContaining({
@@ -735,7 +739,8 @@ describe("sns-api", () => {
       );
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
       expect(postprocessSpy).toBeCalledTimes(1);
-      expect(stopBusySpy).toBeCalledTimes(1);
+      // All step progress including done
+      expect(updateProgressSpy).toBeCalledTimes(5);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
       expect(spyOnToastsSuccess).toBeCalledTimes(1);
@@ -754,12 +759,6 @@ describe("sns-api", () => {
         .spyOn(snsProjectsStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([]));
 
-      const startBusySpy = jest
-        .spyOn(busyStore, "startBusy")
-        .mockImplementation(jest.fn());
-      const stopBusySpy = jest
-        .spyOn(busyStore, "stopBusy")
-        .mockImplementation(jest.fn());
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
@@ -776,12 +775,11 @@ describe("sns-api", () => {
         }),
         account,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
-      expect(startBusySpy).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
-      expect(stopBusySpy).toBeCalledTimes(1);
       // null after ready
       expect(ticketFromStore().ticket).toEqual(null);
     });
@@ -800,10 +798,12 @@ describe("sns-api", () => {
       });
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
       });
 
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
@@ -811,6 +811,9 @@ describe("sns-api", () => {
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(ticketFromStore().ticket).toEqual(null);
       expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(upgradeProgressSpy).toBeCalledTimes(4);
     });
 
     it("should poll refresh_buyer_tokens until successful", async () => {
@@ -835,10 +838,12 @@ describe("sns-api", () => {
         });
       jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
       });
 
       let counter = 0;
@@ -864,6 +869,9 @@ describe("sns-api", () => {
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(retriesUntilSuccess);
       expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(upgradeProgressSpy).toBeCalledTimes(4);
     });
 
     it("should show error if known error is thrown", async () => {
@@ -878,10 +886,12 @@ describe("sns-api", () => {
       );
       jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
       let counter = 0;
@@ -904,22 +914,28 @@ describe("sns-api", () => {
       expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(expectedRetries);
       expect(postprocessSpy).not.toBeCalled();
+
+      // Initialization and transfer steps
+      expect(updateProgressSpy).toBeCalledTimes(2);
     });
 
     it("should do nothing if there is no ticket (important for auto retry feature)", async () => {
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
       expect(ledgerCanisterMock.transfer).not.toBeCalled();
       expect(spyOnNotifyParticipation).not.toBeCalled();
       expect(spyOnSyncAccounts).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
+      expect(updateProgressSpy).not.toBeCalled();
     });
 
     it("should display an error in case the ticket principal not equals to the current identity", async () => {
@@ -941,6 +957,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -963,6 +980,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -986,6 +1004,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -1008,6 +1027,7 @@ describe("sns-api", () => {
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
           postprocess: jest.fn().mockResolvedValue(undefined),
+          updateProgress: jest.fn().mockResolvedValue(undefined),
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -1038,6 +1058,7 @@ describe("sns-api", () => {
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
           postprocess: jest.fn().mockResolvedValue(undefined),
+          updateProgress: jest.fn().mockResolvedValue(undefined),
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -1066,6 +1087,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).toBeCalled();
@@ -1087,6 +1109,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -1113,6 +1136,7 @@ describe("sns-api", () => {
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnToastsShow).toBeCalledWith(
