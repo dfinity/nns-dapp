@@ -222,9 +222,6 @@ export const poll = async <T>({
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
 }): Promise<T> => {
-  if (counter >= maxAttempts) {
-    throw new PollingLimitExceededError();
-  }
   try {
     return await fn();
   } catch (error: unknown) {
@@ -234,6 +231,10 @@ export const poll = async <T>({
     // Log swallowed errors
     console.error(`Error polling: ${errorToString(error)}`);
   }
+  counter += 1;
+  if (counter >= maxAttempts) {
+    throw new PollingLimitExceededError();
+  }
   await waitForMilliseconds(millisecondsToWait);
   if (useExponentialBackoff) {
     millisecondsToWait *= 2;
@@ -242,7 +243,7 @@ export const poll = async <T>({
     fn,
     shouldExit,
     maxAttempts,
-    counter: counter + 1,
+    counter,
     millisecondsToWait,
     useExponentialBackoff,
   });
