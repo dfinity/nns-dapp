@@ -256,7 +256,7 @@ describe("sns-utils", () => {
       owner: mockPrincipal,
     }).ticket;
 
-    it("returns true when the ticket is undefined and we keep polling", () => {
+    it("returns polling when the ticket is undefined and we keep polling", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
@@ -269,10 +269,10 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeTruthy();
+      ).toEqual({status: "polling"})
     });
 
-    it("returns false when the ticket is undefined and we stopped keep polling", () => {
+    it("returns none when the ticket is undefined and we stopped keep polling", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
@@ -288,7 +288,7 @@ describe("sns-utils", () => {
       ).toEqual({ status: "none" });
     });
 
-    it("returns true when there is an open ticket in the store", () => {
+    it("returns open when there is an open ticket in the store", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -300,10 +300,10 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeTruthy();
+      ).toEqual({ status: "open" });
     });
 
-    it("returns false the open ticket is null (processed)", () => {
+    it("returns none when the open ticket is null (processed)", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: null,
