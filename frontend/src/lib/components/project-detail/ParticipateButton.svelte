@@ -28,6 +28,7 @@
   import type { TicketStatus } from "$lib/types/sale";
   import { SaleStep } from "$lib/types/sale";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -162,9 +163,7 @@
 {/if}
 
 {#if status === "open"}
-  <Modal>
-    <SaleInProgress {progressStep} />
-  </Modal>
+  <SaleInProgressModal {progressStep} />
 {/if}
 
 {#if showModal}
