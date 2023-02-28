@@ -41,3 +41,9 @@ export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
     : MAINNET_CKBTC_INDEX_CANISTER_ID
 );
 export const CKBTC_UNIVERSE_CANISTER_ID = CKBTC_LEDGER_CANISTER_ID;
+
+// TVL Canister ID on mainnet. Use for readonly.
+
+export const TVL_CANISTER_ID = Principal.fromText(
+  "ewh3f-3qaaa-aaaap-aazjq-cai"
+);

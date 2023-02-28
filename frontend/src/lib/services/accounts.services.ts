@@ -106,33 +106,64 @@ export const loadAccounts = async ({
   };
 };
 
+type SyncAccontsErrorHandler = (params: {
+  err: unknown;
+  certified: boolean;
+}) => void;
+
 /**
- * - sync: load the account data using the ledger and the nns dapp canister itself
+ * Default error handler for syncAccounts.
+ *
+ * Ignores non-certified errors.
+ * Resets accountsStore and shows toast for certified errors.
  */
-export const syncAccounts = (): Promise<void> => {
+const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
+  err,
+  certified,
+}: {
+  err: unknown;
+  certified: boolean;
+}) => {
+  if (!certified) {
+    return;
+  }
+
+  accountsStore.reset();
+
+  toastsError(
+    toToastError({
+      err,
+      fallbackErrorLabelKey: "error.accounts_not_found",
+    })
+  );
+};
+
+/**
+ * Loads the account data using the ledger and the nns dapp canister.
+ */
+export const syncAccounts = (
+  errorHandler: SyncAccontsErrorHandler = defaultErrorHandlerAccounts
+): Promise<void> => {
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
-      }
-
-      // Explicitly handle only UPDATE errors
-      accountsStore.reset();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
-        })
-      );
+      errorHandler({ err, certified });
     },
     logMessage: "Syncing Accounts",
   });
 };
+
+const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
+
+/**
+ * This function is called on app load to sync the accounts.
+ *
+ * It ignores errors and does not show any toasts. Accounts will be synced again.
+ */
+export const initAccounts = () => syncAccounts(ignoreErrors);
 
 export const addSubAccount = async ({
   name,
