@@ -1,3 +1,4 @@
+import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
 import { registerVote } from "$lib/api/proposals.api";
 import { i18n } from "$lib/stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
@@ -33,7 +34,6 @@ import { get } from "svelte/store";
 import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { listNeurons } from "./neurons.services";
-import {resetNeuronsApiService} from "$lib/api-services/neurons.api-service";
 
 /**
  * Create Makes multiple registerVote calls (1 per neuronId).
