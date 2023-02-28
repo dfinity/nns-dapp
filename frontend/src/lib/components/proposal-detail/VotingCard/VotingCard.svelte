@@ -21,7 +21,6 @@
   } from "$lib/stores/vote-registration.store";
   import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
