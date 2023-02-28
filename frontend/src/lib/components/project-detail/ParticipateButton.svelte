@@ -7,7 +7,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+  import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
@@ -25,6 +25,9 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import type { TicketStatus } from "$lib/types/sale";
+  import type { SaleStep } from "$lib/types/sale";
+  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -54,14 +57,19 @@
     : undefined;
 
   // busy if open ticket is available or not requested
-  let busy = true;
-  $: busy = hasOpenTicketInProcess({
+  let status: TicketStatus = "unknown";
+  $: ({ status } = hasOpenTicketInProcess({
     rootCanisterId,
     ticketsStore: $snsTicketsStore,
-  });
+  }));
+
+  let busy = true;
+  $: busy = status !== "none";
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
+
+  let progressStep: SaleStep | undefined = undefined;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -76,9 +84,12 @@
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
+    const updateProgress = (step: SaleStep) => (progressStep = step);
+
     await restoreSnsSaleParticipation({
       rootCanisterId,
       postprocess: reload,
+      updateProgress,
     });
   };
 
@@ -148,6 +159,10 @@
       </SignInGuard>
     </div>
   </BottomSheet>
+{/if}
+
+{#if status === "open" && nonNullish(progressStep)}
+  <SaleInProgressModal {progressStep} />
 {/if}
 
 {#if showModal}

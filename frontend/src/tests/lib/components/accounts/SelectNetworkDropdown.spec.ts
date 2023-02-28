@@ -3,8 +3,8 @@
  */
 
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { TransactionNetwork } from "../../../../lib/types/transaction";
 import en from "../../../mocks/i18n.mock";
 
 describe("SelectNetworkDropdown", () => {

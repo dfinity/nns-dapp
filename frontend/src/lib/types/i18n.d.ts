@@ -636,6 +636,16 @@ interface I18nSns_project_detail {
   sign_in: string;
 }
 
+interface I18nSns_sale {
+  participation_in_progress: string;
+  step_initialization: string;
+  step_transfer: string;
+  step_notify: string;
+  step_reload: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
+}
+
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
@@ -1085,6 +1095,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
   time: I18nTime;
