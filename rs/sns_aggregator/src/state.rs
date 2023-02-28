@@ -1,6 +1,7 @@
 //! The state of the canister
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
+use crate::fast_scheduler::FastScheduler;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
@@ -22,7 +23,7 @@ pub struct State {
     /// Scheduler for getting data from upstream
     pub timer_id: RefCell<Option<TimerId>>,
     /// Scheduler for updating data on SNSs with active swaps
-    pub update_timer_id: RefCell<Option<TimerId>>,
+    pub fast_scheduler: RefCell<FastScheduler>,
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
     pub stable: RefCell<StableState>,
@@ -235,11 +236,14 @@ impl State {
 pub struct Config {
     /// The update interval, in milliseconds
     pub update_interval_ms: u64,
+    /// The fast update interval, in milliseconds
+    pub fast_interval_ms: u64,
 }
 impl Default for Config {
     fn default() -> Self {
         Config {
             update_interval_ms: 120_000,
+            fast_interval_ms: 10_000,
         }
     }
 }
