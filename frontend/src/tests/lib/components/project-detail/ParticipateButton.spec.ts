@@ -143,7 +143,7 @@ describe("ParticipateButton", () => {
         ticket: testTicket,
       });
 
-      const { getByTestId, queryByTestId } = renderContextCmp({
+      const { getByTestId } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
@@ -154,6 +154,18 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
       );
+    });
+
+    it("should not show progress modal if user has no no ticket", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { getByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(() => getByTestId("sale-in-progress-modal")).toThrow();
     });
 
     it("should display spinner and disable button when there is loading", async () => {
