@@ -725,10 +725,11 @@ export const participateInSnsSale = async ({
   } catch (err) {
     console.error("[sale] on transfer", err);
 
-    // TODO(Maks): refactor w/ a switch
-    // if duplicated transfer, silently continue the flow
-    if (!(err instanceof TxDuplicateError)) {
-      if (err instanceof InsufficientFundsError) {
+    switch ((err as object)?.constructor) {
+      // if duplicated transfer, silently continue the flow
+      case TxDuplicateError:
+        break;
+      case InsufficientFundsError: {
         await removeOpenTicket({
           rootCanisterId,
           identity,
@@ -745,15 +746,16 @@ export const participateInSnsSale = async ({
         // stop the flow since the ticket was removed
         return;
       }
-
-      if (err instanceof TxTooOldError) {
+      case TxTooOldError: {
         /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
          * - continue the flow:
          *  - refresh_buyer_tokens // internal errors are ignored
          *  - notify_payment_failure
          */
         hasTooOldError = true;
-      } else {
+        break;
+      }
+      default: {
         toastsError({
           labelKey: "error__sns.sns_sale_unexpected_error",
           err,

@@ -967,7 +967,7 @@ describe("sns-api", () => {
       expect(ticketFromStore().ticket).not.toEqual(null);
     });
 
-    it("should poll transfer during unknown issues", async () => {
+    it("should poll transfer during unknown issues or TxCreatedInFutureError", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
