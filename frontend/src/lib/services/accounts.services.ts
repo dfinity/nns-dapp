@@ -24,6 +24,7 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import { poll } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -347,4 +348,47 @@ const renameError = ({
   );
 
   return { success: false, err: labelKey };
+};
+
+const pollLoadAccounts = async (params: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountsStoreData> =>
+  poll({
+    fn: () => loadAccounts(params),
+    // Any error is an unknown error worth a retry
+    shouldExit: () => false,
+    useExponentialBackoff: true,
+  });
+
+export const pollAccounts = () => {
+  const accounts = get(accountsStore);
+
+  // Skip if accounts are already loaded and certified
+  if (accounts.certified) {
+    return;
+  }
+
+  queryAndUpdate({
+    request: ({ certified, identity }) =>
+      pollLoadAccounts({ certified, identity }),
+    onLoad: ({ response: accounts }) => accountsStore.set(accounts),
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (certified !== true) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      accountsStore.reset();
+
+      toastsError(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_not_found_poll",
+        })
+      );
+    },
+  });
 };
