@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "build": "scripts/docker-build"
     },
     "internet_identity": {
       "type": "custom",
@@ -94,7 +94,7 @@
     },
     "sns_aggregator": {
       "build": [
-        "./build-sns-aggregator.sh"
+        "scripts/docker-build"
       ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
