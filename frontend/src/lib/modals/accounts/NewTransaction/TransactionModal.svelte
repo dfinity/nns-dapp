@@ -25,6 +25,8 @@
   ) => string | undefined = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
+  const STEP_PROGRESS = "Progress" as const;
+
   const steps: WizardSteps = [
     {
       name: "Form",
@@ -35,7 +37,7 @@
       title: "",
     },
     {
-      name: "Progress",
+      name: STEP_PROGRESS,
       title: "",
     },
   ];
@@ -59,7 +61,7 @@
     modal.back();
   };
   export const goProgress = () =>
-    modal.set(steps.findIndex(({ name }) => name === "Progress"));
+    modal.set(steps.findIndex(({ name }) => name === STEP_PROGRESS));
 </script>
 
 <WizardModal
@@ -67,7 +69,7 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  disablePointerEvents={currentStep?.name === "Progress"}
+  disablePointerEvents={currentStep?.name === STEP_PROGRESS}
 >
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
@@ -112,7 +114,7 @@
       <slot name="description" slot="description" />
     </TransactionReview>
   {/if}
-  {#if currentStep?.name === "Progress"}
+  {#if currentStep?.name === STEP_PROGRESS}
     <slot name="in_progress" />
   {/if}
 </WizardModal>
