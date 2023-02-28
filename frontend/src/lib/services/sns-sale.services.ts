@@ -512,11 +512,12 @@ const pollNotifyParticipation = async ({
 };
 
 /**
- * Manually remove the open ticket w/o
+ * Manually remove the open ticket
+ *
  * @param rootCanisterId
  * @param identity
  */
-const notifyFailure = async ({rootCanisterId, identity}: {rootCanisterId: Principal, identity: Identity}): Promise<void> => {
+const removeOpenTicket = async ({rootCanisterId, identity}: {rootCanisterId: Principal, identity: Identity}): Promise<void> => {
       try {
         // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
         // force to remove ticket
@@ -577,7 +578,7 @@ const notifyParticipationAndRemoveTicket = async ({
     if (hasTooOldError) {
       if (internalError) {
         // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
-        await notifyFailure({
+        await removeOpenTicket({
           rootCanisterId,
           identity,
         });
@@ -741,18 +742,23 @@ export const participateInSnsSale = async ({
     // TODO(Maks): refactor w/ a switch
     // if duplicated transfer, silently continue the flow
     if (!(err instanceof TxDuplicateError)) {
-      let labelKey = "error__sns.sns_sale_unexpected_error";
-
       if (err instanceof InsufficientFundsError) {
-        labelKey = "error__sns.ledger_insufficient_funds";
         // TODO(sale): to test
-        await notifyFailure({
+        await removeOpenTicket({
           rootCanisterId,
           identity,
         });
 
+        toastsError({
+          labelKey: "error__sns.ledger_insufficient_funds",
+          err,
+        });
+
         // enable participate button
         snsTicketsStore.setNoTicket(rootCanisterId);
+
+        // stop the flow since the ticket was removed
+        return;
       }
 
       if (err instanceof TxTooOldError) {
@@ -764,12 +770,15 @@ export const participateInSnsSale = async ({
         hasTooOldError = true;
       } else {
         toastsError({
-          labelKey,
+          labelKey: "error__sns.sns_sale_unexpected_error",
           err,
         });
 
         // enable participate button
         snsTicketsStore.setNoTicket(rootCanisterId);
+
+        // stop the flow since the ticket was removed
+        return;
       }
     }
   }

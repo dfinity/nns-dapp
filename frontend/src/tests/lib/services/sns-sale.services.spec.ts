@@ -803,6 +803,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
       expect(ticketFromStore().ticket).toEqual(null);
       expect(postprocessSpy).toBeCalledTimes(1);
@@ -858,6 +859,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(retriesUntilSuccess);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(postprocessSpy).toBeCalledTimes(1);
     });
 
@@ -898,6 +900,7 @@ describe("sns-api", () => {
       expect(counter).toBe(retriesBeforeSuccess);
       expect(sendICPSpy).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(expectedRetries);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
     });
 
@@ -913,6 +916,7 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).not.toBeCalled();
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnSyncAccounts).not.toBeCalled();
       expect(postprocessSpy).not.toBeCalled();
     });
@@ -939,6 +943,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
@@ -993,7 +998,7 @@ describe("sns-api", () => {
       expect(postprocessSpy).toBeCalledTimes(1);
     });
 
-    it("should display transfer api errors", async () => {
+    it("should display transfer api unknown errors", async () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -1006,6 +1011,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
@@ -1027,6 +1033,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.ledger_insufficient_funds",
@@ -1126,6 +1133,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
 
       await waitFor(() => expect(spyOnToastsShow).toHaveBeenCalledTimes(2), {
         timeout: 2000,
