@@ -13,10 +13,7 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import {
-  SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
-  SYNC_ACCOUNTS_RETRY_SECONDS,
-} from "$lib/constants/accounts.constants";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
@@ -354,7 +351,7 @@ const renameError = ({
   return { success: false, err: labelKey };
 };
 
-const ACCOUNTS_RETYR_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
@@ -364,8 +361,9 @@ const pollLoadAccounts = async (params: {
     // Any error is an unknown error and worth a retry
     shouldExit: () => false,
     useExponentialBackoff: true,
-    maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
-    millisecondsToWait: ACCOUNTS_RETYR_MILLIS,
+    // TODO: This should be a constant
+    maxAttempts: 50,
+    millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
   });
 
 /**

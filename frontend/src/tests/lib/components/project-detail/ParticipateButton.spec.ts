@@ -5,12 +5,14 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import type { ParticipateInSnsSaleParameters } from "$lib/services/sns-sale.services";
 import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { SaleStep } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
+import { mockAccountsStoreData } from "../../../mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
@@ -91,6 +93,9 @@ describe("ParticipateButton", () => {
     });
 
     it("should open swap participation modal on participate click", async () => {
+      // When the modal appears, it will trigger `pollAccounts`
+      // which trigger api calls if accounts are not loaded.
+      accountsStore.set(mockAccountsStoreData);
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -101,6 +106,7 @@ describe("ParticipateButton", () => {
       await waitFor(() =>
         expect(getByTestId("transaction-step-1")).toBeInTheDocument()
       );
+      accountsStore.reset();
     });
 
     it("should hide button is state is not open", () => {
