@@ -57,7 +57,7 @@
   const goNext = () => {
     modal.next();
   };
-  export const goBack = () => {
+  const goBack = () => {
     modal.back();
   };
   export const goProgress = () =>

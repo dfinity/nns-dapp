@@ -108,10 +108,10 @@ describe("ParticipateSwapModal", () => {
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
     });
 
-    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-      snsTicketsStore.setNoTicket(rootCanisterIdMock);
-      const { getByTestId, container } = await renderEnter10ICPAndNext();
-
+    const participate = async ({
+      getByTestId,
+      container,
+    }: RenderResult<SvelteComponent>) => {
       const confirmButton = getByTestId("transaction-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
 
@@ -122,8 +122,26 @@ describe("ParticipateSwapModal", () => {
       );
 
       fireEvent.click(confirmButton);
+    };
+
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
+    });
+
+    it("should render progress when participating", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
+
+      await waitFor(
+        expect(result.getByTestId("sale-in-progress-warning")).not.toBeNull
+      );
     });
   });
 

@@ -52,7 +52,7 @@
   $: progressStep, (() => updateSteps())();
 </script>
 
-<div class="warning">
+<div class="warning" data-tid="sale-in-progress-warning">
   <div class="icon">
     <IconWarning size={ICON_SIZE_LARGE} />
   </div>
