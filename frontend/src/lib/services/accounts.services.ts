@@ -119,11 +119,10 @@ const defaultErrorHandlerAccounts = ({
   err: unknown;
   certified: boolean;
 }) => {
-  if (certified !== true) {
+  if (!certified) {
     return;
   }
 
-  // Explicitly handle only UPDATE errors
   accountsStore.reset();
 
   toastsError(
@@ -134,18 +133,11 @@ const defaultErrorHandlerAccounts = ({
   );
 };
 
-type ErrorHanlder = ({
-  err,
-  certified,
-}: {
-  err: unknown;
-  certified: boolean;
-}) => void;
 /**
- * - sync: load the account data using the ledger and the nns dapp canister itself
+ * Loads the account data using the ledger and the nns dapp canister.
  */
 export const syncAccounts = (
-  errorHandler: ErrorHanlder = defaultErrorHandlerAccounts
+  errorHandler: typeof defaultErrorHandlerAccounts = defaultErrorHandlerAccounts
 ): Promise<void> => {
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),

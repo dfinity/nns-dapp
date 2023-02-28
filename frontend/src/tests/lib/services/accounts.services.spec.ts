@@ -174,6 +174,7 @@ describe("accounts-services", () => {
     beforeEach(() => {
       toastsStore.reset();
     });
+
     it("should sync accounts", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
       const queryAccountBalanceSpy = jest
@@ -282,22 +283,20 @@ describe("accounts-services", () => {
     });
 
     it("should use handler passed", async () => {
-      const errorTest = "test";
+      const errorTest = new Error("test");
       jest.spyOn(ledgerApi, "queryAccountBalance");
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockRejectedValue(new Error(errorTest));
+      jest.spyOn(nnsdappApi, "queryAccount").mockRejectedValue(errorTest);
 
       const handler = jest.fn();
       await syncAccounts(handler);
 
       expect(handler).toBeCalledTimes(2);
       expect(handler).toBeCalledWith({
-        err: new Error(errorTest),
+        err: errorTest,
         certified: false,
       });
       expect(handler).toBeCalledWith({
-        err: new Error(errorTest),
+        err: errorTest,
         certified: true,
       });
     });
