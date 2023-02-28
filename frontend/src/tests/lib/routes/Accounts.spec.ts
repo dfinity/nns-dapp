@@ -16,12 +16,14 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mockAccountsStoreData } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
@@ -87,6 +89,8 @@ describe("Accounts", () => {
       certified: true,
       accounts: [mockSnsMainAccount],
     });
+
+    accountsStore.set(mockAccountsStoreData);
   });
 
   it("should render NnsAccounts by default", () => {
