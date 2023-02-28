@@ -20,10 +20,12 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import { syncAccounts } from "$lib/services/accounts.services";
   import type { Unsubscriber } from "svelte/store";
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import {
+    loadSnsAccounts,
+    syncSnsAccounts,
+  } from "$lib/services/sns-accounts.services";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { goto } from "$app/navigation";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
@@ -89,7 +91,7 @@
       neuronId: fromDefinedNullable(neuron.id),
     });
 
-    await Promise.all([syncAccounts(), reloadNeuron()]);
+    await Promise.all([loadSnsAccounts({ rootCanisterId }), reloadNeuron()]);
 
     loading = false;
 
