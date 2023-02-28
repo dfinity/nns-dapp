@@ -128,6 +128,7 @@ const pollGetOpenTicket = async ({
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: 6,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -315,6 +316,7 @@ const pollNewSaleTicket = async (params: {
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: 6,
   });
 
 // TODO(sale): rename to loadNewSaleTicket
@@ -505,6 +507,7 @@ const pollNotifyParticipation = async ({
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: 6,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -616,6 +619,7 @@ const pollTransfer = ({
     shouldExit: isTransferError,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: 6,
   });
 
 /**

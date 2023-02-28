@@ -1,4 +1,3 @@
-import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
@@ -196,7 +195,6 @@ export class PollingLimitExceededError extends Error {}
 // Exported for testing purposes
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
 const DEFAULT_WAIT_TIME_MS = 500;
-const MILLIS_BEFORE_HIGH_LOAD_MESSAGE = SECONDS_IN_MINUTE * 1000;
 
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
@@ -205,11 +203,9 @@ const MILLIS_BEFORE_HIGH_LOAD_MESSAGE = SECONDS_IN_MINUTE * 1000;
  * @param {fn} params.fn Function to call
  * @param {shouldExit} params.shouldExit Function to check whether function should stop polling when it throws an error
  * @param {maxAttempts} params.maxAttempts Param to override the default number of times to poll.
- * @param {counter} params.counter Param to check how many times it has polled.
  * @param {millisecondsToWait} params.millisecondsToWait How long to wait between calls, or the base for the exponential backoff if that's enabled
  * @param {useExponentialBackoff} params.useExponentialBackoff Whether to use exponential backoff instead of waiting the same time between retries
- * @param {showHighLoadMessage} params.showHighLoadMessage Whether show a toast about "high load" after retrying for some time.
- * @param {millisBeforeHighLoadMessage} params.millisBeforeHighLoadMessage If after a failure at least this much time has passed, show the "high load" message. Note that this is not exact because we only check directly after a failure.
+ * @param {failuresBeforeHighLoadMessage} params.failuresBeforeHighLoadMessage Show the "high load" message after this many failures.
  *
  * @returns
  */
@@ -217,56 +213,44 @@ export const poll = async <T>({
   fn,
   shouldExit,
   maxAttempts = DEFAULT_MAX_POLLING_ATTEMPTS,
-  counter = 0,
   millisecondsToWait = DEFAULT_WAIT_TIME_MS,
   useExponentialBackoff = false,
-  showHighLoadMessage = true,
-  millisBeforeHighLoadMessage = MILLIS_BEFORE_HIGH_LOAD_MESSAGE,
+  failuresBeforeHighLoadMessage = 6,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
   maxAttempts?: number;
-  counter?: number;
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
-  showHighLoadMessage?: boolean;
-  millisBeforeHighLoadMessage?: number;
+  failuresBeforeHighLoadMessage?: number;
 }): Promise<T> => {
-  if (counter >= maxAttempts) {
-    throw new PollingLimitExceededError();
-  }
-  try {
-    return await fn();
-  } catch (error: unknown) {
-    if (shouldExit(error)) {
-      throw error;
+  for (let counter = 0; counter < maxAttempts; counter++) {
+    if (counter > 0) {
+      if (
+        nonNullish(failuresBeforeHighLoadMessage) &&
+        counter == failuresBeforeHighLoadMessage
+      ) {
+        toastsError({
+          labelKey: "error.high_load_retrying",
+        });
+      }
+      await waitForMilliseconds(millisecondsToWait);
+      if (useExponentialBackoff) {
+        millisecondsToWait *= 2;
+      }
     }
-    // Log swallowed errors
-    console.error(`Error polling: ${errorToString(error)}`);
+
+    try {
+      return await fn();
+    } catch (error: unknown) {
+      if (shouldExit(error)) {
+        throw error;
+      }
+      // Log swallowed errors
+      console.error(`Error polling: ${errorToString(error)}`);
+    }
   }
-  if (showHighLoadMessage && millisBeforeHighLoadMessage <= 0) {
-    toastsError({
-      labelKey: "error.high_load_retrying",
-    });
-    // Make sure we don't show the message again on the next failure.
-    showHighLoadMessage = false;
-  } else {
-    millisBeforeHighLoadMessage -= millisecondsToWait;
-  }
-  await waitForMilliseconds(millisecondsToWait);
-  if (useExponentialBackoff) {
-    millisecondsToWait *= 2;
-  }
-  return poll({
-    fn,
-    shouldExit,
-    maxAttempts,
-    counter: counter + 1,
-    millisecondsToWait,
-    useExponentialBackoff,
-    showHighLoadMessage,
-    millisBeforeHighLoadMessage,
-  });
+  throw new PollingLimitExceededError();
 };
 
 export const pollingLimit = (error: unknown): boolean =>

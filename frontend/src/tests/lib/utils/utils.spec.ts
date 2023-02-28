@@ -421,26 +421,25 @@ describe("utils", () => {
       });
 
       it("should show 'high load' message after ~1 minute", async () => {
-        const t0 = new Date().getTime();
-        let timePassed = t0;
-        const millisBeforeHighLoadMessage = 60 * 1000;
+        let calls = 0;
+        const failuresBeforeHighLoadMessage = 3;
         const _ = poll({
           fn: async () => {
-            timePassed = new Date().getTime() - t0;
+            calls += 1;
             throw new Error();
           },
           shouldExit: () => false,
           maxAttempts: 10,
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
-          millisBeforeHighLoadMessage,
+          failuresBeforeHighLoadMessage,
         });
+        expect(calls).toEqual(1);
         await advanceTime();
-        await advanceTime();
-        expect(timePassed).toBeLessThan(millisBeforeHighLoadMessage);
+        expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toEqual([]);
         await advanceTime();
-        expect(timePassed).toBeGreaterThanOrEqual(millisBeforeHighLoadMessage);
+        expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
 
@@ -453,7 +452,7 @@ describe("utils", () => {
           maxAttempts: 10,
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
-          millisBeforeHighLoadMessage: 60 * 1000,
+          failuresBeforeHighLoadMessage: 3,
         });
         expect(get(toastsStore)).toEqual([]);
         await advanceTime();
