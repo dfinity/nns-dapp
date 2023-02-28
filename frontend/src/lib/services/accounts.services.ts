@@ -13,6 +13,10 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import {
+  SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+  SYNC_ACCOUNTS_RETRY_SECONDS,
+} from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
@@ -24,7 +28,7 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { poll } from "$lib/utils/utils";
+import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -356,39 +360,46 @@ const pollLoadAccounts = async (params: {
 }): Promise<AccountsStoreData> =>
   poll({
     fn: () => loadAccounts(params),
-    // Any error is an unknown error worth a retry
+    // Any error is an unknown error and worth a retry
     shouldExit: () => false,
     useExponentialBackoff: true,
+    maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+    millisecondsToWait: SYNC_ACCOUNTS_RETRY_SECONDS,
   });
 
-export const pollAccounts = () => {
+/**
+ * Loads accounts in the background and updates the store.
+ *
+ * If the accounts are already loaded and certified, it will skip the request.
+ *
+ * If the accounts are not certified or not present, it will poll the request until it succeeds.
+ */
+export const pollAccounts = async () => {
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
-  if (accounts.certified) {
+  // `certified` might be `undefined` if not yet loaded.
+  // Therefore, we compare with `true`.
+  if (accounts.certified === true) {
     return;
   }
 
-  queryAndUpdate({
-    request: ({ certified, identity }) =>
-      pollLoadAccounts({ certified, identity }),
-    onLoad: ({ response: accounts }) => accountsStore.set(accounts),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (certified !== true) {
-        return;
-      }
-
-      // Explicitly handle only UPDATE errors
-      accountsStore.reset();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_not_found_poll",
-        })
-      );
-    },
-  });
+  try {
+    const identity = await getAuthenticatedIdentity();
+    const certifiedAccounts = await pollLoadAccounts({
+      identity,
+      certified: true,
+    });
+    accountsStore.set(certifiedAccounts);
+  } catch (err) {
+    const errorKey = pollingLimit(err)
+      ? "error.accounts_not_found_poll"
+      : "error.accounts_not_found";
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: errorKey,
+      })
+    );
+  }
 };
