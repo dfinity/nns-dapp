@@ -47,6 +47,12 @@ impl FastScheduler {
         })
     }
     /// Identifies the next SNS to update.
+    /// 
+    /// The search uses the data collected by the slow updater.  It searches through the SNSs in the order
+    /// they are listed in the nns-sns-wasm canister, searching forwards and looping round to the beginning
+    /// when it reaches the end of the list.
+    /// 
+    /// For each SNS, the search checks whether the SNS is eligible and skips SNSs that are not.
     fn next() -> Option<SnsIndex> {
         STATE.with(|state| {
             let sns_stable = state.stable.borrow();
