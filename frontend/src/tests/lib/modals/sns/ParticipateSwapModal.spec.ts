@@ -6,6 +6,7 @@ import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svel
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
@@ -16,7 +17,6 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import { snsTicketsStore } from "../../../../lib/stores/sns-tickets.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,

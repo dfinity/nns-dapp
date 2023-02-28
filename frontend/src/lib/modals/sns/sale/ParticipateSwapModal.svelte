@@ -91,10 +91,11 @@
   let accepted: boolean;
 
   let busy = true;
-  $: busy = hasOpenTicketInProcess({
-    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
-    ticketsStore: $snsTicketsStore,
-  });
+  $: busy =
+    hasOpenTicketInProcess({
+      rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+      ticketsStore: $snsTicketsStore,
+    }).status !== "none";
 
   let modal: TransactionModal;
   let progressStep: SaleStep = SaleStep.INITIALIZATION;

@@ -1,10 +1,11 @@
-import { getBTCAddress, updateBalance } from "$lib/api/ckbtc-minter.api";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import mock from "jest-mock-extended/lib/Mock";
 import {
+  getBTCAddress,
   getWithdrawalAccount,
   retrieveBtc,
-} from "../../../lib/api/ckbtc-minter.api";
+  updateBalance,
+} from "$lib/api/ckbtc-minter.api";
+import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 

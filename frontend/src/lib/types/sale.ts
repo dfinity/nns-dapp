@@ -5,3 +5,5 @@ export enum SaleStep {
   RELOAD = "reload",
   DONE = "done",
 }
+
+export type TicketStatus = "unknown" | "open" | "none" | "polling";

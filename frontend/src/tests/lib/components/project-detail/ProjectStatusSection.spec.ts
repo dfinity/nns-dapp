@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import * as snsSaleApi from "$lib/api/sns-sale.api";
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import * as snsSaleApi from "../../../../lib/api/sns-sale.api";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import {
   mockSnsFullProject,
