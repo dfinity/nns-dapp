@@ -986,6 +986,7 @@ describe("sns-api", () => {
       });
       jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       // Success on the fourth try
       const retriesUntilSuccess = 4;
@@ -998,6 +999,7 @@ describe("sns-api", () => {
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
       let counter = 0;
@@ -1024,6 +1026,8 @@ describe("sns-api", () => {
 
       expect(sendICPSpy).toBeCalledTimes(retriesUntilSuccess);
       expect(postprocessSpy).toBeCalledTimes(1);
+      // All steps completed
+      expect(updateProgressSpy).toBeCalledTimes(4);
     });
 
     it("should display transfer api errors", async () => {
