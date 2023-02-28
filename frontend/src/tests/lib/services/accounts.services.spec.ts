@@ -7,6 +7,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
@@ -16,6 +17,7 @@ import {
   getOrCreateAccount,
   initAccounts,
   loadAccounts,
+  pollAccounts,
   renameSubAccount,
   syncAccounts,
   transferICP,
@@ -25,6 +27,7 @@ import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
   mockAccountDetails,
@@ -653,6 +656,109 @@ describe("accounts-services", () => {
       );
       expect(expectedIdentity).toBeUndefined();
       accountsStore.reset();
+    });
+  });
+
+  describe("pollAccounts", () => {
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
+    it("calls apis and sets accountsStore", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+
+      const mockAccounts = {
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      };
+
+      await pollAccounts();
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(1);
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledTimes(1);
+
+      const accounts = get(accountsStore);
+      expect(accounts).toEqual(mockAccounts);
+    });
+
+    it("polls if queryAccount failes", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const retriesUntilSuccess = 4;
+      const error = new Error("test");
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error)
+        .mockResolvedValue(mockAccountDetails);
+
+      const mockAccounts = {
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      };
+
+      pollAccounts();
+
+      let counter = 0;
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const extraRetries = 4;
+      while (counter < retriesUntilSuccess + extraRetries) {
+        expect(queryAccountSpy).toBeCalledTimes(
+          Math.min(counter, retriesUntilSuccess)
+        );
+        counter += 1;
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
+
+        await waitFor(() =>
+          expect(queryAccountSpy).toBeCalledTimes(
+            Math.min(counter, retriesUntilSuccess)
+          )
+        );
+      }
+
+      expect(counter).toBe(retriesUntilSuccess + extraRetries);
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(retriesUntilSuccess);
+
+      await waitFor(() => {
+        const accounts = get(accountsStore);
+        return expect(accounts).toEqual(mockAccounts);
+      });
     });
   });
 });
