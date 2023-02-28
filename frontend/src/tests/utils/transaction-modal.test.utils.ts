@@ -1,6 +1,6 @@
+import { TransactionNetwork } from "$lib/types/transaction";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { TransactionNetwork } from "../../lib/types/transaction";
 
 export const testTransferTokens = async ({
   result: { getByTestId, container, queryAllByText },
