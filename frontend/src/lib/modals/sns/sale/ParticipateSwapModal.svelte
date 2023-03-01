@@ -37,7 +37,7 @@
   import { pollAccounts } from "$lib/services/accounts.services";
 
   onMount(() => {
-    pollAccounts();
+    pollAccounts(false);
   });
 
   const { store: projectDetailStore, reload } =
