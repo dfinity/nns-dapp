@@ -2,17 +2,23 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import {
-  mockAccountsStoreSubscribe,
+  mockAccountDetails,
+  mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 
 jest.mock("$lib/services/accounts.services", () => ({
   ...(jest.requireActual("$lib/services/accounts.services") as object),
@@ -41,7 +47,22 @@ describe("NnsWallet", () => {
     );
   };
 
-  describe("loading", () => {
+  describe("no accounts", () => {
+    beforeEach(() => {
+      accountsStore.reset();
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+    });
+
+    const props = {
+      accountIdentifier: mockMainAccount.identifier,
+    };
+
     it("should render a spinner while loading", () => {
       const { getByTestId } = render(NnsWallet);
 
@@ -53,12 +74,6 @@ describe("NnsWallet", () => {
 
       testToolbarButton({ container, disabled: true });
     });
-  });
-
-  describe("no accounts", () => {
-    const props = {
-      accountIdentifier: mockMainAccount.identifier,
-    };
 
     it("new transaction should remain disabled if route is valid but store is not loaded", async () => {
       const { container } = render(NnsWallet, props);
@@ -71,16 +86,23 @@ describe("NnsWallet", () => {
       // route set triggers get account
       testToolbarButton({ container, disabled: true });
     });
+
+    it("should show new accounts after being loaded", async () => {
+      const { queryByTestId } = render(NnsWallet, props);
+
+      expect(queryByTestId("projects-summary")).toBeNull();
+
+      await waitFor(() =>
+        expect(queryByTestId("projects-summary")).toBeInTheDocument()
+      );
+    });
   });
 
   describe("accounts loaded", () => {
     beforeAll(() => {
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
+      jest.clearAllMocks();
+      accountsStore.set(mockAccountsStoreData);
     });
-
-    afterAll(() => jest.clearAllMocks());
 
     const props = {
       accountIdentifier: mockMainAccount.identifier,
@@ -92,14 +114,6 @@ describe("NnsWallet", () => {
       const titleRow = getByTestId("projects-summary");
 
       expect(titleRow).not.toBeNull();
-    });
-
-    it("should hide spinner when selected account is loaded", async () => {
-      const { container } = render(NnsWallet, props);
-
-      await waitFor(() =>
-        expect(container.querySelector('[data-tid="spinner"]')).toBeNull()
-      );
     });
 
     it("should enable new transaction action for route and store", async () => {
@@ -143,12 +157,11 @@ describe("NnsWallet", () => {
   });
 
   describe("accounts loaded (Hardware Wallet)", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        );
+    beforeEach(() => {
+      accountsStore.set({
+        ...mockAccountsStoreData,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
     });
 
     const props = {
