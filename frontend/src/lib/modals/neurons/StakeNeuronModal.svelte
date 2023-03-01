@@ -18,6 +18,12 @@
   import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { onMount } from "svelte";
+  import { pollAccounts } from "$lib/services/accounts.services";
+
+  onMount(() => {
+    pollAccounts();
+  });
 
   const lastSteps: WizardSteps = [
     {
