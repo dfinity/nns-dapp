@@ -368,7 +368,7 @@ const pollAccountsId = Symbol();
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData | undefined> =>
+}): Promise<AccountsStoreData> =>
   poll({
     fn: () => loadAccounts(params),
     // Any error is an unknown error and worth a retry
@@ -405,9 +405,7 @@ export const pollAccounts = async (certified = true) => {
       identity,
       certified: overriedCertified,
     });
-    if (nonNullish(certifiedAccounts)) {
-      accountsStore.set(certifiedAccounts);
-    }
+    accountsStore.set(certifiedAccounts);
   } catch (err) {
     // Don't show error if polling was cancelled
     if (pollingCancelled(err)) {
@@ -425,4 +423,4 @@ export const pollAccounts = async (certified = true) => {
   }
 };
 
-export const clearPollAccounts = () => cancelPoll(pollAccountsId);
+export const cancelPollAccounts = () => cancelPoll(pollAccountsId);

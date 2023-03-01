@@ -40,7 +40,7 @@
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
   import { SaleStep } from "$lib/types/sale";
   import {
-    clearPollAccounts,
+    cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
 
@@ -49,7 +49,7 @@
   });
 
   onDestroy(() => {
-    clearPollAccounts();
+    cancelPollAccounts();
   });
 
   const { store: projectDetailStore, reload } =

@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
   import {
-    clearPollAccounts,
+    cancelPollAccounts,
     getAccountTransactions,
     pollAccounts,
   } from "$lib/services/accounts.services";
@@ -44,7 +44,7 @@
   });
 
   onDestroy(() => {
-    clearPollAccounts();
+    cancelPollAccounts();
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);

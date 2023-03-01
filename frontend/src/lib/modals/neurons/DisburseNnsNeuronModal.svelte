@@ -18,7 +18,7 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import {
-    clearPollAccounts,
+    cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
 
@@ -29,7 +29,7 @@
   });
 
   onDestroy(() => {
-    clearPollAccounts();
+    cancelPollAccounts();
   });
 
   const dispatcher = createEventDispatcher();

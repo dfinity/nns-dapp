@@ -7,7 +7,7 @@
   import type { Account } from "$lib/types/account";
   import { onDestroy, onMount } from "svelte";
   import {
-    clearPollAccounts,
+    cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
 
@@ -18,7 +18,7 @@
   });
 
   onDestroy(() => {
-    clearPollAccounts();
+    cancelPollAccounts();
   });
 </script>
 

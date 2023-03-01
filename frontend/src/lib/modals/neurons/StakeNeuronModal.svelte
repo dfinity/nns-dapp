@@ -20,7 +20,7 @@
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { onMount } from "svelte";
   import {
-    clearPollAccounts,
+    cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
 
@@ -29,7 +29,7 @@
   });
 
   onDestroy(() => {
-    clearPollAccounts();
+    cancelPollAccounts();
   });
 
   const lastSteps: WizardSteps = [
