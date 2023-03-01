@@ -262,8 +262,7 @@ const handleNewSaleTicketError = ({
             ticket: existingTicket,
           });
         }
-        // break to jump to the generic error message
-        break;
+        return;
       }
       case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
         const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
