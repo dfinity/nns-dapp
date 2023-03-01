@@ -168,8 +168,7 @@ impl FastScheduler {
     }
 
     /// When to start collecting data, depending on information about the provided SNS.
-    ///
-    fn start_in(&self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
+    fn start_time_for_sns(&self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
         // Are we already running?
         if self.update_timer.is_some() {
             return None;
@@ -202,16 +201,24 @@ impl FastScheduler {
     }
 
     /// Set the timer to get the given SNS, if needed.
-    fn schedule_data_collection_for_sns_maybe(&mut self, swap_state: &GetStateResponse) {
-        if let Some((start_seconds, delay)) = self.start_in(swap_state) {
+    fn global_schedule_sns(swap_state: &GetStateResponse) {
+        if let Some((start_seconds, delay)) =
+            STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state))
+        {
+            Self::global_start_at(start_seconds, delay);
+        }
+    }
+    /// Set the timer to get SNSs in th egiven state, if needed.
+    fn global_schedule_state(state: &State) {
+        if let Some((start_seconds, delay)) = Self::start_time_for_state(state) {
             Self::global_start_at(start_seconds, delay);
         }
     }
 
     /// Set the timer for an SNS
-    fn schedule_data_collection_for_state_maybe(state: &State) {
+    fn start_time_for_state(state: &State) -> Option<(u64, Duration)> {
         let this = state.fast_scheduler.borrow();
-        let next_start = state
+        state
             .stable
             .borrow()
             .sns_cache
@@ -219,11 +226,7 @@ impl FastScheduler {
             .upstream_data
             .borrow()
             .values()
-            .filter_map(|value| this.start_in(&value.swap_state))
-            .reduce(|a, b| if a.0 < b.0 { a } else { b });
-        if let Some((timestamp_seconds, delay)) = next_start {
-            state.fast_scheduler.borrow_mut().next_start_seconds =
-                Some((timestamp_seconds, set_timer(delay, Self::global_start)));
-        }
+            .filter_map(|value| this.start_time_for_sns(&value.swap_state))
+            .reduce(|a, b| if a.0 < b.0 { a } else { b })
     }
 }
