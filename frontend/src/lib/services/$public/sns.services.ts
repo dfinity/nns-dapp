@@ -1,5 +1,6 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
+import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
@@ -19,10 +20,42 @@ import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
     const cachedSnses = await querySnsProjects();
+    const identity = getCurrentIdentity();
+    if (!identity.getPrincipal().isAnonymous()) {
+      // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
+      // The SNS Aggregator gives us the canister ids of the SNS projects.
+      await Promise.all(
+        cachedSnses.map(async ({ canister_ids }) => {
+          const canisterIds = {
+            rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
+            swapCanisterId: Principal.fromText(canister_ids.swap_canister_id),
+            governanceCanisterId: Principal.fromText(
+              canister_ids.governance_canister_id
+            ),
+            ledgerCanisterId: Principal.fromText(
+              canister_ids.ledger_canister_id
+            ),
+            indexCanisterId: Principal.fromText(canister_ids.index_canister_id),
+          };
+          // Build certified and uncertified wrappers because SNS aggregator gives certified data.
+          await buildAndStoreWrapper({
+            identity,
+            certified: true,
+            canisterIds,
+          });
+          await buildAndStoreWrapper({
+            identity,
+            certified: false,
+            canisterIds,
+          });
+        })
+      );
+    }
     const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
       cachedSnses.map((sns) => ({
         rootCanisterId: sns.canister_ids.root_canister_id,

@@ -29,11 +29,23 @@
 
   export let rootCanisterId: string | undefined | null;
 
-  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
-    loadCommitment(rootCanisterId);
+  // Wait until the project summary is loaded.
+  // This way the sns wrapper will be cached.
+  $: if (
+    nonNullish(rootCanisterId) &&
+    isSignedIn($authStore.identity) &&
+    nonNullish($projectDetailStore.summary)
+  ) {
+    loadCommitment({ rootCanisterId, forceFetch: false });
   }
 
-  const loadCommitment = (rootCanisterId: string) =>
+  const loadCommitment = ({
+    rootCanisterId,
+    forceFetch,
+  }: {
+    rootCanisterId: string;
+    forceFetch: boolean;
+  }) =>
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
@@ -41,6 +53,7 @@
         $projectDetailStore.swapCommitment = undefined;
         goBack();
       },
+      forceFetch,
     });
 
   const reload = async () => {
@@ -52,7 +65,7 @@
     await Promise.all([
       loadSnsTotalCommitment({ rootCanisterId }),
       loadSnsLifecycle({ rootCanisterId }),
-      loadCommitment(rootCanisterId),
+      loadCommitment({ rootCanisterId, forceFetch: true }),
     ]);
   };
 

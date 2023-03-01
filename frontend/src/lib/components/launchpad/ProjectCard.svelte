@@ -10,8 +10,24 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import { loadSnsSwapCommitment } from "$lib/services/sns.services";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let project: SnsFullProject;
+
+  const loadSnsSale = async () => {
+    if (!isSignedIn($authStore.identity)) {
+      return;
+    }
+
+    await loadSnsSwapCommitment({
+      rootCanisterId: project.summary.rootCanisterId.toText(),
+      forceFetch: false,
+    });
+  };
+
+  $: $authStore.identity, loadSnsSale();
 
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;

@@ -54,6 +54,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
   ) {
     return;
   }
+
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
@@ -90,10 +91,21 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
+  forceFetch,
 }: {
   rootCanisterId: string;
   onError?: () => void;
-}) =>
+  forceFetch: boolean;
+}) => {
+  const swapCommitment = (get(snsSwapCommitmentsStore) ?? []).find(
+    ({ swapCommitment }) =>
+      swapCommitment.rootCanisterId.toText() === rootCanisterId
+  );
+
+  if (nonNullish(swapCommitment) && !forceFetch) {
+    return;
+  }
+
   queryAndUpdate<SnsSwapCommitment, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
@@ -124,6 +136,7 @@ export const loadSnsSwapCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+};
 
 export const loadSnsTotalCommitment = async ({
   rootCanisterId,
