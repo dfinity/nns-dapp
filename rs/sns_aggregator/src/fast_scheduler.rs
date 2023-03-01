@@ -1,11 +1,15 @@
-use std::{borrow::Borrow, time::Duration};
-use ic_cdk::{timer::{TimerId, set_timer_interval, set_timer, clear_timer}, api::time};
 use crate::{
-    state::{STATE, State},
-    types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse}, convert_canister_id,
+    convert_canister_id,
+    state::{State, STATE},
+    types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse},
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
+use ic_cdk::{
+    api::time,
+    timer::{clear_timer, set_timer, set_timer_interval, TimerId},
+};
 use std::str::FromStr;
+use std::{borrow::Borrow, time::Duration};
 
 #[derive(Default)]
 pub struct FastScheduler {
@@ -14,7 +18,7 @@ pub struct FastScheduler {
     /// The fast update timer
     update_timer: Option<TimerId>,
     /// The time of the next sale start, with a trigger to start collecting data then.
-    /// 
+    ///
     /// The time is in seconds since the UNIX epoch, as provided by ic0::time() / 1_000_000_000.
     /// See: https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-time
     next_start_seconds: Option<(u64, TimerId)>,
@@ -52,11 +56,11 @@ impl FastScheduler {
         })
     }
     /// Identifies the next SNS to update.
-    /// 
+    ///
     /// The search uses the data collected by the slow updater.  It searches through the SNSs in the order
     /// they are listed in the nns-sns-wasm canister, searching forwards and looping round to the beginning
     /// when it reaches the end of the list.
-    /// 
+    ///
     /// For each SNS, the search checks whether the SNS is eligible and skips SNSs that are not.
     fn next() -> Option<SnsIndex> {
         STATE.with(|state| {
@@ -84,22 +88,28 @@ impl FastScheduler {
             .unwrap_or_default();
         // Save the state
         STATE.with(|state| {
-            state.stable.borrow().sns_cache.borrow_mut().upstream_data.entry(root_canister_id).and_modify(|entry| {
-                entry.swap_state = swap_state;
-            });
+            state
+                .stable
+                .borrow()
+                .sns_cache
+                .borrow_mut()
+                .upstream_data
+                .entry(root_canister_id)
+                .and_modify(|entry| {
+                    entry.swap_state = swap_state;
+                });
         });
         // Update affected assets
-        let slow_data = STATE.with(|state| {
-            state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone()
-        });
+        let slow_data =
+            STATE.with(|state| state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone());
         State::insert_sns(index, slow_data)
-        .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
-        .unwrap_or_default();
+            .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
+            .unwrap_or_default();
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
     /// Gets the next SNS in need of updating, if any
     async fn update_next() {
-        if let Some(next) = Self::next(){
+        if let Some(next) = Self::next() {
             Self::update(next).await;
         } else {
             crate::state::log(format!("No SNS to update."));
@@ -139,7 +149,7 @@ impl FastScheduler {
         let data_collection_start_seconds = sale_start_seconds - 10;
         // Has the sale stage passed?
         if swap.lifecycle > Self::LIFECYCLE_OPEN {
-            return None
+            return None;
         }
         // Is the start time after our next scheduled start time?  If so it's not interesting yet.
         if let Some((time, _timer)) = self.next_start_seconds {
@@ -158,7 +168,8 @@ impl FastScheduler {
         Some((data_collection_start_seconds, Duration::from_secs(delay)))
     }
 
-    fn schedule_start_maybe(&mut self, swap_state: &GetStateResponse) {
+    /// Set the timer to get the given SNS, if needed.
+    fn schedule_data_collection_for_sns_maybe(&mut self, swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) = self.start_in(swap_state) {
             let start_timer = set_timer(delay, Self::global_start);
             if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {

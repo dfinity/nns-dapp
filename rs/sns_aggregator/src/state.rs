@@ -38,8 +38,7 @@ pub struct State {
 impl State {
     /// Util to get a swap canister ID
     pub fn swap_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
-        self
-            .stable
+        self.stable
             .borrow()
             .sns_cache
             .borrow()
@@ -50,20 +49,19 @@ impl State {
             .swap_canister_id
             .ok_or_else(|| format!("SNS {index} has no known swap canister"))
     }
-        /// Util to get a root canister ID
-        pub fn root_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
-            self
-                .stable
-                .borrow()
-                .sns_cache
-                .borrow()
-                .all_sns
-                .get(index as usize)
-                .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
-                .1
-                .root_canister_id
-                .ok_or_else(|| format!("SNS {index} has no known root canister"))
-        }
+    /// Util to get a root canister ID
+    pub fn root_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
+        self.stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .all_sns
+            .get(index as usize)
+            .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
+            .1
+            .root_canister_id
+            .ok_or_else(|| format!("SNS {index} has no known root canister"))
+    }
 }
 
 /// State that is saved across canister upgrades.
