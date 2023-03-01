@@ -44,7 +44,7 @@ sha256sum sns_aggregator.wasm
 \`\`\`
 EOF
 
-cat <<EOF >release/ROLLBACK.md
+cat <<EOF >release/AGGREGATOR_ROLLBACK.md
 # Downgrade SNS aggregator canister to commit \`$(git rev-parse HEAD)\`
 Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
 
