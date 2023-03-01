@@ -381,6 +381,7 @@ const pollLoadAccounts = async (params: {
  * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
+  const overriedCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
@@ -394,7 +395,7 @@ export const pollAccounts = async (certified = true) => {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({
       identity,
-      certified,
+      certified: overriedCertified,
     });
     accountsStore.set(certifiedAccounts);
   } catch (err) {
