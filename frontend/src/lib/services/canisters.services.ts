@@ -13,6 +13,7 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -40,6 +41,7 @@ export const listCanisters = async ({
 
   return queryAndUpdate<CanisterInfo[], unknown>({
     request: (options) => queryCanisters(options),
+    strategy: FORCE_CALL_STRATEGY,
     onLoad: ({ response: canisters, certified }) =>
       canistersStore.setCanisters({ canisters, certified }),
     onError: ({ error: err, certified }) => {

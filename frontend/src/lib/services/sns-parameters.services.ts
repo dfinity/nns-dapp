@@ -1,4 +1,5 @@
 import { nervousSystemParameters } from "$lib/api/sns-governance.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
@@ -16,6 +17,7 @@ export const loadSnsParameters = async (
     return;
   }
   await queryAndUpdate<NervousSystemParameters, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       nervousSystemParameters({
         rootCanisterId,

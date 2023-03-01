@@ -1,6 +1,7 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
@@ -92,6 +93,7 @@ export const loadSnsSummaries = (): Promise<void> => {
 
   return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
     identityType: "anonymous",
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       Promise.all([
         queryAllSnsMetadata({ certified, identity }),
@@ -121,6 +123,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified }) =>
       loadProposalsByTopic({
         certified,
@@ -160,6 +163,7 @@ export const loadSnsNervousSystemFunctions = async (
   }
 
   return queryAndUpdate<SnsNervousSystemFunction[], Error>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getNervousSystemFunctions({
         rootCanisterId,

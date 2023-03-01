@@ -18,6 +18,7 @@ import {
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -158,6 +159,7 @@ export const syncAccounts = (
       errorHandler({ err, certified });
     },
     logMessage: "Syncing Accounts",
+    strategy: FORCE_CALL_STRATEGY,
   });
 };
 
@@ -249,6 +251,7 @@ export const getAccountTransactions = async ({
   }) => void;
 }): Promise<void> =>
   queryAndUpdate<Transaction[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getTransactions({
         identity,

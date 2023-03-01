@@ -45,3 +45,5 @@ export const IS_TESTNET: boolean =
 
 // TODO: disable TVL display locally until we use the XCR canister to fetch teh ICP<>USD exchange rate and a certified endpoint to fetch the TVL
 export const ENABLE_TVL = !DEV;
+
+export const FORCE_CALL_STRATEGY: "query" | undefined = "query";

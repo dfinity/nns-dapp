@@ -4,6 +4,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapCommitments,
 } from "$lib/api/sns.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -54,6 +55,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
     return;
   }
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
@@ -93,6 +95,7 @@ export const loadSnsSwapCommitment = async ({
   onError?: () => void;
 }) =>
   queryAndUpdate<SnsSwapCommitment, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
