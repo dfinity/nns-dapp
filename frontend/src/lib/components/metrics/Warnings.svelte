@@ -46,4 +46,4 @@
   $: transactionRate, (() => transactionRateWarning())();
 </script>
 
-<Toasts position="top-end" />
+<Toasts position="top" />
