@@ -165,7 +165,7 @@
     "staging": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "HOST": "https://nnsdapp.dfinity.network",
+        "HOST": "https://nnsdapp.testnet.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
