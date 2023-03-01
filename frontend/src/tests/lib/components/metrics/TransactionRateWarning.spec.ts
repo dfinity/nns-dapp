@@ -7,6 +7,7 @@ import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import en from "../../../mocks/i18n.mock";
 import TransactionRateWarningTest from "./TransactionRateWarningTest.svelte";
 
@@ -77,5 +78,32 @@ describe("TransactionRateWarning", () => {
     await waitFor(() => {
       expect(container.querySelector(".toast")).toBeNull();
     });
+  });
+
+  it("should render transaction warning once", async () => {
+    const { container } = render(TransactionRateWarningTest);
+
+    metricsCallback?.({
+      metrics: {
+        transactionRate: transactionRateHighLoad,
+      },
+    });
+
+    await waitFor(() => {
+      const toast = container.querySelector(".toast");
+
+      expect(toast?.textContent ?? "").toContain(en.metrics.nns_high_load);
+      expect(toast?.textContent ?? "").toContain(en.metrics.thanks_fun);
+    });
+
+    metricsCallback?.({
+      metrics: {
+        transactionRate: transactionRateHighLoad,
+      },
+    });
+
+    await tick();
+
+    expect(container.querySelectorAll(".toast").length).toEqual(1);
   });
 });
