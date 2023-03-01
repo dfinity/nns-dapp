@@ -4,7 +4,6 @@
  * to make sure each one is mocked in the test.
  */
 
-
 const blockedCalls: string[] = [];
 
 const failOnCall = ({

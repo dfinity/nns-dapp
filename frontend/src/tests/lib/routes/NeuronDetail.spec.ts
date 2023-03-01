@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { snsQueryStore } from "$lib/stores/sns.store";
 import * as governanceApi from "$lib/api/governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
@@ -11,6 +10,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
 import { loadSnsProjects } from "$lib/services/$public/sns.services";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
@@ -51,7 +51,6 @@ const nnsProps = {
 };
 
 describe("NeuronDetail", () => {
-
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {

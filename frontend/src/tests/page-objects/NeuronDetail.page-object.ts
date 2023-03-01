@@ -36,8 +36,10 @@ export class NeuronDetailPo {
   }
 
   isContentLoaded() {
-    return this.getNnsNeuronDetail()?.isContentLoaded() ||
+    return (
+      this.getNnsNeuronDetail()?.isContentLoaded() ||
       this.getSnsNeuronDetail()?.isContentLoaded() ||
-      false;
+      false
+    );
   }
 }
