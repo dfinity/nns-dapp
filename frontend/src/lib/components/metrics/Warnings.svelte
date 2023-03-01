@@ -16,12 +16,9 @@
   let toastId: symbol | undefined;
 
   const transactionRateWarning = () => {
-    // Display only one warning toast.
-    if (
-      nonNullish(toastId) &&
-      $toastsStore.filter(({ id }: ToastMsg) => id === toastId) !== undefined
-    ) {
-      // If transaction rate is lower threshold we can close existing toast.
+    // Display only one warning toast or do not display again a toast if user has manually closed the warning
+    if (nonNullish(toastId)) {
+      // If new transaction rate is lower threshold we reset the warning.
       if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_MEDIUM_LOAD) {
         toastsHide(toastId);
         toastId = undefined;
@@ -30,7 +27,7 @@
       return;
     }
 
-    // There was no toast display but is the subnet under high load?
+    // There was no toast displayed but, is the subnet under high load?
     if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_MEDIUM_LOAD) {
       return;
     }
