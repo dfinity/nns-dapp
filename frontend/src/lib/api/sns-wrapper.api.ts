@@ -1,9 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
 import { WASM_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import {
-  FORCE_CALL_STRATEGY,
-  HOST,
-} from "$lib/constants/environment.constants";
+import { HOST } from "$lib/constants/environment.constants";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
@@ -150,14 +147,13 @@ export const wrappers = async ({
   identity: Identity;
 }): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
   const principalText = identity.getPrincipal().toText();
-  const overriedCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
   if (certified) {
     if (identitiesCertifiedWrappers[principalText] === undefined) {
       // the initialization of the wrappers can be called mutliple times at the same time when the app loads.
       // We cache the promise so that if multiple calls are made then all will resolve when the first init resolve.
       identitiesCertifiedWrappers[principalText] = initWrappers({
         identity,
-        certified: overriedCertified,
+        certified,
       });
     }
     return identitiesCertifiedWrappers[principalText];
@@ -165,7 +161,7 @@ export const wrappers = async ({
     if (identitiesNotCertifiedWrappers[principalText] === undefined) {
       identitiesNotCertifiedWrappers[principalText] = initWrappers({
         identity,
-        certified: overriedCertified,
+        certified,
       });
     }
     return identitiesNotCertifiedWrappers[principalText];
