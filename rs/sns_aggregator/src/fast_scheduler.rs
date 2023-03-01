@@ -1,3 +1,4 @@
+//! Code for collecting a subset of data with higher frequency.
 use crate::{
     convert_canister_id,
     state::{State, STATE},
@@ -11,6 +12,7 @@ use ic_cdk::{
 use std::str::FromStr;
 use std::{borrow::Borrow, time::Duration};
 
+/// Collects a subset of data with high frequency during an open sale.
 #[derive(Default)]
 pub struct FastScheduler {
     /// Last SNS updated
@@ -35,9 +37,9 @@ impl FastScheduler {
             .unwrap_or(false)
     }
     /// Iterates over SNSs, showing for each whether it needs an update.
-    fn needs_update_iter<'a>(
-        sns_cache: &'a SnsCache,
-    ) -> impl Iterator<Item = Option<&'a SnsIndex>> + Sized + DoubleEndedIterator {
+    fn needs_update_iter(
+        sns_cache: &'_ SnsCache,
+    ) -> impl Iterator<Item = Option<&'_ SnsIndex>> + Sized + DoubleEndedIterator {
         sns_cache.all_sns.iter().map(|(index, canister_ids)| {
             let needs_update = canister_ids
                 .root_canister_id
