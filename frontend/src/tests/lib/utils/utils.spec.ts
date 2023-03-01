@@ -1,5 +1,6 @@
 import {
   bytesToHexString,
+  cancelPoll,
   createChunks,
   expandObject,
   hexStringToBytes,
@@ -7,6 +8,7 @@ import {
   isHash,
   isPngAsset,
   poll,
+  pollingCancelled,
   PollingLimitExceededError,
   removeKeys,
   smallerVersion,
@@ -351,13 +353,18 @@ describe("utils", () => {
         },
       ];
 
+      let originalTimeout;
       beforeEach(() => {
+        jest.useRealTimers();
+        if (originalTimeout === undefined) {
+          originalTimeout = setTimeout;
+        }
         jest.useFakeTimers();
       });
 
       const advanceTime = async (): Promise<void> => {
         // Make sure the timers are set before we advance time.
-        await null;
+        await new Promise((resolve) => originalTimeout(resolve, 0));
         await jest.runOnlyPendingTimers();
       };
 
@@ -384,7 +391,7 @@ describe("utils", () => {
           useExponentialBackoff,
         });
 
-        for (let i = 0; i < maxAttempts; i++) {
+        for (let i = 0; i < maxAttempts - 1; i++) {
           await advanceTime();
         }
         expect(() => promise).rejects.toThrowError(PollingLimitExceededError);
@@ -451,6 +458,7 @@ describe("utils", () => {
         expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toEqual([]);
         await advanceTime();
+        await advanceTime();
         expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
@@ -476,6 +484,46 @@ describe("utils", () => {
         await advanceTime();
         // Still only 1 toast.
         expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
+
+      it.only("should stop polling when cancelled", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        }).catch((err) => {
+          console.log("polling cancelled");
+          if (pollingCancelled(err)) {
+            cancelled = true;
+          }
+        });
+        expect(fnSpy).toBeCalled();
+        await advanceTime();
+        expect(cancelled).toBe(false);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        cancelPoll(pollId);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(cancelled).toBe(true);
       });
     });
   });

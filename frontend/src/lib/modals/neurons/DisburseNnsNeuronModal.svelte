@@ -11,18 +11,25 @@
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { disburse } from "$lib/services/neurons.services";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import { pollAccounts } from "$lib/services/accounts.services";
+  import {
+    clearPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
 
   export let neuron: NeuronInfo;
 
   onMount(() => {
     pollAccounts();
+  });
+
+  onDestroy(() => {
+    clearPollAccounts();
   });
 
   const dispatcher = createEventDispatcher();
