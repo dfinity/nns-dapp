@@ -26,6 +26,8 @@
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
   import { ENABLE_CKBTC_LEDGER } from "$lib/stores/feature-flags.store";
 
+  // TODO: This component is mounted twice. Understand why and fix it.
+
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
 

@@ -99,6 +99,7 @@ interface I18nError {
   pub_key_not_hex_string: string;
   pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
+  high_load_retrying: string;
   canister_refund: string;
   canister_creation_unknown: string;
   canister_top_up_unknown: string;
@@ -636,6 +637,17 @@ interface I18nSns_project_detail {
   sign_in: string;
 }
 
+interface I18nSns_sale {
+  participation_in_progress: string;
+  step_initialization: string;
+  step_transfer: string;
+  step_notify: string;
+  step_reload: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
+  connecting_sale_canister: string;
+}
+
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
@@ -758,7 +770,6 @@ interface I18nError__sns {
   sns_sale_invalid_amount: string;
   sns_sale_invalid_subaccount: string;
   sns_sale_try_later: string;
-  sns_sale_retry_in: string;
   sns_sale_committed_not_equal_to_amount: string;
   invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;
@@ -1085,6 +1096,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
   time: I18nTime;

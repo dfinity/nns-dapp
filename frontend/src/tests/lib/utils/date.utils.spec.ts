@@ -1,13 +1,13 @@
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   daysToDuration,
+  nanoSecondsToDateTime,
   secondsToDate,
   secondsToDateTime,
   secondsToDissolveDelayDuration,
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
-import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
 import en from "../../mocks/i18n.mock";
 import { normalizeWhitespace } from "../../utils/utils.test-utils";
 
