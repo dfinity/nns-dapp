@@ -143,6 +143,7 @@ impl FastScheduler {
         if let Some(id) = old_timer {
             ic_cdk::timer::clear_timer(id);
         }
+        self.next_start_seconds = None;
     }
 
     /// Starts the update timer using the global state.
@@ -172,25 +173,27 @@ impl FastScheduler {
     }
 
     /// When to start collecting data, depending on information about the provided SNS.
-    fn start_time_for_sns(&self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
+    fn start_time_for_sns(&self, swap_state: &GetStateResponse) -> Result<(u64, Duration), &'static str> {
         // Are we already running?
         if self.update_timer.is_some() {
-            return None;
+            return Err("Already running.");
         }
         // Does the SNS have swap state?
-        let swap = swap_state.swap.as_ref()?;
+        let swap = swap_state.swap.as_ref().ok_or_else(|| "SNS has no swap.")?;
         // Is a start scheduled?
-        let sale_start_seconds = swap.decentralization_sale_open_timestamp_seconds?;
+        let sale_start_seconds = swap
+            .decentralization_sale_open_timestamp_seconds
+            .ok_or_else(|| "SNS sale has no time.")?;
         // We would want to start a bit before the sale.
         let data_collection_start_seconds = sale_start_seconds - 10;
         // Has the sale stage passed?
         if swap.lifecycle > Self::LIFECYCLE_OPEN {
-            return None;
+            return Err("Lifecycle stage has passed.");
         }
         // Is the start time after our next scheduled start time?  If so it's not interesting yet.
         if let Some((time, _timer)) = self.next_start_seconds {
             if data_collection_start_seconds >= time {
-                return None;
+                return Err("Another SNS starts beforehand.");
             }
         }
         // Ok, make sure that we are running when the sale starts.
@@ -201,16 +204,20 @@ impl FastScheduler {
         } else {
             data_collection_start_seconds - now_seconds
         };
-        Some((data_collection_start_seconds, Duration::from_secs(delay)))
+        Ok((data_collection_start_seconds, Duration::from_secs(delay)))
     }
 
     /// Schedule the given SNS, if needed.  This should be called by the slow updater whenever
     /// it has a new SNS.
     pub fn global_schedule_sns(swap_state: &GetStateResponse) {
-        if let Some((start_seconds, delay)) =
-            STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state))
-        {
-            Self::global_start_at(start_seconds, delay);
+        match STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state)) {
+            Ok((start_seconds, delay)) => {
+                crate::state::log(format!("Scheduling fast restart in {} seconds...", delay.as_secs()));
+                Self::global_start_at(start_seconds, delay);
+            }
+            Err(msg) => {
+                crate::state::log(format!("SNS does not need fast updates: {msg}"));
+            }
         }
     }
     /// Schedule SNSs in the given state, if needed.
@@ -231,7 +238,7 @@ impl FastScheduler {
             .upstream_data
             .borrow()
             .values()
-            .filter_map(|value| this.start_time_for_sns(&value.swap_state))
+            .filter_map(|value| this.start_time_for_sns(&value.swap_state).ok())
             .reduce(|a, b| if a.0 < b.0 { a } else { b })
     }
 }
