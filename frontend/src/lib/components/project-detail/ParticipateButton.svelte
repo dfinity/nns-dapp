@@ -106,7 +106,10 @@
     });
   };
 
-  // skip ticket update if the sns is not open
+  // skip ticket update if
+  // - the sns is not open
+  // - the user is not sign in
+  // - user commitment information is not loaded
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
     isSignedIn($authStore.identity) &&
