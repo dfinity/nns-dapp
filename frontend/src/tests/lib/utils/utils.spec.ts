@@ -455,6 +455,30 @@ describe("utils", () => {
         expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
 
+      it("should hide 'high load' message after success", async () => {
+        const failuresBeforeHighLoadMessage = 3;
+        let shouldFail = true;
+        const _ = poll({
+          fn: async () => {
+            if (shouldFail) {
+              throw new Error();
+            }
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+        });
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        shouldFail = false;
+        await advanceTime();
+        expect(get(toastsStore)).toEqual([]);
+      });
+
       it("should show 'high load' message only once", async () => {
         const _ = poll({
           fn: async () => {

@@ -51,17 +51,17 @@ export const toastsError = ({
   labelKey: string;
   err?: unknown;
   substitutions?: I18nSubstitutions;
-}) => {
-  toastsShow({
+}): symbol => {
+  if (err !== undefined) {
+    console.error(err);
+  }
+
+  return toastsShow({
     labelKey,
     level: "error",
     detail: errorToString(err),
     substitutions,
   });
-
-  if (err !== undefined) {
-    console.error(err);
-  }
 };
 
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
