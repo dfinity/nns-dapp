@@ -457,14 +457,14 @@ export const initiateSnsSaleParticipation = async ({
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
       // Step 2. to finish
-      await participateInSnsSale({
+      const { success } = await participateInSnsSale({
         rootCanisterId,
         userCommitment,
         postprocess,
         updateProgress,
       });
 
-      return { success: true };
+      return { success };
     }
   } catch (err: unknown) {
     toastsError(
@@ -656,13 +656,13 @@ export const participateInSnsSale = async ({
   postprocess,
   userCommitment,
   updateProgress,
-}: ParticipateInSnsSaleParameters): Promise<void> => {
+}: ParticipateInSnsSaleParameters): Promise<{ success: boolean }> => {
   let hasTooOldError = false;
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   // skip if there is no more ticket (e.g. on retry)
   if (isNullish(ticket)) {
     logWithTimestamp("[sale] skip participation - no ticket");
-    return;
+    return { success: false };
   }
 
   logWithTimestamp(
@@ -691,7 +691,7 @@ export const participateInSnsSale = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
-    return;
+    return { success: false };
   }
 
   const {
@@ -745,7 +745,7 @@ export const participateInSnsSale = async ({
         snsTicketsStore.setNoTicket(rootCanisterId);
 
         // stop the flow since the ticket was removed
-        return;
+        return { success: false };
       }
       case TxTooOldError: {
         /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
@@ -766,7 +766,7 @@ export const participateInSnsSale = async ({
         snsTicketsStore.setNoTicket(rootCanisterId);
 
         // stop the flow since the ticket was removed
-        return;
+        return { success: false };
       }
     }
   }
@@ -783,7 +783,7 @@ export const participateInSnsSale = async ({
   });
 
   if (!success) {
-    return;
+    return { success: false };
   }
 
   // Step 4.
@@ -806,4 +806,6 @@ export const participateInSnsSale = async ({
   snsTicketsStore.setNoTicket(rootCanisterId);
 
   updateProgress(SaleStep.DONE);
+
+  return { success: true };
 };
