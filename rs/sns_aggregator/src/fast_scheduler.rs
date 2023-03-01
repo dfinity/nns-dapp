@@ -114,8 +114,22 @@ impl FastScheduler {
             Self::global_update(next).await;
         } else {
             crate::state::log(format!("No SNS to update."));
-            
+            Self::global_stop();
         }
+    }
+
+    /// Stop collecting data now.
+    pub fn stop(&mut self) {
+        if let Some(timer_id) = self.update_timer.take() {
+            ic_cdk::timer::clear_timer(timer_id);
+        }
+    }
+
+    /// Starts the update timer using the global state.
+    pub fn global_stop() {
+        STATE.with(|state| {
+            state.fast_scheduler.borrow_mut().stop();
+        });
     }
 
     /// Start collecting data now.
@@ -126,6 +140,7 @@ impl FastScheduler {
             ic_cdk::timer::clear_timer(id);
         }
     }
+
     /// Starts the update timer using the global state.
     pub fn global_start() {
         let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().fast_interval_ms));
@@ -189,10 +204,7 @@ impl FastScheduler {
     /// Set the timer to get the given SNS, if needed.
     fn schedule_data_collection_for_sns_maybe(&mut self, swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) = self.start_in(swap_state) {
-            let start_timer = set_timer(delay, Self::global_start);
-            if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {
-                clear_timer(old_timer);
-            }
+            Self::global_start_at(start_seconds, delay);
         }
     }
 
