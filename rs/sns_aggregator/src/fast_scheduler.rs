@@ -62,7 +62,7 @@ impl FastScheduler {
     /// when it reaches the end of the list.
     ///
     /// For each SNS, the search checks whether the SNS is eligible and skips SNSs that are not.
-    fn next() -> Option<SnsIndex> {
+    fn global_next() -> Option<SnsIndex> {
         STATE.with(|state| {
             let sns_stable = state.stable.borrow();
             let sns_cache = sns_stable.sns_cache.borrow();
@@ -109,7 +109,7 @@ impl FastScheduler {
     }
     /// Gets the next SNS in need of updating, if any
     async fn update_next() {
-        if let Some(next) = Self::next() {
+        if let Some(next) = Self::global_next() {
             Self::update(next).await;
         } else {
             crate::state::log(format!("No SNS to update."));
