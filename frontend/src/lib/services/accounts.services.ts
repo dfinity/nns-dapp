@@ -375,7 +375,7 @@ const pollLoadAccounts = async (params: {
  *
  * If the accounts are not certified or not present, it will poll the request until it succeeds.
  *
- * @param certified Whether the accounts should be requeted as certified or not.
+ * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
   const accounts = get(accountsStore);
