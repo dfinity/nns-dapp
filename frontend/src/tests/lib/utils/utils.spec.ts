@@ -13,11 +13,15 @@ import {
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("utils", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    toastsStore.reset();
     jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
@@ -340,9 +344,22 @@ describe("utils", () => {
     });
 
     describe("with fake timers", () => {
+      const highLoadToast = [
+        {
+          level: "error",
+          text: `${en.error.high_load_retrying}`,
+        },
+      ];
+
       beforeEach(() => {
         jest.useFakeTimers();
       });
+
+      const advanceTime = async (): Promise<void> => {
+        // Make sure the timers are set before we advance time.
+        await null;
+        await jest.runOnlyPendingTimers();
+      };
 
       const getTimestamps = async ({
         maxAttempts,
@@ -368,9 +385,7 @@ describe("utils", () => {
         });
 
         for (let i = 0; i < maxAttempts; i++) {
-          // Make sure the timers are set before we advance time.
-          await null;
-          await jest.runOnlyPendingTimers();
+          await advanceTime();
         }
         expect(() => promise).rejects.toThrowError(PollingLimitExceededError);
         return timestamps;
@@ -403,6 +418,52 @@ describe("utils", () => {
             useExponentialBackoff: true,
           })
         ).toEqual([0, 1000, 3000, 7000, 15000]);
+      });
+
+      it("should show 'high load' message after ~1 minute", async () => {
+        let calls = 0;
+        const failuresBeforeHighLoadMessage = 3;
+        const _ = poll({
+          fn: async () => {
+            calls += 1;
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+        });
+        expect(calls).toEqual(1);
+        await advanceTime();
+        expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
+
+      it("should show 'high load' message only once", async () => {
+        const _ = poll({
+          fn: async () => {
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage: 3,
+        });
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        // Still only 1 toast.
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
     });
   });

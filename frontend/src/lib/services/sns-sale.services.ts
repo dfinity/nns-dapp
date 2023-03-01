@@ -102,6 +102,7 @@ const shouldStopPollingTicket =
 const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 // TODO: Solve problem with importing from sns.constants.ts
 const MAX_ATTEMPS_FOR_TICKET = 50;
+const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
 // Export for testing purposes
 const pollGetOpenTicket = async ({
   rootCanisterId,
@@ -128,6 +129,7 @@ const pollGetOpenTicket = async ({
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -315,6 +317,7 @@ const pollNewSaleTicket = async (params: {
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
 // TODO(sale): rename to loadNewSaleTicket
@@ -497,6 +500,7 @@ const pollNotifyParticipation = async ({
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -629,6 +633,7 @@ const pollTransfer = ({
       isTransferError(err) && !(err instanceof TxCreatedInFutureError),
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
 /**

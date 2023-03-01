@@ -95,6 +95,7 @@
     "pub_key_not_hex_string": "$key is not a hex string.",
     "pub_key_hex_string_invalid_length": "The key must be >= 130 characters and <= 150 characters.",
     "hardware_wallet_no_account": "No hardware wallet account provided.",
+    "high_load_retrying": "The Internet Computer is experiencing high load. We'll keep retrying.",
     "canister_refund": "Sorry, the operation was not successful and the amount has been refunded.",
     "canister_creation_unknown": "Sorry, there was an error creating the canister.",
     "canister_top_up_unknown": "Sorry, there was an error adding cycles to the canister.",

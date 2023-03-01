@@ -99,6 +99,7 @@ interface I18nError {
   pub_key_not_hex_string: string;
   pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
+  high_load_retrying: string;
   canister_refund: string;
   canister_creation_unknown: string;
   canister_top_up_unknown: string;
