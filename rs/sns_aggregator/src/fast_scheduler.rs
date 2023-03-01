@@ -108,8 +108,8 @@ impl FastScheduler {
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
 
-    /// Gets the next SNS in need of updating, if any
-    async fn update_next() {
+    /// Updat the next SNS, if any.  Else pause the update timer.
+    async fn global_update_next() {
         if let Some(next) = Self::global_next() {
             Self::global_update(next).await;
         } else {
@@ -136,7 +136,7 @@ impl FastScheduler {
 
     /// Start collecting data now.
     pub fn start(&mut self, timer_interval: Duration) {
-        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::update_next()));
+        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::global_update_next()));
         let old_timer = self.update_timer.replace(timer_id);
         if let Some(id) = old_timer {
             ic_cdk::timer::clear_timer(id);
@@ -202,7 +202,8 @@ impl FastScheduler {
         Some((data_collection_start_seconds, Duration::from_secs(delay)))
     }
 
-    /// Schedule the given SNS, if needed.
+    /// Schedule the given SNS, if needed.  This should be called by the slow updater whenever
+    /// it has a new SNS.
     fn global_schedule_sns(swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) =
             STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state))
