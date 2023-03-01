@@ -52,4 +52,5 @@ dfx-canister-set-id --canister_name sns_aggregator --canister_id "$AGGREGATOR_CA
 dfx canister info sns_aggregator
 
 : Deploy the aggregator
-RUSTFLAGS="--cfg feature=\"reconfigurable\"" dfx deploy sns_aggregator --network "$DFX_NETWORK"
+./scripts/docker-build
+dfx canister install sns_aggregator --network "$DFX_NETWORK" --wasm sns_aggregator_dev.wasm
