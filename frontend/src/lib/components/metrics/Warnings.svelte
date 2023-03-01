@@ -38,7 +38,7 @@
       id: toastId,
       labelKey: "metrics.thanks_fun",
       level: "info",
-      position: "top-end",
+      position: "top",
       title: $i18n.metrics.nns_high_load,
       truncate: true,
       icon: TransactionRateWarning,
