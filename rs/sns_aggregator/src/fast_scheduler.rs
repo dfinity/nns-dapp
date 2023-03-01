@@ -179,11 +179,11 @@ impl FastScheduler {
             return Err("Already running.");
         }
         // Does the SNS have swap state?
-        let swap = swap_state.swap.as_ref().ok_or_else(|| "SNS has no swap.")?;
+        let swap = swap_state.swap.as_ref().ok_or("SNS has no swap.")?;
         // Is a start scheduled?
         let sale_start_seconds = swap
             .decentralization_sale_open_timestamp_seconds
-            .ok_or_else(|| "SNS sale has no time.")?;
+            .ok_or("SNS sale has no time.")?;
         // We would want to start a bit before the sale.
         let data_collection_start_seconds = sale_start_seconds - 10;
         // Has the sale stage passed?
