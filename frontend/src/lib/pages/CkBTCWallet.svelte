@@ -166,7 +166,7 @@
           <CkBTCTransactionsList
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
-            {canisters}
+            indexCanisterId={canisters.indexCanisterId}
           />
         {/if}
       {:else}
