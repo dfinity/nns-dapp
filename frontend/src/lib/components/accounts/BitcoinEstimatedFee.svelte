@@ -11,7 +11,8 @@
 
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
-  const estimateFee = async () => {
+  // TODO: if the fee is ultimately used no where else we can probably move the loading in parent modal component
+  const loadEstimatedFee = async () => {
     if (selectedNetwork !== TransactionNetwork.BITCOIN) {
       bitcoinEstimatedFee = null;
       return;
@@ -28,7 +29,7 @@
     });
   };
 
-  const debounceEstimateFee = debounce(estimateFee);
+  const debounceEstimateFee = debounce(loadEstimatedFee);
 
   $: selectedNetwork, amount, (async () => debounceEstimateFee())();
 </script>

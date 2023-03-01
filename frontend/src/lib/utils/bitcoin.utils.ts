@@ -1,2 +1,4 @@
+import { BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC } from "$lib/constants/bitcoin.constants";
+
 export const formatEstimatedFee = (bitcoinEstimatedFee: bigint): number =>
-  Number(bitcoinEstimatedFee) / 100_000_000;
+  Number(bitcoinEstimatedFee) / BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC;
