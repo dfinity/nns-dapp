@@ -806,7 +806,9 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total ICP Value Locked"
+    "tvl": "Total ICP Value Locked",
+    "nns_high_load": "NNS is under a high load.",
+    "thanks_fun": "Thanks for being part of the fun!"
   },
   "ckbtc": {
     "title": "ckBTC",

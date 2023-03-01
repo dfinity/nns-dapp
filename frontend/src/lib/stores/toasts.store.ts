@@ -22,13 +22,12 @@ const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
  */
 
 export const toastsShow = (msg: ToastMsg): symbol => {
-  const { level, spinner, duration } = msg;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { labelKey, substitutions, detail, ...rest } = msg;
 
   return toastsStore.show({
     text: mapToastText(msg),
-    level,
-    spinner,
-    duration,
+    ...rest,
   });
 };
 

@@ -8,14 +8,14 @@
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
-  import { ENABLE_TVL } from "$lib/constants/environment.constants";
+  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
 
   let innerWidth = 0;
   let displayTvl = false;
 
   // We have to use JS to activate the TVL metrics in the header or menu to avoid to make calls twice
   // Easier than introducing stores and logic at this point since this can only happen on the login screen.
-  $: displayTvl = innerWidth > BREAKPOINT_EXTRA_LARGE && ENABLE_TVL;
+  $: displayTvl = innerWidth > BREAKPOINT_EXTRA_LARGE && ENABLE_METRICS;
 </script>
 
 <svelte:window bind:innerWidth />

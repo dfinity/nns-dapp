@@ -1,12 +1,12 @@
 <script lang="ts">
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
   import { layoutMenuOpen } from "@dfinity/gix-components";
-  import { ENABLE_TVL } from "$lib/constants/environment.constants";
+  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
 
   export let sticky = true;
 </script>
 
-{#if ENABLE_TVL}
+{#if ENABLE_METRICS}
   <div class:open={$layoutMenuOpen} class:sticky>
     <TotalValueLocked layout="stacked" />
   </div>
