@@ -26,8 +26,15 @@ pub struct FastScheduler {
     next_start_seconds: Option<(u64, TimerId)>,
 }
 impl FastScheduler {
-    /// Lifecycle of an open swap.  See https://github.com/dfinity/ic/blob/master/rs/sns/swap/proto/ic_sns_swap/pb/v1/swap.proto
+    /// Lifecycle of an open swap with an active sale.  See https://github.com/dfinity/ic/blob/master/rs/sns/swap/proto/ic_sns_swap/pb/v1/swap.proto
     const LIFECYCLE_OPEN: i32 = 2;
+    /// A lifecycle state that can lead to open.
+    const LIFECYCLE_PENDING: i32 = 1;
+    /// A lifecycle state that can lead to open.
+    const LIFECYCLE_ADOPTED: i32 = 5;
+    /// Lifecycle states that need fast data collection either now or in the future.
+    /// SNSs in other lifecycle states are ignored by this scheduler.
+    const LIFECYCLES_TO_WATCH: [i32; 3] = [Self::LIFECYCLE_ADOPTED, Self::LIFECYCLE_PENDING, Self::LIFECYCLE_OPEN];
     /// Determines whether an SNS is eligible for an update
     fn needs_update(sns_swap_state: &GetStateResponse) -> bool {
         sns_swap_state
@@ -187,7 +194,7 @@ impl FastScheduler {
         // We would want to start a bit before the sale.
         let data_collection_start_seconds = sale_start_seconds - 10;
         // Has the sale stage passed?
-        if swap.lifecycle > Self::LIFECYCLE_OPEN {
+        if !Self::LIFECYCLES_TO_WATCH.contains(&swap.lifecycle) {
             return Err("Lifecycle stage has passed.");
         }
         // Is the start time after our next scheduled start time?  If so it's not interesting yet.
