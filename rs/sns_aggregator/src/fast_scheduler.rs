@@ -114,7 +114,9 @@ impl FastScheduler {
             Self::global_update(next).await;
         } else {
             crate::state::log(format!("No SNS to update."));
+            // Pause until the next SNS sale is about to start
             Self::global_stop();
+            Self::global_schedule_state();
         }
     }
 
@@ -209,7 +211,7 @@ impl FastScheduler {
         }
     }
     /// Schedule SNSs in the given state, if needed.
-    fn global_schedule_state(state: &State) {
+    fn global_schedule_state() {
         if let Some((start_seconds, delay)) = Self::start_time_for_state(state) {
             Self::global_start_at(start_seconds, delay);
         }
