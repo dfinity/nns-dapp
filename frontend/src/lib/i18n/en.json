@@ -615,7 +615,7 @@
   "sns_sale": {
     "participation_in_progress": "Participating in sale",
     "step_initialization": "Connecting with sale canister",
-    "step_transfer": "Sending ICP",
+    "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
     "this_may_take_a_few_minutes": "This may take a few minutes",
