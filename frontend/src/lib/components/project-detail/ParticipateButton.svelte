@@ -112,10 +112,12 @@
   // - the sns is not open
   // - the user is not sign in
   // - user commitment information is not loaded
+  // - project summary is not loaded, to avoid building a wrapper instead of using a cached one
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
     isSignedIn($authStore.identity) &&
-    nonNullish(userCommitment)
+    nonNullish(userCommitment) &&
+    nonNullish($projectDetailStore.summary)
   ) {
     updateTicket();
   }
