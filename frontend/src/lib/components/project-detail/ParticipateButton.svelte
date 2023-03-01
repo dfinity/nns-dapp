@@ -16,7 +16,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { assertNonNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     hidePollingToast,
@@ -90,7 +90,10 @@
     ) {
       return;
     }
-
+    if (isNullish(userCommitment)) {
+      // Typescript guard, user commitment cannot be undefined here
+      return;
+    }
     snsTicketsStore.enablePolling(rootCanisterId);
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
@@ -99,7 +102,7 @@
 
     await restoreSnsSaleParticipation({
       rootCanisterId,
-      userCommitment: userCommitment!,
+      userCommitment,
       postprocess: reload,
       updateProgress,
     });
