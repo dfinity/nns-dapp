@@ -6,7 +6,6 @@
   import { onMount, onDestroy } from "svelte";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
 
   let worker:
@@ -17,10 +16,6 @@
     | undefined;
 
   onMount(async () => {
-    if (!ENABLE_METRICS) {
-      return;
-    }
-
     worker = await initMetricsWorker();
 
     worker?.startMetricsTimer({

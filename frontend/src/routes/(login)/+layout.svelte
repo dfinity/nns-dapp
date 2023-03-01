@@ -11,6 +11,7 @@
   import { isNullish } from "@dfinity/utils";
   import Metrics from "$lib/components/metrics/Metrics.svelte";
   import Warnings from "$lib/components/metrics/Warnings.svelte";
+  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -41,7 +42,10 @@
     </div>
   </Layout>
 
-  <Metrics />
+  {#if ENABLE_METRICS}
+    <Metrics />
+  {/if}
+
   <Warnings />
 {/if}
 
