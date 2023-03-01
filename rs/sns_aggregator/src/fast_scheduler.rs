@@ -107,7 +107,7 @@ impl FastScheduler {
     }
 
     /// Starts the update timer using the global state.
-    pub fn start_global() {
+    pub fn global_start() {
         let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().fast_interval_ms));
         crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
         STATE.with(|state| {
@@ -160,7 +160,7 @@ impl FastScheduler {
 
     fn schedule_start_maybe(&mut self, swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) = self.start_in(swap_state) {
-            let start_timer = set_timer(delay, Self::start_global);
+            let start_timer = set_timer(delay, Self::global_start);
             if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {
                 clear_timer(old_timer);
             }
