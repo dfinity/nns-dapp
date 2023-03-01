@@ -196,6 +196,33 @@ export class PollingLimitExceededError extends Error {}
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
 const DEFAULT_WAIT_TIME_MS = 500;
 
+type Polls = Record<string, boolean>;
+const currentPolls: Polls = {};
+export const clearCurrentPolls = () => {
+  Object.keys(currentPolls).forEach((key: string) => {
+    clearTimeout(Number(key));
+    delete currentPolls[key];
+  });
+};
+/**
+ * Waits for a specific amount of milliseconds, and returns the id of the timeout.
+ *
+ * It loads the currentPolls object with the id of the timeout, so it can be cleared later.
+ *
+ * USED ONLY in `poll`
+ *
+ * @param milliseconds
+ * @returns {string} whether it waited or not
+ */
+const waitForMillisecondsPolling = (milliseconds: number): Promise<string> =>
+  new Promise((resolve) => {
+    const id = setTimeout(() => {
+      resolve(String(id));
+    }, milliseconds);
+    const idNumber = String(id);
+    currentPolls[idNumber] = true;
+  });
+
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
  *
@@ -223,7 +250,7 @@ export const poll = async <T>({
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
   failuresBeforeHighLoadMessage?: number;
-}): Promise<T> => {
+}): Promise<T | undefined> => {
   for (let counter = 0; counter < maxAttempts; counter++) {
     if (counter > 0) {
       if (
@@ -234,7 +261,11 @@ export const poll = async <T>({
           labelKey: "error.high_load_retrying",
         });
       }
-      await waitForMilliseconds(millisecondsToWait);
+      const id = await waitForMillisecondsPolling(millisecondsToWait);
+      // Exit polling if the timeout was cleared
+      if (!(id in currentPolls)) {
+        return undefined;
+      }
       if (useExponentialBackoff) {
         millisecondsToWait *= 2;
       }

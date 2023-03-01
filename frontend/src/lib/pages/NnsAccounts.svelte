@@ -5,13 +5,18 @@
   import { accountsStore } from "$lib/stores/accounts.store";
   import { nonNullish } from "@dfinity/utils";
   import type { Account } from "$lib/types/account";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { pollAccounts } from "$lib/services/accounts.services";
+  import { clearCurrentPolls } from "$lib/utils/utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
   onMount(() => {
     pollAccounts();
+  });
+
+  onDestroy(() => {
+    clearCurrentPolls();
   });
 </script>
 
