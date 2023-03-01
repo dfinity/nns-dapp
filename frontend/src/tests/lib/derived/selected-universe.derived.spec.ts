@@ -18,9 +18,12 @@ import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { NNS_UNIVERSE } from "../../../lib/derived/selectable-universes.derived";
-import { selectedUniverseStore } from "../../../lib/derived/selected-universe.derived";
-import { snsProjectsCommittedStore } from "../../../lib/derived/sns/sns-projects.derived";
+import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
+import {
+  selectedCkBTCUniverseIdStore,
+  selectedUniverseStore,
+} from "$lib/derived/selected-universe.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -238,6 +241,35 @@ describe("selected universe derived stores", () => {
         routeId: AppPath.Neurons,
       });
       expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+    });
+  });
+
+  describe("selectedCkBTCUniverseIdStore", () => {
+    beforeEach(() => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+    });
+
+    it("should get undefined", () => {
+      const $store = get(selectedCkBTCUniverseIdStore);
+
+      expect($store).toBeUndefined();
+    });
+
+    it("should get ckbtc universe id", () => {
+      const $store1 = get(selectedCkBTCUniverseIdStore);
+
+      expect($store1).toBeUndefined();
+
+      page.mock({
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Accounts,
+      });
+
+      const $store2 = get(selectedCkBTCUniverseIdStore);
+      expect($store2.toText()).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
     });
   });
 });
