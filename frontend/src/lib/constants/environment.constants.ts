@@ -43,5 +43,5 @@ export const IS_TESTNET: boolean =
   FETCH_ROOT_KEY === true &&
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
-// TODO: disable TVL display locally until we use the XCR canister to fetch teh ICP<>USD exchange rate and a certified endpoint to fetch the TVL
-export const ENABLE_TVL = !DEV;
+// Disable TVL or transaction rate warning locally because that information is not crucial when we develop
+export const ENABLE_METRICS = !DEV;

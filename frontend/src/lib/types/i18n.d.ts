@@ -852,6 +852,8 @@ interface I18nSns_status_description {
 
 interface I18nMetrics {
   tvl: string;
+  nns_high_load: string;
+  thanks_fun: string;
 }
 
 interface I18nCkbtc {

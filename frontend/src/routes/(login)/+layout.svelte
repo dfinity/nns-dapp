@@ -9,6 +9,8 @@
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
   import { navigating } from "$app/stores";
   import { isNullish } from "@dfinity/utils";
+  import Metrics from "$lib/components/metrics/Metrics.svelte";
+  import Warnings from "$lib/components/metrics/Warnings.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -38,6 +40,9 @@
       </div>
     </div>
   </Layout>
+
+  <Metrics />
+  <Warnings />
 {/if}
 
 <style lang="scss">

@@ -1,11 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { onDestroy } from "svelte/internal";
-  import {
-    type MetricsCallback,
-    initMetricsWorker,
-  } from "$lib/services/$public/worker-metrics.services";
-  import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
@@ -13,25 +6,6 @@
   import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
-
-  let worker:
-    | {
-        startMetricsTimer: (params: { callback: MetricsCallback }) => void;
-        stopMetricsTimer: () => void;
-      }
-    | undefined;
-
-  onMount(async () => {
-    worker = await initMetricsWorker();
-
-    worker?.startMetricsTimer({
-      callback: syncMetrics,
-    });
-  });
-  onDestroy(() => worker?.stopMetricsTimer());
-
-  const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
-    metricsStore.set(data);
 
   let total: number | undefined;
   $: total = Number($metricsStore?.tvl?.tvl ?? "0");
