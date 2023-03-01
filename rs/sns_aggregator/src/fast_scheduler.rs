@@ -212,7 +212,7 @@ impl FastScheduler {
     }
     /// Schedule SNSs in the given state, if needed.
     fn global_schedule_state() {
-        if let Some((start_seconds, delay)) = Self::start_time_for_state(state) {
+        if let Some((start_seconds, delay)) = STATE.with(|state| Self::start_time_for_state(state)) {
             Self::global_start_at(start_seconds, delay);
         }
     }
