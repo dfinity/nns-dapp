@@ -76,8 +76,8 @@ impl FastScheduler {
             index_maybe
         })
     }
-    /// Gets data
-    async fn update(index: SnsIndex) {
+    /// Gets data, updating the global state.
+    async fn global_update(index: SnsIndex) {
         crate::state::log(format!("Updating SNS index {index} swap state..."));
         let swap_canister_id = STATE.with(|state| convert_canister_id!(state.swap_canister_from_index(index)));
         let root_canister_id = STATE.with(|state| convert_canister_id!(state.root_canister_from_index(index)));
@@ -107,12 +107,14 @@ impl FastScheduler {
             .unwrap_or_default();
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
+
     /// Gets the next SNS in need of updating, if any
     async fn update_next() {
         if let Some(next) = Self::global_next() {
-            Self::update(next).await;
+            Self::global_update(next).await;
         } else {
             crate::state::log(format!("No SNS to update."));
+            
         }
     }
 
