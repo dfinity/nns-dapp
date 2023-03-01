@@ -69,7 +69,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -107,7 +107,11 @@ export const loadSnsSwapCommitment = async ({
     onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         toastsError(
           toToastError({
             err,

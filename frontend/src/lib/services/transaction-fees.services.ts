@@ -30,7 +30,7 @@ export const loadSnsTransactionFee = async ({
       transactionsFeesStore.setFee({ certified, rootCanisterId, fee });
     },
     onError: ({ error: err, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 

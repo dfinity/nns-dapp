@@ -33,7 +33,11 @@ export const loadSnsParameters = async (
     onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         snsParametersStore.resetProject(rootCanisterId);
 
         toastsError(

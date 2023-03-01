@@ -43,7 +43,11 @@ const handleFindProposalsError = ({
   identity: Identity;
 }) => {
   console.error(err);
-  if (certified || identity.getPrincipal().isAnonymous()) {
+  if (
+    certified ||
+    identity.getPrincipal().isAnonymous() ||
+    FORCE_CALL_STRATEGY === "query"
+  ) {
     proposalsStore.setProposals({ proposals: [], certified });
 
     toastsError({
@@ -175,7 +179,7 @@ const findProposals = async ({
     request: ({ certified, identity }) =>
       queryProposals({ beforeProposal, identity, filters, certified }),
     onLoad: ({ response: proposals, certified }) => {
-      if (certified === false) {
+      if (!certified) {
         uncertifiedProposals = proposals;
         onLoad({ response: proposals, certified });
         return;

@@ -33,7 +33,7 @@ export const loadCkBTCToken = async ({
         token,
       }),
     onError: ({ error: err, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 

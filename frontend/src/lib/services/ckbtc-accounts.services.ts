@@ -31,7 +31,7 @@ export const loadCkBTCAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 

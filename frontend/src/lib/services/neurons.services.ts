@@ -256,7 +256,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -904,7 +904,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
       catchError(error);
