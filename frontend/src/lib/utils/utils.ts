@@ -249,7 +249,7 @@ export const poll = async <T>({
   pollId?: symbol;
 }): Promise<T> => {
   let highLoadToast: symbol | null = null;
-  // If we are already polling for this id, don't twice.
+  // If we are already polling for this id, don't poll twice.
   if (currentPolls.has(pollId)) {
     throw new PollingCancelledError(pollId);
   }
@@ -257,7 +257,9 @@ export const poll = async <T>({
   // `T` just makes TS happy.
   const cancelPromise = new Promise<T>((_resolve, reject) => {
     if (nonNullish(pollId)) {
-      currentPolls[pollId] = reject;
+      currentPolls.set(pollId, (err) => {
+        reject(err);
+      });
     }
   });
   for (let counter = 0; counter < maxAttempts; counter++) {

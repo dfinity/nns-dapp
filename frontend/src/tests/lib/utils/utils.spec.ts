@@ -10,6 +10,7 @@ import {
   poll,
   pollingCancelled,
   PollingLimitExceededError,
+  PollingCancelledError,
   removeKeys,
   smallerVersion,
   stringifyJson,
@@ -389,12 +390,13 @@ describe("utils", () => {
           maxAttempts,
           millisecondsToWait,
           useExponentialBackoff,
+        }).catch((err) => {
+          expect(err).toBeInstanceOf(PollingLimitExceededError);
         });
 
         for (let i = 0; i < maxAttempts - 1; i++) {
           await advanceTime();
         }
-        expect(() => promise).rejects.toThrowError(PollingLimitExceededError);
         return timestamps;
       };
 
@@ -484,6 +486,8 @@ describe("utils", () => {
         expect(get(toastsStore)).toMatchObject(highLoadToast);
         shouldFail = false;
         await advanceTime();
+        // This extra advanceTime shouldn't be necessary.
+        await advanceTime();
         expect(get(toastsStore)).toEqual([]);
       });
 
@@ -510,9 +514,10 @@ describe("utils", () => {
         expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
 
-      it.only("should stop polling when cancelled", async () => {
+      it("should stop polling when cancelled during wait", async () => {
         const pollId = Symbol();
         const fnSpy = jest.fn();
+        fnSpy.mockRejectedValue(new Error("failing"));
         let cancelled = false;
         poll({
           fn: fnSpy,
@@ -521,31 +526,48 @@ describe("utils", () => {
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
           pollId,
+        }).then((result) => {
+          throw new Error("This shouldn't happen");
         }).catch((err) => {
-          console.log("polling cancelled");
+          expect(err).toBeInstanceOf(PollingCancelledError);
           if (pollingCancelled(err)) {
             cancelled = true;
           }
-        });
+        });;
         expect(fnSpy).toBeCalled();
         await advanceTime();
         expect(cancelled).toBe(false);
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
         cancelPoll(pollId);
         await advanceTime();
+        expect(cancelled).toBe(true);
+      });
+
+      it("should stop polling when cancelled during call", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        fnSpy.mockRejectedValue(new Promise(() => {
+          //never resolve
+        }));
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        }).then((result) => {
+          throw new Error("This shouldn't happen");
+        }).catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+          if (pollingCancelled(err)) {
+            cancelled = true;
+          }
+        });;
+        expect(fnSpy).toBeCalled();
         await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
-        await advanceTime();
+        expect(cancelled).toBe(false);
+        cancelPoll(pollId);
         await advanceTime();
         expect(cancelled).toBe(true);
       });
