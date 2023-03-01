@@ -24,7 +24,10 @@ import {
   mockAccountsStoreData,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
@@ -233,17 +236,19 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when accounts are not available", () => {
+    const mainBalanceE8s = BigInt(10_000_000);
+    let queryAccountSpy: jest.SpyInstance;
+    let queryAccountBalanceSpy: jest.SpyInstance;
     beforeEach(() => {
       accountsStore.reset();
-    });
-    it("loads accounts and renders account selector", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
+      queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      jest
+      queryAccountSpy = jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
+    });
+    it("loads accounts and renders account selector", async () => {
       const { queryByTestId } = await renderSwapModal();
 
       expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
@@ -252,6 +257,20 @@ describe("ParticipateSwapModal", () => {
       await waitFor(() =>
         expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
+    });
+
+    it("loads accounts with query only", async () => {
+      await renderSwapModal();
+
+      expect(queryAccountSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledWith({
+        accountIdentifier: mockAccountDetails.account_identifier,
+        identity: mockIdentity,
+        certified: false,
+      });
     });
   });
 });
