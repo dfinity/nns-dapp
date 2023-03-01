@@ -5,13 +5,15 @@
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
-  import { getContext } from "svelte";
+  import { getContext, onMount } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
+  import { Principal } from "@dfinity/principal";
+  import { querySnsMetrics } from "$lib/services/sns-swap-metrics.services";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -37,8 +39,23 @@
     amount: buyersTotalCommitment,
     token: ICPToken,
   });
+
+  let saleBuyerCount: number | undefined;
+  onMount(async () => {
+    // TODO: bind by rootCanisterId
+    const swapCanisterId = Principal.fromText("2hx64-daaaa-aaaaq-aaana-cai");
+    saleBuyerCount = await querySnsMetrics({ swapCanisterId });
+  });
 </script>
 
+{#if saleBuyerCount !== undefined}
+  <KeyValuePair testId="sns-project-current-sale-buyer-count">
+    <span slot="key">
+      {$i18n.sns_project_detail.current_sale_buyer_count}
+    </span>
+    <span slot="value">{saleBuyerCount}</span>
+  </KeyValuePair>
+{/if}
 <KeyValuePair testId="sns-project-current-commitment">
   <span slot="key">
     {$i18n.sns_project_detail.current_overall_commitment}
