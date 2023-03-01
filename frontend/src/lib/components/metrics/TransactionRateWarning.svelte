@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Toasts } from "@dfinity/gix-components";
   import { metricsStore } from "$lib/stores/metrics.store";
   import { toastsHide, toastsShow } from "$lib/stores/toasts.store";
   import { nonNullish } from "@dfinity/utils";
@@ -46,4 +45,4 @@
   $: transactionRate, (() => transactionRateWarning())();
 </script>
 
-<Toasts position="top" />
+<!-- display transaction rate warnings -->

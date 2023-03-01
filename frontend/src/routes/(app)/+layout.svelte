@@ -8,9 +8,7 @@
     initAppAuth,
     initAppPublicData,
   } from "$lib/services/$public/app.services";
-  import Metrics from "$lib/components/metrics/Metrics.svelte";
   import Warnings from "$lib/components/metrics/Warnings.svelte";
-  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
@@ -23,10 +21,6 @@
 </script>
 
 <slot />
-
-{#if ENABLE_METRICS}
-  <Metrics />
-{/if}
 
 <Warnings />
 
