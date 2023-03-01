@@ -370,12 +370,12 @@ describe("utils", () => {
         millisecondsToWait?: number;
         useExponentialBackoff: boolean;
       }): Promise<number[]> => {
-        const t0 = new Date().getTime();
+        const t0 = Date.now();
         const timestamps = [];
 
         const promise = poll({
           fn: async () => {
-            timestamps.push(new Date().getTime() - t0);
+            timestamps.push(Date.now() - t0);
             throw new Error();
           },
           shouldExit: () => false,
@@ -418,6 +418,18 @@ describe("utils", () => {
             useExponentialBackoff: true,
           })
         ).toEqual([0, 1000, 3000, 7000, 15000]);
+      });
+
+      it("should not wait after the last failure", async () => {
+        const t0 = Date.now();
+        const timestamps = await getTimestamps({
+          maxAttempts: 5,
+          millisecondsToWait: 1000,
+          useExponentialBackoff: false,
+        });
+        const totalTimePassed = Date.now() - t0;
+        const timeOfLastCall = timestamps[timestamps.length - 1];
+        expect(totalTimePassed).toEqual(timeOfLastCall);
       });
 
       it("should show 'high load' message after ~1 minute", async () => {
