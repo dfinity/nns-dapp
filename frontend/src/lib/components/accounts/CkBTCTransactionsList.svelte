@@ -10,7 +10,7 @@
   } from "$lib/utils/icrc-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import type {CanisterId} from "$lib/types/canister";
+  import type { CanisterId } from "$lib/types/canister";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
