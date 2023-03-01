@@ -204,7 +204,7 @@ impl FastScheduler {
 
     /// Schedule the given SNS, if needed.  This should be called by the slow updater whenever
     /// it has a new SNS.
-    fn global_schedule_sns(swap_state: &GetStateResponse) {
+    pub fn global_schedule_sns(swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) =
             STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state))
         {
