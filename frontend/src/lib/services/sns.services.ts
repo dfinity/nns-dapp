@@ -106,8 +106,9 @@ export const loadSnsSwapCommitment = async ({
     return;
   }
 
+  // We use update when we want to force fetch the data to make sure we have the latest data.
   queryAndUpdate<SnsSwapCommitment, unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: forceFetch ? "update" : FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,

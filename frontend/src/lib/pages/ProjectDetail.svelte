@@ -29,13 +29,7 @@
 
   export let rootCanisterId: string | undefined | null;
 
-  // Wait until the project summary is loaded.
-  // This way the sns wrapper will be cached.
-  $: if (
-    nonNullish(rootCanisterId) &&
-    isSignedIn($authStore.identity) &&
-    nonNullish($projectDetailStore.summary)
-  ) {
+  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
     loadCommitment({ rootCanisterId, forceFetch: false });
   }
 
