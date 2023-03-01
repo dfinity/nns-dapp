@@ -486,6 +486,27 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
+    it("should handle sale-not-open error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN,
+        })
+      );
+
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_not_open",
+        })
+      );
+      expect(ticketFromStore()?.ticket).toEqual(null);
+    });
+
     it("should reuse the ticket from the ticket-exist error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
