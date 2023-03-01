@@ -71,7 +71,7 @@ impl FastScheduler {
             let iter = Self::needs_update_iter(&sns_cache)
                 .skip(last_sns_update as usize + 1)
                 .chain(Self::needs_update_iter(&sns_cache).take(last_sns_update as usize + 1));
-            let index_maybe = iter.filter_map(|x| x).next().copied();
+            let index_maybe = iter.flatten().next().copied();
             state.fast_scheduler.borrow_mut().last_sns_updated = index_maybe;
             index_maybe
         })
@@ -113,7 +113,7 @@ impl FastScheduler {
         if let Some(next) = Self::global_next() {
             Self::global_update(next).await;
         } else {
-            crate::state::log(format!("No SNS to update."));
+            crate::state::log("No SNS to update.".to_string());
             // Pause until the next SNS sale is about to start
             Self::global_stop();
             Self::global_schedule_state();
@@ -213,7 +213,7 @@ impl FastScheduler {
     }
     /// Schedule SNSs in the given state, if needed.
     fn global_schedule_state() {
-        if let Some((start_seconds, delay)) = STATE.with(|state| Self::start_time_for_state(state)) {
+        if let Some((start_seconds, delay)) = STATE.with(Self::start_time_for_state) {
             Self::global_start_at(start_seconds, delay);
         }
     }
