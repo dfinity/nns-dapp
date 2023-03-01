@@ -207,7 +207,7 @@ fn setup(config: Option<Config>) {
         }
     });
     // Schedule fast collection of swap state
-    FastScheduler::start();
+    FastScheduler::start_global();
     // Get one SNS quickly, so that we don't need to wait for the normal, slow schedule before
     // there is some sign of life.
     //

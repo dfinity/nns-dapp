@@ -106,18 +106,24 @@ impl FastScheduler {
         }
     }
 
-    /// Starts the update timer.
-    pub fn start() {
-        let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
+    /// Starts the update timer using the global state.
+    pub fn start_global() {
+        let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().fast_interval_ms));
         crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
         STATE.with(|state| {
-            let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::update_next()));
-            let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
-            if let Some(id) = old_timer {
-                ic_cdk::timer::clear_timer(id);
-            }
+            state.fast_scheduler.borrow_mut().start(timer_interval);
         });
     }
+
+    /// Start this timer.
+    pub fn start(&mut self, timer_interval: Duration) {
+        let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::update_next()));
+        let old_timer = self.update_timer.replace(timer_id);
+        if let Some(id) = old_timer {
+            ic_cdk::timer::clear_timer(id);
+        }
+    }
+
     /// When to start collecting data, depending on information about the provided SNS.
     ///
     fn start_in(&mut self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
@@ -154,7 +160,7 @@ impl FastScheduler {
 
     fn schedule_start_maybe(&mut self, swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) = self.start_in(swap_state) {
-            let start_timer = set_timer(delay, Self::start);
+            let start_timer = set_timer(delay, Self::start_global);
             if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {
                 clear_timer(old_timer);
             }
