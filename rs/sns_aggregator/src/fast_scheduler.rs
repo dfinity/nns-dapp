@@ -1,5 +1,5 @@
 use std::{borrow::Borrow, time::Duration};
-use ic_cdk::timer::{TimerId, set_timer_interval};
+use ic_cdk::{timer::{TimerId, set_timer_interval, set_timer, clear_timer}, api::time};
 use crate::{
     state::{STATE, State},
     types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse}, convert_canister_id,
@@ -13,6 +13,11 @@ pub struct FastScheduler {
     last_sns_updated: Option<SnsIndex>,
     /// The fast update timer
     update_timer: Option<TimerId>,
+    /// The time of the next sale start, with a trigger to start collecting data then.
+    /// 
+    /// The time is in seconds since the UNIX epoch, as provided by ic0::time() / 1_000_000_000.
+    /// See: https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-time
+    next_start_seconds: Option<(u64, TimerId)>,
 }
 impl FastScheduler {
     /// Lifecycle of an open swap.  See https://github.com/dfinity/ic/blob/master/rs/sns/swap/proto/ic_sns_swap/pb/v1/swap.proto
@@ -113,7 +118,46 @@ impl FastScheduler {
             }
         });
     }
-    /// Maybe start a timer, depending on information about the provided SNS.
+    /// When to start collecting data, depending on information about the provided SNS.
     ///
-    fn start_maybe() {}
+    fn start_in(&mut self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
+        // Are we already running?
+        if self.update_timer.is_some() {
+            return None;
+        }
+        // Does the SNS have swap state?
+        let swap = swap_state.swap.as_ref()?;
+        // Is a start scheduled?
+        let sale_start_seconds = swap.decentralization_sale_open_timestamp_seconds?;
+        // We would want to start a bit before the sale.
+        let data_collection_start_seconds = sale_start_seconds - 10;
+        // Has the sale stage passed?
+        if swap.lifecycle > Self::LIFECYCLE_OPEN {
+            return None
+        }
+        // Is the start time after our next scheduled start time?  If so it's not interesting yet.
+        if let Some((time, _timer)) = self.next_start_seconds {
+            if data_collection_start_seconds >= time {
+                return None;
+            }
+        }
+        // Ok, make sure that we are running when the sale starts.
+        let now_seconds = time() / 1_000_000_000;
+        // Already started, or starting soon?
+        let delay = if data_collection_start_seconds < now_seconds {
+            0
+        } else {
+            data_collection_start_seconds - now_seconds
+        };
+        Some((data_collection_start_seconds, Duration::from_secs(delay)))
+    }
+
+    fn schedule_start_maybe(&mut self, swap_state: &GetStateResponse) {
+        if let Some((start_seconds, delay)) = self.start_in(swap_state) {
+            let start_timer = set_timer(delay, Self::start);
+            if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {
+                clear_timer(old_timer);
+            }
+        }
+    }
 }
