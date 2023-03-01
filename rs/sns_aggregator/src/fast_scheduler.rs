@@ -125,7 +125,7 @@ impl FastScheduler {
         });
     }
 
-    /// Start this timer.
+    /// Start collecting data now.
     pub fn start(&mut self, timer_interval: Duration) {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::update_next()));
         let old_timer = self.update_timer.replace(timer_id);
@@ -134,9 +134,26 @@ impl FastScheduler {
         }
     }
 
+    /// Start collecting data at some time in the future.
+    ///
+    /// Note: We request both the delay and the timestamp to avoid making a syscall for data that
+    /// is almost certainly already available to the caller.
+    pub fn global_start_at(start_seconds: u64, delay: Duration) {
+        let start_timer = set_timer(delay, Self::global_start);
+        if let Some((_, old_timer)) = STATE.with(|state| {
+            state
+                .fast_scheduler
+                .borrow_mut()
+                .next_start_seconds
+                .replace((start_seconds, start_timer))
+        }) {
+            clear_timer(old_timer);
+        }
+    }
+
     /// When to start collecting data, depending on information about the provided SNS.
     ///
-    fn start_in(&mut self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
+    fn start_in(&self, swap_state: &GetStateResponse) -> Option<(u64, Duration)> {
         // Are we already running?
         if self.update_timer.is_some() {
             return None;
@@ -175,6 +192,25 @@ impl FastScheduler {
             if let Some((_, old_timer)) = self.next_start_seconds.replace((start_seconds, start_timer)) {
                 clear_timer(old_timer);
             }
+        }
+    }
+
+    /// Set the timer for an SNS
+    fn schedule_data_collection_for_state_maybe(state: &State) {
+        let this = state.fast_scheduler.borrow();
+        let next_start = state
+            .stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .upstream_data
+            .borrow()
+            .values()
+            .filter_map(|value| this.start_in(&value.swap_state))
+            .reduce(|a, b| if a.0 < b.0 { a } else { b });
+        if let Some((timestamp_seconds, delay)) = next_start {
+            state.fast_scheduler.borrow_mut().next_start_seconds =
+                Some((timestamp_seconds, set_timer(delay, Self::global_start)));
         }
     }
 }
