@@ -12,8 +12,17 @@
   layoutTitleStore.set($i18n.neuron_detail.title);
 </script>
 
-{#if $isNnsUniverseStore}
-  <NnsNeuronDetail neuronIdText={neuronId} />
-{:else if nonNullish($snsProjectSelectedStore)}
-  <SnsNeuronDetail {neuronId} />
-{/if}
+<div data-tid="neuron-detail-component" class="component">
+  {#if $isNnsUniverseStore}
+    <NnsNeuronDetail neuronIdText={neuronId} />
+  {:else if nonNullish($snsProjectSelectedStore)}
+    <SnsNeuronDetail {neuronId} />
+  {/if}
+</div>
+
+<style lang="scss">
+  .component {
+    display: contents;
+  }
+</style>
+
