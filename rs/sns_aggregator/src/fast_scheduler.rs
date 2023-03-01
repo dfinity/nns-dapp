@@ -118,15 +118,6 @@ impl FastScheduler {
         }
     }
 
-    /// Starts the update timer using the global state.
-    pub fn global_start() {
-        let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().fast_interval_ms));
-        crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
-        STATE.with(|state| {
-            state.fast_scheduler.borrow_mut().start(timer_interval);
-        });
-    }
-
     /// Start collecting data now.
     pub fn start(&mut self, timer_interval: Duration) {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::update_next()));
@@ -134,6 +125,14 @@ impl FastScheduler {
         if let Some(id) = old_timer {
             ic_cdk::timer::clear_timer(id);
         }
+    }
+    /// Starts the update timer using the global state.
+    pub fn global_start() {
+        let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().fast_interval_ms));
+        crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
+        STATE.with(|state| {
+            state.fast_scheduler.borrow_mut().start(timer_interval);
+        });
     }
 
     /// Start collecting data at some time in the future.
