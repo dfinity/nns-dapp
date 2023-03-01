@@ -6,8 +6,10 @@
   import { nonNullish } from "@dfinity/utils";
   import type { Account } from "$lib/types/account";
   import { onDestroy, onMount } from "svelte";
-  import { pollAccounts } from "$lib/services/accounts.services";
-  import { clearCurrentPolls } from "$lib/utils/utils";
+  import {
+    clearPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -16,7 +18,7 @@
   });
 
   onDestroy(() => {
-    clearCurrentPolls();
+    clearPollAccounts();
   });
 </script>
 

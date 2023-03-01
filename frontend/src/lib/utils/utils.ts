@@ -192,36 +192,31 @@ export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   });
 
 export class PollingLimitExceededError extends Error {}
+
+export class PollingCancelledError extends Error {
+  public id: symbol;
+  constructor(id: symbol) {
+    super(`Polling cancelled, id: ${String(id)}`);
+    this.id = id;
+  }
+}
+
 // Exported for testing purposes
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
 const DEFAULT_WAIT_TIME_MS = 500;
 
-type Polls = Record<string, boolean>;
-const currentPolls: Polls = {};
-export const clearCurrentPolls = () => {
-  Object.keys(currentPolls).forEach((key: string) => {
-    clearTimeout(Number(key));
-    delete currentPolls[key];
-  });
+// Map symbol to `reject` function
+const currentPolls = new Map<symbol, (error: PollingCancelledError) => void>();
+
+export const cancelPoll = (id: symbol) => {
+  if (currentPolls.has(id)) {
+    // Call reject function to stop polling
+    const reject = currentPolls.get(id);
+    // TS doesn't know that `reject` is defined here
+    reject?.(new PollingCancelledError(id));
+    currentPolls.delete(id);
+  }
 };
-/**
- * Waits for a specific amount of milliseconds, and returns the id of the timeout.
- *
- * It loads the currentPolls object with the id of the timeout, so it can be cleared later.
- *
- * USED ONLY in `poll`
- *
- * @param milliseconds
- * @returns {string} whether it waited or not
- */
-const waitForMillisecondsPolling = (milliseconds: number): Promise<string> =>
-  new Promise((resolve) => {
-    const id = setTimeout(() => {
-      resolve(String(id));
-    }, milliseconds);
-    const idNumber = String(id);
-    currentPolls[idNumber] = true;
-  });
 
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
@@ -243,6 +238,7 @@ export const poll = async <T>({
   millisecondsToWait = DEFAULT_WAIT_TIME_MS,
   useExponentialBackoff = false,
   failuresBeforeHighLoadMessage = 6,
+  pollId,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
@@ -250,8 +246,16 @@ export const poll = async <T>({
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
   failuresBeforeHighLoadMessage?: number;
+  pollId?: symbol;
 }): Promise<T> => {
   let highLoadToast: symbol | null = null;
+  // We'll never call `resolve`, therefore the type doesn't matter.
+  // `T` just makes TS happy.
+  const cancelPromise = new Promise<T>((_resolve, reject) => {
+    if (nonNullish(pollId)) {
+      currentPolls[pollId] = reject;
+    }
+  });
   for (let counter = 0; counter < maxAttempts; counter++) {
     if (counter > 0) {
       if (
@@ -262,18 +266,17 @@ export const poll = async <T>({
           labelKey: "error.high_load_retrying",
         });
       }
-      const id = await waitForMillisecondsPolling(millisecondsToWait);
-      // Exit polling if the timeout was cleared
-      if (!(id in currentPolls)) {
-        return undefined;
-      }
+      await Promise.race([
+        waitForMilliseconds(millisecondsToWait),
+        cancelPromise,
+      ]);
       if (useExponentialBackoff) {
         millisecondsToWait *= 2;
       }
     }
 
     try {
-      const result = await fn();
+      const result = await Promise.race([fn(), cancelPromise]);
       highLoadToast && toastsHide(highLoadToast);
       return result;
     } catch (error: unknown) {
@@ -289,6 +292,9 @@ export const poll = async <T>({
 
 export const pollingLimit = (error: unknown): boolean =>
   error instanceof PollingLimitExceededError;
+
+export const pollingCancelled = (error: unknown): boolean =>
+  error instanceof PollingCancelledError;
 
 /**
  * Use to highlight a placeholder in a text rendered from i18n labels.

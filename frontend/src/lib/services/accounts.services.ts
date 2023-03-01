@@ -29,9 +29,15 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { poll, pollingLimit } from "$lib/utils/utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -358,14 +364,16 @@ const renameError = ({
 };
 
 const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+const pollAccountsId = Symbol();
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData> =>
+}): Promise<AccountsStoreData | undefined> =>
   poll({
     fn: () => loadAccounts(params),
     // Any error is an unknown error and worth a retry
     shouldExit: () => false,
+    pollId: pollAccountsId,
     useExponentialBackoff: true,
     maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
     millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
@@ -397,8 +405,14 @@ export const pollAccounts = async (certified = true) => {
       identity,
       certified: overriedCertified,
     });
-    accountsStore.set(certifiedAccounts);
+    if (nonNullish(certifiedAccounts)) {
+      accountsStore.set(certifiedAccounts);
+    }
   } catch (err) {
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
+      return;
+    }
     const errorKey = pollingLimit(err)
       ? "error.accounts_not_found_poll"
       : "error.accounts_not_found";
@@ -410,3 +424,5 @@ export const pollAccounts = async (certified = true) => {
     );
   }
 };
+
+export const clearPollAccounts = () => cancelPoll(pollAccountsId);

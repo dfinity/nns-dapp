@@ -1,7 +1,12 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { createEventDispatcher, getContext, onMount } from "svelte";
+  import {
+    createEventDispatcher,
+    getContext,
+    onDestroy,
+    onMount,
+  } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -34,10 +39,17 @@
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
   import { SaleStep } from "$lib/types/sale";
-  import { pollAccounts } from "$lib/services/accounts.services";
+  import {
+    clearPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
 
   onMount(() => {
     pollAccounts(false);
+  });
+
+  onDestroy(() => {
+    clearPollAccounts();
   });
 
   const { store: projectDetailStore, reload } =

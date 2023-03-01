@@ -13,16 +13,23 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
-  import { createEventDispatcher, tick } from "svelte";
+  import { createEventDispatcher, onDestroy, tick } from "svelte";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { onMount } from "svelte";
-  import { pollAccounts } from "$lib/services/accounts.services";
+  import {
+    clearPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
 
   onMount(() => {
     pollAccounts();
+  });
+
+  onDestroy(() => {
+    clearPollAccounts();
   });
 
   const lastSteps: WizardSteps = [

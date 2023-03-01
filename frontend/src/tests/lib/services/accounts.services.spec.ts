@@ -768,6 +768,7 @@ describe("accounts-services", () => {
         // Make sure the timers are set before we advance time.
         await null;
         await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
         await waitFor(() =>
