@@ -200,7 +200,7 @@ impl FastScheduler {
         Some((data_collection_start_seconds, Duration::from_secs(delay)))
     }
 
-    /// Set the timer to get the given SNS, if needed.
+    /// Schedule the given SNS, if needed.
     fn global_schedule_sns(swap_state: &GetStateResponse) {
         if let Some((start_seconds, delay)) =
             STATE.with(|state| state.fast_scheduler.borrow().start_time_for_sns(swap_state))
@@ -208,14 +208,14 @@ impl FastScheduler {
             Self::global_start_at(start_seconds, delay);
         }
     }
-    /// Set the timer to get SNSs in th egiven state, if needed.
+    /// Schedule SNSs in the given state, if needed.
     fn global_schedule_state(state: &State) {
         if let Some((start_seconds, delay)) = Self::start_time_for_state(state) {
             Self::global_start_at(start_seconds, delay);
         }
     }
 
-    /// Set the timer for an SNS
+    /// When we need to start collecting data for the SNSs in the given state.
     fn start_time_for_state(state: &State) -> Option<(u64, Duration)> {
         let this = state.fast_scheduler.borrow();
         state
