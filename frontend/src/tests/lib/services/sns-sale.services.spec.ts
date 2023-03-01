@@ -1085,6 +1085,7 @@ describe("sns-api", () => {
         })
       );
       expect(ticketFromStore().ticket).toEqual(null);
+      expect(spyOnToastsSuccess).not.toBeCalled();
     });
 
     describe("TooOldError", () => {
