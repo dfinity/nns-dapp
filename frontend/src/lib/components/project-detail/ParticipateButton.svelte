@@ -57,6 +57,7 @@
 
   let userCommitment: undefined | bigint;
   $: userCommitment =
+    // swapCommitment=null - not initialized yet
     $projectDetailStore.swapCommitment === null
       ? undefined
       : getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
@@ -90,8 +91,6 @@
       return;
     }
 
-    assertNonNullish(userCommitment);
-
     snsTicketsStore.enablePolling(rootCanisterId);
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
@@ -100,7 +99,7 @@
 
     await restoreSnsSaleParticipation({
       rootCanisterId,
-      userCommitment,
+      userCommitment: userCommitment!,
       postprocess: reload,
       updateProgress,
     });
@@ -113,7 +112,7 @@
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
     isSignedIn($authStore.identity) &&
-    userCommitment !== undefined
+    nonNullish(userCommitment)
   ) {
     updateTicket();
   }
