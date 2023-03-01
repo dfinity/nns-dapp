@@ -1,6 +1,6 @@
 # Retract permission for the GIX team to create canisters on the SNS subnet
 
-The GIX team has no further need to create canisters on the SNS subnet at this time.  We would like to be releived
+The GIX team has no further need to create canisters on the SNS subnet at this time.  We would like to be relieved
 of the power, and responsibility, of being able to create such canisters.
 
 ## Context
