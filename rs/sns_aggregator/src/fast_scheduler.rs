@@ -110,7 +110,7 @@ impl FastScheduler {
         crate::state::log(format!("Updating SNS index {index}... DONE"));
     }
 
-    /// Updat the next SNS, if any.  Else pause the update timer.
+    /// Update the next SNS, if any.  Else pause updates until the next known sale.
     async fn global_update_next() {
         if let Some(next) = Self::global_next() {
             Self::global_update(next).await;
