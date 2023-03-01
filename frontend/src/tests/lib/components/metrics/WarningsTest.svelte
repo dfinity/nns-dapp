@@ -4,6 +4,7 @@
   import { Toasts } from "@dfinity/gix-components";
 </script>
 
-<TransactionRateWarning />
+<!-- ENABLE_METRICS is global false for test that is why instead of mocking declare the same components here -->
 <Metrics />
+<TransactionRateWarning />
 <Toasts position="top" />
