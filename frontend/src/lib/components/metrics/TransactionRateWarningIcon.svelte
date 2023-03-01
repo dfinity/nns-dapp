@@ -7,7 +7,7 @@
 </div>
 
 <style lang="scss">
-  .high {
+  div {
     --meter-rotate: 70deg;
   }
 </style>
