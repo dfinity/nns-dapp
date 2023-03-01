@@ -6,14 +6,19 @@
   import TransactionModal from "../accounts/NewTransaction/TransactionModal.svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import { pollAccounts } from "$lib/services/accounts.services";
 
   export let neuron: NeuronInfo;
+
+  onMount(() => {
+    pollAccounts();
+  });
 
   let currentStep: WizardStep;
 
