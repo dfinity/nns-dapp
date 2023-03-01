@@ -13,7 +13,12 @@ import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
@@ -27,6 +32,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
+import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({
@@ -395,6 +401,23 @@ describe("TransactionModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(onSubmit).toBeCalled());
+    });
+  });
+
+  describe("progress", () => {
+    it("should got to step progress", () => {
+      const { component } = render(TransactionModalTest);
+
+      expect(component.$$.ctx[component.$$.props["currentStep"]]).toEqual({
+        name: "Progress",
+        title: "",
+      });
+    });
+
+    it("should disable close on step progress", () => {
+      const { getByTestId } = render(TransactionModalTest);
+
+      expect(getByTestId("close-modal")?.hasAttribute("disabled")).toBeTruthy();
     });
   });
 });

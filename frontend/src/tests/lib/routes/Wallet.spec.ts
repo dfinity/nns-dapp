@@ -7,11 +7,13 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { mockAccountsStoreData } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { mockSnsFullProject, principal } from "../../mocks/sns-projects.mock";
 import { snsResponseFor } from "../../mocks/sns-response.mock";
@@ -43,6 +45,7 @@ describe("Wallet", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       })
     );
+    accountsStore.set(mockAccountsStoreData);
   });
 
   beforeAll(() =>

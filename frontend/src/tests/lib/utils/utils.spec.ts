@@ -13,14 +13,17 @@ import {
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("utils", () => {
-  beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
-  );
-
-  afterAll(() => jest.resetAllMocks());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    toastsStore.reset();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+  });
 
   describe("stringifyJson", () => {
     const SAMPLE = { a: 0, b: [1, 2], c: "c" };
@@ -264,62 +267,216 @@ describe("utils", () => {
   });
 
   describe("poll", () => {
-    beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
-      // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
-    });
-
-    it("should recall the function until `shouldExit` is true", async () => {
-      const maxCalls = 3;
-      let calls = 0;
-      await poll({
-        fn: async () => {
-          calls += 1;
-          if (calls < maxCalls) {
-            throw new Error();
-          }
-          return calls;
-        },
-        shouldExit: () => calls >= maxCalls,
+    describe("without timers", () => {
+      beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+        // Avoid to print errors during test
+        jest.spyOn(console, "log").mockImplementation(() => undefined);
       });
-      expect(calls).toBe(maxCalls);
-    });
 
-    it("should return the value of `fn` when it doesn't throw", async () => {
-      const result = 10;
-      const expected = await poll({
-        fn: async () => result,
-        shouldExit: () => false,
-      });
-      expect(expected).toBe(result);
-    });
-
-    it("should throw when `shuoldExit` returns trye", async () => {
-      const result = 10;
-      const expected = await poll({
-        fn: async () => result,
-        shouldExit: () => true,
-      });
-      expect(expected).toBe(result);
-    });
-
-    it("should throw after `maxAttempts`", async () => {
-      let counter = 0;
-      const maxAttempts = 5;
-      const call = () =>
-        poll({
+      it("should recall the function until `fn` succeeds", async () => {
+        const maxCalls = 3;
+        let calls = 0;
+        await poll({
           fn: async () => {
-            counter += 1;
+            calls += 1;
+            if (calls < maxCalls) {
+              throw new Error();
+            }
+            return calls;
+          },
+          shouldExit: () => false,
+        });
+        expect(calls).toBe(maxCalls);
+      });
+
+      it("should recall the function until `shouldExit` is true", async () => {
+        const maxCalls = 3;
+        let calls = 0;
+        const pollCall = () =>
+          poll({
+            fn: async () => {
+              calls += 1;
+              throw new Error("fn failed");
+            },
+            shouldExit: () => calls >= maxCalls,
+          });
+        await expect(pollCall).rejects.toThrow("fn failed");
+        expect(calls).toBe(maxCalls);
+      });
+
+      it("should return the value of `fn` when it doesn't throw", async () => {
+        const result = 10;
+        const expected = await poll({
+          fn: async () => result,
+          shouldExit: () => false,
+        });
+        expect(expected).toBe(result);
+      });
+
+      it("should throw when `shouldExit` returns true", async () => {
+        const result = 10;
+        const expected = await poll({
+          fn: async () => result,
+          shouldExit: () => true,
+        });
+        expect(expected).toBe(result);
+      });
+
+      it("should throw after `maxAttempts`", async () => {
+        let counter = 0;
+        const maxAttempts = 5;
+        const call = () =>
+          poll({
+            fn: async () => {
+              counter += 1;
+              throw new Error();
+            },
+            shouldExit: () => false,
+            maxAttempts,
+          });
+        // Without the `await`, the line didn't wait the `poll` to throw to
+        // move to the next line
+        await expect(call).rejects.toThrowError(PollingLimitExceededError);
+        expect(counter).toBe(maxAttempts);
+      });
+    });
+
+    describe("with fake timers", () => {
+      const highLoadToast = [
+        {
+          level: "error",
+          text: `${en.error.high_load_retrying}`,
+        },
+      ];
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+
+      const advanceTime = async (): Promise<void> => {
+        // Make sure the timers are set before we advance time.
+        await null;
+        await jest.runOnlyPendingTimers();
+      };
+
+      const getTimestamps = async ({
+        maxAttempts,
+        millisecondsToWait,
+        useExponentialBackoff,
+      }: {
+        maxAttempts: number;
+        millisecondsToWait?: number;
+        useExponentialBackoff: boolean;
+      }): Promise<number[]> => {
+        const t0 = Date.now();
+        const timestamps = [];
+
+        const promise = poll({
+          fn: async () => {
+            timestamps.push(Date.now() - t0);
             throw new Error();
           },
           shouldExit: () => false,
           maxAttempts,
+          millisecondsToWait,
+          useExponentialBackoff,
         });
-      // Without the `await`, the line didn't wait the `poll` to throw to move to the next line
-      await expect(call).rejects.toThrowError(PollingLimitExceededError);
-      expect(counter).toBe(maxAttempts);
+
+        for (let i = 0; i < maxAttempts; i++) {
+          await advanceTime();
+        }
+        expect(() => promise).rejects.toThrowError(PollingLimitExceededError);
+        return timestamps;
+      };
+
+      it("should have a default wait time of 500ms", async () => {
+        expect(
+          await getTimestamps({
+            maxAttempts: 2,
+            useExponentialBackoff: false,
+          })
+        ).toEqual([0, 500]);
+      });
+
+      it("should wait the same amount between calls", async () => {
+        expect(
+          await getTimestamps({
+            maxAttempts: 5,
+            millisecondsToWait: 1000,
+            useExponentialBackoff: false,
+          })
+        ).toEqual([0, 1000, 2000, 3000, 4000]);
+      });
+
+      it("should do exponential backoff", async () => {
+        expect(
+          await getTimestamps({
+            maxAttempts: 5,
+            millisecondsToWait: 1000,
+            useExponentialBackoff: true,
+          })
+        ).toEqual([0, 1000, 3000, 7000, 15000]);
+      });
+
+      it("should not wait after the last failure", async () => {
+        const t0 = Date.now();
+        const timestamps = await getTimestamps({
+          maxAttempts: 5,
+          millisecondsToWait: 1000,
+          useExponentialBackoff: false,
+        });
+        const totalTimePassed = Date.now() - t0;
+        const timeOfLastCall = timestamps[timestamps.length - 1];
+        expect(totalTimePassed).toEqual(timeOfLastCall);
+      });
+
+      it("should show 'high load' message after ~1 minute", async () => {
+        let calls = 0;
+        const failuresBeforeHighLoadMessage = 3;
+        const _ = poll({
+          fn: async () => {
+            calls += 1;
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+        });
+        expect(calls).toEqual(1);
+        await advanceTime();
+        expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
+
+      it("should show 'high load' message only once", async () => {
+        const _ = poll({
+          fn: async () => {
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage: 3,
+        });
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        // Still only 1 toast.
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
     });
   });
 

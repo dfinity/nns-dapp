@@ -2,12 +2,12 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext, onDestroy } from "svelte";
-  import { BottomSheet, Spinner } from "@dfinity/gix-components";
+  import { BottomSheet } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+  import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
@@ -25,6 +25,10 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import type { TicketStatus } from "$lib/types/sale";
+  import type { SaleStep } from "$lib/types/sale";
+  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
+  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -54,14 +58,19 @@
     : undefined;
 
   // busy if open ticket is available or not requested
-  let busy = true;
-  $: busy = hasOpenTicketInProcess({
+  let status: TicketStatus = "unknown";
+  $: ({ status } = hasOpenTicketInProcess({
     rootCanisterId,
     ticketsStore: $snsTicketsStore,
-  });
+  }));
+
+  let busy = true;
+  $: busy = status !== "none";
 
   // TODO(sale): find a better solution
   let loadingTicketRootCanisterId: string | undefined;
+
+  let progressStep: SaleStep | undefined = undefined;
 
   const updateTicket = async () => {
     // Avoid second call for the same rootCanisterId
@@ -76,9 +85,12 @@
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
+    const updateProgress = (step: SaleStep) => (progressStep = step);
+
     await restoreSnsSaleParticipation({
       rootCanisterId,
       postprocess: reload,
+      updateProgress,
     });
   };
 
@@ -117,21 +129,24 @@
     <div role="toolbar">
       <SignInGuard>
         {#if userCanParticipateToSwap}
-          <button
-            disabled={busy}
-            on:click={openModal}
-            class="primary participate"
-            data-tid="sns-project-participate-button"
-          >
-            {#if busy}
-              <span>
-                <Spinner size="small" inline />
-              </span>
-            {/if}
-            {userHasParticipatedToSwap
-              ? $i18n.sns_project_detail.increase_participation
-              : $i18n.sns_project_detail.participate}
-          </button>
+          {#if busy}
+            <div class="loader" data-tid="connecting_sale_canister">
+              <SpinnerText
+                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+              >
+            </div>
+          {:else}
+            <button
+              disabled={busy}
+              on:click={openModal}
+              class="primary participate"
+              data-tid="sns-project-participate-button"
+            >
+              {userHasParticipatedToSwap
+                ? $i18n.sns_project_detail.increase_participation
+                : $i18n.sns_project_detail.participate}
+            </button>
+          {/if}
         {:else}
           <Tooltip
             id="sns-project-participate-button-tooltip"
@@ -148,6 +163,10 @@
       </SignInGuard>
     </div>
   </BottomSheet>
+{/if}
+
+{#if status === "open" && nonNullish(progressStep)}
+  <SaleInProgressModal {progressStep} />
 {/if}
 
 {#if showModal}
@@ -181,5 +200,9 @@
       justify-content: flex-start;
       padding: 0;
     }
+  }
+
+  .loader {
+    padding: var(--padding) 0 0;
   }
 </style>

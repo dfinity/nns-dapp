@@ -6,13 +6,13 @@ import {
   getOpenTicket,
   newSaleTicket,
   notifyParticipation,
+  notifyPaymentFailure,
 } from "$lib/api/sns-sale.api";
 import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
-import { notifyPaymentFailure } from "../../../lib/api/sns-sale.api";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,

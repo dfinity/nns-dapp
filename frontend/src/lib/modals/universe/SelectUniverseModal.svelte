@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Modal } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
   import { buildSwitchUniverseUrl } from "$lib/utils/navigation.utils";
+  import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
@@ -17,7 +17,7 @@
 
 <Modal testId="select-universe-modal" on:nnsClose>
   <span slot="title" data-tid="select-universe-modal-title"
-    >{$i18n.universe.select_token}</span
+    >{$titleTokenSelectorStore}</span
   >
 
   <SelectUniverseList

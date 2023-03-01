@@ -21,11 +21,11 @@
   } from "$lib/stores/vote-registration.store";
   import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -115,8 +115,7 @@
           <VotingNeuronSelect {proposalInfo} {voteRegistration} />
         {:else}
           <div class="loader">
-            <span class="spinner"><Spinner inline size="small" /></span>
-            <span> <small>{$i18n.proposal_detail.loading_neurons}</small></span>
+            <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
           </div>
         {/if}
       {/if}
@@ -146,11 +145,5 @@
     @include media.min-width(large) {
       padding: var(--padding-3x) 0;
     }
-  }
-
-  .spinner {
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
   }
 </style>

@@ -1,8 +1,6 @@
+import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
-import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
-import { totalDissolvingNeurons } from "$lib/services/$public/governance-metrics.services";
-import type { BinanceAvgPrice } from "$lib/types/binance";
-import type { DissolvingNeurons } from "$lib/types/governance-metrics";
+import { queryTVL } from "$lib/services/$public/tvl.service";
 import type {
   PostMessage,
   PostMessageDataRequest,
@@ -58,23 +56,24 @@ const syncMetrics = async () => {
 
   syncInProgress = true;
 
-  const [avgPrice, dissolvingNeurons] = await Promise.all([
-    exchangeRateICPToUsd(),
-    totalDissolvingNeurons(),
-  ]);
+  try {
+    const tvl = await queryTVL();
 
-  emitCanister({ avgPrice, dissolvingNeurons });
+    emitCanister(tvl);
+  } catch (err: unknown) {
+    // We silence the error here as it is not an information crucial for the usage of the dapp
+    console.error(err);
+  }
 
   syncInProgress = false;
 };
 
-const emitCanister = (metrics: {
-  avgPrice: BinanceAvgPrice | null;
-  dissolvingNeurons: DissolvingNeurons | null;
-}) =>
+const emitCanister = (tvl: TvlResult) =>
   postMessage({
     msg: "nnsSyncMetrics",
     data: {
-      metrics,
+      metrics: {
+        tvl,
+      },
     },
   });
