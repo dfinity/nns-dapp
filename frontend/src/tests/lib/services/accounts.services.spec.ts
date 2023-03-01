@@ -705,6 +705,28 @@ describe("accounts-services", () => {
       expect(accounts).toEqual(mockAccounts);
     });
 
+    it("calls apis with certified param used", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+
+      await pollAccounts(false);
+
+      expect(queryAccountSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: false,
+      });
+    });
+
     it("polls if queryAccount fails", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
 

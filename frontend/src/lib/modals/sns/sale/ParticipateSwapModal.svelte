@@ -27,14 +27,17 @@
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import {
+    getCommitmentE8s,
+    hasOpenTicketInProcess,
+  } from "$lib/utils/sns.utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
   import { SaleStep } from "$lib/types/sale";
   import { pollAccounts } from "$lib/services/accounts.services";
 
   onMount(() => {
-    pollAccounts();
+    pollAccounts(false);
   });
 
   const { store: projectDetailStore, reload } =
@@ -113,11 +116,14 @@
       modal?.goProgress();
 
       const updateProgress = (step: SaleStep) => (progressStep = step);
+      const userCommitment =
+        getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
 
       const { success } = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        userCommitment,
         postprocess: async () => {
           await reload();
         },

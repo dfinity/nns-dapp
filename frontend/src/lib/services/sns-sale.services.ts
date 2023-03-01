@@ -262,8 +262,7 @@ const handleNewSaleTicketError = ({
             ticket: existingTicket,
           });
         }
-        // break to jump to the generic error message
-        break;
+        return;
       }
       case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
         const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
@@ -371,12 +370,14 @@ const getProjectFromStore = (
 
 export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;
+  userCommitment: bigint;
   postprocess: () => Promise<void>;
   updateProgress: (step: SaleStep) => void;
 }
 
 export const restoreSnsSaleParticipation = async ({
   rootCanisterId,
+  userCommitment,
   postprocess,
   updateProgress,
 }: ParticipateInSnsSaleParameters): Promise<void> => {
@@ -400,6 +401,7 @@ export const restoreSnsSaleParticipation = async ({
 
   await participateInSnsSale({
     rootCanisterId,
+    userCommitment,
     postprocess,
     updateProgress,
   });
@@ -407,23 +409,17 @@ export const restoreSnsSaleParticipation = async ({
 
 /**
  * Does participation validation and creates an open ticket.
- *
- * @param amount
- * @param rootCanisterId
- * @param account
  */
 export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
+  userCommitment,
   postprocess,
   updateProgress,
-}: {
+}: ParticipateInSnsSaleParameters & {
   amount: TokenAmount;
-  rootCanisterId: Principal;
   account: Account;
-  postprocess: () => Promise<void>;
-  updateProgress: (step: SaleStep) => void;
 }): Promise<{ success: boolean }> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
@@ -461,13 +457,14 @@ export const initiateSnsSaleParticipation = async ({
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
       // Step 2. to finish
-      await participateInSnsSale({
+      const { success } = await participateInSnsSale({
         rootCanisterId,
+        userCommitment,
         postprocess,
         updateProgress,
       });
 
-      return { success: true };
+      return { success };
     }
   } catch (err: unknown) {
     toastsError(
@@ -544,11 +541,13 @@ const notifyParticipationAndRemoveTicket = async ({
   identity,
   hasTooOldError,
   ticket,
+  userCommitment,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   hasTooOldError: boolean;
   ticket: Ticket;
+  userCommitment: bigint;
 }): Promise<{ success: boolean }> => {
   try {
     logWithTimestamp("[sale] 2. refresh_buyer_tokens");
@@ -560,8 +559,11 @@ const notifyParticipationAndRemoveTicket = async ({
       identity,
     });
 
-    // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
+    // current_committed (the sum of all) ≠ ticket.amount + previous commitment
+    if (
+      icp_accepted_participation_e8s !==
+      ticket.amount_icp_e8s + userCommitment
+    ) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
@@ -652,14 +654,15 @@ const pollTransfer = ({
 export const participateInSnsSale = async ({
   rootCanisterId,
   postprocess,
+  userCommitment,
   updateProgress,
-}: ParticipateInSnsSaleParameters): Promise<void> => {
+}: ParticipateInSnsSaleParameters): Promise<{ success: boolean }> => {
   let hasTooOldError = false;
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   // skip if there is no more ticket (e.g. on retry)
   if (isNullish(ticket)) {
     logWithTimestamp("[sale] skip participation - no ticket");
-    return;
+    return { success: false };
   }
 
   logWithTimestamp(
@@ -688,7 +691,7 @@ export const participateInSnsSale = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
-    return;
+    return { success: false };
   }
 
   const {
@@ -742,7 +745,7 @@ export const participateInSnsSale = async ({
         snsTicketsStore.setNoTicket(rootCanisterId);
 
         // stop the flow since the ticket was removed
-        return;
+        return { success: false };
       }
       case TxTooOldError: {
         /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
@@ -763,7 +766,7 @@ export const participateInSnsSale = async ({
         snsTicketsStore.setNoTicket(rootCanisterId);
 
         // stop the flow since the ticket was removed
-        return;
+        return { success: false };
       }
     }
   }
@@ -776,10 +779,11 @@ export const participateInSnsSale = async ({
     identity,
     hasTooOldError,
     ticket,
+    userCommitment,
   });
 
   if (!success) {
-    return;
+    return { success: false };
   }
 
   // Step 4.
@@ -802,4 +806,6 @@ export const participateInSnsSale = async ({
   snsTicketsStore.setNoTicket(rootCanisterId);
 
   updateProgress(SaleStep.DONE);
+
+  return { success: true };
 };

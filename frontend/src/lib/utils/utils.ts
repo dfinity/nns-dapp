@@ -1,4 +1,4 @@
-import { toastsError } from "$lib/stores/toasts.store";
+import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
@@ -224,13 +224,14 @@ export const poll = async <T>({
   useExponentialBackoff?: boolean;
   failuresBeforeHighLoadMessage?: number;
 }): Promise<T> => {
+  let highLoadToast: symbol | null = null;
   for (let counter = 0; counter < maxAttempts; counter++) {
     if (counter > 0) {
       if (
         nonNullish(failuresBeforeHighLoadMessage) &&
         counter === failuresBeforeHighLoadMessage
       ) {
-        toastsError({
+        highLoadToast = toastsError({
           labelKey: "error.high_load_retrying",
         });
       }
@@ -241,7 +242,9 @@ export const poll = async <T>({
     }
 
     try {
-      return await fn();
+      const result = await fn();
+      highLoadToast && toastsHide(highLoadToast);
+      return result;
     } catch (error: unknown) {
       if (shouldExit(error)) {
         throw error;

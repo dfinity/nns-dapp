@@ -7,7 +7,15 @@ import type { SnsSummary, SnsSwapCommitment } from "./sns";
  * SnsSummary or SnsSwapCommitment is a valid project
  */
 export type ProjectDetailStore = {
+  /**
+   * `null` - not initialized<br>
+   * `undefined` - not found
+   */
   summary: SnsSummary | undefined | null;
+  /**
+   * `null` - not initialized<br>
+   * `undefined` - not found
+   */
   swapCommitment: SnsSwapCommitment | undefined | null;
 };
 
