@@ -243,7 +243,6 @@ export const poll = async <T>({
 
     try {
       const result = await fn();
-      console.log("dskloetx hide");
       highLoadToast && toastsHide(highLoadToast);
       return result;
     } catch (error: unknown) {
