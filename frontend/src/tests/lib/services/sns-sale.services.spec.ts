@@ -500,6 +500,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).not.toBeCalled();
       expect(spyOnToastsShow).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
@@ -667,6 +668,7 @@ describe("sns-api", () => {
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -693,6 +695,7 @@ describe("sns-api", () => {
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -724,6 +727,7 @@ describe("sns-api", () => {
           token: ICPToken,
         }),
         account,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -771,6 +775,7 @@ describe("sns-api", () => {
           token: ICPToken,
         }),
         account,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -799,6 +804,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
       });
@@ -840,6 +846,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
       });
@@ -891,6 +898,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -931,6 +939,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -961,6 +970,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -997,6 +1007,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
       });
@@ -1038,6 +1049,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -1061,6 +1073,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -1073,6 +1086,7 @@ describe("sns-api", () => {
         })
       );
       expect(ticketFromStore().ticket).toEqual(null);
+      expect(spyOnToastsSuccess).not.toBeCalled();
     });
 
     describe("TooOldError", () => {
@@ -1085,6 +1099,7 @@ describe("sns-api", () => {
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
+          userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
         });
@@ -1116,6 +1131,7 @@ describe("sns-api", () => {
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
+          userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
         });
@@ -1145,6 +1161,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -1155,12 +1172,19 @@ describe("sns-api", () => {
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 100n,
+      });
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 1n,
+        },
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
       });
@@ -1172,6 +1196,56 @@ describe("sns-api", () => {
         })
       );
       expect(ticketFromStore().ticket).toEqual(null);
+    });
+
+    it("should not display a waring when current_committed = ticket.amount", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 1n,
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 1n,
+        },
+      });
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
+      });
+
+      expect(spyOnToastsShow).not.toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        })
+      );
+    });
+
+    it("should not display a waring when current_committed = ticket.amount for increase participation", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 10n,
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 3n,
+        },
+      });
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 7n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
+      });
+
+      expect(spyOnToastsShow).not.toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        })
+      );
     });
   });
 });
