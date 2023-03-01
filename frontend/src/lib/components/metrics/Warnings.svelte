@@ -2,11 +2,9 @@
   import { Toasts } from "@dfinity/gix-components";
   import { metricsStore } from "$lib/stores/metrics.store";
   import { toastsHide, toastsShow } from "$lib/stores/toasts.store";
-  import { IconMeter, toastsStore } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import type { ToastMsg } from "$lib/types/toast";
   import { i18n } from "$lib/stores/i18n";
-  import { WARNING_TRANSACTIONS_PER_SECONDS_MEDIUM_LOAD } from "$lib/constants/warnings.constants";
+  import { WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD } from "$lib/constants/warnings.constants";
   import TransactionRateWarning from "$lib/components/metrics/TransactionRateWarning.svelte";
 
   let transactionRate: number;
@@ -19,7 +17,7 @@
     // Display only one warning toast or do not display again a toast if user has manually closed the warning
     if (nonNullish(toastId)) {
       // If new transaction rate is lower threshold we reset the warning.
-      if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_MEDIUM_LOAD) {
+      if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD) {
         toastsHide(toastId);
         toastId = undefined;
       }
@@ -28,7 +26,7 @@
     }
 
     // There was no toast displayed but, is the subnet under high load?
-    if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_MEDIUM_LOAD) {
+    if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD) {
       return;
     }
 
