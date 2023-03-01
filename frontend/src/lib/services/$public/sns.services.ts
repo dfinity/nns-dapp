@@ -1,6 +1,7 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
@@ -92,6 +93,7 @@ export const loadSnsSummaries = (): Promise<void> => {
 
   return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
     identityType: "anonymous",
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       Promise.all([
         queryAllSnsMetadata({ certified, identity }),
@@ -101,7 +103,11 @@ export const loadSnsSummaries = (): Promise<void> => {
     onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         snsQueryStore.setLoadingState();
 
         toastsError(
@@ -121,6 +127,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified }) =>
       loadProposalsByTopic({
         certified,
@@ -134,7 +141,11 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
     onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         snsProposalsStore.setLoadingState();
 
         toastsError(
@@ -160,6 +171,7 @@ export const loadSnsNervousSystemFunctions = async (
   }
 
   return queryAndUpdate<SnsNervousSystemFunction[], Error>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getNervousSystemFunctions({
         rootCanisterId,
@@ -189,7 +201,11 @@ export const loadSnsNervousSystemFunctions = async (
     onError: ({ certified, error, identity }) => {
       // If the user is not logged in, only a query is done.
       // Therefore, we want to show an error even if the error doesn't come from a certified call.
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         toastsError({
           labelKey: "error__sns.sns_load_functions",
           err: error,

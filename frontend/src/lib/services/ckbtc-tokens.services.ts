@@ -1,5 +1,6 @@
 import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -19,6 +20,7 @@ export const loadCkBTCToken = async ({
   }
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getCkBTCToken({
         identity,
@@ -31,7 +33,7 @@ export const loadCkBTCToken = async ({
         token,
       }),
     onError: ({ error: err, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
