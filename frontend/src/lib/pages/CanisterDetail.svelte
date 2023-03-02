@@ -47,10 +47,8 @@
       return true;
     }
 
-    return (
-      $canistersStore.canisters !== undefined &&
-      $canistersStore.certified === true
-    );
+    // At the moment we load the stores with query only.
+    return $canistersStore.canisters !== undefined;
   };
 
   let canistersReady = false;

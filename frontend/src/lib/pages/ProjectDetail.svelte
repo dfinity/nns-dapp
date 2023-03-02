@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import { setContext, onDestroy } from "svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
@@ -9,6 +9,7 @@
     loadSnsLifecycle,
     loadSnsSwapCommitment,
     loadSnsTotalCommitment,
+    watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
@@ -22,15 +23,83 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
+  import {
+    loadSnsMetrics,
+    watchSnsMetrics,
+  } from "$lib/services/sns-swap-metrics.services";
 
   export let rootCanisterId: string | undefined | null;
 
+  let unsubscribeWatchCommitment: () => void | undefined;
+  let unsubscribeWatchMetrics: () => void | undefined;
+
+  onDestroy(() => {
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchMetrics?.();
+  });
+
   $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
     loadCommitment({ rootCanisterId, forceFetch: false });
+  }
+
+  $: if (nonNullish(rootCanisterId)) {
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
+  }
+
+  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
+    const swapCanisterId = $projectDetailStore?.summary
+      ?.swapCanisterId as Principal;
+
+    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
+      return;
+    }
+
+    await loadSnsMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      forceFetch,
+    });
+  };
+
+  const reload = async () => {
+    if (rootCanisterId === undefined || rootCanisterId === null) {
+      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+      return;
+    }
+
+    await Promise.all([
+      loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
+      loadSnsLifecycle({ rootCanisterId }),
+      loadCommitment({ rootCanisterId, forceFetch: true }),
+      reloadSnsMetrics({ forceFetch: true }),
+    ]);
+  };
+
+  const projectDetailStore = writable<ProjectDetailStore>({
+    summary: null,
+    swapCommitment: null,
+  });
+
+  debugSelectedProjectStore(projectDetailStore);
+
+  setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
+    store: projectDetailStore,
+    reload,
+  });
+
+  let swapCanisterId: Principal | undefined;
+  $: if (nonNullish(swapCanisterId) && nonNullish(rootCanisterId)) {
+    reloadSnsMetrics({ forceFetch: false });
+    unsubscribeWatchMetrics?.();
+    unsubscribeWatchMetrics = watchSnsMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId: swapCanisterId,
+    });
   }
 
   const loadCommitment = ({
@@ -50,31 +119,6 @@
       forceFetch,
     });
 
-  const reload = async () => {
-    if (rootCanisterId === undefined || rootCanisterId === null) {
-      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
-      return;
-    }
-
-    await Promise.all([
-      loadSnsTotalCommitment({ rootCanisterId }),
-      loadSnsLifecycle({ rootCanisterId }),
-      loadCommitment({ rootCanisterId, forceFetch: true }),
-    ]);
-  };
-
-  const projectDetailStore = writable<ProjectDetailStore>({
-    summary: null,
-    swapCommitment: null,
-  });
-
-  debugSelectedProjectStore(projectDetailStore);
-
-  setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
-    store: projectDetailStore,
-    reload,
-  });
-
   const goBack = async (): Promise<void> => {
     if (!browser) {
       return;
@@ -83,7 +127,7 @@
     return goto(AppPath.Launchpad, { replaceState: true });
   };
 
-  const mapProjectDetail = (rootCanisterId: string) => {
+  const setProjectStore = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
     if ($snsSummariesStore.length === 0) {
       return;
@@ -126,7 +170,18 @@
         await goBack();
         return;
       }
-      mapProjectDetail(rootCanisterId);
+      setProjectStore(rootCanisterId);
+
+      // TODO: Understand why this component doesn't subscribe to the store `projectDetailStore`.
+      // Is it because it's created in this same component?
+      const newSwapCanisterId = $snsSummariesStore.find(
+        ({ rootCanisterId: rootCanister }) =>
+          rootCanister?.toText() === rootCanisterId
+      )?.swapCanisterId;
+
+      if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
+        swapCanisterId = newSwapCanisterId;
+      }
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");

@@ -86,6 +86,21 @@ describe("CanisterDetail", () => {
     expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
   });
 
+  it("should render cards when not certified", async () => {
+    // Need to be the same that routePathCanisterId returns.
+    canistersStore.setCanisters({
+      canisters: [mockCanister],
+      certified: false,
+    });
+    const { queryByTestId } = render(CanisterDetail, props);
+
+    await waitFor(() =>
+      expect(queryByTestId("canister-cycles-card")).toBeInTheDocument()
+    );
+    // Waiting for the one above is enough
+    expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
+  });
+
   it("should not render cards if user is not the controller", async () => {
     setGetCanisterDetailReturn(Promise.reject(new UserNotTheControllerError()));
     // Need to be the same that routePathCanisterId returns.

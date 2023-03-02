@@ -5,6 +5,7 @@ import {
   querySnsSwapCommitments,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -23,7 +24,7 @@ import type {
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 /**
  * Loads the user commitments for all projects.
@@ -141,10 +142,14 @@ export const loadSnsSwapCommitment = async ({
 
 export const loadSnsTotalCommitment = async ({
   rootCanisterId,
+  strategy,
 }: {
   rootCanisterId: string;
+  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsGetDerivedStateResponse | undefined, unknown>({
+    strategy: strategy ?? FORCE_CALL_STRATEGY,
+    identityType: "current",
     request: ({ certified, identity }) =>
       querySnsDerivedState({
         rootCanisterId,
@@ -170,6 +175,20 @@ export const loadSnsTotalCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+
+export const watchSnsTotalCommitment = ({
+  rootCanisterId,
+}: {
+  rootCanisterId: string;
+}) => {
+  const id = setInterval(() => {
+    loadSnsTotalCommitment({ rootCanisterId, strategy: "query" });
+  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
+
+  return () => {
+    clearInterval(id);
+  };
+};
 
 export const loadSnsLifecycle = async ({
   rootCanisterId,
