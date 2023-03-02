@@ -5,21 +5,22 @@
   import { i18n } from "$lib/stores/i18n";
   import { WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD } from "$lib/constants/warnings.constants";
   import TransactionRateWarningIcon from "$lib/components/metrics/TransactionRateWarningIcon.svelte";
-  import {onDestroy} from "svelte";
+  import {layoutWarningToastId} from "$lib/stores/layout.store";
 
-  let transactionRate: number;
-  $: transactionRate =
-    $metricsStore?.transactionRate?.message_execution_rate[0]?.[1] ?? 0;
-
-  let toastId: symbol | undefined;
+  let transactionRate: number | undefined;
+  $: transactionRate = $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
 
   const transactionRateWarning = () => {
+      if (isNullish(transactionRate)) {
+          return;
+      }
+
     // Display only one warning toast or do not display again a toast if user has manually closed the warning
-    if (nonNullish(toastId)) {
+    if (nonNullish($layoutWarningToastId)) {
       // If new transaction rate is lower threshold we reset the warning.
       if (transactionRate < WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD) {
-        toastsHide(toastId);
-        toastId = undefined;
+        toastsHide($layoutWarningToastId);
+          layoutWarningToastId.set(undefined);
       }
 
       return;
@@ -30,10 +31,10 @@
       return;
     }
 
-    toastId = Symbol("warn-transaction-rate");
+    layoutWarningToastId.set(Symbol("warn-transaction-rate"));
 
     toastsShow({
-      id: toastId,
+      id: $layoutWarningToastId,
       labelKey: "metrics.thanks_fun",
       level: "info",
       position: "top",
@@ -43,14 +44,6 @@
       theme: "inverted",
     });
   };
-
-  onDestroy(() => {
-      if (isNullish(toastId)) {
-          return;
-      }
-
-      toastsHide(toastId);
-  })
 
   $: transactionRate, (() => transactionRateWarning())();
 </script>
