@@ -34,7 +34,7 @@ const {
   loadSnsSwapCommitments,
   loadSnsSwapCommitment,
   loadSnsTotalCommitment,
-  watchDerivedState,
+  watchSnsTotalCommitment,
 } = services;
 
 describe("sns-services", () => {
@@ -110,7 +110,7 @@ describe("sns-services", () => {
 
     it("should call api to get total commitments and load them in store", async () => {
       const derivedState: GetDerivedStateResponse = {
-        sns_tokens_per_icp: [1],
+        sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
@@ -125,14 +125,14 @@ describe("sns-services", () => {
         .mockImplementation(() => Promise.resolve(derivedState));
 
       const initStore = get(snsQueryStore);
-      const initState = initStore?.swaps.find(
+      const initState = initStore.swaps.find(
         (swap) => swap.rootCanisterId === canisterId
       )?.derived[0];
-      expect(initState?.buyer_total_icp_e8s).toEqual(
-        initState?.buyer_total_icp_e8s
+      expect(initState.buyer_total_icp_e8s).not.toEqual(
+        fromNullable(derivedState.buyer_total_icp_e8s)
       );
-      expect(initState?.sns_tokens_per_icp).toEqual(
-        initState?.sns_tokens_per_icp
+      expect(initState.sns_tokens_per_icp).not.toEqual(
+        fromNullable(derivedState.sns_tokens_per_icp)
       );
 
       await loadSnsTotalCommitment({
@@ -175,7 +175,7 @@ describe("sns-services", () => {
     });
   });
 
-  describe("watchDerivedState", () => {
+  describe("watchSnsTotalCommitment", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       snsSwapCommitmentsStore.reset();
@@ -188,8 +188,8 @@ describe("sns-services", () => {
 
     it("should call api to get total commitments and load them in store and keep polling", async () => {
       const derivedState: GetDerivedStateResponse = {
-        sns_tokens_per_icp: [1],
-        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        sns_tokens_per_icp: [2],
+        buyer_total_icp_e8s: [BigInt(2_000_000_000)],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
         certified: true,
@@ -198,11 +198,22 @@ describe("sns-services", () => {
       snsQueryStore.setData([metadatas, swaps]);
       const canisterId = swaps[0].rootCanisterId;
 
+      const initStore = get(snsQueryStore);
+      const initState = initStore.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.derived[0];
+      expect(initState.buyer_total_icp_e8s).not.toEqual(
+        fromNullable(derivedState.buyer_total_icp_e8s)
+      );
+      expect(initState.sns_tokens_per_icp).not.toEqual(
+        fromNullable(derivedState.sns_tokens_per_icp)
+      );
+
       const spy = jest
         .spyOn(api, "querySnsDerivedState")
-        .mockImplementation(() => Promise.resolve(derivedState));
+        .mockResolvedValue(derivedState);
 
-      const clearWatch = watchDerivedState({
+      const clearWatch = watchSnsTotalCommitment({
         rootCanisterId: canisterId,
       });
 

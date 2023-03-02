@@ -9,7 +9,7 @@
     loadSnsLifecycle,
     loadSnsSwapCommitment,
     loadSnsTotalCommitment,
-    watchDerivedState,
+    watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
@@ -43,7 +43,7 @@
 
   $: if (nonNullish(rootCanisterId)) {
     unsubscribeWatch?.();
-    unsubscribeWatch = watchDerivedState({ rootCanisterId });
+    unsubscribeWatch = watchSnsTotalCommitment({ rootCanisterId });
   }
 
   const loadCommitment = ({

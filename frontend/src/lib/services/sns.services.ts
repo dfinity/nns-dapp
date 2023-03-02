@@ -176,7 +176,7 @@ export const loadSnsTotalCommitment = async ({
     logMessage: "Syncing Sns swap commitment",
   });
 
-export const watchDerivedState = ({
+export const watchSnsTotalCommitment = ({
   rootCanisterId,
 }: {
   rootCanisterId: string;

@@ -7,7 +7,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import {
   loadSnsSwapCommitment,
-  watchDerivedState,
+  watchSnsTotalCommitment,
 } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -25,7 +25,9 @@ jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
-    watchDerivedState: jest.fn().mockImplementation(() => mockUnwatchCall),
+    watchSnsTotalCommitment: jest
+      .fn()
+      .mockImplementation(() => mockUnwatchCall),
   };
 });
 
@@ -57,7 +59,7 @@ describe("ProjectDetail", () => {
     it("should start watching derived state", async () => {
       render(ProjectDetail, props);
 
-      await waitFor(() => expect(watchDerivedState).toBeCalled());
+      await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
     });
 
     it("should clear eatch on unmount", async () => {
@@ -106,7 +108,7 @@ describe("ProjectDetail", () => {
     it("should start watching derived state", async () => {
       render(ProjectDetail, props);
 
-      await waitFor(() => expect(watchDerivedState).toBeCalled());
+      await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
     });
 
     it("should clear eatch on unmount", async () => {
