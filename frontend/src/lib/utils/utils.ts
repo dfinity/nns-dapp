@@ -250,7 +250,7 @@ export const poll = async <T>({
 }): Promise<T> => {
   let highLoadToast: symbol | null = null;
   // If we are already polling for this id, don't poll twice.
-  if (currentPolls.has(pollId)) {
+  if (nonNullish(pollId) && currentPolls.has(pollId)) {
     throw new PollingCancelledError(pollId);
   }
   // We'll never call `resolve`, therefore the type doesn't matter.
