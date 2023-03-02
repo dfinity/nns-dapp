@@ -35,26 +35,36 @@ impl FastScheduler {
     /// Lifecycle states that need fast data collection either now or in the future.
     /// SNSs in other lifecycle states are ignored by this scheduler.
     const LIFECYCLES_TO_WATCH: [i32; 3] = [Self::LIFECYCLE_ADOPTED, Self::LIFECYCLE_PENDING, Self::LIFECYCLE_OPEN];
+    /// How long before an SNS starts, it i seligible for fast swap updates.
+    const FAST_BEFORE_SECONDS: u64 = 60;
     /// Determines whether an SNS is eligible for an update
-    fn needs_update(sns_swap_state: &GetStateResponse) -> bool {
+    fn needs_update(sns_swap_state: &GetStateResponse, time_now_seconds: u64) -> bool {
         sns_swap_state
             .swap
             .as_ref()
-            .map(|swap_state| swap_state.lifecycle == Self::LIFECYCLE_OPEN)
+            .map(|swap_state| match swap_state.lifecycle {
+                Self::LIFECYCLE_OPEN => true,
+                Self::LIFECYCLE_ADOPTED => swap_state
+                    .decentralization_sale_open_timestamp_seconds
+                    .map(|open_time| open_time + Self::FAST_BEFORE_SECONDS >= time_now_seconds)
+                    .unwrap_or(false),
+                _ => false,
+            })
             .unwrap_or(false)
     }
     /// Iterates over SNSs, showing for each whether it needs an update.
     fn needs_update_iter(
         sns_cache: &'_ SnsCache,
+        time_now_seconds: u64,
     ) -> impl Iterator<Item = Option<&'_ SnsIndex>> + Sized + DoubleEndedIterator {
-        sns_cache.all_sns.iter().map(|(index, canister_ids)| {
+        sns_cache.all_sns.iter().map(move |(index, canister_ids)| {
             let needs_update = canister_ids
                 .root_canister_id
                 .and_then(|root_canister_id| {
                     sns_cache
                         .upstream_data
                         .get(&root_canister_id)
-                        .map(|upstream_data| Self::needs_update(&upstream_data.swap_state))
+                        .map(|upstream_data| Self::needs_update(&upstream_data.swap_state, time_now_seconds))
                 })
                 .unwrap_or(false);
             if needs_update {
@@ -72,14 +82,15 @@ impl FastScheduler {
     ///
     /// For each SNS, the search checks whether the SNS is eligible and skips SNSs that are not.
     fn global_next() -> Option<SnsIndex> {
+        let time_now_seconds = time() / 1_000_000_000;
         STATE.with(|state| {
             let sns_stable = state.stable.borrow();
             let sns_cache = sns_stable.sns_cache.borrow();
             // We will search forwards, starting after the last updated value, looping around at the end if necessary.
             let last_sns_update = state.fast_scheduler.borrow().last_sns_updated.unwrap_or_default();
-            let iter = Self::needs_update_iter(&sns_cache)
+            let iter = Self::needs_update_iter(&sns_cache, time_now_seconds)
                 .skip(last_sns_update as usize + 1)
-                .chain(Self::needs_update_iter(&sns_cache).take(last_sns_update as usize + 1));
+                .chain(Self::needs_update_iter(&sns_cache, time_now_seconds).take(last_sns_update as usize + 1));
             let index_maybe = iter.flatten().next().copied();
             state.fast_scheduler.borrow_mut().last_sns_updated = index_maybe;
             index_maybe
