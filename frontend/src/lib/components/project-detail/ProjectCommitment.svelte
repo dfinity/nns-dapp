@@ -42,13 +42,19 @@
     token: ICPToken,
   });
 
+  // TODO(Maks): extend test to see the field
   let saleBuyerCount: number | undefined;
   $: saleBuyerCount =
-    $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId]
+    $projectDetailStore?.summary?.rootCanisterId &&
+    $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId.toText()]
       ?.saleBuyerCount;
-  $: if ($projectDetailStore?.summary?.rootCanisterId !== undefined) {
+  $: if (
+    nonNullish($projectDetailStore?.summary?.rootCanisterId) &&
+    nonNullish($projectDetailStore?.summary?.swapCanisterId)
+  ) {
     loadSnsMetrics({
       rootCanisterId: $projectDetailStore?.summary?.rootCanisterId as Principal,
+      swapCanisterId: $projectDetailStore?.summary?.swapCanisterId as Principal,
     });
   }
 </script>

@@ -1,18 +1,19 @@
-import { wrapper } from "$lib/api/sns-wrapper.api";
-import { getCurrentIdentity } from "$lib/services/auth.services";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
+// TODO(Maks): tests
 /**
  * Get metrics from the store or fetch it
  * @param rootCanisterId
  */
 export const loadSnsMetrics = async ({
   rootCanisterId,
+  swapCanisterId,
 }: {
   rootCanisterId: Principal;
+  swapCanisterId: Principal;
 }): Promise<void> => {
   const store = get(snsSwapMetricsStore);
 
@@ -27,7 +28,7 @@ export const loadSnsMetrics = async ({
     metrics: null,
   });
 
-  const metrics = await querySnsMetrics({ rootCanisterId });
+  const metrics = await querySnsMetrics({ swapCanisterId });
   snsSwapMetricsStore.setMetrics({
     rootCanisterId,
     metrics: metrics ?? null,
@@ -35,22 +36,15 @@ export const loadSnsMetrics = async ({
 };
 
 const querySnsMetrics = async ({
-  rootCanisterId,
+  swapCanisterId,
 }: {
-  rootCanisterId: Principal;
+  swapCanisterId: Principal;
 }): Promise<{ saleBuyerCount: number } | undefined> => {
   logWithTimestamp("Loading SNS metrics...");
 
   try {
-    const identity = await getCurrentIdentity();
-    const { canisterIds } = await wrapper({
-      identity,
-      rootCanisterId: rootCanisterId.toText(),
-      certified: false,
-    });
-    const { swapCanisterId } = canisterIds;
-    const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
-    // const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
+    // Test canister oc: const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
+    const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -67,6 +61,7 @@ const querySnsMetrics = async ({
   }
 };
 
+// TODO(Maks): tests
 /**
  * Exported for testing purposes
  *
