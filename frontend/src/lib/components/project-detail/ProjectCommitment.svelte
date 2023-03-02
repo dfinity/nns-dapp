@@ -12,8 +12,8 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
-  import { Principal } from "@dfinity/principal";
   import { querySnsMetrics } from "$lib/services/sns-swap-metrics.services";
+  import type { Principal } from "@dfinity/principal";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -40,12 +40,14 @@
     token: ICPToken,
   });
 
+  const updateSaleBuyerCount = async (rootCanisterId: Principal) =>
+    (saleBuyerCount = await querySnsMetrics({ rootCanisterId }));
   let saleBuyerCount: number | undefined;
-  onMount(async () => {
-    // TODO: bind by rootCanisterId
-    const swapCanisterId = Principal.fromText("2hx64-daaaa-aaaaq-aaana-cai");
-    saleBuyerCount = await querySnsMetrics({ swapCanisterId });
-  });
+  $: if ($projectDetailStore?.summary?.rootCanisterId !== undefined) {
+    updateSaleBuyerCount(
+      $projectDetailStore?.summary?.rootCanisterId as Principal
+    );
+  }
 </script>
 
 {#if saleBuyerCount !== undefined}

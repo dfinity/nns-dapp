@@ -1,28 +1,37 @@
+import { wrapper } from "$lib/api/sns-wrapper.api";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
 
 export const querySnsMetrics = async ({
-  swapCanisterId,
+  rootCanisterId,
 }: {
-  swapCanisterId: Principal;
+  rootCanisterId: Principal;
 }): Promise<number | undefined> => {
   logWithTimestamp("Loading SNS metrics...");
 
-  const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("Error loading SNS metrics");
-  }
-
   try {
+    const identity = await getCurrentIdentity();
+    const { canisterIds } = await wrapper({
+      identity,
+      rootCanisterId: rootCanisterId.toText(),
+      certified: false,
+    });
+    const { swapCanisterId } = canisterIds;
+    const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
+    // const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Error loading SNS metrics");
+    }
+
     const rawMetrics = await response.text();
     return parseSnsSwapSaleBuyerCount(rawMetrics);
 
     logWithTimestamp("Loading SNS metrics completed");
   } catch (err) {
-    console.error("Error converting data", err);
-    throw new Error("Error converting data from aggregator canister");
+    console.error("Error getting SNS metrics", err);
   }
 };
 
