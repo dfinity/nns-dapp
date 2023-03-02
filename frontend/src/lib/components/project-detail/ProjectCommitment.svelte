@@ -5,15 +5,17 @@
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
-  import { getContext, onMount } from "svelte";
+  import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
-  import { querySnsMetrics } from "$lib/services/sns-swap-metrics.services";
+  import { loadSnsMetrics } from "$lib/services/sns-swap-metrics.services";
   import type { Principal } from "@dfinity/principal";
+  import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
+  import { nonNullish } from "@dfinity/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -40,17 +42,18 @@
     token: ICPToken,
   });
 
-  const updateSaleBuyerCount = async (rootCanisterId: Principal) =>
-    (saleBuyerCount = await querySnsMetrics({ rootCanisterId }));
   let saleBuyerCount: number | undefined;
+  $: saleBuyerCount =
+    $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId]
+      ?.saleBuyerCount;
   $: if ($projectDetailStore?.summary?.rootCanisterId !== undefined) {
-    updateSaleBuyerCount(
-      $projectDetailStore?.summary?.rootCanisterId as Principal
-    );
+    loadSnsMetrics({
+      rootCanisterId: $projectDetailStore?.summary?.rootCanisterId as Principal,
+    });
   }
 </script>
 
-{#if saleBuyerCount !== undefined}
+{#if nonNullish(saleBuyerCount)}
   <KeyValuePair testId="sns-project-current-sale-buyer-count">
     <span slot="key">
       {$i18n.sns_project_detail.current_sale_buyer_count}

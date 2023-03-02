@@ -1,13 +1,44 @@
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import { getCurrentIdentity } from "$lib/services/auth.services";
+import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 
-export const querySnsMetrics = async ({
+/**
+ * Get metrics from the store or fetch it
+ * @param rootCanisterId
+ */
+export const loadSnsMetrics = async ({
   rootCanisterId,
 }: {
   rootCanisterId: Principal;
-}): Promise<number | undefined> => {
+}): Promise<void> => {
+  const store = get(snsSwapMetricsStore);
+
+  // skip update when data is available
+  if (store[rootCanisterId.toText()] !== undefined) {
+    return;
+  }
+
+  // mark in progress to avoid multiple load
+  snsSwapMetricsStore.setMetrics({
+    rootCanisterId,
+    metrics: null,
+  });
+
+  const metrics = await querySnsMetrics({ rootCanisterId });
+  snsSwapMetricsStore.setMetrics({
+    rootCanisterId,
+    metrics: metrics ?? null,
+  });
+};
+
+const querySnsMetrics = async ({
+  rootCanisterId,
+}: {
+  rootCanisterId: Principal;
+}): Promise<{ saleBuyerCount: number } | undefined> => {
   logWithTimestamp("Loading SNS metrics...");
 
   try {
@@ -27,7 +58,8 @@ export const querySnsMetrics = async ({
     }
 
     const rawMetrics = await response.text();
-    return parseSnsSwapSaleBuyerCount(rawMetrics);
+    const saleBuyerCount = parseSnsSwapSaleBuyerCount(rawMetrics);
+    return saleBuyerCount === undefined ? undefined : { saleBuyerCount };
 
     logWithTimestamp("Loading SNS metrics completed");
   } catch (err) {
