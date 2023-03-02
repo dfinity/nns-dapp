@@ -1,10 +1,11 @@
 //! The state of the canister
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
+use crate::fast_scheduler::FastScheduler;
 use crate::types::slow::logo_binary;
 use crate::types::slow::SlowSnsData;
 use crate::types::slow::LOGO_FMT;
-use crate::types::upstream::UpstreamData;
+use crate::types::upstream::{SnsIndex, UpstreamData};
 use crate::types::{CandidType, Deserialize, Serialize};
 use crate::{
     assets::{AssetHashes, Assets},
@@ -21,6 +22,8 @@ use std::str::FromStr;
 pub struct State {
     /// Scheduler for getting data from upstream
     pub timer_id: RefCell<Option<TimerId>>,
+    /// Scheduler for updating data on SNSs with active swaps
+    pub fast_scheduler: RefCell<FastScheduler>,
     /// State perserved across upgrades, as long as the new data structures
     /// are compatible.
     pub stable: RefCell<StableState>,
@@ -31,6 +34,34 @@ pub struct State {
     pub asset_hashes: RefCell<AssetHashes>,
     /// Log errors when getting data from upstream
     pub log: RefCell<VecDeque<String>>,
+}
+impl State {
+    /// Util to get a swap canister ID
+    pub fn swap_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
+        self.stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .all_sns
+            .get(index as usize)
+            .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
+            .1
+            .swap_canister_id
+            .ok_or_else(|| format!("SNS {index} has no known swap canister"))
+    }
+    /// Util to get a root canister ID
+    pub fn root_canister_from_index(&self, index: SnsIndex) -> Result<CanisterId, String> {
+        self.stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .all_sns
+            .get(index as usize)
+            .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
+            .1
+            .root_canister_id
+            .ok_or_else(|| format!("SNS {index} has no known root canister"))
+    }
 }
 
 /// State that is saved across canister upgrades.
@@ -203,11 +234,14 @@ impl State {
 pub struct Config {
     /// The update interval, in milliseconds
     pub update_interval_ms: u64,
+    /// The fast update interval, in milliseconds
+    pub fast_interval_ms: u64,
 }
 impl Default for Config {
     fn default() -> Self {
         Config {
             update_interval_ms: 120_000,
+            fast_interval_ms: 10_000,
         }
     }
 }

@@ -1,5 +1,19 @@
 # Changelog
 
+## Proposal 110166
+* Enable SNS aggregator.
+* Switch to TVL canister.
+* Sale process improvement.
+* Minor fixes and improvements.
+
+## Proposal 109947
+* Performance improvements by delaying requests when needed.
+* Setup caching layer for neurons.
+* Payment flow upgrade.
+* SNS Aggregator improvements.
+* Derived state api.
+* Fixes and UI improvements.
+
 ## Proposal 108160
 * Migration to nns.internetcomputer.org
 

@@ -16,8 +16,14 @@
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import { pollAccounts } from "$lib/services/accounts.services";
 
   export let neuron: NeuronInfo;
+
+  onMount(() => {
+    pollAccounts();
+  });
 
   const dispatcher = createEventDispatcher();
   const steps: WizardSteps = [

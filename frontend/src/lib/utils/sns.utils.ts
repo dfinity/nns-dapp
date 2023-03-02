@@ -1,7 +1,8 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
-import type { SnsTicketsStore } from "$lib/stores/sns-tickets.store";
+import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { TicketStatus } from "$lib/types/sale";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -225,7 +226,7 @@ export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
     "New balance:",
     // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
     "The available balance to be topped up",
-  ].some((text) => message.startsWith(text));
+  ].some((text) => message.includes(text));
 };
 
 export const hasOpenTicketInProcess = ({
@@ -233,27 +234,27 @@ export const hasOpenTicketInProcess = ({
   ticketsStore,
 }: {
   rootCanisterId?: Principal | null;
-  ticketsStore: SnsTicketsStore;
-}): boolean => {
+  ticketsStore: SnsTicketsStoreData;
+}): { status: TicketStatus } => {
   if (isNullish(rootCanisterId)) {
-    return true;
+    return { status: "unknown" };
   }
   const projectTicketData = ticketsStore[rootCanisterId.toText()];
 
   if (isNullish(projectTicketData)) {
-    return true;
+    return { status: "unknown" };
   }
 
   // If we have a ticket, we have an open ticket in process.
   if (nonNullish(projectTicketData.ticket)) {
-    return true;
+    return { status: "open" };
   }
 
   // `null` means that the user has no open tickets.
   if (projectTicketData.ticket === null) {
-    return false;
+    return { status: "none" };
   }
 
   // `undefined` means that we could still be polling for the ticket.
-  return projectTicketData.keepPolling;
+  return { status: projectTicketData.keepPolling ? "polling" : "none" };
 };

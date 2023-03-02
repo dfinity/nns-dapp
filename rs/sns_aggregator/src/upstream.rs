@@ -3,6 +3,7 @@
 use std::str::FromStr;
 
 use crate::convert_canister_id;
+use crate::fast_scheduler::FastScheduler;
 use crate::state::{State, STATE};
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 use crate::types::upstream::UpstreamData;
@@ -127,6 +128,9 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
 
     crate::state::log("Yay, got an SNS status".to_string());
+    // If the SNS sale will open, collect data when it does.
+    FastScheduler::global_schedule_sns(&swap_state);
+    // Save the data in the state.
     let slow_data = UpstreamData {
         index,
         canister_ids: sns_canister_ids,

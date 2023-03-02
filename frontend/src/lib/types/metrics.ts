@@ -1,7 +1,14 @@
-import type { BinanceAvgPrice } from "$lib/types/binance";
-import type { DissolvingNeurons } from "$lib/types/governance-metrics";
+import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
+import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 
 export interface MetricsSync {
-  avgPrice: BinanceAvgPrice | null;
-  dissolvingNeurons: DissolvingNeurons | null;
+  tvl?: TvlResult;
+  transactionRate?: DashboardMessageExecutionRateResponse;
+}
+
+export type MetricsSyncConfigLoad = "once" | "sync";
+
+export interface MetricsSyncConfig {
+  tvl: MetricsSyncConfigLoad;
+  transactionRate: MetricsSyncConfigLoad;
 }

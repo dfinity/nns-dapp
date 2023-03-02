@@ -19,10 +19,12 @@ describe("featureFlags store", () => {
   it("should export all feature flags on the module with default values", () => {
     let feature: FeatureKey;
     for (feature in FEATURE_FLAG_ENVIRONMENT) {
-      expect(
-        get(featureFlagsModule[feature]),
-        `FeatureFlag ${feature} should be exported from feature-flags.store.ts`
-      ).toEqual(FEATURE_FLAG_ENVIRONMENT[feature]);
+      // Include the feature in the expected value so when it fails it's clear
+      // which feature is missing.
+      expect([feature, get(featureFlagsModule[feature])]).toEqual([
+        feature,
+        FEATURE_FLAG_ENVIRONMENT[feature],
+      ]);
     }
   });
 

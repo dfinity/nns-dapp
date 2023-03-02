@@ -94,6 +94,7 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       snsAccountsStore.reset();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
     it("should call sns accounts and transaction fee and load them in store", async () => {
       const spyAccountsQuery = jest

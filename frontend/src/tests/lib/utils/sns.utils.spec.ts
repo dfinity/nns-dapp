@@ -1,18 +1,16 @@
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
   getSwapCanisterAccount,
+  hasOpenTicketInProcess,
+  isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
 } from "$lib/utils/sns.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
-import {
-  hasOpenTicketInProcess,
-  isInternalRefreshBuyerTokensError,
-} from "../../../lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -256,7 +254,37 @@ describe("sns-utils", () => {
       owner: mockPrincipal,
     }).ticket;
 
-    it("returns true when the ticket is undefined and we keep polling", () => {
+    it("returns unknown", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+        keepPolling: true,
+      });
+      const store = get(snsTicketsStore);
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: principal(2),
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: null,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: undefined,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
+    });
+
+    it("returns polling when the ticket is undefined and we keep polling", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
@@ -269,10 +297,10 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeTruthy();
+      ).toEqual({ status: "polling" });
     });
 
-    it("returns false when the ticket is undefined and we stopped keep polling", () => {
+    it("returns none when the ticket is undefined and we stopped keep polling", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
@@ -285,10 +313,10 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeFalsy();
+      ).toEqual({ status: "none" });
     });
 
-    it("returns true when there is an open ticket in the store", () => {
+    it("returns open when there is an open ticket in the store", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
@@ -300,10 +328,10 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeTruthy();
+      ).toEqual({ status: "open" });
     });
 
-    it("returns false the open ticket is null (processed)", () => {
+    it("returns none when the open ticket is null (processed)", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: null,
@@ -315,13 +343,20 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toBeFalsy();
+      ).toEqual({ status: "none" });
     });
   });
 
   describe("isInternalRefreshBuyerTokensError", () => {
     it("returns true on known error", () => {
       const error = new Error("The swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns true on known error", () => {
+      const error = new Error(
+        "This is the beginning of the error. The swap has already reached its target ..."
+      );
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
     });
 

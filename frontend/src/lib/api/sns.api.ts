@@ -12,6 +12,7 @@ import type { IcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
   SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
@@ -261,10 +262,39 @@ export const querySnsDerivedState = async ({
     await getDerivedState({});
 
   logWithTimestamp(
-    `Getting Sns ${rootCanisterId} swap commitment certified:${certified} done.`
+    `Getting Sns ${rootCanisterId} swap derived state certified:${certified} done.`
   );
 
   return derivedState;
+};
+
+export const querySnsLifecycle = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: QueryRootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsGetLifecycleResponse | undefined> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} call...`
+  );
+
+  const { getLifecycle }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const lifecycleResponse: SnsGetLifecycleResponse | undefined =
+    await getLifecycle({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} done.`
+  );
+
+  return lifecycleResponse;
 };
 
 export const querySnsNeurons = async ({

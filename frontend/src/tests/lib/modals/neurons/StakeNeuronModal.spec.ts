@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
 import {
@@ -24,7 +26,8 @@ import {
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import {
-  mockAccountsStoreSubscribe,
+  mockAccountDetails,
+  mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
@@ -33,6 +36,8 @@ import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 const neuronStake = 2.2;
 const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
 const newNeuron: NeuronInfo = {
@@ -64,12 +69,6 @@ jest.mock("$lib/services/known-neurons.services", () => {
   };
 });
 
-jest.mock("$lib/services/accounts.services", () => {
-  return {
-    syncAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
-
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
@@ -82,9 +81,10 @@ describe("StakeNeuronModal", () => {
   describe("main account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      accountsStore.set({
+        ...mockAccountsStoreData,
+        subAccounts: [mockSubAccount],
+      });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
@@ -94,6 +94,13 @@ describe("StakeNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     });
 
     afterEach(() => {
@@ -407,19 +414,15 @@ describe("StakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        );
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+      accountsStore.set({
+        ...mockAccountsStoreData,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     const createNeuron = async ({
@@ -528,6 +531,31 @@ describe("StakeNeuronModal", () => {
       confirmButton && (await fireEvent.click(confirmButton));
 
       await waitFor(() => expect(updateDelay).toBeCalled());
+    });
+  });
+
+  describe("when accounts are not loaded", () => {
+    beforeEach(() => {
+      neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
+      accountsStore.reset();
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+    });
+    it("should load and then show the accounts", async () => {
+      const { queryByTestId } = await renderModal({
+        component: StakeNeuronModal,
+      });
+      expect(queryByTestId("account-card")).not.toBeInTheDocument();
+
+      // Component is rendered after the accounts are loaded
+      await waitFor(() =>
+        expect(queryByTestId("account-card")).toBeInTheDocument()
+      );
     });
   });
 });

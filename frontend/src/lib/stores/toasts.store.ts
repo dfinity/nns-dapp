@@ -22,13 +22,12 @@ const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
  */
 
 export const toastsShow = (msg: ToastMsg): symbol => {
-  const { level, spinner, duration } = msg;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { labelKey, substitutions, detail, ...rest } = msg;
 
   return toastsStore.show({
     text: mapToastText(msg),
-    level,
-    spinner,
-    duration,
+    ...rest,
   });
 };
 
@@ -51,17 +50,17 @@ export const toastsError = ({
   labelKey: string;
   err?: unknown;
   substitutions?: I18nSubstitutions;
-}) => {
-  toastsShow({
+}): symbol => {
+  if (err !== undefined) {
+    console.error(err);
+  }
+
+  return toastsShow({
     labelKey,
     level: "error",
     detail: errorToString(err),
     substitutions,
   });
-
-  if (err !== undefined) {
-    console.error(err);
-  }
 };
 
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);

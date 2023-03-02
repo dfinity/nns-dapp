@@ -1,5 +1,6 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -24,6 +25,7 @@ export const loadSnsAccounts = async ({
   handleError?: () => void;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
