@@ -1,5 +1,5 @@
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
   | "vote-registration"
@@ -14,8 +14,27 @@ export interface VoteRegistration {
   vote: Vote;
 }
 
-export interface VoteRegistrationStore {
+export interface VoteRegistrationStoreData {
   registrations: VoteRegistration[];
+}
+
+export interface VoteRegistrationStore
+  extends Readable<VoteRegistrationStoreData> {
+  add: (params: {
+    vote: Vote;
+    proposalInfo: ProposalInfo;
+    neuronIds: NeuronId[];
+  }) => VoteRegistration;
+  addSuccessfullyVotedNeuronId: (params: {
+    proposalId: ProposalId;
+    neuronId: NeuronId;
+  }) => void;
+  updateStatus: (params: {
+    proposalId: ProposalId;
+    status: VoteRegistrationStatus;
+  }) => void;
+  remove: (proposalId: ProposalId) => void;
+  reset: () => void;
 }
 
 // TODO: think about having an abstract store for the basic CRUD
@@ -24,8 +43,8 @@ export interface VoteRegistrationStore {
  * A store that contain votes in progress data (proposals and neurons that were not confirmed by `update` calls)
  * Is used for optimistic UI update
  */
-const initVoteRegistrationStore = () => {
-  const { subscribe, update, set } = writable<VoteRegistrationStore>({
+const initVoteRegistrationStore = (): VoteRegistrationStore => {
+  const { subscribe, update, set } = writable<VoteRegistrationStoreData>({
     registrations: [],
   });
 

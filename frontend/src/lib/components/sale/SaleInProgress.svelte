@@ -1,9 +1,13 @@
 <script lang="ts">
-  import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
+  import {
+    IconWarning,
+    type ProgressStep,
+    ProgressSteps,
+  } from "@dfinity/gix-components";
   import { SaleStep } from "$lib/types/sale";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
-  import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+  import { saleInProgress } from "$lib/stores/sns-sale.store";
 
   export let progressStep: SaleStep;
 
@@ -50,6 +54,8 @@
   };
 
   $: progressStep, (() => updateSteps())();
+
+  $: saleInProgress.set(progressStep !== SaleStep.DONE);
 </script>
 
 <div class="warning" data-tid="sale-in-progress-warning">

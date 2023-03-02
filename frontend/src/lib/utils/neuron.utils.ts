@@ -18,7 +18,7 @@ import {
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
-import type { VoteRegistrationStore } from "$lib/stores/vote-registration.store";
+import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
@@ -800,7 +800,7 @@ export const neuronVoting = ({
   store: { registrations },
   neuronId,
 }: {
-  store: VoteRegistrationStore;
+  store: VoteRegistrationStoreData;
   neuronId: NeuronId;
 }): boolean =>
   registrations.find(
