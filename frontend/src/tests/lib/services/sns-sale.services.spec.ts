@@ -533,7 +533,7 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).toBeCalled();
+      expect(spyOnToastsError).toBeCalledTimes(1);
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",

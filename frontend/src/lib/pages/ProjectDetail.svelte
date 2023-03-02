@@ -117,7 +117,7 @@
     return goto(AppPath.Launchpad, { replaceState: true });
   };
 
-  const mapProjectDetail = (rootCanisterId: string) => {
+  const setProjectStore = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
     if ($snsSummariesStore.length === 0) {
       return;
@@ -152,13 +152,15 @@
     // We need both of these here because this component does not "subscribe" to projectDetailStore
     // The store is created in this same component.
     reloadSnsMetrics({ forceFetch: false });
-
-    unsubscribeWatchMetrics?.();
-    unsubscribeWatchMetrics = watchSnsMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      // TS is not smart enought to understand the `nonNullish` before
-      swapCanisterId: $projectDetailStore.summary?.swapCanisterId as Principal,
-    });
+    if (nonNullish($projectDetailStore.summary?.swapCanisterId)) {
+      unsubscribeWatchMetrics?.();
+      unsubscribeWatchMetrics = watchSnsMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        // TS is not smart enought to understand the `nonNullish` before
+        swapCanisterId: $projectDetailStore.summary
+          ?.swapCanisterId as Principal,
+      });
+    }
   };
 
   /**
@@ -171,7 +173,7 @@
         await goBack();
         return;
       }
-      mapProjectDetail(rootCanisterId);
+      setProjectStore(rootCanisterId);
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
