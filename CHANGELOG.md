@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 110588
 * "high-load" warning fix.
 
 ## Proposal 110166
