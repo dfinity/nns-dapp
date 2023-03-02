@@ -156,6 +156,9 @@ const cspConnectSrc = () => {
     process.env.VITE_HOST,
     process.env.VITE_GOVERNANCE_CANISTER_URL,
     process.env.VITE_LEDGER_CANISTER_URL,
+    // TODO: solve with a worker
+    // Used for the metrics of OC launch
+    "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
   ];
 
   if (isAggregatorCanisterUrlDefined) {
