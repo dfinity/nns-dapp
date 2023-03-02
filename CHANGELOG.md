@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 110166
 * SNS participation progress screen.
 * SNS aggregator improvements.
 * Network "high load" notification.
