@@ -8,6 +8,10 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 
 describe("tvl services", () => {
+  beforeEach(() =>
+    jest.spyOn(console, "error").mockImplementation(() => undefined)
+  );
+
   const result = {
     tvl: 1n,
     time_sec: 0n,
@@ -26,5 +30,17 @@ describe("tvl services", () => {
         certified: false,
       })
     );
+  });
+
+  it("should not bubble error but return undefined", async () => {
+    jest
+      .spyOn(tvlApi, "queryTVL")
+      .mockImplementation(async () => {
+        throw new Error("test");
+      });
+
+    const result = await queryTVL();
+
+    expect(result).toBeUndefined();
   });
 });
