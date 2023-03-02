@@ -111,7 +111,7 @@ pub struct SlowSwap {
     /// to the outcome of the swap.
     pub open_sns_token_swap_proposal_id: ::core::option::Option<u64>,
     /// The time at which the sale is expected to open.
-    pub  decentralization_sale_open_timestamp_seconds: Option<u64>,
+    pub decentralization_sale_open_timestamp_seconds: Option<u64>,
 }
 
 impl From<&Swap> for SlowSwap {
