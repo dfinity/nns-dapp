@@ -22,10 +22,11 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
+  import { loadSnsMetrics } from "$lib/services/sns-swap-metrics.services";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -60,6 +61,7 @@
       loadSnsTotalCommitment({ rootCanisterId }),
       loadSnsLifecycle({ rootCanisterId }),
       loadCommitment({ rootCanisterId, forceFetch: true }),
+      reloadSnsMetrics({ forceFetch: true }),
     ]);
   };
 
@@ -74,6 +76,21 @@
     store: projectDetailStore,
     reload,
   });
+
+  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
+    const swapCanisterId = $projectDetailStore?.summary
+      ?.swapCanisterId as Principal;
+
+    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
+      return;
+    }
+
+    await loadSnsMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      forceFetch,
+    });
+  };
 
   const goBack = async (): Promise<void> => {
     if (!browser) {
@@ -130,6 +147,12 @@
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
+  $: if (
+    nonNullish(rootCanisterId) &&
+    nonNullish($projectDetailStore?.summary?.swapCanisterId)
+  ) {
+    reloadSnsMetrics({ forceFetch: false });
+  }
 
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;

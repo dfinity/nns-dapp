@@ -12,8 +12,6 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
-  import { loadSnsMetrics } from "$lib/services/sns-swap-metrics.services";
-  import type { Principal } from "@dfinity/principal";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
 
@@ -48,15 +46,6 @@
     $projectDetailStore?.summary?.rootCanisterId &&
     $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId.toText()]
       ?.saleBuyerCount;
-  $: if (
-    nonNullish($projectDetailStore?.summary?.rootCanisterId) &&
-    nonNullish($projectDetailStore?.summary?.swapCanisterId)
-  ) {
-    loadSnsMetrics({
-      rootCanisterId: $projectDetailStore?.summary?.rootCanisterId as Principal,
-      swapCanisterId: $projectDetailStore?.summary?.swapCanisterId as Principal,
-    });
-  }
 </script>
 
 {#if nonNullish(saleBuyerCount)}

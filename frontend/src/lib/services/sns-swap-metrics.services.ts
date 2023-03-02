@@ -11,22 +11,26 @@ import { get } from "svelte/store";
 export const loadSnsMetrics = async ({
   rootCanisterId,
   swapCanisterId,
+  forceFetch,
 }: {
   rootCanisterId: Principal;
   swapCanisterId: Principal;
+  forceFetch: boolean;
 }): Promise<void> => {
   const store = get(snsSwapMetricsStore);
 
   // skip update when data is available
-  if (store[rootCanisterId.toText()] !== undefined) {
+  if (!forceFetch && store[rootCanisterId.toText()] !== undefined) {
     return;
   }
 
-  // mark in progress to avoid multiple load
-  snsSwapMetricsStore.setMetrics({
-    rootCanisterId,
-    metrics: null,
-  });
+  if (store[rootCanisterId.toText()] === undefined) {
+    // mark in progress to avoid multiple load
+    snsSwapMetricsStore.setMetrics({
+      rootCanisterId,
+      metrics: null,
+    });
+  }
 
   const metrics = await querySnsMetrics({ swapCanisterId });
   snsSwapMetricsStore.setMetrics({
@@ -43,7 +47,8 @@ const querySnsMetrics = async ({
   logWithTimestamp("Loading SNS metrics...");
 
   try {
-    // Test canister oc: const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
+    // TODO: need to add like a HOST variable for url build (otherwise can't be tested it in a testnet)
+    // const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
     const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
     const response = await fetch(url);
 
