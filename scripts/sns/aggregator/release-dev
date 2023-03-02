@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+export PATH="$SOURCE_DIR:$PATH:$(dfx cache show)"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+export DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK")"
+export DFX_IDENTITY_PEM="$HOME/.config/dfx/identity/$DFX_IDENTITY/identity.pem"
+export NNS_URL="$(dfx-network-provider --network "$DFX_NETWORK")"
+command -v "ic-admin"
+AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator --network "$DFX_NETWORK")"
+WASM="sns_aggregator_dev.wasm"
+SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
+
+set ic-admin \
+  --secret-key-pem "$DFX_IDENTITY_PEM" \
+  --nns-url "$NNS_URL" \
+  propose-to-change-nns-canister \
+  --proposer "$DFX_NEURON_ID" \
+  --canister-id "$AGGREGATOR_CANISTER_ID" \
+  --mode upgrade \
+  --wasm-module-path "$WASM" \
+  --summary "Please upgrade aggregator" \
+  --wasm-module-sha256 "$SHA" \
+  --arg "$SOURCE_DIR/release-dev.arg"
+
+echo
+echo PLEASE REVIEW THIS COMMAND:
+echo
+echo "${@}"
+echo
+
+read -rp "Execute? (y/N)" COMMAND_OK
+if [[ "$COMMAND_OK" = [yY] ]]; then
+  "${@}"
+fi
