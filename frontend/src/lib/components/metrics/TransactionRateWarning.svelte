@@ -1,10 +1,11 @@
 <script lang="ts">
   import { metricsStore } from "$lib/stores/metrics.store";
   import { toastsHide, toastsShow } from "$lib/stores/toasts.store";
-  import { nonNullish } from "@dfinity/utils";
+  import {isNullish, nonNullish} from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD } from "$lib/constants/warnings.constants";
   import TransactionRateWarningIcon from "$lib/components/metrics/TransactionRateWarningIcon.svelte";
+  import {onDestroy} from "svelte";
 
   let transactionRate: number;
   $: transactionRate =
@@ -42,6 +43,14 @@
       theme: "inverted",
     });
   };
+
+  onDestroy(() => {
+      if (isNullish(toastId)) {
+          return;
+      }
+
+      toastsHide(toastId);
+  })
 
   $: transactionRate, (() => transactionRateWarning())();
 </script>
