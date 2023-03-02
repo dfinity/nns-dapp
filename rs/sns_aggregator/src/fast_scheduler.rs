@@ -35,7 +35,7 @@ impl FastScheduler {
     /// Lifecycle states that need fast data collection either now or in the future.
     /// SNSs in other lifecycle states are ignored by this scheduler.
     const LIFECYCLES_TO_WATCH: [i32; 3] = [Self::LIFECYCLE_ADOPTED, Self::LIFECYCLE_PENDING, Self::LIFECYCLE_OPEN];
-    /// How long before an SNS starts, it i seligible for fast swap updates.
+    /// How long before an SNS starts, it is eligible for fast swap updates.
     const FAST_BEFORE_SECONDS: u64 = 60;
     /// Determines whether an SNS is eligible for an update
     fn needs_update(sns_swap_state: &GetStateResponse, time_now_seconds: u64) -> bool {
