@@ -8,7 +8,8 @@
   import { layoutWarningToastId } from "$lib/stores/layout.store";
 
   const transactionRateWarning = () => {
-    const transactionRate = $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
+    const transactionRate =
+      $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
 
     if (isNullish(transactionRate)) {
       return;
