@@ -25,8 +25,15 @@ import { nonNullish } from "@dfinity/utils";
 interface IdentityWrapper {
   [principal: string]: Promise<Map<QueryRootCanisterId, SnsWrapper>>;
 }
-const identitiesCertifiedWrappers: IdentityWrapper = {};
-const identitiesNotCertifiedWrappers: IdentityWrapper = {};
+
+let identitiesCertifiedWrappers: IdentityWrapper = {};
+let identitiesNotCertifiedWrappers: IdentityWrapper = {};
+
+// ONLY FOR TESTING PURPOSES
+export const clearWrapperCache = () => {
+  identitiesCertifiedWrappers = {};
+  identitiesNotCertifiedWrappers = {};
+};
 
 type CanisterIds = {
   rootCanisterId: Principal;
