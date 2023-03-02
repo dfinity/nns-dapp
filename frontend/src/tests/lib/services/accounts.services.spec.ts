@@ -784,7 +784,6 @@ describe("accounts-services", () => {
 
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
       const callsBeforeCancelPolling = 3;
-      const extraRetries = 4;
       while (expectedCalls < callsBeforeCancelPolling) {
         await advanceTime(retryDelay);
         retryDelay *= 2;

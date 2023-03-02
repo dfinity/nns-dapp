@@ -913,7 +913,7 @@ describe("sns-api", () => {
       await runResolvedPromises();
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
 
-      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      const retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
 
       // Even after waiting a long time there shouldn't be more calls.
       await advanceTime(99 * retryDelay);
