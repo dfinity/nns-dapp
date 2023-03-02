@@ -33,11 +33,9 @@ describe("tvl services", () => {
   });
 
   it("should not bubble error but return undefined", async () => {
-    jest
-      .spyOn(tvlApi, "queryTVL")
-      .mockImplementation(async () => {
-        throw new Error("test");
-      });
+    jest.spyOn(tvlApi, "queryTVL").mockImplementation(async () => {
+      throw new Error("test");
+    });
 
     const result = await queryTVL();
 
