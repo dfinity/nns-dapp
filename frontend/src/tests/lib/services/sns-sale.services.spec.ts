@@ -234,6 +234,10 @@ describe("sns-api", () => {
             Math.min(counter, retriesUntilSuccess)
           );
           counter += 1;
+          await null;
+          await null;
+          await null;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
@@ -267,6 +271,8 @@ describe("sns-api", () => {
         while (counter <= maxAttempts) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
           counter += 1;
+          await null;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
@@ -400,6 +406,11 @@ describe("sns-api", () => {
     });
 
     describe("when disabling polling", () => {
+      beforeEach(() => {
+        jest.clearAllTimers();
+        const now = Date.now();
+        jest.useFakeTimers().setSystemTime(now);
+      });
       it("should stop retrying", async () => {
         snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
         spyOnGetOpenTicketApi.mockRejectedValue(new Error("network error"));
@@ -414,15 +425,17 @@ describe("sns-api", () => {
         // We loop until 10 advancing time, but the polling should stop after `retriesBeforeStopPolling` + 1
         while (counter < DEFAULT_MAX_POLLING_ATTEMPTS) {
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-            Math.min(counter, retriesBeforeStopPolling + 1)
+            Math.min(counter, retriesBeforeStopPolling)
           );
           counter += 1;
+          await null;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
           await waitFor(() =>
             expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-              Math.min(counter, retriesBeforeStopPolling + 1)
+              Math.min(counter, retriesBeforeStopPolling)
             )
           );
 
@@ -434,7 +447,7 @@ describe("sns-api", () => {
 
         await waitFor(() =>
           expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-            retriesBeforeStopPolling + 1
+            retriesBeforeStopPolling
           )
         );
       });
@@ -607,6 +620,8 @@ describe("sns-api", () => {
           Math.min(counter, extraRetries)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -646,6 +661,8 @@ describe("sns-api", () => {
           Math.min(counter, extraRetries)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -860,6 +877,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -912,6 +931,8 @@ describe("sns-api", () => {
           Math.min(expectedRetries, counter)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -1021,6 +1042,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
