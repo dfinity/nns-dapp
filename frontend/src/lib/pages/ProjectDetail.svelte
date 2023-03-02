@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import { setContext, onDestroy } from "svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
@@ -9,6 +9,7 @@
     loadSnsLifecycle,
     loadSnsSwapCommitment,
     loadSnsTotalCommitment,
+    watchDerivedState,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
   import {
@@ -30,8 +31,19 @@
 
   export let rootCanisterId: string | undefined | null;
 
+  let unsubscribeWatch: () => void | undefined;
+
+  onDestroy(() => {
+    unsubscribeWatch?.();
+  });
+
   $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
     loadCommitment({ rootCanisterId, forceFetch: false });
+  }
+
+  $: if (nonNullish(rootCanisterId)) {
+    unsubscribeWatch?.();
+    unsubscribeWatch = watchDerivedState({ rootCanisterId });
   }
 
   const loadCommitment = ({
@@ -58,7 +70,7 @@
     }
 
     await Promise.all([
-      loadSnsTotalCommitment({ rootCanisterId }),
+      loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
       loadSnsLifecycle({ rootCanisterId }),
       loadCommitment({ rootCanisterId, forceFetch: true }),
       reloadSnsMetrics({ forceFetch: true }),

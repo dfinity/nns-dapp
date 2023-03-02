@@ -5,7 +5,10 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
-import { loadSnsSwapCommitment } from "$lib/services/sns.services";
+import {
+  loadSnsSwapCommitment,
+  watchDerivedState,
+} from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -21,6 +24,7 @@ jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
+    watchDerivedState: jest.fn().mockReturnValue(() => undefined),
   };
 });
 
@@ -53,6 +57,12 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
     });
 
+    it("should start watching derived state", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(watchDerivedState).toBeCalled());
+    });
+
     it("should not load user's commitnemtn", async () => {
       render(ProjectDetail, props);
 
@@ -81,6 +91,12 @@ describe("ProjectDetail", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
+    });
+
+    it("should start watching derived state", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(watchDerivedState).toBeCalled());
     });
 
     it("should load user's commitment", async () => {

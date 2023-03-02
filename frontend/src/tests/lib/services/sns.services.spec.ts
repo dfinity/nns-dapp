@@ -4,6 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as api from "$lib/api/sns.api";
+import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { AccountIdentifier } from "@dfinity/nns";
@@ -144,6 +145,71 @@ describe("sns-services", () => {
       expect(updatedState?.sns_tokens_per_icp).toEqual(
         fromNullable(derivedState.sns_tokens_per_icp)
       );
+    });
+  });
+
+  describe("watchDerivedState", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      snsQueryStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("should call api to get total commitments and load them in store and keep polling", async () => {
+      const derivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [1],
+        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+      };
+      const [metadatas, swaps] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
+      });
+      snsQueryStore.setData([metadatas, swaps]);
+      const canisterId = swaps[0].rootCanisterId;
+
+      const spy = jest
+        .spyOn(api, "querySnsDerivedState")
+        .mockImplementation(() => Promise.resolve(derivedState));
+
+      const initStore = get(snsQueryStore);
+      const initState = initStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.derived[0];
+      expect(initState?.buyer_total_icp_e8s).toEqual(
+        initState?.buyer_total_icp_e8s
+      );
+      expect(initState?.sns_tokens_per_icp).toEqual(
+        initState?.sns_tokens_per_icp
+      );
+
+      const clearWatch = services.watchDerivedState({
+        rootCanisterId: canisterId,
+      });
+
+      let counter = 0;
+      const retriesBeforeClearing = 3;
+      const extraRetries = 4;
+      while (counter < retriesBeforeClearing + extraRetries) {
+        expect(spy).toBeCalledTimes(Math.min(counter, retriesBeforeClearing));
+        counter += 1;
+        // Make sure the timers are set before we advance time.
+        await null;
+        await null;
+        await null;
+        jest.advanceTimersByTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+        await waitFor(() =>
+          expect(spy).toBeCalledTimes(Math.min(counter, retriesBeforeClearing))
+        );
+
+        if (counter === retriesBeforeClearing) {
+          clearWatch();
+        }
+      }
+      expect(spy).toBeCalledTimes(retriesBeforeClearing);
     });
   });
 
