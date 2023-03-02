@@ -192,9 +192,31 @@ export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   });
 
 export class PollingLimitExceededError extends Error {}
+
+export class PollingCancelledError extends Error {
+  public id: symbol;
+  constructor(id: symbol) {
+    super(`Polling cancelled, id: ${String(id)}`);
+    this.id = id;
+  }
+}
+
 // Exported for testing purposes
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
 const DEFAULT_WAIT_TIME_MS = 500;
+
+// Map symbol to `reject` function
+const currentPolls = new Map<symbol, (error: PollingCancelledError) => void>();
+
+export const cancelPoll = (id: symbol) => {
+  if (currentPolls.has(id)) {
+    // Call reject function to stop polling
+    const reject = currentPolls.get(id);
+    // TS doesn't know that `reject` is defined here
+    reject?.(new PollingCancelledError(id));
+    currentPolls.delete(id);
+  }
+};
 
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
@@ -216,6 +238,7 @@ export const poll = async <T>({
   millisecondsToWait = DEFAULT_WAIT_TIME_MS,
   useExponentialBackoff = false,
   failuresBeforeHighLoadMessage = 6,
+  pollId,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
@@ -223,8 +246,22 @@ export const poll = async <T>({
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
   failuresBeforeHighLoadMessage?: number;
+  pollId?: symbol;
 }): Promise<T> => {
   let highLoadToast: symbol | null = null;
+  // If we are already polling for this id, don't poll twice.
+  if (nonNullish(pollId) && currentPolls.has(pollId)) {
+    throw new PollingCancelledError(pollId);
+  }
+  // We'll never call `resolve`, therefore the type doesn't matter.
+  // `T` just makes TS happy.
+  const cancelPromise = new Promise<T>((_resolve, reject) => {
+    if (nonNullish(pollId)) {
+      currentPolls.set(pollId, (err) => {
+        reject(err);
+      });
+    }
+  });
   for (let counter = 0; counter < maxAttempts; counter++) {
     if (counter > 0) {
       if (
@@ -235,14 +272,17 @@ export const poll = async <T>({
           labelKey: "error.high_load_retrying",
         });
       }
-      await waitForMilliseconds(millisecondsToWait);
+      await Promise.race([
+        waitForMilliseconds(millisecondsToWait),
+        cancelPromise,
+      ]);
       if (useExponentialBackoff) {
         millisecondsToWait *= 2;
       }
     }
 
     try {
-      const result = await fn();
+      const result = await Promise.race([fn(), cancelPromise]);
       highLoadToast && toastsHide(highLoadToast);
       return result;
     } catch (error: unknown) {
@@ -258,6 +298,9 @@ export const poll = async <T>({
 
 export const pollingLimit = (error: unknown): boolean =>
   error instanceof PollingLimitExceededError;
+
+export const pollingCancelled = (error: unknown): boolean =>
+  error instanceof PollingCancelledError;
 
 /**
  * Use to highlight a placeholder in a text rendered from i18n labels.

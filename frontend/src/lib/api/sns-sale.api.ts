@@ -1,6 +1,9 @@
+import { createAgent } from "$lib/api/agent.api";
+import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
+import { SnsSwapCanister } from "@dfinity/sns";
 import type {
   RefreshBuyerTokensResponse,
   Ticket,
@@ -10,22 +13,25 @@ import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
   identity,
-  rootCanisterId,
+  swapCanisterId,
   certified,
 }: {
   identity: Identity;
-  rootCanisterId: Principal;
+  swapCanisterId: Principal;
   certified: boolean;
 }): Promise<Ticket | undefined> => {
   logWithTimestamp(`[sale] getOpenTicket call...`);
-
-  const { getOpenTicket } = await wrapper({
+  const agent = await createAgent({
     identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
+    host: HOST,
   });
 
-  const response = await getOpenTicket({});
+  const canister = SnsSwapCanister.create({
+    canisterId: swapCanisterId,
+    agent,
+  });
+
+  const response = await canister.getOpenTicket({ certified });
 
   logWithTimestamp(`[sale] getOpenTicket complete.`);
 
