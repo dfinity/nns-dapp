@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal XXX
+* SNS participation progress screen.
+* SNS aggregator improvements.
+* Network "high load" notification.
+* Polling and request optimization.
+* Minor UI and text updates
+
 ## Proposal 110166
 * Enable SNS aggregator.
 * Switch to TVL canister.
