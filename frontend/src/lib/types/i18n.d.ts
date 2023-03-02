@@ -608,6 +608,7 @@ interface I18nSns_project_detail {
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
+  current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
