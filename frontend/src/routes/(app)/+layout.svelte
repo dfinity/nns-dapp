@@ -7,7 +7,7 @@
     initAppPublicData,
   } from "$lib/services/$public/app.services";
   import Warnings from "$lib/components/metrics/Warnings.svelte";
-  import {confirmBeforeCloseStore} from "$lib/derived/before-unload.derived";
+  import { confirmBeforeCloseStore } from "$lib/derived/before-unload.derived";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
