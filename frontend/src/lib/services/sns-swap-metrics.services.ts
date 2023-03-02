@@ -53,7 +53,7 @@ const querySnsMetrics = async ({
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error("Error loading SNS metrics");
+      throw new Error("response not ok");
     }
 
     const rawMetrics = await response.text();
@@ -62,7 +62,7 @@ const querySnsMetrics = async ({
 
     logWithTimestamp("Loading SNS metrics completed");
   } catch (err) {
-    console.error("Error getting SNS metrics", err);
+    logWithTimestamp("Error getting SNS metrics", err);
   }
 };
 
