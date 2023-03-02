@@ -381,7 +381,7 @@ describe("utils", () => {
         const t0 = Date.now();
         const timestamps = [];
 
-        const promise = poll({
+        poll({
           fn: async () => {
             timestamps.push(Date.now() - t0);
             throw new Error();
@@ -527,7 +527,7 @@ describe("utils", () => {
           useExponentialBackoff: false,
           pollId,
         })
-          .then((result) => {
+          .then(() => {
             throw new Error("This shouldn't happen");
           })
           .catch((err) => {
@@ -561,7 +561,7 @@ describe("utils", () => {
           useExponentialBackoff: false,
           pollId,
         })
-          .then((result) => {
+          .then(() => {
             throw new Error("This shouldn't happen");
           })
           .catch((err) => {
