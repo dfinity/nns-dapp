@@ -39,6 +39,7 @@
       title: $i18n.metrics.nns_high_load,
       truncate: true,
       icon: TransactionRateWarningIcon,
+      theme: "inverted",
     });
   };
 
