@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { advanceTime, runResolvedPromises } from "../../../utils/timers.test-utils";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -34,6 +33,10 @@ import {
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -300,7 +303,7 @@ describe("ParticipateSwapModal", () => {
       const { unmount } = await renderSwapModal();
 
       await runResolvedPromises();
-      let expectedCalls = 1
+      let expectedCalls = 1;
       expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
 
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;

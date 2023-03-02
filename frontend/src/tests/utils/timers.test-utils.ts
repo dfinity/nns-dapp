@@ -2,7 +2,8 @@ import { nonNullish } from "@dfinity/utils";
 
 const originalTimeout = setTimeout;
 
-export const runResolvedPromises = () => new Promise((resolve) => originalTimeout(resolve, 0));
+export const runResolvedPromises = () =>
+  new Promise((resolve) => originalTimeout(resolve, 0));
 
 // If `millis` is passed, advance time by that much.
 // Otherwise advance time enough to run all current timers.

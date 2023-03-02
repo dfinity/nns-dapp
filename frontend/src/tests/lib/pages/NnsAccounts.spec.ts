@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { advanceTime, runResolvedPromises } from "../../utils/timers.test-utils";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -10,13 +9,17 @@ import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

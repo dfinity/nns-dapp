@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { advanceTime, runResolvedPromises } from "../../utils/timers.test-utils";
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -30,7 +29,6 @@ import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
   mockAccountDetails,
@@ -48,6 +46,10 @@ import {
 } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
