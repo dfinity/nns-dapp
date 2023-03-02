@@ -87,10 +87,6 @@ describe("ProposalDetail", () => {
           certified: true,
         })
       );
-      expect(governanceApi.queryNeurons).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        certified: false,
-      });
     });
   });
 

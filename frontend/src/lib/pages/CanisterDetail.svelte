@@ -47,10 +47,7 @@
       return true;
     }
 
-    return (
-      $canistersStore.canisters !== undefined &&
-      $canistersStore.certified === true
-    );
+    return $canistersStore.canisters !== undefined;
   };
 
   let canistersReady = false;

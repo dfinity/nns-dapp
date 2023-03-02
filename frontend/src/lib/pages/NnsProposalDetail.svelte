@@ -23,7 +23,9 @@
   export let referrerPath: AppPath | undefined = undefined;
 
   $: if (isSignedIn($authStore.identity)) {
-    listNeurons();
+    // We only care for the update call.
+    // The voting buttons are shown when the neurons are certified.
+    listNeurons({ strategy: "update" });
   }
 
   const mapProposalId = (
