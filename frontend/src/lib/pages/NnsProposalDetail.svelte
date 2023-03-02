@@ -25,7 +25,7 @@
   $: if (isSignedIn($authStore.identity)) {
     // We only care for the update call.
     // The voting buttons are shown when the neurons are certified.
-    listNeurons({ strategy: "update" });
+    listNeurons({ strategy: "query_and_update" });
   }
 
   const mapProposalId = (
