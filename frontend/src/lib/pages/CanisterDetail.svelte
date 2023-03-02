@@ -47,6 +47,7 @@
       return true;
     }
 
+    // At the moment we load the stores with query only.
     return $canistersStore.canisters !== undefined;
   };
 

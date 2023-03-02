@@ -87,6 +87,7 @@ describe("ProposalDetail", () => {
           certified: true,
         })
       );
+      expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(1);
     });
   });
 
