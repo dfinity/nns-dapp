@@ -773,5 +773,47 @@ describe("accounts-services", () => {
         return expect(accounts).toEqual(mockAccounts);
       });
     });
+
+    it("stops polling when cancelPollAccounts is called", async () => {
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const error = new Error("test");
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValue(error);
+
+      pollAccounts();
+
+      let counter = 0;
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const retriesBeforeCancelPolling = 3;
+      const extraRetries = 4;
+      while (counter < retriesBeforeCancelPolling + extraRetries) {
+        expect(queryAccountSpy).toBeCalledTimes(
+          Math.min(counter, retriesBeforeCancelPolling)
+        );
+        counter += 1;
+        // Make sure the timers are set before we advance time.
+        await null;
+        await null;
+        await null;
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
+        await waitFor(() =>
+          expect(queryAccountSpy).toBeCalledTimes(
+            Math.min(counter, retriesBeforeCancelPolling)
+          )
+        );
+
+        if (counter === retriesBeforeCancelPolling) {
+          cancelPollAccounts();
+        }
+      }
+
+      expect(counter).toBe(retriesBeforeCancelPolling + extraRetries);
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(retriesBeforeCancelPolling);
+    });
   });
 });
