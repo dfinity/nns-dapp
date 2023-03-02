@@ -21,7 +21,11 @@ AGGREGATOR_CANISTER_ID="3r4gx-wqaaa-aaaaq-aaaia-cai"
 WASM="./release/docker/sns_aggregator.wasm"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
-set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA"
+ARG_DID="./release/arg.did"
+ARG_PATH="./release/arg.bin"
+didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+
+set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
 
 echo
 echo PLEASE REVIEW THIS COMMAND:
