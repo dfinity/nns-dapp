@@ -1,6 +1,8 @@
 /**
  * @jest-environment jsdom
  */
+
+import { advanceTime, runResolvedPromises } from "../../utils/timers.test-utils";
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -732,7 +734,7 @@ describe("accounts-services", () => {
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const retriesUntilSuccess = 4;
+      const callsUntilSuccess = 4;
       const error = new Error("test");
       const queryAccountSpy = jest
         .spyOn(nnsdappApi, "queryAccount")
@@ -743,35 +745,24 @@ describe("accounts-services", () => {
 
       pollAccounts();
 
-      let counter = 0;
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-      const extraRetries = 4;
-      while (counter < retriesUntilSuccess + extraRetries) {
-        expect(queryAccountSpy).toBeCalledTimes(
-          Math.min(counter, retriesUntilSuccess)
-        );
-        counter += 1;
-        // Make sure the timers are set before we advance time.
-        await null;
-        await null;
-        await null;
-        jest.advanceTimersByTime(retryDelay);
+      while (expectedCalls < callsUntilSuccess) {
+        await advanceTime(retryDelay);
         retryDelay *= 2;
-        await waitFor(() =>
-          expect(queryAccountSpy).toBeCalledTimes(
-            Math.min(counter, retriesUntilSuccess)
-          )
-        );
+        expectedCalls += 1;
+        expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
       }
 
-      expect(counter).toBe(retriesUntilSuccess + extraRetries);
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
 
-      expect(queryAccountSpy).toHaveBeenCalledTimes(retriesUntilSuccess);
-
-      await waitFor(() => {
-        const accounts = get(accountsStore);
-        return expect(accounts).toEqual(mockAccounts);
-      });
+      const accounts = get(accountsStore);
+      return expect(accounts).toEqual(mockAccounts);
     });
 
     it("stops polling when cancelPollAccounts is called", async () => {
@@ -785,35 +776,24 @@ describe("accounts-services", () => {
 
       pollAccounts();
 
-      let counter = 0;
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-      const retriesBeforeCancelPolling = 3;
+      const callsBeforeCancelPolling = 3;
       const extraRetries = 4;
-      while (counter < retriesBeforeCancelPolling + extraRetries) {
-        expect(queryAccountSpy).toBeCalledTimes(
-          Math.min(counter, retriesBeforeCancelPolling)
-        );
-        counter += 1;
-        // Make sure the timers are set before we advance time.
-        await null;
-        await null;
-        await null;
-        jest.advanceTimersByTime(retryDelay);
+      while (expectedCalls < callsBeforeCancelPolling) {
+        await advanceTime(retryDelay);
         retryDelay *= 2;
-        await waitFor(() =>
-          expect(queryAccountSpy).toBeCalledTimes(
-            Math.min(counter, retriesBeforeCancelPolling)
-          )
-        );
-
-        if (counter === retriesBeforeCancelPolling) {
-          cancelPollAccounts();
-        }
+        expectedCalls += 1;
+        expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
       }
+      cancelPollAccounts();
 
-      expect(counter).toBe(retriesBeforeCancelPolling + extraRetries);
-
-      expect(queryAccountSpy).toHaveBeenCalledTimes(retriesBeforeCancelPolling);
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
     });
   });
 });
