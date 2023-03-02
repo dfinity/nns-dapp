@@ -122,7 +122,7 @@ describe("sns-api", () => {
     spyOnToastsShow.mockReset();
     spyOnToastsSuccess.mockReset();
     spyOnToastsError.mockReset();
-    spyOnGetOpenTicketApi.mockReset();
+    snsSwapCanister.getOpenTicket.mockReset();
     spyOnNewSaleTicketApi.mockReset();
     spyOnNotifyPaymentFailureApi.mockReset();
 
