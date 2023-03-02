@@ -61,4 +61,4 @@ sha256sum sns_aggregator.wasm
 EOF
 
 ARG_PATH="./release/arg.bin"
-didc encode '(record{})' | xxd -r -p > "$ARG_PATH"
+didc encode '(record{})' | xxd -r -p >"$ARG_PATH"
