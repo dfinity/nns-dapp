@@ -49,7 +49,7 @@ export const watchSnsMetrics = ({
 }): (() => void) => {
   const interval = setInterval(() => {
     loadSnsMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
-  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
+  }, WATCH_SALE_STATE_EVERY_MILLISECONDS / 10);
 
   return () => {
     clearInterval(interval);
@@ -75,9 +75,8 @@ const querySnsMetrics = async ({
 
     const rawMetrics = await response.text();
     const saleBuyerCount = parseSnsSwapSaleBuyerCount(rawMetrics);
-    return saleBuyerCount === undefined ? undefined : { saleBuyerCount };
-
     logWithTimestamp("Loading SNS metrics completed");
+    return saleBuyerCount === undefined ? undefined : { saleBuyerCount };
   } catch (err) {
     logWithTimestamp("Error getting SNS metrics", err);
   }

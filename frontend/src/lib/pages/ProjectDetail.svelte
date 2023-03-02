@@ -51,22 +51,20 @@
     unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
   }
 
-  const loadCommitment = ({
-    rootCanisterId,
-    forceFetch,
-  }: {
-    rootCanisterId: string;
-    forceFetch: boolean;
-  }) =>
-    loadSnsSwapCommitment({
-      rootCanisterId,
-      onError: () => {
-        // Set to not found
-        $projectDetailStore.swapCommitment = undefined;
-        goBack();
-      },
+  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
+    const swapCanisterId = $projectDetailStore?.summary
+      ?.swapCanisterId as Principal;
+
+    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
+      return;
+    }
+
+    await loadSnsMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
       forceFetch,
     });
+  };
 
   const reload = async () => {
     if (rootCanisterId === undefined || rootCanisterId === null) {
@@ -94,20 +92,32 @@
     reload,
   });
 
-  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
-    const swapCanisterId = $projectDetailStore?.summary
-      ?.swapCanisterId as Principal;
-
-    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
-      return;
-    }
-
-    await loadSnsMetrics({
+  let swapCanisterId: Principal | undefined;
+  $: if (nonNullish(swapCanisterId) && nonNullish(rootCanisterId)) {
+    reloadSnsMetrics({ forceFetch: false });
+    unsubscribeWatchMetrics?.();
+    unsubscribeWatchMetrics = watchSnsMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
+      swapCanisterId: swapCanisterId,
+    });
+  }
+
+  const loadCommitment = ({
+    rootCanisterId,
+    forceFetch,
+  }: {
+    rootCanisterId: string;
+    forceFetch: boolean;
+  }) =>
+    loadSnsSwapCommitment({
+      rootCanisterId,
+      onError: () => {
+        // Set to not found
+        $projectDetailStore.swapCommitment = undefined;
+        goBack();
+      },
       forceFetch,
     });
-  };
 
   const goBack = async (): Promise<void> => {
     if (!browser) {
@@ -148,19 +158,6 @@
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
         : undefined;
-
-    // We need both of these here because this component does not "subscribe" to projectDetailStore
-    // The store is created in this same component.
-    reloadSnsMetrics({ forceFetch: false });
-    if (nonNullish($projectDetailStore.summary?.swapCanisterId)) {
-      unsubscribeWatchMetrics?.();
-      unsubscribeWatchMetrics = watchSnsMetrics({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        // TS is not smart enought to understand the `nonNullish` before
-        swapCanisterId: $projectDetailStore.summary
-          ?.swapCanisterId as Principal,
-      });
-    }
   };
 
   /**
@@ -174,6 +171,17 @@
         return;
       }
       setProjectStore(rootCanisterId);
+
+      // TODO: Understand why this component doesn't subscribe to the store `projectDetailStore`.
+      // Is it because it's created in this same component?
+      const newSwapCanisterId = $snsSummariesStore.find(
+        ({ rootCanisterId: rootCanister }) =>
+          rootCanister?.toText() === rootCanisterId
+      )?.swapCanisterId;
+
+      if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
+        swapCanisterId = newSwapCanisterId;
+      }
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
