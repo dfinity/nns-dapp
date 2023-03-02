@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 cd "$(dirname "$0")/../../.."
 
 NEURON_PATH="$HOME/.config/dfx/prod-neuron"
@@ -21,7 +22,7 @@ AGGREGATOR_CANISTER_ID="3r4gx-wqaaa-aaaaq-aaaia-cai"
 WASM="./release/docker/sns_aggregator.wasm"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
-set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA"
+set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$SOURCE_DIR/release.arg"
 
 echo
 echo PLEASE REVIEW THIS COMMAND:
