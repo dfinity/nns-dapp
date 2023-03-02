@@ -253,8 +253,8 @@ const handleNewSaleTicketError = ({
       case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
         const existingTicket = newSaleTicketError.existingTicket;
         if (nonNullish(existingTicket)) {
-          toastsShow({
-            level: "info",
+          // Show error so that it shows above the modal in case the user is participating and has the modal open
+          toastsError({
             labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
             substitutions: {
               $time: nanoSecondsToDateTime(existingTicket.creation_time),
