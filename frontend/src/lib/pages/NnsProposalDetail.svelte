@@ -23,8 +23,8 @@
   export let referrerPath: AppPath | undefined = undefined;
 
   $: if (isSignedIn($authStore.identity)) {
-    // We only care for the update call.
-    // The voting buttons are shown when the neurons are certified.
+    // We want to force the strategy, otherwise uses `FORCE_CALL_STRATEGY` which is `query` for now.
+    // We want certified data for the neurons when voting.
     listNeurons({ strategy: "query_and_update" });
   }
 
