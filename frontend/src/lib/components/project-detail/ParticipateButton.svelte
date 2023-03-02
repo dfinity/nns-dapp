@@ -37,8 +37,10 @@
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let lifecycle: number;
+  let swapCanisterId: Principal;
   $: ({
     swap: { lifecycle },
+    swapCanisterId,
   } =
     $projectDetailStore.summary ??
     ({
@@ -82,7 +84,7 @@
 
   let progressStep: SaleStep | undefined = undefined;
 
-  const updateTicket = async () => {
+  const updateTicket = async (swapCanisterId: Principal) => {
     // Avoid second call for the same rootCanisterId
     if (
       rootCanisterId === undefined ||
@@ -103,6 +105,7 @@
     await restoreSnsSaleParticipation({
       rootCanisterId,
       userCommitment,
+      swapCanisterId,
       postprocess: reload,
       updateProgress,
     });
@@ -112,14 +115,14 @@
   // - the sns is not open
   // - the user is not sign in
   // - user commitment information is not loaded
-  // - project summary is not loaded, to avoid building a wrapper instead of using a cached one
+  // - project swap canister id is not loaded, needed for the ticket call
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
     isSignedIn($authStore.identity) &&
     nonNullish(userCommitment) &&
-    nonNullish($projectDetailStore.summary)
+    nonNullish(swapCanisterId)
   ) {
-    updateTicket();
+    updateTicket(swapCanisterId);
   }
 
   let userHasParticipatedToSwap = false;
