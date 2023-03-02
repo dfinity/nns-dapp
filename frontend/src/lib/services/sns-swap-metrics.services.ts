@@ -49,7 +49,7 @@ export const watchSnsMetrics = ({
 }): (() => void) => {
   const interval = setInterval(() => {
     loadSnsMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
-  }, WATCH_SALE_STATE_EVERY_MILLISECONDS / 10);
+  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {
     clearInterval(interval);
