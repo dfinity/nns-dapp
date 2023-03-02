@@ -2,7 +2,6 @@
 
 ## Proposal XXX
 * "high-load" warning fix.
-* Aggregator improvements.
 
 ## Proposal 110166
 * Enable SNS aggregator.
