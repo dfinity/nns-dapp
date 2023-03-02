@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as api from "$lib/api/sns.api";
 import * as services from "$lib/services/sns.services";
@@ -10,6 +14,7 @@ import type {
   GetLifecycleResponse,
 } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable } from "@dfinity/utils";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
@@ -18,7 +23,8 @@ import {
 } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const { getSwapAccount, loadSnsSwapCommitments } = services;
+const { getSwapAccount, loadSnsSwapCommitments, loadSnsSwapCommitment } =
+  services;
 
 const testGetIdentityReturn = Promise.resolve(mockIdentity);
 
@@ -90,7 +96,7 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsTotalCommitment", () => {
-    afterEach(() => {
+    beforeEach(() => {
       jest.clearAllMocks();
       snsSwapCommitmentsStore.reset();
       snsQueryStore.reset();
@@ -139,49 +145,119 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
     });
+  });
 
-    describe("loadSnsLifecycle", () => {
-      afterEach(() => {
-        jest.clearAllMocks();
-        snsSwapCommitmentsStore.reset();
-        snsQueryStore.reset();
+  describe("loadSnsSwapCommitment", () => {
+    let queryCommitmentSpy: jest.SpyInstance;
+    const commitment1 = mockSnsSwapCommitment(principal(0));
+    beforeEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      queryCommitmentSpy = jest
+        .spyOn(api, "querySnsSwapCommitment")
+        .mockImplementation(() => Promise.resolve(commitment1));
+    });
+
+    it("should call api to get commitments and load them in store", async () => {
+      expect(get(snsSwapCommitmentsStore)).toBeUndefined();
+      await loadSnsSwapCommitment({
+        rootCanisterId: commitment1.rootCanisterId.toText(),
+        forceFetch: false,
+      });
+      expect(queryCommitmentSpy).toBeCalledTimes(2);
+
+      await waitFor(() =>
+        expect(get(snsSwapCommitmentsStore)).not.toBeUndefined()
+      );
+      const commitmentInStore = get(snsSwapCommitmentsStore).find(
+        ({ swapCommitment: { rootCanisterId } }) =>
+          commitment1.rootCanisterId.toText() === rootCanisterId.toText()
+      );
+      expect(commitmentInStore.swapCommitment).toEqual(commitment1);
+    });
+
+    it("should not call api if they are loaded in store", async () => {
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment1,
+        certified: true,
       });
 
-      it("should call api to get lifecycle and load them in store", async () => {
-        const newLifeCycle = SnsSwapLifecycle.Committed;
-        const lifeCycleResponse: GetLifecycleResponse = {
-          lifecycle: [newLifeCycle],
-          decentralization_sale_open_timestamp_seconds: [BigInt(1)],
-        };
-        const dataLifecycle = SnsSwapLifecycle.Open;
-        const [metadatas, swaps] = snsResponsesForLifecycle({
-          certified: true,
-          lifecycles: [dataLifecycle, SnsSwapLifecycle.Open],
-        });
-        snsQueryStore.setData([metadatas, swaps]);
-        const canisterId = swaps[0].rootCanisterId;
-
-        const spy = jest
-          .spyOn(api, "querySnsLifecycle")
-          .mockImplementation(() => Promise.resolve(lifeCycleResponse));
-
-        const initStore = get(snsQueryStore);
-        const initLifecycle = initStore?.swaps.find(
-          (swap) => swap.rootCanisterId === canisterId
-        )?.swap[0].lifecycle;
-        expect(initLifecycle).toEqual(dataLifecycle);
-
-        await services.loadSnsLifecycle({
-          rootCanisterId: canisterId,
-        });
-        expect(spy).toBeCalled();
-
-        const updatedStore = get(snsQueryStore);
-        const updatedLifecycle = updatedStore?.swaps.find(
-          (swap) => swap.rootCanisterId === canisterId
-        )?.swap[0].lifecycle;
-        expect(updatedLifecycle).toEqual(newLifeCycle);
+      await loadSnsSwapCommitment({
+        rootCanisterId: commitment1.rootCanisterId.toText(),
+        forceFetch: false,
       });
+      expect(queryCommitmentSpy).not.toBeCalled();
+    });
+
+    it("should call api if they are loaded in store but forceFetch is true", async () => {
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: commitment1,
+        certified: true,
+      });
+
+      await loadSnsSwapCommitment({
+        rootCanisterId: commitment1.rootCanisterId.toText(),
+        forceFetch: true,
+      });
+
+      expect(queryCommitmentSpy).toBeCalledTimes(1);
+    });
+
+    it("should call api with update if forceFetch is try", async () => {
+      await loadSnsSwapCommitment({
+        rootCanisterId: commitment1.rootCanisterId.toText(),
+        forceFetch: true,
+      });
+      expect(queryCommitmentSpy).toBeCalledTimes(1);
+      expect(queryCommitmentSpy).toBeCalledWith({
+        rootCanisterId: commitment1.rootCanisterId.toText(),
+        certified: true,
+        identity: mockIdentity,
+      });
+    });
+  });
+
+  describe("loadSnsLifecycle", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      snsSwapCommitmentsStore.reset();
+      snsQueryStore.reset();
+    });
+
+    it("should call api to get lifecycle and load them in store", async () => {
+      const newLifeCycle = SnsSwapLifecycle.Committed;
+      const lifeCycleResponse: GetLifecycleResponse = {
+        lifecycle: [newLifeCycle],
+        decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+      };
+      const dataLifecycle = SnsSwapLifecycle.Open;
+      const [metadatas, swaps] = snsResponsesForLifecycle({
+        certified: true,
+        lifecycles: [dataLifecycle, SnsSwapLifecycle.Open],
+      });
+      snsQueryStore.setData([metadatas, swaps]);
+      const canisterId = swaps[0].rootCanisterId;
+
+      const spy = jest
+        .spyOn(api, "querySnsLifecycle")
+        .mockImplementation(() => Promise.resolve(lifeCycleResponse));
+
+      const initStore = get(snsQueryStore);
+      const initLifecycle = initStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.swap[0].lifecycle;
+      expect(initLifecycle).toEqual(dataLifecycle);
+
+      await services.loadSnsLifecycle({
+        rootCanisterId: canisterId,
+      });
+      expect(spy).toBeCalled();
+
+      const updatedStore = get(snsQueryStore);
+      const updatedLifecycle = updatedStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.swap[0].lifecycle;
+      expect(updatedLifecycle).toEqual(newLifeCycle);
     });
   });
 });
