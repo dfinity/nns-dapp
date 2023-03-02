@@ -81,6 +81,8 @@ const syncMetrics = async ({
       syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
     ]);
 
+    console.log('Emit', metrics);
+
     emitCanister(metrics);
   } catch (err: unknown) {
     // We silence the error here as it is not an information crucial for the usage of the dapp

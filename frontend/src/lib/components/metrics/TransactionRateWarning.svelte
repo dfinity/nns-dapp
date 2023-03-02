@@ -7,13 +7,11 @@
   import TransactionRateWarningIcon from "$lib/components/metrics/TransactionRateWarningIcon.svelte";
   import { layoutWarningToastId } from "$lib/stores/layout.store";
 
-  let transactionRate: number | undefined;
-  $: transactionRate =
-    $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
-
   $: console.log('layout store', $layoutWarningToastId);
 
   const transactionRateWarning = () => {
+    const transactionRate = $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
+
     console.log('transactionRateWarning', transactionRate, $layoutWarningToastId);
 
     if (isNullish(transactionRate)) {
@@ -50,7 +48,7 @@
     });
   };
 
-  $: transactionRate, (() => transactionRateWarning())();
+  $: $metricsStore, (() => transactionRateWarning())();
 </script>
 
 <!-- display transaction rate warnings -->
