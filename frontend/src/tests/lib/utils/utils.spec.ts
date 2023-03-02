@@ -9,8 +9,8 @@ import {
   isPngAsset,
   poll,
   pollingCancelled,
-  PollingLimitExceededError,
   PollingCancelledError,
+  PollingLimitExceededError,
   removeKeys,
   smallerVersion,
   stringifyJson,
@@ -526,14 +526,16 @@ describe("utils", () => {
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
           pollId,
-        }).then((result) => {
-          throw new Error("This shouldn't happen");
-        }).catch((err) => {
-          expect(err).toBeInstanceOf(PollingCancelledError);
-          if (pollingCancelled(err)) {
-            cancelled = true;
-          }
-        });;
+        })
+          .then((result) => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            if (pollingCancelled(err)) {
+              cancelled = true;
+            }
+          });
         expect(fnSpy).toBeCalled();
         await advanceTime();
         expect(cancelled).toBe(false);
@@ -545,9 +547,11 @@ describe("utils", () => {
       it("should stop polling when cancelled during call", async () => {
         const pollId = Symbol();
         const fnSpy = jest.fn();
-        fnSpy.mockRejectedValue(new Promise(() => {
-          //never resolve
-        }));
+        fnSpy.mockRejectedValue(
+          new Promise(() => {
+            //never resolve
+          })
+        );
         let cancelled = false;
         poll({
           fn: fnSpy,
@@ -556,14 +560,16 @@ describe("utils", () => {
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
           pollId,
-        }).then((result) => {
-          throw new Error("This shouldn't happen");
-        }).catch((err) => {
-          expect(err).toBeInstanceOf(PollingCancelledError);
-          if (pollingCancelled(err)) {
-            cancelled = true;
-          }
-        });;
+        })
+          .then((result) => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            if (pollingCancelled(err)) {
+              cancelled = true;
+            }
+          });
         expect(fnSpy).toBeCalled();
         await advanceTime();
         expect(cancelled).toBe(false);
