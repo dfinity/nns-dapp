@@ -584,7 +584,7 @@
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
-    "current_sale_buyer_count": "Current Sale Buyer Count",
+    "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
