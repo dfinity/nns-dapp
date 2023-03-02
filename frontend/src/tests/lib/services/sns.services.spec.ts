@@ -6,6 +6,7 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
+import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -17,28 +18,32 @@ import type {
 import { fromNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockPrincipal,
+} from "../../mocks/auth.store.mock";
 import {
   mockSnsSwapCommitment,
   principal,
 } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const { getSwapAccount, loadSnsSwapCommitments, loadSnsSwapCommitment } =
-  services;
-
-const testGetIdentityReturn = Promise.resolve(mockIdentity);
-
-jest.mock("$lib/services/accounts.services", () => {
-  return {
-    getAccountIdentity: jest
-      .fn()
-      .mockImplementation(() => testGetIdentityReturn),
-    syncAccounts: jest.fn(),
-  };
-});
+const {
+  getSwapAccount,
+  loadSnsSwapCommitments,
+  loadSnsSwapCommitment,
+  loadSnsTotalCommitment,
+  watchDerivedState,
+} = services;
 
 describe("sns-services", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   describe("getSwapAccount", () => {
     afterEach(() => jest.clearAllMocks());
     it("should return the swap canister account identifier", async () => {
@@ -130,7 +135,7 @@ describe("sns-services", () => {
         initState?.sns_tokens_per_icp
       );
 
-      await services.loadSnsTotalCommitment({
+      await loadSnsTotalCommitment({
         rootCanisterId: canisterId,
       });
       expect(spy).toBeCalled();
@@ -145,6 +150,28 @@ describe("sns-services", () => {
       expect(updatedState?.sns_tokens_per_icp).toEqual(
         fromNullable(derivedState.sns_tokens_per_icp)
       );
+    });
+
+    it("should call api with the strategy passed", async () => {
+      const derivedState: GetDerivedStateResponse = {
+        sns_tokens_per_icp: [1],
+        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+      };
+      const spy = jest
+        .spyOn(api, "querySnsDerivedState")
+        .mockImplementation(() => Promise.resolve(derivedState));
+
+      await loadSnsTotalCommitment({
+        rootCanisterId: mockPrincipal.toText(),
+        strategy: "update",
+      });
+
+      expect(spy).toBeCalledWith({
+        rootCanisterId: mockPrincipal.toText(),
+        identity: mockIdentity,
+        certified: true,
+      });
+      expect(spy).toBeCalledTimes(1);
     });
   });
 
@@ -175,18 +202,7 @@ describe("sns-services", () => {
         .spyOn(api, "querySnsDerivedState")
         .mockImplementation(() => Promise.resolve(derivedState));
 
-      const initStore = get(snsQueryStore);
-      const initState = initStore?.swaps.find(
-        (swap) => swap.rootCanisterId === canisterId
-      )?.derived[0];
-      expect(initState?.buyer_total_icp_e8s).toEqual(
-        initState?.buyer_total_icp_e8s
-      );
-      expect(initState?.sns_tokens_per_icp).toEqual(
-        initState?.sns_tokens_per_icp
-      );
-
-      const clearWatch = services.watchDerivedState({
+      const clearWatch = watchDerivedState({
         rootCanisterId: canisterId,
       });
 
@@ -210,6 +226,17 @@ describe("sns-services", () => {
         }
       }
       expect(spy).toBeCalledTimes(retriesBeforeClearing);
+
+      const updatedStore = get(snsQueryStore);
+      const updatedState = updatedStore?.swaps.find(
+        (swap) => swap.rootCanisterId === canisterId
+      )?.derived[0];
+      expect(updatedState?.buyer_total_icp_e8s).toEqual(
+        fromNullable(derivedState.buyer_total_icp_e8s)
+      );
+      expect(updatedState?.sns_tokens_per_icp).toEqual(
+        fromNullable(derivedState.sns_tokens_per_icp)
+      );
     });
   });
 
