@@ -5,6 +5,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
+import { watchSnsMetrics } from "$lib/services/sns-swap-metrics.services";
 import {
   loadSnsSwapCommitment,
   watchSnsTotalCommitment,
@@ -20,16 +21,29 @@ import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
-const mockUnwatchCall = jest.fn();
+const mockUnwatchCommitmentsCall = jest.fn();
 jest.mock("$lib/services/sns.services", () => {
   return {
     loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
     watchSnsTotalCommitment: jest
       .fn()
-      .mockImplementation(() => mockUnwatchCall),
+      .mockImplementation(() => mockUnwatchCommitmentsCall),
   };
 });
+
+const mockUnwatchMetricsCall = jest.fn();
+jest.mock("$lib/services/sns-swap-metrics.services", () => {
+  return {
+    loadSnsMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
+    watchSnsMetrics: jest.fn().mockImplementation(() => mockUnwatchMetricsCall),
+  };
+});
+
+jest.mock("$lib/services/sns-sale.services", () => ({
+  restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
+  hidePollingToast: jest.fn().mockResolvedValue(undefined),
+}));
 
 describe("ProjectDetail", () => {
   const props = {
@@ -62,14 +76,44 @@ describe("ProjectDetail", () => {
       await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
     });
 
-    it("should clear eatch on unmount", async () => {
+    it("should clear watch commitments on unmount", async () => {
       const { unmount } = render(ProjectDetail, props);
 
-      expect(mockUnwatchCall).not.toBeCalled();
+      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
 
       unmount();
 
-      await waitFor(() => expect(mockUnwatchCall).toBeCalledTimes(1));
+      await waitFor(() =>
+        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+      );
+    });
+
+    it("should start watching metrics", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(watchSnsMetrics).toBeCalled());
+    });
+
+    it("should clear watch metrics on unmount", async () => {
+      const { unmount } = render(ProjectDetail, props);
+
+      expect(mockUnwatchMetricsCall).not.toBeCalled();
+
+      unmount();
+
+      await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
+    });
+
+    it("should clear watch commitments on unmount", async () => {
+      const { unmount } = render(ProjectDetail, props);
+
+      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+
+      unmount();
+
+      await waitFor(() =>
+        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+      );
     });
 
     it("should not load user's commitnemtn", async () => {
@@ -103,6 +147,17 @@ describe("ProjectDetail", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
+
+      snsQueryStore.setData(
+        snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        })
+      );
+      snsSwapCommitmentsStore.setSwapCommitment({
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        certified: true,
+      });
     });
 
     it("should start watching derived state", async () => {
@@ -111,14 +166,32 @@ describe("ProjectDetail", () => {
       await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
     });
 
-    it("should clear eatch on unmount", async () => {
+    it("should clear watch on unmount", async () => {
       const { unmount } = render(ProjectDetail, props);
 
-      expect(mockUnwatchCall).not.toBeCalled();
+      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
 
       unmount();
 
-      await waitFor(() => expect(mockUnwatchCall).toBeCalledTimes(1));
+      await waitFor(() =>
+        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+      );
+    });
+
+    it("should start watching metrics", async () => {
+      render(ProjectDetail, props);
+
+      await waitFor(() => expect(watchSnsMetrics).toBeCalled());
+    });
+
+    it("should clear watch metrics on unmount", async () => {
+      const { unmount } = render(ProjectDetail, props);
+
+      expect(mockUnwatchMetricsCall).not.toBeCalled();
+
+      unmount();
+
+      await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
     });
 
     it("should load user's commitment", async () => {

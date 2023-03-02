@@ -1,3 +1,4 @@
+import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
@@ -37,6 +38,22 @@ export const loadSnsMetrics = async ({
     rootCanisterId,
     metrics: metrics ?? null,
   });
+};
+
+export const watchSnsMetrics = ({
+  rootCanisterId,
+  swapCanisterId,
+}: {
+  rootCanisterId: Principal;
+  swapCanisterId: Principal;
+}): (() => void) => {
+  const interval = setInterval(() => {
+    loadSnsMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
+  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
+
+  return () => {
+    clearInterval(interval);
+  };
 };
 
 const querySnsMetrics = async ({

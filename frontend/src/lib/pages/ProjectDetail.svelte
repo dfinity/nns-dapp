@@ -27,14 +27,19 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
-  import { loadSnsMetrics } from "$lib/services/sns-swap-metrics.services";
+  import {
+    loadSnsMetrics,
+    watchSnsMetrics,
+  } from "$lib/services/sns-swap-metrics.services";
 
   export let rootCanisterId: string | undefined | null;
 
-  let unsubscribeWatch: () => void | undefined;
+  let unsubscribeWatchCommitment: () => void | undefined;
+  let unsubscribeWatchMetrics: () => void | undefined;
 
   onDestroy(() => {
-    unsubscribeWatch?.();
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchMetrics?.();
   });
 
   $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
@@ -42,8 +47,8 @@
   }
 
   $: if (nonNullish(rootCanisterId)) {
-    unsubscribeWatch?.();
-    unsubscribeWatch = watchSnsTotalCommitment({ rootCanisterId });
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
   }
 
   const loadCommitment = ({
@@ -143,6 +148,17 @@
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
         : undefined;
+
+    // We need both of these here because this component does not "subscribe" to projectDetailStore
+    // The store is created in this same component.
+    reloadSnsMetrics({ forceFetch: false });
+
+    unsubscribeWatchMetrics?.();
+    unsubscribeWatchMetrics = watchSnsMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      // TS is not smart enought to understand the `nonNullish` before
+      swapCanisterId: $projectDetailStore.summary?.swapCanisterId as Principal,
+    });
   };
 
   /**
@@ -159,12 +175,6 @@
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
-  $: if (
-    nonNullish(rootCanisterId) &&
-    nonNullish($projectDetailStore?.summary?.swapCanisterId)
-  ) {
-    reloadSnsMetrics({ forceFetch: false });
-  }
 
   let notFound: boolean;
   $: notFound = $projectDetailStore.summary === undefined;
