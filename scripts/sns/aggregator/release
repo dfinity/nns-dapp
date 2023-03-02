@@ -2,14 +2,20 @@
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
-read -rp "HSM Pin: " DFX_HSM_PIN
-
 NEURON_PATH="$HOME/.config/dfx/prod-neuron"
 if test -e "$NEURON_PATH"; then
   NEURON="$(cat "$NEURON_PATH")"
+  echo "Neuron ID: $NEURON (from $NEURON_PATH)"
 else
-  read -rp "Neuron ID: " NEURON
+  read -rp "Please enter your Neuron ID: " NEURON
+  read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
+  [[ "$STORE_NEURON" != [yY] ]] || {
+    mkdir -p "$(dirname "$NEURON_PATH")"
+    printf "%s" "$NEURON" >"$NEURON_PATH"
+  }
 fi
+
+read -rp "HSM Pin: " DFX_HSM_PIN
 
 AGGREGATOR_CANISTER_ID="3r4gx-wqaaa-aaaaq-aaaia-cai"
 WASM="./release/docker/sns_aggregator.wasm"
