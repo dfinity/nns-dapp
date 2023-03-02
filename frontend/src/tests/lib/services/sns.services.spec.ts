@@ -141,7 +141,7 @@ describe("sns-services", () => {
       expect(spy).toBeCalled();
 
       const updatedStore = get(snsQueryStore);
-      const updatedState = updatedStore?.swaps.find(
+      const updatedState = updatedStore.swaps.find(
         (swap) => swap.rootCanisterId === canisterId
       )?.derived[0];
       expect(updatedState?.buyer_total_icp_e8s).toEqual(
@@ -239,7 +239,7 @@ describe("sns-services", () => {
       expect(spy).toBeCalledTimes(retriesBeforeClearing);
 
       const updatedStore = get(snsQueryStore);
-      const updatedState = updatedStore?.swaps.find(
+      const updatedState = updatedStore.swaps.find(
         (swap) => swap.rootCanisterId === canisterId
       )?.derived[0];
       expect(updatedState?.buyer_total_icp_e8s).toEqual(
