@@ -11,7 +11,11 @@
   $: transactionRate =
     $metricsStore?.transactionRate?.message_execution_rate[0]?.[1];
 
+  $: console.log('layout store', $layoutWarningToastId);
+
   const transactionRateWarning = () => {
+    console.log('transactionRateWarning', transactionRate, $layoutWarningToastId);
+
     if (isNullish(transactionRate)) {
       return;
     }
