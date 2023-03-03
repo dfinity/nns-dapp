@@ -1,5 +1,6 @@
 import {
   bytesToHexString,
+  cancelPoll,
   createChunks,
   expandObject,
   hexStringToBytes,
@@ -7,17 +8,23 @@ import {
   isHash,
   isPngAsset,
   poll,
+  pollingCancelled,
+  PollingCancelledError,
   PollingLimitExceededError,
   removeKeys,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import en from "../../mocks/i18n.mock";
 
 describe("utils", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    toastsStore.reset();
     jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
@@ -340,9 +347,27 @@ describe("utils", () => {
     });
 
     describe("with fake timers", () => {
+      const highLoadToast = [
+        {
+          level: "error",
+          text: `${en.error.high_load_retrying}`,
+        },
+      ];
+
+      let originalTimeout;
       beforeEach(() => {
+        jest.useRealTimers();
+        if (originalTimeout === undefined) {
+          originalTimeout = setTimeout;
+        }
         jest.useFakeTimers();
       });
+
+      const advanceTime = async (): Promise<void> => {
+        // Make sure the timers are set before we advance time.
+        await new Promise((resolve) => originalTimeout(resolve, 0));
+        await jest.runOnlyPendingTimers();
+      };
 
       const getTimestamps = async ({
         maxAttempts,
@@ -353,26 +378,25 @@ describe("utils", () => {
         millisecondsToWait?: number;
         useExponentialBackoff: boolean;
       }): Promise<number[]> => {
-        const t0 = new Date().getTime();
+        const t0 = Date.now();
         const timestamps = [];
 
-        const promise = poll({
+        poll({
           fn: async () => {
-            timestamps.push(new Date().getTime() - t0);
+            timestamps.push(Date.now() - t0);
             throw new Error();
           },
           shouldExit: () => false,
           maxAttempts,
           millisecondsToWait,
           useExponentialBackoff,
+        }).catch((err) => {
+          expect(err).toBeInstanceOf(PollingLimitExceededError);
         });
 
-        for (let i = 0; i < maxAttempts; i++) {
-          // Make sure the timers are set before we advance time.
-          await null;
-          await jest.runOnlyPendingTimers();
+        for (let i = 0; i < maxAttempts - 1; i++) {
+          await advanceTime();
         }
-        expect(() => promise).rejects.toThrowError(PollingLimitExceededError);
         return timestamps;
       };
 
@@ -403,6 +427,155 @@ describe("utils", () => {
             useExponentialBackoff: true,
           })
         ).toEqual([0, 1000, 3000, 7000, 15000]);
+      });
+
+      it("should not wait after the last failure", async () => {
+        const t0 = Date.now();
+        const timestamps = await getTimestamps({
+          maxAttempts: 5,
+          millisecondsToWait: 1000,
+          useExponentialBackoff: false,
+        });
+        const totalTimePassed = Date.now() - t0;
+        const timeOfLastCall = timestamps[timestamps.length - 1];
+        expect(totalTimePassed).toEqual(timeOfLastCall);
+      });
+
+      it("should show 'high load' message after ~1 minute", async () => {
+        let calls = 0;
+        const failuresBeforeHighLoadMessage = 3;
+        const _ = poll({
+          fn: async () => {
+            calls += 1;
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+        });
+        expect(calls).toEqual(1);
+        await advanceTime();
+        expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        await advanceTime();
+        expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
+
+      it("should hide 'high load' message after success", async () => {
+        const failuresBeforeHighLoadMessage = 3;
+        let shouldFail = true;
+        const _ = poll({
+          fn: async () => {
+            if (shouldFail) {
+              throw new Error();
+            }
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+        });
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        shouldFail = false;
+        await advanceTime();
+        // This extra advanceTime shouldn't be necessary.
+        await advanceTime();
+        expect(get(toastsStore)).toEqual([]);
+      });
+
+      it("should show 'high load' message only once", async () => {
+        const _ = poll({
+          fn: async () => {
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage: 3,
+        });
+        expect(get(toastsStore)).toEqual([]);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        // Still only 1 toast.
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+      });
+
+      it("should stop polling when cancelled during wait", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        fnSpy.mockRejectedValue(new Error("failing"));
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        })
+          .then(() => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            if (pollingCancelled(err)) {
+              cancelled = true;
+            }
+          });
+        expect(fnSpy).toBeCalled();
+        await advanceTime();
+        expect(cancelled).toBe(false);
+        cancelPoll(pollId);
+        await advanceTime();
+        expect(cancelled).toBe(true);
+      });
+
+      it("should stop polling when cancelled during call", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        fnSpy.mockRejectedValue(
+          new Promise(() => {
+            //never resolve
+          })
+        );
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        })
+          .then(() => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            if (pollingCancelled(err)) {
+              cancelled = true;
+            }
+          });
+        expect(fnSpy).toBeCalled();
+        await advanceTime();
+        expect(cancelled).toBe(false);
+        cancelPoll(pollId);
+        await advanceTime();
+        expect(cancelled).toBe(true);
       });
     });
   });

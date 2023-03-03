@@ -26,7 +26,7 @@ import {
 } from "../../../mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
 
-jest.mock("../../../../../src/lib/services/$public/sns.services", () => ({
+jest.mock("$lib/services/$public/sns.services", () => ({
   loadSnsNervousSystemFunctions: jest.fn(),
 }));
 

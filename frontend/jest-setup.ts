@@ -38,6 +38,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
   CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
   CKBTC_INDEX_CANISTER_ID: Principal.fromText("si2b5-pyaaa-aaaaa-aaaja-cai"),
   CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
+  TVL_CANISTER_ID: Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai"),
 }));
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
@@ -57,6 +58,8 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   SNS_AGGREGATOR_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
+  ENABLE_METRICS: false,
+  FORCE_CALL_STRATEGY: undefined,
 }));
 
 global.localStorage = localStorageMock;

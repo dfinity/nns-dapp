@@ -15,10 +15,8 @@
     if (!isSignedIn($authStore.identity)) {
       return;
     }
-
     await loadSnsSwapCommitments();
   };
-
   $: $authStore.identity, (async () => await loadSnsSale())();
 
   let showCommitted = false;

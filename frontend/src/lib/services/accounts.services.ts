@@ -13,7 +13,12 @@ import type {
   SubAccountDetails,
   Transaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import {
+  SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+  SYNC_ACCOUNTS_RETRY_SECONDS,
+} from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -24,6 +29,12 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -106,33 +117,65 @@ export const loadAccounts = async ({
   };
 };
 
+type SyncAccontsErrorHandler = (params: {
+  err: unknown;
+  certified: boolean;
+}) => void;
+
 /**
- * - sync: load the account data using the ledger and the nns dapp canister itself
+ * Default error handler for syncAccounts.
+ *
+ * Ignores non-certified errors.
+ * Resets accountsStore and shows toast for certified errors.
  */
-export const syncAccounts = (): Promise<void> => {
+const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
+  err,
+  certified,
+}: {
+  err: unknown;
+  certified: boolean;
+}) => {
+  if (!certified) {
+    return;
+  }
+
+  accountsStore.reset();
+
+  toastsError(
+    toToastError({
+      err,
+      fallbackErrorLabelKey: "error.accounts_not_found",
+    })
+  );
+};
+
+/**
+ * Loads the account data using the ledger and the nns dapp canister.
+ */
+export const syncAccounts = (
+  errorHandler: SyncAccontsErrorHandler = defaultErrorHandlerAccounts
+): Promise<void> => {
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => accountsStore.set(accounts),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
-        return;
-      }
-
-      // Explicitly handle only UPDATE errors
-      accountsStore.reset();
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
-        })
-      );
+      errorHandler({ err, certified });
     },
     logMessage: "Syncing Accounts",
+    strategy: FORCE_CALL_STRATEGY,
   });
 };
+
+const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
+
+/**
+ * This function is called on app load to sync the accounts.
+ *
+ * It ignores errors and does not show any toasts. Accounts will be synced again.
+ */
+export const initAccounts = () => syncAccounts(ignoreErrors);
 
 export const addSubAccount = async ({
   name,
@@ -213,6 +256,7 @@ export const getAccountTransactions = async ({
   }) => void;
 }): Promise<void> =>
   queryAndUpdate<Transaction[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getTransactions({
         identity,
@@ -226,7 +270,7 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -317,3 +361,65 @@ const renameError = ({
 
   return { success: false, err: labelKey };
 };
+
+const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+const pollAccountsId = Symbol();
+const pollLoadAccounts = async (params: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountsStoreData> =>
+  poll({
+    fn: () => loadAccounts(params),
+    // Any error is an unknown error and worth a retry
+    shouldExit: () => false,
+    pollId: pollAccountsId,
+    useExponentialBackoff: true,
+    maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+    millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
+  });
+
+/**
+ * Loads accounts in the background and updates the store.
+ *
+ * If the accounts are already loaded and certified, it will skip the request.
+ *
+ * If the accounts are not certified or not present, it will poll the request until it succeeds.
+ *
+ * @param certified Whether the accounts should be requested as certified or not.
+ */
+export const pollAccounts = async (certified = true) => {
+  const overriedCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
+  const accounts = get(accountsStore);
+
+  // Skip if accounts are already loaded and certified
+  // `certified` might be `undefined` if not yet loaded.
+  // Therefore, we compare with `true`.
+  if (accounts.certified === true) {
+    return;
+  }
+
+  try {
+    const identity = await getAuthenticatedIdentity();
+    const certifiedAccounts = await pollLoadAccounts({
+      identity,
+      certified: overriedCertified,
+    });
+    accountsStore.set(certifiedAccounts);
+  } catch (err) {
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
+      return;
+    }
+    const errorKey = pollingLimit(err)
+      ? "error.accounts_not_found_poll"
+      : "error.accounts_not_found";
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: errorKey,
+      })
+    );
+  }
+};
+
+export const cancelPollAccounts = () => cancelPoll(pollAccountsId);

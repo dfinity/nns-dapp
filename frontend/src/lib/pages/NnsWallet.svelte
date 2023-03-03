@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { setContext } from "svelte";
+  import { setContext, onMount, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { getAccountTransactions } from "$lib/services/accounts.services";
+  import {
+    cancelPollAccounts,
+    getAccountTransactions,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -34,6 +38,14 @@
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+
+  onMount(() => {
+    pollAccounts();
+  });
+
+  onDestroy(() => {
+    cancelPollAccounts();
+  });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 

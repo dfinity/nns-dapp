@@ -10,15 +10,82 @@ import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
+import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { InitSnsWrapper, SnsWrapper } from "@dfinity/sns";
+import {
+  SnsGovernanceCanister,
+  SnsRootCanister,
+  SnsSwapCanister,
+  SnsWrapper,
+  type InitSnsWrapper,
+} from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 
 interface IdentityWrapper {
   [principal: string]: Promise<Map<QueryRootCanisterId, SnsWrapper>>;
 }
-const identitiesCertifiedWrappers: IdentityWrapper = {};
-const identitiesNotCertifiedWrappers: IdentityWrapper = {};
+
+let identitiesCertifiedWrappers: IdentityWrapper = {};
+let identitiesNotCertifiedWrappers: IdentityWrapper = {};
+
+// ONLY FOR TESTING PURPOSES
+export const clearWrapperCache = () => {
+  identitiesCertifiedWrappers = {};
+  identitiesNotCertifiedWrappers = {};
+};
+
+type CanisterIds = {
+  rootCanisterId: Principal;
+  governanceCanisterId: Principal;
+  ledgerCanisterId: Principal;
+  swapCanisterId: Principal;
+  indexCanisterId: Principal;
+};
+export const buildAndStoreWrapper = async ({
+  identity,
+  certified,
+  canisterIds: {
+    rootCanisterId,
+    governanceCanisterId,
+    ledgerCanisterId,
+    swapCanisterId,
+    indexCanisterId,
+  },
+}: {
+  identity: Identity;
+  certified: boolean;
+  canisterIds: CanisterIds;
+}) => {
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+  const wrapper = new SnsWrapper({
+    root: SnsRootCanister.create({ canisterId: rootCanisterId, agent }),
+    governance: SnsGovernanceCanister.create({
+      canisterId: governanceCanisterId,
+      agent,
+    }),
+    ledger: IcrcLedgerCanister.create({ canisterId: ledgerCanisterId, agent }),
+    swap: SnsSwapCanister.create({ canisterId: swapCanisterId, agent }),
+    index: IcrcIndexCanister.create({ canisterId: indexCanisterId, agent }),
+    certified,
+  });
+
+  const identitiesMap = certified
+    ? identitiesCertifiedWrappers
+    : identitiesNotCertifiedWrappers;
+
+  if (nonNullish(identitiesMap[identity.getPrincipal().toText()])) {
+    const wrappersMap = await identitiesMap[identity.getPrincipal().toText()];
+    wrappersMap.set(rootCanisterId.toText(), wrapper);
+  } else {
+    identitiesMap[identity.getPrincipal().toText()] = Promise.resolve(
+      new Map([[rootCanisterId.toText(), wrapper]])
+    );
+  }
+};
 
 /**
  * List all deployed Snses - i.e list all Sns projects

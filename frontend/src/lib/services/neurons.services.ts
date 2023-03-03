@@ -1,7 +1,10 @@
 import { neuronsApiService } from "$lib/api-services/neurons.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { IS_TESTNET } from "$lib/constants/environment.constants";
+import {
+  FORCE_CALL_STRATEGY,
+  IS_TESTNET,
+} from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
   MIN_VERSION_STAKE_MATURITY_WORKAROUND,
@@ -244,7 +247,7 @@ export const listNeurons = async ({
   strategy?: QueryAndUpdateStrategy;
 } = {}): Promise<void> => {
   return queryAndUpdate<NeuronInfo[], unknown>({
-    strategy,
+    strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       neuronsApiService.queryNeurons({ certified, identity }),
     onLoad: async ({ response: neurons, certified }) => {
@@ -253,7 +256,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -901,7 +904,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
       catchError(error);

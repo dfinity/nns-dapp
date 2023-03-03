@@ -5,8 +5,21 @@
   import { accountsStore } from "$lib/stores/accounts.store";
   import { nonNullish } from "@dfinity/utils";
   import type { Account } from "$lib/types/account";
+  import { onDestroy, onMount } from "svelte";
+  import {
+    cancelPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
 
   export let goToWallet: (account: Account) => Promise<void>;
+
+  onMount(() => {
+    pollAccounts();
+  });
+
+  onDestroy(() => {
+    cancelPollAccounts();
+  });
 </script>
 
 <div class="card-grid" data-tid="accounts-body">

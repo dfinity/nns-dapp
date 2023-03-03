@@ -71,6 +71,13 @@ export const mockHardwareWalletAccountDetails: HardwareWalletAccountDetails = {
     "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
 };
 
+export const mockAccountsStoreData = {
+  main: mockMainAccount,
+  subAccounts: [],
+  hardwareWallets: [],
+  certified: true,
+};
+
 export const mockAccountsStoreSubscribe =
   (subAccounts: Account[] = [], hardwareWalletAccounts: Account[] = []) =>
   (run: Subscriber<AccountsStoreData>): (() => void) => {

@@ -3,7 +3,7 @@ import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
   notifyParticipation,
-  notifyPaymentFailure,
+  notifyPaymentFailure as notifyPaymentFailureApi,
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -18,6 +18,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
+import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
@@ -60,10 +61,9 @@ import {
 import { get } from "svelte/store";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
-import { startBusy, stopBusy } from "../stores/busy.store";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { toastsSuccess } from "../stores/toasts.store";
-import { nanoSecondsToDateTime, secondsToDuration } from "../utils/date.utils";
+import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";
 
@@ -102,14 +102,17 @@ const shouldStopPollingTicket =
 const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 // TODO: Solve problem with importing from sns.constants.ts
 const MAX_ATTEMPS_FOR_TICKET = 50;
+const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
 // Export for testing purposes
 const pollGetOpenTicket = async ({
   rootCanisterId,
+  swapCanisterId,
   identity,
   certified,
   maxAttempts,
 }: {
   rootCanisterId: Principal;
+  swapCanisterId: Principal;
   identity: Identity;
   certified: boolean;
   maxAttempts?: number;
@@ -121,13 +124,14 @@ const pollGetOpenTicket = async ({
       fn: (): Promise<Ticket | undefined> =>
         getOpenTicketApi({
           identity,
-          rootCanisterId,
+          swapCanisterId,
           certified,
         }),
       shouldExit: shouldStopPollingTicket(rootCanisterId),
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
@@ -152,10 +156,12 @@ const getTicketErrorMapper: Record<GetOpenTicketErrorType, string> = {
  */
 export const loadOpenTicket = async ({
   rootCanisterId,
+  swapCanisterId,
   certified,
   maxAttempts = MAX_ATTEMPS_FOR_TICKET,
 }: {
   rootCanisterId: Principal;
+  swapCanisterId: Principal;
   certified: boolean;
   maxAttempts?: number;
 }): Promise<void> => {
@@ -163,6 +169,7 @@ export const loadOpenTicket = async ({
     const identity = await getCurrentIdentity();
     const ticket = await pollGetOpenTicket({
       identity,
+      swapCanisterId,
       rootCanisterId,
       certified,
       maxAttempts,
@@ -246,8 +253,8 @@ const handleNewSaleTicketError = ({
       case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
         const existingTicket = newSaleTicketError.existingTicket;
         if (nonNullish(existingTicket)) {
-          toastsShow({
-            level: "info",
+          // Show error so that it shows above the modal in case the user is participating and has the modal open
+          toastsError({
             labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
             substitutions: {
               $time: nanoSecondsToDateTime(existingTicket.creation_time),
@@ -260,8 +267,7 @@ const handleNewSaleTicketError = ({
             ticket: existingTicket,
           });
         }
-        // break to jump to the generic error message
-        break;
+        return;
       }
       case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
         const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
@@ -315,6 +321,7 @@ const pollNewSaleTicket = async (params: {
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
 // TODO(sale): rename to loadNewSaleTicket
@@ -366,12 +373,21 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
+export interface ParticipateInSnsSaleParameters {
+  rootCanisterId: Principal;
+  userCommitment: bigint;
+  postprocess: () => Promise<void>;
+  updateProgress: (step: SaleStep) => void;
+}
+
 export const restoreSnsSaleParticipation = async ({
   rootCanisterId,
+  swapCanisterId,
+  userCommitment,
   postprocess,
-}: {
-  rootCanisterId: Principal;
-  postprocess: () => Promise<void>;
+  updateProgress,
+}: ParticipateInSnsSaleParameters & {
+  swapCanisterId: Principal;
 }): Promise<void> => {
   // avoid concurrent restores
   if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
@@ -379,6 +395,7 @@ export const restoreSnsSaleParticipation = async ({
   }
 
   await loadOpenTicket({
+    swapCanisterId,
     rootCanisterId,
     certified: true,
   });
@@ -391,53 +408,31 @@ export const restoreSnsSaleParticipation = async ({
     return;
   }
 
-  // TODO(sale): recheck why it's there
-  toastsShow({
-    level: "info",
-    labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
-    substitutions: {
-      $time: nanoSecondsToDateTime(ticket.creation_time),
-    },
-    duration: DEFAULT_TOAST_DURATION_MILLIS,
-  });
-
-  startBusy({
-    initiator: "project-participate",
-    labelKey: "neurons.may_take_while",
-  });
-
   await participateInSnsSale({
     rootCanisterId,
+    userCommitment,
     postprocess,
+    updateProgress,
   });
-
-  stopBusy("project-participate");
 };
 
 /**
  * Does participation validation and creates an open ticket.
- *
- * @param amount
- * @param rootCanisterId
- * @param account
  */
 export const initiateSnsSaleParticipation = async ({
   amount,
   rootCanisterId,
   account,
+  userCommitment,
   postprocess,
-}: {
+  updateProgress,
+}: ParticipateInSnsSaleParameters & {
   amount: TokenAmount;
-  rootCanisterId: Principal;
   account: Account;
-  postprocess: () => Promise<void>;
-}): Promise<void> => {
+}): Promise<{ success: boolean }> => {
   logWithTimestamp("[sale]initiateSnsSaleParticipation:", amount?.toE8s());
   try {
-    startBusy({
-      initiator: "project-participate",
-      labelKey: "neurons.may_take_while",
-    });
+    updateProgress(SaleStep.INITIALIZATION);
 
     // amount validation
     const transactionFee = get(transactionsFeesStore).main;
@@ -457,6 +452,7 @@ export const initiateSnsSaleParticipation = async ({
       throw new LedgerErrorKey(labelKey, substitutions);
     }
 
+    // Step 1.
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
     await newSaleTicket({
@@ -469,10 +465,15 @@ export const initiateSnsSaleParticipation = async ({
 
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
-      await participateInSnsSale({
+      // Step 2. to finish
+      const { success } = await participateInSnsSale({
         rootCanisterId,
+        userCommitment,
         postprocess,
+        updateProgress,
       });
+
+      return { success };
     }
   } catch (err: unknown) {
     toastsError(
@@ -486,7 +487,7 @@ export const initiateSnsSaleParticipation = async ({
     snsTicketsStore.setNoTicket(rootCanisterId);
   }
 
-  stopBusy("project-participate");
+  return { success: false };
 };
 
 const pollNotifyParticipation = async ({
@@ -505,12 +506,37 @@ const pollNotifyParticipation = async ({
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       useExponentialBackoff: true,
+      failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_getting_open_ticket");
     }
     throw error;
+  }
+};
+
+/**
+ * Manually remove the open ticket
+ *
+ * @param rootCanisterId
+ * @param identity
+ */
+const removeOpenTicket = async ({
+  rootCanisterId,
+  identity,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+}): Promise<void> => {
+  try {
+    // force to remove ticket
+    await notifyPaymentFailureApi({
+      rootCanisterId,
+      identity,
+    });
+  } catch (err) {
+    console.error("[sale] notifyPaymentFailure", err);
   }
 };
 
@@ -524,11 +550,13 @@ const notifyParticipationAndRemoveTicket = async ({
   identity,
   hasTooOldError,
   ticket,
+  userCommitment,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   hasTooOldError: boolean;
   ticket: Ticket;
+  userCommitment: bigint;
 }): Promise<{ success: boolean }> => {
   try {
     logWithTimestamp("[sale] 2. refresh_buyer_tokens");
@@ -540,8 +568,11 @@ const notifyParticipationAndRemoveTicket = async ({
       identity,
     });
 
-    // current_committed ≠ ticket.amount
-    if (icp_accepted_participation_e8s !== ticket.amount_icp_e8s) {
+    // current_committed (the sum of all) ≠ ticket.amount + previous commitment
+    if (
+      icp_accepted_participation_e8s !==
+      ticket.amount_icp_e8s + userCommitment
+    ) {
       toastsShow({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
@@ -561,16 +592,10 @@ const notifyParticipationAndRemoveTicket = async ({
     // process `TxTooOldError`
     if (hasTooOldError) {
       if (internalError) {
-        try {
-          // TODO(sale): test to call this w/o refresh_bayers_tockents (expected the ticket is removed)
-          // force to remove ticket
-          await notifyPaymentFailure({
-            rootCanisterId,
-            identity,
-          });
-        } catch (err) {
-          console.error("[sale] notifyPaymentFailure", err);
-        }
+        await removeOpenTicket({
+          rootCanisterId,
+          identity,
+        });
         // jump to unexpected_error
       }
     }
@@ -613,9 +638,13 @@ const pollTransfer = ({
         createdAt,
         memo,
       }),
-    shouldExit: isTransferError,
+    // Should still just retry in case of TxCreatedInFutureError
+    // (this error should be gone in a couple of seconds)
+    shouldExit: (err: unknown) =>
+      isTransferError(err) && !(err instanceof TxCreatedInFutureError),
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
+    failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
 /**
@@ -634,16 +663,15 @@ const pollTransfer = ({
 export const participateInSnsSale = async ({
   rootCanisterId,
   postprocess,
-}: {
-  rootCanisterId: Principal;
-  postprocess: () => Promise<void>;
-}): Promise<void> => {
+  userCommitment,
+  updateProgress,
+}: ParticipateInSnsSaleParameters): Promise<{ success: boolean }> => {
   let hasTooOldError = false;
   const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
   // skip if there is no more ticket (e.g. on retry)
   if (isNullish(ticket)) {
     logWithTimestamp("[sale] skip participation - no ticket");
-    return;
+    return { success: false };
   }
 
   logWithTimestamp(
@@ -651,6 +679,8 @@ export const participateInSnsSale = async ({
     ticket,
     rootCanisterId?.toText()
   );
+
+  updateProgress(SaleStep.TRANSFER);
 
   const {
     amount_icp_e8s: amount,
@@ -670,7 +700,7 @@ export const participateInSnsSale = async ({
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
-    return;
+    return { success: false };
   }
 
   const {
@@ -690,6 +720,7 @@ export const participateInSnsSale = async ({
 
     logWithTimestamp("[sale] 1. transfer (time,id):", creationTime, ticketId);
 
+    // Step 2.
     // Send amount to the ledger
     await pollTransfer({
       amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
@@ -704,71 +735,71 @@ export const participateInSnsSale = async ({
   } catch (err) {
     console.error("[sale] on transfer", err);
 
-    // Frontend should auto retry participation
-    // (in theory this error should be gone in a couple of seconds)
-    if (err instanceof TxCreatedInFutureError) {
-      const retryIn = SALE_PARTICIPATION_RETRY_SECONDS;
-
-      setTimeout(() => {
-        participateInSnsSale({
+    switch ((err as object)?.constructor) {
+      // if duplicated transfer, silently continue the flow
+      case TxDuplicateError:
+        break;
+      case InsufficientFundsError: {
+        await removeOpenTicket({
           rootCanisterId,
-          postprocess,
+          identity,
         });
-      }, retryIn * 1000);
 
-      toastsShow({
-        level: "error",
-        labelKey: "error__sns.sns_sale_retry_in",
-        substitutions: {
-          $time: secondsToDuration(BigInt(retryIn)),
-        },
-        duration: DEFAULT_TOAST_DURATION_MILLIS,
-      });
-
-      return;
-    }
-
-    // if duplicated transfer, silently continue the flow
-    if (!(err instanceof TxDuplicateError)) {
-      let labelKey = "error__sns.sns_sale_unexpected_error";
-
-      if (err instanceof InsufficientFundsError) {
-        labelKey = "error__sns.ledger_insufficient_funds";
-      }
-
-      if (err instanceof TxTooOldError) {
-        /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
-         * - continue the flow:
-         *  - refresh_buyer_tokens // internal errors are ignored
-         *  - notify_payment_failure
-         */
-        hasTooOldError = true;
-      } else {
         toastsError({
-          labelKey,
+          labelKey: "error__sns.ledger_insufficient_funds",
           err,
         });
 
         // enable participate button
         snsTicketsStore.setNoTicket(rootCanisterId);
 
-        return;
+        // stop the flow since the ticket was removed
+        return { success: false };
+      }
+      case TxTooOldError: {
+        /* After 24h ledger returns TxTooOldError and the user will be blocked because there will be an open ticket that can not be used
+         * - continue the flow:
+         *  - refresh_buyer_tokens // internal errors are ignored
+         *  - notify_payment_failure
+         */
+        hasTooOldError = true;
+        break;
+      }
+      default: {
+        toastsError({
+          labelKey: "error__sns.sns_sale_unexpected_error",
+          err,
+        });
+
+        // enable participate button
+        snsTicketsStore.setNoTicket(rootCanisterId);
+
+        // stop the flow since the ticket was removed
+        return { success: false };
       }
     }
   }
+
+  // Step 3.
+  updateProgress(SaleStep.NOTIFY);
 
   const { success } = await notifyParticipationAndRemoveTicket({
     rootCanisterId,
     identity,
     hasTooOldError,
     ticket,
+    userCommitment,
   });
 
   if (!success) {
-    return;
+    return { success: false };
   }
 
+  // Step 4.
   logWithTimestamp("[sale] 3. syncAccounts");
+
+  updateProgress(SaleStep.RELOAD);
+
   await syncAccounts();
 
   logWithTimestamp("[sale] done");
@@ -782,4 +813,8 @@ export const participateInSnsSale = async ({
 
   // remove the ticket when it's complete to enable increase participation button
   snsTicketsStore.setNoTicket(rootCanisterId);
+
+  updateProgress(SaleStep.DONE);
+
+  return { success: true };
 };

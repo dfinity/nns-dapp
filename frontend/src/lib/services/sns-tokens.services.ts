@@ -1,4 +1,5 @@
 import { getSnsToken } from "$lib/api/sns-ledger.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -21,6 +22,7 @@ export const loadSnsToken = async ({
   }
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getSnsToken({
         identity,
@@ -30,7 +32,7 @@ export const loadSnsToken = async ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: rootCanisterId, token }),
     onError: ({ error: err, certified }) => {
-      if (certified) {
+      if (certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
