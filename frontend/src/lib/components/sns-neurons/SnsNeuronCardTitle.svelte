@@ -44,9 +44,9 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/card";
-  @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .hash {
     @include fonts.standard(true);

@@ -41,8 +41,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "../themes/mixins/login";
 
   .sign-in {
