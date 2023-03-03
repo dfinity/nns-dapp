@@ -414,6 +414,44 @@ describe("sns-api", () => {
           })
         );
       });
+
+      it("should show 'high load' toast after 6 failures", async () => {
+        const maxAttempts = 10;
+        const expectFailuresBeforeToast = 6;
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        while (expectedCalls < expectFailuresBeforeToast) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+          if (expectedCalls < expectFailuresBeforeToast) {
+            expect(spyOnToastsError).not.toBeCalled();
+          }
+        }
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+          expectFailuresBeforeToast
+        );
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error.high_load_retrying",
+          })
+        );
+      });
     });
 
     describe("when disabling polling", () => {
@@ -670,6 +708,38 @@ describe("sns-api", () => {
       // Even after waiting a long time there shouldn't be more calls.
       await advanceTime(99 * retryDelay);
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+    });
+
+    it("should show 'high load' toast after 6 failures", async () => {
+      const maxAttempts = 10;
+      const expectFailuresBeforeToast = 6;
+      spyOnNewSaleTicketApi.mockRejectedValue(new Error("network error"));
+      newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectFailuresBeforeToast);
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error.high_load_retrying",
+        })
+      );
     });
   });
 
@@ -1233,6 +1303,90 @@ describe("sns-api", () => {
       expect(spyOnToastsShow).not.toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
+        })
+      );
+    });
+
+    it("should show 'high load' toast after 6 failures", async () => {
+      const maxAttempts = 10;
+      const expectFailuresBeforeToast = 6;
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation.mockRejectedValue(new Error("network error"));
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnNotifyParticipation).toBeCalledTimes(
+        expectFailuresBeforeToast
+      );
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error.high_load_retrying",
+        })
+      );
+    });
+
+    it("transfer should show 'high load' toast after 6 failures", async () => {
+      const maxAttempts = 10;
+      const expectFailuresBeforeToast = 6;
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnSendICP.mockRejectedValue(new Error("network error"));
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnSendICP).toBeCalledTimes(expectFailuresBeforeToast);
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error.high_load_retrying",
         })
       );
     });
