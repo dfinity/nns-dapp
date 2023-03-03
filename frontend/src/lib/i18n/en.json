@@ -580,7 +580,7 @@
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
-    "total_tokens": "Total Tokens",
+    "total_tokens": "Tokens Distributed to Participants",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
