@@ -214,7 +214,6 @@ export const cancelPoll = (id: symbol) => {
     const reject = currentPolls.get(id);
     // TS doesn't know that `reject` is defined here
     reject?.(new PollingCancelledError(id));
-    currentPolls.delete(id);
   }
 };
 
@@ -262,38 +261,42 @@ export const poll = async <T>({
       });
     }
   });
-  for (let counter = 0; counter < maxAttempts; counter++) {
-    if (counter > 0) {
-      if (
-        nonNullish(failuresBeforeHighLoadMessage) &&
-        counter === failuresBeforeHighLoadMessage
-      ) {
-        highLoadToast = toastsError({
-          labelKey: "error.high_load_retrying",
-        });
+  try {
+    for (let counter = 0; counter < maxAttempts; counter++) {
+      if (counter > 0) {
+        if (
+          nonNullish(failuresBeforeHighLoadMessage) &&
+          counter === failuresBeforeHighLoadMessage
+        ) {
+          highLoadToast = toastsError({
+            labelKey: "error.high_load_retrying",
+          });
+        }
+        await Promise.race([
+          waitForMilliseconds(millisecondsToWait),
+          cancelPromise,
+        ]);
+        if (useExponentialBackoff) {
+          millisecondsToWait *= 2;
+        }
       }
-      await Promise.race([
-        waitForMilliseconds(millisecondsToWait),
-        cancelPromise,
-      ]);
-      if (useExponentialBackoff) {
-        millisecondsToWait *= 2;
-      }
-    }
 
-    try {
-      const result = await Promise.race([fn(), cancelPromise]);
-      highLoadToast && toastsHide(highLoadToast);
-      return result;
-    } catch (error: unknown) {
-      if (shouldExit(error)) {
-        throw error;
+      try {
+        const result = await Promise.race([fn(), cancelPromise]);
+        return result;
+      } catch (error: unknown) {
+        if (shouldExit(error)) {
+          throw error;
+        }
+        // Log swallowed errors
+        console.error(`Error polling: ${errorToString(error)}`);
       }
-      // Log swallowed errors
-      console.error(`Error polling: ${errorToString(error)}`);
     }
+    throw new PollingLimitExceededError();
+  } finally {
+    highLoadToast && toastsHide(highLoadToast);
+    currentPolls.delete(pollId);
   }
-  throw new PollingLimitExceededError();
 };
 
 export const pollingLimit = (error: unknown): boolean =>
