@@ -42,7 +42,7 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
   article {
     :global(.collapsible-expand-icon) {

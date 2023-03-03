@@ -18,7 +18,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .neurons {
     padding: var(--padding-1_5x) var(--padding) 0;

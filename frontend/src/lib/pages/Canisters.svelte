@@ -117,7 +117,7 @@
 </Footer>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   main {
     padding-bottom: var(--footer-height);

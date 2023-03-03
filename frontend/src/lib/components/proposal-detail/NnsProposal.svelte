@@ -43,7 +43,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   @include media.min-width(medium) {
     // If this would be use elsewhere, we can extract some utility to gix-components
