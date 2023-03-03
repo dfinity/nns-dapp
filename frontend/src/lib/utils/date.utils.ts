@@ -41,7 +41,7 @@ export const secondsToDuration = (seconds: bigint): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`
@@ -83,7 +83,7 @@ export const daysToDuration = (days: number): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`
@@ -119,7 +119,7 @@ export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`

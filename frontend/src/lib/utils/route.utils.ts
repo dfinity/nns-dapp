@@ -17,4 +17,4 @@ export const replaceHistory = (url: URL) => {
 const supportsHistory = (): boolean =>
   window.history !== undefined &&
   "pushState" in window.history &&
-  typeof window.history.pushState != "undefined";
+  typeof window.history.pushState !== "undefined";
