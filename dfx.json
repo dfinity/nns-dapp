@@ -109,8 +109,8 @@
       "build": [
         "true"
       ],
-      "candid": "tmp/ledger.did",
-      "wasm": "tmp/ledger_canister.wasm",
+      "candid": "target/ic/ckbtc_ledger.did",
+      "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -122,16 +122,16 @@
       "build": [
         "true"
       ],
-      "candid": "tmp/minter.did",
-      "wasm": "tmp/ckbtc_minter.wasm",
+      "candid": "target/ic/ckbtc_minter.did",
+      "wasm": "target/ic/ckbtc_minter.wasm",
       "type": "custom"
     },
     "ckbtc_index": {
       "build": [
         "true"
       ],
-      "candid": "tmp/index.did",
-      "wasm": "tmp/index_canister.wasm",
+      "candid": "target/ic/ckbtc_index.did",
+      "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
       "remote": {
         "id": {
