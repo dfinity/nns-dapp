@@ -13,7 +13,6 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
   (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string) === ""
     ? undefined
     : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
-export const OLD_MAINNET_OWN_CANISTER_URL = "https://nns.ic0.app";
 
 export interface FeatureFlags<T> {
   ENABLE_SNS_2: T;
