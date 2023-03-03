@@ -24,7 +24,7 @@ Every Pull Request needs unit tests.
 
 After installing the project, you can run the test suite:
 
-```
+```bash
 npm run test
 ```
 

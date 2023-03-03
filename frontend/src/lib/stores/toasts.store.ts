@@ -5,6 +5,7 @@ import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
   `${replacePlaceholders(translate({ labelKey }), substitutions ?? {})}${
@@ -65,7 +66,15 @@ export const toastsError = ({
 
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
 
-export const toastsReset = () => toastsStore.reset();
+export const toastsReset = () => {
+  // TODO: Workaround, implement better solution
+  const toasts = [...get(toastsStore)];
+  const customToasts = toasts.filter(({ level }) => level === "custom");
+
+  toastsStore.reset();
+
+  customToasts.forEach((msg) => toastsStore.show(msg));
+};
 
 export const toastsUpdate = ({
   id,

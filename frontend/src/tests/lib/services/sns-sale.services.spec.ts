@@ -41,6 +41,7 @@ import { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
+  SnsSwapCanister,
   SnsSwapGetOpenTicketError,
   SnsSwapLifecycle,
   SnsSwapNewTicketError,
@@ -110,7 +111,7 @@ describe("sns-api", () => {
     owner: mockPrincipal,
   });
   const testTicket = testSnsTicket.ticket;
-  const spyOnGetOpenTicketApi = jest.fn();
+  const snsSwapCanister = mock<SnsSwapCanister>();
   const spyOnNewSaleTicketApi = jest.fn();
   const spyOnNotifyPaymentFailureApi = jest.fn();
   const ticketFromStore = (rootCanisterId = testRootCanisterId) =>
@@ -177,11 +178,15 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: spyOnNotifyParticipation,
-        getOpenTicket: spyOnGetOpenTicketApi,
         newSaleTicket: spyOnNewSaleTicketApi,
         notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
       })
     );
+
+    // `getOpenTicket` is mocked from the SnsSwapCanister not the wrapper
+    jest
+      .spyOn(SnsSwapCanister, "create")
+      .mockImplementation((): SnsSwapCanister => snsSwapCanister);
 
     jest
       .spyOn(authStore, "subscribe")
@@ -201,13 +206,14 @@ describe("sns-api", () => {
         jest.useFakeTimers().setSystemTime(now);
       });
       it("should call api and load ticket in the store", async () => {
-        spyOnGetOpenTicketApi.mockResolvedValue(testSnsTicket.ticket);
+        snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
-        expect(spyOnGetOpenTicketApi).toBeCalledTimes(1);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
         expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
           testTicket
         );
@@ -216,13 +222,14 @@ describe("sns-api", () => {
       it("should retry until gets an open ticket", async () => {
         // Success in the fourth attempt
         const retriesUntilSuccess = 4;
-        spyOnGetOpenTicketApi
+        snsSwapCanister.getOpenTicket
           .mockRejectedValueOnce(new Error("network error"))
           .mockRejectedValueOnce(new Error("network error"))
           .mockRejectedValueOnce(new Error("network error"))
           .mockResolvedValue(testSnsTicket.ticket);
         loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -230,15 +237,18 @@ describe("sns-api", () => {
         let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
         const extraRetries = 4;
         while (counter < retriesUntilSuccess + extraRetries) {
-          expect(spyOnGetOpenTicketApi).toBeCalledTimes(
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
             Math.min(counter, retriesUntilSuccess)
           );
           counter += 1;
+          await null;
+          await null;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
           await waitFor(() =>
-            expect(spyOnGetOpenTicketApi).toBeCalledTimes(
+            expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
               Math.min(counter, retriesUntilSuccess)
             )
           );
@@ -250,14 +260,19 @@ describe("sns-api", () => {
             testTicket
           )
         );
-        expect(spyOnGetOpenTicketApi).toBeCalledTimes(retriesUntilSuccess);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+          retriesUntilSuccess
+        );
       });
 
       it("should stop retrying after max attempts and set ticket to null", async () => {
         const maxAttempts = 10;
-        spyOnGetOpenTicketApi.mockRejectedValue(new Error("network error"));
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
         loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
           maxAttempts,
         });
@@ -265,13 +280,15 @@ describe("sns-api", () => {
         let counter = 0;
         let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
         while (counter <= maxAttempts) {
-          expect(spyOnGetOpenTicketApi).toBeCalledTimes(counter);
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(counter);
           counter += 1;
+          await null;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
           await waitFor(() =>
-            expect(spyOnGetOpenTicketApi).toBeCalledTimes(
+            expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
               Math.min(counter, maxAttempts)
             )
           );
@@ -286,25 +303,27 @@ describe("sns-api", () => {
       });
 
       it("should call api once if error is known", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
         );
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
-        expect(spyOnGetOpenTicketApi).toBeCalledTimes(1);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
       });
 
       it("should set store to `null` on closed error", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
         );
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -314,12 +333,13 @@ describe("sns-api", () => {
       });
 
       it("should show error on closed", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
         );
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -331,12 +351,13 @@ describe("sns-api", () => {
       });
 
       it("should set store to `null` on unspecified type error", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
         );
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -346,12 +367,13 @@ describe("sns-api", () => {
       });
 
       it("should show error on unspecified type error", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
         );
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -363,7 +385,7 @@ describe("sns-api", () => {
       });
 
       it("should set store to `null` on not open error", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(
             GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN
           )
@@ -371,6 +393,7 @@ describe("sns-api", () => {
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -380,7 +403,7 @@ describe("sns-api", () => {
       });
 
       it("should show error on not open error", async () => {
-        spyOnGetOpenTicketApi.mockRejectedValue(
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
           new SnsSwapGetOpenTicketError(
             GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN
           )
@@ -388,6 +411,7 @@ describe("sns-api", () => {
 
         await loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -400,11 +424,19 @@ describe("sns-api", () => {
     });
 
     describe("when disabling polling", () => {
+      beforeEach(() => {
+        jest.clearAllTimers();
+        const now = Date.now();
+        jest.useFakeTimers().setSystemTime(now);
+      });
       it("should stop retrying", async () => {
         snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
-        spyOnGetOpenTicketApi.mockRejectedValue(new Error("network error"));
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
         loadOpenTicket({
           rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
           certified: true,
         });
 
@@ -413,16 +445,17 @@ describe("sns-api", () => {
         const retriesBeforeStopPolling = 4;
         // We loop until 10 advancing time, but the polling should stop after `retriesBeforeStopPolling` + 1
         while (counter < DEFAULT_MAX_POLLING_ATTEMPTS) {
-          expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-            Math.min(counter, retriesBeforeStopPolling + 1)
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+            Math.min(counter, retriesBeforeStopPolling)
           );
           counter += 1;
+          await null;
           jest.advanceTimersByTime(retryDelay);
           retryDelay *= 2;
 
           await waitFor(() =>
-            expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-              Math.min(counter, retriesBeforeStopPolling + 1)
+            expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+              Math.min(counter, retriesBeforeStopPolling)
             )
           );
 
@@ -433,8 +466,8 @@ describe("sns-api", () => {
         expect(counter).toBe(DEFAULT_MAX_POLLING_ATTEMPTS);
 
         await waitFor(() =>
-          expect(spyOnGetOpenTicketApi).toBeCalledTimes(
-            retriesBeforeStopPolling + 1
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+            retriesBeforeStopPolling
           )
         );
       });
@@ -500,8 +533,8 @@ describe("sns-api", () => {
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsError).not.toBeCalled();
-      expect(spyOnToastsShow).toBeCalledWith(
+      expect(spyOnToastsError).toBeCalledTimes(1);
+      expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
           substitutions: {
@@ -607,6 +640,8 @@ describe("sns-api", () => {
           Math.min(counter, extraRetries)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -646,6 +681,8 @@ describe("sns-api", () => {
           Math.min(counter, extraRetries)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -662,12 +699,13 @@ describe("sns-api", () => {
 
   describe("restoreSnsSaleParticipation", () => {
     it("should perform successful participation flow if open ticket", async () => {
-      spyOnGetOpenTicketApi.mockResolvedValue(testSnsTicket.ticket);
+      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
@@ -686,7 +724,7 @@ describe("sns-api", () => {
     });
 
     it("should not start flow if no open tickeet", async () => {
-      spyOnGetOpenTicketApi.mockResolvedValue(undefined);
+      snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
       const startBusySpy = jest
@@ -695,6 +733,7 @@ describe("sns-api", () => {
 
       await restoreSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
@@ -860,6 +899,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -912,6 +953,8 @@ describe("sns-api", () => {
           Math.min(expectedRetries, counter)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 
@@ -1021,6 +1064,8 @@ describe("sns-api", () => {
           Math.min(counter, retriesUntilSuccess)
         );
         counter += 1;
+        await null;
+        await null;
         jest.advanceTimersByTime(retryDelay);
         retryDelay *= 2;
 

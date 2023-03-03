@@ -106,11 +106,13 @@ const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
 // Export for testing purposes
 const pollGetOpenTicket = async ({
   rootCanisterId,
+  swapCanisterId,
   identity,
   certified,
   maxAttempts,
 }: {
   rootCanisterId: Principal;
+  swapCanisterId: Principal;
   identity: Identity;
   certified: boolean;
   maxAttempts?: number;
@@ -122,7 +124,7 @@ const pollGetOpenTicket = async ({
       fn: (): Promise<Ticket | undefined> =>
         getOpenTicketApi({
           identity,
-          rootCanisterId,
+          swapCanisterId,
           certified,
         }),
       shouldExit: shouldStopPollingTicket(rootCanisterId),
@@ -154,10 +156,12 @@ const getTicketErrorMapper: Record<GetOpenTicketErrorType, string> = {
  */
 export const loadOpenTicket = async ({
   rootCanisterId,
+  swapCanisterId,
   certified,
   maxAttempts = MAX_ATTEMPS_FOR_TICKET,
 }: {
   rootCanisterId: Principal;
+  swapCanisterId: Principal;
   certified: boolean;
   maxAttempts?: number;
 }): Promise<void> => {
@@ -165,6 +169,7 @@ export const loadOpenTicket = async ({
     const identity = await getCurrentIdentity();
     const ticket = await pollGetOpenTicket({
       identity,
+      swapCanisterId,
       rootCanisterId,
       certified,
       maxAttempts,
@@ -248,8 +253,8 @@ const handleNewSaleTicketError = ({
       case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
         const existingTicket = newSaleTicketError.existingTicket;
         if (nonNullish(existingTicket)) {
-          toastsShow({
-            level: "info",
+          // Show error so that it shows above the modal in case the user is participating and has the modal open
+          toastsError({
             labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
             substitutions: {
               $time: nanoSecondsToDateTime(existingTicket.creation_time),
@@ -377,16 +382,20 @@ export interface ParticipateInSnsSaleParameters {
 
 export const restoreSnsSaleParticipation = async ({
   rootCanisterId,
+  swapCanisterId,
   userCommitment,
   postprocess,
   updateProgress,
-}: ParticipateInSnsSaleParameters): Promise<void> => {
+}: ParticipateInSnsSaleParameters & {
+  swapCanisterId: Principal;
+}): Promise<void> => {
   // avoid concurrent restores
   if (nonNullish(get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket)) {
     return;
   }
 
   await loadOpenTicket({
+    swapCanisterId,
     rootCanisterId,
     certified: true,
   });

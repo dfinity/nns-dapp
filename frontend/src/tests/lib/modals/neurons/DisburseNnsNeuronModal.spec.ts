@@ -4,9 +4,11 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import type { NeuronInfo } from "@dfinity/nns";
@@ -32,6 +34,10 @@ jest.mock("$lib/services/neurons.services", () => {
 });
 
 describe("DisburseNnsNeuronModal", () => {
+  beforeEach(() => {
+    cancelPollAccounts();
+  });
+
   const renderDisburseModal = async (
     neuron: NeuronInfo
   ): Promise<RenderResult<SvelteComponent>> => {
@@ -151,6 +157,60 @@ describe("DisburseNnsNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("account-card")).toBeInTheDocument()
       );
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderDisburseModal(mockNeuron);
+
+      let counter = 1;
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const retriesBeforeLeaving = 3;
+      const extraRetries = 4;
+      await waitFor(() => expect(spyQueryAccount).toBeCalledTimes(counter));
+      while (counter < retriesBeforeLeaving + extraRetries) {
+        expect(spyQueryAccount).toBeCalledTimes(
+          Math.min(counter, retriesBeforeLeaving)
+        );
+        counter += 1;
+        // Make sure the timers are set before we advance time.
+        await null;
+        await null;
+        await null;
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
+        await waitFor(() =>
+          expect(spyQueryAccount).toBeCalledTimes(
+            Math.min(counter, retriesBeforeLeaving)
+          )
+        );
+
+        if (counter === retriesBeforeLeaving) {
+          unmount();
+        }
+      }
+
+      expect(counter).toBe(retriesBeforeLeaving + extraRetries);
+
+      expect(spyQueryAccount).toHaveBeenCalledTimes(retriesBeforeLeaving);
     });
   });
 });

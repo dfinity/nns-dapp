@@ -13,6 +13,8 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import { SnsSwapCanister } from "@dfinity/sns";
+import { mock } from "jest-mock-extended";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -42,6 +44,7 @@ describe("sns-sale.api", () => {
     .mockResolvedValue(participationResponse);
 
   beforeEach(() => {
+    jest.clearAllMocks();
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -65,15 +68,20 @@ describe("sns-sale.api", () => {
     );
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
-
   it("should query open ticket", async () => {
+    const snsSwapCanister = mock<SnsSwapCanister>();
+    snsSwapCanister.getOpenTicket.mockResolvedValue(
+      snsTicketMock({
+        rootCanisterId: rootCanisterIdMock,
+        owner: mockIdentity.getPrincipal(),
+      }).ticket
+    );
+    jest
+      .spyOn(SnsSwapCanister, "create")
+      .mockImplementation((): SnsSwapCanister => snsSwapCanister);
     const result = await getOpenTicket({
       identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
       certified: true,
     });
 
