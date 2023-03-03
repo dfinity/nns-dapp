@@ -43,10 +43,9 @@ describe("NnsAccounts", () => {
     });
 
     it("should render a main card", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
 
-      const article = container.querySelector("article");
-      expect(article).not.toBeNull();
+      expect(queryByTestId("account-card")).not.toBeNull();
     });
 
     it("should render account icp in card too", () => {
@@ -73,12 +72,14 @@ describe("NnsAccounts", () => {
         hardwareWallets: [],
         certified: true,
       });
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryAllByTestId } = render(NnsAccounts, {
+        props: { goToWallet },
+      });
 
-      const articles = container.querySelectorAll("article");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
 
     it("should render hardware wallet account cards", () => {
@@ -88,12 +89,14 @@ describe("NnsAccounts", () => {
         hardwareWallets: [mockHardwareWalletAccount],
         certified: true,
       });
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryAllByTestId } = render(NnsAccounts, {
+        props: { goToWallet },
+      });
 
-      const articles = container.querySelectorAll("article");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
   });
 
@@ -135,11 +138,12 @@ describe("NnsAccounts", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should load accounts", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+    it("should load accounts", async () => {
+      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
 
-      const article = container.querySelector("article");
-      expect(article).not.toBeNull();
+      expect(queryByTestId("account-card")).toBeNull();
+
+      await waitFor(() => expect(queryByTestId("account-card")).not.toBeNull());
     });
   });
 
