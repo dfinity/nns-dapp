@@ -14,7 +14,7 @@ import WalletContextTest from "./WalletContextTest.svelte";
 jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });
