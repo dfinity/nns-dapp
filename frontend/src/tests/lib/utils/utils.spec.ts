@@ -504,10 +504,9 @@ describe("utils", () => {
           useExponentialBackoff: false,
           failuresBeforeHighLoadMessage,
           pollId,
-        })
-          .catch((err) => {
-            expect(err).toBeInstanceOf(PollingCancelledError);
-          });
+        }).catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+        });
         await advanceTime();
         await advanceTime();
         await advanceTime();
@@ -640,7 +639,9 @@ describe("utils", () => {
         const expectedResult1 = "foo";
         const expectedResult2 = "bar";
 
-        fnSpy.mockResolvedValueOnce(expectedResult1).mockResolvedValueOnce(expectedResult2);
+        fnSpy
+          .mockResolvedValueOnce(expectedResult1)
+          .mockResolvedValueOnce(expectedResult2);
 
         const callPoll = () =>
           poll({
@@ -662,10 +663,13 @@ describe("utils", () => {
 
         const expectedResult2 = "baz";
 
-        fnSpy.mockReturnValueOnce(new Promise(() => {
-          // never resolve
-        }))
-        .mockResolvedValueOnce(expectedResult2);
+        fnSpy
+          .mockReturnValueOnce(
+            new Promise(() => {
+              // never resolve
+            })
+          )
+          .mockResolvedValueOnce(expectedResult2);
 
         const callPoll = () =>
           poll({
@@ -695,9 +699,11 @@ describe("utils", () => {
         const pollId2 = Symbol();
         const fnSpy = jest.fn();
 
-        fnSpy.mockReturnValue(new Promise(() => {
-          // never resolve
-        }))
+        fnSpy.mockReturnValue(
+          new Promise(() => {
+            // never resolve
+          })
+        );
 
         const callPoll = (id) =>
           poll({
