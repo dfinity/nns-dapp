@@ -18,6 +18,10 @@ import {
   mockMainAccount,
 } from "../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -204,35 +208,23 @@ describe("NnsWallet", () => {
     it("should stop polling", async () => {
       const { unmount } = render(NnsWallet, { props });
 
-      let counter = 0;
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-      const retriesBeforeLeaving = 3;
-      const extraRetries = 4;
-      while (counter < retriesBeforeLeaving + extraRetries) {
-        expect(spyQueryAccount).toBeCalledTimes(
-          Math.min(counter, retriesBeforeLeaving)
-        );
-        counter += 1;
-        // Make sure the timers are set before we advance time.
-        await null;
-        await null;
-        await null;
-        jest.advanceTimersByTime(retryDelay);
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
         retryDelay *= 2;
-        await waitFor(() =>
-          expect(spyQueryAccount).toBeCalledTimes(
-            Math.min(counter, retriesBeforeLeaving)
-          )
-        );
-
-        if (counter === retriesBeforeLeaving) {
-          unmount();
-        }
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
       }
+      unmount();
 
-      expect(counter).toBe(retriesBeforeLeaving + extraRetries);
-
-      expect(spyQueryAccount).toHaveBeenCalledTimes(retriesBeforeLeaving);
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

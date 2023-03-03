@@ -20,6 +20,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
+import { advanceTime } from "../../utils/timers.test-utils";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -354,20 +355,9 @@ describe("utils", () => {
         },
       ];
 
-      let originalTimeout;
       beforeEach(() => {
-        jest.useRealTimers();
-        if (originalTimeout === undefined) {
-          originalTimeout = setTimeout;
-        }
         jest.useFakeTimers();
       });
-
-      const advanceTime = async (): Promise<void> => {
-        // Make sure the timers are set before we advance time.
-        await new Promise((resolve) => originalTimeout(resolve, 0));
-        await jest.runOnlyPendingTimers();
-      };
 
       const getTimestamps = async ({
         maxAttempts,
@@ -394,9 +384,11 @@ describe("utils", () => {
           expect(err).toBeInstanceOf(PollingLimitExceededError);
         });
 
-        for (let i = 0; i < maxAttempts - 1; i++) {
+        for (let i = 1; i <= maxAttempts - 1; i++) {
+          expect(timestamps.length).toEqual(i);
           await advanceTime();
         }
+        expect(timestamps.length).toEqual(maxAttempts);
         return timestamps;
       };
 
@@ -460,7 +452,6 @@ describe("utils", () => {
         expect(calls).toBeLessThan(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toEqual([]);
         await advanceTime();
-        await advanceTime();
         expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toMatchObject(highLoadToast);
       });
@@ -485,8 +476,6 @@ describe("utils", () => {
         await advanceTime();
         expect(get(toastsStore)).toMatchObject(highLoadToast);
         shouldFail = false;
-        await advanceTime();
-        // This extra advanceTime shouldn't be necessary.
         await advanceTime();
         expect(get(toastsStore)).toEqual([]);
       });
@@ -532,22 +521,23 @@ describe("utils", () => {
           })
           .catch((err) => {
             expect(err).toBeInstanceOf(PollingCancelledError);
-            if (pollingCancelled(err)) {
-              cancelled = true;
-            }
+            cancelled = true;
           });
-        expect(fnSpy).toBeCalled();
+        expect(fnSpy).toBeCalledTimes(1);
         await advanceTime();
+        expect(fnSpy).toBeCalledTimes(2);
         expect(cancelled).toBe(false);
         cancelPoll(pollId);
         await advanceTime();
         expect(cancelled).toBe(true);
+        // No further calls after cancel.
+        expect(fnSpy).toBeCalledTimes(2);
       });
 
       it("should stop polling when cancelled during call", async () => {
         const pollId = Symbol();
         const fnSpy = jest.fn();
-        fnSpy.mockRejectedValue(
+        fnSpy.mockReturnValue(
           new Promise(() => {
             //never resolve
           })
@@ -570,12 +560,14 @@ describe("utils", () => {
               cancelled = true;
             }
           });
-        expect(fnSpy).toBeCalled();
+        expect(fnSpy).toBeCalledTimes(1);
         await advanceTime();
         expect(cancelled).toBe(false);
         cancelPoll(pollId);
         await advanceTime();
         expect(cancelled).toBe(true);
+        // No further calls after cancel.
+        expect(fnSpy).toBeCalledTimes(1);
       });
     });
   });
