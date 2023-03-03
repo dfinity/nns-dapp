@@ -85,7 +85,7 @@
     <meta name="theme-color" content="#352652" />
 
     <!-- Init theme as fast as possible -->
-    <script>
+    <script theme-loader>
       try {
         const isDarkPreferred = window.matchMedia(
           "(prefers-color-scheme: dark)"
@@ -108,6 +108,7 @@
     </script>
 
     <!-- SCRIPT_LOADER -->
+    <!-- LINKS_PRELOADER -->
 
     %sveltekit.head%
   </head>

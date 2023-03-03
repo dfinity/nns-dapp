@@ -59,3 +59,6 @@ git checkout "$(git rev-parse HEAD)"
 sha256sum sns_aggregator.wasm
 \`\`\`
 EOF
+
+ARG_DID="./release/arg.did"
+echo '(record{})' >"$ARG_DID"
