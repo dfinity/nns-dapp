@@ -711,7 +711,6 @@ describe("sns-api", () => {
     });
 
     it("should show 'high load' toast after 6 failures", async () => {
-      const maxAttempts = 10;
       const expectFailuresBeforeToast = 6;
       spyOnNewSaleTicketApi.mockRejectedValue(new Error("network error"));
       newSaleTicket({
@@ -1308,7 +1307,6 @@ describe("sns-api", () => {
     });
 
     it("should show 'high load' toast after 6 failures", async () => {
-      const maxAttempts = 10;
       const expectFailuresBeforeToast = 6;
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
@@ -1351,7 +1349,6 @@ describe("sns-api", () => {
     });
 
     it("transfer should show 'high load' toast after 6 failures", async () => {
-      const maxAttempts = 10;
       const expectFailuresBeforeToast = 6;
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
