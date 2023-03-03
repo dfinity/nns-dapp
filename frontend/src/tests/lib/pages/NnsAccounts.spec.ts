@@ -9,7 +9,7 @@ import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
