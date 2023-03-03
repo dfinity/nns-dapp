@@ -72,10 +72,10 @@ describe("NnsAccounts", () => {
         props: { goToWallet },
       });
 
-      const articles = queryAllByTestId("account-card");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
 
     it("should render hardware wallet account cards", () => {
@@ -89,10 +89,10 @@ describe("NnsAccounts", () => {
         props: { goToWallet },
       });
 
-      const articles = queryAllByTestId("account-card");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
   });
 
