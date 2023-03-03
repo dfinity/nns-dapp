@@ -58,6 +58,8 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   SNS_AGGREGATOR_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
+  ENABLE_METRICS: false,
+  FORCE_CALL_STRATEGY: undefined,
 }));
 
 global.localStorage = localStorageMock;

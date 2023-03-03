@@ -91,7 +91,7 @@ describe("sns-api", () => {
     .fn()
     .mockResolvedValue(snsNervousSystemParametersMock);
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => ledgerCanisterMock);
@@ -134,7 +134,7 @@ describe("sns-api", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });

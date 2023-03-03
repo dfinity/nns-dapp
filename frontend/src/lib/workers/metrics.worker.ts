@@ -1,6 +1,12 @@
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
-import { SYNC_METRICS_TIMER_INTERVAL } from "$lib/constants/metrics.constants";
+import {
+  SYNC_METRICS_CONFIG,
+  SYNC_METRICS_TIMER_INTERVAL,
+} from "$lib/constants/metrics.constants";
+import { fetchTransactionRate } from "$lib/rest/dashboard.rest";
 import { queryTVL } from "$lib/services/$public/tvl.service";
+import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
+import type { MetricsSync } from "$lib/types/metrics";
 import type {
   PostMessage,
   PostMessageDataRequest,
@@ -29,10 +35,17 @@ const startMetricsTimer = async () => {
     return;
   }
 
-  const sync = async () => await syncMetrics();
+  const sync = async () =>
+    await syncMetrics({
+      syncTvl: SYNC_METRICS_CONFIG.tvl === "sync",
+      syncTransactionRate: SYNC_METRICS_CONFIG.transactionRate === "sync",
+    });
 
   // We sync now but also schedule the update afterwards
-  await sync();
+  await syncMetrics({
+    syncTvl: true,
+    syncTransactionRate: true,
+  });
 
   timer = setInterval(sync, SYNC_METRICS_TIMER_INTERVAL);
 };
@@ -48,7 +61,13 @@ const stopMetricsTimer = () => {
 
 let syncInProgress = false;
 
-const syncMetrics = async () => {
+const syncMetrics = async ({
+  syncTvl,
+  syncTransactionRate,
+}: {
+  syncTvl: boolean;
+  syncTransactionRate: boolean;
+}) => {
   // Avoid to duplicate the sync if already in progress and not yet finished
   if (syncInProgress) {
     return;
@@ -57,9 +76,12 @@ const syncMetrics = async () => {
   syncInProgress = true;
 
   try {
-    const tvl = await queryTVL();
+    const metrics = await Promise.all([
+      syncTvl ? queryTVL() : Promise.resolve(undefined),
+      syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
+    ]);
 
-    emitCanister(tvl);
+    emitCanister(metrics);
   } catch (err: unknown) {
     // We silence the error here as it is not an information crucial for the usage of the dapp
     console.error(err);
@@ -68,12 +90,16 @@ const syncMetrics = async () => {
   syncInProgress = false;
 };
 
-const emitCanister = (tvl: TvlResult) =>
+const emitCanister = ([tvl, transactionRate]: [
+  TvlResult | undefined,
+  DashboardMessageExecutionRateResponse | undefined
+]) =>
   postMessage({
     msg: "nnsSyncMetrics",
     data: {
       metrics: {
         tvl,
-      },
+        transactionRate,
+      } as MetricsSync,
     },
   });

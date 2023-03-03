@@ -7,6 +7,7 @@ import type { MetricsCallback } from "$lib/services/$public/worker-metrics.servi
 import { metricsStore } from "$lib/stores/metrics.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
@@ -37,7 +38,7 @@ describe("TotalValueLocked", () => {
   };
 
   it("should render TVL", async () => {
-    const { getByTestId } = render(TotalValueLocked);
+    const { getByTestId } = render(TotalValueLockedTest);
 
     // Wait for initialization of the callback
     await waitFor(() => expect(metricsCallback).not.toBeUndefined());

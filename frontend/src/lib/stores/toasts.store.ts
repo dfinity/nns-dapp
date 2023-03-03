@@ -5,6 +5,7 @@ import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
   `${replacePlaceholders(translate({ labelKey }), substitutions ?? {})}${
@@ -22,13 +23,12 @@ const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
  */
 
 export const toastsShow = (msg: ToastMsg): symbol => {
-  const { level, spinner, duration } = msg;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { labelKey, substitutions, detail, ...rest } = msg;
 
   return toastsStore.show({
     text: mapToastText(msg),
-    level,
-    spinner,
-    duration,
+    ...rest,
   });
 };
 
@@ -51,22 +51,30 @@ export const toastsError = ({
   labelKey: string;
   err?: unknown;
   substitutions?: I18nSubstitutions;
-}) => {
-  toastsShow({
+}): symbol => {
+  if (err !== undefined) {
+    console.error(err);
+  }
+
+  return toastsShow({
     labelKey,
     level: "error",
     detail: errorToString(err),
     substitutions,
   });
-
-  if (err !== undefined) {
-    console.error(err);
-  }
 };
 
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
 
-export const toastsReset = () => toastsStore.reset();
+export const toastsReset = () => {
+  // TODO: Workaround, implement better solution
+  const toasts = [...get(toastsStore)];
+  const customToasts = toasts.filter(({ level }) => level === "custom");
+
+  toastsStore.reset();
+
+  customToasts.forEach((msg) => toastsStore.show(msg));
+};
 
 export const toastsUpdate = ({
   id,

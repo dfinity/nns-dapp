@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { setContext, onMount } from "svelte";
+  import { setContext, onMount, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
   import {
+    cancelPollAccounts,
     getAccountTransactions,
     pollAccounts,
   } from "$lib/services/accounts.services";
@@ -40,6 +41,10 @@
 
   onMount(() => {
     pollAccounts();
+  });
+
+  onDestroy(() => {
+    cancelPollAccounts();
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);

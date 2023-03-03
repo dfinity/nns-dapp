@@ -16,7 +16,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
     hidePollingToast,
@@ -24,7 +24,10 @@
   } from "$lib/services/sns-sale.services";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import {
+    getCommitmentE8s,
+    hasOpenTicketInProcess,
+  } from "$lib/utils/sns.utils";
   import type { TicketStatus } from "$lib/types/sale";
   import type { SaleStep } from "$lib/types/sale";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
@@ -34,8 +37,10 @@
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
 
   let lifecycle: number;
+  let swapCanisterId: Principal;
   $: ({
     swap: { lifecycle },
+    swapCanisterId,
   } =
     $projectDetailStore.summary ??
     ({
@@ -51,6 +56,13 @@
     summary: $projectDetailStore.summary,
     swapCommitment: $projectDetailStore.swapCommitment,
   });
+
+  let userCommitment: undefined | bigint;
+  $: userCommitment =
+    // swapCommitment=null - not initialized yet
+    $projectDetailStore.swapCommitment === null
+      ? undefined
+      : getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
@@ -72,7 +84,7 @@
 
   let progressStep: SaleStep | undefined = undefined;
 
-  const updateTicket = async () => {
+  const updateTicket = async (swapCanisterId: Principal) => {
     // Avoid second call for the same rootCanisterId
     if (
       rootCanisterId === undefined ||
@@ -80,7 +92,10 @@
     ) {
       return;
     }
-
+    if (isNullish(userCommitment)) {
+      // Typescript guard, user commitment cannot be undefined here
+      return;
+    }
     snsTicketsStore.enablePolling(rootCanisterId);
 
     loadingTicketRootCanisterId = rootCanisterId.toText();
@@ -89,17 +104,25 @@
 
     await restoreSnsSaleParticipation({
       rootCanisterId,
+      userCommitment,
+      swapCanisterId,
       postprocess: reload,
       updateProgress,
     });
   };
 
-  // skip ticket update if the sns is not open
+  // skip ticket update if
+  // - the sns is not open
+  // - the user is not sign in
+  // - user commitment information is not loaded
+  // - project swap canister id is not loaded, needed for the ticket call
   $: if (
     lifecycle === SnsSwapLifecycle.Open &&
-    isSignedIn($authStore.identity)
+    isSignedIn($authStore.identity) &&
+    nonNullish(userCommitment) &&
+    nonNullish(swapCanisterId)
   ) {
-    updateTicket();
+    updateTicket(swapCanisterId);
   }
 
   let userHasParticipatedToSwap = false;

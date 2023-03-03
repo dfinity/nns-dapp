@@ -84,7 +84,7 @@ describe("sns-api", () => {
   const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
   const increaseStakeNeuronSpy = jest.fn();
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => ledgerCanisterMock);
@@ -120,7 +120,7 @@ describe("sns-api", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });

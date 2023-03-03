@@ -608,6 +608,7 @@ interface I18nSns_project_detail {
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
+  current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
@@ -852,6 +853,8 @@ interface I18nSns_status_description {
 
 interface I18nMetrics {
   tvl: string;
+  nns_high_load: string;
+  thanks_fun: string;
 }
 
 interface I18nCkbtc {

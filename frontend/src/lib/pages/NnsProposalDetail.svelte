@@ -23,7 +23,9 @@
   export let referrerPath: AppPath | undefined = undefined;
 
   $: if (isSignedIn($authStore.identity)) {
-    listNeurons();
+    // We want to force the strategy, otherwise uses `FORCE_CALL_STRATEGY` which is `query` for now.
+    // We want certified data for the neurons when voting.
+    listNeurons({ strategy: "query_and_update" });
   }
 
   const mapProposalId = (
