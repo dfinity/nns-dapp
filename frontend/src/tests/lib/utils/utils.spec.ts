@@ -20,7 +20,10 @@ import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
-import { advanceTime } from "../../utils/timers.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -501,8 +504,7 @@ describe("utils", () => {
         await advanceTime();
         expect(get(toastsStore)).toMatchObject(highLoadToast);
         cancelPoll(pollId);
-        // Use `await runResolvedPromised()` from other PR.
-        await new Promise((resolve) => originalTimeout(resolve, 0));
+        await runResolvedPromises();
         expect(get(toastsStore)).toEqual([]);
       });
 

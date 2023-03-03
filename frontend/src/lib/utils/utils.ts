@@ -295,7 +295,7 @@ export const poll = async <T>({
     throw new PollingLimitExceededError();
   } finally {
     highLoadToast && toastsHide(highLoadToast);
-    currentPolls.delete(pollId);
+    pollId && currentPolls.delete(pollId);
   }
 };
 
