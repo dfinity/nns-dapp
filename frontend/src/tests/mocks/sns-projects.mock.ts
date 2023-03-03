@@ -118,6 +118,9 @@ export const mockQuerySwap: SnsSwap = {
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
   params: [mockSnsParams],
+  next_ticket_id: [],
+  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+  purge_old_tickets_next_principal: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {

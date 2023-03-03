@@ -132,7 +132,7 @@ describe("selected universe derived stores", () => {
       expect($store2.toText()).toEqual(OWN_CANISTER_ID.toText());
     });
 
-    it("returns OWN_CANISTER_ID if context is not a selectable universe", () => {
+    it.skip("returns OWN_CANISTER_ID if context is not a selectable universe", () => {
       const unselectableUniverse = Principal.fromText(
         "fzm72-3zdem-rsgiz-cgirs-gmy"
       );

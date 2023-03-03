@@ -2,20 +2,23 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
-import {
-  accountsStore,
-  type AccountsStoreData,
-} from "$lib/stores/accounts.store";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { render } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
+import { render, waitFor } from "@testing-library/svelte";
 import {
-  mockAccountsStoreSubscribe,
+  mockAccountDetails,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 
 describe("NnsAccounts", () => {
   const goToWallet = async () => {
@@ -25,12 +28,17 @@ describe("NnsAccounts", () => {
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {
-    let accountsStoreMock: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      });
+      cancelPollAccounts();
+    });
 
     it("should render a main card", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
       const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const article = container.querySelector("article");
@@ -38,9 +46,6 @@ describe("NnsAccounts", () => {
     });
 
     it("should render account icp in card too", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
       const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const cardTitleRow = container.querySelector(
@@ -53,17 +58,17 @@ describe("NnsAccounts", () => {
     });
 
     it("should render account identifier", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
       const { getByText } = render(NnsAccounts, { props: { goToWallet } });
       getByText(mockMainAccount.identifier);
     });
 
     it("should render subaccount cards", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [],
+        certified: true,
+      });
       const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
@@ -73,11 +78,12 @@ describe("NnsAccounts", () => {
     });
 
     it("should render hardware wallet account cards", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        );
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
       const { container } = render(NnsAccounts, { props: { goToWallet } });
 
       const articles = container.querySelectorAll("article");
@@ -85,30 +91,18 @@ describe("NnsAccounts", () => {
       expect(articles).not.toBeNull();
       expect(articles.length).toBe(2);
     });
-
-    it("should subscribe to store", () => {
-      accountsStoreMock = jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe());
-      render(NnsAccounts, { props: { goToWallet } });
-
-      expect(accountsStoreMock).toHaveBeenCalled();
-    });
   });
 
   describe("summary", () => {
-    beforeAll(() =>
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe(
-            [mockSubAccount],
-            [mockHardwareWalletAccount]
-          )
-        )
-    );
-
-    afterAll(jest.clearAllMocks);
+    beforeAll(() => {
+      jest.clearAllMocks();
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
+    });
 
     it("should contain a tooltip", () => {
       const { container } = render(NnsAccounts, { props: { goToWallet } });
@@ -119,19 +113,14 @@ describe("NnsAccounts", () => {
 
   describe("when no accounts", () => {
     beforeEach(() => {
+      accountsStore.reset();
+      const mainBalanceE8s = BigInt(10_000_000);
       jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          (run: Subscriber<AccountsStoreData>): (() => void) => {
-            run({
-              main: undefined,
-              subAccounts: undefined,
-              hardwareWallets: undefined,
-            });
-
-            return () => undefined;
-          }
-        );
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     });
     it("should not render a token amount component nor zero", () => {
       const { container } = render(NnsAccounts, { props: { goToWallet } });
@@ -140,6 +129,67 @@ describe("NnsAccounts", () => {
       expect(
         container.querySelector(".tooltip-wrapper")
       ).not.toBeInTheDocument();
+    });
+
+    it("should load accounts", () => {
+      const { container } = render(NnsAccounts, { props: { goToWallet } });
+
+      const article = container.querySelector("article");
+      expect(article).not.toBeNull();
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      cancelPollAccounts();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = render(NnsAccounts, { props: { goToWallet } });
+
+      let counter = 0;
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const retriesBeforeLeaving = 3;
+      const extraRetries = 4;
+      while (counter < retriesBeforeLeaving + extraRetries) {
+        expect(spyQueryAccount).toBeCalledTimes(
+          Math.min(counter, retriesBeforeLeaving)
+        );
+        counter += 1;
+        // Make sure the timers are set before we advance time.
+        await null;
+        await null;
+        await null;
+        jest.advanceTimersByTime(retryDelay);
+        retryDelay *= 2;
+        await waitFor(() =>
+          expect(spyQueryAccount).toBeCalledTimes(
+            Math.min(counter, retriesBeforeLeaving)
+          )
+        );
+
+        if (counter === retriesBeforeLeaving) {
+          unmount();
+        }
+      }
+
+      expect(counter).toBe(retriesBeforeLeaving + extraRetries);
+
+      expect(spyQueryAccount).toHaveBeenCalledTimes(retriesBeforeLeaving);
     });
   });
 });

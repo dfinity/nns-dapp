@@ -57,6 +57,11 @@ describe("transactionFee-services", () => {
     });
 
     describe("error", () => {
+      beforeEach(() => {
+        // Avoid to print errors during test
+        jest.spyOn(console, "error").mockImplementation(() => undefined);
+      });
+
       it("should call error callback", async () => {
         const spyTransactionFeeApi = jest
           .spyOn(snsApi, "transactionFee")

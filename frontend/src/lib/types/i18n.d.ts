@@ -60,6 +60,7 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  accounts_not_found_poll: string;
   account_not_found: string;
   transactions_not_found: string;
   canister_not_found: string;
@@ -98,6 +99,7 @@ interface I18nError {
   pub_key_not_hex_string: string;
   pub_key_hex_string_invalid_length: string;
   hardware_wallet_no_account: string;
+  high_load_retrying: string;
   canister_refund: string;
   canister_creation_unknown: string;
   canister_top_up_unknown: string;
@@ -105,6 +107,7 @@ interface I18nError {
   not_canister_controller_to_update: string;
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
+  limit_exceeded_getting_open_ticket: string;
   sns_loading_commited_projects: string;
   swap_not_loaded: string;
   transaction_fee_not_found: string;
@@ -605,6 +608,7 @@ interface I18nSns_project_detail {
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
+  current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
@@ -630,7 +634,19 @@ interface I18nSns_project_detail {
   sale_end: string;
   max_left: string;
   max_user_commitment_reached: string;
+  getting_sns_open_ticket: string;
   sign_in: string;
+}
+
+interface I18nSns_sale {
+  participation_in_progress: string;
+  step_initialization: string;
+  step_transfer: string;
+  step_notify: string;
+  step_reload: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
+  connecting_sale_canister: string;
 }
 
 interface I18nSns_neuron_detail {
@@ -729,6 +745,7 @@ interface I18nError__sns {
   list_swap_commitments: string;
   load_swap_commitment: string;
   load_sale_total_commitments: string;
+  load_sale_lifecycle: string;
   load_parameters: string;
   sns_remove_hotkey: string;
   sns_split_neuron: string;
@@ -746,12 +763,14 @@ interface I18nError__sns {
   commitment_too_large: string;
   commitment_exceeds_current_allowed: string;
   sns_sale_unexpected_error: string;
+  sns_sale_unexpected_and_refresh: string;
+  sns_sale_final_error: string;
   sns_sale_proceed_with_existing_ticket: string;
   sns_sale_closed: string;
+  sns_sale_not_open: string;
   sns_sale_invalid_amount: string;
   sns_sale_invalid_subaccount: string;
   sns_sale_try_later: string;
-  sns_sale_retry_in: string;
   sns_sale_committed_not_equal_to_amount: string;
   invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;
@@ -796,6 +815,7 @@ interface I18nAuth_sns {
 
 interface I18nUniverse {
   select_token: string;
+  select_nervous_system: string;
   select: string;
 }
 
@@ -833,6 +853,8 @@ interface I18nSns_status_description {
 
 interface I18nMetrics {
   tvl: string;
+  nns_high_load: string;
+  thanks_fun: string;
 }
 
 interface I18nCkbtc {
@@ -1077,6 +1099,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
+  sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
   sns_neurons: I18nSns_neurons;
   time: I18nTime;

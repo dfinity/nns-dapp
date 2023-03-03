@@ -22,6 +22,10 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
       swap.decentralization_sale_open_timestamp_seconds
     ),
     params: [{ ...swap.params }],
+
+    next_ticket_id: [],
+    purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+    purge_old_tickets_next_principal: [],
   },
 ];
 

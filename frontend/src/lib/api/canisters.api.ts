@@ -19,7 +19,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { poll, PollingLimitExceededError } from "$lib/utils/utils";
+import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
@@ -130,8 +130,6 @@ export const detachCanister = async ({
   logWithTimestamp("Detaching canister call complete.");
 };
 
-const pollingLimit = (error: unknown): boolean =>
-  error instanceof PollingLimitExceededError;
 const notProcessingError = (error: unknown): boolean =>
   !(error instanceof ProcessingError);
 

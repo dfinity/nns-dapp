@@ -10,7 +10,7 @@
     type WalletStore,
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { setContext } from "svelte/internal";
+  import { setContext } from "svelte";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
   import { nonNullish } from "@dfinity/utils";

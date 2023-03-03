@@ -1,14 +1,16 @@
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
   getSwapCanisterAccount,
+  hasOpenTicketInProcess,
+  isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
 } from "$lib/utils/sns.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { snsTicketsStore } from "../../../lib/stores/sns-tickets.store";
-import { hasOpenTicketInProcess } from "../../../lib/utils/sns.utils";
+import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -244,36 +246,133 @@ describe("sns-utils", () => {
   });
 
   describe("hasOpenTicketInProcess", () => {
+    beforeEach(() => {
+      snsTicketsStore.reset();
+    });
     const testTicket = snsTicketMock({
       rootCanisterId: rootCanisterIdMock,
       owner: mockPrincipal,
     }).ticket;
 
-    it("returns true when the ticket is undefined", () => {
+    it("returns unknown", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
+        keepPolling: true,
       });
+      const store = get(snsTicketsStore);
 
-      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeTruthy();
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: principal(2),
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: null,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: undefined,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "unknown" });
     });
 
-    it("returns true when there is an open ticket in the store", () => {
+    it("returns polling when the ticket is undefined and we keep polling", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+        keepPolling: true,
+      });
+      const store = get(snsTicketsStore);
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: rootCanisterIdMock,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "polling" });
+    });
+
+    it("returns none when the ticket is undefined and we stopped keep polling", () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: undefined,
+        keepPolling: false,
+      });
+      const store = get(snsTicketsStore);
+
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: rootCanisterIdMock,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "none" });
+    });
+
+    it("returns open when there is an open ticket in the store", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: testTicket,
       });
+      const store = get(snsTicketsStore);
 
-      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeTruthy();
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: rootCanisterIdMock,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "open" });
     });
 
-    it("returns false the open ticket is null (processed)", () => {
+    it("returns none when the open ticket is null (processed)", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: null,
       });
+      const store = get(snsTicketsStore);
 
-      expect(hasOpenTicketInProcess(rootCanisterIdMock)).toBeFalsy();
+      expect(
+        hasOpenTicketInProcess({
+          rootCanisterId: rootCanisterIdMock,
+          ticketsStore: store,
+        })
+      ).toEqual({ status: "none" });
+    });
+  });
+
+  describe("isInternalRefreshBuyerTokensError", () => {
+    it("returns true on known error", () => {
+      const error = new Error("The swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns true on known error", () => {
+      const error = new Error(
+        "This is the beginning of the error. The swap has already reached its target ..."
+      );
+      expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns false on unknown error", () => {
+      const error = new Error("Fake the swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
+    });
+
+    it("returns false on not error argument", () => {
+      expect(isInternalRefreshBuyerTokensError(null)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(undefined)).toBeFalsy();
+      expect(
+        isInternalRefreshBuyerTokensError(
+          "The swap has already reached its target"
+        )
+      ).toBeFalsy();
     });
   });
 });

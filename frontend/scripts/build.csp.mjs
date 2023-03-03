@@ -16,6 +16,7 @@ const buildCsp = (htmlFile) => {
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
   // 2. We add our custom script loader - we inject it at build time because it would throw an error when developing locally if missing
   const indexHTMLWithScriptLoader = injectScriptLoader(
+    htmlFile,
     indexHTMLWithoutStartScript
   );
   // 3. Replace preloaders
@@ -40,13 +41,16 @@ const removeDefaultCspTag = (indexHtml) => {
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
  */
-const injectScriptLoader = (indexHtml) => {
+const injectScriptLoader = (filePath, indexHtml) => {
+  const buildDir = join(process.cwd(), "public");
+  const folderPath = dirname(filePath.replace(buildDir, "")).split("/").pop();
+
   return indexHtml.replace(
     "<!-- SCRIPT_LOADER -->",
     `<script sveltekit-loader>
       const loader = document.createElement("script");
       loader.type = "module";
-      loader.src = "main.js";
+      loader.src = "${folderPath !== "" ? `/${folderPath}` : ""}/main.js";
       document.head.appendChild(loader);
     </script>`
   );
@@ -208,6 +212,9 @@ const cspConnectSrc = () => {
     process.env.VITE_HOST,
     process.env.VITE_GOVERNANCE_CANISTER_URL,
     process.env.VITE_LEDGER_CANISTER_URL,
+    // TODO: solve with a worker
+    // Used for the metrics of OC launch
+    "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
   ];
 
   if (isAggregatorCanisterUrlDefined) {

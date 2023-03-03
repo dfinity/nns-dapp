@@ -1,4 +1,5 @@
 import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Principal } from "@dfinity/principal/lib/cjs";
@@ -18,6 +19,7 @@ export const loadSnsTransactionFee = async ({
     return;
   }
   return queryAndUpdate<bigint, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       snsTransactionFee({
         identity,
@@ -28,7 +30,7 @@ export const loadSnsTransactionFee = async ({
       transactionsFeesStore.setFee({ certified, rootCanisterId, fee });
     },
     onError: ({ error: err, certified }) => {
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 

@@ -1,7 +1,12 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
-  import { createEventDispatcher, getContext } from "svelte";
+  import {
+    createEventDispatcher,
+    getContext,
+    onDestroy,
+    onMount,
+  } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -20,14 +25,32 @@
     NewTransaction,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import AdditionalInfoForm from "./AdditionalInfoForm.svelte";
-  import AdditionalInfoReview from "./AdditionalInfoReview.svelte";
+  import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
+  import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
+  import {
+    getCommitmentE8s,
+    hasOpenTicketInProcess,
+  } from "$lib/utils/sns.utils";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
+  import { SaleStep } from "$lib/types/sale";
+  import {
+    cancelPollAccounts,
+    pollAccounts,
+  } from "$lib/services/accounts.services";
+
+  onMount(() => {
+    pollAccounts(false);
+  });
+
+  onDestroy(() => {
+    cancelPollAccounts();
+  });
 
   const { store: projectDetailStore, reload } =
     getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
@@ -64,6 +87,8 @@
       ? userHasParticipatedToSwap
         ? $i18n.sns_project_detail.increase_participation
         : $i18n.sns_project_detail.participate
+      : currentStep?.name === "Progress"
+      ? $i18n.sns_sale.participation_in_progress
       : $i18n.accounts.review_transaction;
 
   let maxCommitment: TokenAmount;
@@ -86,24 +111,47 @@
   let accepted: boolean;
 
   let busy = true;
-  $: busy = hasOpenTicketInProcess(
-    $projectDetailStore?.summary?.rootCanisterId
-  );
+  $: busy =
+    hasOpenTicketInProcess({
+      rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+      ticketsStore: $snsTicketsStore,
+    }).status !== "none";
+
+  let modal: TransactionModal;
+  let progressStep: SaleStep = SaleStep.INITIALIZATION;
 
   const dispatcher = createEventDispatcher();
   const participate = async ({
     detail: { sourceAccount, amount },
   }: CustomEvent<NewTransaction>) => {
     if (nonNullish($projectDetailStore.summary)) {
-      await initiateSnsSaleParticipation({
+      modal?.goProgress();
+
+      const updateProgress = (step: SaleStep) => (progressStep = step);
+      const userCommitment =
+        getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
+
+      const { success } = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
         rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        userCommitment,
         postprocess: async () => {
           await reload();
-          dispatcher("nnsClose");
         },
+        updateProgress,
       });
+
+      // We close the modal anyway because either on success or error there will be a toast and user might have to replay everything from scratch anyway.
+      if (!success) {
+        dispatcher("nnsClose");
+        return;
+      }
+
+      // We defer the closing of the modal a bit to let the user notice the last step was successful
+      setTimeout(() => {
+        dispatcher("nnsClose");
+      }, 1000);
     }
   };
 
@@ -144,6 +192,7 @@
   <TransactionModal
     rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
+    bind:this={modal}
     on:nnsClose
     on:nnsSubmit={participate}
     {validateAmount}
@@ -176,6 +225,7 @@
     <p slot="description" class="value">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
+    <SaleInProgress slot="in_progress" {progressStep} />
   </TransactionModal>
 {/if}
 

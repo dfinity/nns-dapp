@@ -1,5 +1,6 @@
 import { ckBTCTransfer, getCkBTCAccounts } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
@@ -19,6 +20,7 @@ export const loadCkBTCAccounts = async ({
   handleError?: () => void;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getCkBTCAccounts({ identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
@@ -29,7 +31,7 @@ export const loadCkBTCAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
