@@ -90,7 +90,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
 
   ul {
     @include card.list;

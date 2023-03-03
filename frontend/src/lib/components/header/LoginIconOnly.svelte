@@ -28,7 +28,7 @@
 </button>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/header";
+  @use "@dfinity/gix-components/dist/styles/mixins/header";
 
   button {
     justify-self: flex-end;
