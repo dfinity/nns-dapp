@@ -28,6 +28,10 @@ import {
   principal,
 } from "../../mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 const {
   getSwapAccount,
@@ -217,26 +221,20 @@ describe("sns-services", () => {
         rootCanisterId: canisterId,
       });
 
-      let counter = 0;
-      const retriesBeforeClearing = 3;
-      const extraRetries = 4;
-      while (counter < retriesBeforeClearing + extraRetries) {
-        expect(spy).toBeCalledTimes(Math.min(counter, retriesBeforeClearing));
-        counter += 1;
-        // Make sure the timers are set before we advance time.
-        await null;
-        await null;
-        await null;
-        jest.advanceTimersByTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
-        await waitFor(() =>
-          expect(spy).toBeCalledTimes(Math.min(counter, retriesBeforeClearing))
-        );
+      await runResolvedPromises();
+      let expectedCalls = 0;
+      expect(spy).toBeCalledTimes(expectedCalls);
 
-        if (counter === retriesBeforeClearing) {
-          clearWatch();
-        }
+      const callsBeforeClearing = 3;
+      while (expectedCalls < callsBeforeClearing) {
+        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+        expectedCalls += 1;
+        expect(spy).toBeCalledTimes(expectedCalls);
       }
-      expect(spy).toBeCalledTimes(retriesBeforeClearing);
+      clearWatch();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      expect(spy).toBeCalledTimes(expectedCalls);
 
       const updatedStore = get(snsQueryStore);
       const updatedState = updatedStore.swaps.find(
