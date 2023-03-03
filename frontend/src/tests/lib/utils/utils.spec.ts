@@ -20,7 +20,10 @@ import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
-import { advanceTime } from "../../utils/timers.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -480,6 +483,31 @@ describe("utils", () => {
         expect(get(toastsStore)).toEqual([]);
       });
 
+      it("should hide 'high load' message after cancel", async () => {
+        const pollId = Symbol();
+        const failuresBeforeHighLoadMessage = 3;
+        const _ = poll({
+          fn: async () => {
+            throw new Error();
+          },
+          shouldExit: () => false,
+          maxAttempts: 10,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          failuresBeforeHighLoadMessage,
+          pollId,
+        }).catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+        });
+        await advanceTime();
+        await advanceTime();
+        await advanceTime();
+        expect(get(toastsStore)).toMatchObject(highLoadToast);
+        cancelPoll(pollId);
+        await runResolvedPromises();
+        expect(get(toastsStore)).toEqual([]);
+      });
+
       it("should show 'high load' message only once", async () => {
         const _ = poll({
           fn: async () => {
@@ -568,6 +596,139 @@ describe("utils", () => {
         expect(cancelled).toBe(true);
         // No further calls after cancel.
         expect(fnSpy).toBeCalledTimes(1);
+      });
+
+      it("should cancel immediately when called again while polling", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        let resolvePromise;
+        fnSpy.mockReturnValue(
+          new Promise((resolve) => {
+            resolvePromise = resolve;
+          })
+        );
+
+        const callPoll = () =>
+          poll({
+            fn: fnSpy,
+            shouldExit: () => false,
+            maxAttempts: 10,
+            millisecondsToWait: 20 * 1000,
+            useExponentialBackoff: false,
+            pollId,
+          });
+
+        const pollPromise = callPoll();
+        expect(callPoll).rejects.toThrowError(PollingCancelledError);
+
+        const expectedPollResult = "foo";
+        resolvePromise(expectedPollResult);
+        expect(await pollPromise).toEqual(expectedPollResult);
+      });
+
+      it("should work when called again after success", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+
+        const expectedResult1 = "foo";
+        const expectedResult2 = "bar";
+
+        fnSpy
+          .mockResolvedValueOnce(expectedResult1)
+          .mockResolvedValueOnce(expectedResult2);
+
+        const callPoll = () =>
+          poll({
+            fn: fnSpy,
+            shouldExit: () => false,
+            maxAttempts: 10,
+            millisecondsToWait: 20 * 1000,
+            useExponentialBackoff: false,
+            pollId,
+          });
+
+        expect(await callPoll()).toEqual(expectedResult1);
+        expect(await callPoll()).toEqual(expectedResult2);
+      });
+
+      it("should work when called again after cancel", async () => {
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+
+        const expectedResult2 = "baz";
+
+        fnSpy
+          .mockReturnValueOnce(
+            new Promise(() => {
+              // never resolve
+            })
+          )
+          .mockResolvedValueOnce(expectedResult2);
+
+        const callPoll = () =>
+          poll({
+            fn: fnSpy,
+            shouldExit: () => false,
+            maxAttempts: 10,
+            millisecondsToWait: 20 * 1000,
+            useExponentialBackoff: false,
+            pollId,
+          });
+
+        let canceled = false;
+        callPoll().catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+          canceled = true;
+        });
+        await advanceTime();
+        expect(canceled).toBe(false);
+        cancelPoll(pollId);
+        await advanceTime();
+        expect(canceled).toBe(true);
+        expect(await callPoll()).toEqual(expectedResult2);
+      });
+
+      it("should cancel only the polling with the correct id", async () => {
+        const pollId1 = Symbol();
+        const pollId2 = Symbol();
+        const fnSpy = jest.fn();
+
+        fnSpy.mockReturnValue(
+          new Promise(() => {
+            // never resolve
+          })
+        );
+
+        const callPoll = (id) =>
+          poll({
+            fn: fnSpy,
+            shouldExit: () => false,
+            maxAttempts: 10,
+            millisecondsToWait: 20 * 1000,
+            useExponentialBackoff: false,
+            pollId: id,
+          });
+
+        let canceled1 = false;
+        let canceled2 = false;
+
+        callPoll(pollId1).catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+          canceled1 = true;
+        });
+
+        callPoll(pollId2).catch((err) => {
+          expect(err).toBeInstanceOf(PollingCancelledError);
+          canceled2 = true;
+        });
+
+        await advanceTime();
+        expect(canceled1).toBe(false);
+        expect(canceled2).toBe(false);
+        cancelPoll(pollId2);
+        await advanceTime();
+        expect(canceled1).toBe(false);
+        expect(canceled2).toBe(true);
       });
     });
   });
