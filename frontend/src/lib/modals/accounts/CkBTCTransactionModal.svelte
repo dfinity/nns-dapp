@@ -5,6 +5,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import { TransactionNetwork } from "$lib/types/transaction";
+  import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
@@ -16,6 +17,8 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+  import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
+  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -26,6 +29,7 @@
   export let transactionFee: TokenAmount;
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
+  let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep;
 
@@ -69,7 +73,13 @@
     }
   };
 
-  // TODO(GIX-1330): display bitcoin transaction fee
+  let userAmount: number | undefined = undefined;
+  const validateAmount: ValidateAmountFn = (
+    amount: number | undefined
+  ): string | undefined => {
+    userAmount = amount;
+    return undefined;
+  };
 </script>
 
 <TransactionModal
@@ -82,6 +92,7 @@
   sourceAccount={selectedAccount}
   mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
   bind:selectedNetwork
+  {validateAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
@@ -89,4 +100,15 @@
       $token: token.symbol,
     })}
   </p>
+  <BitcoinEstimatedFee
+    slot="additional-info-form"
+    {selectedNetwork}
+    amount={userAmount}
+    minterCanisterId={canisters.minterCanisterId}
+    bind:bitcoinEstimatedFee
+  />
+  <BitcoinEstimatedFeeDisplay
+    {bitcoinEstimatedFee}
+    slot="additional-info-review"
+  />
 </TransactionModal>

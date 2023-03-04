@@ -223,6 +223,7 @@ interface I18nAccounts {
   network_bitcoin: string;
   network_test_bitcoin: string;
   select_network: string;
+  estimated_bitcoin_transaction_fee: string;
 }
 
 interface I18nNeurons {
@@ -871,6 +872,7 @@ interface I18nCkbtc {
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
+  btc: string;
   ckbtc_balance_updated: string;
 }
 
@@ -888,6 +890,7 @@ interface I18nError__ckbtc {
   amount_too_low: string;
   insufficient_funds: string;
   retrieve_btc_unknown: string;
+  estimated_fee: string;
 }
 
 interface I18nNeuron_state {

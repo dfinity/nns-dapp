@@ -117,4 +117,36 @@ describe("ckbtc-minter-services", () => {
       );
     });
   });
+
+  describe("estimateFee", () => {
+    it("should call estimate fee", async () => {
+      const result = 123n;
+
+      const spyEstimateFee = jest
+        .spyOn(minterApi, "estimateFee")
+        .mockResolvedValue(result);
+
+      const params = { certified: true, amount: 456n };
+
+      const callback = jest.fn();
+
+      await services.estimateFee({
+        params,
+        callback,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      await waitFor(() =>
+        expect(spyEstimateFee).toBeCalledWith({
+          identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
+          ...params,
+        })
+      );
+
+      expect(callback).toHaveBeenCalledWith(result);
+      // Query + Update
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+  });
 });
