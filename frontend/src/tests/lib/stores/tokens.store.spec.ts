@@ -1,4 +1,4 @@
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { get } from "svelte/store";
 import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";

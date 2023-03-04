@@ -3,7 +3,10 @@
  */
 
 import * as indexApi from "$lib/api/ckbtc-index.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -33,6 +36,8 @@ describe("ckbtc-transactions-services", () => {
       await services.loadCkBTCAccountTransactions({
         account: mockCkBTCMainAccount,
         start,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       const account = {
@@ -44,6 +49,7 @@ describe("ckbtc-transactions-services", () => {
           identity: mockIdentity,
           account,
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          indexCanisterId: CKBTC_INDEX_CANISTER_ID,
           canisterId: CKBTC_UNIVERSE_CANISTER_ID,
           start,
         })
@@ -69,6 +75,8 @@ describe("ckbtc-transactions-services", () => {
 
       await services.loadCkBTCAccountNextTransactions({
         account: mockCkBTCMainAccount,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       const account = {
@@ -80,6 +88,7 @@ describe("ckbtc-transactions-services", () => {
           identity: mockIdentity,
           account,
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          indexCanisterId: CKBTC_INDEX_CANISTER_ID,
           canisterId: CKBTC_UNIVERSE_CANISTER_ID,
         })
       );
@@ -112,6 +121,8 @@ describe("ckbtc-transactions-services", () => {
 
       await services.loadCkBTCAccountNextTransactions({
         account: mockCkBTCMainAccount,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       await waitFor(() => {
@@ -121,6 +132,7 @@ describe("ckbtc-transactions-services", () => {
             owner: mockCkBTCMainAccount.principal,
           },
           maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          indexCanisterId: CKBTC_INDEX_CANISTER_ID,
           canisterId: CKBTC_UNIVERSE_CANISTER_ID,
           // TODO: It should be oldestTxId but there is a bug in the Index canister that doesn't return proper oldestTxId
           // Instead, we need to calculate the oldest by checking the transactions.

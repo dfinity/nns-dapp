@@ -24,6 +24,8 @@ export interface SnsAccountsStore extends Readable<SnsAccountsStoreData> {
   reset: () => void;
 }
 
+// TODO: we can maybe replace this store with icrcAccountStore?
+
 /**
  * A store that contains the sns accounts for each project.
  *

@@ -2,10 +2,14 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { IC_LOGO } from "$lib/constants/icp.constants";
   import type { SnsSummary } from "$lib/types/sns";
-  import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-  import { isUniverseCkBTC } from "$lib/utils/universe.utils";
+  import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
+  import {
+    isUniverseCkBTC,
+    isUniverseCkTESTBTC,
+    universeLogoAlt,
+  } from "$lib/utils/universe.utils";
 
   export let universe: Universe;
   export let size: "big" | "small" = "small";
@@ -20,16 +24,16 @@
   let ckBTC = false;
   $: ckBTC = isUniverseCkBTC(canisterId);
 
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(canisterId);
+
   let logo: string;
-  $: logo = summary?.metadata.logo ?? (ckBTC ? CKBTC_LOGO : IC_LOGO);
+  $: logo =
+    summary?.metadata.logo ??
+    (ckTESTBTC ? CKTESTBTC_LOGO : ckBTC ? CKBTC_LOGO : IC_LOGO);
 
   let title: string;
-  $: title =
-    summary?.metadata.name !== undefined
-      ? `${summary?.metadata.name} ${$i18n.sns_launchpad.project_logo}`
-      : ckBTC
-      ? $i18n.ckbtc.logo
-      : $i18n.auth.ic_logo;
+  $: title = universeLogoAlt(universe);
 </script>
 
 <div class={`${size}`} data-tid="project-logo">
