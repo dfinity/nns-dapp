@@ -7,23 +7,21 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import {
   isCkBTCUniverseStore,
   isNnsUniverseStore,
+  selectedCkBTCUniverseIdStore,
   selectedUniverseIdStore,
+  selectedUniverseStore,
 } from "$lib/derived/selected-universe.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
-import {
-  selectedCkBTCUniverseIdStore,
-  selectedUniverseStore,
-} from "$lib/derived/selected-universe.derived";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,

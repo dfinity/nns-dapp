@@ -7,6 +7,7 @@ import { configure } from "@testing-library/svelte";
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -33,6 +34,7 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
   GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   CYCLES_MINTING_CANISTER_ID: Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai"),
   WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+  TVL_CANISTER_ID: Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai"),
 }));
 
 jest.mock("./src/lib/constants/ckbtc-canister-ids.constants.ts", () => ({
@@ -71,9 +73,13 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   SNS_AGGREGATOR_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
+  ENABLE_METRICS: false,
+  FORCE_CALL_STRATEGY: undefined,
 }));
 
 global.localStorage = localStorageMock;
+
+failTestsThatLogToConsole();
 
 // testing-library setup
 configure({

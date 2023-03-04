@@ -1,7 +1,7 @@
+import { nonNullish } from "@dfinity/utils";
+
 export const isNode = (): boolean =>
-  typeof process !== "undefined" &&
-  process.versions != null &&
-  process.versions.node != null;
+  typeof process !== "undefined" && nonNullish(process.versions?.node);
 
 /**
  *

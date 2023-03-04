@@ -8,54 +8,8 @@
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
       "remote": {
         "id": {
-          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "nnsdapp": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "benchmarklarge": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___benchmarklarge_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large01_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large02_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large03_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large04_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium06_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium07_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium08_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium09_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium10_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "__default": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -63,7 +17,13 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "build": "./build.sh",
+      "remote": {
+        "id": {
+          "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
+        }
+      }
     },
     "internet_identity": {
       "type": "custom",
@@ -85,54 +45,8 @@
       "type": "custom",
       "remote": {
         "id": {
-          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "nnsdapp": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small13": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium07": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium08": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small07": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small08": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small14": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "benchmarklarge": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___benchmarklarge_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large01_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large02_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large03_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large04_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium06_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium07_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium08_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium09_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium10_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "__default": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -201,8 +115,8 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-ledger.did",
-      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "candid": "target/ic/ckbtc_ledger.did",
+      "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -210,12 +124,20 @@
         }
       }
     },
+    "ckbtc_minter": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_minter.did",
+      "wasm": "target/ic/ckbtc_minter.wasm",
+      "type": "custom"
+    },
     "ckbtc_index": {
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-index.did",
-      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "candid": "target/ic/ckbtc_index.did",
+      "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -230,15 +152,14 @@
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
-        "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
         "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": true,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -253,9 +174,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": true,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -271,8 +192,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -288,8 +209,8 @@
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -305,8 +226,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -322,8 +243,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -339,8 +260,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -356,8 +277,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -373,8 +294,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -397,8 +318,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -414,8 +335,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "providers": [
@@ -432,8 +353,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "bind": "127.0.0.1:8080",
@@ -447,8 +368,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -461,8 +382,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -475,8 +396,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -489,8 +410,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -503,8 +424,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -517,8 +438,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -531,8 +452,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -545,8 +466,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -559,8 +480,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -573,8 +494,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -587,8 +508,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -601,8 +522,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": false,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKBTC_LEDGER": false,
+          "ENABLE_CKBTC_MINTER": false
         }
       },
       "type": "ephemeral"
@@ -994,8 +915,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC_LEDGER": false
         }
       },
       "providers": [

@@ -39,18 +39,16 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
-  beforeAll(() => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
-  });
-
   afterAll(() => {
     jest.resetAllMocks();
     jest.clearAllTimers();
   });
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    const now = Date.now();
+    jest.useFakeTimers().setSystemTime(now);
+
     jest
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);

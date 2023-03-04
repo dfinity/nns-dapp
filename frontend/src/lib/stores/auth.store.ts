@@ -1,14 +1,12 @@
 import { resetAgents } from "$lib/api/agent.api";
 import {
-  IS_TESTNET,
-  OLD_MAINNET_OWN_CANISTER_URL,
-} from "$lib/constants/environment.constants";
-import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
+import { NNS_IC_APP_DERIVATION_ORIGIN } from "$lib/constants/origin.constants";
 import { createAuthClient } from "$lib/utils/auth.utils";
+import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
 import { writable } from "svelte/store";
@@ -70,7 +68,9 @@ const initAuthStore = () => {
 
       await authClient?.login({
         identityProvider: getIdentityProvider(),
-        derivationOrigin: IS_TESTNET ? undefined : OLD_MAINNET_OWN_CANISTER_URL,
+        ...(isNnsAlternativeOrigin() && {
+          derivationOrigin: NNS_IC_APP_DERIVATION_ORIGIN,
+        }),
         maxTimeToLive: AUTH_SESSION_DURATION,
         onSuccess: () => {
           update((state: AuthStore) => ({

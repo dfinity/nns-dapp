@@ -208,18 +208,13 @@ describe("proposals-services", () => {
   });
 
   describe("no identity", () => {
-    beforeAll(() => {
+    beforeEach(() => {
+      resetIdentity();
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(jest.fn);
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
-
-      resetIdentity();
     });
 
     it("should use anonymous identity", () => {
@@ -323,7 +318,10 @@ describe("proposals-services", () => {
       .spyOn(api, "queryProposalPayload")
       .mockImplementation(() => Promise.resolve({ data: "test" }));
 
-    afterEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
 
     it("should call queryProposalPayload", async () => {
       await loadProposalPayload({ proposalId: BigInt(0) });

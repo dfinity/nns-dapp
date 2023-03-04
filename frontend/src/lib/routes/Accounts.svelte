@@ -27,6 +27,8 @@
   import type { Universe } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
 
+  // TODO: This component is mounted twice. Understand why and fix it.
+
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;
 

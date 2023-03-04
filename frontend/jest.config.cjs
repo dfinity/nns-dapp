@@ -25,6 +25,8 @@ module.exports = {
     "^\\$lib(.*)$": "<rootDir>/src/lib$1",
     "^\\$routes(.*)$": "<rootDir>/src/routes$1",
     "^\\$mocks(.*)$": "<rootDir>/__mocks__$1",
+    "@dfinity/gix-components":
+      "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },
   setupFiles: ["fake-indexeddb/auto"],
 };
