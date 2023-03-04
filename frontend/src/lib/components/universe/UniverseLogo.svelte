@@ -2,7 +2,6 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { IC_LOGO } from "$lib/constants/icp.constants";
   import type { SnsSummary } from "$lib/types/sns";
-  import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
