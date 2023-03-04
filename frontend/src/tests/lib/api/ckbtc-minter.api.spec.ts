@@ -1,6 +1,6 @@
 import {
-  getBTCAddress,
   estimateFee,
+  getBTCAddress,
   getWithdrawalAccount,
   retrieveBtc,
   updateBalance,

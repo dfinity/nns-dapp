@@ -6,8 +6,8 @@ import {
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
-import type { CanisterId } from "$lib/types/canister";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
 import type { UpdateBalanceResult } from "@dfinity/ckbtc";
@@ -28,15 +28,15 @@ export const getBTCAddress = async (
 };
 
 export const estimateFee = async ({
-                                    params,
-                                    callback,
-                                  }: {
+  params,
+  callback,
+}: {
   params: EstimateFeeParams;
   callback: (fee: bigint | null) => void;
 }): Promise<void> => {
   return queryAndUpdate<bigint, unknown>({
     request: ({ certified, identity }) =>
-        estimateFeeAPI({ identity, certified, ...params }),
+      estimateFeeAPI({ identity, certified, ...params }),
     onLoad: ({ response: fee }) => callback(fee),
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -49,10 +49,10 @@ export const estimateFee = async ({
       }
 
       toastsError(
-          toToastError({
-            err,
-            fallbackErrorLabelKey: "error__ckbtc.estimated_fee",
-          })
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error__ckbtc.estimated_fee",
+        })
       );
     },
     logMessage: "Getting Bitcoin estimated fee",
