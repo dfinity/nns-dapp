@@ -18,6 +18,8 @@ export const nnsTokenStore = derived<
   TokensStoreUniverseData
 >([tokensStore], ([$tokensStore]) => $tokensStore[OWN_CANISTER_ID_TEXT]);
 
+// TODO: should we create and icrcTokenStore and icrcTokenFeeStore ?
+
 export const ckBTCTokenStore = derived<
   [Readable<TokensStoreData>],
   Record<UniverseCanisterIdText, TokensStoreUniverseData | undefined>

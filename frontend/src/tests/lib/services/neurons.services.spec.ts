@@ -23,7 +23,7 @@ import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
-import { tick } from "svelte/internal";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
@@ -104,7 +104,6 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 describe("neurons-services", () => {
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
   const notControlledNeuron = {
     ...mockNeuron,
     neuronId: BigInt(123),
@@ -1406,6 +1405,7 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
         setNeuron: jest.fn(),

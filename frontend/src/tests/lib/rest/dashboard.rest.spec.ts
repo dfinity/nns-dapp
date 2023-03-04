@@ -1,18 +1,16 @@
-import { exchangeRateICPToUsd } from "$lib/rest/binance.rest";
-import type { BinanceAvgPrice } from "$lib/types/binance";
+import { fetchTransactionRate } from "$lib/rest/dashboard.rest";
+import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 
-describe("Binance Rest API", () => {
-  beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
-  );
-
-  afterAll(() => {
-    jest.clearAllMocks();
+describe("Dashboard Rest API", () => {
+  beforeEach(() => {
     jest.resetAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  it("should return an average price", async () => {
-    const data: BinanceAvgPrice = { mins: 5, price: "5.43853359" };
+  it("should fetch a transaction rate", async () => {
+    const data: DashboardMessageExecutionRateResponse = {
+      message_execution_rate: [[1234, 300]],
+    };
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
@@ -24,10 +22,9 @@ describe("Binance Rest API", () => {
       })
     );
 
-    const rate = await exchangeRateICPToUsd();
+    const rate = await fetchTransactionRate();
 
-    expect(rate.mins).toEqual(data.mins);
-    expect(rate.price).toEqual(data.price);
+    expect(rate.message_execution_rate).toEqual(data.message_execution_rate);
 
     expect(fetch).toHaveBeenCalledTimes(1);
   });
@@ -42,7 +39,7 @@ describe("Binance Rest API", () => {
       })
     );
 
-    const rate = await exchangeRateICPToUsd();
+    const rate = await fetchTransactionRate();
 
     expect(rate).toBeNull();
 
@@ -54,7 +51,7 @@ describe("Binance Rest API", () => {
     // @ts-ignore mock fetch
     global.fetch = jest.fn(() => Promise.reject("An API error"));
 
-    const rate = await exchangeRateICPToUsd();
+    const rate = await fetchTransactionRate();
 
     expect(rate).toBeNull();
 

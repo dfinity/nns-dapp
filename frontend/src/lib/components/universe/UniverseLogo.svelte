@@ -9,6 +9,7 @@
   import {
     isUniverseCkBTC,
     isUniverseCkTESTBTC,
+    universeLogoAlt,
   } from "$lib/utils/universe.utils";
 
   export let universe: Universe;
@@ -33,14 +34,7 @@
     (ckTESTBTC ? CKTESTBTC_LOGO : ckBTC ? CKBTC_LOGO : IC_LOGO);
 
   let title: string;
-  $: title =
-    summary?.metadata.name !== undefined
-      ? `${summary?.metadata.name} ${$i18n.sns_launchpad.project_logo}`
-      : ckTESTBTC
-      ? $i18n.ckbtc.test_logo
-      : ckBTC
-      ? $i18n.ckbtc.logo
-      : $i18n.auth.ic_logo;
+  $: title = universeLogoAlt(universe);
 </script>
 
 <div class={`${size}`} data-tid="project-logo">

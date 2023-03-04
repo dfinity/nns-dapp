@@ -105,7 +105,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
 
   h3 {
     line-height: var(--line-height-standard);

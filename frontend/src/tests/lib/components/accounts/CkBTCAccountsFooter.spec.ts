@@ -21,7 +21,7 @@ describe("CkBTCAccountsFooter", () => {
     });
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
 
     icrcAccountsStore.reset();

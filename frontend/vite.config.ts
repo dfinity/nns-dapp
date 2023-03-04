@@ -30,6 +30,7 @@ const config: UserConfig = {
           if (
             [
               "frontend/src/lib/api",
+              "frontend/src/lib/api-services",
               "frontend/src/lib/canisters",
               "frontend/src/lib/constants",
               "frontend/src/lib/derived",
@@ -40,6 +41,7 @@ const config: UserConfig = {
               "frontend/src/lib/stores",
               "frontend/src/lib/types",
               "frontend/src/lib/utils",
+              "frontend/src/lib/workers",
             ].find((module) => folder.includes(module)) !== undefined
           ) {
             return "dapp";

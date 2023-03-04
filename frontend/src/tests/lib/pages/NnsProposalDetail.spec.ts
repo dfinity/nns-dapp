@@ -37,9 +37,8 @@ describe("ProposalDetail", () => {
 
   const mockLedgerCanister: MockLedgerCanister = new MockLedgerCanister();
 
-  beforeAll(silentConsoleErrors);
-
   beforeEach(() => {
+    silentConsoleErrors();
     jest.clearAllMocks();
     resetNeuronsApiService();
     jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
@@ -92,6 +91,7 @@ describe("ProposalDetail", () => {
         identity: mockIdentity,
         certified: false,
       });
+      expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(2);
     });
   });
 

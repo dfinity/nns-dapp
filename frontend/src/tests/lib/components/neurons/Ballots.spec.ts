@@ -23,9 +23,8 @@ describe("Ballots", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
-  beforeAll(silentConsoleErrors);
-
   beforeEach(() => {
+    silentConsoleErrors();
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);

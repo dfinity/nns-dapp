@@ -28,6 +28,8 @@ describe("BallotSummary", () => {
     new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
+    silentConsoleErrors();
+
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
@@ -36,8 +38,6 @@ describe("BallotSummary", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });
-
-  beforeAll(silentConsoleErrors);
 
   it("should render proposal id", async () => {
     const { queryByTestId, getByText } = render(BallotSummary, {
