@@ -7,8 +7,8 @@ import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.sv
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { CKBTC_MINTER_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
-import { numberToE8s } from "../../../../lib/utils/token.utils";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 

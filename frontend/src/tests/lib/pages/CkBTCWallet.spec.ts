@@ -16,7 +16,7 @@ import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { TransactionNetwork } from "../../../lib/types/transaction";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,

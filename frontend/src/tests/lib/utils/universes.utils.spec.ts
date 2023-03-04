@@ -10,8 +10,8 @@ import {
   pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
-import { OWN_CANISTER_ID_TEXT } from "../../../lib/constants/canister-ids.constants";
-import { universeLogoAlt } from "../../../lib/utils/universe.utils";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { universeLogoAlt } from "$lib/utils/universe.utils";
 import en from "../../mocks/i18n.mock";
 import { mockSnsFullProject, mockSummary } from "../../mocks/sns-projects.mock";
 

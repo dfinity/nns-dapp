@@ -12,8 +12,8 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
-import { convertCkBTCToBtc } from "../../../../lib/services/ckbtc-convert.services";
-import { TransactionNetwork } from "../../../../lib/types/transaction";
+import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import {
