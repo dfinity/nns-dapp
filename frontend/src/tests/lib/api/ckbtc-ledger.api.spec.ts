@@ -3,6 +3,7 @@ import {
   getCkBTCAccounts,
   getCkBTCToken,
 } from "$lib/api/ckbtc-ledger.api";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "../../mocks/auth.store.mock";
@@ -34,6 +35,7 @@ describe("ckbtc-ledger api", () => {
       const accounts = await getCkBTCAccounts({
         certified: true,
         identity: mockIdentity,
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       expect(accounts.length).toBeGreaterThan(0);
@@ -54,6 +56,7 @@ describe("ckbtc-ledger api", () => {
         getCkBTCAccounts({
           certified: true,
           identity: mockIdentity,
+          canisterId: CKBTC_LEDGER_CANISTER_ID,
         });
 
       expect(call).rejects.toThrowError();
@@ -69,6 +72,7 @@ describe("ckbtc-ledger api", () => {
       const token = await getCkBTCToken({
         certified: true,
         identity: mockIdentity,
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       expect(token).toEqual(mockSnsToken);
@@ -83,6 +87,7 @@ describe("ckbtc-ledger api", () => {
         getCkBTCToken({
           certified: true,
           identity: mockIdentity,
+          canisterId: CKBTC_LEDGER_CANISTER_ID,
         });
 
       expect(call).rejects.toThrowError();
@@ -100,6 +105,7 @@ describe("ckbtc-ledger api", () => {
         amount: BigInt(10_000_000),
         createdAt: BigInt(123456),
         fee: BigInt(10_000),
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       expect(transferSpy).toBeCalled();

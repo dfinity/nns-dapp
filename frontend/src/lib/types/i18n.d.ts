@@ -219,7 +219,9 @@ interface I18nAccounts {
   current_balance_detail: string;
   network: string;
   network_icp_ckbtc: string;
+  network_icp_cktestbtc: string;
   network_bitcoin: string;
+  network_test_bitcoin: string;
   select_network: string;
 }
 
@@ -859,8 +861,9 @@ interface I18nMetrics {
 
 interface I18nCkbtc {
   title: string;
-  ckBTC: string;
+  test_title: string;
   logo: string;
+  test_logo: string;
   receive: string;
   address: string;
   btc_receive_note: string;
@@ -877,6 +880,7 @@ interface I18nError__ckbtc {
   temporary_unavailable: string;
   get_btc_address: string;
   get_btc_no_account: string;
+  get_btc_no_universe: string;
   update_balance: string;
   withdrawal_account: string;
   retrieve_btc: string;

@@ -5,27 +5,29 @@ import {
   icrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
-import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
+import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCAccounts = async ({
   identity,
   certified,
+  canisterId,
 }: {
   identity: Identity;
   certified: boolean;
+  canisterId: Principal;
 }): Promise<Account[]> => {
   // TODO: Support subaccounts
   logWithTimestamp("Getting ckBTC accounts: call...");
 
   const {
     canister: { metadata, balance },
-  } = await ckBTCLedgerCanister({ identity });
+  } = await ckBTCLedgerCanister({ identity, canisterId });
 
   const mainAccount = await getIcrcMainAccount({
     identity,
@@ -42,15 +44,17 @@ export const getCkBTCAccounts = async ({
 export const getCkBTCToken = async ({
   identity,
   certified,
+  canisterId,
 }: {
   identity: Identity;
   certified: boolean;
+  canisterId: Principal;
 }): Promise<IcrcTokenMetadata> => {
   logWithTimestamp("Getting ckBTC token: call...");
 
   const {
     canister: { metadata: getMetadata },
-  } = await ckBTCLedgerCanister({ identity });
+  } = await ckBTCLedgerCanister({ identity, canisterId });
 
   const token = await getIcrcToken({
     certified,
@@ -64,15 +68,17 @@ export const getCkBTCToken = async ({
 
 export const ckBTCTransfer = async ({
   identity,
+  canisterId,
   ...rest
 }: {
   identity: Identity;
+  canisterId: Principal;
 } & Omit<IcrcTransferParams, "transfer">): Promise<void> => {
   logWithTimestamp("Getting ckBTC transfer: call...");
 
   const {
     canister: { transfer: transferApi },
-  } = await ckBTCLedgerCanister({ identity });
+  } = await ckBTCLedgerCanister({ identity, canisterId });
 
   await transferIcrcApi({
     ...rest,
@@ -84,8 +90,10 @@ export const ckBTCTransfer = async ({
 
 const ckBTCLedgerCanister = async ({
   identity,
+  canisterId,
 }: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<{
   canister: IcrcLedgerCanister;
   agent: HttpAgent;
@@ -97,7 +105,7 @@ const ckBTCLedgerCanister = async ({
 
   const canister = IcrcLedgerCanister.create({
     agent,
-    canisterId: CKBTC_LEDGER_CANISTER_ID,
+    canisterId,
   });
 
   return {
