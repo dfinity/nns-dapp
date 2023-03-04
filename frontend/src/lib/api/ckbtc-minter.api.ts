@@ -100,15 +100,17 @@ export const retrieveBtc = async ({
 
 export const estimateFee = async ({
   identity,
+  canisterId,
   ...params
 }: {
   identity: Identity;
+  canisterId: Principal;
 } & EstimateFeeParams): Promise<bigint> => {
   logWithTimestamp("Bitcoin estimated fee: call...");
 
   const {
     canister: { estimateFee: estimateFeeApi },
-  } = await ckBTCMinterCanister({ identity });
+  } = await ckBTCMinterCanister({ identity, canisterId });
 
   const result = await estimateFeeApi(params);
 

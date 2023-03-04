@@ -133,11 +133,13 @@ describe("ckbtc-minter-services", () => {
       await services.estimateFee({
         params,
         callback,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
       });
 
       await waitFor(() =>
         expect(spyEstimateFee).toBeCalledWith({
           identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
           ...params,
         })
       );

@@ -29,14 +29,21 @@ export const getBTCAddress = async (
 
 export const estimateFee = async ({
   params,
+  minterCanisterId,
   callback,
 }: {
   params: EstimateFeeParams;
+  minterCanisterId: CanisterId;
   callback: (fee: bigint | null) => void;
 }): Promise<void> => {
   return queryAndUpdate<bigint, unknown>({
     request: ({ certified, identity }) =>
-      estimateFeeAPI({ identity, certified, ...params }),
+      estimateFeeAPI({
+        identity,
+        certified,
+        canisterId: minterCanisterId,
+        ...params,
+      }),
     onLoad: ({ response: fee }) => callback(fee),
     onError: ({ error: err, certified }) => {
       console.error(err);

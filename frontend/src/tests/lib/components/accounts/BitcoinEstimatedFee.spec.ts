@@ -7,6 +7,7 @@ import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.sv
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { CKBTC_MINTER_CANISTER_ID } from "../../../../lib/constants/ckbtc-canister-ids.constants";
 import { numberToE8s } from "../../../../lib/utils/token.utils";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
@@ -22,9 +23,13 @@ describe("BitcoinEstimatedFee", () => {
       .mockResolvedValue(result);
   });
 
+  const props = {
+    minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+  };
+
   it("should not display estimated fee if no network selected", () => {
     const { getByTestId } = render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: undefined },
+      props: { selectedNetwork: undefined, ...props },
     });
 
     const call = () => getByTestId("bitcoin-estimated-fee");
@@ -35,7 +40,7 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should not display estimated fee if network ckBTC", () => {
     const { getByTestId } = render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.ICP_CKBTC },
+      props: { selectedNetwork: TransactionNetwork.ICP_CKBTC, ...props },
     });
 
     const call = () => getByTestId("bitcoin-estimated-fee");
@@ -46,7 +51,7 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should display estimated fee for network Bitcoin", async () => {
     const { getByTestId } = render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.BITCOIN },
+      props: { selectedNetwork: TransactionNetwork.BITCOIN, ...props },
     });
 
     await waitFor(() =>
@@ -69,7 +74,7 @@ describe("BitcoinEstimatedFee", () => {
     const amount = 456;
 
     render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.BITCOIN, amount },
+      props: { selectedNetwork: TransactionNetwork.BITCOIN, amount, ...props },
     });
 
     await waitFor(() =>
@@ -77,6 +82,7 @@ describe("BitcoinEstimatedFee", () => {
         amount: numberToE8s(amount),
         certified: false,
         identity: mockIdentity,
+        canisterId: CKBTC_MINTER_CANISTER_ID,
       })
     );
   });

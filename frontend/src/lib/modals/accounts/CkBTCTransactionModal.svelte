@@ -5,11 +5,7 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import type {
-    NewTransaction,
-    TransactionNetwork,
-    ValidateAmountFn,
-  } from "$lib/types/transaction";
+  import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
@@ -21,7 +17,6 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
-  import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
 
@@ -109,6 +104,7 @@
     slot="additional-info-form"
     {selectedNetwork}
     amount={userAmount}
+    minterCanisterId={canisters.minterCanisterId}
     bind:bitcoinEstimatedFee
   />
   <BitcoinEstimatedFeeDisplay
