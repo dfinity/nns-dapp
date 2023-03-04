@@ -7,16 +7,32 @@ import {
   sortedSnsUserNeuronsStore,
 } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockPrincipal } from "../../../mocks/auth.store.mock";
 import { createMockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import { snsResponsesFor } from "../../../mocks/sns-response.mock";
 
 describe("sortedSnsNeuronStore", () => {
-  afterEach(() => snsNeuronsStore.reset());
+  const principal2 = Principal.fromText("aaaaa-aa");
+
+  beforeEach(() => {
+    snsNeuronsStore.reset();
+    snsQueryStore.reset();
+
+    snsQueryStore.setData(
+      snsResponsesFor([
+        { principal: mockPrincipal, lifecycle: SnsSwapLifecycle.Committed },
+        { principal: principal2, lifecycle: SnsSwapLifecycle.Committed },
+      ])
+    );
+  });
+
   it("returns an empty array if no neurons", () => {
     expect(get(snsSortedNeuronStore).length).toBe(0);
   });
@@ -152,7 +168,6 @@ describe("sortedSnsNeuronStore", () => {
         created_timestamp_seconds: BigInt(3),
       },
     ];
-    const principal2 = Principal.fromText("aaaaa-aa");
     snsNeuronsStore.setNeurons({
       rootCanisterId: principal2,
       neurons: neurons2,

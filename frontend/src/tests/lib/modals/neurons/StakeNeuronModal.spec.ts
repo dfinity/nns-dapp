@@ -2,8 +2,12 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
@@ -24,7 +28,8 @@ import {
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import {
-  mockAccountsStoreSubscribe,
+  mockAccountDetails,
+  mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "../../../mocks/accounts.store.mock";
@@ -32,7 +37,13 @@ import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../../utils/timers.test-utils";
 
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 const neuronStake = 2.2;
 const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
 const newNeuron: NeuronInfo = {
@@ -64,12 +75,6 @@ jest.mock("$lib/services/known-neurons.services", () => {
   };
 });
 
-jest.mock("$lib/services/accounts.services", () => {
-  return {
-    syncAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
-
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
@@ -79,12 +84,17 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("StakeNeuronModal", () => {
+  beforeEach(() => {
+    cancelPollAccounts();
+  });
+
   describe("main account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+      accountsStore.set({
+        ...mockAccountsStoreData,
+        subAccounts: [mockSubAccount],
+      });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
@@ -94,6 +104,13 @@ describe("StakeNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     });
 
     afterEach(() => {
@@ -407,19 +424,15 @@ describe("StakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        );
+      jest.clearAllMocks();
+      neuronsStore.setNeurons({ neurons: [], certified: true });
+      accountsStore.set({
+        ...mockAccountsStoreData,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     const createNeuron = async ({
@@ -528,6 +541,74 @@ describe("StakeNeuronModal", () => {
       confirmButton && (await fireEvent.click(confirmButton));
 
       await waitFor(() => expect(updateDelay).toBeCalled());
+    });
+  });
+
+  describe("when accounts are not loaded", () => {
+    beforeEach(() => {
+      neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
+      accountsStore.reset();
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+    });
+    it("should load and then show the accounts", async () => {
+      const { queryByTestId } = await renderModal({
+        component: StakeNeuronModal,
+      });
+      expect(queryByTestId("account-card")).not.toBeInTheDocument();
+
+      // Component is rendered after the accounts are loaded
+      await waitFor(() =>
+        expect(queryByTestId("account-card")).toBeInTheDocument()
+      );
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderModal({
+        component: StakeNeuronModal,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

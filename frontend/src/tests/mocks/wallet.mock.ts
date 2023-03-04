@@ -22,6 +22,7 @@ export const renderWalletActions = ({
       contextValue: {
         store: writable<WalletStore>({
           account,
+          neurons: [],
         }),
       } as WalletContext,
       Component: component,

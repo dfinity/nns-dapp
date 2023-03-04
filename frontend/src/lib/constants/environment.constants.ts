@@ -4,6 +4,8 @@ export const DEV = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean =
   import.meta.env.VITE_FETCH_ROOT_KEY === "true";
 
+export const HOST_IC0_APP = "https://ic0.app";
+
 // TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
 // Local development needs `.raw` to avoid CORS issues for now.
 // TODO: Fix CORS issues
@@ -16,8 +18,8 @@ export interface FeatureFlags<T> {
   ENABLE_SNS_2: T;
   ENABLE_SNS_VOTING: T;
   ENABLE_SNS_AGGREGATOR: T;
-  ENABLE_CKBTC_LEDGER: T;
-  ENABLE_CKBTC_RECEIVE: T;
+  ENABLE_CKBTC: T;
+  ENABLE_CKTESTBTC: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -32,13 +34,15 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC_LEDGER": true, "ENABLE_CKBTC_RECEIVE": false}'
+    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
 );
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
-  !HOST.includes(".ic0.app");
+  !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
-// TODO: disable TVL display locally until we use the XCR canister to fetch teh ICP<>USD exchange rate and a certified endpoint to fetch the TVL
-export const ENABLE_TVL = !DEV;
+// Disable TVL or transaction rate warning locally because that information is not crucial when we develop
+export const ENABLE_METRICS = !DEV;
+
+export const FORCE_CALL_STRATEGY: "query" | undefined = "query";

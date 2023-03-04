@@ -1,5 +1,5 @@
 {
-  "dfx": "0.13.0-downgrade.1",
+  "dfx": "0.13.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -8,54 +8,8 @@
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
       "remote": {
         "id": {
-          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "nnsdapp": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small13": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small14": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "large05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium09": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "medium10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small01": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small02": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small03": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small04": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small05": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small07": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small08": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small10": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small15": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "benchmarklarge": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___benchmarklarge_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large01_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large02_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large03_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large04_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___large05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium05_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium06_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium07_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium08_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium09_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "https___medium10_testnet_dfinity_network": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "__default": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
@@ -63,13 +17,19 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "build": "./build.sh",
+      "remote": {
+        "id": {
+          "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
+        }
+      }
     },
     "internet_identity": {
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -85,54 +45,8 @@
       "type": "custom",
       "remote": {
         "id": {
-          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "testnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "nnsdapp": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small11": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small12": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small13": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "large05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium06": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium07": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium08": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "medium10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small01": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small02": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small03": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small04": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small05": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small07": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small08": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small09": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small10": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small14": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "small15": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "benchmarklarge": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___benchmarklarge_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large01_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large02_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large03_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large04_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___large05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium05_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium06_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium07_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium08_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium09_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-          "https___medium10_testnet_dfinity_network": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+          "__default": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
     },
@@ -190,14 +104,19 @@
       ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
+        }
+      }
     },
     "ckbtc_ledger": {
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-ledger.did",
-      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "candid": "target/ic/ckbtc_ledger.did",
+      "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -205,12 +124,20 @@
         }
       }
     },
+    "ckbtc_minter": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_minter.did",
+      "wasm": "target/ic/ckbtc_minter.wasm",
+      "type": "custom"
+    },
     "ckbtc_index": {
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-index.did",
-      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "candid": "target/ic/ckbtc_index.did",
+      "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
       "remote": {
         "id": {
@@ -223,20 +150,20 @@
     "mainnet": {
       "config": {
         "FETCH_ROOT_KEY": false,
-        "HOST": "https://ic0.app",
-        "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
-        "OWN_CANISTER_URL": "https://nns.ic0.app",
-        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/",
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
+        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": true,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
-        "https://ic0.app/"
+        "https://icp-api.io/"
       ],
       "type": "persistent"
     },
@@ -247,9 +174,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": true,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -265,8 +192,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -282,8 +209,8 @@
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -299,8 +226,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -316,8 +243,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -333,8 +260,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -350,8 +277,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -367,8 +294,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -391,8 +318,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -408,8 +335,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -421,12 +348,13 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "HOST": "http://localhost:8080",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "bind": "127.0.0.1:8080",
@@ -440,8 +368,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -454,8 +382,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -468,8 +396,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -482,8 +410,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -496,8 +424,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -510,8 +438,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -524,8 +452,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -538,8 +466,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -552,8 +480,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -566,8 +494,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -580,8 +508,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -594,8 +522,8 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC_LEDGER": false,
-          "ENABLE_CKBTC_RECEIVE": false
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "type": "ephemeral"
@@ -987,8 +915,9 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC_LEDGER": false
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
         }
       },
       "providers": [
@@ -1031,7 +960,7 @@
       "config": {
         "RUSTC_VERSION": "1.64.0",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "3dba201865d970cfae3414ba78da18c888e2b111"
+        "IC_COMMIT": "ced285287d5513832ba8c66fc3793e438c74b531"
       },
       "packtool": ""
     }

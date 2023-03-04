@@ -1,5 +1,6 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -11,6 +12,7 @@ import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
 import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
@@ -23,6 +25,7 @@ export const loadSnsAccounts = async ({
   handleError?: () => void;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
@@ -71,11 +74,8 @@ export const snsTransferTokens = async ({
   source,
   loadTransactions,
   ...rest
-}: {
+}: IcrcTransferTokensUserParams & {
   rootCanisterId: Principal;
-  source: Account;
-  destinationAddress: string;
-  amount: number;
   loadTransactions: boolean;
 }): Promise<{ success: boolean }> => {
   const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;

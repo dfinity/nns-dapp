@@ -56,6 +56,7 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "accounts_not_found_poll": "An error occurred while loading the accounts information. The Internet Computer seems to be under high load, please try in a few minutes.",
     "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
     "transactions_not_found": "An error occurred while loading the transactions.",
     "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
@@ -94,6 +95,7 @@
     "pub_key_not_hex_string": "$key is not a hex string.",
     "pub_key_hex_string_invalid_length": "The key must be >= 130 characters and <= 150 characters.",
     "hardware_wallet_no_account": "No hardware wallet account provided.",
+    "high_load_retrying": "The Internet Computer is experiencing high load. We'll keep retrying.",
     "canister_refund": "Sorry, the operation was not successful and the amount has been refunded.",
     "canister_creation_unknown": "Sorry, there was an error creating the canister.",
     "canister_top_up_unknown": "Sorry, there was an error adding cycles to the canister.",
@@ -101,6 +103,7 @@
     "not_canister_controller_to_update": "The current user is not the controller of the canister. Only controllers can change the settings.",
     "limit_exceeded_topping_up_canister": "Error topping up canister. ICP might have been transferred, refresh the page. Try again if not.",
     "limit_exceeded_creating_canister": "Error creating canister. Canister might be created, refresh the page. Try again if not.",
+    "limit_exceeded_getting_open_ticket": "There was an error connecting to the SNS sale. Please refresh the page.",
     "sns_loading_commited_projects": "Sorry, there was an error loading the projects.",
     "swap_not_loaded": "Sorry, there was an error loading the sale information.",
     "transaction_fee_not_found": "Sorry, there was an error loading the transaction fee.",
@@ -146,10 +149,10 @@
   "accounts": {
     "main": "Main",
     "balance": "Balance",
-    "new_transaction": "New Transaction",
+    "send": "Send",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
-    "review_action": "Review",
+    "ckbtc_transaction_description": "$token Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -182,6 +185,7 @@
     "transaction_fee": "Transaction Fee (billed to source)",
     "new_transaction_fee": "(transaction fee)",
     "review_transaction": "Review Transaction",
+    "you_are_sending": "You are sending",
     "edit_destination": "Edit Destination",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
@@ -199,11 +203,18 @@
     "current_balance_total": "Total balance: $amount $token",
     "description": "Description",
     "edit_transaction": "Edit Transaction",
-    "execute": "Execute",
+    "send_now": "Send Now",
     "select": "Select",
     "manual": "Manual",
     "no_account_select": "No accounts to select",
-    "current_balance_detail": "Current balance: $amount $token"
+    "current_balance_detail": "Current balance: $amount $token",
+    "network": "Network",
+    "network_icp_ckbtc": "Internet Computer (ckBTC)",
+    "network_icp_cktestbtc": "Internet Computer (ckTESTBTC)",
+    "network_bitcoin": "Bitcoin (BTC)",
+    "network_test_bitcoin": "Bitcoin (Test BTC)",
+    "select_network": "Select network",
+    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
   },
   "neurons": {
     "title": "Neurons",
@@ -231,7 +242,7 @@
     "source": "Source",
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
-    "may_take_while": "This may take up to one minute",
+    "may_take_while": "This may take more than a minute",
     "create": "Create",
     "change_source": "Change Source Account",
     "community_fund": "Community fund",
@@ -572,10 +583,11 @@
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
-    "total_tokens": "Total Tokens",
+    "total_tokens": "Tokens Distributed to Participants",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
+    "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
@@ -601,7 +613,18 @@
     "sale_end": "Sale End",
     "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached",
+    "getting_sns_open_ticket": "We're connecting with the SNS sale. This might take more than a minute.",
     "sign_in": "Sign in to participate"
+  },
+  "sns_sale": {
+    "participation_in_progress": "Participating in sale",
+    "step_initialization": "Connecting with sale canister",
+    "step_transfer": "Confirming ICP transfer",
+    "step_notify": "Confirming participation",
+    "step_reload": "Refreshing UI Balances",
+    "this_may_take_a_few_minutes": "This may take a few minutes",
+    "do_not_close": "Please do not close your browser tab",
+    "connecting_sale_canister": "Connecting to sale canister"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
@@ -690,6 +713,8 @@
     "load_summary": "There was an unexpected error while loading the project.",
     "list_swap_commitments": "There was an unexpected error while loading the commitments of all deployed projects.",
     "load_swap_commitment": "There was an unexpected error while loading the commitment of the project.",
+    "load_sale_total_commitments": "There was an unexpected error while loading the commitments of the project.",
+    "load_sale_lifecycle": "There was an unexpected error while loading the status of the project.",
     "load_parameters": "There was an unexpected error while loading the parameters of the project.",
     "sns_remove_hotkey": "There was an error removing the hotkey.",
     "sns_split_neuron": "There was an error while splitting the neuron.",
@@ -706,14 +731,23 @@
     "not_enough_amount": "Sorry, the amount is too small. You need a minimum of $amount ICP to participate in this sale.",
     "commitment_too_large": "Sorry, your new commitment of $newCommitment ICP is too high. You have already committed $currentCommitment ICP and the maximum is $maxCommitment ICP.",
     "commitment_exceeds_current_allowed": "Sorry, your commitment of $commitment ICP is too high. There is $remainingCommitment ICP left to reach maximum.",
-    "cannot_participate": "Sorry, There was an unexpected error while participating.",
+    "sns_sale_unexpected_error": "Sorry, There was an unexpected error while participating. Please refresh the page and try again.",
+    "sns_sale_unexpected_and_refresh": "Sorry, There was an unexpected error while participating. Please refresh and try again",
+    "sns_sale_final_error": "Sorry, there was an unexpected error connection with the SNS sale. Please reload the page and try again.",
+    "sns_sale_proceed_with_existing_ticket": "There is an existing participation started at $time. Completing that participation.",
+    "sns_sale_closed": "Sorry, the sale was already closed. Please reload the page.",
+    "sns_sale_not_open": "Sorry, the sale is not yet open. Please reload the page.",
+    "sns_sale_invalid_amount": "Can't participate with the selected amount. Please participate with a different amount ($min - $max).",
+    "sns_sale_invalid_subaccount": "Can't participate with the selected subaccount.",
+    "sns_sale_try_later": "Sorry, there was an unexpected error while participating. Please try again later.",
+    "sns_sale_committed_not_equal_to_amount": "Your total committed: $amount ICP",
     "invalid_root_canister_id": "Sorry, the project ID $canisterId is invalid.",
     "ledger_temporarily_unavailable": "Sorry, the ledger is not available at the moment. Please try again later.",
     "ledger_duplicate": "Sorry, the transaction is duplicated. Please try again.",
     "ledger_bad_fee": "Sorry, wrong transaction fee applied. Please try again.",
     "ledger_created_future": "Sorry, the transaction can't be created in the future. Please try again.",
     "ledger_too_old": "Sorry, the transaction is too old. Please try again.",
-    "ledger_unsufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
+    "ledger_insufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
     "sns_add_followee": "There was an error while adding a followee.",
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
     "sns_load_functions": "There was an error while loading the project topics.",
@@ -744,6 +778,7 @@
   },
   "universe": {
     "select_token": "Select Token",
+    "select_nervous_system": "Select Nervous System",
     "select": "Select"
   },
   "sns_rewards_status": {
@@ -775,12 +810,15 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total ICP Value Locked"
+    "tvl": "Total ICP Value Locked",
+    "nns_high_load": "NNS is under a high load.",
+    "thanks_fun": "Thanks for being part of the fun!"
   },
   "ckbtc": {
     "title": "ckBTC",
-    "ckBTC": "ckBTC",
+    "test_title": "ckTESTBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
     "address": "Address",
     "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
@@ -788,6 +826,7 @@
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
+    "btc": "BTC",
     "ckbtc_balance_updated": "Balance successfully updated."
   },
   "error__ckbtc": {
@@ -796,6 +835,14 @@
     "temporary_unavailable": "The minter is temporary unavailable.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
-    "update_balance": "Sorry, the balance cannot be updated."
+    "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",
+    "update_balance": "Sorry, the balance cannot be updated.",
+    "withdrawal_account": "Sorry, no withdrawal account can be found.",
+    "retrieve_btc": "Sorry, retrieving BTC failed.",
+    "malformed_address": "Address malformed.",
+    "amount_too_low": "Amount too low.",
+    "insufficient_funds": "Insufficient funds.",
+    "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
+    "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched."
   }
 }

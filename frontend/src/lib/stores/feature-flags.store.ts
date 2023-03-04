@@ -20,6 +20,10 @@ const assertValidFeatureFlag = (flag: FeatureKey) => {
   if (!(flag in FEATURE_FLAG_ENVIRONMENT)) {
     throw new Error(`Unknown feature flag: ${flag}`);
   }
+};
+
+const assertEditableFeatureFlag = (flag: FeatureKey) => {
+  assertValidFeatureFlag(flag);
   if (!EDITABLE_FEATURE_FLAGS.includes(flag)) {
     throw new Error(`Feature flag is not editable: ${flag}`);
   }
@@ -29,6 +33,7 @@ const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_SNS_AGGREGATOR",
   "ENABLE_SNS_2",
   "TEST_FLAG_EDITABLE",
+  "ENABLE_CKTESTBTC",
 ];
 
 /**
@@ -80,9 +85,14 @@ interface FeatureFlagsConsoleInterface
 const initSingleFeatureConsoleInterface = (
   key: FeatureKey
 ): FeatureFlagConsoleInterface => ({
-  overrideWith: (value: boolean) =>
-    overrideFeatureFlagsStore.setFlag(key, value),
-  removeOverride: () => overrideFeatureFlagsStore.removeFlag(key),
+  overrideWith: (value: boolean) => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.setFlag(key, value);
+  },
+  removeOverride: () => {
+    assertEditableFeatureFlag(key);
+    overrideFeatureFlagsStore.removeFlag(key);
+  },
 });
 
 const listFeatureFlagsToConsole = () => {
@@ -140,8 +150,8 @@ export const {
   ENABLE_SNS_2,
   ENABLE_SNS_VOTING,
   ENABLE_SNS_AGGREGATOR,
-  ENABLE_CKBTC_LEDGER,
-  ENABLE_CKBTC_RECEIVE,
+  ENABLE_CKBTC,
+  ENABLE_CKTESTBTC,
   // Used only in tests only
   TEST_FLAG_EDITABLE,
   TEST_FLAG_NOT_EDITABLE,

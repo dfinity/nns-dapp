@@ -41,7 +41,7 @@ export const secondsToDuration = (seconds: bigint): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`
@@ -83,7 +83,7 @@ export const daysToDuration = (days: number): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`
@@ -119,7 +119,7 @@ export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
     .map(
       (labelInfo) =>
         `${labelInfo.amount} ${
-          labelInfo.amount == 1
+          labelInfo.amount === 1
             ? i18nObj.time[labelInfo.labelKey]
             : i18nObj.time[`${labelInfo.labelKey}_plural`]
         }`
@@ -129,6 +129,11 @@ export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
 
 export const secondsToDateTime = (seconds: bigint): string =>
   `${secondsToDate(Number(seconds))} ${secondsToTime(Number(seconds))}`;
+
+export const nanoSecondsToDateTime = (nanoSeconds: bigint): string => {
+  const seconds = Number(nanoSeconds / BigInt(1e9));
+  return `${secondsToDate(seconds)} ${secondsToTime(seconds)}`;
+};
 
 export const secondsToDate = (seconds: number): string => {
   const options: Intl.DateTimeFormatOptions = {

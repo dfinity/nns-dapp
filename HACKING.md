@@ -133,7 +133,7 @@ The index canister does not exist yet on mainnet but, will be proposed soon. Sam
 
 ### Feature flag
 
-Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC_LEDGER` and `ENABLE_CKBTC_RECEIVE` per default. 
+Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default. 
 
 Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
 

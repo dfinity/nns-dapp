@@ -4,7 +4,7 @@
     type CyclesCallback,
     initCyclesWorker,
   } from "$lib/services/worker-cycles.services";
-  import { onDestroy } from "svelte/internal";
+  import { onDestroy } from "svelte";
   import type { CanisterSync } from "$lib/types/canister";
   import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { isNullish, nonNullish } from "@dfinity/utils";

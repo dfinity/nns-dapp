@@ -13,7 +13,12 @@ import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
@@ -27,6 +32,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
 import { clickByTestId } from "../../../utils/utils.test-utils";
+import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({
@@ -38,12 +44,14 @@ describe("TransactionModal", () => {
     }),
     rootCanisterId,
     validateAmount,
+    mustSelectNetwork = false,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
     validateAmount?: ValidateAmountFn;
+    mustSelectNetwork?: boolean;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -53,6 +61,7 @@ describe("TransactionModal", () => {
         transactionFee,
         rootCanisterId,
         validateAmount,
+        mustSelectNetwork,
       },
     });
 
@@ -77,17 +86,20 @@ describe("TransactionModal", () => {
     transactionFee,
     rootCanisterId,
     sourceAccount,
+    mustSelectNetwork = false,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
+    mustSelectNetwork?: boolean;
   }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,
       transactionFee,
       rootCanisterId,
+      mustSelectNetwork,
     });
 
     const { queryAllByText, getByTestId, container } = result;
@@ -304,6 +316,37 @@ describe("TransactionModal", () => {
     });
   });
 
+  describe("select network", () => {
+    it("should not show the select network component", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      expect(queryByTestId("select-network-dropdown")).not.toBeInTheDocument();
+    });
+
+    it("should show the select network component", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+        mustSelectNetwork: true,
+      });
+
+      expect(queryByTestId("select-network-dropdown")).toBeInTheDocument();
+    });
+
+    it("should disable next button if network not selected", async () => {
+      const call = async () =>
+        await renderEnter10ICPAndNext({
+          rootCanisterId: OWN_CANISTER_ID,
+          mustSelectNetwork: true,
+        });
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
   describe("when source account is provided", () => {
     it("should not show the select account component", async () => {
       const { queryByTestId, container } = await renderTransactionModal({
@@ -358,6 +401,23 @@ describe("TransactionModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(onSubmit).toBeCalled());
+    });
+  });
+
+  describe("progress", () => {
+    it("should got to step progress", () => {
+      const { component } = render(TransactionModalTest);
+
+      expect(component.$$.ctx[component.$$.props["currentStep"]]).toEqual({
+        name: "Progress",
+        title: "",
+      });
+    });
+
+    it("should hide close on step progress", () => {
+      const { getByTestId } = render(TransactionModalTest);
+
+      expect(() => getByTestId("close-modal")).toThrow();
     });
   });
 });

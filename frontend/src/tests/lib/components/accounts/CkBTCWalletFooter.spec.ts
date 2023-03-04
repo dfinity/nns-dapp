@@ -3,10 +3,13 @@
  */
 
 import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { tokensStore } from "../../../../lib/stores/tokens.store";
+import { page } from "../../../../../__mocks__/$app/stores";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
@@ -28,6 +31,11 @@ describe("CkBTCWalletFooter", () => {
     jest
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
   });
 
   const renderWalletActions = (account?: Account) =>

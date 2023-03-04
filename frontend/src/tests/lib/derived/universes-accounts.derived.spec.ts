@@ -1,10 +1,8 @@
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { get } from "svelte/store";
 import {
@@ -48,9 +46,12 @@ describe("universes-accounts", () => {
   });
 
   it("should derive ckBTC accounts", () => {
-    ckBTCAccountsStore.set({
-      accounts: [mockCkBTCMainAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      accounts: {
+        accounts: [mockCkBTCMainAccount],
+        certified: true,
+      },
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
     });
 
     const store = get(universesAccountsStore);
@@ -72,9 +73,12 @@ describe("universes-accounts", () => {
       certified: true,
     });
 
-    ckBTCAccountsStore.set({
-      accounts: [mockCkBTCMainAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      accounts: {
+        accounts: [mockCkBTCMainAccount],
+        certified: true,
+      },
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
     });
 
     const store = get(universesAccountsStore);

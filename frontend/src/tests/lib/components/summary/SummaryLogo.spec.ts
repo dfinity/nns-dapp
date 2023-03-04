@@ -3,10 +3,8 @@
  */
 
 import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";

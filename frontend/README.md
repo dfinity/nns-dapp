@@ -1,6 +1,6 @@
 # NNS Dapp Frontend
 
-All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
+All the pages in the [NNS dapp](https://nns.internetcomputer.org/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [SvelteKit](https://kit.svelte.dev/) and [Jest](https://jestjs.io/).
 
@@ -24,7 +24,7 @@ Every Pull Request needs unit tests.
 
 After installing the project, you can run the test suite:
 
-```
+```bash
 npm run test
 ```
 

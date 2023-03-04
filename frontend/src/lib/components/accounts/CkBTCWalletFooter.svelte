@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import {
     WALLET_CONTEXT_KEY,
     type CkBTCWalletContext,
@@ -12,13 +12,21 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import type { CkBTCWalletModal } from "../../types/wallet.modal";
-  import { ENABLE_CKBTC_RECEIVE } from "$lib/stores/feature-flags.store";
+  import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
   const { store, reloadAccount, reloadAccountFromStore }: CkBTCWalletContext =
     context;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 
   const openReceive = async () => {
     // Button is disabled if no account anyway
@@ -29,19 +37,33 @@
       return;
     }
 
+    // Button is disabled if no universe anyway
+    if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
+      });
+      return;
+    }
+
     startBusy({
       initiator: "get-btc-address",
     });
 
     try {
       // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      const btcAddress = await getBTCAddress();
+      const btcAddress = await getBTCAddress(canisters.minterCanisterId);
 
       emit<CkBTCWalletModal>({
         message: "ckBTCWalletModal",
         detail: {
           type: "ckbtc-receive",
-          data: { btcAddress, account: $store.account, reloadAccount },
+          data: {
+            btcAddress,
+            account: $store.account,
+            reloadAccount,
+            universeId: $selectedCkBTCUniverseIdStore,
+            canisters,
+          },
         },
       });
     } catch (err: unknown) {
@@ -63,30 +85,52 @@
       return;
     }
 
+    // Button is disabled if no universe anyway
+    if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
+      });
+      return;
+    }
+
     emit<CkBTCWalletModal>({
       message: "ckBTCWalletModal",
       detail: {
         type: "ckbtc-transaction",
-        data: { account: $store.account, reloadAccountFromStore },
+        data: {
+          account: $store.account,
+          reloadAccountFromStore,
+          universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
+        },
       },
     });
   };
+
+  let disableButton = true;
+  $: disableButton =
+    isNullish($store.account) ||
+    isNullish($selectedCkBTCUniverseIdStore) ||
+    isNullish(canisters);
+  $busy;
+
+  let minter = false;
+  $: minter = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);
 </script>
 
-<Footer columns={$ENABLE_CKBTC_RECEIVE ? 2 : 1}>
+<Footer columns={minter ? 2 : 1}>
   <button
     class="primary"
     on:click={openSend}
-    disabled={isNullish($store.account) || $busy}
-    data-tid="open-new-ckbtc-transaction"
-    >{$i18n.accounts.new_transaction}</button
+    disabled={disableButton}
+    data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
   >
 
-  {#if $ENABLE_CKBTC_RECEIVE}
+  {#if minter}
     <button
       class="secondary"
       on:click={openReceive}
-      disabled={isNullish($store.account) || $busy}
+      disabled={disableButton}
       data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
     >
   {/if}

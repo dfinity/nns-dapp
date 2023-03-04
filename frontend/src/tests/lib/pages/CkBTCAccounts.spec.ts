@@ -2,10 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
 import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { render, waitFor } from "@testing-library/svelte";
+import { page } from "../../../../__mocks__/$app/stores";
 import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
 import en from "../../mocks/i18n.mock";
 
@@ -20,11 +23,21 @@ describe("CkBTCAccounts", () => {
     // Do nothing
   };
 
+  beforeAll(() =>
+    page.mock({
+      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    })
+  );
+
   describe("when there are accounts in the store", () => {
     beforeAll(() => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
     });
 
@@ -55,7 +68,7 @@ describe("CkBTCAccounts", () => {
 
   describe("when no accounts", () => {
     beforeAll(() => {
-      ckBTCAccountsStore.reset();
+      icrcAccountsStore.reset();
     });
 
     it("should call load ckBTC accounts", () => {

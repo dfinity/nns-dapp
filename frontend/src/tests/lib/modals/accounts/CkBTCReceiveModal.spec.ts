@@ -5,6 +5,7 @@
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
@@ -31,6 +32,7 @@ describe("CkBTCReceiveModal", () => {
           account: mockCkBTCMainAccount,
           btcAddress: mockCkBTCAddress,
           reloadAccount: reloadAccountSpy,
+          canisters: mockCkBTCAdditionalCanisters,
         },
         qrCodeRendered: true,
       },
