@@ -12,6 +12,8 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import { convertCkBTCToBtc } from "../../../../lib/services/ckbtc-convert.services";
+import { TransactionNetwork } from "../../../../lib/types/transaction";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import {
@@ -24,6 +26,12 @@ import { testTransferTokens } from "../../../utils/transaction-modal.test.utils"
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
     ckBTCTransferTokens: jest.fn().mockResolvedValue({ success: true }),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-convert.services", () => {
+  return {
+    convertCkBTCToBtc: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -67,9 +75,23 @@ describe("CkBTCTransactionModal", () => {
   it("should transfer tokens", async () => {
     const result = await renderTransactionModal();
 
-    await testTransferTokens({ result, selectedNetwork: true });
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKBTC,
+    });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+  });
+
+  it("should convert ckBTC to Bitcoin", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BITCOIN,
+    });
+
+    await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
   });
 
   it("should not render the select account dropdown if selected account is passed", async () => {
