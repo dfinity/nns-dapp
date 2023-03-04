@@ -47,13 +47,11 @@ describe("VotingHistoryModal", () => {
   });
 
   it("should render a neuron card", async () => {
-    const { container } = render(VotingHistoryModal, {
+    const { queryByTestId } = render(VotingHistoryModal, {
       props,
     });
 
-    await waitFor(() =>
-      expect(container.querySelector("article")).not.toBeNull()
-    );
+    await waitFor(() => expect(queryByTestId("neuron-card")).not.toBeNull());
   });
 
   it("should close on error", async () => {

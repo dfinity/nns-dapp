@@ -11,8 +11,8 @@
 </footer>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   footer {
     height: var(--footer-height);

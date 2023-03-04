@@ -148,12 +148,12 @@ describe("NnsProposals", () => {
           .spyOn(neuronsStore, "subscribe")
           .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
-        const { container } = render(NnsProposals);
+        const { queryAllByTestId } = render(NnsProposals);
 
         proposalsFiltersStore.toggleExcludeVotedProposals();
 
         await waitFor(() =>
-          expect(container.querySelectorAll("article").length).toBe(
+          expect(queryAllByTestId("proposal-card").length).toBe(
             mockProposals.length - 1
           )
         );

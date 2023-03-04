@@ -51,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/form";
+  @use "@dfinity/gix-components/dist/styles/mixins/form";
   .select {
     @include form.input;
 

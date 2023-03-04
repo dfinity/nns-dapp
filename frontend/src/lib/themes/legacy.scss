@@ -2,7 +2,7 @@
  * CSS styles that override gix-components preset for the "old ui"
  */
 
-@use "@dfinity/gix-components/styles/mixins/media";
+@use "@dfinity/gix-components/dist/styles/mixins/media";
 
 main.legacy {
   margin: inherit;

@@ -20,13 +20,13 @@ const neuron = {
 
 describe("IneligibleNeuronsCard", () => {
   it("should be hidden if no neurons", () => {
-    const { container } = render(IneligibleNeuronsCard, {
+    const { queryByTestId } = render(IneligibleNeuronsCard, {
       props: {
         proposalInfo,
         neurons: [],
       },
     });
-    expect(container.querySelector("article")).not.toBeInTheDocument();
+    expect(queryByTestId("neuron-card")).not.toBeInTheDocument();
   });
 
   it("should display texts", () => {
