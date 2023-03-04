@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-  import { CanisterId } from "$lib/types/canister";
+  import type { CanisterId } from "$lib/types/canister";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;
