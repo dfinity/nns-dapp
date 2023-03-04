@@ -6,14 +6,14 @@ import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-id
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
+import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
-import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
-import { TransactionNetwork } from "$lib/types/transaction";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import {

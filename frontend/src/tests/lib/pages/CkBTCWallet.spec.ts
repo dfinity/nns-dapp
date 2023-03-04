@@ -12,11 +12,11 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { TransactionNetwork } from "$lib/types/transaction";
 import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,

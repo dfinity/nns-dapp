@@ -4,11 +4,11 @@
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-import { render, waitFor } from "@testing-library/svelte";
-import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { numberToE8s } from "$lib/utils/token.utils";
+import { render, waitFor } from "@testing-library/svelte";
 import { mockIdentity } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 
