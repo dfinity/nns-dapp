@@ -3,6 +3,10 @@ import {
   type CanisterDetails,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_MINTER_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import { Principal } from "@dfinity/principal";
@@ -57,3 +61,8 @@ export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
   details: mockCanisterDetails,
   controller: true,
 });
+
+export const mockCkBTCAdditionalCanisters = {
+  minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+  indexCanisterId: CKBTC_INDEX_CANISTER_ID,
+};

@@ -6,6 +6,7 @@ import {
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
+import type { CanisterId } from "$lib/types/canister";
 import { toastsError } from "$lib/stores/toasts.store";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
@@ -19,21 +20,23 @@ import {
 } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
-export const getBTCAddress = async (): Promise<string> => {
+export const getBTCAddress = async (
+  minterCanisterId: CanisterId
+): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
-  return getBTCAddressAPI({ identity });
+  return getBTCAddressAPI({ identity, canisterId: minterCanisterId });
 };
 
 export const estimateFee = async ({
-  params,
-  callback,
-}: {
+                                    params,
+                                    callback,
+                                  }: {
   params: EstimateFeeParams;
   callback: (fee: bigint | null) => void;
 }): Promise<void> => {
   return queryAndUpdate<bigint, unknown>({
     request: ({ certified, identity }) =>
-      estimateFeeAPI({ identity, certified, ...params }),
+        estimateFeeAPI({ identity, certified, ...params }),
     onLoad: ({ response: fee }) => callback(fee),
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -46,21 +49,23 @@ export const estimateFee = async ({
       }
 
       toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__ckbtc.estimated_fee",
-        })
+          toToastError({
+            err,
+            fallbackErrorLabelKey: "error__ckbtc.estimated_fee",
+          })
       );
     },
     logMessage: "Getting Bitcoin estimated fee",
   });
 };
 
-export const updateBalance = async (): Promise<UpdateBalanceResult> => {
+export const updateBalance = async (
+  minterCanisterId: CanisterId
+): Promise<UpdateBalanceResult> => {
   const identity = await getAuthenticatedIdentity();
 
   try {
-    return await updateBalanceAPI({ identity });
+    return await updateBalanceAPI({ identity, canisterId: minterCanisterId });
   } catch (err: unknown) {
     throwUpdateBalanceError(err);
 

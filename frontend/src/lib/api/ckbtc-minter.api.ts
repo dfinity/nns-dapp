@@ -1,5 +1,4 @@
 import { createAgent } from "$lib/api/agent.api";
-import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
@@ -12,6 +11,7 @@ import {
   type UpdateBalanceResult,
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
+import type { Principal } from "@dfinity/principal";
 
 const minterIdentityParams = ({
   identity,
@@ -28,6 +28,7 @@ const minterIdentityParams = ({
 
 export const getBTCAddress = async (params: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<string> => {
   logWithTimestamp("Getting BTC address: call...");
 
@@ -44,6 +45,7 @@ export const getBTCAddress = async (params: {
 
 export const updateBalance = async (params: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<UpdateBalanceResult> => {
   logWithTimestamp("Updating ckBTC balance: call...");
 
@@ -60,6 +62,7 @@ export const updateBalance = async (params: {
 
 export const getWithdrawalAccount = async (params: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<WithdrawalAccount> => {
   logWithTimestamp("Get ckBTC withdrawal account: call...");
 
@@ -76,15 +79,17 @@ export const getWithdrawalAccount = async (params: {
 
 export const retrieveBtc = async ({
   identity,
+  canisterId,
   ...params
 }: {
   identity: Identity;
+  canisterId: Principal;
 } & RetrieveBtcParams): Promise<RetrieveBtcOk> => {
   logWithTimestamp("Retrieve BTC: call...");
 
   const {
     canister: { retrieveBtc: retrieveBtcApi },
-  } = await ckBTCMinterCanister({ identity });
+  } = await ckBTCMinterCanister({ identity, canisterId });
 
   const result = await retrieveBtcApi(params);
 
@@ -114,8 +119,10 @@ export const estimateFee = async ({
 
 const ckBTCMinterCanister = async ({
   identity,
+  canisterId,
 }: {
   identity: Identity;
+  canisterId: Principal;
 }): Promise<{
   canister: CkBTCMinterCanister;
   agent: HttpAgent;
@@ -127,7 +134,7 @@ const ckBTCMinterCanister = async ({
 
   const canister = CkBTCMinterCanister.create({
     agent,
-    canisterId: CKBTC_MINTER_CANISTER_ID,
+    canisterId,
   });
 
   return {

@@ -25,7 +25,7 @@ export const decodePublicKey = ({
     throw new LedgerErrorKey("error__ledger.please_open");
   }
 
-  if (code == LedgerError.TransactionRejected) {
+  if (code === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey("error__ledger.locked");
   }
 

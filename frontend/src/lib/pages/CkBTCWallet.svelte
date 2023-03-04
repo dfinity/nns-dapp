@@ -10,10 +10,10 @@
     type WalletStore,
   } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { setContext } from "svelte/internal";
+  import { setContext } from "svelte";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
-  import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import {
     loadCkBTCAccounts,
     syncCkBTCAccounts,
@@ -30,6 +30,10 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -42,8 +46,12 @@
 
   // e.g. is called from "Receive" modal after user click "Done"
   const reloadAccount = async () => {
-    await loadCkBTCAccounts({});
-    await loadAccount();
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      return;
+    }
+
+    await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await loadAccount($selectedCkBTCUniverseIdStore);
   };
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
@@ -61,13 +69,18 @@
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
-        accounts: $ckBTCAccountsStore.accounts,
+        accounts: nonNullish($selectedCkBTCUniverseIdStore)
+          ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]
+              ?.accounts ?? []
+          : [],
       }),
       neurons: [],
     });
   };
 
-  const loadAccount = async (): Promise<{
+  const loadAccount = async (
+    universeId: UniverseCanisterId
+  ): Promise<{
     state: "loaded" | "not_found" | "unknown";
   }> => {
     setSelectedAccount();
@@ -78,7 +91,7 @@
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    if (hasAccounts($ckBTCAccountsStore.accounts)) {
+    if (hasAccounts($icrcAccountsStore[universeId.toText()]?.accounts ?? [])) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
@@ -94,12 +107,17 @@
 
   let loaded = false;
 
-  const loadData = async () => {
+  const loadData = async (universeId: UniverseCanisterId | undefined) => {
+    // Universe is not yet loaded
+    if (isNullish(universeId)) {
+      return;
+    }
+
     // This will display a spinner each time we search and load an account
     // It will also re-create a new component for the list of transactions which per extension will trigger fetching those
     loaded = false;
 
-    const { state } = await loadAccount();
+    const { state } = await loadAccount(universeId);
 
     // The account was loaded or was not found even though accounts are already loaded in store
     if (state !== "unknown") {
@@ -108,21 +126,30 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await syncCkBTCAccounts({});
+    await syncCkBTCAccounts({ universeId });
 
     // And finally try to set the account again
-    await loadAccount();
+    await loadAccount(universeId);
 
     loaded = true;
   };
 
-  $: accountIdentifier, (async () => await loadData())();
+  $: accountIdentifier,
+    (async () => await loadData($selectedCkBTCUniverseIdStore))();
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
-    hasAccounts($ckBTCAccountsStore.accounts) &&
-    nonNullish($ckBTCTokenFeeStore) &&
-    nonNullish($ckBTCTokenStore);
+    nonNullish($selectedCkBTCUniverseIdStore) &&
+    hasAccounts(
+      $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
+    ) &&
+    nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
+    nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 </script>
 
 <Island>
@@ -135,8 +162,12 @@
 
         <Separator />
 
-        {#if nonNullish($selectedAccountStore.account)}
-          <CkBTCTransactionsList account={$selectedAccountStore.account} />
+        {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
+          <CkBTCTransactionsList
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+            indexCanisterId={canisters.indexCanisterId}
+          />
         {/if}
       {:else}
         <Spinner />

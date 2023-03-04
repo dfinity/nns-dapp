@@ -33,8 +33,8 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
-  @use "@dfinity/gix-components/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   div {
     padding: var(--padding-2x) 0;

@@ -47,10 +47,8 @@
       return true;
     }
 
-    return (
-      $canistersStore.canisters !== undefined &&
-      $canistersStore.certified === true
-    );
+    // At the moment we load the stores with query only.
+    return $canistersStore.canisters !== undefined;
   };
 
   let canistersReady = false;
@@ -229,7 +227,7 @@
 <CanisterDetailModals />
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .actions {
     margin-bottom: var(--padding-3x);

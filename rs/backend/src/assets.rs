@@ -105,6 +105,15 @@ pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// List of content encodings supported by the assets database.
     const CONTENT_ENCODINGS: [ContentEncoding; 2] = [ContentEncoding::GZip, ContentEncoding::Identity];
+    /// List of suffix changes that may be made.
+    ///
+    /// - "" -> "" A path may be served unchanged.
+    /// - "/" -> "/index.html" Given the path to a directory, e.g, `/launchpad/`, the index for that
+    ///   directory may be returned, e.g. `/launchpad/index.html`
+    /// - "" -> "/index.html" A directory does not need a trailing slash.  E.g. `/launchpad` may
+    ///   serve `/launchpad/index.html`.  Please note that if this is done, relative URLs in
+    ///   index.html will break so be careful if using this much requested but error-prone option.
+    const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
@@ -125,16 +134,18 @@ impl Assets {
     ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
-        for (old_suffix, new_suffix) in [("/", "/index.html")] {
+        for (old_suffix, new_suffix) in Self::SUFFIX_REWRITES {
             if let Some(root) = path.strip_suffix(old_suffix) {
                 let new_path = root.to_string() + new_suffix;
-                return self.get(&new_path);
+                if let Some(asset_with_encoding) = Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
+                    self.get_with_encoding(*content_encoding, &new_path)
+                        .map(|asset| (*content_encoding, asset))
+                }) {
+                    return Some(asset_with_encoding);
+                }
             }
         }
-        Self::CONTENT_ENCODINGS.iter().find_map(|content_encoding| {
-            self.get_with_encoding(*content_encoding, path)
-                .map(|asset| (*content_encoding, asset))
-        })
+        None
     }
     /// Gets the given URL path from the assets, with the given encoding.
     fn get_with_encoding(&self, content_encoding: ContentEncoding, path: &str) -> Option<&Asset> {
@@ -163,14 +174,13 @@ impl Assets {
             // Add the directory, with trailing slash, as an alternative path.
             // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
             .flat_map(|path| {
-                if let Some(root) = path.strip_suffix("/index.html") {
-                    ["/", "/index.html"]
-                        .iter()
-                        .map(|suffix| root.to_string() + suffix)
-                        .collect::<Vec<String>>()
-                } else {
-                    vec![path]
-                }
+                Self::SUFFIX_REWRITES
+                    .iter()
+                    .filter_map(|(new_suffix, original_suffix)| {
+                        path.strip_suffix(original_suffix)
+                            .map(|root| root.to_string() + new_suffix)
+                    })
+                    .collect::<Vec<String>>()
             })
             .collect()
     }
@@ -260,6 +270,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
         "js" => Some("application/javascript"),
+        "mjs" => Some("application/javascript"),
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
@@ -269,7 +280,8 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
         "txt" => Some("text/plain"),
-        _ => None,
+        path if path == suffix => Some("text/html"), // Path has no suffix.  E.g. /launchpad
+        _ => None,                                   // Path has an unrecognised suffix.
     })
 }
 

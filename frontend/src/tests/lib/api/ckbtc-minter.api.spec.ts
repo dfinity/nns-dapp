@@ -1,11 +1,13 @@
-import { getBTCAddress, updateBalance } from "$lib/api/ckbtc-minter.api";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import mock from "jest-mock-extended/lib/Mock";
 import {
+  getBTCAddress,
   estimateFee,
   getWithdrawalAccount,
   retrieveBtc,
-} from "../../../lib/api/ckbtc-minter.api";
+  updateBalance,
+} from "$lib/api/ckbtc-minter.api";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 
@@ -20,7 +22,10 @@ describe("ckbtc-minter api", () => {
 
   afterAll(() => jest.clearAllMocks());
 
-  const params = { identity: mockIdentity };
+  const params = {
+    identity: mockIdentity,
+    canisterId: CKBTC_MINTER_CANISTER_ID,
+  };
 
   describe("getBTCAddress", () => {
     it("returns the bitcoin address", async () => {

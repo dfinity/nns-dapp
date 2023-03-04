@@ -47,7 +47,7 @@ export interface IcrcTransactionsStore
  * - reset: reset the store to an empty state.
  * - resetProject: removed the transactions for a specific project.
  */
-const initSnsTransactionsStore = (): IcrcTransactionsStore => {
+const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
   const { subscribe, update, set } = writable<IcrcTransactionsStoreData>({});
 
   return {
@@ -112,4 +112,4 @@ const initSnsTransactionsStore = (): IcrcTransactionsStore => {
   };
 };
 
-export const icrcTransactionsStore = initSnsTransactionsStore();
+export const icrcTransactionsStore = initIcrcTransactionsStore();

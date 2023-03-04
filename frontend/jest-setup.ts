@@ -34,10 +34,26 @@ jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
   GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   CYCLES_MINTING_CANISTER_ID: Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai"),
   WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+  TVL_CANISTER_ID: Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai"),
+}));
+
+jest.mock("./src/lib/constants/ckbtc-canister-ids.constants.ts", () => ({
   CKBTC_MINTER_CANISTER_ID: Principal.fromText("q3fc5-haaaa-aaaaa-aaahq-cai"),
-  CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
-  CKBTC_INDEX_CANISTER_ID: Principal.fromText("si2b5-pyaaa-aaaaa-aaaja-cai"),
-  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mc6ru-gyaaa-aaaar-qaaaq-cai"),
+  CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai"),
+  CKBTC_INDEX_CANISTER_ID: Principal.fromText("n5wcd-faaaa-aaaar-qaaea-cai"),
+  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai"),
+  CKTESTBTC_MINTER_CANISTER_ID: Principal.fromText(
+    "ml52i-qqaaa-aaaar-qaaba-cai"
+  ),
+  CKTESTBTC_LEDGER_CANISTER_ID: Principal.fromText(
+    "mc6ru-gyaaa-aaaar-qaaaq-cai"
+  ),
+  CKTESTBTC_INDEX_CANISTER_ID: Principal.fromText(
+    "mm444-5iaaa-aaaar-qaabq-cai"
+  ),
+  CKTESTBTC_UNIVERSE_CANISTER_ID: Principal.fromText(
+    "mc6ru-gyaaa-aaaar-qaaaq-cai"
+  ),
 }));
 
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
@@ -49,14 +65,16 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
     ENABLE_SNS_2: true,
     ENABLE_SNS_VOTING: true,
     ENABLE_SNS_AGGREGATOR: true,
-    ENABLE_CKBTC_LEDGER: true,
-    ENABLE_CKBTC_MINTER: true,
+    ENABLE_CKBTC: true,
+    ENABLE_CKTESTBTC: true,
     TEST_FLAG_EDITABLE: true,
     TEST_FLAG_NOT_EDITABLE: true,
   },
   SNS_AGGREGATOR_CANISTER_URL:
     "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
   STAKE_MATURITY: true,
+  ENABLE_METRICS: false,
+  FORCE_CALL_STRATEGY: undefined,
 }));
 
 global.localStorage = localStorageMock;

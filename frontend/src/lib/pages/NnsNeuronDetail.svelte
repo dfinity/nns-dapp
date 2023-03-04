@@ -65,6 +65,9 @@
     if (
       neuron === undefined &&
       $neuronsStore.neurons !== undefined &&
+      // After neuron staking the query (not certified) call can return the outdated neuron list
+      // so if the neuron is undefined it's more reliable to wait for the update call.
+      $neuronsStore.certified === true &&
       $pageStore.path === AppPath.Neuron
     ) {
       toastsError({

@@ -8,6 +8,7 @@
     initAppAuth,
     initAppPublicData,
   } from "$lib/services/$public/app.services";
+  import Warnings from "$lib/components/metrics/Warnings.svelte";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
@@ -20,6 +21,8 @@
 </script>
 
 <slot />
+
+<Warnings />
 
 <Toasts />
 <BusyScreen />

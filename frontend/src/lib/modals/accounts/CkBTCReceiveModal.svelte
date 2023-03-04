@@ -18,14 +18,19 @@
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCWalletReceiveModalData } from "$lib/types/wallet.modal";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let data: CkBTCWalletReceiveModalData;
 
+  let universeId: UniverseCanisterId;
+  let canisters: CkBTCAdditionalCanisters;
   let account: Account;
   let btcAddress: string;
   let reloadAccount: () => Promise<void>;
 
-  $: ({ account, btcAddress, reloadAccount } = data);
+  $: ({ account, btcAddress, reloadAccount, canisters, universeId } = data);
 
   let bitcoinSegmentId = Symbol();
   let ckBTCSegmentId = Symbol();
@@ -46,7 +51,16 @@
   $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
 
   let logoArialLabel: string;
-  $: logoArialLabel = bitcoin ? $i18n.ckbtc.bitcoin : $i18n.ckbtc.title;
+  $: logoArialLabel = bitcoin
+    ? $i18n.ckbtc.bitcoin
+    : isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_title
+    : $i18n.ckbtc.title;
+
+  let segmentLabel: string;
+  $: segmentLabel = isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_title
+    : $i18n.ckbtc.title;
 
   // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
   export let qrCodeRendered = false;
@@ -60,7 +74,7 @@
     });
 
     try {
-      await updateBalanceService();
+      await updateBalanceService(canisters.minterCanisterId);
 
       await reloadAccount();
 
@@ -96,8 +110,10 @@
 
   <div class="receive">
     <Segment bind:selectedSegmentId bind:this={segment}>
-      <SegmentButton segmentId={bitcoinSegmentId}>Bitcoin</SegmentButton>
-      <SegmentButton segmentId={ckBTCSegmentId}>ckBTC</SegmentButton>
+      <SegmentButton segmentId={bitcoinSegmentId}
+        >{$i18n.ckbtc.bitcoin}</SegmentButton
+      >
+      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
     </Segment>
   </div>
 
@@ -170,7 +186,7 @@
 </Modal>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .content {
     display: flex;

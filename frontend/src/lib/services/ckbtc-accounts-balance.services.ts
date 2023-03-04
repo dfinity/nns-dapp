@@ -1,23 +1,32 @@
 import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type {
+  UniverseCanisterId,
+  UniverseCanisterIdText,
+} from "$lib/types/universe";
+import { Principal } from "@dfinity/principal";
 
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
  */
-const loadCkBTCAccountsBalance = (): Promise<void> => {
+const loadCkBTCAccountsBalance = (
+  universeId: UniverseCanisterId
+): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
-      getCkBTCAccounts({ identity, certified }),
+      getCkBTCAccounts({ identity, certified, canisterId: universeId }),
     onLoad: ({ response: accounts, certified }) =>
-      ckBTCAccountsStore.set({
-        accounts,
-        certified,
+      icrcAccountsStore.set({
+        universeId,
+        accounts: {
+          accounts,
+          certified,
+        },
       }),
     onError: ({ error: err }) => {
       console.error(err);
@@ -31,13 +40,13 @@ const loadCkBTCAccountsBalance = (): Promise<void> => {
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
  */
-const loadCkBTCToken = (): Promise<void> => {
+const loadCkBTCToken = (universeId: UniverseCanisterId): Promise<void> => {
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     request: ({ certified, identity }) =>
-      getCkBTCToken({ identity, certified }),
+      getCkBTCToken({ identity, certified, canisterId: universeId }),
     onLoad: ({ response: token, certified }) =>
       tokensStore.setToken({
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        canisterId: universeId,
         token,
         certified,
       }),
@@ -55,13 +64,30 @@ const loadCkBTCToken = (): Promise<void> => {
  *
  * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when the ckBTC universe is manually selected either through the token navigation switcher or accessed directly via the browser url.
  *
- * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
+ * @param {universeIds: UniverseCanisterId[]; excludeUniverseIds: RootCanisterIdText[] | undefined} params
+ * @param {UniverseCanisterId[]} params.universeIds The ckBTC (ckBTC or ckTESTBTC) environment for which the balances should be loaded.
+ * @param {RootCanisterIdText[] | undefined} params.excludeUniverseIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
-export const uncertifiedLoadCkBTCAccountsBalance = async (): Promise<void> => {
-  const results: PromiseSettledResult<void>[] = await Promise.allSettled([
-    loadCkBTCAccountsBalance(),
-    loadCkBTCToken(),
-  ]);
+export const uncertifiedLoadCkBTCAccountsBalance = async ({
+  universeIds,
+  excludeUniverseIds = [],
+}: {
+  universeIds: UniverseCanisterIdText[];
+  excludeUniverseIds?: UniverseCanisterIdText[] | undefined;
+}): Promise<void> => {
+  const results: PromiseSettledResult<[void, void]>[] =
+    await Promise.allSettled(
+      (
+        universeIds.filter(
+          (universeId) => !excludeUniverseIds.includes(universeId)
+        ) ?? []
+      ).map((universeId) =>
+        Promise.all([
+          loadCkBTCAccountsBalance(Principal.fromText(universeId)),
+          loadCkBTCToken(Principal.fromText(universeId)),
+        ])
+      )
+    );
 
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;

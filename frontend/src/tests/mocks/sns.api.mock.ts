@@ -37,6 +37,10 @@ export const swapCanisterIdMock: Principal = Principal.fromText(
   "kuwf5-5qaaa-aaaaa-aacqq-cai"
 );
 
+export const indexCanisterIdMock: Principal = Principal.fromText(
+  "pin7y-wyaaa-aaaaa-aacpa-cai"
+);
+
 export const snsMock: [string, Principal, SnsCanisterStatus][] = [
   ["root", rootCanisterIdMock, {} as unknown as SnsCanisterStatus],
   ["ledger", ledgerCanisterIdMock, {} as unknown as SnsCanisterStatus],

@@ -3,6 +3,8 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import type { NewTransaction } from "$lib/types/transaction";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import type {
     NewTransaction,
     TransactionNetwork,
@@ -12,10 +14,13 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
   import type { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
   import { ENABLE_CKBTC_MINTER } from "$lib/stores/feature-flags.store";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
@@ -23,6 +28,8 @@
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
 
+  export let canisters: CkBTCAdditionalCanisters;
+  export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
@@ -38,6 +45,7 @@
       : $i18n.accounts.you_are_sending;
 
   const dispatcher = createEventDispatcher();
+
   const transfer = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
@@ -45,15 +53,22 @@
       initiator: "accounts",
     });
 
-    // TODO: if selectedNetwork === bitcoin then convertCkBTCToBtc
-    // else ckBTCTransferTokens
-
-    const { success } = await ckBTCTransferTokens({
-      source: sourceAccount,
-      destinationAddress,
-      amount,
-      loadTransactions,
-    });
+    const { success } = await (selectedNetwork === TransactionNetwork.BITCOIN
+      ? convertCkBTCToBtc({
+          source: sourceAccount,
+          destinationAddress,
+          amount,
+          universeId,
+          canisters,
+        })
+      : ckBTCTransferTokens({
+          source: sourceAccount,
+          destinationAddress,
+          amount,
+          loadTransactions,
+          universeId,
+          indexCanisterId: canisters.indexCanisterId,
+        }));
 
     stopBusy("accounts");
 
@@ -73,14 +88,14 @@
 </script>
 
 <TransactionModal
-  rootCanisterId={CKBTC_UNIVERSE_CANISTER_ID}
+  rootCanisterId={universeId}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
   {token}
   {transactionFee}
   sourceAccount={selectedAccount}
-  mustSelectNetwork={$ENABLE_CKBTC_MINTER}
+  mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
   bind:selectedNetwork
   {validateAmount}
 >

@@ -3,7 +3,13 @@
  */
 
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import * as toastsStore from "$lib/stores/toasts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import {
   decodeIcrcAccount,
@@ -11,12 +17,8 @@ import {
   IcrcLedgerCanister,
 } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
-import { convertCkBTCToBtc } from "../../../lib/services/ckbtc-convert.services";
-import { loadCkBTCAccountTransactions } from "../../../lib/services/ckbtc-transactions.services";
-import { tokensStore } from "../../../lib/stores/tokens.store";
-import { nowInBigIntNanoSeconds } from "../../../lib/utils/date.utils";
-import { numberToE8s } from "../../../lib/utils/token.utils";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockCkBTCAdditionalCanisters } from "../../mocks/canisters.mock";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
@@ -37,6 +39,8 @@ describe("ckbtc-convert-services", () => {
     source: mockCkBTCMainAccount,
     destinationAddress: mockCkBTCAddress,
     amount: 1,
+    universeId: CKBTC_UNIVERSE_CANISTER_ID,
+    canisters: mockCkBTCAdditionalCanisters,
   };
 
   const convert = async () => await convertCkBTCToBtc(params);
