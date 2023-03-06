@@ -185,6 +185,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         35 => identity::<UpdateAllowedPrincipalsRequest>(payload_bytes),
         36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
+        38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -588,6 +589,18 @@ mod def {
             }
         }
     }
+
+    // NNS function 38 - UpdateElectedReplicaVersions
+    /// The payload of a proposal to update elected replica versions.
+    // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
+    pub type UpdateElectedReplicaVersionsPayload = registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
+    /**
+      release_package_urls : vec text;
+      replica_versions_to_unelect : vec text;
+      replica_version_to_elect : opt text;
+      guest_launch_measurement_sha256_hex : opt text;
+      release_package_sha256_hex : opt text;
+     */
 }
 
 #[cfg(test)]
