@@ -3,14 +3,11 @@ import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
-import {
-  BtcNetwork,
-  parseBtcAddress,
-} from "../../../../../ic-js/packages/ckbtc/src";
 
 /*
  * Returns the principal's main or hardware account
@@ -35,16 +32,10 @@ export const getAccountByPrincipal = ({
 
 /**
  * Is the address a valid entry to proceed with converting to Bitcoin?
- *
- * Note: as for `invalidAddress`, undefined is considered here as a valid address
  */
-export const invalidBtcAddress = (address: string | undefined): boolean => {
-  if (isNullish(address)) {
-    return true;
-  }
-
+export const invalidBtcAddress = (address: BtcAddress): boolean => {
   try {
-    parseBtcAddress({ address, network: BtcNetwork.Mainnet });
+    parseBtcAddress(address);
   } catch (_: unknown) {
     return true;
   }

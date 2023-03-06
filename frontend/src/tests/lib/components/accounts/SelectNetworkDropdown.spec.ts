@@ -44,10 +44,12 @@ describe("SelectNetworkDropdown", () => {
   it("should display an option to select bitcoin", () => {
     const { container } = render(SelectNetworkDropdown, props);
 
-    const option = container.querySelector("option[value='network_bitcoin']");
+    const option = container.querySelector(
+      "option[value='network_btc_mainnet']"
+    );
 
     expect(option).not.toBeNull();
-    expect(option.innerHTML).toEqual(en.accounts.network_bitcoin);
+    expect(option.innerHTML).toEqual(en.accounts.network_btc_mainnet);
   });
 
   it("should bind select to selected network", async () => {

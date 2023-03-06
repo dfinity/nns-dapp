@@ -15,7 +15,10 @@
 
   // TODO: if the fee is ultimately used no where else we can probably move the loading in parent modal component
   const loadEstimatedFee = async () => {
-    if (selectedNetwork !== TransactionNetwork.BITCOIN) {
+    if (
+      selectedNetwork !== TransactionNetwork.BTC_MAINNET &&
+      selectedNetwork !== TransactionNetwork.BTC_TESTNET
+    ) {
       bitcoinEstimatedFee = null;
       return;
     }

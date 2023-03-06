@@ -5,6 +5,7 @@
 
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { TransactionNetwork } from "$lib/types/transaction";
+  import { BtcNetwork } from "@dfinity/ckbtc";
 
   export let address = "";
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
@@ -14,19 +15,26 @@
   const showErrorIfAny = () => {
     showError =
       address.length > 0 &&
-      (selectedNetwork === TransactionNetwork.BITCOIN
-        ? invalidBtcAddress(address)
+      (selectedNetwork === TransactionNetwork.BTC_MAINNET ||
+      selectedNetwork === TransactionNetwork.BTC_TESTNET
+        ? invalidBtcAddress({
+            address,
+            network:
+              selectedNetwork === TransactionNetwork.BTC_TESTNET
+                ? BtcNetwork.Testnet
+                : BtcNetwork.Mainnet,
+          })
         : invalidAddress(address));
   };
   // Hide error on change
   $: address, (showError = false);
 
   const onBlur = () => {
-      showErrorIfAny();
-      dispatcher("nnsBlur");
-  }
+    showErrorIfAny();
+    dispatcher("nnsBlur");
+  };
 
-  $: selectedNetwork, (() => showErrorIfAny())()
+  $: selectedNetwork, (() => showErrorIfAny())();
 </script>
 
 <InputWithError

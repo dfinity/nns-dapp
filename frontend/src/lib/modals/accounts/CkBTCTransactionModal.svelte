@@ -48,7 +48,8 @@
       initiator: "accounts",
     });
 
-    const { success } = await (selectedNetwork === TransactionNetwork.BITCOIN
+    const { success } = await (selectedNetwork ===
+    TransactionNetwork.BTC_MAINNET
       ? convertCkBTCToBtc({
           source: sourceAccount,
           destinationAddress,
