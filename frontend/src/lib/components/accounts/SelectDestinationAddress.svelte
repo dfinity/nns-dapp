@@ -4,7 +4,7 @@
   import {
     getAccountByRootCanister,
     getAccountsByRootCanister,
-    invalidAddress,
+    invalidICPOrIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
@@ -27,7 +27,7 @@
   });
   let address: string;
   $: {
-    if (!invalidAddress(address)) {
+    if (!invalidICPOrIcrcAddress(address)) {
       selectedDestinationAddress = address;
     }
     // Keep in sync the selected destination address

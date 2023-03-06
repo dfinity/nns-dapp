@@ -2,8 +2,9 @@ import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
-import { parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
+import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -33,7 +34,7 @@ export const getAccountByPrincipal = ({
 /**
  * Is the address a valid entry to proceed with converting to Bitcoin?
  */
-export const invalidBtcAddress = (address: BtcAddress): boolean => {
+const invalidBtcAddress = (address: BtcAddress): boolean => {
   try {
     parseBtcAddress(address);
   } catch (_: unknown) {
@@ -48,7 +49,35 @@ export const invalidBtcAddress = (address: BtcAddress): boolean => {
  *
  * Note: undefined is considered here as a valid address
  */
-export const invalidAddress = (address: string | undefined): boolean => {
+export const invalidAddress = ({
+  address,
+  selectedNetwork,
+}: {
+  address: string | undefined;
+  selectedNetwork: TransactionNetwork | undefined;
+}): boolean => {
+  if (isNullish(address)) {
+    return true;
+  }
+
+  switch (selectedNetwork) {
+    case TransactionNetwork.BTC_MAINNET:
+    case TransactionNetwork.BTC_TESTNET:
+      return invalidBtcAddress({
+        address,
+        network:
+          selectedNetwork === TransactionNetwork.BTC_TESTNET
+            ? BtcNetwork.Testnet
+            : BtcNetwork.Mainnet,
+      });
+    default:
+      return invalidICPOrIcrcAddress(address);
+  }
+};
+
+export const invalidICPOrIcrcAddress = (
+  address: string | undefined
+): boolean => {
   if (isNullish(address)) {
     return true;
   }
