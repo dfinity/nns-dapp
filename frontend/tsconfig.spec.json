@@ -10,6 +10,8 @@
     "sourceMap": true,
     "strict": false,
     "paths": {
+      "$foo": ["src/tests"],
+      "$foo/*": ["src/tests/*"],
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$routes": ["src/routes"],

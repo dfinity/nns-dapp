@@ -29,7 +29,7 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
+} from "$foo/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
