@@ -52,20 +52,20 @@ const invalidBtcAddress = (address: BtcAddress): boolean => {
  */
 export const invalidAddress = ({
   address,
-  selectedNetwork,
+  network,
 }: {
   address: string | undefined;
-  selectedNetwork: TransactionNetwork | undefined;
+  network: TransactionNetwork | undefined;
 }): boolean => {
   if (isNullish(address)) {
     return true;
   }
 
-  if (isTransactionNetworkBtc(selectedNetwork)) {
+  if (isTransactionNetworkBtc(network)) {
     return invalidBtcAddress({
       address,
       network:
-        selectedNetwork === TransactionNetwork.BTC_TESTNET
+        network === TransactionNetwork.BTC_TESTNET
           ? BtcNetwork.Testnet
           : BtcNetwork.Mainnet,
     });

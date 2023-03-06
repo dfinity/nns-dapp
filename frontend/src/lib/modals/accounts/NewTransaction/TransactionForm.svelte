@@ -64,7 +64,10 @@
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
-    invalidAddress({ address: selectedDestinationAddress, selectedNetwork }) ||
+    invalidAddress({
+      address: selectedDestinationAddress,
+      network: selectedNetwork,
+    }) ||
     errorMessage !== undefined ||
     (mustSelectNetwork && isNullish(selectedNetwork));
 

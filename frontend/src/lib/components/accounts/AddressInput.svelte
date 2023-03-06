@@ -13,7 +13,8 @@
   const dispatcher = createEventDispatcher();
   const showErrorIfAny = () => {
     showError =
-      address.length > 0 && invalidAddress({ address, selectedNetwork });
+      address.length > 0 &&
+      invalidAddress({ address, network: selectedNetwork });
   };
   // Hide error on change
   $: address, (showError = false);
