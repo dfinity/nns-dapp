@@ -12,7 +12,6 @@ import {
 } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import type { SnsSwapCommitment } from "$lib/types/sns";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -67,11 +66,6 @@ describe("ProjectDetail", () => {
             certified: true,
           })
         );
-        // snsSwapCommitmentsStore.setSwapCommitment({
-        //   swapCommitment:
-        //     mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        //   certified: true,
-        // });
       });
 
       it("should start watching derived state", async () => {
@@ -129,17 +123,13 @@ describe("ProjectDetail", () => {
       it("should render info section", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
-        );
+        expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
       });
 
       it("should render status section", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
-        );
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
       });
     });
 
@@ -154,15 +144,17 @@ describe("ProjectDetail", () => {
       });
 
       it("should not start watching derived state", async () => {
-        render(ProjectDetail, props);
+        const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() => expect(watchSnsTotalCommitment).not.toBeCalled());
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsTotalCommitment).not.toBeCalled();
       });
 
       it("should not start watching metrics", async () => {
-        render(ProjectDetail, props);
+        const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() => expect(watchSnsMetrics).not.toBeCalled());
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsMetrics).not.toBeCalled();
       });
     });
   });
@@ -185,11 +177,6 @@ describe("ProjectDetail", () => {
             certified: true,
           })
         );
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment:
-            mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-          certified: true,
-        });
       });
 
       it("should start watching derived state", async () => {
@@ -241,23 +228,20 @@ describe("ProjectDetail", () => {
             certified: true,
           })
         );
-        snsSwapCommitmentsStore.setSwapCommitment({
-          swapCommitment:
-            mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-          certified: true,
-        });
       });
 
       it("should not start watching derived state", async () => {
-        render(ProjectDetail, props);
+        const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() => expect(watchSnsTotalCommitment).not.toBeCalled());
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsTotalCommitment).not.toBeCalled();
       });
 
       it("should not start watching metrics", async () => {
-        render(ProjectDetail, props);
+        const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() => expect(watchSnsMetrics).not.toBeCalled());
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsMetrics).not.toBeCalled();
       });
 
       it("should load user's commitment", async () => {
