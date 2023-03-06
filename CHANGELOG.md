@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXX
+* Enable sns stake maturity.
+* Enable update calls.
+* Optimize project calls.
+* Minor text updates and fixes.
+
 ## Proposal 110588
 * "high-load" warning fix.
 
