@@ -594,13 +594,6 @@ mod def {
     /// The payload of a proposal to update elected replica versions.
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
     pub type UpdateElectedReplicaVersionsPayload = registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
-    /**
-      release_package_urls : vec text;
-      replica_versions_to_unelect : vec text;
-      replica_version_to_elect : opt text;
-      guest_launch_measurement_sha256_hex : opt text;
-      release_package_sha256_hex : opt text;
-     */
 }
 
 #[cfg(test)]
