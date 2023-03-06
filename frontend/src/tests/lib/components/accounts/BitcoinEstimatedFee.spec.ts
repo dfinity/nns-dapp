@@ -51,7 +51,7 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should display estimated fee for network Bitcoin", async () => {
     const { getByTestId } = render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.BITCOIN, ...props },
+      props: { selectedNetwork: TransactionNetwork.BTC_MAINNET, ...props },
     });
 
     await waitFor(() =>
@@ -74,7 +74,7 @@ describe("BitcoinEstimatedFee", () => {
     const amount = 456;
 
     render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.BITCOIN, amount, ...props },
+      props: { selectedNetwork: TransactionNetwork.BTC_MAINNET, amount, ...props },
     });
 
     await waitFor(() =>

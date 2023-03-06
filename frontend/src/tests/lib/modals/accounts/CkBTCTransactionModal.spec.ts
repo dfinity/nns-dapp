@@ -88,7 +88,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.BITCOIN,
+      selectedNetwork: TransactionNetwork.BTC_MAINNET,
     });
 
     await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
