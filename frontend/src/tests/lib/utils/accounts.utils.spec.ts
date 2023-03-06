@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { TransactionNetwork } from "$lib/types/transaction";
 import {
   accountName,
   assertEnoughAccountFunds,
@@ -20,7 +21,6 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { TransactionNetwork } from "$lib/types/transaction";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
