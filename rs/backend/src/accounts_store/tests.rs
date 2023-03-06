@@ -1313,7 +1313,7 @@ fn decode_into_restored_fields_of_mptp_after_rollback() {
         Candid::from_bytes(bytes).map(|c| c.0);
 
     // This fails, showing that we need special logic to make rollbacks safe.
-    assert_eq!(old_mptp_result.err().unwrap().starts_with("Fail to decode"), true);
+    assert!(old_mptp_result.err().unwrap().starts_with("Fail to decode"));
 }
 
 #[test]

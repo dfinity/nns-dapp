@@ -26,9 +26,11 @@ pub struct MultiPartTransactionsProcessorWithRemovedFields {
 
 impl MultiPartTransactionsProcessorWithRemovedFields {
     pub fn from(mptp: &MultiPartTransactionsProcessor) -> MultiPartTransactionsProcessorWithRemovedFields {
-        let mut result = MultiPartTransactionsProcessorWithRemovedFields::default();
-        result.queue = mptp.queue.clone();
-        result
+        MultiPartTransactionsProcessorWithRemovedFields {
+            queue: mptp.queue.clone(),
+            statuses: BTreeMap::default(),
+            errors: VecDeque::default(),
+        }
     }
 }
 
