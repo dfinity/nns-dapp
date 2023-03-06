@@ -959,7 +959,7 @@
     "build": {
       "config": {
         "RUSTC_VERSION": "1.64.0",
-	"NODE_VERSION": "18.14.2",
+        "NODE_VERSION": "18.14.2",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IC_COMMIT": "ced285287d5513832ba8c66fc3793e438c74b531"
       },
