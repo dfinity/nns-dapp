@@ -1,19 +1,19 @@
 import { SkeletonCardPo } from "./SkeletonCard.page-object";
 
-const tid = "sns-neuron-detail-component";
-
 export class SnsNeuronDetailPo {
+  static readonly tid = "sns-neuron-detail-component";
+
   root: Element;
 
   constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== tid) {
+    if (root.getAttribute("data-tid") !== SnsNeuronDetailPo.tid) {
       throw new Error(`${root} is not an SnsNeuronDetail`);
     }
     this.root = root;
   }
 
   static under(element: Element): SnsNeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${tid}]`);
+    const el = element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`);
     return el && new SnsNeuronDetailPo(el);
   }
 
