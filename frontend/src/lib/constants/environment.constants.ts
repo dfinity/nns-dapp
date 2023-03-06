@@ -45,4 +45,4 @@ export const IS_TESTNET: boolean =
 // Disable TVL or transaction rate warning locally because that information is not crucial when we develop
 export const ENABLE_METRICS = !DEV;
 
-export const FORCE_CALL_STRATEGY: "query" | undefined = "query";
+export const FORCE_CALL_STRATEGY: "query" | undefined = undefined;
