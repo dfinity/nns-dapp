@@ -27,7 +27,7 @@ COPY dfx.json dfx.json
 ARG rust_version=1.64.0
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
-RUN printf "%s" "$NODE_VERSION" > config/node_version
+RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN printf "%s" "$rust_version" > config/rust_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 

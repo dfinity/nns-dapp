@@ -70,7 +70,7 @@ jobs:
         run: |
           dfx-sns-demo-install
       - name: Get node version
-        run: perl -e 'while($_ = <>){if (s/.*(NODE_VERSION=)/\1/){ print $_}}' Dockerfile >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
