@@ -1,5 +1,6 @@
 import type { CachedSns } from "$lib/api/sns-aggregator.api";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 
 export const aggregatorTokenMock: IcrcTokenMetadata = {
   name: "Community Fund Demo",
@@ -88,7 +89,7 @@ export const aggregatorSnsMock: CachedSns = {
   },
   swap_state: {
     swap: {
-      lifecycle: 3,
+      lifecycle: SnsSwapLifecycle.Committed,
       decentralization_sale_open_timestamp_seconds: [BigInt(1234)],
       finalize_swap_in_progress: [false],
       buyers: [],
@@ -144,3 +145,24 @@ export const aggregatorSnsMock: CachedSns = {
   ],
   icrc1_fee: aggregatorTokenMock.fee,
 };
+
+export const aggregatorSnsMockWith = ({
+  rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
+  lifecycle = SnsSwapLifecycle.Committed,
+}: {
+  rootCanisterId: string;
+  lifecycle: SnsSwapLifecycle;
+}): CachedSns => ({
+  ...aggregatorSnsMock,
+  canister_ids: {
+    ...aggregatorSnsMock.canister_ids,
+    root_canister_id: rootCanisterId,
+  },
+  swap_state: {
+    ...aggregatorSnsMock.swap_state,
+    swap: {
+      ...aggregatorSnsMock.swap_state.swap,
+      lifecycle,
+    },
+  },
+});

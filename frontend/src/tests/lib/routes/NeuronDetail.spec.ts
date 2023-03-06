@@ -3,6 +3,7 @@
  */
 
 import * as governanceApi from "$lib/api/governance.api";
+import * as snsAggregatorApi from "$lib/api/sns-aggregator.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as snsApi from "$lib/api/sns.api";
@@ -17,20 +18,22 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { mockNeuron } from "../../mocks/neurons.mock";
+import { aggregatorSnsMockWith } from "../../mocks/sns-aggregator.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "../../mocks/sns-neurons.mock";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
 import { NeuronDetailPo } from "../../page-objects/NeuronDetail.page-object";
 import { blockAllCallsTo } from "../../utils/module.test-utils";
 
+jest.mock("$lib/api/sns-aggregator.api");
 jest.mock("$lib/api/governance.api");
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/api/sns-ledger.api");
 jest.mock("$lib/api/sns.api");
 
 const blockedApiPaths = [
+  "$lib/api/sns-aggregator.api",
   "$lib/api/governance.api",
   "$lib/api/sns.api",
   "$lib/api/sns-ledger.api",
@@ -79,12 +82,12 @@ describe("NeuronDetail", () => {
 
   describe("sns neuron", () => {
     beforeEach(() => {
-      const [metadata, swapStates] = snsResponseFor({
-        principal: testSnsCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      });
-      jest.mocked(snsApi.queryAllSnsMetadata).mockResolvedValue(metadata);
-      jest.mocked(snsApi.querySnsSwapStates).mockResolvedValue(swapStates);
+      jest.mocked(snsAggregatorApi.querySnsProjects).mockResolvedValue([
+        aggregatorSnsMockWith({
+          rootCanisterId: testSnsCanisterId.toText(),
+          lifecycle: SnsSwapLifecycle.Committed,
+        }),
+      ]);
       jest
         .mocked(snsGovernanceApi.nervousSystemParameters)
         .mockResolvedValue(snsNervousSystemParametersMock);
