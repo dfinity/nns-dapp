@@ -84,7 +84,7 @@ export const resetNeuronsApiService = () => {
   clearCache();
 };
 
-export const neuronsApiService = {
+export const governanceApiService = {
   // Read calls
   queryKnownNeurons(params: ApiQueryParams) {
     return queryKnownNeurons(params);

@@ -1,4 +1,4 @@
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import {
   DEFAULT_TRANSACTION_FEE_E8S,
