@@ -375,7 +375,7 @@ describe("vote-registration-services", () => {
       });
     };
 
-    beforeAll(() => {
+    beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation(jest.fn);
     });
 
@@ -496,7 +496,7 @@ describe("vote-registration-services", () => {
   });
 
   describe("identity errors", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation(jest.fn);
       setNoIdentity();
     });

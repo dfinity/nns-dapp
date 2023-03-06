@@ -4,7 +4,7 @@
   import type { AuthStore } from "$lib/stores/auth.store";
   import { initAuthWorker } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
-  import { toastsReset } from "$lib/stores/toasts.store";
+  import { toastsClean } from "$lib/stores/toasts.store";
 
   let ready = false;
 
@@ -29,7 +29,7 @@
     // We reset the toast to clear any previous messages.
     // This is notably user-friendly in case of the user would have been sign-out automatically - session duration expired.
     // That way user does not have to manually close previous message.
-    toastsReset();
+    toastsClean();
 
     // Load app global stores data
     await initAppPrivateDataProxy();
@@ -48,7 +48,7 @@
 <slot />
 
 <style lang="scss" global>
-  @import "@dfinity/gix-components/styles/global.scss";
+  @import "@dfinity/gix-components/dist/styles/global.scss";
   @import "../lib/themes/legacy";
   @import "../lib/themes/global";
   @import "../lib/themes/variables";

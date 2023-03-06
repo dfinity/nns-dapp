@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   importInitSnsWrapper,
@@ -9,20 +11,24 @@ import {
 } from "$lib/proxy/api.import.proxy";
 import * as accountsServices from "$lib/services/accounts.services";
 import {
-  getOpenTicket,
   initiateSnsSaleParticipation,
+  loadOpenTicket,
   newSaleTicket,
   participateInSnsSale,
+  restoreSnsSaleParticipation,
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
+import * as busyStore from "$lib/stores/busy.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
   InsufficientFundsError,
-  LedgerCanister,
   TokenAmount,
   TransferError,
   TxCreatedInFutureError,
@@ -34,15 +40,13 @@ import { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
+  SnsSwapCanister,
   SnsSwapGetOpenTicketError,
   SnsSwapLifecycle,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import type { SnsTicket } from "../../../lib/types/sns";
-import { nanoSecondsToDateTime } from "../../../lib/utils/date.utils";
-import { formatToken } from "../../../lib/utils/token.utils";
+import { get } from "svelte/store";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
@@ -65,6 +69,10 @@ import {
   swapCanisterIdMock,
 } from "../../mocks/sns.api.mock";
 import { snsTicketMock } from "../../mocks/sns.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -72,6 +80,12 @@ jest.mock("$lib/api/agent.api", () => {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
 });
+
+jest.mock("$lib/constants/sns.constants", () => ({
+  SALE_PARTICIPATION_RETRY_SECONDS: 1,
+}));
+
+jest.mock("$lib/api/ledger.api");
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
@@ -87,28 +101,41 @@ describe("sns-api", () => {
     ],
   };
 
-  const spyOnNotifyParticipation = jest.fn().mockResolvedValue({
-    icp_accepted_participation_e8s: 666n,
-  });
+  const spyOnSendICP = jest.spyOn(ledgerApi, "sendICP");
+  const spyOnNotifyParticipation = jest.fn();
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
-  const ledgerCanisterMock = mock<LedgerCanister>();
-  const nnsDappMock = mock<NNSDappCanister>();
-  const testTicket = snsTicketMock({
-    rootCanisterId: rootCanisterIdMock,
+  const testRootCanisterId = rootCanisterIdMock;
+  const testSnsTicket = snsTicketMock({
+    rootCanisterId: testRootCanisterId,
     owner: mockPrincipal,
   });
-  const spyOnGetOpenTicketApi = jest.fn();
+  const testTicket = testSnsTicket.ticket;
+  const snsSwapCanister = mock<SnsSwapCanister>();
   const spyOnNewSaleTicketApi = jest.fn();
-  // const spyOnValidParticipation = jest.spyOn(projectsUtils, "validParticipation");
+  const spyOnNotifyPaymentFailureApi = jest.fn();
+  const ticketFromStore = (rootCanisterId = testRootCanisterId) =>
+    get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
-    spyOnToastsShow.mockClear();
-    spyOnToastsError.mockClear();
+    spyOnSendICP.mockReset();
+    spyOnSendICP.mockReset();
+    spyOnNotifyParticipation.mockReset();
+    spyOnToastsShow.mockReset();
+    spyOnToastsSuccess.mockReset();
+    spyOnToastsError.mockReset();
+    snsSwapCanister.getOpenTicket.mockReset();
+    spyOnNewSaleTicketApi.mockReset();
+    spyOnNotifyPaymentFailureApi.mockReset();
+
+    jest.useFakeTimers();
     jest.clearAllMocks();
 
-    spyOnGetOpenTicketApi.mockResolvedValue(testTicket.ticket);
-    spyOnNewSaleTicketApi.mockResolvedValue(testTicket.ticket);
+    snsTicketsStore.reset();
+
+    spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
+    spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
 
@@ -118,16 +145,12 @@ describe("sns-api", () => {
       mockProjectSubscribe([
         {
           ...mockSnsFullProject,
-          rootCanisterId: testTicket.rootCanisterId,
+          rootCanisterId: testSnsTicket.rootCanisterId,
         },
       ])
     );
 
-    const ledgerMock = mock<LedgerCanister>();
-    ledgerMock.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    jest.spyOn(LedgerCanister, "create").mockReturnValue(ledgerMock);
-
-    ledgerCanisterMock.transfer.mockResolvedValue(13n);
+    spyOnSendICP.mockResolvedValue(13n);
 
     snsQueryStore.setData(
       snsResponsesForLifecycle({
@@ -142,10 +165,6 @@ describe("sns-api", () => {
       certified: true,
     });
 
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
-
     (importSnsWasmCanister as jest.Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
@@ -153,6 +172,9 @@ describe("sns-api", () => {
       }),
     });
 
+    spyOnNotifyParticipation.mockResolvedValue({
+      icp_accepted_participation_e8s: 666n,
+    });
     (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
@@ -165,91 +187,354 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: spyOnNotifyParticipation,
-        getOpenTicket: spyOnGetOpenTicketApi,
         newSaleTicket: spyOnNewSaleTicketApi,
+        notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
       })
     );
+
+    // `getOpenTicket` is mocked from the SnsSwapCanister not the wrapper
+    jest
+      .spyOn(SnsSwapCanister, "create")
+      .mockImplementation((): SnsSwapCanister => snsSwapCanister);
 
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-
-    nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
-    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
   });
 
-  describe("getOpenTicket", () => {
-    it("should return a ticket", async () => {
-      const result = await getOpenTicket({
-        rootCanisterId: testTicket.rootCanisterId,
-        certified: true,
-      });
-
-      expect(spyOnGetOpenTicketApi).toBeCalled();
-      expect(result).toEqual(testTicket);
+  describe("loadOpenTicket", () => {
+    beforeEach(() => {
+      snsTicketsStore.reset();
     });
 
-    it("should display already closed error", async () => {
-      spyOnGetOpenTicketApi.mockRejectedValue(
-        new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
-      );
-
-      const result = await getOpenTicket({
-        rootCanisterId: testTicket.rootCanisterId,
-        certified: true,
+    describe("when polling is enabled", () => {
+      beforeEach(() => {
+        jest.clearAllTimers();
+        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
+        const now = Date.now();
+        jest.useFakeTimers().setSystemTime(now);
       });
 
-      expect(result).toBeUndefined();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_closed",
-        })
-      );
+      it("should call api and load ticket in the store", async () => {
+        snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
+        expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
+          testTicket
+        );
+      });
+
+      it("should retry until gets an open ticket", async () => {
+        // Success in the fourth attempt
+        const callsUntilSuccess = 4;
+        snsSwapCanister.getOpenTicket
+          .mockRejectedValueOnce(new Error("network error"))
+          .mockRejectedValueOnce(new Error("network error"))
+          .mockRejectedValueOnce(new Error("network error"))
+          .mockResolvedValue(testSnsTicket.ticket);
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        while (expectedCalls < callsUntilSuccess) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toEqual(
+          testTicket
+        );
+      });
+
+      it("should stop retrying after max attempts and set ticket to null", async () => {
+        const maxAttempts = 10;
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        while (expectedCalls < maxAttempts) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+
+        // Even after waiting a long time, there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        expect(ticketFromStore(testSnsTicket.rootCanisterId).ticket).toBeNull();
+      });
+
+      it("should call api once if error is known", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(1);
+      });
+
+      it("should set store to `null` on closed error", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(
+          ticketFromStore(testSnsTicket.rootCanisterId)?.ticket
+        ).toBeNull();
+      });
+
+      it("should show error on closed", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_SALE_CLOSED)
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_closed",
+          })
+        );
+      });
+
+      it("should set store to `null` on unspecified type error", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(
+          ticketFromStore(testSnsTicket.rootCanisterId)?.ticket
+        ).toBeNull();
+      });
+
+      it("should show error on unspecified type error", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_final_error",
+          })
+        );
+      });
+
+      it("should set store to `null` on not open error", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(
+            GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN
+          )
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(
+          ticketFromStore(testSnsTicket.rootCanisterId)?.ticket
+        ).toBeNull();
+      });
+
+      it("should show error on not open error", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new SnsSwapGetOpenTicketError(
+            GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN
+          )
+        );
+
+        await loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+        });
+
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_not_open",
+          })
+        );
+      });
+
+      it("should show 'high load' toast after 6 failures", async () => {
+        const maxAttempts = 10;
+        const expectFailuresBeforeToast = 6;
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        while (expectedCalls < expectFailuresBeforeToast) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+          if (expectedCalls < expectFailuresBeforeToast) {
+            expect(spyOnToastsError).not.toBeCalled();
+          }
+        }
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(
+          expectFailuresBeforeToast
+        );
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error.high_load_retrying",
+          })
+        );
+      });
     });
 
-    it("should display unexpected error on not_closed error", async () => {
-      spyOnGetOpenTicketApi.mockRejectedValue(
-        new SnsSwapGetOpenTicketError(GetOpenTicketErrorType.TYPE_UNSPECIFIED)
-      );
-
-      spyOnGetOpenTicketApi.mockRejectedValue({
-        errorType: GetOpenTicketErrorType.TYPE_SALE_NOT_OPEN,
+    describe("when disabling polling", () => {
+      beforeEach(() => {
+        jest.clearAllTimers();
+        const now = Date.now();
+        jest.useFakeTimers().setSystemTime(now);
       });
 
-      const result = await getOpenTicket({
-        rootCanisterId: testTicket.rootCanisterId,
-        certified: true,
-      });
+      it("should stop retrying", async () => {
+        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts: 10,
+        });
 
-      expect(result).toBeUndefined();
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
-        })
-      );
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+        // disablePolling works through shouldExit which is only called after a
+        // failure, so after we disablePolling, it will stop polling only after
+        // 1 more failure.
+        snsTicketsStore.disablePolling(testSnsTicket.rootCanisterId);
+        expectedCalls += 1;
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        // Even after waiting a long time, there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+      });
     });
   });
 
   describe("newSaleTicket", () => {
-    it("should create newSaleTicket", async () => {
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+    beforeEach(() => {
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
+    it("should call newSaleTicket api", async () => {
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(result).toEqual(testTicket);
     });
 
-    it("should display sale-closed error", async () => {
+    it("should add new ticket to the store", async () => {
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(ticketFromStore()?.ticket).toEqual(testTicket);
+    });
+
+    it("should handle sale-closed error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED,
         })
       );
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
@@ -259,35 +544,36 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_closed",
         })
       );
-      expect(result).toBeUndefined();
+      expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
     it("should reuse the ticket from the ticket-exist error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS,
-          existingTicket: testTicket.ticket,
+          existingTicket: testSnsTicket.ticket,
         })
       );
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
       expect(spyOnNewSaleTicketApi).toBeCalled();
-      expect(spyOnToastsShow).toBeCalledWith(
+      expect(spyOnToastsError).toBeCalledTimes(1);
+      expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_proceed_with_existing_ticket",
           substitutions: {
-            $time: nanoSecondsToDateTime(testTicket.ticket.creation_time),
+            $time: nanoSecondsToDateTime(testSnsTicket.ticket.creation_time),
           },
         })
       );
-      expect(result).toEqual(testTicket);
+      expect(ticketFromStore()?.ticket).toEqual(testTicket);
     });
 
-    it("should display invalid user amount error", async () => {
+    it("should handle invalid user amount error", async () => {
       const min_amount_icp_e8s_included = 123n;
       const max_amount_icp_e8s_included = 321n;
       spyOnNewSaleTicketApi.mockRejectedValue(
@@ -300,8 +586,8 @@ describe("sns-api", () => {
         })
       );
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
@@ -315,18 +601,18 @@ describe("sns-api", () => {
           },
         })
       );
-      expect(result).toBeUndefined();
+      expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display invalid sub-account error", async () => {
+    it("should handle invalid sub-account error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_INVALID_SUBACCOUNT,
         })
       );
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
@@ -336,18 +622,18 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_invalid_subaccount",
         })
       );
-      expect(result).toBeUndefined();
+      expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display retry later error", async () => {
+    it("should handle retry later error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
           errorType: NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED,
         })
       );
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      await newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
@@ -357,33 +643,157 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_try_later",
         })
       );
-      expect(result).toBeUndefined();
+      expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
-    it("should display unknown error for all other error types", async () => {
-      spyOnNewSaleTicketApi.mockRejectedValue(
-        new SnsSwapNewTicketError({
-          errorType: "dummy type" as unknown as NewSaleTicketResponseErrorType,
-        })
-      );
+    it("should retry unknown errors until successful", async () => {
+      // Success on the 4th try
+      const callsUntilSuccess = 4;
+      spyOnNewSaleTicketApi
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockResolvedValue(testSnsTicket.ticket);
 
-      const result = await newSaleTicket({
-        rootCanisterId: testTicket.rootCanisterId,
+      newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
-      expect(spyOnNewSaleTicketApi).toBeCalled();
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < callsUntilSuccess) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+      }
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+    });
+
+    it("should retry unknown errors until known error", async () => {
+      // Known error on the 4th try
+      const callsUntilKnownError = 4;
+      spyOnNewSaleTicketApi
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValueOnce(new Error("connection error"))
+        .mockRejectedValue(
+          new SnsSwapNewTicketError({
+            errorType: NewSaleTicketResponseErrorType.TYPE_UNSPECIFIED,
+          })
+        );
+
+      newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < callsUntilKnownError) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+      }
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+    });
+
+    it("should show 'high load' toast after 6 failures", async () => {
+      const expectFailuresBeforeToast = 6;
+      spyOnNewSaleTicketApi.mockRejectedValue(new Error("network error"));
+      newSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(expectFailuresBeforeToast);
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
+          labelKey: "error.high_load_retrying",
         })
       );
-      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("restoreSnsSaleParticipation", () => {
+    it("should perform successful participation flow if open ticket", async () => {
+      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      await restoreSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(spyOnSendICP).toBeCalledTimes(1);
+      expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(updateProgressSpy).toBeCalledTimes(4);
+
+      // null after ready
+      expect(ticketFromStore().ticket).toEqual(null);
+      // no errors
+      expect(spyOnToastsError).not.toBeCalled();
+    });
+
+    it("should not start flow if no open tickeet", async () => {
+      snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+      const startBusySpy = jest
+        .spyOn(busyStore, "startBusy")
+        .mockImplementation(jest.fn());
+
+      await restoreSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(startBusySpy).not.toBeCalled();
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(postprocessSpy).not.toBeCalled();
+      expect(updateProgressSpy).not.toBeCalled();
+      expect(ticketFromStore().ticket).toEqual(null);
     });
   });
 
   describe("initiateSnsSaleParticipation", () => {
-    it("It should create and return a ticket", async () => {
+    it("should start successful participation flow", async () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
@@ -391,23 +801,41 @@ describe("sns-api", () => {
           token: ICPToken,
         }),
       };
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
-      const result = await initiateSnsSaleParticipation({
+      await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
           amount: 1,
           token: ICPToken,
         }),
         account,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
       });
 
-      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledWith(
         expect.objectContaining({
           amount_icp_e8s: 100000000n,
         })
       );
-      expect(result).toEqual(testTicket);
+      expect(spyOnSendICP).toBeCalledTimes(1);
+      expect(postprocessSpy).toBeCalledTimes(1);
+      // All step progress including done
+      expect(updateProgressSpy).toBeCalledTimes(5);
+      // null after ready
+      expect(ticketFromStore().ticket).toEqual(null);
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "sns_project_detail.participate_success",
+        })
+      );
+      // no errors
+      expect(spyOnToastsError).not.toBeCalled();
     });
 
     it("should handle errors", async () => {
@@ -424,39 +852,176 @@ describe("sns-api", () => {
         }),
       };
 
-      const result = await initiateSnsSaleParticipation({
+      await initiateSnsSaleParticipation({
         rootCanisterId: rootCanisterIdMock,
         amount: TokenAmount.fromNumber({
           amount: 1,
           token: ICPToken,
         }),
         account,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNewSaleTicketApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
-      expect(result).toBeUndefined();
+      // null after ready
+      expect(ticketFromStore().ticket).toEqual(null);
     });
   });
 
   describe("participateInSnsSale", () => {
-    it("should participateInSnsSale", async () => {
-      nnsDappMock.addPendingNotifySwap.mockResolvedValue(undefined);
-      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
-
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+    beforeEach(() => {
+      jest.clearAllTimers();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+    });
+    it("should call postprocess and APIs", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
       });
       const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
-      expect(nnsDappMock.addPendingNotifySwap).toBeCalledTimes(1);
-      expect(ledgerCanisterMock.transfer).toBeCalledTimes(1);
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      expect(spyOnSendICP).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnSyncAccounts).toBeCalledTimes(1);
-      expect(result).toEqual({ success: true, retry: false });
+      expect(ticketFromStore().ticket).toEqual(null);
+      expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(upgradeProgressSpy).toBeCalledTimes(4);
+    });
+
+    it("should poll refresh_buyer_tokens until successful", async () => {
+      // Success on the fourth try
+      const callsUntilSuccess = 4;
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      const accountBalanceError = new Error(
+        "Error calling method 'account_balance_pb'..."
+      );
+      spyOnNotifyParticipation
+        .mockRejectedValueOnce(accountBalanceError)
+        .mockRejectedValueOnce(accountBalanceError)
+        .mockRejectedValueOnce(accountBalanceError)
+        .mockResolvedValue({
+          icp_accepted_participation_e8s: 666n,
+        });
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < callsUntilSuccess) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+      }
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+      expect(ticketFromStore().ticket).toEqual(null);
+
+      expect(spyOnSendICP).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
+      expect(postprocessSpy).toBeCalledTimes(1);
+
+      // All steps called
+      expect(upgradeProgressSpy).toBeCalledTimes(4);
+    });
+
+    it("should show error if known error is thrown", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation.mockRejectedValue(
+        new Error(
+          "The token amount can only be refreshed when the canister is in the OPEN state"
+        )
+      );
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+
+      const retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+
+      expect(spyOnSendICP).toBeCalledTimes(1);
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
+      expect(postprocessSpy).not.toBeCalled();
+
+      // Initialization and transfer steps
+      expect(updateProgressSpy).toBeCalledTimes(2);
+    });
+
+    it("should do nothing if there is no ticket (important for auto retry feature)", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(spyOnSendICP).not.toBeCalled();
+      expect(spyOnNotifyParticipation).not.toBeCalled();
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
+      expect(spyOnSyncAccounts).not.toBeCalled();
+      expect(postprocessSpy).not.toBeCalled();
+      expect(updateProgressSpy).not.toBeCalled();
     });
 
     it("should display an error in case the ticket principal not equals to the current identity", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
       // corrupt the current identity principal
       jest.spyOn(authStore, "subscribe").mockImplementation((run) => {
         run({
@@ -468,102 +1033,218 @@ describe("sns-api", () => {
         return () => undefined;
       });
 
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
         })
       );
+      // do not enable the UI
+      expect(ticketFromStore().ticket).not.toEqual(null);
     });
 
-    it("should display transfer api errors", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(new TransferError("test"));
+    it("should poll transfer during unknown issues or TxCreatedInFutureError", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+      // Success on the fourth try
+      const callsUntilSuccess = 4;
+      spyOnSendICP
+        .mockRejectedValueOnce(new Error("Connection error"))
+        .mockRejectedValueOnce(
+          new TxCreatedInFutureError("Created in future error")
+        )
+        .mockRejectedValueOnce(new Error("Connection error"))
+        .mockResolvedValue(13n);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < callsUntilSuccess) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+      }
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyOnSendICP).toBeCalledTimes(callsUntilSuccess);
+
+      expect(ticketFromStore().ticket).toBeNull();
+      expect(postprocessSpy).toBeCalledTimes(1);
+      // All steps completed
+      expect(updateProgressSpy).toBeCalledTimes(4);
+    });
+
+    it("should display transfer api unknown errors", async () => {
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnSendICP.mockRejectedValue(new TransferError("test"));
+
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_unexpected_error",
         })
       );
+      expect(ticketFromStore().ticket).toEqual(null);
     });
 
     it("should display InsufficientFundsError errors", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(
-        new InsufficientFundsError(0n)
-      );
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnSendICP.mockRejectedValue(new InsufficientFundsError(0n));
 
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(result).toEqual({ success: false, retry: false });
+      expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({
           labelKey: "error__sns.ledger_insufficient_funds",
         })
       );
+      expect(ticketFromStore().ticket).toEqual(null);
+      expect(spyOnToastsSuccess).not.toBeCalled();
     });
 
-    it("should display TooOldError errors", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(new TxTooOldError(0));
+    describe("TooOldError", () => {
+      it("should succeed when no errors on notify participation", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
+        spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
 
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+        await participateInSnsSale({
+          rootCanisterId: testRootCanisterId,
+          userCommitment: 0n,
+          postprocess: jest.fn().mockResolvedValue(undefined),
+          updateProgress: jest.fn().mockResolvedValue(undefined),
+        });
+
+        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
+        expect(spyOnToastsError).not.toBeCalled();
+        expect(spyOnToastsSuccess).toBeCalledTimes(1);
+        expect(spyOnToastsSuccess).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "sns_project_detail.participate_success",
+          })
+        );
+        // to enable the button/increase_participation
+        expect(ticketFromStore().ticket).toEqual(null);
       });
 
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(result).toEqual({ success: false, retry: false });
-      expect(spyOnToastsError).toBeCalledWith(
-        expect.objectContaining({
-          labelKey: "error__sns.ledger_too_old",
-        })
-      );
+      it("should handle refresh_buyer_tokens internal errors and manually remove the ticket", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
+        spyOnNotifyParticipation.mockRejectedValue(
+          new Error(
+            "The token amount can only be refreshed when the canister is in the OPEN state"
+          )
+        );
+        spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
+
+        await participateInSnsSale({
+          rootCanisterId: testRootCanisterId,
+          userCommitment: 0n,
+          postprocess: jest.fn().mockResolvedValue(undefined),
+          updateProgress: jest.fn().mockResolvedValue(undefined),
+        });
+
+        expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+        expect(spyOnNotifyPaymentFailureApi).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledTimes(1);
+        expect(spyOnToastsError).toBeCalledWith(
+          expect.objectContaining({
+            labelKey: "error__sns.sns_sale_unexpected_and_refresh",
+          })
+        );
+        expect(spyOnToastsSuccess).not.toBeCalled();
+        // the button/increase_participation should not be enabled
+        expect(ticketFromStore().ticket).not.toBeNull();
+      });
     });
 
     it("should ignore Duplicate error", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(new TxDuplicateError(0n));
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnSendICP.mockRejectedValue(new TxDuplicateError(0n));
 
       expect(spyOnToastsError).not.toBeCalled();
 
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnNotifyParticipation).toBeCalled();
       expect(spyOnToastsError).not.toBeCalled();
-      expect(result).toEqual({ success: true, retry: false });
-    });
-
-    it("should set retry flag on CreatedInFuture error", async () => {
-      ledgerCanisterMock.transfer.mockRejectedValue(
-        new TxCreatedInFutureError()
-      );
-
-      expect(spyOnToastsError).not.toBeCalled();
-
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
-      });
-
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnToastsError).not.toBeCalled();
-      expect(result).toEqual({ success: false, retry: true });
+      expect(ticketFromStore().ticket).toEqual(null);
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 100n,
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 1n,
+        },
+      });
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
       expect(spyOnToastsShow).toBeCalledWith(
@@ -572,38 +1253,139 @@ describe("sns-api", () => {
           labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         })
       );
-      expect(result).toEqual({ success: true, retry: false });
+      expect(ticketFromStore().ticket).toEqual(null);
     });
 
-    it("should display participateInSnsSale errors", async () => {
-      spyOnNotifyParticipation.mockRejectedValue(new Error());
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+    it("should not display a waring when current_committed = ticket.amount", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 1n,
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 1n,
+        },
+      });
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
-      expect(spyOnToastsError).toBeCalledWith(
+      expect(spyOnToastsShow).not.toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
+          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         })
       );
-      expect(result).toEqual({ success: false, retry: false });
     });
 
-    it("should display addPendingNotifySwap errors", async () => {
-      nnsDappMock.addPendingNotifySwap.mockRejectedValue(new Error("test"));
-      jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
-
-      spyOnNotifyParticipation.mockRejectedValue(new Error());
-      const result = await participateInSnsSale({
-        ticket: testTicket as Required<SnsTicket>,
+    it("should not display a waring when current_committed = ticket.amount for increase participation", async () => {
+      spyOnNotifyParticipation.mockResolvedValue({
+        icp_accepted_participation_e8s: 10n,
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: {
+          ...testTicket,
+          amount_icp_e8s: 3n,
+        },
+      });
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 7n,
+        postprocess: jest.fn().mockResolvedValue(undefined),
+        updateProgress: jest.fn().mockResolvedValue(undefined),
       });
 
-      expect(spyOnToastsError).toBeCalledWith(
+      expect(spyOnToastsShow).not.toBeCalledWith(
         expect.objectContaining({
-          labelKey: "error__sns.sns_sale_unexpected_error",
+          labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         })
       );
-      expect(result).toEqual({ success: false, retry: false });
+    });
+
+    it("should show 'high load' toast after 6 failures", async () => {
+      const expectFailuresBeforeToast = 6;
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnNotifyParticipation.mockRejectedValue(new Error("network error"));
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnNotifyParticipation).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnNotifyParticipation).toBeCalledTimes(
+        expectFailuresBeforeToast
+      );
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error.high_load_retrying",
+        })
+      );
+    });
+
+    it("transfer should show 'high load' toast after 6 failures", async () => {
+      const expectFailuresBeforeToast = 6;
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: testTicket,
+      });
+      spyOnSendICP.mockRejectedValue(new Error("network error"));
+      jest.spyOn(accountsServices, "syncAccounts");
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+      while (expectedCalls < expectFailuresBeforeToast) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyOnSendICP).toBeCalledTimes(expectedCalls);
+
+        if (expectedCalls < expectFailuresBeforeToast) {
+          expect(spyOnToastsError).not.toBeCalled();
+        }
+      }
+      expect(spyOnSendICP).toBeCalledTimes(expectFailuresBeforeToast);
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error.high_load_retrying",
+        })
+      );
     });
   });
 });

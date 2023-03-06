@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Spinner, busy } from "@dfinity/gix-components";
-  import { onDestroy, setContext } from "svelte/internal";
+  import { onDestroy, setContext } from "svelte";
   import { writable, type Unsubscriber } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";

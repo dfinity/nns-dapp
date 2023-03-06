@@ -68,6 +68,27 @@ export const transactionFee = async ({
   return fee;
 };
 
+export const queryAccountBalance = async ({
+  accountIdentifier,
+  identity,
+  certified,
+}: {
+  certified: boolean;
+  identity: Identity;
+  accountIdentifier: string;
+}) => {
+  logWithTimestamp(`Get account balance call...`);
+  const { canister } = await ledgerCanister({ identity });
+
+  const e8sBalance = await canister.accountBalance({
+    accountIdentifier: AccountIdentifier.fromHex(accountIdentifier),
+    certified,
+  });
+
+  logWithTimestamp(`Get account balance complete`);
+  return e8sBalance;
+};
+
 export const ledgerCanister = async ({
   identity,
 }: {

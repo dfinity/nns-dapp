@@ -1,48 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { onDestroy } from "svelte/internal";
-  import {
-    type MetricsCallback,
-    initMetricsWorker,
-  } from "$lib/services/$public/worker-metrics.services";
-  import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { i18n } from "$lib/stores/i18n";
   import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
 
-  let worker:
-    | {
-        startMetricsTimer: (params: { callback: MetricsCallback }) => void;
-        stopMetricsTimer: () => void;
-      }
-    | undefined;
-
-  onMount(async () => {
-    worker = await initMetricsWorker();
-
-    worker?.startMetricsTimer({
-      callback: syncMetrics,
-    });
-  });
-  onDestroy(() => worker?.stopMetricsTimer());
-
-  const syncMetrics = ({ metrics: data }: PostMessageDataResponse) =>
-    metricsStore.set(data);
-
-  let totalNeurons: number | undefined;
-  $: totalNeurons =
-    ($metricsStore?.dissolvingNeurons?.totalDissolvingNeurons ?? 0) +
-    ($metricsStore?.dissolvingNeurons?.totalNotDissolvingNeurons ?? 0);
-
   let total: number | undefined;
-  $: total =
-    ((totalNeurons ?? 0) / E8S_PER_ICP) *
-    Number($metricsStore?.avgPrice?.price ?? "0");
+  $: total = Number($metricsStore?.tvl?.tvl ?? "0");
 
   const format = (n: number): string =>
     formatNumber(n, {
@@ -64,8 +30,8 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/fonts";
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .tvl {
     display: inline-block;

@@ -12,7 +12,9 @@
 # with `dfx deploy nns-dapp` and it replace the provided canister.
 
 set -euo pipefail
-cd "$(dirname "$0")/.."
+
+top_dir=$(git rev-parse --show-toplevel)
+cd "$top_dir"
 
 bash_version=$(/usr/bin/env bash -c "echo \${BASH_VERSION}")
 bash_major_version=$(/usr/bin/env bash -c "echo \${BASH_VERSINFO[0]}")
@@ -36,6 +38,7 @@ need() {
 need dfx
 need jq
 need npm
+need node
 
 if ! pgrep icx-proxy >/dev/null; then
   echo "You need a local replica."
@@ -67,6 +70,7 @@ sed -e "s@null@${nns_dapp_canister_id}@" frontend/.env-with-null >frontend/.env
 rm frontend/.env-with-null
 
 local_ids=".dfx/local/canister_ids.json"
+mkdir -p "$(dirname "$local_ids")"
 if ! [ -f "$local_ids" ]; then
   echo "{
   \"nns-dapp\": {

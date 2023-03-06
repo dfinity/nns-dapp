@@ -1,5 +1,6 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,
   SnsSwapDerivedState,
@@ -21,8 +22,57 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
       swap.decentralization_sale_open_timestamp_seconds
     ),
     params: [{ ...swap.params }],
+
+    next_ticket_id: [],
+    purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+    purge_old_tickets_next_principal: [],
   },
 ];
+
+export const snsResponseFor = ({
+  principal,
+  lifecycle,
+  certified = false,
+}: {
+  principal: Principal;
+  lifecycle: SnsSwapLifecycle;
+  certified?: boolean;
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
+  [
+    {
+      ...mockQueryMetadata,
+      rootCanisterId: principal.toText(),
+      certified,
+    },
+  ],
+  [
+    {
+      rootCanisterId: principal.toText(),
+      swapCanisterId: swapCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
+      derived: [mockDerived] as [SnsSwapDerivedState],
+      certified,
+    },
+  ],
+];
+
+const mergeSnsResponses = (
+  responses: [QuerySnsMetadata[], QuerySnsSwapState[]][]
+): [QuerySnsMetadata[], QuerySnsSwapState[]] => {
+  const metadata = responses.flatMap(([meta, _]) => meta);
+  const swapState = responses.flatMap(([_, state]) => state);
+  return [metadata, swapState];
+};
+
+export const snsResponsesFor = (
+  params: {
+    principal: Principal;
+    lifecycle: SnsSwapLifecycle;
+    certified?: boolean;
+  }[]
+): [QuerySnsMetadata[], QuerySnsSwapState[]] =>
+  mergeSnsResponses(params.map(snsResponseFor));
 
 export const snsResponsesForLifecycle = ({
   certified = false,
@@ -30,22 +80,13 @@ export const snsResponsesForLifecycle = ({
 }: {
   lifecycles: SnsSwapLifecycle[];
   certified?: boolean;
-}): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
-  [
-    ...lifecycles.map((lifecycle, i) => ({
-      ...mockQueryMetadata,
-      rootCanisterId: principal(i).toText(),
-      certified,
-    })),
-  ],
-  [
-    ...lifecycles.map((lifecycle, i) => ({
-      rootCanisterId: principal(i).toText(),
-      swapCanisterId: swapCanisterIdMock,
-      governanceCanisterId: governanceCanisterIdMock,
-      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
-      derived: [mockDerived] as [SnsSwapDerivedState],
-      certified,
-    })),
-  ],
-];
+}): [QuerySnsMetadata[], QuerySnsSwapState[]] =>
+  mergeSnsResponses(
+    lifecycles.map((lifecycle, i) =>
+      snsResponseFor({
+        principal: principal(i),
+        lifecycle,
+        certified,
+      })
+    )
+  );

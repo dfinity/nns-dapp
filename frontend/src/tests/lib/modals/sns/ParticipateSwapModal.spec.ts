@@ -2,30 +2,44 @@
  * @jest-environment jsdom
  */
 
-import ParticipateSwapModal from "$lib/modals/sns/SwapModal/ParticipateSwapModal.svelte";
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
   type ProjectDetailContext,
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
-import type { SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import { AccountIdentifier } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 import {
-  mockAccountsStoreSubscribe,
+  mockAccountDetails,
+  mockAccountsStoreData,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../../mocks/sns.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../../utils/timers.test-utils";
 
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 jest.mock("$lib/services/sns.services", () => {
   return {
     initiateSnsSaleParticipation: jest
@@ -39,28 +53,17 @@ jest.mock("$lib/services/sns.services", () => {
   };
 });
 
-const ticket: SnsTicket | undefined = snsTicketMock({
-  rootCanisterId: rootCanisterIdMock,
-  owner: rootCanisterIdMock,
-});
 jest.mock("$lib/services/sns-sale.services", () => ({
-  getOpenTicket: jest
-    .fn()
-    .mockImplementation(() =>
-      Promise.resolve({ ...ticket, ticket: undefined })
-    ),
-  initiateSnsSaleParticipation: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve(ticket)),
-  participateInSnsSale: jest.fn().mockResolvedValue({ success: true }),
+  initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 describe("ParticipateSwapModal", () => {
-  beforeAll(() =>
+  beforeEach(() => {
+    cancelPollAccounts();
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
 
   const reload = jest.fn();
   const renderSwapModal = (
@@ -106,23 +109,16 @@ describe("ParticipateSwapModal", () => {
     return result;
   };
 
-  beforeEach(() => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
-  });
-
-  describe("when user has not participated", () => {
-    it("should move to the last step with ICP and disabled button", async () => {
-      const { getByTestId } = await renderEnter10ICPAndNext();
-
-      const confirmButton = getByTestId("transaction-button-execute");
-      expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+  describe("when accounts are available", () => {
+    beforeEach(() => {
+      accountsStore.reset();
+      accountsStore.set(mockAccountsStoreData);
     });
 
-    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-      const { getByTestId, container } = await renderEnter10ICPAndNext();
-
+    const participate = async ({
+      getByTestId,
+      container,
+    }: RenderResult<SvelteComponent>) => {
       const confirmButton = getByTestId("transaction-button-execute");
       expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
 
@@ -133,14 +129,33 @@ describe("ParticipateSwapModal", () => {
       );
 
       fireEvent.click(confirmButton);
+    };
+
+    it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
-      await waitFor(() => expect(reload).toHaveBeenCalled());
+    });
+
+    it("should render progress when participating", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const result = await renderEnter10ICPAndNext();
+
+      await participate(result);
+
+      await waitFor(
+        expect(result.getByTestId("sale-in-progress-warning")).not.toBeNull
+      );
     });
   });
 
   describe("when user has participated", () => {
     it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
       const { getByTestId, container } = await renderEnter10ICPAndNext(
         mockSnsFullProject.swapCommitment
       );
@@ -157,36 +172,153 @@ describe("ParticipateSwapModal", () => {
       fireEvent.click(confirmButton);
 
       await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
-      await waitFor(() => expect(reload).toHaveBeenCalled());
     });
   });
 
   describe("when swapCommitment is empty", () => {
-    const renderSwapModal = () =>
-      renderModalContextWrapper({
-        Component: ParticipateSwapModal,
-        contextKey: PROJECT_DETAIL_CONTEXT_KEY,
-        contextValue: {
-          store: writable<ProjectDetailStore>({
-            summary: mockSnsFullProject.summary,
-            swapCommitment: undefined,
-          }),
-          reload,
-        } as ProjectDetailContext,
+    describe("when user has not participated", () => {
+      it("should move to the last step with ICP and disabled button", async () => {
+        const { getByTestId } = await renderEnter10ICPAndNext();
+
+        const confirmButton = getByTestId("transaction-button-execute");
+        expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
       });
-    it("should have disabled button if no swap commitment is present", async () => {
-      const { getByTestId, container } = await renderSwapModal();
 
+      it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+        snsTicketsStore.setNoTicket(rootCanisterIdMock);
+        const { getByTestId, container } = await renderEnter10ICPAndNext();
+
+        const confirmButton = getByTestId("transaction-button-execute");
+        expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+
+        const acceptInput = container.querySelector("[type='checkbox']");
+        acceptInput && (await fireEvent.click(acceptInput));
+        await waitFor(() =>
+          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        );
+
+        fireEvent.click(confirmButton);
+
+        await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
+      });
+    });
+
+    describe("when user has participated", () => {
+      it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
+        snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+        const { getByTestId, container } = await renderEnter10ICPAndNext(
+          mockSnsFullProject.swapCommitment
+        );
+
+        const confirmButton = getByTestId("transaction-button-execute");
+        expect(confirmButton?.hasAttribute("disabled")).toBeTruthy();
+
+        const acceptInput = container.querySelector("[type='checkbox']");
+        acceptInput && (await fireEvent.click(acceptInput));
+        await waitFor(() =>
+          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        );
+
+        fireEvent.click(confirmButton);
+
+        await waitFor(() => expect(initiateSnsSaleParticipation).toBeCalled());
+      });
+
+      it("should have disabled button if no swap commitment is present", async () => {
+        const { getByTestId, container } = await renderSwapModal();
+
+        await waitFor(() =>
+          expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+        );
+
+        const participateButton = getByTestId("transaction-button-next");
+
+        const input = container.querySelector("input[name='amount']");
+        input && (await fireEvent.input(input, { target: { value: "10" } }));
+
+        expect(participateButton?.hasAttribute("disabled")).toBeFalsy();
+      });
+    });
+  });
+
+  describe("when accounts are not available", () => {
+    const mainBalanceE8s = BigInt(10_000_000);
+    let queryAccountSpy: jest.SpyInstance;
+    let queryAccountBalanceSpy: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      queryAccountSpy = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+    });
+    it("loads accounts and renders account selector", async () => {
+      const { queryByTestId } = await renderSwapModal();
+
+      expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
+
+      // Component is rendered after the accounts are loaded
       await waitFor(() =>
-        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+        expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
+    });
 
-      const participateButton = getByTestId("transaction-button-next");
+    it("loads accounts with query only", async () => {
+      await renderSwapModal();
 
-      const input = container.querySelector("input[name='amount']");
-      input && (await fireEvent.input(input, { target: { value: "10" } }));
+      expect(queryAccountSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledWith({
+        accountIdentifier: mockAccountDetails.account_identifier,
+        identity: mockIdentity,
+        certified: false,
+      });
+    });
+  });
 
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy();
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderSwapModal();
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

@@ -65,6 +65,9 @@
     if (
       neuron === undefined &&
       $neuronsStore.neurons !== undefined &&
+      // After neuron staking the query (not certified) call can return the outdated neuron list
+      // so if the neuron is undefined it's more reliable to wait for the update call.
+      $neuronsStore.certified === true &&
       $pageStore.path === AppPath.Neuron
     ) {
       toastsError({
@@ -129,32 +132,40 @@
   });
 </script>
 
-<Island>
-  <main class="legacy">
-    <section data-tid="neuron-detail">
-      {#if neuron && !inVotingProcess}
-        <Summary displayUniverse={false} />
+<div data-tid="nns-neuron-detail-component" class="component">
+  <Island>
+    <main class="legacy">
+      <section data-tid="neuron-detail">
+        {#if neuron && !inVotingProcess}
+          <Summary displayUniverse={false} />
 
-        <NnsNeuronMetaInfoCard {neuron} />
-        <NnsNeuronInfoStake {neuron} />
-        <NnsNeuronMaturityCard {neuron} />
-        <NeuronJoinFundCard {neuron} />
-        <NeuronFollowingCard {neuron} />
+          <NnsNeuronMetaInfoCard {neuron} />
+          <NnsNeuronInfoStake {neuron} />
+          <NnsNeuronMaturityCard {neuron} />
+          <NeuronJoinFundCard {neuron} />
+          <NeuronFollowingCard {neuron} />
 
-        {#if IS_TESTNET}
-          <NnsNeuronProposalsCard {neuron} />
+          {#if IS_TESTNET}
+            <NnsNeuronProposalsCard {neuron} />
+          {/if}
+
+          <NnsNeuronHotkeysCard {neuron} />
+          <NeuronVotingHistoryCard {neuron} />
+        {:else}
+          <SkeletonCard size="large" cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
         {/if}
+      </section>
+    </main>
+  </Island>
 
-        <NnsNeuronHotkeysCard {neuron} />
-        <NeuronVotingHistoryCard {neuron} />
-      {:else}
-        <SkeletonCard size="large" cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-      {/if}
-    </section>
-  </main>
-</Island>
+  <NnsNeuronModals />
+</div>
 
-<NnsNeuronModals />
+<style lang="scss">
+  .component {
+    display: contents;
+  }
+</style>

@@ -19,6 +19,7 @@ import {
   querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import {
@@ -99,7 +100,7 @@ export const syncSnsNeurons = async (
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -236,7 +237,6 @@ export const getSnsNeuron = async ({
 };
 
 // Implement when SNS neurons can be controlled with Hardware wallets
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getSnsNeuronIdentity = (): Promise<Identity> =>
   getAuthenticatedIdentity();
 

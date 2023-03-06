@@ -1,4 +1,5 @@
 use super::*;
+use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
 use std::str::FromStr;
 
@@ -1264,6 +1265,80 @@ fn get_stats() {
     store.mark_ledger_sync_complete();
     let stats = store.get_stats();
     assert!(stats.seconds_since_last_ledger_sync < 10);
+}
+
+fn assert_queue_item_eq_stake_neuron(
+    expected_block_index: BlockIndex,
+    expected_principal: PrincipalId,
+    expected_memo: Memo,
+    actual_queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
+) {
+    assert_eq!(actual_queue.len(), 1);
+    let actual_queue_item = actual_queue.get(0).unwrap();
+    assert_eq!(expected_block_index, actual_queue_item.0);
+    if let MultiPartTransactionToBeProcessed::StakeNeuron(actual_principal, actual_memo) = actual_queue_item.1 {
+        assert_eq!(expected_principal, actual_principal);
+        assert_eq!(expected_memo, actual_memo);
+    } else {
+        panic!("Queue item should be stake neuron transaction.");
+    }
+}
+
+#[test]
+fn decode_after_fields_removed_from_from_mptp() {
+    let mut mptp_old = MultiPartTransactionsProcessorWithRemovedFields::default();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let block_index = 123;
+    let memo = Memo(789);
+    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
+        block_index,
+        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
+    );
+    mptp_old.queue.push_back(queue_item);
+
+    let bytes = Candid((&mptp_old,)).into_bytes().unwrap();
+    let (mptp_new,): (MultiPartTransactionsProcessor,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap();
+
+    let decoded_queue = mptp_new.get_queue_for_testing();
+
+    assert_queue_item_eq_stake_neuron(block_index, principal, memo, decoded_queue);
+}
+
+#[test]
+fn decode_into_restored_fields_of_mptp_after_rollback() {
+    let new_mptp = MultiPartTransactionsProcessor::default();
+    let bytes = Candid((&new_mptp,)).into_bytes().unwrap();
+
+    let old_mptp_result: Result<(MultiPartTransactionsProcessorWithRemovedFields,), String> =
+        Candid::from_bytes(bytes).map(|c| c.0);
+
+    // This fails, showing that we need special logic to make rollbacks safe.
+    assert!(old_mptp_result.err().unwrap().starts_with("Fail to decode"));
+}
+
+#[test]
+fn encode_decode_stable_state() {
+    let mut store = AccountsStore::default();
+    let block_index = 312;
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let memo = Memo(789);
+    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
+        block_index,
+        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
+    );
+    store
+        .multi_part_transactions_processor
+        .get_mut_queue_for_testing()
+        .push_back(queue_item);
+    let bytes = store.encode();
+    let decoded_store = AccountsStore::decode(bytes).unwrap();
+
+    assert_queue_item_eq_stake_neuron(
+        block_index,
+        principal,
+        memo,
+        decoded_store.multi_part_transactions_processor.get_queue_for_testing(),
+    );
 }
 
 fn setup_test_store() -> AccountsStore {

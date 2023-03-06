@@ -6,6 +6,7 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
+  import type { TransactionNetwork } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
@@ -17,10 +18,14 @@
   // Max amount accepted by the transaction wihout fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
+  export let mustSelectNetwork = false;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let validateAmount: (
     amount: number | undefined
   ) => string | undefined = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
+
+  const STEP_PROGRESS = "Progress";
 
   const steps: WizardSteps = [
     {
@@ -29,6 +34,10 @@
     },
     {
       name: "Review",
+      title: "",
+    },
+    {
+      name: STEP_PROGRESS,
       title: "",
     },
   ];
@@ -51,9 +60,17 @@
   const goBack = () => {
     modal.back();
   };
+  export const goProgress = () =>
+    modal.set(steps.findIndex(({ name }) => name === STEP_PROGRESS));
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  disablePointerEvents={currentStep?.name === STEP_PROGRESS}
+>
   <slot name="title" slot="title" />
   {#if currentStep?.name === "Form"}
     <TransactionForm
@@ -71,6 +88,8 @@
       {token}
       on:nnsNext={goNext}
       on:nnsClose
+      {mustSelectNetwork}
+      bind:selectedNetwork
     >
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
@@ -85,6 +104,7 @@
       {transactionFee}
       {disableSubmit}
       {token}
+      {selectedNetwork}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose
@@ -93,5 +113,8 @@
       <slot name="destination-info" slot="destination-info" />
       <slot name="description" slot="description" />
     </TransactionReview>
+  {/if}
+  {#if currentStep?.name === STEP_PROGRESS}
+    <slot name="in_progress" />
   {/if}
 </WizardModal>

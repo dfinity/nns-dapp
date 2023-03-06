@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -9,13 +11,15 @@ import { authStore } from "$lib/stores/auth.store";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 import {
-  mockAccountsStoreSubscribe,
-  mockSubAccount,
+  mockAccountDetails,
+  mockAccountsStoreData,
 } from "../../../mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockNeuron } from "../../../mocks/neurons.mock";
 
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
 jest.mock("$lib/services/neurons.services", () => {
   return {
     topUpNeuron: jest.fn().mockResolvedValue({ success: true }),
@@ -37,40 +41,62 @@ describe("IncreaseNeuronStakeModal", () => {
       .mockImplementation(mockAuthStoreSubscribe)
   );
 
-  beforeEach(() => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+  describe("when accounts store is empty", () => {
+    it("should fetch accounts and render account selector", async () => {
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const { queryByTestId } = await renderTransactionModal();
+
+      expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
+
+      // Component is rendered after the accounts are loaded
+      await waitFor(() =>
+        expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
+      );
+    });
   });
 
-  it("should call top up neuron", async () => {
-    const { queryAllByText, getByTestId, container } =
-      await renderTransactionModal();
+  describe("when accounts are loaded", () => {
+    beforeEach(() => {
+      accountsStore.set(mockAccountsStoreData);
+    });
 
-    await waitFor(() =>
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
-    );
-    const participateButton = getByTestId("transaction-button-next");
-    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
+    it("should call top up neuron", async () => {
+      const { queryAllByText, getByTestId, container } =
+        await renderTransactionModal();
 
-    // Enter amount
-    const icpAmount = "1";
-    const input = container.querySelector("input[name='amount']");
-    input && fireEvent.input(input, { target: { value: icpAmount } });
-    await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
-    );
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+      );
+      const participateButton = getByTestId("transaction-button-next");
+      expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
 
-    fireEvent.click(participateButton);
+      // Enter amount
+      const icpAmount = "1";
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: icpAmount } });
+      await waitFor(() =>
+        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      );
 
-    await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
-    expect(queryAllByText(icpAmount, { exact: false }).length).toBeGreaterThan(
-      0
-    );
+      fireEvent.click(participateButton);
 
-    const confirmButton = getByTestId("transaction-button-execute");
-    fireEvent.click(confirmButton);
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-2")).toBeTruthy()
+      );
+      expect(
+        queryAllByText(icpAmount, { exact: false }).length
+      ).toBeGreaterThan(0);
 
-    await waitFor(() => expect(topUpNeuron).toBeCalled());
+      const confirmButton = getByTestId("transaction-button-execute");
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => expect(topUpNeuron).toBeCalled());
+    });
   });
 });

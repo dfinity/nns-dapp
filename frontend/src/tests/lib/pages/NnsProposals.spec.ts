@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
@@ -148,12 +148,12 @@ describe("NnsProposals", () => {
           .spyOn(neuronsStore, "subscribe")
           .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
 
-        const { container } = render(NnsProposals);
+        const { queryAllByTestId } = render(NnsProposals);
 
         proposalsFiltersStore.toggleExcludeVotedProposals();
 
         await waitFor(() =>
-          expect(container.querySelectorAll("article").length).toBe(
+          expect(queryAllByTestId("proposal-card").length).toBe(
             mockProposals.length - 1
           )
         );

@@ -19,6 +19,15 @@ index caf728e4..739c2846 100644
  pub struct Init {
    pub  sns_root_canister_id: String,
    pub  fallback_controller_principal_ids: Vec<String>,
+@@ -74,7 +74,7 @@ pub struct SettleCommunityFundParticipationResult {
+ }
+
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub enum Possibility_2 { Ok{}, Err(CanisterCallError) }
++pub enum Possibility_2 { Ok, Err(CanisterCallError) }
+
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct SetModeCallResult { possibility: Option<Possibility_2> }
 @@ -171,13 +171,13 @@ pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }

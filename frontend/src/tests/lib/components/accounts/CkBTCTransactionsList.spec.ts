@@ -3,10 +3,11 @@
  */
 
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { render } from "@testing-library/svelte";
+import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
 import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,
@@ -24,6 +25,8 @@ describe("CkBTCTransactionList", () => {
     render(CkBTCTransactionsList, {
       props: {
         account: mockCkBTCMainAccount,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        canisters: mockCkBTCAdditionalCanisters,
       },
     });
 

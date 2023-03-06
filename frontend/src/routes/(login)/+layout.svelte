@@ -9,6 +9,7 @@
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
   import { navigating } from "$app/stores";
   import { isNullish } from "@dfinity/utils";
+  import Warnings from "$lib/components/metrics/Warnings.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
@@ -38,10 +39,12 @@
       </div>
     </div>
   </Layout>
+
+  <Warnings bringToastsForward />
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../lib/themes/mixins/login";
 
   .content {

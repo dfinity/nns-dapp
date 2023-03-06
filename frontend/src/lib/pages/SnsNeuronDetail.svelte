@@ -133,35 +133,43 @@
     transactionFee === undefined;
 </script>
 
-<Island>
-  <main class="legacy">
-    <section data-tid="sns-neuron-detail-page">
-      {#if loading}
-        <SkeletonCard size="large" cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-      {:else}
-        <Summary />
-
-        {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
-          <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
-        {:else}
+<div data-tid="sns-neuron-detail-component" class="component">
+  <Island>
+    <main class="legacy">
+      <section data-tid="sns-neuron-detail-page">
+        {#if loading}
           <SkeletonCard size="large" cardType="info" separator />
-        {/if}
-        <SnsNeuronInfoStake />
-        <SnsNeuronMaturityCard />
-        <SnsNeuronFollowingCard />
-        {#if nonNullish(parameters)}
-          <SnsNeuronHotkeysCard {parameters} />
-        {/if}
-        {#if IS_TESTNET}
-          <SnsNeuronProposalsCard />
-          <SnsPermissionsCard />
-        {/if}
-      {/if}
-    </section>
-  </main>
-</Island>
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+        {:else}
+          <Summary />
 
-<SnsNeuronModals />
+          {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
+            <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
+          {:else}
+            <SkeletonCard size="large" cardType="info" separator />
+          {/if}
+          <SnsNeuronInfoStake />
+          <SnsNeuronMaturityCard />
+          <SnsNeuronFollowingCard />
+          {#if nonNullish(parameters)}
+            <SnsNeuronHotkeysCard {parameters} />
+          {/if}
+          {#if IS_TESTNET}
+            <SnsNeuronProposalsCard />
+            <SnsPermissionsCard />
+          {/if}
+        {/if}
+      </section>
+    </main>
+  </Island>
+
+  <SnsNeuronModals />
+</div>
+
+<style lang="scss">
+  .component {
+    display: contents;
+  }
+</style>

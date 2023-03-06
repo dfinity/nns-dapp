@@ -15,13 +15,15 @@ import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("snsSelectedTransactionFeeStore", () => {
   const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Open],
+    lifecycles: [SnsSwapLifecycle.Committed],
     certified: true,
   });
-  afterEach(() => {
+
+  beforeEach(() => {
     snsQueryStore.reset();
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
+
   it("returns transaction fee of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;

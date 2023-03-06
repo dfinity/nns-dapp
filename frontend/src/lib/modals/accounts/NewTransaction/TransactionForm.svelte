@@ -18,6 +18,9 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
+  import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { isNullish } from "@dfinity/utils";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -32,6 +35,10 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+
+  export let mustSelectNetwork = false;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
+
   export let validateAmount: (
     amount: number | undefined
   ) => string | undefined = () => undefined;
@@ -58,7 +65,8 @@
     amount === 0 ||
     amount === undefined ||
     invalidAddress(selectedDestinationAddress) ||
-    errorMessage !== undefined;
+    errorMessage !== undefined ||
+    (mustSelectNetwork && isNullish(selectedNetwork));
 
   let errorMessage: string | undefined = undefined;
   $: (() => {
@@ -96,6 +104,9 @@
   const goNext = () => {
     dispatcher("nnsNext");
   };
+
+  // TODO(GIX-1332): if destination address is selected, select corresponding network
+  // TODO: if network changes, reset destination address or display error?
 </script>
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
@@ -125,11 +136,6 @@
     {/if}
   </div>
 
-  <div class="wrapper">
-    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
-    <slot name="additional-info" />
-  </div>
-
   {#if canSelectDestination}
     <SelectDestinationAddress
       {rootCanisterId}
@@ -138,6 +144,22 @@
       bind:showManualAddress
     />
   {/if}
+
+  {#if mustSelectNetwork}
+    <SelectNetworkDropdown bind:selectedNetwork universeId={rootCanisterId} />
+  {/if}
+
+  <div class="amount">
+    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
+    <slot name="additional-info" />
+
+    <p class="fee description">
+      {$i18n.accounts.transaction_fee}: <AmountDisplay
+        amount={transactionFee}
+        singleLine
+      />
+    </p>
+  </div>
 
   <div class="toolbar">
     <button
@@ -158,6 +180,7 @@
 <style lang="scss">
   form {
     --dropdown-width: 100%;
+    gap: var(--padding-2x);
   }
 
   .select-account {
@@ -166,12 +189,8 @@
     gap: var(--padding);
   }
 
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: var(--padding-3x);
+  .amount {
+    margin-top: var(--padding);
   }
 
   .account-identifier {
@@ -182,5 +201,10 @@
     p {
       margin: 0;
     }
+  }
+
+  .fee {
+    text-align: right;
+    padding-top: var(--padding-0_5x);
   }
 </style>
