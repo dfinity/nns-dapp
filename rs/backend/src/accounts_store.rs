@@ -1,6 +1,8 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::metrics_encoder::MetricsEncoder;
-use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
+use crate::multi_part_transactions_processor::{
+    MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor, MultiPartTransactionsProcessorWithRemovedFields,
+};
 use crate::state::StableState;
 use crate::time::time_millis;
 use crate::STATE;
@@ -1288,6 +1290,10 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
+        // Encode with removed fields intact to make rolling back to
+        // a version which still has the removed fields safe.
+        let mptp_with_removed_fields =
+            MultiPartTransactionsProcessorWithRemovedFields::from(&self.multi_part_transactions_processor);
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
@@ -1295,7 +1301,7 @@ impl StableState for AccountsStore {
             &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
-            &self.multi_part_transactions_processor,
+            mptp_with_removed_fields,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
         ))
