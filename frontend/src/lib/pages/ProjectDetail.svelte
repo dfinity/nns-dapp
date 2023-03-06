@@ -31,11 +31,13 @@
     loadSnsMetrics,
     watchSnsMetrics,
   } from "$lib/services/sns-swap-metrics.services";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   export let rootCanisterId: string | undefined | null;
 
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
+  let enableWatchers = false;
 
   onDestroy(() => {
     unsubscribeWatchCommitment?.();
@@ -46,7 +48,7 @@
     loadCommitment({ rootCanisterId, forceFetch: false });
   }
 
-  $: if (nonNullish(rootCanisterId)) {
+  $: if (nonNullish(rootCanisterId) && enableWatchers) {
     unsubscribeWatchCommitment?.();
     unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
   }
@@ -93,7 +95,11 @@
   });
 
   let swapCanisterId: Principal | undefined;
-  $: if (nonNullish(swapCanisterId) && nonNullish(rootCanisterId)) {
+  $: if (
+    nonNullish(swapCanisterId) &&
+    nonNullish(rootCanisterId) &&
+    enableWatchers
+  ) {
     reloadSnsMetrics({ forceFetch: false });
     unsubscribeWatchMetrics?.();
     unsubscribeWatchMetrics = watchSnsMetrics({
@@ -127,6 +133,7 @@
     return goto(AppPath.Launchpad, { replaceState: true });
   };
 
+  // TODO: Change to a `let` that is recalculated when the store changes
   const setProjectStore = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
     if ($snsSummariesStore.length === 0) {
@@ -174,14 +181,17 @@
 
       // TODO: Understand why this component doesn't subscribe to the store `projectDetailStore`.
       // Is it because it's created in this same component?
-      const newSwapCanisterId = $snsSummariesStore.find(
+      const summary = $snsSummariesStore.find(
         ({ rootCanisterId: rootCanister }) =>
           rootCanister?.toText() === rootCanisterId
-      )?.swapCanisterId;
+      );
+      const newSwapCanisterId = summary?.swapCanisterId;
 
       if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
         swapCanisterId = newSwapCanisterId;
       }
+
+      enableWatchers = summary?.swap.lifecycle === SnsSwapLifecycle.Open;
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
