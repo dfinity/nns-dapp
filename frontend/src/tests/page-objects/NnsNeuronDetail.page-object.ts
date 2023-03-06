@@ -22,6 +22,6 @@ export class NnsNeuronDetailPo {
   }
 
   isContentLoaded(): boolean {
-    return this.getSkeletonCards().length == 0;
+    return this.getSkeletonCards().length === 0;
   }
 }
