@@ -19,6 +19,7 @@
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
+  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -48,8 +49,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await (selectedNetwork ===
-    TransactionNetwork.BTC_MAINNET
+    const { success } = await (isTransactionNetworkBtc(selectedNetwork)
       ? convertCkBTCToBtc({
           source: sourceAccount,
           destinationAddress,

@@ -6,6 +6,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import type { CanisterId } from "$lib/types/canister";
+  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;
@@ -15,10 +16,7 @@
 
   // TODO: if the fee is ultimately used no where else we can probably move the loading in parent modal component
   const loadEstimatedFee = async () => {
-    if (
-      selectedNetwork !== TransactionNetwork.BTC_MAINNET &&
-      selectedNetwork !== TransactionNetwork.BTC_TESTNET
-    ) {
+    if (!isTransactionNetworkBtc(selectedNetwork)) {
       bitcoinEstimatedFee = null;
       return;
     }

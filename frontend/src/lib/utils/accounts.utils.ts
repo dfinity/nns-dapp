@@ -4,6 +4,7 @@ import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
@@ -60,19 +61,17 @@ export const invalidAddress = ({
     return true;
   }
 
-  switch (selectedNetwork) {
-    case TransactionNetwork.BTC_MAINNET:
-    case TransactionNetwork.BTC_TESTNET:
-      return invalidBtcAddress({
-        address,
-        network:
-          selectedNetwork === TransactionNetwork.BTC_TESTNET
-            ? BtcNetwork.Testnet
-            : BtcNetwork.Mainnet,
-      });
-    default:
-      return invalidICPOrIcrcAddress(address);
+  if (isTransactionNetworkBtc(selectedNetwork)) {
+    return invalidBtcAddress({
+      address,
+      network:
+        selectedNetwork === TransactionNetwork.BTC_TESTNET
+          ? BtcNetwork.Testnet
+          : BtcNetwork.Mainnet,
+    });
   }
+
+  return invalidICPOrIcrcAddress(address);
 };
 
 export const invalidICPOrIcrcAddress = (
