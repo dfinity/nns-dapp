@@ -70,6 +70,7 @@ sed -e "s@null@${nns_dapp_canister_id}@" frontend/.env-with-null >frontend/.env
 rm frontend/.env-with-null
 
 local_ids=".dfx/local/canister_ids.json"
+mkdir -p $(dirname "$local_ids")
 if ! [ -f "$local_ids" ]; then
   echo "{
   \"nns-dapp\": {
