@@ -38,6 +38,11 @@
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
   let enableWatchers = false;
+  $: enableWatchers =
+    $snsSummariesStore.find(
+      ({ rootCanisterId: rootCanister }) =>
+        rootCanister?.toText() === rootCanisterId
+    )?.swap.lifecycle === SnsSwapLifecycle.Open;
 
   onDestroy(() => {
     unsubscribeWatchCommitment?.();
@@ -102,6 +107,7 @@
   ) {
     reloadSnsMetrics({ forceFetch: false });
     unsubscribeWatchMetrics?.();
+
     unsubscribeWatchMetrics = watchSnsMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
       swapCanisterId: swapCanisterId,
@@ -190,8 +196,6 @@
       if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
         swapCanisterId = newSwapCanisterId;
       }
-
-      enableWatchers = summary?.swap.lifecycle === SnsSwapLifecycle.Open;
     })();
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
