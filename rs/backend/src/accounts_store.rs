@@ -42,6 +42,22 @@ pub struct AccountsStore {
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
+
+    instruction_counters: VecDeque<PerformanceCounter>,
+}
+
+#[derive(CandidType, Deserialize, Clone)]
+struct PerformanceCounter {
+    timestamp_ns_since_epoch: u64,
+    name: String,
+    instruction_counter: u64,
+}
+impl PerformanceCounter {
+    pub fn new(name: String) -> Self {
+        let timestamp_ns_since_epoch = crate::time::time();
+        let instruction_counter = crate::perf::instruction_counter();
+        PerformanceCounter{timestamp_ns_since_epoch, name, instruction_counter}
+    }
 }
 
 #[derive(CandidType, Deserialize)]
@@ -851,6 +867,14 @@ impl AccountsStore {
         self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
+    pub fn record_instruction_counter(&mut self, name: String) {
+        let counter = PerformanceCounter::new(name);
+        if self.instruction_counters.len() >= 100 {
+            self.instruction_counters.pop_front();
+        }
+        self.instruction_counters.push_back(counter);
+    }
+
     pub fn get_stats(&self) -> Stats {
         let earliest_transaction = self.transactions.front();
         let latest_transaction = self.transactions.back();
@@ -877,6 +901,7 @@ impl AccountsStore {
             neurons_created_count: self.neuron_accounts.len() as u64,
             neurons_topped_up_count: self.neurons_topped_up_count,
             transactions_to_process_queue_length: self.multi_part_transactions_processor.get_queue_length(),
+            instruction_counters: self.instruction_counters.clone(),
         }
     }
 
@@ -1354,6 +1379,8 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
         }
 
+        let instruction_counters = VecDeque::new();
+
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
@@ -1366,6 +1393,7 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
+            instruction_counters,
         })
     }
 }
@@ -1565,6 +1593,7 @@ pub struct Stats {
     neurons_created_count: u64,
     neurons_topped_up_count: u64,
     transactions_to_process_queue_length: u32,
+    instruction_counters: VecDeque<PerformanceCounter>,
 }
 
 #[cfg(test)]

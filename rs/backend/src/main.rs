@@ -23,6 +23,7 @@ mod periodic_tasks_runner;
 mod proposals;
 mod state;
 mod time;
+mod perf;
 
 type Cycles = u128;
 
@@ -42,16 +43,20 @@ fn pre_upgrade() {
 #[export_name = "canister_post_upgrade"]
 fn post_upgrade() {
     STATE.with(|s| {
+        perf::record_instruction_counter("post_upgrade before state_recovery");
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {:?}", e));
             unreachable!();
         });
 
-        s.replace(new_state)
+        s.replace(new_state);
+        perf::record_instruction_counter("post_upgrade after state_recovery");
     });
 
+    perf::record_instruction_counter("post_upgrade before init_assets");
     assets::init_assets();
+    perf::record_instruction_counter("post_upgrade after init_assets");
 }
 
 #[export_name = "canister_query http_request"]
