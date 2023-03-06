@@ -1,4 +1,4 @@
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import { registerVote } from "$lib/api/proposals.api";
 import { i18n } from "$lib/stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
