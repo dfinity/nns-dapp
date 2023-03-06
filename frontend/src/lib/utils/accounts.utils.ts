@@ -7,6 +7,10 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import {
+  BtcNetwork,
+  parseBtcAddress,
+} from "../../../../../ic-js/packages/ckbtc/src";
 
 /*
  * Returns the principal's main or hardware account
@@ -30,28 +34,49 @@ export const getAccountByPrincipal = ({
 };
 
 /**
- * Is the address a valid entry to proceed with any action such as transferring ICP?
+ * Is the address a valid entry to proceed with converting to Bitcoin?
+ *
+ * Note: as for `invalidAddress`, undefined is considered here as a valid address
  */
-export const invalidAddress = (address: string | undefined): boolean => {
-  if (address === undefined) {
+export const invalidBtcAddress = (address: string | undefined): boolean => {
+  if (isNullish(address)) {
     return true;
   }
+
+  try {
+    parseBtcAddress({ address, network: BtcNetwork.Mainnet });
+  } catch (_: unknown) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Is the address a valid entry to proceed with any action such as transferring ICP?
+ *
+ * Note: undefined is considered here as a valid address
+ */
+export const invalidAddress = (address: string | undefined): boolean => {
+  if (isNullish(address)) {
+    return true;
+  }
+
   try {
     checkAccountId(address);
     return false;
-  } catch (_) {
+  } catch (_: unknown) {
     try {
-      // TODO: Find a better solution to check if the address is valid for SNS as well.
-      // It might also be an SNS address
+      // TODO: Find a better solution to check if the address is valid for Icrc as well.
+      // It might also be an Icrc address
       decodeIcrcAccount(address);
       return false;
-    } catch {
-      _;
-    }
-    {
-      return true;
+    } catch (_: unknown) {
+      // We do not parse the error
     }
   }
+
+  return true;
 };
 
 /**

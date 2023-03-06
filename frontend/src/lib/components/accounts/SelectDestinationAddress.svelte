@@ -11,11 +11,13 @@
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import type { TransactionNetwork } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
   export let showManualAddress = true;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountByRootCanister({
@@ -65,7 +67,7 @@
     {/if}
   </div>
   {#if showManualAddress}
-    <AddressInput bind:address={selectedDestinationAddress} />
+    <AddressInput bind:address={selectedDestinationAddress} {selectedNetwork} />
   {:else}
     <SelectAccountDropdown
       {rootCanisterId}

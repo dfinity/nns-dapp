@@ -142,6 +142,7 @@
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
+      {selectedNetwork}
     />
   {/if}
 
