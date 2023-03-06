@@ -1,4 +1,7 @@
-type Config = record { update_interval_ms : nat64 };
+type Config = record {
+  update_interval_ms : nat64;
+  fast_interval_ms : nat64;
+};
 type HttpHeader = record { text; text };
 type HttpRequest = record {
   url : text;

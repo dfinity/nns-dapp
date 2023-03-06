@@ -4,7 +4,9 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -24,10 +26,17 @@ import {
   mockAccountsStoreData,
   mockMainAccount,
 } from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "../../../mocks/auth.store.mock";
 import { renderModalContextWrapper } from "../../../mocks/modal.mock";
 import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -49,11 +58,12 @@ jest.mock("$lib/services/sns-sale.services", () => ({
 }));
 
 describe("ParticipateSwapModal", () => {
-  beforeAll(() =>
+  beforeEach(() => {
+    cancelPollAccounts();
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
 
   const reload = jest.fn();
   const renderSwapModal = (
@@ -233,17 +243,19 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when accounts are not available", () => {
+    const mainBalanceE8s = BigInt(10_000_000);
+    let queryAccountSpy: jest.SpyInstance;
+    let queryAccountBalanceSpy: jest.SpyInstance;
     beforeEach(() => {
       accountsStore.reset();
-    });
-    it("loads accounts and renders account selector", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
+      queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      jest
+      queryAccountSpy = jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
+    });
+    it("loads accounts and renders account selector", async () => {
       const { queryByTestId } = await renderSwapModal();
 
       expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
@@ -252,6 +264,61 @@ describe("ParticipateSwapModal", () => {
       await waitFor(() =>
         expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
+    });
+
+    it("loads accounts with query only", async () => {
+      await renderSwapModal();
+
+      expect(queryAccountSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledWith({
+        accountIdentifier: mockAccountDetails.account_identifier,
+        identity: mockIdentity,
+        certified: false,
+      });
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderSwapModal();
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

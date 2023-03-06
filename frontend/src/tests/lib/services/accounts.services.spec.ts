@@ -1,6 +1,7 @@
 /**
  * @jest-environment jsdom
  */
+
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -11,6 +12,7 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import {
   addSubAccount,
+  cancelPollAccounts,
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   getAccountTransactions,
@@ -27,7 +29,6 @@ import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import {
   mockAccountDetails,
@@ -45,6 +46,10 @@ import {
 } from "../../mocks/auth.store.mock";
 import en from "../../mocks/i18n.mock";
 import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
@@ -660,36 +665,36 @@ describe("accounts-services", () => {
   });
 
   describe("pollAccounts", () => {
+    const mainBalanceE8s = BigInt(10_000_000);
+    const mockAccounts = {
+      main: {
+        ...mockMainAccount,
+        balance: TokenAmount.fromE8s({
+          amount: mainBalanceE8s,
+          token: ICPToken,
+        }),
+      },
+      subAccounts: [],
+      hardwareWallets: [],
+      certified: true,
+    };
+
     beforeEach(() => {
       accountsStore.reset();
       jest.clearAllTimers();
       jest.clearAllMocks();
+      cancelPollAccounts();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
     });
 
     it("calls apis and sets accountsStore", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
-
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       const queryAccountSpy = jest
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-
-      const mockAccounts = {
-        main: {
-          ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
-        },
-        subAccounts: [],
-        hardwareWallets: [],
-        certified: true,
-      };
 
       await pollAccounts();
 
@@ -705,13 +710,33 @@ describe("accounts-services", () => {
       expect(accounts).toEqual(mockAccounts);
     });
 
-    it("polls if queryAccount fails", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
+    it("calls apis with certified param used", async () => {
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
 
+      await pollAccounts(false);
+
+      expect(queryAccountSpy).toHaveBeenCalledTimes(1);
+      expect(queryAccountSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockAccountDetails.account_identifier,
+        certified: false,
+      });
+    });
+
+    it("polls if queryAccount fails", async () => {
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const retriesUntilSuccess = 4;
+      const callsUntilSuccess = 4;
       const error = new Error("test");
       const queryAccountSpy = jest
         .spyOn(nnsdappApi, "queryAccount")
@@ -720,49 +745,56 @@ describe("accounts-services", () => {
         .mockRejectedValueOnce(error)
         .mockResolvedValue(mockAccountDetails);
 
-      const mockAccounts = {
-        main: {
-          ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
-        },
-        subAccounts: [],
-        hardwareWallets: [],
-        certified: true,
-      };
+      pollAccounts();
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      while (expectedCalls < callsUntilSuccess) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+      }
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+
+      const accounts = get(accountsStore);
+      return expect(accounts).toEqual(mockAccounts);
+    });
+
+    it("stops polling when cancelPollAccounts is called", async () => {
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      const error = new Error("test");
+      const queryAccountSpy = jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockRejectedValue(error);
 
       pollAccounts();
 
-      let counter = 0;
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
+
       let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-      const extraRetries = 4;
-      while (counter < retriesUntilSuccess + extraRetries) {
-        expect(queryAccountSpy).toBeCalledTimes(
-          Math.min(counter, retriesUntilSuccess)
-        );
-        counter += 1;
-        // Make sure the timers are set before we advance time.
-        await null;
-        await null;
-        jest.advanceTimersByTime(retryDelay);
+      const callsBeforeCancelPolling = 3;
+      while (expectedCalls < callsBeforeCancelPolling) {
+        await advanceTime(retryDelay);
         retryDelay *= 2;
-        await waitFor(() =>
-          expect(queryAccountSpy).toBeCalledTimes(
-            Math.min(counter, retriesUntilSuccess)
-          )
-        );
+        expectedCalls += 1;
+        expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
       }
+      cancelPollAccounts();
 
-      expect(counter).toBe(retriesUntilSuccess + extraRetries);
-
-      expect(queryAccountSpy).toHaveBeenCalledTimes(retriesUntilSuccess);
-
-      await waitFor(() => {
-        const accounts = get(accountsStore);
-        return expect(accounts).toEqual(mockAccounts);
-      });
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
     });
   });
 });

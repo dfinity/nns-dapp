@@ -4,16 +4,22 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "../../mocks/accounts.store.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -33,13 +39,13 @@ describe("NnsAccounts", () => {
         hardwareWallets: [],
         certified: true,
       });
+      cancelPollAccounts();
     });
 
     it("should render a main card", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
 
-      const article = container.querySelector("article");
-      expect(article).not.toBeNull();
+      expect(queryByTestId("account-card")).not.toBeNull();
     });
 
     it("should render account icp in card too", () => {
@@ -66,12 +72,14 @@ describe("NnsAccounts", () => {
         hardwareWallets: [],
         certified: true,
       });
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryAllByTestId } = render(NnsAccounts, {
+        props: { goToWallet },
+      });
 
-      const articles = container.querySelectorAll("article");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
 
     it("should render hardware wallet account cards", () => {
@@ -81,12 +89,14 @@ describe("NnsAccounts", () => {
         hardwareWallets: [mockHardwareWalletAccount],
         certified: true,
       });
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryAllByTestId } = render(NnsAccounts, {
+        props: { goToWallet },
+      });
 
-      const articles = container.querySelectorAll("article");
+      const cards = queryAllByTestId("account-card");
 
-      expect(articles).not.toBeNull();
-      expect(articles.length).toBe(2);
+      expect(cards).not.toBeNull();
+      expect(cards.length).toBe(2);
     });
   });
 
@@ -128,11 +138,54 @@ describe("NnsAccounts", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should load accounts", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+    it("should load accounts", async () => {
+      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
 
-      const article = container.querySelector("article");
-      expect(article).not.toBeNull();
+      expect(queryByTestId("account-card")).toBeNull();
+
+      await waitFor(() => expect(queryByTestId("account-card")).not.toBeNull());
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      cancelPollAccounts();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = render(NnsAccounts, { props: { goToWallet } });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

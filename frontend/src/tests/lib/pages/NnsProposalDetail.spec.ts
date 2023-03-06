@@ -91,6 +91,7 @@ describe("ProposalDetail", () => {
         identity: mockIdentity,
         certified: false,
       });
+      expect(governanceApi.queryNeurons).toHaveBeenCalledTimes(2);
     });
   });
 

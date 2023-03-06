@@ -219,8 +219,11 @@ interface I18nAccounts {
   current_balance_detail: string;
   network: string;
   network_icp_ckbtc: string;
+  network_icp_cktestbtc: string;
   network_bitcoin: string;
+  network_test_bitcoin: string;
   select_network: string;
+  estimated_bitcoin_transaction_fee: string;
 }
 
 interface I18nNeurons {
@@ -608,6 +611,7 @@ interface I18nSns_project_detail {
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
+  current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
   deadline: string;
@@ -852,12 +856,15 @@ interface I18nSns_status_description {
 
 interface I18nMetrics {
   tvl: string;
+  nns_high_load: string;
+  thanks_fun: string;
 }
 
 interface I18nCkbtc {
   title: string;
-  ckBTC: string;
+  test_title: string;
   logo: string;
+  test_logo: string;
   receive: string;
   address: string;
   btc_receive_note: string;
@@ -865,6 +872,7 @@ interface I18nCkbtc {
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
+  btc: string;
   ckbtc_balance_updated: string;
 }
 
@@ -874,6 +882,7 @@ interface I18nError__ckbtc {
   temporary_unavailable: string;
   get_btc_address: string;
   get_btc_no_account: string;
+  get_btc_no_universe: string;
   update_balance: string;
   withdrawal_account: string;
   retrieve_btc: string;
@@ -881,6 +890,7 @@ interface I18nError__ckbtc {
   amount_too_low: string;
   insufficient_funds: string;
   retrieve_btc_unknown: string;
+  estimated_fee: string;
 }
 
 interface I18nNeuron_state {

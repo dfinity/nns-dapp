@@ -12,6 +12,8 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
+  import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
+  import { nonNullish } from "@dfinity/utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -37,8 +39,23 @@
     amount: buyersTotalCommitment,
     token: ICPToken,
   });
+
+  // TODO(Maks): extend test to see the field
+  let saleBuyerCount: number | undefined;
+  $: saleBuyerCount =
+    $projectDetailStore?.summary?.rootCanisterId &&
+    $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId.toText()]
+      ?.saleBuyerCount;
 </script>
 
+{#if nonNullish(saleBuyerCount)}
+  <KeyValuePair testId="sns-project-current-sale-buyer-count">
+    <span slot="key">
+      {$i18n.sns_project_detail.current_sale_buyer_count}
+    </span>
+    <span slot="value">{saleBuyerCount}</span>
+  </KeyValuePair>
+{/if}
 <KeyValuePair testId="sns-project-current-commitment">
   <span slot="key">
     {$i18n.sns_project_detail.current_overall_commitment}

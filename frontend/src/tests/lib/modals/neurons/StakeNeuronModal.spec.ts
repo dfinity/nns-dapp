@@ -4,8 +4,10 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
@@ -35,6 +37,10 @@ import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
 import en from "../../../mocks/i18n.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "../../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -78,6 +84,10 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("StakeNeuronModal", () => {
+  beforeEach(() => {
+    cancelPollAccounts();
+  });
+
   describe("main account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
@@ -556,6 +566,49 @@ describe("StakeNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("account-card")).toBeInTheDocument()
       );
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderModal({
+        component: StakeNeuronModal,
+      });
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

@@ -66,7 +66,7 @@ jobs:
         run: |
           ./scripts/deploy-snsdemo-testnet --verbose
       - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: 'Upload aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -85,7 +85,7 @@ jobs:
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
           }
       - name: Make the aggregator collect data slowly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; })'
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
       - name: Create more SNSs
         run: |
           cd "$( dirname "$(command -v snsdemo)" )/.."
@@ -95,7 +95,7 @@ jobs:
             dfx-sns-demo-mksns
           done
       - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; })'
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
         run: sleep 30
       - name: Get the latest data from the sns aggregator

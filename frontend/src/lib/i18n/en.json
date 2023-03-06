@@ -210,8 +210,11 @@
     "current_balance_detail": "Current balance: $amount $token",
     "network": "Network",
     "network_icp_ckbtc": "Internet Computer (ckBTC)",
+    "network_icp_cktestbtc": "Internet Computer (ckTESTBTC)",
     "network_bitcoin": "Bitcoin (BTC)",
-    "select_network": "Select network"
+    "network_test_bitcoin": "Bitcoin (Test BTC)",
+    "select_network": "Select network",
+    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
   },
   "neurons": {
     "title": "Neurons",
@@ -580,10 +583,11 @@
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
-    "total_tokens": "Total Tokens",
+    "total_tokens": "Tokens Distributed to Participants",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
+    "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",
     "deadline": "Deadline",
@@ -615,7 +619,7 @@
   "sns_sale": {
     "participation_in_progress": "Participating in sale",
     "step_initialization": "Connecting with sale canister",
-    "step_transfer": "Sending ICP",
+    "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
     "this_may_take_a_few_minutes": "This may take a few minutes",
@@ -730,7 +734,7 @@
     "sns_sale_unexpected_error": "Sorry, There was an unexpected error while participating. Please refresh the page and try again.",
     "sns_sale_unexpected_and_refresh": "Sorry, There was an unexpected error while participating. Please refresh and try again",
     "sns_sale_final_error": "Sorry, there was an unexpected error connection with the SNS sale. Please reload the page and try again.",
-    "sns_sale_proceed_with_existing_ticket": "Trying to complete the existing participation (Started at $time)",
+    "sns_sale_proceed_with_existing_ticket": "There is an existing participation started at $time. Completing that participation.",
     "sns_sale_closed": "Sorry, the sale was already closed. Please reload the page.",
     "sns_sale_not_open": "Sorry, the sale is not yet open. Please reload the page.",
     "sns_sale_invalid_amount": "Can't participate with the selected amount. Please participate with a different amount ($min - $max).",
@@ -806,12 +810,15 @@
     "5": "The proposal was adopted, but execution failed."
   },
   "metrics": {
-    "tvl": "Total ICP Value Locked"
+    "tvl": "Total ICP Value Locked",
+    "nns_high_load": "NNS is under a high load.",
+    "thanks_fun": "Thanks for being part of the fun!"
   },
   "ckbtc": {
     "title": "ckBTC",
-    "ckBTC": "ckBTC",
+    "test_title": "ckTESTBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo",
+    "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
     "address": "Address",
     "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
@@ -819,6 +826,7 @@
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
+    "btc": "BTC",
     "ckbtc_balance_updated": "Balance successfully updated."
   },
   "error__ckbtc": {
@@ -827,12 +835,14 @@
     "temporary_unavailable": "The minter is temporary unavailable.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
+    "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",
     "update_balance": "Sorry, the balance cannot be updated.",
     "withdrawal_account": "Sorry, no withdrawal account can be found.",
     "retrieve_btc": "Sorry, retrieving BTC failed.",
     "malformed_address": "Address malformed.",
     "amount_too_low": "Amount too low.",
     "insufficient_funds": "Insufficient funds.",
-    "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason."
+    "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
+    "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched."
   }
 }

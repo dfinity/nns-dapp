@@ -414,10 +414,10 @@ describe("TransactionModal", () => {
       });
     });
 
-    it("should disable close on step progress", () => {
+    it("should hide close on step progress", () => {
       const { getByTestId } = render(TransactionModalTest);
 
-      expect(getByTestId("close-modal")?.hasAttribute("disabled")).toBeTruthy();
+      expect(() => getByTestId("close-modal")).toThrow();
     });
   });
 });

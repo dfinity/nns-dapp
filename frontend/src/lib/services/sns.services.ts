@@ -4,6 +4,8 @@ import {
   querySnsSwapCommitment,
   querySnsSwapCommitments,
 } from "$lib/api/sns.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -22,7 +24,7 @@ import type {
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 /**
  * Loads the user commitments for all projects.
@@ -53,7 +55,9 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
   ) {
     return;
   }
+
   return queryAndUpdate<SnsSwapCommitment[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitments({ certified, identity }),
     onLoad: ({ response: swapCommitments, certified }) => {
@@ -67,7 +71,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -88,11 +92,24 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
+  forceFetch,
 }: {
   rootCanisterId: string;
   onError?: () => void;
-}) =>
+  forceFetch: boolean;
+}) => {
+  const swapCommitment = (get(snsSwapCommitmentsStore) ?? []).find(
+    ({ swapCommitment }) =>
+      swapCommitment.rootCanisterId.toText() === rootCanisterId
+  );
+
+  if (nonNullish(swapCommitment) && !forceFetch) {
+    return;
+  }
+
+  // We use update when we want to force fetch the data to make sure we have the latest data.
   queryAndUpdate<SnsSwapCommitment, unknown>({
+    strategy: forceFetch ? "update" : FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsSwapCommitment({
         rootCanisterId,
@@ -104,7 +121,11 @@ export const loadSnsSwapCommitment = async ({
     onError: ({ error: err, certified, identity }) => {
       console.error(err);
 
-      if (certified || identity.getPrincipal().isAnonymous()) {
+      if (
+        certified ||
+        identity.getPrincipal().isAnonymous() ||
+        FORCE_CALL_STRATEGY === "query"
+      ) {
         toastsError(
           toToastError({
             err,
@@ -117,13 +138,18 @@ export const loadSnsSwapCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+};
 
 export const loadSnsTotalCommitment = async ({
   rootCanisterId,
+  strategy,
 }: {
   rootCanisterId: string;
+  strategy?: QueryAndUpdateStrategy;
 }) =>
   queryAndUpdate<SnsGetDerivedStateResponse | undefined, unknown>({
+    strategy: strategy ?? FORCE_CALL_STRATEGY,
+    identityType: "current",
     request: ({ certified, identity }) =>
       querySnsDerivedState({
         rootCanisterId,
@@ -149,6 +175,20 @@ export const loadSnsTotalCommitment = async ({
     },
     logMessage: "Syncing Sns swap commitment",
   });
+
+export const watchSnsTotalCommitment = ({
+  rootCanisterId,
+}: {
+  rootCanisterId: string;
+}) => {
+  const id = setInterval(() => {
+    loadSnsTotalCommitment({ rootCanisterId, strategy: "query" });
+  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
+
+  return () => {
+    clearInterval(id);
+  };
+};
 
 export const loadSnsLifecycle = async ({
   rootCanisterId,
