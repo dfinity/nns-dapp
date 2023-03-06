@@ -10,10 +10,26 @@ use std::collections::{BTreeMap, VecDeque};
 #[derive(Default, CandidType, Deserialize)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
+}
+
+// We temporarily use this to encode stable state which can be
+// safely decoded even if we have to roll back to an earlier
+// version.
+#[derive(Default, CandidType, Deserialize)]
+pub struct MultiPartTransactionsProcessorWithRemovedFields {
+    pub queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
     // Unused but needs a migration to remove safely.
     statuses: BTreeMap<BlockIndex, (PrincipalId, MultiPartTransactionStatus)>,
     // Unused but needs a migration to remove safely.
     errors: VecDeque<MultiPartTransactionError>,
+}
+
+impl MultiPartTransactionsProcessorWithRemovedFields {
+    pub fn from(mptp: &MultiPartTransactionsProcessor) -> MultiPartTransactionsProcessorWithRemovedFields {
+        let mut result = MultiPartTransactionsProcessorWithRemovedFields::default();
+        result.queue = mptp.queue.clone();
+        result
+    }
 }
 
 #[derive(Clone, CandidType, Deserialize)]
@@ -59,6 +75,16 @@ impl MultiPartTransactionsProcessor {
 
     pub fn get_queue_length(&self) -> u32 {
         self.queue.len() as u32
+    }
+
+    #[cfg(test)]
+    pub fn get_queue_for_testing(&self) -> VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
+        self.queue.clone()
+    }
+
+    #[cfg(test)]
+    pub fn get_mut_queue_for_testing(&mut self) -> &mut VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
+        &mut self.queue
     }
 }
 
