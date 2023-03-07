@@ -11,19 +11,21 @@ export const HOST_IC0_APP = "https://ic0.app";
 const snsAggregatorUrlEnv = import.meta.env
   .VITE_AGGREGATOR_CANISTER_URL as string;
 const snsAggregatorUrl = (url: string) => {
-  if (url === "") {
+  try {
+    const { hostname } = new URL(url);
+    if (["localhost", "127.0.0.1"].includes(hostname)) {
+      return url;
+    }
+
+    if (DEV) {
+      return addRawToUrl(url);
+    }
+
+    return url;
+  } catch (e) {
+    console.error(`Invalid URL for SNS aggregator: ${url}`, e);
     return undefined;
   }
-
-  if (url.includes("localhost")) {
-    return url;
-  }
-
-  if (DEV) {
-    return addRawToUrl(url);
-  }
-
-  return url;
 };
 
 /**
