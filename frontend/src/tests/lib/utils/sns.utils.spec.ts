@@ -11,6 +11,7 @@ import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import { parseSnsSwapSaleBuyerCount } from "../../../lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -358,6 +359,39 @@ describe("sns-utils", () => {
         "This is the beginning of the error. The swap has already reached its target ..."
       );
       expect(isInternalRefreshBuyerTokensError(error)).toBeTruthy();
+    });
+
+    it("returns false on unknown error", () => {
+      const error = new Error("Fake the swap has already reached its target");
+      expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
+    });
+
+    it("returns false on not error argument", () => {
+      expect(isInternalRefreshBuyerTokensError(null)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(undefined)).toBeFalsy();
+      expect(
+        isInternalRefreshBuyerTokensError(
+          "The swap has already reached its target"
+        )
+      ).toBeFalsy();
+    });
+  });
+
+  describe("parseSnsSwapSaleBuyerCount", () => {
+    it("returns sale_buyer_count value", () => {
+      const RAW_METRICS = `
+# TYPE sale_buyer_count gauge
+sale_buyer_count 33 1677707139456
+# HELP sale_cf_participants_count`;
+      expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toEqual(33);
+    });
+
+    it("returns undefined when sale_buyer_count not found", () => {
+      const RAW_METRICS = `
+# TYPE sale_buyer_count gauge
+sale_participants_count 33 1677707139456
+# HELP sale_cf_participants_count`;
+      expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toBeUndefined();
     });
 
     it("returns false on unknown error", () => {
