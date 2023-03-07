@@ -7,12 +7,12 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("SelectUniverseNavList", () => {
   jest

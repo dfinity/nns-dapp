@@ -8,22 +8,22 @@ import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockAuthStoreSubscribe,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import { MockLedgerCanister } from "../../mocks/ledger.canister.mock";
-import { buildMockNeuronsStoreSubscribe } from "../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import { MockLedgerCanister } from "$tests/mocks/ledger.canister.mock";
+import { buildMockNeuronsStoreSubscribe } from "$tests/mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
-} from "../../mocks/proposals.store.mock";
-import { silentConsoleErrors } from "../../utils/utils.test-utils";
+} from "$tests/mocks/proposals.store.mock";
+import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/governance.api");
 

@@ -10,17 +10,17 @@ import {
   transactionName,
   transactionType,
 } from "$lib/utils/transactions.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
-} from "../../mocks/transaction.mock";
+} from "$tests/mocks/transaction.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {

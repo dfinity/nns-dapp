@@ -14,17 +14,17 @@ import { loadSnsProjects } from "$lib/services/$public/sns.services";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { aggregatorSnsMockWith } from "../../mocks/sns-aggregator.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
-import { NeuronDetailPo } from "../../page-objects/NeuronDetail.page-object";
-import { blockAllCallsTo } from "../../utils/module.test-utils";
+} from "$tests/mocks/sns-neurons.mock";
+import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/api/sns-aggregator.api");
 jest.mock("$lib/api/governance.api");

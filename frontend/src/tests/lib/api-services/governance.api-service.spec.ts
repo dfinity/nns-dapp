@@ -3,17 +3,17 @@ import {
   resetNeuronsApiService,
 } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { Topic } from "@dfinity/nns";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockIdentity,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   createMockKnownNeuron,
   createMockNeuron,
-} from "../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 

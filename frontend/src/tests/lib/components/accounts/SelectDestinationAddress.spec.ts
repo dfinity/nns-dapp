@@ -6,14 +6,14 @@ import SelectDestinationAddress from "$lib/components/accounts/SelectDestination
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
   describe("nns accounts", () => {

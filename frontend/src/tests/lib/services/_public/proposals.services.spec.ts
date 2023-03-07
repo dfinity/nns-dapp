@@ -22,14 +22,14 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
-import type { ProposalInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   resetIdentity,
-} from "../../../mocks/auth.store.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import type { ProposalInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("proposals-services", () => {
   describe("logged in user", () => {
