@@ -4,14 +4,14 @@
 
 import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { render, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import { render, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("FollowSnsNeuronsModal", () => {
   const neuron = {

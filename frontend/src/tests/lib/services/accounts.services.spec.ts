@@ -27,9 +27,6 @@ import {
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
-import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
@@ -50,6 +47,9 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {

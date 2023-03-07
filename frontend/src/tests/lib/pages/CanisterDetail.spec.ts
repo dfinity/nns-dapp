@@ -10,8 +10,8 @@ import {
   listCanisters,
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { render, waitFor } from "@testing-library/svelte";
 import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
+import { render, waitFor } from "@testing-library/svelte";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;

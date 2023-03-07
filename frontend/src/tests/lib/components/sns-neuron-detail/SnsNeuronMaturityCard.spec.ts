@@ -13,16 +13,16 @@ import {
   formattedTotalMaturity,
   getSnsNeuronIdAsHexString,
 } from "$lib/utils/sns-neuron.utils";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import type { SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("SnsNeuronMaturityCard", () => {

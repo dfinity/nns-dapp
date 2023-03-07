@@ -5,12 +5,12 @@
 import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
 import { addFollowee } from "$lib/services/sns-neurons.services";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

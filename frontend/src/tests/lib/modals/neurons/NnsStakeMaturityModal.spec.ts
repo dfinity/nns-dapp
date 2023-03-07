@@ -6,8 +6,6 @@ import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.sve
 import { stakeMaturity } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -15,6 +13,8 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

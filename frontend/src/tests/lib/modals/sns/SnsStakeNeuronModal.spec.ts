@@ -11,11 +11,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
-import { TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
-import { fireEvent, waitFor } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
@@ -28,6 +23,11 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
+import { TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import type { NervousSystemParameters } from "@dfinity/sns";
+import { fireEvent, waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

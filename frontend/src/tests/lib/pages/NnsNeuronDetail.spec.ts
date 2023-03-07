@@ -8,11 +8,11 @@ import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
+import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 // Used when NeuronFollowingCard is mounted
 jest.mock("$lib/services/known-neurons.services", () => {

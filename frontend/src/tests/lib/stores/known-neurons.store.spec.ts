@@ -1,6 +1,6 @@
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { get } from "svelte/store";
 import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
+import { get } from "svelte/store";
 
 describe("knownNeurons", () => {
   const mockKnownNeurons = [mockKnownNeuron];

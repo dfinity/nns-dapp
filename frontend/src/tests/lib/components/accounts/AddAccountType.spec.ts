@@ -4,11 +4,11 @@
 
 import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
 import type { AccountType } from "$lib/types/add-account.context";
+import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("AddAccountType", () => {

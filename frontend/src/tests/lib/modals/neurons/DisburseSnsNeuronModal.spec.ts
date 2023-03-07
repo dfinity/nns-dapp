@@ -9,10 +9,6 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   createMockIdentity,
   mockPrincipal,
@@ -22,11 +18,12 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import {
-  mockSnsNeuron,
-  mockSnsNeuronId,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/services/sns-accounts.services");

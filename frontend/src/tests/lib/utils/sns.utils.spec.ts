@@ -7,10 +7,6 @@ import {
   isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
 } from "$lib/utils/sns.utils";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createBuyersState,
@@ -25,6 +21,10 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 
 describe("sns-utils", () => {
   beforeEach(() => {

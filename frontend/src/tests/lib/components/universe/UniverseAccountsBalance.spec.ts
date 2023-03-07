@@ -14,7 +14,6 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -33,6 +32,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {

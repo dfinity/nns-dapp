@@ -10,11 +10,11 @@ import {
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("ckbtc-transactions-services", () => {
   beforeEach(() => {

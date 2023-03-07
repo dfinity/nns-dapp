@@ -16,14 +16,14 @@ import {
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
-import { toastsStore } from "@dfinity/gix-components";
-import { get } from "svelte/store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 describe("utils", () => {
   beforeEach(() => {

@@ -3,9 +3,9 @@ import {
   neuronsStore,
   sortedNeuronStore,
 } from "$lib/stores/neurons.store";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("neurons-store", () => {
   afterEach(() => neuronsStore.reset());

@@ -9,11 +9,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import type { Token } from "@dfinity/nns";
-import type { NervousSystemParameters } from "@dfinity/sns";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -25,6 +20,11 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import type { Token } from "@dfinity/nns";
+import type { NervousSystemParameters } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("SnsNeuronMetaInfoCard", () => {
   beforeEach(() => {

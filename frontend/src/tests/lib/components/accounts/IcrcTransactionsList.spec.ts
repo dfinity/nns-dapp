@@ -6,13 +6,13 @@ import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTransactionData } from "$lib/types/transaction";
-import { render, waitFor } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("IcrcTransactionList", () => {
   const renderIcrcTransactionList = ({

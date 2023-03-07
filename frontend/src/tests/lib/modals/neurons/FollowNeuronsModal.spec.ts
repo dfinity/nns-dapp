@@ -4,10 +4,10 @@
 
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { Topic } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
+import { fireEvent, render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

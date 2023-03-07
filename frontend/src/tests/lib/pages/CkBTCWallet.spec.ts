@@ -15,8 +15,6 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { TokenAmount } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
@@ -25,6 +23,8 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { TokenAmount } from "@dfinity/nns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 const expectedBalanceAfterTransfer = TokenAmount.fromE8s({
   amount: BigInt(11_111),

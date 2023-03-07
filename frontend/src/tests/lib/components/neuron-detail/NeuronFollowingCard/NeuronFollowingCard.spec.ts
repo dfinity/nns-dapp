@@ -5,14 +5,14 @@
 import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
 import { listKnownNeurons } from "$lib/services/known-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { Topic, type NeuronInfo } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/known-neurons.services", () => {

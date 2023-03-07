@@ -11,13 +11,6 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
-import { ICPToken } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
-import { fireEvent } from "@testing-library/dom";
-import { waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   createMockIdentity,
   mockPrincipal,
@@ -28,6 +21,13 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { ICPToken } from "@dfinity/nns";
+import type { SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
+import { fireEvent } from "@testing-library/dom";
+import { waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/services/sns-parameters.services");

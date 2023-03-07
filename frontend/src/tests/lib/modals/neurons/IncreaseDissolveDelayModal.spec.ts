@@ -6,12 +6,12 @@ import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
 import { secondsToDays } from "$lib/utils/date.utils";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { renderModal } from "$tests/mocks/modal.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

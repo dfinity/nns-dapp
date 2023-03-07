@@ -4,8 +4,8 @@
 
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
   const show = async ({ container, getByRole }) => {

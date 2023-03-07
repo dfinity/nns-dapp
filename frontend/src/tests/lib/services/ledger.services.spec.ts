@@ -20,10 +20,6 @@ import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import type { HttpAgent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,
@@ -39,6 +35,10 @@ import {
 } from "$tests/mocks/ledger.identity.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
   describe("connect hardware wallet", () => {

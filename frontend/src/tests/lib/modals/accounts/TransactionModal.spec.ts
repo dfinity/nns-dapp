@@ -11,15 +11,6 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -32,6 +23,15 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {

@@ -7,11 +7,11 @@ import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-id
 import { AppPath } from "$lib/constants/routes.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockTokens } from "$tests/mocks/tokens.mock";
 
 describe("CkBTCAccountsFooter", () => {
   beforeAll(() => {

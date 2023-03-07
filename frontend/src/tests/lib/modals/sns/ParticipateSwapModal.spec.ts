@@ -17,10 +17,6 @@ import {
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { writable } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -37,6 +33,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

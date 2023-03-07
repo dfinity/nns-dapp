@@ -22,14 +22,6 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
-import type { Identity } from "@dfinity/agent";
-import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
-import { tick } from "svelte";
-import { get } from "svelte/store";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -39,6 +31,14 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import type { Identity } from "@dfinity/agent";
+import { toastsStore } from "@dfinity/gix-components";
+import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
+import { tick } from "svelte";
+import { get } from "svelte/store";
 
 const {
   addHotkey,

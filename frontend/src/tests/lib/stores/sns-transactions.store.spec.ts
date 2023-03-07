@@ -1,12 +1,12 @@
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { Principal } from "@dfinity/principal";
-import { get } from "svelte/store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
+import { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 
 describe("SNS Transactions store", () => {
   describe("snsTransactionsStore", () => {

@@ -11,10 +11,6 @@ import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.s
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { get } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -27,6 +23,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

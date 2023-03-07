@@ -10,13 +10,13 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
+import { render } from "@testing-library/svelte";
 
 describe("SummaryLogo", () => {
   describe("nns", () => {

@@ -8,11 +8,11 @@ import {
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
-import { render } from "@testing-library/svelte";
-import { writable } from "svelte/store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockReceivedFromMainAccountTransaction } from "$tests/mocks/transaction.mock";
+import { render } from "@testing-library/svelte";
+import { writable } from "svelte/store";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("TransactionList", () => {

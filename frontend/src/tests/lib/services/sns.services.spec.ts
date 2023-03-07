@@ -8,16 +8,6 @@ import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constant
 import * as services from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import type {
-  GetDerivedStateResponse,
-  GetLifecycleResponse,
-} from "@dfinity/sns/dist/candid/sns_swap";
-import { fromNullable } from "@dfinity/utils";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -32,6 +22,16 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import type {
+  GetDerivedStateResponse,
+  GetLifecycleResponse,
+} from "@dfinity/sns/dist/candid/sns_swap";
+import { fromNullable } from "@dfinity/utils";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 const {
   getSwapAccount,

@@ -9,12 +9,6 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
-  SnsNeuronPermissionType,
-  type SnsNervousSystemFunction,
-  type SnsNeuron,
-} from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
@@ -25,6 +19,12 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  SnsNeuronPermissionType,
+  type SnsNervousSystemFunction,
+  type SnsNeuron,
+} from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/sns.services", () => ({
   loadSnsNervousSystemFunctions: jest.fn(),

@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { render, waitFor } from "@testing-library/svelte";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { render, waitFor } from "@testing-library/svelte";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
 jest.mock("$lib/utils/html.utils", () => ({

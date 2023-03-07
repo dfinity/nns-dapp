@@ -3,7 +3,6 @@ import {
   resetNeuronsApiService,
 } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { Topic } from "@dfinity/nns";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
@@ -14,6 +13,7 @@ import {
   createMockKnownNeuron,
   createMockNeuron,
 } from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 

@@ -5,11 +5,11 @@
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 
 describe("sns-tokens-services", () => {
   describe("loadSnsTokens", () => {

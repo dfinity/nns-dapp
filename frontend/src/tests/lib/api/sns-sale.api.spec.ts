@@ -12,9 +12,6 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import type { SnsWasmCanisterOptions } from "@dfinity/nns";
-import { SnsSwapCanister } from "@dfinity/sns";
-import { mock } from "jest-mock-extended";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   deployedSnsMock,
@@ -24,6 +21,9 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
+import { SnsSwapCanister } from "@dfinity/sns";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/proxy/api.import.proxy");
 

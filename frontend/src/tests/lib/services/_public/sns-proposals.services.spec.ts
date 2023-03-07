@@ -11,12 +11,6 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
-import { AnonymousIdentity } from "@dfinity/agent";
-import type { SnsProposalData } from "@dfinity/sns";
-import { SnsVote } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
@@ -24,6 +18,12 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { AnonymousIdentity } from "@dfinity/agent";
+import type { SnsProposalData } from "@dfinity/sns";
+import { SnsVote } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("sns-proposals services", () => {
   const proposal1: SnsProposalData = {

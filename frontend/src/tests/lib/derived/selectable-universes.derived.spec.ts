@@ -4,11 +4,11 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
-import { get } from "svelte/store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
+import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {

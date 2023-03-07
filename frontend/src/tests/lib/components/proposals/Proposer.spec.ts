@@ -4,13 +4,13 @@
 
 import Proposer from "$lib/components/proposals/Proposer.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { GovernanceCanister } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { GovernanceCanister } from "@dfinity/nns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("Proposer", () => {
   const props = {

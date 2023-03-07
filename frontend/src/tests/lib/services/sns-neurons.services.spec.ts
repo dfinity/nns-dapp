@@ -28,6 +28,14 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import {
+  buildMockSnsNeuronsStoreSubscribe,
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import {
@@ -43,14 +51,6 @@ import {
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  buildMockSnsNeuronsStoreSubscribe,
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
-import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 
 const {
   syncSnsNeurons,

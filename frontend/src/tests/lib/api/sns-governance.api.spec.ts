@@ -25,17 +25,6 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import type { HttpAgent } from "@dfinity/agent";
-import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import {
-  SnsNeuronPermissionType,
-  SnsVote,
-  type SnsListNervousSystemFunctionsResponse,
-  type SnsNeuronId,
-} from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import mock from "jest-mock-extended/lib/Mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
@@ -54,6 +43,17 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import {
+  SnsNeuronPermissionType,
+  SnsVote,
+  type SnsListNervousSystemFunctionsResponse,
+  type SnsNeuronId,
+} from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import mock from "jest-mock-extended/lib/Mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {

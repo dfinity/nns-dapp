@@ -13,9 +13,12 @@ import {
   pathSupportsCkBTC,
   universeLogoAlt,
 } from "$lib/utils/universe.utils";
-import { Principal } from "@dfinity/principal";
 import en from "$tests/mocks/i18n.mock";
-import { mockSnsFullProject, mockSummary } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSummary,
+} from "$tests/mocks/sns-projects.mock";
+import { Principal } from "@dfinity/principal";
 
 describe("universes-utils", () => {
   describe("pathSupportsCkBTC", () => {

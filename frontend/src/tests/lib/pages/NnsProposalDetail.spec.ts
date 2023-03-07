@@ -8,8 +8,6 @@ import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockAuthStoreSubscribe,
@@ -24,6 +22,8 @@ import {
   mockProposals,
 } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/governance.api");
 

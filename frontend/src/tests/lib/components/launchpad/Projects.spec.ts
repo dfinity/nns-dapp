@@ -4,13 +4,13 @@
 
 import Projects from "$lib/components/launchpad/Projects.svelte";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
 } from "$tests/mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("Projects", () => {
   beforeEach(() => {

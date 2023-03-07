@@ -10,7 +10,6 @@ import {
   formattedStakedMaturity,
   formattedTotalMaturity,
 } from "$lib/utils/neuron.utils";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -21,6 +20,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronMaturityCard", () => {

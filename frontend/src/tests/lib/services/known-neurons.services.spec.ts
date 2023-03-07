@@ -1,13 +1,13 @@
 import * as api from "$lib/api/governance.api";
 import { listKnownNeurons } from "$lib/services/known-neurons.services";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { get } from "svelte/store";
 import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
+import { get } from "svelte/store";
 
 describe("knownNeurons-services", () => {
   const spyQueryKnownNeurons = jest

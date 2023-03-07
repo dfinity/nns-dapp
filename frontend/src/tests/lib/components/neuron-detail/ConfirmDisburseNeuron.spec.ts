@@ -3,9 +3,9 @@
  */
 
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {

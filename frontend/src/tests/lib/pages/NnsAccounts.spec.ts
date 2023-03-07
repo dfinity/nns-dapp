@@ -9,7 +9,6 @@ import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
@@ -20,6 +19,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

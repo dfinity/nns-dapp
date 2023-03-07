@@ -6,14 +6,14 @@ import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCar
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import { Vote } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   mockProposalInfo,
   mockVoteRegistration,
 } from "$tests/mocks/proposal.mock";
+import { Vote } from "@dfinity/nns";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);

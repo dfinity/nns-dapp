@@ -13,13 +13,6 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import {
-  GovernanceCanister,
-  type Proposal,
-  type ProposalInfo,
-} from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
-import {
   authStoreMock,
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -36,6 +29,13 @@ import {
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "$tests/mocks/proposals.store.mock";
+import {
+  GovernanceCanister,
+  type Proposal,
+  type ProposalInfo,
+} from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
 
 jest.mock("$lib/api/governance.api");
 

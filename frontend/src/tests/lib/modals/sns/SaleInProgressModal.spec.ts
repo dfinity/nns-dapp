@@ -4,8 +4,8 @@
 
 import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
 import { SaleStep } from "$lib/types/sale";
-import { waitFor } from "@testing-library/svelte";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { waitFor } from "@testing-library/svelte";
 
 describe("SaleInProgressModal", () => {
   const renderSaleInProgressModal = () =>

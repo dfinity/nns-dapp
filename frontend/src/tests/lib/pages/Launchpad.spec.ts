@@ -9,7 +9,6 @@ import {
 import Launchpad from "$lib/pages/Launchpad.svelte";
 import { loadSnsSwapCommitments } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
@@ -20,6 +19,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

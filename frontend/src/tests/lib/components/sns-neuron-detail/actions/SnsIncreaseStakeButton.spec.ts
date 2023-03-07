@@ -6,7 +6,6 @@ import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/Sn
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -16,6 +15,7 @@ import {
   mockTokenStore,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsIncreaseStakeButton", () => {

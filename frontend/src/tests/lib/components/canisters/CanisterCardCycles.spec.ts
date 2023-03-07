@@ -6,11 +6,11 @@ import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management
 import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 import type { CyclesCallback } from "$lib/services/worker-cycles.services";
 import type { CanisterSync } from "$lib/types/canister";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 let cyclesCallback: CyclesCallback | undefined;
 

@@ -3,8 +3,8 @@
  */
 
 import AmountInput from "$lib/components/ui/AmountInput.svelte";
-import { fireEvent, render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("AmountInput", () => {
   const props = { amount: 10.25, max: 11 };

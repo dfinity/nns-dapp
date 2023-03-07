@@ -25,28 +25,6 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import {
-  ICPToken,
-  InsufficientFundsError,
-  TokenAmount,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError,
-  type SnsWasmCanisterOptions,
-} from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import {
-  GetOpenTicketErrorType,
-  NewSaleTicketResponseErrorType,
-  SnsSwapCanister,
-  SnsSwapGetOpenTicketError,
-  SnsSwapLifecycle,
-  SnsSwapNewTicketError,
-} from "@dfinity/sns";
-import mock from "jest-mock-extended/lib/Mock";
-import { get } from "svelte/store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
@@ -73,6 +51,28 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import type { HttpAgent, Identity } from "@dfinity/agent";
+import {
+  ICPToken,
+  InsufficientFundsError,
+  TokenAmount,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+  type SnsWasmCanisterOptions,
+} from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import {
+  GetOpenTicketErrorType,
+  NewSaleTicketResponseErrorType,
+  SnsSwapCanister,
+  SnsSwapGetOpenTicketError,
+  SnsSwapLifecycle,
+  SnsSwapNewTicketError,
+} from "@dfinity/sns";
+import mock from "jest-mock-extended/lib/Mock";
+import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {

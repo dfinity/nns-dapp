@@ -10,7 +10,6 @@ import {
   transactionName,
   transactionType,
 } from "$lib/utils/transactions.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -21,6 +20,7 @@ import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {

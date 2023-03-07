@@ -4,7 +4,6 @@
 
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import * as services from "$lib/services/ckbtc-minter.services";
-import { fireEvent, waitFor } from "@testing-library/svelte";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCAddress,
@@ -12,6 +11,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {

@@ -9,9 +9,6 @@ import {
 } from "$lib/services/canisters.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { toastsShow } from "$lib/stores/toasts.store";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -21,6 +18,9 @@ import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

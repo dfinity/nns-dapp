@@ -4,11 +4,11 @@
 
 import { authStore } from "$lib/stores/auth.store";
 import CanistersPage from "$routes/(app)/(nns)/canisters/+page.svelte";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
+import { render } from "@testing-library/svelte";
 
 describe("Canisters page", () => {
   jest

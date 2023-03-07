@@ -6,13 +6,13 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/services/sns-neurons.services";
-import { NeuronState } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { NeuronState } from "@dfinity/nns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import DissolveSnsNeuronButtonTest from "./DissolveSnsNeuronButtonTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {

@@ -6,8 +6,6 @@ import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoS
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { mockSnsNeuronWithPermissions } from "$tests/mocks/sns-neurons.mock";
@@ -15,6 +13,8 @@ import {
   mockSnsFullProject,
   mockTokenStore,
 } from "$tests/mocks/sns-projects.mock";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 describe("SnsNeuronInfoStake", () => {
   beforeAll(() =>

@@ -5,10 +5,10 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "$lib/stores/proposals.store";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { generateMockProposals } from "$tests/mocks/proposal.mock";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("proposals-store", () => {
   describe("proposals", () => {

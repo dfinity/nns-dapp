@@ -11,9 +11,6 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
-import { fireEvent, render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -22,6 +19,9 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
+import { fireEvent, render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("SnsNeuronCard", () => {
   beforeAll(() => {

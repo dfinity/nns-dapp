@@ -5,10 +5,10 @@
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import en from "$tests/mocks/i18n.mock";
 import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;

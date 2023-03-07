@@ -3,8 +3,8 @@
  */
 
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import { fireEvent, render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 import LayoutTest from "./LayoutTest.svelte";
 
 jest.mock("$lib/services/$public/worker-metrics.services", () => ({

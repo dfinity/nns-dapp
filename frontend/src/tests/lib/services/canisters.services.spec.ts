@@ -15,9 +15,6 @@ import {
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
@@ -30,6 +27,9 @@ import {
   mockCanisters,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
+import type { Identity } from "@dfinity/agent";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 let identity: Identity | undefined = mockIdentity;
 const setNoAccountIdentity = () => (identity = undefined);

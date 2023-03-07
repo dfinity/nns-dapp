@@ -6,8 +6,8 @@ import AccountCard from "$lib/components/accounts/AccountCard.svelte";
 import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { render } from "@testing-library/svelte";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { render } from "@testing-library/svelte";
 
 describe("AccountCard", () => {
   const props: { account: Account } = { account: mockMainAccount };

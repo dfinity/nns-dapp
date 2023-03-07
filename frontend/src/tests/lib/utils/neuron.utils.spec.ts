@@ -59,16 +59,6 @@ import {
   votedNeuronDetails,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
-import type { WizardStep } from "@dfinity/gix-components";
-import {
-  ICPToken,
-  NeuronState,
-  TokenAmount,
-  Topic,
-  Vote,
-  type BallotInfo,
-} from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -81,6 +71,16 @@ import {
   mockNeuronNotControlled,
 } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import type { WizardStep } from "@dfinity/gix-components";
+import {
+  ICPToken,
+  NeuronState,
+  TokenAmount,
+  Topic,
+  Vote,
+  type BallotInfo,
+} from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
   beforeAll(() => jest.useFakeTimers().setSystemTime(Date.now()));

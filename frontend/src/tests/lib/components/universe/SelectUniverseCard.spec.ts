@@ -8,7 +8,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -19,6 +18,7 @@ import {
   mockSnsFullProject,
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
+import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: NNS_UNIVERSE, selected: false };

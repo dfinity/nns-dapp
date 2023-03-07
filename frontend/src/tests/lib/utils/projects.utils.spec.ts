@@ -14,8 +14,6 @@ import {
   projectRemainingAmount,
   validParticipation,
 } from "$lib/utils/projects.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import {
   createTransferableAmount,
   mockSnsFullProject,
@@ -26,6 +24,8 @@ import {
   principal,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("project-utils", () => {
   describe("filter", () => {

@@ -10,13 +10,6 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import {
-  decodeIcrcAccount,
-  encodeIcrcAccount,
-  IcrcLedgerCanister,
-} from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -25,6 +18,13 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
+import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import {
+  decodeIcrcAccount,
+  encodeIcrcAccount,
+  IcrcLedgerCanister,
+} from "@dfinity/ledger";
+import mock from "jest-mock-extended/lib/Mock";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {

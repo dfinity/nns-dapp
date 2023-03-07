@@ -3,8 +3,8 @@
  */
 
 import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
-import { render, waitFor } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("ProjectSystemInfoEntry", () => {
   it("should render a description placeholder if no description", async () => {

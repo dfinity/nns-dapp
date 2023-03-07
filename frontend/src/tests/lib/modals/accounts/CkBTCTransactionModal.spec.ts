@@ -12,8 +12,6 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { page } from "$mocks/$app/stores";
-import { TokenAmount } from "@dfinity/nns";
-import { waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -22,6 +20,8 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { TokenAmount } from "@dfinity/nns";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {

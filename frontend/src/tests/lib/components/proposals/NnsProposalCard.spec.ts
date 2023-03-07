@@ -6,11 +6,11 @@ import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
 import { ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "$tests/mocks/i18n.mock";
-import { mockProposals } from "$tests/mocks/proposals.store.mock";
 
 describe("NnsProposalCard", () => {
   it("should render a proposal title", () => {

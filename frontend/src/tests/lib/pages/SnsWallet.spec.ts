@@ -8,9 +8,6 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsAccountsStoreSubscribe,
@@ -18,6 +15,9 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

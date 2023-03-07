@@ -3,9 +3,9 @@
  */
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { get } from "svelte/store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { get } from "svelte/store";
 
 describe("accounts", () => {
   describe("nnsAccountsListStore", () => {

@@ -5,7 +5,6 @@
 import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -13,6 +12,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NeuronJoinFundCard", () => {

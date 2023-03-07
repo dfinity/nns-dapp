@@ -10,8 +10,8 @@ import {
   proposalsPathStore,
 } from "$lib/derived/paths.derived";
 import { page } from "$mocks/$app/stores";
-import { get } from "svelte/store";
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
+import { get } from "svelte/store";
 
 describe("paths derived stores", () => {
   describe("accountsPathStore", () => {

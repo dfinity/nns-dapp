@@ -4,8 +4,8 @@
 
 import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-import { render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
+import { render } from "@testing-library/svelte";
 
 describe("BitcoinEstimatedFeeDisplay", () => {
   it("should display estimated fee", async () => {

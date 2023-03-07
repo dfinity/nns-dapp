@@ -4,13 +4,13 @@
 
 import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/sns-neurons.services";
-import { fireEvent } from "@testing-library/svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { fireEvent } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

@@ -6,13 +6,6 @@ import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
-  ProposalRewardStatus,
-  ProposalStatus,
-  type Ballot,
-  type NeuronInfo,
-} from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
-import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
@@ -20,6 +13,13 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  type Ballot,
+  type NeuronInfo,
+} from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {

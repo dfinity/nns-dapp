@@ -6,10 +6,13 @@ import {
   isController,
   isUserController,
 } from "$lib/utils/canisters.utils";
-import { Principal } from "@dfinity/principal";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCanisterDetails, mockCanisters } from "$tests/mocks/canisters.mock";
+import {
+  mockCanisterDetails,
+  mockCanisters,
+} from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
+import { Principal } from "@dfinity/principal";
 
 describe("canister-utils", () => {
   describe("getCanisterFromStore", () => {

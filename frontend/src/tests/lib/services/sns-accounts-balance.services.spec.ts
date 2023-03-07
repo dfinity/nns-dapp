@@ -4,13 +4,13 @@ import * as services from "$lib/services/sns-accounts-balance.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { tick } from "svelte";
-import { get } from "svelte/store";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockSnsSummaryList,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
+import { tick } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {

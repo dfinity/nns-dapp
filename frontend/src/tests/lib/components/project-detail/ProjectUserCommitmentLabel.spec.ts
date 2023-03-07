@@ -3,13 +3,13 @@
  */
 
 import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockSwapCommitment,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
 
 describe("ProjectUserCommitmentLabel", () => {
   it("should render current commitment label", () => {

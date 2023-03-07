@@ -10,14 +10,6 @@ import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { ICPToken } from "@dfinity/nns";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
@@ -32,6 +24,14 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
+import { ICPToken } from "@dfinity/nns";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

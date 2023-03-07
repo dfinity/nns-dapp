@@ -5,10 +5,10 @@
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
-import { fireEvent, render } from "@testing-library/svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {

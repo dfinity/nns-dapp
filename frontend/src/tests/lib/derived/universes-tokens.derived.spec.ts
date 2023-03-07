@@ -10,13 +10,13 @@ import {
   nnsTokenStore,
 } from "$lib/derived/universes-tokens.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
   describe("complete data set", () => {

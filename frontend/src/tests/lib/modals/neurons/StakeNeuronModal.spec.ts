@@ -18,15 +18,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { secondsToDays } from "$lib/utils/date.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import {
-  fireEvent,
-  waitFor,
-  type BoundFunction,
-  type queries,
-} from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -41,6 +32,15 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import {
+  fireEvent,
+  waitFor,
+  type BoundFunction,
+  type queries,
+} from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

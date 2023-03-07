@@ -14,13 +14,13 @@ import {
 import Proposals from "$lib/routes/Proposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import { waitFor } from "@testing-library/dom";
-import { fireEvent, render } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
+import { waitFor } from "@testing-library/dom";
+import { fireEvent, render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

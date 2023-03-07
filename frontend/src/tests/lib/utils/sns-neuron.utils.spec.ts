@@ -43,6 +43,14 @@ import {
   type SnsFolloweesByNeuron,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -54,14 +62,6 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import {
-  createMockSnsNeuron,
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
   ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),

@@ -6,8 +6,6 @@ import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -18,6 +16,8 @@ import {
 } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
 jest.mock("$lib/proxy/ledger.services.proxy");

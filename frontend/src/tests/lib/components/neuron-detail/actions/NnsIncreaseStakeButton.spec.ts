@@ -4,11 +4,11 @@
 
 import NnsIncreaseStakeButton from "$lib/components/neuron-detail/actions/NnsIncreaseStakeButton.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
 import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { fireEvent } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("NnsIncreaseStakeButton", () => {

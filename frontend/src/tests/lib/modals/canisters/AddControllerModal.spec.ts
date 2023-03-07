@@ -3,9 +3,9 @@
  */
 
 import { addController } from "$lib/services/canisters.services";
+import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { renderModal } from "$tests/mocks/modal.mock";
 import AddControllerModal from "./AddControllerModalTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {

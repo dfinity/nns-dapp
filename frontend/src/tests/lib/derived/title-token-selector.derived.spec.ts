@@ -5,9 +5,9 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
 import { page } from "$mocks/$app/stores";
-import { get } from "svelte/store";
 import en from "$tests/mocks/i18n.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { get } from "svelte/store";
 
 describe("title token selector derived store", () => {
   it("should return select token text if path is not related to neurons", () => {

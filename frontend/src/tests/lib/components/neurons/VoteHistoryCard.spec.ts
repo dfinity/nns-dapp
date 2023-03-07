@@ -4,15 +4,15 @@
 
 import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import type { Proposal } from "@dfinity/nns";
-import { GovernanceCanister, Vote } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import type { Proposal } from "@dfinity/nns";
+import { GovernanceCanister, Vote } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("VoteHistoryCard", () => {
   const props = {

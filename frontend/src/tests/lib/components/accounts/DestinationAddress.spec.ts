@@ -4,12 +4,12 @@
 
 import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
+import { render } from "@testing-library/svelte";
 
 describe("DestinationAddress", () => {
   const mockSubAccount2 = {

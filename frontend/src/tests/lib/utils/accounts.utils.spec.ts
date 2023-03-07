@@ -15,10 +15,6 @@ import {
   sumAccounts,
   sumNnsAccounts,
 } from "$lib/utils/accounts.utils";
-import { AnonymousIdentity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
@@ -32,6 +28,10 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
+import { AnonymousIdentity } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];

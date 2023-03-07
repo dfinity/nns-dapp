@@ -9,14 +9,14 @@ import {
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {

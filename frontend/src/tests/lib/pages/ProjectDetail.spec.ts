@@ -13,12 +13,12 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 const mockUnwatchCommitmentsCall = jest.fn();
 jest.mock("$lib/services/sns.services", () => {

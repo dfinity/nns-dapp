@@ -6,12 +6,12 @@ import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svel
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, render } from "@testing-library/svelte";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("SelectUniverseList", () => {
   const projects = [

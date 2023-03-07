@@ -9,17 +9,17 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
-import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
-import type { ComponentProps } from "svelte/types/runtime";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
+import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
+import type { ComponentProps } from "svelte/types/runtime";
 
 jest.mock("$lib/services/sns-accounts.services");
 

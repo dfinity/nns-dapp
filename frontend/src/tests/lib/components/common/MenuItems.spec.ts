@@ -9,8 +9,8 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
 import en from "$tests/mocks/i18n.mock";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/$public/worker-metrics.services", () => ({
   initMetricsWorker: jest.fn(() =>
