@@ -8,8 +8,8 @@ import {
   secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
-import en from "../../mocks/i18n.mock";
-import { normalizeWhitespace } from "../../utils/utils.test-utils";
+import en from "$tests/mocks/i18n.mock";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 describe("secondsToDuration", () => {
   it("should give year details", () => {

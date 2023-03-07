@@ -20,10 +20,6 @@ import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import type { HttpAgent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,
@@ -31,14 +27,18 @@ import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockLedgerIdentifier,
   MockLedgerIdentity,
-} from "../../mocks/ledger.identity.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { MockNNSDappCanister } from "../../mocks/nns-dapp.canister.mock";
+} from "$tests/mocks/ledger.identity.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
   describe("connect hardware wallet", () => {

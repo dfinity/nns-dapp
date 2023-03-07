@@ -6,12 +6,12 @@ import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/Votin
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../../mocks/proposal.mock";
 
 describe("VotingNeuronSelect", () => {
   const neuron1 = {

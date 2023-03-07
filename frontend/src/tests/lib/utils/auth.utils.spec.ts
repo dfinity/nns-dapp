@@ -1,5 +1,5 @@
 import { isSignedIn } from "$lib/utils/auth.utils";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 
 describe("auth-utils", () => {
   it("should not be signed in", () => {

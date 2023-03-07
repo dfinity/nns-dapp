@@ -1,6 +1,6 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
-import { aggregatorSnsMock } from "../../mocks/sns-aggregator.mock";
-import aggregatedSnses from "../../mocks/sns-aggregator.mock.json";
+import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
+import aggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {

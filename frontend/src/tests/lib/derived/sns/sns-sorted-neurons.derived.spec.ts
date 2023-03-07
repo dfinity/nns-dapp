@@ -9,14 +9,14 @@ import {
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { snsResponsesFor } from "$tests/mocks/sns-response.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { createMockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { snsResponsesFor } from "../../../mocks/sns-response.mock";
 
 describe("sortedSnsNeuronStore", () => {
   const principal2 = Principal.fromText("aaaaa-aa");

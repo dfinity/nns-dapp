@@ -1,8 +1,8 @@
 import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockCanisterDetails } from "../../mocks/canisters.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 
 jest.mock("@dfinity/agent/lib/cjs/index", () => {
   class MockHttpAgent {}

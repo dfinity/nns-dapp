@@ -4,11 +4,11 @@
 
 import { authStore } from "$lib/stores/auth.store";
 import NeuronPage from "$routes/(app)/(u)/(detail)/neuron/+page.svelte";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { render } from "@testing-library/svelte";
 
 describe("Neuron page", () => {
   jest

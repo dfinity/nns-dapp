@@ -16,6 +16,12 @@ import {
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockCanisterDetails,
+  mockCanisterSettings,
+} from "$tests/mocks/canisters.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import {
   AccountIdentifier,
@@ -26,12 +32,6 @@ import {
 } from "@dfinity/nns";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
-import { mockSubAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import {
-  mockCanisterDetails,
-  mockCanisterSettings,
-} from "../../mocks/canisters.mock";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
