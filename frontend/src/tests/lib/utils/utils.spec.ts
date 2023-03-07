@@ -8,7 +8,6 @@ import {
   isHash,
   isPngAsset,
   poll,
-  pollingCancelled,
   PollingCancelledError,
   PollingLimitExceededError,
   removeKeys,
@@ -584,9 +583,7 @@ describe("utils", () => {
           })
           .catch((err) => {
             expect(err).toBeInstanceOf(PollingCancelledError);
-            if (pollingCancelled(err)) {
-              cancelled = true;
-            }
+            cancelled = true;
           });
         expect(fnSpy).toBeCalledTimes(1);
         await advanceTime();
@@ -623,9 +620,7 @@ describe("utils", () => {
           })
           .catch((err) => {
             expect(err).toBeInstanceOf(PollingCancelledError);
-            if (pollingCancelled(err)) {
-              cancelled = true;
-            }
+            cancelled = true;
           });
         rejectCall();
         await advanceTime();
