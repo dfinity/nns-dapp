@@ -15,7 +15,9 @@
       "$routes": ["src/routes"],
       "$routes/*": ["src/routes/*"],
       "$mocks": ["__mocks__"],
-      "$mocks/*": ["__mocks__/*"]
+      "$mocks/*": ["__mocks__/*"],
+      "$tests": ["src/tests"],
+      "$tests/*": ["src/tests/*"]
     }
   },
   "include": [

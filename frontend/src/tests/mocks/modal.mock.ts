@@ -3,11 +3,11 @@ import {
   WALLET_CONTEXT_KEY,
   type WalletStore,
 } from "$lib/types/wallet.context";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
 // TODO: rename and move this modal.mock.ts to modal.test-utils.ts
 

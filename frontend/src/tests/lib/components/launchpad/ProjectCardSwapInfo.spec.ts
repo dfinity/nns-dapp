@@ -9,13 +9,13 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns.services", () => {
   return {

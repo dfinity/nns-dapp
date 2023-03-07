@@ -1,11 +1,11 @@
 import { enumValues } from "$lib/utils/enum.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
 import {
   mockSnsNeuronId,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
 
 describe("sns-parameters utils", () => {
   describe("mapNervousSystemParameters", () => {

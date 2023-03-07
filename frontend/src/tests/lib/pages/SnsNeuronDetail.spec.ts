@@ -13,15 +13,15 @@ import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
-import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   buildMockSnsParametersStore,
   mockSnsNeuron,
-} from "../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 let validNeuron = true;
 jest.mock("$lib/services/sns-parameters.services", () => {

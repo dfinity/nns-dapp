@@ -4,13 +4,13 @@
 
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("ProposalMeta", () => {
   beforeEach(() => {

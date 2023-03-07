@@ -6,13 +6,13 @@ import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
-import { fireEvent } from "@testing-library/svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { fireEvent } from "@testing-library/svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

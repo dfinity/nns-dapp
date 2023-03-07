@@ -5,8 +5,8 @@
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("SelectNetworkDropdown", () => {
   const props = { props: { universeId: CKBTC_UNIVERSE_CANISTER_ID } };

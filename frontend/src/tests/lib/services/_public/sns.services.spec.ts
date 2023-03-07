@@ -14,17 +14,17 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   aggregatorSnsMock,
   aggregatorTokenMock,
-} from "../../../mocks/sns-aggregator.mock";
-import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
+} from "$tests/mocks/sns-aggregator.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {

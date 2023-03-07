@@ -17,23 +17,23 @@ import {
   sumAccounts,
   sumNnsAccounts,
 } from "$lib/utils/accounts.utils";
-import { AnonymousIdentity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
+import { AnonymousIdentity } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];
