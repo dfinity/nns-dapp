@@ -26,7 +26,7 @@ describe("CkBTCTransactionList", () => {
       props: {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        canisters: mockCkBTCAdditionalCanisters,
+        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
       },
     });
 
