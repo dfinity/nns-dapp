@@ -8,8 +8,8 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("busy-services", () => {
   const startBusySpy = jest

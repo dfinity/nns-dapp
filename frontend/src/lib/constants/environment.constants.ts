@@ -1,3 +1,5 @@
+import { addRawToUrl } from "$lib/utils/env.utils";
+
 export const DFX_NETWORK = import.meta.env.VITE_DFX_NETWORK;
 export const HOST = import.meta.env.VITE_HOST as string;
 export const DEV = import.meta.env.DEV;
@@ -6,13 +8,34 @@ export const FETCH_ROOT_KEY: boolean =
 
 export const HOST_IC0_APP = "https://ic0.app";
 
-// TODO: Add as env var https://dfinity.atlassian.net/browse/GIX-1245
-// Local development needs `.raw` to avoid CORS issues for now.
-// TODO: Fix CORS issues
+const snsAggregatorUrlEnv = import.meta.env
+  .VITE_AGGREGATOR_CANISTER_URL as string;
+const snsAggregatorUrl = (url: string) => {
+  try {
+    const { hostname } = new URL(url);
+    if (["localhost", "127.0.0.1"].includes(hostname)) {
+      return url;
+    }
+
+    if (DEV) {
+      return addRawToUrl(url);
+    }
+
+    return url;
+  } catch (e) {
+    console.error(`Invalid URL for SNS aggregator: ${url}`, e);
+    return undefined;
+  }
+};
+
+/**
+ * If you are on a different domain from the canister that you are calling, the service worker will not be loaded for that domain.
+ * If the service worker is not loaded then it will make a request to the boundary node directly which will fail CORS.
+ *
+ * Therefore, we add `raw` to the URL to avoid CORS issues in local development.
+ */
 export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
-  (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string) === ""
-    ? undefined
-    : (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
+  snsAggregatorUrl(snsAggregatorUrlEnv);
 
 export interface FeatureFlags<T> {
   ENABLE_SNS_2: T;

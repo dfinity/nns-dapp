@@ -3,8 +3,8 @@
  */
 
 import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
+import { mockCanister } from "$tests/mocks/canisters.mock";
 import { render } from "@testing-library/svelte";
-import { mockCanister } from "../../../mocks/canisters.mock";
 
 describe("CanisterCardSubTitle", () => {
   it("renders the canister id", async () => {

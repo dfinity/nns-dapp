@@ -4,14 +4,14 @@
 
 import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccount", () => {
   it("should render a skeleton-card until accounts loaded", () => {

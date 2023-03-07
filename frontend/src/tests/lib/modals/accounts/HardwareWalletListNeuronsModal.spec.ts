@@ -3,8 +3,8 @@
  */
 
 import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
+import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 import HardwareWalletNeuronsTest from "../../components/accounts/HardwareWalletNeuronsTest.svelte";
 
 describe("HardwareWalletListNeuronsModal", () => {

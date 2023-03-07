@@ -2,12 +2,12 @@ import {
   voteRegistrationStore,
   type VoteRegistration,
 } from "$lib/stores/vote-registration.store";
-import type { ProposalId } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   mockProposalInfo,
   mockVoteRegistration,
-} from "../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
+import type { ProposalId } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("voting-store", () => {
   const voteA: VoteRegistration = {

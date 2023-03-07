@@ -7,14 +7,14 @@ import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { page } from "$mocks/$app/stores";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   mockSnsSwapCommitment,
   mockSnsToken,
-} from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("selected-project-new-transaction-data derived store", () => {
   describe("snsSelectedProjectNewTxData", () => {

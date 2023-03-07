@@ -7,12 +7,12 @@ import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 jest.mock("$lib/api/governance.api");
 

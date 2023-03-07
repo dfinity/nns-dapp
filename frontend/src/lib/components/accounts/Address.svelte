@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { invalidAddress } from "$lib/utils/accounts.utils";
+  import { invalidICPOrIcrcAddress } from "$lib/utils/accounts.utils";
   import AddressInput from "./AddressInput.svelte";
 
   export let address = "";
@@ -13,7 +13,7 @@
       class="primary"
       type="submit"
       data-tid="address-submit-button"
-      disabled={invalidAddress(address)}
+      disabled={invalidICPOrIcrcAddress(address)}
     >
       {$i18n.core.continue}
     </button>

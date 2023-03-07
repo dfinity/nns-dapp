@@ -25,6 +25,32 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import {
+  mockProjectSubscribe,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
+  mockSnsFullProject,
+  mockSnsToken,
+  mockSwap,
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
@@ -47,32 +73,6 @@ import {
 } from "@dfinity/sns";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockQueryMetadataResponse,
-  mockQueryTokenResponse,
-  mockSnsFullProject,
-  mockSnsToken,
-  mockSwap,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  ledgerCanisterIdMock,
-  swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../mocks/sns.mock";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
