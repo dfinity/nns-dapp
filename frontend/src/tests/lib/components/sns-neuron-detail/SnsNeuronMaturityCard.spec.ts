@@ -4,7 +4,6 @@
 
 import SnsNeuronMaturityCard from "$lib/components/sns-neuron-detail/SnsNeuronMaturityCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   SELECTED_SNS_NEURON_CONTEXT_KEY,
   type SelectedSnsNeuronContext,
@@ -16,7 +15,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
@@ -103,30 +102,5 @@ describe("SnsNeuronMaturityCard", () => {
     );
 
     expect(getByTestId("stake-maturity-actions")).toBeInTheDocument();
-  });
-
-  it("should hide stake maturity actions feature flag is disabled", async () => {
-    const neuron = {
-      ...mockSnsNeuron,
-      permissions: [
-        {
-          principal: [mockIdentity.getPrincipal()],
-          permission_type: [
-            SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
-          ],
-        },
-      ],
-    };
-    const { queryByTestId } = renderSnsNeuronMaturityCard(
-      neuron as unknown as SnsNeuron
-    );
-
-    expect(queryByTestId("stake-maturity-actions")).toBeInTheDocument();
-
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_2", false);
-
-    await waitFor(() =>
-      expect(queryByTestId("stake-maturity-actions")).not.toBeInTheDocument()
-    );
   });
 });
