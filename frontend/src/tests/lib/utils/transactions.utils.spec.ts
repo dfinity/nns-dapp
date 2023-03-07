@@ -11,6 +11,8 @@ import {
   transactionType,
 } from "$lib/utils/transactions.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { TransactionNetwork } from "$lib/types/transaction";
+import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -363,6 +365,24 @@ describe("transactions-utils", () => {
           tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
+    });
+  });
+
+  describe("isTransactionNetworkBtc", () => {
+    it("should be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_MAINNET)
+      ).toBeTruthy();
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_TESTNET)
+      ).toBeTruthy();
+    });
+
+    it("should not be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.ICP_CKTESTBTC)
+      ).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP_CKBTC)).toBeFalsy();
     });
   });
 });
