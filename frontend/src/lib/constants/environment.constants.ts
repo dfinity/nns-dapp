@@ -57,7 +57,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": false, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
+    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
 );
 
 export const IS_TESTNET: boolean =
