@@ -598,6 +598,44 @@ describe("utils", () => {
         expect(fnSpy).toBeCalledTimes(1);
       });
 
+      it("should throw PollingCancelledError when canceled during the last attempt", async () => {
+        const maxAttempts = 2;
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        let rejectCall: () => void;
+        fnSpy.mockImplementation(
+          () =>
+            new Promise((resolve, reject) => {
+              rejectCall = reject;
+            })
+        );
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        })
+          .then(() => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            if (pollingCancelled(err)) {
+              cancelled = true;
+            }
+          });
+        rejectCall();
+        await advanceTime();
+        expect(fnSpy).toBeCalledTimes(maxAttempts);
+        expect(cancelled).toBe(false);
+        cancelPoll(pollId);
+        await advanceTime();
+        expect(cancelled).toBe(true);
+      });
+
       it("should cancel immediately when called again while polling", async () => {
         const pollId = Symbol();
         const fnSpy = jest.fn();
