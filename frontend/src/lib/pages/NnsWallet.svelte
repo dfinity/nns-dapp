@@ -124,6 +124,12 @@
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
+
+  // Spread to update store which triggers the reload
+  const reloadAccount = async () =>
+    selectedAccountStore.set({
+      ...$selectedAccountStore,
+    } as WalletStore);
 </script>
 
 <Island>
@@ -178,5 +184,6 @@
     qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
     logo={IC_LOGO}
     logoArialLabel={$i18n.core.icp}
+    {reloadAccount}
   />
 {/if}

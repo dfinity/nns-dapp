@@ -23,6 +23,10 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import {
+    loadSnsAccountNextTransactions,
+    loadSnsAccountTransactions,
+  } from "$lib/services/sns-transactions.services";
 
   let showModal: "send" | "receive" | undefined = undefined;
 
@@ -51,8 +55,8 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  $: {
-    if (accountIdentifier !== undefined) {
+  const load = () => {
+    if (nonNullish(accountIdentifier)) {
       const selectedAccount = $snsProjectAccountsStore?.find(
         ({ identifier }) => identifier === accountIdentifier
       );
@@ -62,13 +66,36 @@
         neurons: [],
       });
     }
-  }
+  };
+
+  const reloadTransactions = async () => {
+    if (
+      isNullish($selectedAccountStore.account) ||
+      isNullish($snsOnlyProjectStore)
+    ) {
+      return;
+    }
+
+    await loadSnsAccountTransactions({
+      account: $selectedAccountStore.account,
+      canisterId: $snsOnlyProjectStore,
+    });
+  };
+
+  $: accountIdentifier, load();
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
 
   let logo: string;
   $: logo = $selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO;
+
+  // Spread to update store which triggers the reload
+  const reloadAccount = async () => {
+    load();
+
+    await reloadTransactions();
+  };
 </script>
 
 <Island>
@@ -124,5 +151,6 @@
     qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
     {logo}
     logoArialLabel={$i18n.core.icp}
+    {reloadAccount}
   />
 {/if}
