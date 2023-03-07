@@ -9,6 +9,7 @@
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
+  export let logoSize: "huge" | "big" = "huge";
 
   // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
   export let qrCodeRendered = false;
@@ -35,7 +36,7 @@
         <div class="logo" slot="logo" in:fade={{ duration: 200 }}>
           <Logo
             src={logo}
-            size="huge"
+            size={logoSize}
             framed={false}
             testId="logo"
             alt={logoArialLabel}

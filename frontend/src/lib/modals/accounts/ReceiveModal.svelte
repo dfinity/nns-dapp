@@ -3,9 +3,11 @@
   import { i18n } from "$lib/stores/i18n";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import type { Account } from "$lib/types/account";
-  import IC_LOGO from "$lib/assets/icp.svg";
 
   export let account: Account;
+  export let qrCodeLabel: string;
+  export let logo: string;
+  export let logoArialLabel: string;
 
   let modalRendered = false;
 
@@ -18,9 +20,10 @@
   <ReceiveAddressQRCode
     address={account.identifier}
     renderQRCode={modalRendered}
-    qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
-    logo={IC_LOGO}
-    logoArialLabel={$i18n.core.icp}
+    {qrCodeLabel}
+    {logo}
+    {logoArialLabel}
+    logoSize="big"
   >
     <svelte:fragment slot="description">TODO A DESCRIPTION</svelte:fragment>
   </ReceiveAddressQRCode>

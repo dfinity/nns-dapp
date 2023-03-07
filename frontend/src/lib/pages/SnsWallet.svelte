@@ -19,8 +19,12 @@
   import { Island } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import IC_LOGO from "$lib/assets/icp.svg";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 
-  let showNewTransactionModal = false;
+  let showModal: "send" | "receive" | undefined = undefined;
 
   const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
@@ -59,6 +63,12 @@
       });
     }
   }
+
+  let disabled = false;
+  $: disabled = isNullish($selectedAccountStore.account) || $busy;
+
+  let logo: string;
+  $: logo = $selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO;
 </script>
 
 <Island>
@@ -81,20 +91,38 @@
     </section>
   </main>
 
-  <Footer columns={1}>
+  <Footer columns={2}>
     <button
       class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
+      on:click={() => (showModal = "send")}
+      {disabled}
       data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
+    >
+
+    <button
+      class="secondary"
+      on:click={() => (showModal = "receive")}
+      {disabled}
+      data-tid="receive-sns-transaction">{$i18n.ckbtc.receive}</button
     >
   </Footer>
 </Island>
 
-{#if showNewTransactionModal}
+{#if showModal}
   <SnsTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
+    on:nnsClose={() => (showModal = false)}
     selectedAccount={$selectedAccountStore.account}
     loadTransactions
+  />
+{/if}
+
+<!-- For TS - action button is disabled anyway if account is undefined -->
+{#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
+  <ReceiveModal
+    account={$selectedAccountStore.account}
+    on:nnsClose={() => (showModal = undefined)}
+    qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
+    {logo}
+    logoArialLabel={$i18n.core.icp}
   />
 {/if}

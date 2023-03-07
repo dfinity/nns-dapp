@@ -39,7 +39,8 @@
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import IcpReceiveModal from "$lib/modals/accounts/IcpReceiveModal.svelte";
+  import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   onMount(() => {
     pollAccounts();
@@ -155,7 +156,7 @@
       class="secondary"
       on:click={() => (showModal = "receive")}
       {disabled}
-      data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
+      data-tid="receive-nns-transaction">{$i18n.ckbtc.receive}</button
     >
   </Footer>
 </Island>
@@ -171,8 +172,11 @@
 
 <!-- For TS - action button is disabled anyway if account is undefined -->
 {#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
-  <IcpReceiveModal
+  <ReceiveModal
     account={$selectedAccountStore.account}
     on:nnsClose={() => (showModal = undefined)}
+    qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
+    logo={IC_LOGO}
+    logoArialLabel={$i18n.core.icp}
   />
 {/if}
