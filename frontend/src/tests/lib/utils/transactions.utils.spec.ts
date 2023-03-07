@@ -1,8 +1,12 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountTransactionType } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  TransactionNetwork,
+} from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
+  isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
   showTransactionFee,
@@ -363,6 +367,24 @@ describe("transactions-utils", () => {
           tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
+    });
+  });
+
+  describe("isTransactionNetworkBtc", () => {
+    it("should be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_MAINNET)
+      ).toBeTruthy();
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_TESTNET)
+      ).toBeTruthy();
+    });
+
+    it("should not be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.ICP_CKTESTBTC)
+      ).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP_CKBTC)).toBeFalsy();
     });
   });
 });

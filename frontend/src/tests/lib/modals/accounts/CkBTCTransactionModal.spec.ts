@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
@@ -51,13 +52,11 @@ describe("CkBTCTransactionModal", () => {
       },
     });
 
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
 
-  beforeAll(() => {
     icrcAccountsStore.set({
       accounts: {
         accounts: [mockCkBTCMainAccount],
@@ -70,6 +69,8 @@ describe("CkBTCTransactionModal", () => {
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
+
+    jest.spyOn(minterApi, "estimateFee").mockResolvedValue(123n);
   });
 
   it("should transfer tokens", async () => {
@@ -77,7 +78,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKBTC,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
     });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
@@ -88,7 +89,8 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.BITCOIN,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn",
     });
 
     await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());

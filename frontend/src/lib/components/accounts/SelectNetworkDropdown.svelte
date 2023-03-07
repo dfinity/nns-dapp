@@ -9,15 +9,8 @@
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
-  let networkCkBTCLabel = $i18n.accounts.network_icp_ckbtc;
-  $: networkCkBTCLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.accounts.network_icp_cktestbtc
-    : $i18n.accounts.network_icp_ckbtc;
-
-  let networkBitcoinLabel = $i18n.accounts.network_bitcoin;
-  $: networkBitcoinLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.accounts.network_test_bitcoin
-    : $i18n.accounts.network_bitcoin;
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
 </script>
 
 <div class:placeholder={!notEmptyString(selectedNetwork)}>
@@ -31,12 +24,21 @@
     <option disabled selected value={undefined} class="hidden"
       ><span class="description">{$i18n.accounts.select_network}</span></option
     >
-    <DropdownItem value={TransactionNetwork.ICP_CKBTC}
-      >{networkCkBTCLabel}</DropdownItem
-    >
-    <DropdownItem value={TransactionNetwork.BITCOIN}
-      >{networkBitcoinLabel}</DropdownItem
-    >
+    {#if ckTESTBTC}
+      <DropdownItem value={TransactionNetwork.ICP_CKTESTBTC}
+        >{$i18n.accounts.network_icp_cktestbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_TESTNET}
+        >{$i18n.accounts.network_btc_testnet}</DropdownItem
+      >
+    {:else}
+      <DropdownItem value={TransactionNetwork.ICP_CKBTC}
+        >{$i18n.accounts.network_icp_ckbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_MAINNET}
+        >{$i18n.accounts.network_btc_mainnet}</DropdownItem
+      >
+    {/if}
   </Dropdown>
 </div>
 
