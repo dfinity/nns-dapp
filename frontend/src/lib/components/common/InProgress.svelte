@@ -1,11 +1,10 @@
 <script lang="ts">
   import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
-  import { SaleStep } from "$lib/types/sale";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
-  export let progressStep: SaleStep;
+  export let progressStep: string;
   export let steps: [ProgressStep, ...ProgressStep[]];
 
   const updateSteps = () => {
