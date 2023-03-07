@@ -23,7 +23,7 @@
     dispatcher("nnsBlur");
   };
 
-  $: selectedNetwork, (() => showErrorIfAny())();
+  $: selectedNetwork, showErrorIfAny();
 </script>
 
 <InputWithError
