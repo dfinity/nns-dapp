@@ -2,7 +2,6 @@
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { fade } from "svelte/transition";
 
   export let address: string;
   export let renderQRCode = false;
@@ -33,14 +32,16 @@
         ariaLabel={qrCodeLabel}
         on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
       >
-        <div class="logo" slot="logo" in:fade={{ duration: 250 }}>
-          <Logo
-            src={logo}
-            size={logoSize}
-            framed={false}
-            testId="logo"
-            alt={logoArialLabel}
-          />
+        <div class="logo" slot="logo">
+          {#if qrCodeRendered}
+            <Logo
+              src={logo}
+              size={logoSize}
+              framed={false}
+              testId="logo"
+              alt={logoArialLabel}
+            />
+          {/if}
         </div>
       </QRCode>
     {/if}
