@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 111317
 * Stake maturity for SNS neurons.
 * Reenable update calls.
 * Optimize project calls.
