@@ -33,7 +33,9 @@ export const getAccountByPrincipal = ({
 };
 
 /**
- * Is the address a valid entry to proceed with converting to Bitcoin?
+ * Is the address a valid entry to proceed with?
+ *
+ * e.g. this check is used in the Send / convert ckBTC to test if an address is a valid Bitcoin address
  */
 const invalidBtcAddress = (address: BtcAddress): boolean => {
   try {
