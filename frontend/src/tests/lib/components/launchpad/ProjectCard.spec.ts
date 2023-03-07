@@ -4,14 +4,14 @@
 
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
   jest

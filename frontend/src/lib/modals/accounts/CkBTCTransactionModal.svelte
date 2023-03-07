@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
-  import { TransactionNetwork } from "$lib/types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "./NewTransaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -19,6 +19,7 @@
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
+  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -48,7 +49,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await (selectedNetwork === TransactionNetwork.BITCOIN
+    const { success } = await (isTransactionNetworkBtc(selectedNetwork)
       ? convertCkBTCToBtc({
           source: sourceAccount,
           destinationAddress,

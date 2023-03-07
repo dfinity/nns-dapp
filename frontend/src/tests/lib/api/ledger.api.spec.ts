@@ -3,6 +3,8 @@ import {
   sendICP,
   transactionFee,
 } from "$lib/api/ledger.api";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   AccountIdentifier,
   ICPToken,
@@ -10,8 +12,6 @@ import {
   TokenAmount,
 } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
 
 describe("ledger-api", () => {
   describe("sendICP", () => {

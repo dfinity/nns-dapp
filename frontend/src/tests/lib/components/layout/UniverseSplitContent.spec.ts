@@ -5,12 +5,12 @@
 import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { render } from "@testing-library/svelte";
 
 describe("UniverseSplitContent", () => {
   jest

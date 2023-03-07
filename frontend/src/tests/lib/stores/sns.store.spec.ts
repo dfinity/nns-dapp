@@ -7,6 +7,12 @@ import {
 } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsSwapState } from "$lib/types/sns.query";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import {
+  mockSnsSummaryList,
+  mockSnsSwapCommitment,
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { ProposalStatus } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
@@ -15,12 +21,6 @@ import {
 } from "@dfinity/sns";
 import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { get } from "svelte/store";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
-import {
-  mockSnsSummaryList,
-  mockSnsSwapCommitment,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 describe("sns.store", () => {
   describe("snsSwapStatesStore", () => {

@@ -10,16 +10,16 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import * as routeUtils from "$lib/utils/route.utils";
+import {
+  authStoreMock,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "$tests/mocks/auth.store.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;

@@ -5,12 +5,12 @@
 import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
 import { snsFiltesStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
 
 describe("SnsFilterStatusModal", () => {
   afterEach(() => {

@@ -9,8 +9,8 @@ import {
   mockSnsFullProject,
   mockSnsParams,
   mockSummary,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
 
 describe("ProjectSwapDetails", () => {
   it("should render total tokens", () => {

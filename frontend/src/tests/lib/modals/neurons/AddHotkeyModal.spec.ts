@@ -4,11 +4,11 @@
 
 import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/neurons.services";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

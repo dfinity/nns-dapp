@@ -4,13 +4,13 @@
 
 import ProjectStatus from "$lib/components/project-detail/ProjectStatus.svelte";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectStatus", () => {
   it("should render accepting participation text when open", () => {
