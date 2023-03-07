@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 const proposalTimestampSeconds = BigInt(100);
 const proposalInfo = {

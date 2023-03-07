@@ -11,12 +11,15 @@ import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mockAuthStoreSubscribe, mockIdentity } from "../mocks/auth.store.mock";
-import { mockProposalInfo } from "../mocks/proposal.mock";
 
 const proposal = {
   ...mockProposalInfo,

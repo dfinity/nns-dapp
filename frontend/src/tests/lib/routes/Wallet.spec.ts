@@ -9,12 +9,12 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockSnsFullProject, principal } from "../../mocks/sns-projects.mock";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

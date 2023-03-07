@@ -18,6 +18,20 @@ import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { secondsToDays } from "$lib/utils/date.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
+import {
+  mockAccountDetails,
+  mockAccountsStoreData,
+  mockHardwareWalletAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import {
@@ -27,20 +41,6 @@ import {
   type queries,
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import {
-  mockAccountDetails,
-  mockAccountsStoreData,
-  mockHardwareWalletAccount,
-  mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "../../../utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

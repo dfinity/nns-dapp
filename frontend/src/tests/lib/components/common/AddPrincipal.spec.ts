@@ -3,9 +3,9 @@
  */
 
 import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
 
 describe("PrincipalInput", () => {
   it("should render an input and a button", () => {
