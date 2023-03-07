@@ -6,13 +6,13 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Login from "$lib/pages/Login.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   authStoreMock,
   mockAuthStoreSubscribe,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("Login", () => {
   describe("Manual sign-in", () => {

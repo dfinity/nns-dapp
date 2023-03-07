@@ -6,13 +6,13 @@ import {
   isIcrcTransactionsCompleted,
   mapIcrcTransaction,
 } from "$lib/utils/icrc-transactions.utils";
-import { mockPrincipal } from "../..//mocks/auth.store.mock";
+import { mockPrincipal } from "$tests//mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../..//mocks/sns-accounts.mock";
-import { createIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
-import { principal } from "../../mocks/sns-projects.mock";
+} from "$tests//mocks/sns-accounts.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 
 describe("icrc-transaction utils", () => {
   const to = {

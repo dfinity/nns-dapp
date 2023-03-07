@@ -4,12 +4,12 @@ import {
   snsTransfer,
   transactionFee,
 } from "$lib/api/sns-ledger.api";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,
   mockSnsToken,
-} from "../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);

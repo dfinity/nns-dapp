@@ -59,6 +59,18 @@ import {
   votedNeuronDetails,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockFullNeuron,
+  mockNeuron,
+  mockNeuronControlled,
+  mockNeuronNotControlled,
+} from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   ICPToken,
@@ -69,18 +81,6 @@ import {
   type BallotInfo,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
-import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import {
-  mockFullNeuron,
-  mockNeuron,
-  mockNeuronControlled,
-  mockNeuronNotControlled,
-} from "../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
 
 describe("neuron-utils", () => {
   beforeAll(() => jest.useFakeTimers().setSystemTime(Date.now()));

@@ -10,14 +10,14 @@ import Accounts from "$lib/routes/Accounts.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, waitFor } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockMainAccount,
-} from "../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../mocks/auth.store.mock";
-import { clickByTestId } from "../utils/utils.test-utils";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent, waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/api/accounts.api", () => {
   return {

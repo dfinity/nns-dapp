@@ -8,15 +8,15 @@ import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeMod
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent } from "@testing-library/dom";
-import { waitFor } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { fireEvent } from "@testing-library/dom";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

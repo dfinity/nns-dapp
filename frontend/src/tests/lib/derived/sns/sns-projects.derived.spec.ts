@@ -5,13 +5,13 @@ import {
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
-} from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("projects.derived", () => {
   describe("projectsDerived", () => {

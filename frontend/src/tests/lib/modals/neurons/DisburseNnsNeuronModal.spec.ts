@@ -11,22 +11,22 @@ import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.s
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { get } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
