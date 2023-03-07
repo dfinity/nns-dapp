@@ -258,3 +258,25 @@ export const hasOpenTicketInProcess = ({
   // `undefined` means that we could still be polling for the ticket.
   return { status: projectTicketData.keepPolling ? "polling" : "none" };
 };
+
+/**
+ * Exported for testing purposes
+ *
+ * @example text
+ * ...
+ * # TYPE sale_buyer_count gauge
+ * sale_buyer_count 33 1677707139456
+ * # HELP sale_cf_participants_count
+ * ...
+ */
+export const parseSnsSwapSaleBuyerCount = (
+  text: string
+): number | undefined => {
+  const value = Number(
+    text
+      .split("\n")
+      ?.find((line) => line.startsWith("sale_buyer_count "))
+      ?.split(/\s/)?.[1]
+  );
+  return isNaN(value) ? undefined : value;
+};

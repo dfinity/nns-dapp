@@ -1,6 +1,7 @@
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -79,27 +80,4 @@ const querySnsMetrics = async ({
   } catch (err) {
     logWithTimestamp("Error getting SNS metrics", err);
   }
-};
-
-// TODO(Maks): tests
-/**
- * Exported for testing purposes
- *
- * @example text
- * ...
- * # TYPE sale_buyer_count gauge
- * sale_buyer_count 33 1677707139456
- * # HELP sale_cf_participants_count
- * ...
- */
-export const parseSnsSwapSaleBuyerCount = (
-  text: string
-): number | undefined => {
-  const value = Number(
-    text
-      .split("\n")
-      ?.find((line) => line.startsWith("sale_buyer_count "))
-      ?.split(/\s/)?.[1]
-  );
-  return isNaN(value) ? undefined : value;
 };
