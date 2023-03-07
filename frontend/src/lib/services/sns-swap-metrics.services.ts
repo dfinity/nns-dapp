@@ -1,6 +1,6 @@
+import { querySnsMetrics } from "$lib/api/sns-swap-metrics.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -34,10 +34,19 @@ export const loadSnsMetrics = async ({
     });
   }
 
-  const metrics = await querySnsMetrics({ swapCanisterId });
+  const rawMetrics = await querySnsMetrics({ swapCanisterId });
+  if (rawMetrics === undefined) {
+    return;
+  }
+
+  const saleBuyerCount = parseSnsSwapSaleBuyerCount(rawMetrics);
+  if (saleBuyerCount === undefined) {
+    return;
+  }
+
   snsSwapMetricsStore.setMetrics({
     rootCanisterId,
-    metrics: metrics ?? null,
+    metrics: { saleBuyerCount },
   });
 };
 
@@ -55,29 +64,4 @@ export const watchSnsMetrics = ({
   return () => {
     clearInterval(interval);
   };
-};
-
-const querySnsMetrics = async ({
-  swapCanisterId,
-}: {
-  swapCanisterId: Principal;
-}): Promise<{ saleBuyerCount: number } | undefined> => {
-  logWithTimestamp("Loading SNS metrics...");
-
-  try {
-    // TODO: switch to a metrics canister. Otherwise not testable on testnet.
-    const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("response not ok");
-    }
-
-    const rawMetrics = await response.text();
-    const saleBuyerCount = parseSnsSwapSaleBuyerCount(rawMetrics);
-    logWithTimestamp("Loading SNS metrics completed");
-    return saleBuyerCount === undefined ? undefined : { saleBuyerCount };
-  } catch (err) {
-    logWithTimestamp("Error getting SNS metrics", err);
-  }
 };
