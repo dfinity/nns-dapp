@@ -10,6 +10,22 @@ export const HOST_IC0_APP = "https://ic0.app";
 
 const snsAggregatorUrlEnv = import.meta.env
   .VITE_AGGREGATOR_CANISTER_URL as string;
+const snsAggregatorUrl = (url: string) => {
+  if (url === "") {
+    return undefined;
+  }
+
+  if (url.includes("localhost")) {
+    return url;
+  }
+
+  if (DEV) {
+    return addRawToUrl(url);
+  }
+
+  return url;
+};
+
 /**
  * If you are on a different domain from the canister that you are calling, the service worker will not be loaded for that domain.
  * If the service worker is not loaded then it will make a request to the boundary node directly which will fail CORS.
@@ -17,11 +33,7 @@ const snsAggregatorUrlEnv = import.meta.env
  * Therefore, we add `raw` to the URL to avoid CORS issues in local development.
  */
 export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
-  snsAggregatorUrlEnv === ""
-    ? undefined
-    : DEV
-    ? addRawToUrl(snsAggregatorUrlEnv)
-    : snsAggregatorUrlEnv;
+  snsAggregatorUrl(snsAggregatorUrlEnv);
 
 export interface FeatureFlags<T> {
   ENABLE_SNS_2: T;
