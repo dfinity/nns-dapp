@@ -64,8 +64,7 @@ const querySnsMetrics = async ({
   logWithTimestamp("Loading SNS metrics...");
 
   try {
-    // TODO: need to add like a HOST variable for url build (otherwise can't be tested it in a testnet)
-    // const url = `https://${"2hx64-daaaa-aaaaq-aaana-cai"}.raw.ic0.app/metrics`;
+    // TODO: switch to a metrics canister. Otherwise not testable on testnet.
     const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
     const response = await fetch(url);
 
