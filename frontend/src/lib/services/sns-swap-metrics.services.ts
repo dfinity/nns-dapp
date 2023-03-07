@@ -5,12 +5,11 @@ import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
-// TODO(Maks): rename: loadSwapMetrics
 /**
  * Get metrics from the store or fetch it
  * @param rootCanisterId
  */
-export const loadSnsMetrics = async ({
+export const loadSnsSwapMetrics = async ({
   rootCanisterId,
   swapCanisterId,
   forceFetch,
@@ -58,7 +57,7 @@ export const watchSnsMetrics = ({
   swapCanisterId: Principal;
 }): (() => void) => {
   const interval = setInterval(() => {
-    loadSnsMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
+    loadSnsSwapMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {

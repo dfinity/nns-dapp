@@ -5,7 +5,7 @@
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import * as snsSwapMetrics from "../../../lib/api/sns-swap-metrics.api";
-import { loadSnsMetrics } from "../../../lib/services/sns-swap-metrics.services";
+import { loadSnsSwapMetrics } from "../../../lib/services/sns-swap-metrics.services";
 import { snsSwapMetricsStore } from "../../../lib/stores/sns-swap-metrics.store";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
@@ -20,7 +20,7 @@ sale_buyer_count 33 1677707139456
     snsSwapMetricsStore.reset();
   });
 
-  describe("loadSnsMetrics", () => {
+  describe("loadSnsSwapMetrics", () => {
     const rootCanisterId = mockPrincipal;
     const swapCanisterId = Principal.fromText("aaaaa-aa");
 
@@ -28,7 +28,7 @@ sale_buyer_count 33 1677707139456
       const querySnsMetricsSpy = jest
         .spyOn(snsSwapMetrics, "querySnsMetrics")
         .mockResolvedValue(RAW_METRICS);
-      await loadSnsMetrics({
+      await loadSnsSwapMetrics({
         rootCanisterId,
         swapCanisterId,
         forceFetch: false,
@@ -52,7 +52,7 @@ sale_buyer_count 33 1677707139456
       const querySnsMetricsSpy = jest
         .spyOn(snsSwapMetrics, "querySnsMetrics")
         .mockResolvedValue(RAW_METRICS);
-      await loadSnsMetrics({
+      await loadSnsSwapMetrics({
         rootCanisterId,
         swapCanisterId,
         forceFetch: false,
@@ -69,7 +69,7 @@ sale_buyer_count 33 1677707139456
       const querySnsMetricsSpy = jest
         .spyOn(snsSwapMetrics, "querySnsMetrics")
         .mockResolvedValue(RAW_METRICS);
-      await loadSnsMetrics({
+      await loadSnsSwapMetrics({
         rootCanisterId,
         swapCanisterId,
         forceFetch: true,
