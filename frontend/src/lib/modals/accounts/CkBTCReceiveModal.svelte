@@ -117,6 +117,7 @@
       : $i18n.ckbtc.qrcode_aria_label_ckBTC}
     {logo}
     {logoArialLabel}
+    bind:qrCodeRendered
   >
     <svelte:fragment slot="description"
       >{bitcoin

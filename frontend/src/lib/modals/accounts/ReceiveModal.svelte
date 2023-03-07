@@ -12,6 +12,8 @@
   export let logoArialLabel: string;
   export let reloadAccount: () => Promise<void>;
 
+  let qrCodeRendered = false;
+
   let modalRendered = false;
 
   const onIntroEnd = () => (modalRendered = true);
@@ -23,7 +25,7 @@
       initiator: "reload-ckbtc-account",
     });
 
-    reloadAccount();
+    await reloadAccount();
     dispatcher("nnsClose");
 
     stopBusy("reload-ckbtc-account");
@@ -40,17 +42,22 @@
     {logo}
     {logoArialLabel}
     logoSize="big"
+    bind:qrCodeRendered
   >
     <svelte:fragment slot="description">TODO A DESCRIPTION</svelte:fragment>
   </ReceiveAddressQRCode>
 
-  <div class="toolbar">
-    <button
-      class="primary"
-      on:click={reloadAccountAndClose}
-      data-tid="reload-ckbtc-account">{$i18n.core.done}</button
-    >
-  </div>
+  {#if modalRendered}
+    <div class="toolbar">
+      {#if qrCodeRendered}
+      <button
+              class="primary"
+              on:click={reloadAccountAndClose}
+              data-tid="reload-ckbtc-account">{$i18n.core.done}</button
+      >
+        {/if}
+    </div>
+  {/if}
 </Modal>
 
 <style lang="scss">

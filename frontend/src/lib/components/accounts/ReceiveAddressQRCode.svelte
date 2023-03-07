@@ -33,7 +33,7 @@
         ariaLabel={qrCodeLabel}
         on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
       >
-        <div class="logo" slot="logo" in:fade={{ duration: 200 }}>
+        <div class="logo" slot="logo" in:fade={{ duration: 250 }}>
           <Logo
             src={logo}
             size={logoSize}
