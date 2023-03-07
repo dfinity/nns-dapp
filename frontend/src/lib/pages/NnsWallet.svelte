@@ -38,6 +38,8 @@
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import IcpReceiveModal from "$lib/modals/accounts/IcpReceiveModal.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -115,9 +117,12 @@
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
 
-  let showNewTransactionModal = false;
+  let showModal: "send" | "receive" | undefined = undefined;
 
   // TODO(L2-581): Create WalletInfo component
+
+  let disabled = false;
+  $: disabled = isNullish($selectedAccountStore.account) || $busy;
 </script>
 
 <Island>
@@ -138,21 +143,36 @@
     </section>
   </main>
 
-  <Footer columns={1}>
+  <Footer columns={2}>
     <button
       class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
+      on:click={() => (showModal = "send")}
+      {disabled}
       data-tid="new-transaction">{$i18n.accounts.send}</button
+    >
+
+    <button
+      class="secondary"
+      on:click={() => (showModal = "receive")}
+      {disabled}
+      data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
     >
   </Footer>
 </Island>
 
 <WalletModals />
 
-{#if showNewTransactionModal}
+{#if showModal === "send"}
   <IcpTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
+    on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}
+  />
+{/if}
+
+<!-- For TS - action button is disabled anyway if account is undefined -->
+{#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
+  <IcpReceiveModal
+    account={$selectedAccountStore.account}
+    on:nnsClose={() => (showModal = undefined)}
   />
 {/if}

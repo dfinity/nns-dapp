@@ -437,6 +437,7 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
+  qrcode_aria_label_icp: string;
 }
 
 interface I18nBusy_screen {
@@ -866,7 +867,6 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  address: string;
   btc_receive_note: string;
   ckbtc_receive_note: string;
   qrcode_aria_label_bitcoin: string;

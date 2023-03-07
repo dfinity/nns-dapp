@@ -1,6 +1,6 @@
 <script lang="ts">
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { IC_LOGO } from "$lib/constants/icp.constants";
+  import IC_LOGO from "$lib/assets/icp.svg";
   import type { SnsSummary } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";

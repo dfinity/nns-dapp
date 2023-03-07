@@ -420,7 +420,8 @@
     "principal": "Principal",
     "direction_from": "Source:",
     "direction_to": "To:",
-    "no_transactions": "No transactions"
+    "no_transactions": "No transactions",
+    "qrcode_aria_label_icp": "A QR code that renders the address to receive ICP"
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve.",
@@ -820,7 +821,6 @@
     "logo": "Chain-key Bitcoin (ckBTC) logo",
     "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
-    "address": "Address",
     "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
     "ckbtc_receive_note": "ckBTC sent to your ckBTC address is available after a few seconds.",
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
