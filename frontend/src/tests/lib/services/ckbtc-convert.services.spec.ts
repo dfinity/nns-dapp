@@ -41,6 +41,7 @@ describe("ckbtc-convert-services", () => {
     amount: 1,
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
     canisters: mockCkBTCAdditionalCanisters,
+    updateProgress: jest.fn(),
   };
 
   const convert = async () => await convertCkBTCToBtc(params);
