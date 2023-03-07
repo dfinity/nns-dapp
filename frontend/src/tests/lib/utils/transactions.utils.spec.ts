@@ -1,8 +1,12 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountTransactionType } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  TransactionNetwork,
+} from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
+  isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
   showTransactionFee,
@@ -11,8 +15,6 @@ import {
   transactionType,
 } from "$lib/utils/transactions.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { TransactionNetwork } from "$lib/types/transaction";
-import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import {
   mockMainAccount,
   mockSubAccount,
