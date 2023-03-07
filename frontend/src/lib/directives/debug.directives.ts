@@ -104,6 +104,7 @@ export function triggerDebugReport(node: HTMLElement) {
             get(i18n).feature_flags_prompt.override_true
           );
           flag && overrideFeatureFlagsStore.setFlag(flag, true);
+          return;
         }
 
         if (LogType.FeatureFlagsOverrideFalse === logType) {
@@ -111,6 +112,7 @@ export function triggerDebugReport(node: HTMLElement) {
             get(i18n).feature_flags_prompt.override_false
           );
           flag && overrideFeatureFlagsStore.setFlag(flag, false);
+          return;
         }
 
         if (LogType.FeatureFlagsOverrideRemove === logType) {
@@ -118,6 +120,7 @@ export function triggerDebugReport(node: HTMLElement) {
             get(i18n).feature_flags_prompt.remove_override
           );
           flag && overrideFeatureFlagsStore.removeFlag(flag);
+          return;
         }
 
         generateDebugLog(logType);
@@ -333,11 +336,11 @@ const generateDebugLog = async (logType: LogType) => {
 
 const promptFeatureFlag = (question: string): FeatureKey | null => {
   const editableNonTestFlags = EDITABLE_FEATURE_FLAGS.filter(
-    (f) => !f.startsWith("TEST_")
+    (flag) => !flag.startsWith("TEST_")
   );
   const message = [
     question,
-    ...editableNonTestFlags.map((flag, index) => index + 1 + ": " + flag),
+    ...editableNonTestFlags.map((flag, index) => `${index + 1}: ${flag}`),
   ].join("\n");
 
   const choice = Number(prompt(message));
