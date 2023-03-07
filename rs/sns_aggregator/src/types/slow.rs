@@ -5,9 +5,9 @@ use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Sw
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
-use candid::CandidType;
-use candid::Nat;
+use candid::{CandidType, Nat};
 use serde::{Deserialize, Serialize};
+use num_traits::ToPrimitive;
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
@@ -27,7 +27,10 @@ pub struct SlowSnsData {
     /// Ledger metadata.  The ledger keeps track of who owns how many tokens.
     pub icrc1_metadata: Vec<(String, Icrc1Value)>,
     /// The ledger fee, presumably a transaction fee.
+    /// TODO: Convert to u64 in v2 of the SNS aggregator
     pub icrc1_fee: Nat,
+    /// The ledger total tokens supply
+    pub icrc1_total_supply: u64,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
@@ -41,6 +44,7 @@ impl From<&UpstreamData> for SlowSnsData {
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
             icrc1_fee: upstream.icrc1_fee.clone(),
+            icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().expect("Error decoding total supply"),
         }
     }
 }

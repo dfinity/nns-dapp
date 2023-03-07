@@ -50,4 +50,6 @@ pub struct UpstreamData {
     pub icrc1_metadata: Vec<(String, Icrc1Value)>,
     /// The ledger fee, presumably a transaction fee.
     pub icrc1_fee: Nat,
+    /// The ledger total tokens supply
+    pub icrc1_total_supply: Nat,
 }
