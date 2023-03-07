@@ -6,9 +6,11 @@ import type { SvelteComponent } from "svelte";
 export const testTransferTokens = async ({
   result: { getByTestId, container, queryAllByText },
   selectedNetwork = undefined,
+  destinationAddress = "aaaaa-aa",
 }: {
   result: RenderResult<SvelteComponent>;
   selectedNetwork?: TransactionNetwork;
+  destinationAddress?: string;
 }) => {
   await waitFor(() =>
     expect(getByTestId("transaction-step-1")).toBeInTheDocument()
@@ -26,7 +28,7 @@ export const testTransferTokens = async ({
     "input[name='accounts-address']"
   );
   addressInput &&
-    fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
+    fireEvent.input(addressInput, { target: { value: destinationAddress } });
 
   if (nonNullish(selectedNetwork)) {
     const selectElement = getByTestId(

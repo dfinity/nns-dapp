@@ -220,8 +220,8 @@ interface I18nAccounts {
   network: string;
   network_icp_ckbtc: string;
   network_icp_cktestbtc: string;
-  network_bitcoin: string;
-  network_test_bitcoin: string;
+  network_btc_mainnet: string;
+  network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
 }
