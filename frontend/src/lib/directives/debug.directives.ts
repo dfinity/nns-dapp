@@ -1,6 +1,11 @@
 import { addHotkey } from "$lib/api/governance.api";
+import type { FeatureKey } from "$lib/constants/environment.constants";
 import { initDebugStore } from "$lib/derived/debug.derived";
 import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
+import {
+  EDITABLE_FEATURE_FLAGS,
+  overrideFeatureFlagsStore,
+} from "$lib/stores/feature-flags.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
@@ -47,6 +52,9 @@ export enum LogType {
   ClaimNeurons = "cn",
   AddHotkey = "ah",
   RemoveFolloweesDecentralizedSale = "rfds",
+  FeatureFlagsOverrideTrue = "fft",
+  FeatureFlagsOverrideFalse = "fff",
+  FeatureFlagsOverrideRemove = "ffr",
 }
 
 /**
@@ -89,6 +97,27 @@ export function triggerDebugReport(node: HTMLElement) {
         if (LogType.RemoveFolloweesDecentralizedSale === logType) {
           removeFolloweesDecentralizedSale();
           return;
+        }
+
+        if (LogType.FeatureFlagsOverrideTrue === logType) {
+          const flag: FeatureKey = promptFeatureFlag(
+            get(i18n).feature_flags_prompt.override_true
+          );
+          flag && overrideFeatureFlagsStore.setFlag(flag, true);
+        }
+
+        if (LogType.FeatureFlagsOverrideFalse === logType) {
+          const flag: FeatureKey = promptFeatureFlag(
+            get(i18n).feature_flags_prompt.override_false
+          );
+          flag && overrideFeatureFlagsStore.setFlag(flag, false);
+        }
+
+        if (LogType.FeatureFlagsOverrideRemove === logType) {
+          const flag: FeatureKey = promptFeatureFlag(
+            get(i18n).feature_flags_prompt.remove_override
+          );
+          flag && overrideFeatureFlagsStore.removeFlag(flag);
         }
 
         generateDebugLog(logType);
@@ -300,4 +329,19 @@ const generateDebugLog = async (logType: LogType) => {
   } else {
     logWithTimestamp(stringifiedState);
   }
+};
+
+const promptFeatureFlag = (question: string): FeatureKey | null => {
+  const editableNonTestFlags = EDITABLE_FEATURE_FLAGS.filter(
+    (f) => !f.startsWith("TEST_")
+  );
+  const message = [
+    question,
+    ...editableNonTestFlags.map((flag, index) => index + 1 + ": " + flag),
+  ].join("\n");
+  const choice: number = prompt(message);
+  if (choice >= 1 && choice <= editableNonTestFlags.length) {
+    return editableNonTestFlags[choice - 1];
+  }
+  return null;
 };

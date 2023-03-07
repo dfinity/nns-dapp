@@ -844,5 +844,10 @@
     "insufficient_funds": "Insufficient funds.",
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched."
+  },
+  "feature_flags_prompt" : {
+    "override_true": "Enter the number for the feature you want to enable.",
+    "override_false": "Enter the number for the feature you want to disabled.",
+    "remove_override": "Enter the number for the feature you want to set back to its default value."
   }
 }
