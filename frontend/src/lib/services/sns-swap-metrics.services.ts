@@ -5,7 +5,7 @@ import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
-// TODO(Maks): tests
+// TODO(Maks): rename: loadSwapMetrics
 /**
  * Get metrics from the store or fetch it
  * @param rootCanisterId
