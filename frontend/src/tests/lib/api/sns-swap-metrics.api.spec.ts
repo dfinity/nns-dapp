@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { querySnsMetrics } from "../../../lib/api/sns-swap-metrics.api";
+import { querySnsSwapMetrics } from "../../../lib/api/sns-swap-metrics.api";
 import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("sns-swap-metrics.api", () => {
@@ -17,7 +17,7 @@ describe("sns-swap-metrics.api", () => {
     global.fetch = mockFetch;
 
     const swapCanisterId = mockPrincipal;
-    const result = await querySnsMetrics({ swapCanisterId });
+    const result = await querySnsSwapMetrics({ swapCanisterId });
 
     expect(result).toEqual("test");
     expect(mockFetch).toBeCalledTimes(1);
