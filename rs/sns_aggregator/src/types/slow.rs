@@ -6,8 +6,8 @@ use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
 use candid::{CandidType, Nat};
-use serde::{Deserialize, Serialize};
 use num_traits::ToPrimitive;
+use serde::{Deserialize, Serialize};
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
 #[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
@@ -44,7 +44,11 @@ impl From<&UpstreamData> for SlowSnsData {
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
             icrc1_fee: upstream.icrc1_fee.clone(),
-            icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().expect("Error decoding total supply"),
+            icrc1_total_supply: upstream
+                .icrc1_total_supply
+                .0
+                .to_u64()
+                .expect("Error decoding total supply"),
         }
     }
 }
