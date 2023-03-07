@@ -191,8 +191,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -208,8 +208,8 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
-          "ENABLE_SNS_AGGREGATOR": false,
-          "ENABLE_CKBTC": false,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -225,7 +225,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -242,7 +242,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -259,7 +259,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -276,7 +276,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -293,7 +293,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -317,7 +317,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -334,7 +334,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -352,7 +352,7 @@
         "FEATURE_FLAGS": {
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": false,
+          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
