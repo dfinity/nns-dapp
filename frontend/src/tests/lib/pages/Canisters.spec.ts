@@ -11,9 +11,9 @@ import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import { mockCanistersStoreSubscribe } from "../../mocks/canisters.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

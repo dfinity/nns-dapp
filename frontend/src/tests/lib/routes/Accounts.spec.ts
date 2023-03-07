@@ -21,16 +21,16 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockSummary,
-} from "../../mocks/sns-projects.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

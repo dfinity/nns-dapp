@@ -8,7 +8,7 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import SignedInOnlyTest from "./SignedInOnlyTest.svelte";
 
 describe("SignedInOnly", () => {

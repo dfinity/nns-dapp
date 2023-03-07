@@ -16,10 +16,10 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {

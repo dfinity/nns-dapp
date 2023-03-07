@@ -13,9 +13,9 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
-import en from "../../mocks/i18n.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCAddress } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("ckbtc-minter-services", () => {
   afterEach(() => jest.clearAllMocks());

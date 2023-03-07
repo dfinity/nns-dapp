@@ -1,7 +1,7 @@
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { get } from "svelte/store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 
 describe("accountsStore", () => {
   const expectStoreInitialValues = () => {

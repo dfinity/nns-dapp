@@ -6,8 +6,8 @@ import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import { mockKnownNeuron } from "../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
 
 describe("knownNeurons-services", () => {
   const spyQueryKnownNeurons = jest

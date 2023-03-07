@@ -26,9 +26,9 @@ import { mock } from "jest-mock-extended";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
-} from "../../mocks/accounts.store.mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCanister, mockCanisters } from "../../mocks/canisters.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {

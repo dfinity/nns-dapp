@@ -18,18 +18,18 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisters,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
 
 let identity: Identity | undefined = mockIdentity;
 const setNoAccountIdentity = () => (identity = undefined);

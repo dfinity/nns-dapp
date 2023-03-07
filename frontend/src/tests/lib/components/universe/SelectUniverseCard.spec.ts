@@ -13,12 +13,12 @@ import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   mockSummary,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: NNS_UNIVERSE, selected: false };

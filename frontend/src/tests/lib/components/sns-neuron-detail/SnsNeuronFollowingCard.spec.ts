@@ -17,14 +17,14 @@ import { waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
-import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
-} from "../../../mocks/sns-neurons.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 jest.mock("$lib/services/$public/sns.services", () => ({
   loadSnsNervousSystemFunctions: jest.fn(),

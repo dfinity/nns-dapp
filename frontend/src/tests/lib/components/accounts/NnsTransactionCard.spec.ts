@@ -11,13 +11,13 @@ import { render } from "@testing-library/svelte";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
-} from "../../../mocks/transaction.mock";
-import { normalizeWhitespace } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/transaction.mock";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 describe("NnsTransactionCard", () => {
   const renderTransactionCard = (

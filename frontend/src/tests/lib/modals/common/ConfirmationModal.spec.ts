@@ -4,7 +4,7 @@
 
 import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import ConfirmationModalTest from "./ConfirmationModalTest.svelte";
 
 const yesButtonText = en.core.confirm_yes;

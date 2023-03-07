@@ -8,8 +8,8 @@ import {
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCAddress } from "$tests/mocks/ckbtc-accounts.mock";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();

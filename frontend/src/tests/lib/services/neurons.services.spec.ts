@@ -17,6 +17,11 @@ import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
 import type { Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
@@ -26,19 +31,14 @@ import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "$foo/mocks/accounts.store.mock";
-import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 const {
   addHotkey,

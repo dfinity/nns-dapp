@@ -12,7 +12,7 @@ import {
   authStoreMock,
   mockAuthStoreSubscribe,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("Login", () => {
   describe("Manual sign-in", () => {

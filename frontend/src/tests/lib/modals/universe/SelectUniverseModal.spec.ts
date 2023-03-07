@@ -8,12 +8,12 @@ import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte
 import { page } from "$mocks/$app/stores";
 import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("SelectUniverseModal", () => {
   jest

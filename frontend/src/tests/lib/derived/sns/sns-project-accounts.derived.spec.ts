@@ -11,12 +11,12 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../../mocks/sns-accounts.mock";
-import { snsResponseFor } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-accounts.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {

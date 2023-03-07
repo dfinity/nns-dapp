@@ -6,7 +6,7 @@ import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {

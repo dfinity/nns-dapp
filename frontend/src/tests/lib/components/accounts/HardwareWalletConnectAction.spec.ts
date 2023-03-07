@@ -8,8 +8,8 @@ import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 jest.mock("$lib/proxy/ledger.services.proxy");
 

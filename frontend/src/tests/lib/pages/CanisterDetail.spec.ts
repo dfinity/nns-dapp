@@ -11,7 +11,7 @@ import {
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockCanister, mockCanisterDetails } from "../../mocks/canisters.mock";
+import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;

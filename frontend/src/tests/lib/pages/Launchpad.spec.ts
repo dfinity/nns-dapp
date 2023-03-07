@@ -14,12 +14,12 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

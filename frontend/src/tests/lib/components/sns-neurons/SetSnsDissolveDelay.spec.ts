@@ -17,12 +17,12 @@ import { formatToken } from "$lib/utils/token.utils";
 import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
 
 describe("ConfirmSnsDissolveDelay", () => {
   const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);

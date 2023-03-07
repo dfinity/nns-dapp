@@ -9,7 +9,7 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 
 describe("DestinationAddress", () => {
   const mockSubAccount2 = {

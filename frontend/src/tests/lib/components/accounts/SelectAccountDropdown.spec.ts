@@ -12,9 +12,9 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {

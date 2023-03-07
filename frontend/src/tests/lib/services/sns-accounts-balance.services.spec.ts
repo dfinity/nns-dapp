@@ -6,11 +6,11 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockSnsSummaryList,
   mockSnsToken,
-} from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {

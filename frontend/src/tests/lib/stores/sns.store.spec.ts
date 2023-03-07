@@ -15,12 +15,12 @@ import {
 } from "@dfinity/sns";
 import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { get } from "svelte/store";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 describe("sns.store", () => {
   describe("snsSwapStatesStore", () => {

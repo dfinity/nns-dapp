@@ -24,14 +24,14 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {

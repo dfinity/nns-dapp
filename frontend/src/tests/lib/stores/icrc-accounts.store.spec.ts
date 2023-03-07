@@ -2,7 +2,7 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { get } from "svelte/store";
-import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 
 describe("icrc Accounts store", () => {
   afterEach(() => icrcAccountsStore.reset());

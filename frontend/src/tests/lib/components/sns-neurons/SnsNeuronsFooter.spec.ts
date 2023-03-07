@@ -8,13 +8,13 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { NeuronState, TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockStoreSubscribe } from "../../../mocks/commont.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/neurons.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 
 describe("SnsNeuron footer", () => {
   beforeEach(() => {

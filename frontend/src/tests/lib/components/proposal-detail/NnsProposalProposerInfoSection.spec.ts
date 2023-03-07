@@ -5,7 +5,7 @@
 import NnsProposalProposerInfoSection from "$lib/components/proposal-detail/NnsProposalProposerInfoSection.svelte";
 import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 jest.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),

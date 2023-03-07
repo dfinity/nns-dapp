@@ -13,10 +13,10 @@ import { waitFor } from "@testing-library/svelte";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

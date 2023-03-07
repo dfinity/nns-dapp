@@ -9,8 +9,8 @@ import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../__mocks__/$app/stores";
-import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
-import en from "../../mocks/i18n.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {

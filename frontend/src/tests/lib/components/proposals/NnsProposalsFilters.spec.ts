@@ -17,8 +17,8 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("NnsProposalsFilters", () => {
   const shouldRenderFilter = ({

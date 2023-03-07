@@ -10,8 +10,8 @@ import { enumKeys } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../../../mocks/i18n.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+import en from "$tests/mocks/i18n.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 
 describe("ProposalsFilterModal", () => {
   const props: { props: ProposalsFilterModalProps } = {

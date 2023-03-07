@@ -7,7 +7,7 @@ import { get } from "svelte/store";
 import {
   mockProposalInfo,
   mockVoteRegistration,
-} from "../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 
 describe("voting-store", () => {
   const voteA: VoteRegistration = {

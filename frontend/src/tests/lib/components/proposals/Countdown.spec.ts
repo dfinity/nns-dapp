@@ -5,8 +5,8 @@
 import Countdown from "$lib/components/proposals/Countdown.svelte";
 import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 
 describe("Countdown", () => {
   beforeEach(() => {

@@ -9,8 +9,8 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 describe("ProposalMeta", () => {
   beforeEach(() => {

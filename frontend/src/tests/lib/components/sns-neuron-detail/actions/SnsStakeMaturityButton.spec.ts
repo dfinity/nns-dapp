@@ -4,9 +4,9 @@
 
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../../mocks/auth.store.mock";
-import en from "../../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsStakeMaturityButton", () => {

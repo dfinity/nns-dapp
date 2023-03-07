@@ -10,9 +10,9 @@ import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 
 jest.mock("$lib/services/accounts.services", () => {
   return {

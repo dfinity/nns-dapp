@@ -22,8 +22,8 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { mockSnsProposal } from "../../../mocks/sns-proposals.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 
 describe("sns-proposals services", () => {
   const proposal1: SnsProposalData = {

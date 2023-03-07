@@ -18,10 +18,10 @@ import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
-import { mockAuthStoreSubscribe } from "../../../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../../../mocks/governance.canister.mock";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../../mocks/proposal.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {

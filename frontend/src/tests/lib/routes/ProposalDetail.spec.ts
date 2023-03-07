@@ -10,9 +10,9 @@ import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 
 jest.mock("$lib/api/governance.api");
 

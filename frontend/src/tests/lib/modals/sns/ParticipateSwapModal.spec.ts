@@ -25,18 +25,18 @@ import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import { renderModalContextWrapper } from "../../../mocks/modal.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

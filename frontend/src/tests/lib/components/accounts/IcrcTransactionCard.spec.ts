@@ -7,18 +7,18 @@ import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { createIcrcTransactionWithId } from "../../../mocks/icrc-transactions.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
-import { normalizeWhitespace } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/sns-projects.mock";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 describe("IcrcTransactionCard", () => {
   const renderTransactionCard = (

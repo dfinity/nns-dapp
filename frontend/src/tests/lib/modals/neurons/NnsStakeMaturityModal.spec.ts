@@ -11,10 +11,10 @@ import type { SvelteComponent } from "svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
-import { selectPercentage } from "../../../utils/neurons-modal.test-utils";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

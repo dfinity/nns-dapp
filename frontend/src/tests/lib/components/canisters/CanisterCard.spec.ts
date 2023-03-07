@@ -4,7 +4,7 @@
 
 import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockCanister } from "../../../mocks/canisters.mock";
+import { mockCanister } from "$tests/mocks/canisters.mock";
 
 jest.mock("$lib/services/worker-cycles.services", () => ({
   initCyclesWorker: jest.fn(() =>

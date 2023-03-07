@@ -3,7 +3,7 @@
  */
 import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
 import { render } from "@testing-library/svelte";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("SetNnsDissolveDelay", () => {
   // Tested in CreateNeuronModal.spec.ts

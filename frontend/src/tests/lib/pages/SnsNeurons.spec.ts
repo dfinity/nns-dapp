@@ -19,17 +19,17 @@ import { page } from "$mocks/$app/stores";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockStoreSubscribe } from "../../mocks/commont.mock";
-import en from "../../mocks/i18n.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   buildMockSnsParametersStore,
   buildMockSortedSnsNeuronsStoreSubscribe,
   createMockSnsNeuron,
-} from "../../mocks/sns-neurons.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

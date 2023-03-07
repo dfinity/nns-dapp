@@ -2,7 +2,7 @@ import { snsFiltesStore } from "$lib/stores/sns-filters.store";
 import { Principal } from "@dfinity/principal";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 
 describe("sns-filters store", () => {
   it("should setDecisionStatus in different projects", () => {

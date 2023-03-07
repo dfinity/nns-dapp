@@ -1,6 +1,6 @@
 import { canistersStore } from "$lib/stores/canisters.store";
 import { get } from "svelte/store";
-import { mockCanisters } from "../../mocks/canisters.mock";
+import { mockCanisters } from "$tests/mocks/canisters.mock";
 
 describe("canisters-store", () => {
   describe("canistersStore", () => {

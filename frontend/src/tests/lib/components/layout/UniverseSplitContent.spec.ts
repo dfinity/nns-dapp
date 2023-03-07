@@ -10,7 +10,7 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("UniverseSplitContent", () => {
   jest

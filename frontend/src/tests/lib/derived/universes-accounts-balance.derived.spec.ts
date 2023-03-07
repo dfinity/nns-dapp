@@ -6,9 +6,9 @@ import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 
 describe("universes-accounts-balance.derived", () => {
   jest

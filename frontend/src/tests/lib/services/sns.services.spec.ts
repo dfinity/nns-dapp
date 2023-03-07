@@ -22,16 +22,16 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   mockSnsSwapCommitment,
   principal,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 
 const {
   getSwapAccount,

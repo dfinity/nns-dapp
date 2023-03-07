@@ -8,14 +8,14 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
-import { mockVoteRegistration } from "../../../mocks/proposal.mock";
+} from "$tests/mocks/neurons.mock";
+import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

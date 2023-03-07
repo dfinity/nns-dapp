@@ -16,9 +16,9 @@ import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 const mockUnwatchCommitmentsCall = jest.fn();
 jest.mock("$lib/services/sns.services", () => {

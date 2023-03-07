@@ -18,12 +18,12 @@ import {
 } from "$lib/utils/utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 
 describe("utils", () => {
   beforeEach(() => {

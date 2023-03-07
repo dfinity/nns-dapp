@@ -19,7 +19,7 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;

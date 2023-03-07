@@ -7,7 +7,7 @@ import { render } from "@testing-library/svelte";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import WalletContextTest from "./WalletContextTest.svelte";
 
 describe("WalletActions", () => {

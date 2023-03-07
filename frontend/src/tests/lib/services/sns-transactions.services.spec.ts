@@ -9,9 +9,9 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 
 describe("sns-transactions-services", () => {
   describe("loadSnsAccountTransactions", () => {

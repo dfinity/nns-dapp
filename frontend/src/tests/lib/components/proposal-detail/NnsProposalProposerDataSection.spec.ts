@@ -10,7 +10,7 @@ import { mock } from "jest-mock-extended";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 
 describe("NnsProposalProposerDataSection", () => {
   const nnsDappMock = mock<NNSDappCanister>();

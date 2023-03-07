@@ -1,8 +1,8 @@
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mock } from "jest-mock-extended";
-import { mockAccountDetails } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 
 describe("nns-dapp api", () => {
   describe("addAccount", () => {

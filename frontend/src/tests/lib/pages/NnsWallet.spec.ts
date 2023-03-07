@@ -16,12 +16,12 @@ import {
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");

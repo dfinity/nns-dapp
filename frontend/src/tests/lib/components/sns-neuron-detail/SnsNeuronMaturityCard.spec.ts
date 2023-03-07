@@ -20,9 +20,9 @@ import { writable } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("SnsNeuronMaturityCard", () => {

@@ -11,12 +11,12 @@ import {
   durationTillSwapStart,
 } from "$lib/utils/projects.utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
 
 describe("ProjectTimeline", () => {
   const now = Date.now();

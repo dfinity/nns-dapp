@@ -11,7 +11,7 @@ import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createBuyersState,
   mockDerived,
@@ -22,9 +22,9 @@ import {
   mockSnsSummaryList,
   mockSummary,
   principal,
-} from "../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
 
 describe("sns-utils", () => {
   beforeEach(() => {

@@ -17,11 +17,11 @@ import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 describe("SnsNeuronCard", () => {
   beforeAll(() => {

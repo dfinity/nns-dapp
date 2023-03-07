@@ -15,15 +15,15 @@ import {
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { SnsSwapCanister } from "@dfinity/sns";
 import { mock } from "jest-mock-extended";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../mocks/sns.mock";
+} from "$tests/mocks/sns.api.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 

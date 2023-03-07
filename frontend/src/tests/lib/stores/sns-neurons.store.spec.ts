@@ -2,8 +2,8 @@ import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 
 describe("SNS Neurons stores", () => {
   describe("snsNeurons store", () => {

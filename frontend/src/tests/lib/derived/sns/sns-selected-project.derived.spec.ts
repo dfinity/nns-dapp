@@ -11,15 +11,15 @@ import { page } from "$mocks/$app/stores";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockSnsSwapCommitment } from "../../../mocks/sns-projects.mock";
+import { mockSnsSwapCommitment } from "$tests/mocks/sns-projects.mock";
 import {
   snsResponseFor,
   snsResponsesForLifecycle,
-} from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-response.mock";
 import {
   mockSnsCanisterId,
   mockSnsCanisterIdText,
-} from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/sns.api.mock";
 
 describe("selected sns project derived stores", () => {
   describe("snsOnlyProjectStore", () => {

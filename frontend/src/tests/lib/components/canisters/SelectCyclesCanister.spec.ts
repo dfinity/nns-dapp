@@ -5,8 +5,8 @@
 import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+import en from "$tests/mocks/i18n.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import SelectCyclesCanisterTest from "./SelectCyclesCanisterTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {

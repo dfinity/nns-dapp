@@ -20,19 +20,19 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
-import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {

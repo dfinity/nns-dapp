@@ -31,14 +31,14 @@ import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockLedgerIdentifier,
   MockLedgerIdentity,
-} from "../../mocks/ledger.identity.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { MockNNSDappCanister } from "../../mocks/nns-dapp.canister.mock";
+} from "$tests/mocks/ledger.identity.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 
 describe("ledger-services", () => {
   describe("connect hardware wallet", () => {

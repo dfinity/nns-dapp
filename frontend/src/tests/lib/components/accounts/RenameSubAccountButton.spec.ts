@@ -5,8 +5,8 @@
 import RenameSubAccount from "$lib/components/accounts/RenameSubAccountButton.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import WalletContextTest from "./WalletContextTest.svelte";
 
 describe("RenameSubAccountButton", () => {

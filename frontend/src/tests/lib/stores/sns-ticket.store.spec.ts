@@ -1,9 +1,9 @@
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../mocks/sns.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
 
 describe("snsTicketsStore", () => {
   const { ticket } = snsTicketMock({

@@ -5,7 +5,7 @@ import { fromDefinedNullable } from "@dfinity/utils";
 import {
   mockSnsNeuronId,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
 
 describe("sns-parameters utils", () => {
   describe("mapNervousSystemParameters", () => {

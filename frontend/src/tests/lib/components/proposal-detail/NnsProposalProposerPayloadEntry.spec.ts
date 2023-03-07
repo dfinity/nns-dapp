@@ -11,7 +11,7 @@ import { mock } from "jest-mock-extended";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 import { simplifyJson } from "../common/Json.spec";
 
 const proposalWithNnsFunctionAction = {

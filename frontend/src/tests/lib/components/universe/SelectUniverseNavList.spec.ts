@@ -12,7 +12,7 @@ import { get } from "svelte/store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("SelectUniverseNavList", () => {
   jest

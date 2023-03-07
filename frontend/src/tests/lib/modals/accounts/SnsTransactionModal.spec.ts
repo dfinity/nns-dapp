@@ -16,14 +16,14 @@ import type { Subscriber } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
-} from "../../../mocks/sns-accounts.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
-import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
+} from "$tests/mocks/sns-accounts.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

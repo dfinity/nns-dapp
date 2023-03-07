@@ -8,13 +8,13 @@ import { get } from "svelte/store";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
 
 describe("universes-accounts", () => {
   it("should derive Nns accounts", () => {

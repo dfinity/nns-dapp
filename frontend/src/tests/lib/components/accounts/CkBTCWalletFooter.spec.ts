@@ -13,11 +13,11 @@ import { page } from "../../../../../__mocks__/$app/stores";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
-} from "../../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
 import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {

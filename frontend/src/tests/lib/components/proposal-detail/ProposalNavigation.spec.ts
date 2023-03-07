@@ -10,7 +10,7 @@ import { proposalsStore } from "$lib/stores/proposals.store";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 
 describe("ProposalNavigation", () => {
   const props = { proposalInfo: mockProposals[0] };

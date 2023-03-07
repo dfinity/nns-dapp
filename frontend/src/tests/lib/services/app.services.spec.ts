@@ -8,7 +8,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
-import { mockAccountDetails } from "../../mocks/accounts.store.mock";
+import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
 
 jest.mock("$lib/api/sns-aggregator.api");
 

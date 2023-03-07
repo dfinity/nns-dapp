@@ -9,13 +9,13 @@ import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockFullNeuron,
   mockKnownNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

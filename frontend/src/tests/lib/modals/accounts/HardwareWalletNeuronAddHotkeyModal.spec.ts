@@ -11,13 +11,13 @@ import { get } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletNeuronsStore,
   mockNeuronStake,
-} from "../../../mocks/hardware-wallet-neurons.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/hardware-wallet-neurons.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
 jest.mock("$lib/proxy/ledger.services.proxy");

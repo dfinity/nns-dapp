@@ -2,8 +2,8 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsProposal } from "../../mocks/sns-proposals.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 
 describe("SNS Proposals stores", () => {
   const snsProposal1: SnsProposalData = {

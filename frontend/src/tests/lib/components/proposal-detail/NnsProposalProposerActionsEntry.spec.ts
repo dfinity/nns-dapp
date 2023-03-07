@@ -11,7 +11,7 @@ import {
   proposalActionMotion,
   proposalActionNnsFunction21,
   proposalActionRewardNodeProvider,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 
 const proposalWithMotionAction = {
   ...mockProposalInfo.proposal,

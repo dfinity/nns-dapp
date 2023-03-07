@@ -6,13 +6,13 @@ import {
   type ResponseAddress,
   type ResponseSign,
 } from "@zondax/ledger-icp";
-import { mockPrincipalText } from "../../mocks/auth.store.mock";
+import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import {
   derEncodedPublicKeyHex,
   fromHexString,
   MockLedgerIdentity,
   rawPublicKeyHex,
-} from "../../mocks/ledger.identity.mock";
+} from "$tests/mocks/ledger.identity.mock";
 
 describe("ledger-utils", () => {
   describe("decodePublicKey", () => {

@@ -12,11 +12,11 @@ import {
 import { tokensStore } from "$lib/stores/tokens.store";
 import { TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
 
 describe("universes-tokens", () => {
   describe("complete data set", () => {

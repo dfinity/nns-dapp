@@ -9,8 +9,8 @@ import * as services from "$lib/services/ckbtc-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 
 describe("ckbtc-tokens-services", () => {
   describe("loadCkBTCTokens", () => {

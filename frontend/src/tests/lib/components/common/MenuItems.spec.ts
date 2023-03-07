@@ -10,7 +10,7 @@ import {
 import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 
 jest.mock("$lib/services/$public/worker-metrics.services", () => ({
   initMetricsWorker: jest.fn(() =>

@@ -10,14 +10,14 @@
     "sourceMap": true,
     "strict": false,
     "paths": {
-      "$foo": ["src/tests"],
-      "$foo/*": ["src/tests/*"],
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$routes": ["src/routes"],
       "$routes/*": ["src/routes/*"],
       "$mocks": ["__mocks__"],
-      "$mocks/*": ["__mocks__/*"]
+      "$mocks/*": ["__mocks__/*"],
+      "$tests": ["src/tests"],
+      "$tests/*": ["src/tests/*"]
     }
   },
   "include": [

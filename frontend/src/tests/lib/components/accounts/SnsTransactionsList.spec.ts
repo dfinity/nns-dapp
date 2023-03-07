@@ -6,12 +6,12 @@ import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.sve
 import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { render } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
-} from "../../../mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/icrc-transactions.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => {
   return {

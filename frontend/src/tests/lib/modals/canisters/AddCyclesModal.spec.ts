@@ -14,9 +14,9 @@ import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {

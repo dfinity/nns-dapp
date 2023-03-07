@@ -10,9 +10,9 @@ import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NeuronJoinFundCard", () => {

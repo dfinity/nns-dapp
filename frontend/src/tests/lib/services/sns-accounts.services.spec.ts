@@ -12,9 +12,9 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => ({
   loadSnsAccountTransactions: jest.fn(),

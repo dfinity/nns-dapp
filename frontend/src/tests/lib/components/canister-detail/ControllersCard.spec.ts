@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import ControllersCard from "./ControllersCardTest.svelte";
 
 describe("ControllersCard", () => {

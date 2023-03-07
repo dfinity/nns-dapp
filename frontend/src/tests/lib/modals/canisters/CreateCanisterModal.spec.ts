@@ -16,11 +16,11 @@ import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockCanister } from "../../../mocks/canisters.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/accounts.store.mock";
+import { mockCanister } from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

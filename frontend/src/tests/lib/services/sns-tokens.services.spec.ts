@@ -8,8 +8,8 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockSnsToken } from "../../mocks/sns-projects.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 
 describe("sns-tokens-services", () => {
   describe("loadSnsTokens", () => {

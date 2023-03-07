@@ -17,14 +17,14 @@ import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
-import en from "../../mocks/i18n.mock";
-import { mockUniversesTokens } from "../../mocks/tokens.mock";
-import { testTransferTokens } from "../../utils/transaction-modal.test.utils";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 
 const expectedBalanceAfterTransfer = TokenAmount.fromE8s({
   amount: BigInt(11_111),

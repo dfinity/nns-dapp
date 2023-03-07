@@ -8,8 +8,8 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("AccountBadge", () => {
   it("should render no badge", () => {

@@ -11,9 +11,9 @@ import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 
 describe("SelectDestinationAddress", () => {
   describe("nns accounts", () => {

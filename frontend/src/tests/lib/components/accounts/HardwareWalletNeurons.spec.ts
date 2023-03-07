@@ -6,9 +6,9 @@ import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeuron
 import { formatToken } from "$lib/utils/token.utils";
 import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render } from "@testing-library/svelte";
-import { mockNeuronStake } from "../../../mocks/hardware-wallet-neurons.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import HardwareWalletNeuronsTest from "./HardwareWalletNeuronsTest.svelte";
 
 describe("HardwareWalletNeurons", () => {

@@ -7,10 +7,10 @@ import { stakeMaturity } from "$lib/services/sns-neurons.services";
 import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { selectPercentage } from "../../../utils/neurons-modal.test-utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

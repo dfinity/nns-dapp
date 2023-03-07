@@ -10,9 +10,9 @@ import { render } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../../mocks/auth.store.mock";
-import en from "../../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/known-neurons.services", () => {

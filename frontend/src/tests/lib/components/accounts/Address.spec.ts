@@ -4,8 +4,8 @@
 
 import Address from "$lib/components/accounts/Address.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockAddressInputValid } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockAddressInputValid } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("Address", () => {
   const props = { props: { address: undefined } };

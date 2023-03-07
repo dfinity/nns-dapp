@@ -6,9 +6,9 @@ import {
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import type { GetTransactionsResponse } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mock } from "jest-mock-extended";
-import { mockSubAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 
 describe("accounts-api", () => {
   afterAll(() => jest.clearAllMocks());

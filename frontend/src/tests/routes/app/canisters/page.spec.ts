@@ -8,7 +8,7 @@ import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("Canisters page", () => {
   jest

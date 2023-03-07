@@ -16,17 +16,17 @@ import type { SvelteComponent } from "svelte";
 import {
   createMockIdentity,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
 import {
   mockSnsNeuron,
   mockSnsNeuronId,
-} from "../../../mocks/sns-neurons.mock";
-import { snsResponseFor } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/services/sns-accounts.services");

@@ -5,7 +5,7 @@
 import HardwareWalletNeuronAddHotkeyButton from "$lib/components/accounts/HardwareWalletNeuronAddHotkeyButton.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import HardwareWalletAddNeuronHotkeyTest from "./HardwareWalletAddNeuronHotkeyTest.svelte";
 
 describe("HardwareWalletNeuronAddHotkeyButton", () => {

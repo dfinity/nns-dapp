@@ -9,11 +9,11 @@ import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   mockProposalInfo,
   mockVoteRegistration,
-} from "../../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);

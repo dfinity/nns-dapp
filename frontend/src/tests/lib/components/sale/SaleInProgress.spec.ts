@@ -6,7 +6,7 @@ import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
 import { SaleStep } from "$lib/types/sale";
 import { render, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("SaleInProgress", () => {
   it("should render a warning to not close the browser", () => {

@@ -14,14 +14,14 @@ import type { SvelteComponent } from "svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

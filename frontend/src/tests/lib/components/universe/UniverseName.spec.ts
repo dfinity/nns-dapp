@@ -6,11 +6,11 @@ import UniverseName from "$lib/components/universe/UniverseName.svelte";
 import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   mockSummary,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("UniverseName", () => {
   it("shout render IC", () => {

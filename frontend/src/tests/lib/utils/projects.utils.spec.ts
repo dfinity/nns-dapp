@@ -25,7 +25,7 @@ import {
   mockSwapCommitment,
   principal,
   summaryForLifecycle,
-} from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("project-utils", () => {
   describe("filter", () => {

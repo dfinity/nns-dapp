@@ -54,14 +54,14 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
   ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),

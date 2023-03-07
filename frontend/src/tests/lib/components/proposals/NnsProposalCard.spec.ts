@@ -9,8 +9,8 @@ import { secondsToDuration } from "$lib/utils/date.utils";
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
 import { ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 
 describe("NnsProposalCard", () => {
   it("should render a proposal title", () => {

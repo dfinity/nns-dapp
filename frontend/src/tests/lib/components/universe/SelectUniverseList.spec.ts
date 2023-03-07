@@ -11,7 +11,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
   principal,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("SelectUniverseList", () => {
   const projects = [

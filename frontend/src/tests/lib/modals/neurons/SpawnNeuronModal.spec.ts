@@ -10,9 +10,9 @@ import { fireEvent } from "@testing-library/svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

@@ -8,11 +8,11 @@ import {
 } from "$lib/services/sns-neurons.services";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import en from "../../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
-} from "../../../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
 import DissolveSnsNeuronButtonTest from "./DissolveSnsNeuronButtonTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {

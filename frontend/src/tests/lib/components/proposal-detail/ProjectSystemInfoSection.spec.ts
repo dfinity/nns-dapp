@@ -9,11 +9,11 @@ import type { Proposal } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
 
 describe("ProposalSystemInfoSection", () => {
   const {

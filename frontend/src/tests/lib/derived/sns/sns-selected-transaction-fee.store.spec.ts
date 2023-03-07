@@ -10,8 +10,8 @@ import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 describe("snsSelectedTransactionFeeStore", () => {
   const data = snsResponsesForLifecycle({

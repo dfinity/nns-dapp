@@ -6,7 +6,7 @@ import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import type { TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 
 describe("AmountDisplay", () => {
   const props: { amount: TokenAmount } = { amount: mockMainAccount.balance };

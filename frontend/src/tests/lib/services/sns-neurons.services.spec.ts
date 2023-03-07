@@ -43,14 +43,14 @@ import {
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 
 const {
   syncSnsNeurons,

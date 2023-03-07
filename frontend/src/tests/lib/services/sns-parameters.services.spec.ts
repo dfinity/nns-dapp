@@ -6,8 +6,8 @@ import * as governanceApi from "$lib/api/sns-governance.api";
 import * as services from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 
 describe("sns-parameters-services", () => {
   describe("loadSnsParameters", () => {

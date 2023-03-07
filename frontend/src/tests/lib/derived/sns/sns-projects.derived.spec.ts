@@ -10,8 +10,8 @@ import { get } from "svelte/store";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
-} from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 describe("projects.derived", () => {
   describe("projectsDerived", () => {

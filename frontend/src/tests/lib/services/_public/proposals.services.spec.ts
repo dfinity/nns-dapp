@@ -28,8 +28,8 @@ import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   resetIdentity,
-} from "../../../mocks/auth.store.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 
 describe("proposals-services", () => {
   describe("logged in user", () => {

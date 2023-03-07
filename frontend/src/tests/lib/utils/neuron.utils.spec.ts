@@ -72,15 +72,15 @@ import { get } from "svelte/store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockFullNeuron,
   mockNeuron,
   mockNeuronControlled,
   mockNeuronNotControlled,
-} from "../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
+} from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 describe("neuron-utils", () => {
   beforeAll(() => jest.useFakeTimers().setSystemTime(Date.now()));

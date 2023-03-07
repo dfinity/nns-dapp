@@ -7,8 +7,8 @@ import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 jest.mock("$lib/services/$public/sns.services", () => {
   return {

@@ -14,7 +14,7 @@ import { get } from "svelte/store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {

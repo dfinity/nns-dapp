@@ -24,18 +24,18 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockNeuron,
-} from "../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
   mockProposalsStoreSubscribe,
-} from "../../mocks/proposals.store.mock";
+} from "$tests/mocks/proposals.store.mock";
 
 jest.mock("$lib/api/governance.api");
 

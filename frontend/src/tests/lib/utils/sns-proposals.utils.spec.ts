@@ -12,8 +12,8 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
-import { mockSnsProposal } from "../../mocks/sns-proposals.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {

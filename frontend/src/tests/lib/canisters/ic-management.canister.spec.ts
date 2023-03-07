@@ -6,12 +6,12 @@ import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-man
 import type { ManagementCanisterRecord } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterId,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ManagementCanisterRecord) => {

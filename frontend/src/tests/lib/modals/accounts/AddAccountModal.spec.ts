@@ -7,9 +7,9 @@ import { addSubAccount } from "$lib/services/accounts.services";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function

@@ -8,8 +8,8 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

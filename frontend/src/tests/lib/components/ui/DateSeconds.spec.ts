@@ -4,7 +4,7 @@
 
 import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 import { render } from "@testing-library/svelte";
-import { normalizeWhitespace } from "../../../utils/utils.test-utils";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 describe("DateSeconds", () => {
   const seconds = Number(BigInt("0"));

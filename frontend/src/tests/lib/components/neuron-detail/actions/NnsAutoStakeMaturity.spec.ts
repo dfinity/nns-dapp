@@ -5,7 +5,7 @@
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockNeuron } from "../../../../mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {

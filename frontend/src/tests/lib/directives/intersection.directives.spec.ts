@@ -8,7 +8,7 @@ import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
   mockIntersectionObserverIsIntersecting,
-} from "../../mocks/infinitescroll.mock";
+} from "$tests/mocks/infinitescroll.mock";
 import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {

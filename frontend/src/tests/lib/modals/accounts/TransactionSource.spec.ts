@@ -5,8 +5,8 @@
 import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { render } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("TransactionSource", () => {
   it("should render info texts", () => {

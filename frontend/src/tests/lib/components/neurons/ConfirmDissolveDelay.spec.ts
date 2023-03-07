@@ -3,7 +3,7 @@
  */
 import ConfirmDisolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
 import { render } from "@testing-library/svelte";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("ConfirmDissolveDelay", () => {
   // Tested in CreateNeuronModal.spec.ts

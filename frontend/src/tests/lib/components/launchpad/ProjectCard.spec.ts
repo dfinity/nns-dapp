@@ -9,9 +9,9 @@ import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 
 describe("ProjectCard", () => {
   jest

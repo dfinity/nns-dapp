@@ -17,10 +17,10 @@ import { get } from "svelte/store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
-import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockTokens } from "../../mocks/tokens.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {

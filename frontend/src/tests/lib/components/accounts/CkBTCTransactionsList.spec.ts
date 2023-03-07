@@ -7,12 +7,12 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { render } from "@testing-library/svelte";
-import { mockCkBTCAdditionalCanisters } from "../../../mocks/canisters.mock";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
+import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
-} from "../../../mocks/icrc-transactions.mock";
+} from "$tests/mocks/icrc-transactions.mock";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {

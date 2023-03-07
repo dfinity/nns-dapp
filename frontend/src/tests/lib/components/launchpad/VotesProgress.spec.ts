@@ -6,7 +6,7 @@ import VotesProgress from "$lib/components/launchpad/VotesProgress.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { formatNumber } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 describe("VotesProgress", () => {
   const yes = BigInt(1600000000);

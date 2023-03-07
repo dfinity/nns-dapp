@@ -26,12 +26,12 @@ import {
 } from "@dfinity/nns";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
-import { mockSubAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();

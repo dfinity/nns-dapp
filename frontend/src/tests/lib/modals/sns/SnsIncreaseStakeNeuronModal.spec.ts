@@ -21,17 +21,17 @@ import type { SvelteComponent } from "svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { mockStoreSubscribe } from "../../../mocks/commont.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
-} from "../../../utils/neurons-modal.test-utils";
+} from "$tests/utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

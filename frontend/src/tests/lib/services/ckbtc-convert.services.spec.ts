@@ -17,14 +17,14 @@ import {
   IcrcLedgerCanister,
 } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCkBTCAdditionalCanisters } from "../../mocks/canisters.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCAddress,
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
-import { mockTokens } from "../../mocks/tokens.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {

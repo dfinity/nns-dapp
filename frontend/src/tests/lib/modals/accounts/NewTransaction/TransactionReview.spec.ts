@@ -6,12 +6,12 @@ import TransactionReview from "$lib/modals/accounts/NewTransaction/TransactionRe
 import { authStore } from "$lib/stores/auth.store";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 
 describe("TransactionReview", () => {
   jest

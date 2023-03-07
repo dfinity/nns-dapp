@@ -8,7 +8,7 @@ import { formatNumber } from "$lib/utils/format.utils";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 
 describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;

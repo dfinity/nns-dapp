@@ -37,19 +37,19 @@ import {
   mockMainAccount,
   mockSubAccount,
   mockSubAccountDetails,
-} from "../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {

@@ -11,9 +11,9 @@ import { page } from "$mocks/$app/stores";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {
