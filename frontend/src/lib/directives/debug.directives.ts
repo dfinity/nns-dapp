@@ -339,7 +339,7 @@ const promptFeatureFlag = (question: string): FeatureKey | null => {
     question,
     ...editableNonTestFlags.map((flag, index) => index + 1 + ": " + flag),
   ].join("\n");
-  const choice: number = prompt(message);
+  const choice: number = +prompt(message);
   if (choice >= 1 && choice <= editableNonTestFlags.length) {
     return editableNonTestFlags[choice - 1];
   }
