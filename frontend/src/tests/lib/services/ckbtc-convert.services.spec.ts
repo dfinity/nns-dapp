@@ -41,10 +41,13 @@ describe("ckbtc-convert-services", () => {
     amount: 1,
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
     canisters: mockCkBTCAdditionalCanisters,
-    updateProgress: jest.fn(),
   };
 
-  const convert = async () => await convertCkBTCToBtc(params);
+  const convert = async (updateProgressSpy: () => void) =>
+    await convertCkBTCToBtc({
+      ...params,
+      updateProgress: updateProgressSpy,
+    });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -78,9 +81,13 @@ describe("ckbtc-convert-services", () => {
     const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
     it("should get a withdrawal account", async () => {
-      await convert();
+      const updateProgressSpy = jest.fn();
+
+      await convert(updateProgressSpy);
 
       expect(getWithdrawalAccountSpy).toBeCalledWith();
+
+      expect(updateProgressSpy).toBeCalledTimes(2);
     });
 
     describe("transfer tokens succeed", () => {
@@ -96,7 +103,9 @@ describe("ckbtc-convert-services", () => {
       const amountE8s = numberToE8s(params.amount);
 
       it("should transfer tokens to ledger", async () => {
-        await convert();
+        const updateProgressSpy = jest.fn();
+
+        await convert(updateProgressSpy);
 
         const to = decodeIcrcAccount(
           encodeIcrcAccount({
@@ -115,6 +124,9 @@ describe("ckbtc-convert-services", () => {
             subaccount: [to.subaccount],
           },
         });
+
+        // We test ledger here but the all test go through therefore all steps performed
+        expect(updateProgressSpy).toBeCalledTimes(5);
       });
 
       describe("retrieve btc succeed", () => {
@@ -126,19 +138,28 @@ describe("ckbtc-convert-services", () => {
           minterCanisterMock.retrieveBtc.mockResolvedValue(ok);
 
         it("should retrieve btc", async () => {
-          await convert();
+          const updateProgressSpy = jest.fn();
+
+          await convert(updateProgressSpy);
 
           expect(retrieveBtcSpy).toBeCalledWith({
             address: mockCkBTCAddress,
             amount: amountE8s,
           });
+
+          // We test ledger here but the all test go through therefore all steps performed
+          expect(updateProgressSpy).toBeCalledTimes(5);
         });
 
         it("should load transactions", async () => {
-          await convert();
+          const updateProgressSpy = jest.fn();
+
+          await convert(updateProgressSpy);
 
           // We only test that the call is made here. Test should be covered by its respective service.
           expect(loadCkBTCAccountTransactions).toBeCalled();
+
+          expect(updateProgressSpy).toBeCalledTimes(5);
         });
       });
 
@@ -150,9 +171,13 @@ describe("ckbtc-convert-services", () => {
 
           const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-          await convert();
+          const updateProgressSpy = jest.fn();
+
+          await convert(updateProgressSpy);
 
           expect(spyOnToastsError).toBeCalled();
+
+          expect(updateProgressSpy).toBeCalledTimes(4);
         });
       });
     });
@@ -165,9 +190,13 @@ describe("ckbtc-convert-services", () => {
 
         const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-        await convert();
+        const updateProgressSpy = jest.fn();
+
+        await convert(updateProgressSpy);
 
         expect(spyOnToastsError).toBeCalled();
+
+        expect(updateProgressSpy).toBeCalledTimes(2);
       });
     });
   });
@@ -180,9 +209,13 @@ describe("ckbtc-convert-services", () => {
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      await convert();
+      const updateProgressSpy = jest.fn();
+
+      await convert(updateProgressSpy);
 
       expect(spyOnToastsError).toBeCalled();
+
+      expect(updateProgressSpy).toBeCalledTimes(1);
     });
   });
 });
