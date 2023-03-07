@@ -100,21 +100,21 @@ export function triggerDebugReport(node: HTMLElement) {
         }
 
         if (LogType.FeatureFlagsOverrideTrue === logType) {
-          const flag: FeatureKey = promptFeatureFlag(
+          const flag = promptFeatureFlag(
             get(i18n).feature_flags_prompt.override_true
           );
           flag && overrideFeatureFlagsStore.setFlag(flag, true);
         }
 
         if (LogType.FeatureFlagsOverrideFalse === logType) {
-          const flag: FeatureKey = promptFeatureFlag(
+          const flag = promptFeatureFlag(
             get(i18n).feature_flags_prompt.override_false
           );
           flag && overrideFeatureFlagsStore.setFlag(flag, false);
         }
 
         if (LogType.FeatureFlagsOverrideRemove === logType) {
-          const flag: FeatureKey = promptFeatureFlag(
+          const flag = promptFeatureFlag(
             get(i18n).feature_flags_prompt.remove_override
           );
           flag && overrideFeatureFlagsStore.removeFlag(flag);
@@ -339,7 +339,9 @@ const promptFeatureFlag = (question: string): FeatureKey | null => {
     question,
     ...editableNonTestFlags.map((flag, index) => index + 1 + ": " + flag),
   ].join("\n");
-  const choice: number = +prompt(message);
+
+  const choice = Number(prompt(message));
+
   if (choice >= 1 && choice <= editableNonTestFlags.length) {
     return editableNonTestFlags[choice - 1];
   }
