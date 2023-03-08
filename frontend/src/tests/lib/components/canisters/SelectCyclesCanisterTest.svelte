@@ -1,6 +1,6 @@
 <script lang="ts">
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
-  import en from "../../../mocks/i18n.mock";
+  import en from "$tests/mocks/i18n.mock";
 
   export let icpToCyclesExchangeRate: bigint;
 </script>

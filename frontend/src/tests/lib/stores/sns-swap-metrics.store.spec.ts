@@ -1,6 +1,6 @@
+import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { get } from "svelte/store";
-import { snsSwapMetricsStore } from "../../../lib/stores/sns-swap-metrics.store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("snsSwapMetricsStore", () => {
   const metrics = {

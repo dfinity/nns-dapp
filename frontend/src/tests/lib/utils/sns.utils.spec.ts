@@ -6,6 +6,7 @@ import {
   hasOpenTicketInProcess,
   isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
+  parseSnsSwapSaleBuyerCount,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
@@ -25,7 +26,6 @@ import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { parseSnsSwapSaleBuyerCount } from "../../../lib/utils/sns.utils";
 
 describe("sns-utils", () => {
   beforeEach(() => {

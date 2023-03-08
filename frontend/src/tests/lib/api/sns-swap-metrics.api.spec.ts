@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { querySnsSwapMetrics } from "../../../lib/api/sns-swap-metrics.api";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
+import { querySnsSwapMetrics } from "$lib/api/sns-swap-metrics.api";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 
 describe("sns-swap-metrics.api", () => {
   it("should query raw metrics with swapCanisterId", async () => {
