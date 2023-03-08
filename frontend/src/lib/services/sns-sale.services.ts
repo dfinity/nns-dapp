@@ -250,6 +250,12 @@ const handleNewSaleTicketError = ({
           err,
         });
         return;
+      case NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN:
+        toastsError({
+          labelKey: "error__sns.sns_sale_not_open",
+          err,
+        });
+        return;
       case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
         const existingTicket = newSaleTicketError.existingTicket;
         if (nonNullish(existingTicket)) {
