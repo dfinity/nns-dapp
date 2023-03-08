@@ -324,7 +324,6 @@ const pollNewSaleTicket = async (params: {
     failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
-// TODO(sale): rename to loadNewSaleTicket
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -333,7 +332,7 @@ const pollNewSaleTicket = async (params: {
  * @param {E8s} amount_icp_e8s
  * @param {Uint8Array} subaccount
  */
-export const newSaleTicket = async ({
+export const loadNewSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
   subaccount,
@@ -455,7 +454,7 @@ export const initiateSnsSaleParticipation = async ({
     // Step 1.
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
-    await newSaleTicket({
+    await loadNewSaleTicket({
       rootCanisterId,
       subaccount: isNullish(subaccount)
         ? undefined
