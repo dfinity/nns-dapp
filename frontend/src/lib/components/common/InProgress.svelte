@@ -26,7 +26,7 @@
     ) as [ProgressStep, ...ProgressStep[]];
   };
 
-  $: progressStep, (() => updateSteps())();
+  $: progressStep, updateSteps();
 </script>
 
 <div class="warning" data-tid="in-progress-warning">
