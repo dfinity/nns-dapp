@@ -49,14 +49,14 @@ describe("CkBTCWalletFooter", () => {
   it("should render a receive button", () => {
     const { getByTestId } = renderWalletActions(mockCkBTCMainAccount);
 
-    expect(getByTestId("receive-ckbtc-transaction")).not.toBeNull();
+    expect(getByTestId("receive-ckbtc")).not.toBeNull();
   });
 
   it("should render a disabled receive button if not account", () => {
     const { getByTestId } = renderWalletActions(undefined);
 
     expect(
-      getByTestId("receive-ckbtc-transaction").getAttribute("disabled")
+      getByTestId("receive-ckbtc").getAttribute("disabled")
     ).not.toBeNull();
   });
 
@@ -65,7 +65,7 @@ describe("CkBTCWalletFooter", () => {
       renderWalletActions(mockCkBTCMainAccount);
 
     fireEvent.click(
-      getByTestId("receive-ckbtc-transaction") as HTMLButtonElement
+      getByTestId("receive-ckbtc") as HTMLButtonElement
     );
 
     await waitFor(() =>

@@ -148,6 +148,6 @@
     class="secondary"
     on:click={openReceive}
     disabled={disableButton}
-    data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
+    data-tid="receive-ckbtc">{$i18n.ckbtc.receive}</button
   >
 </Footer>
