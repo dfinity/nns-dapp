@@ -908,7 +908,7 @@ describe("neurons api-service", () => {
       vote: Vote.Yes,
     };
 
-    it("should call stopDissolving api", () => {
+    it("should call registerVote api", () => {
       governanceApiService.registerVote(params);
       expect(api.registerVote).toHaveBeenCalledWith(params);
       expect(api.registerVote).toHaveBeenCalledTimes(1);

@@ -633,13 +633,13 @@ describe("neurons-api", () => {
   });
 
   describe("registerVote", () => {
-    const neuronId = BigInt(0);
+    const neuronId = BigInt(110);
     const identity = mockIdentity;
-    const proposalId = BigInt(0);
+    const proposalId = BigInt(110);
 
     it("should call the canister to cast vote neuronIds count", async () => {
       await registerVote({
-        neuronId: neuronId,
+        neuronId,
         proposalId,
         vote: Vote.Yes,
         identity,
