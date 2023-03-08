@@ -292,7 +292,7 @@
     "top_up_description": "Increase stake of neuron $neuronId",
     "community_fund_title": "Community Fund Membership",
     "merge_neurons_select_info": "The order of selection matters. The neuron that you select first will be merged into the second one.",
-    "merge_neurons_source_neuron_disappear": "The neuron $neuronId will disappear.",
+    "merge_neurons_source_neuron_disappear": "The neuron <strong>$neuronId</strong> will disappear.",
     "merge_neurons_more_info": "Learn more about merging neurons <a href=\"https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2\" rel=\"noopener noreferrer\" aria-label=\"more info about merging neurons\" target=\"_blank\">here</a>.",
     "stake_amount": "Stake Amount"
   },
