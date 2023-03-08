@@ -156,6 +156,7 @@
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
     "ckbtc_transaction_description": "$token Transaction",
+    "ckbtc_to_btc_transaction_description": "ckBTC —> BTC Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
