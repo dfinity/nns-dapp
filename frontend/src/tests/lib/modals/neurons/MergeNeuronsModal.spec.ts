@@ -135,7 +135,7 @@ describe("MergeNeuronsModal", () => {
     });
 
     it("allows user to select two neurons and move to confirmation screen", async () => {
-      const { queryAllByTestId, queryByTestId, queryByText, queryAllByText } =
+      const { queryAllByTestId, queryByTestId, queryAllByText } =
         await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
@@ -152,7 +152,9 @@ describe("MergeNeuronsModal", () => {
       expect(
         queryAllByText(en.neurons.merge_neurons_modal_confirm).length
       ).toBeGreaterThan(0);
-      expect(queryByText(mergeableNeuron1.neuronId.toString())).not.toBeNull();
+      expect(
+        queryAllByText(mergeableNeuron1.neuronId.toString()).length
+      ).toBeGreaterThan(0);
     });
 
     it("allows user to select two neurons and merge them", async () => {

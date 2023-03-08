@@ -240,7 +240,7 @@ interface I18nNeurons {
   merge_neurons_edit_selection: string;
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
-  merge_neurons_modal_with: string;
+  merge_neurons_modal_into: string;
   set_dissolve_delay: string;
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
@@ -301,6 +301,9 @@ interface I18nNeurons {
   top_up_neuron: string;
   top_up_description: string;
   community_fund_title: string;
+  merge_neurons_select_info: string;
+  merge_neurons_source_neuron_disappear: string;
+  merge_neurons_more_info: string;
   stake_amount: string;
 }
 
