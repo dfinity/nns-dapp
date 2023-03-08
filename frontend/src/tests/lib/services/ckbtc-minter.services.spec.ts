@@ -7,7 +7,7 @@ import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import * as services from "$lib/services/ckbtc-minter.services";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCAddress } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   MinterAlreadyProcessingError,
@@ -24,7 +24,7 @@ describe("ckbtc-minter-services", () => {
     it("should get bitcoin address", async () => {
       const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
-        .mockResolvedValue(mockCkBTCAddress);
+        .mockResolvedValue(mockBTCAddressTestnet);
 
       await services.getBTCAddress(CKBTC_MINTER_CANISTER_ID);
 
