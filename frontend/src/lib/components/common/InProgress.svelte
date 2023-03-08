@@ -8,10 +8,13 @@
   export let progressStep: string;
   export let steps: [ProgressStep, ...ProgressStep[]];
 
-  const updateSteps = () => {
-    const progressIndex = steps.findIndex(({ step }) => step === progressStep);
+  let dynamicSteps: ProgressStep[] = [];
+  $: dynamicSteps = [...steps];
 
-    steps = steps.map((step, index) =>
+  const updateSteps = () => {
+    const progressIndex = dynamicSteps.findIndex(({ step }) => step === progressStep);
+
+    dynamicSteps = dynamicSteps.map((step, index) =>
       step.step === progressStep
         ? {
             ...step,
@@ -38,7 +41,7 @@
   <p class="description">{$i18n.core.do_not_close}</p>
 </div>
 
-<ProgressSteps {steps} />
+<ProgressSteps steps={dynamicSteps} />
 
 <style lang="scss">
   .warning {
