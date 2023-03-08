@@ -56,7 +56,7 @@
 
   <NnsNeuronInfo neuron={sourceNeuron} />
 
-  <h3>{$i18n.neurons.merge_neurons_modal_with}</h3>
+  <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
   <NnsNeuronInfo neuron={targetNeuron} />
 
