@@ -6,6 +6,7 @@ import AddressInput from "$lib/components/accounts/AddressInput.svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
+import {mockBTCAddressTestnet, mockCkBTCAddress} from "../../../mocks/ckbtc-accounts.mock";
 
 describe("AddressInput", () => {
   const props = { address: undefined };
@@ -34,16 +35,13 @@ describe("AddressInput", () => {
 
     const input = container.querySelector("input") as HTMLInputElement;
 
-    const ckBTCAdress =
-      "73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe";
-
-    await fireEvent.input(input, { target: { value: ckBTCAdress } });
+    await fireEvent.input(input, { target: { value: mockCkBTCAddress } });
     await fireEvent.blur(input);
     expect(queryByTestId("input-error-message")).toBeNull();
 
     rerender({
       ...props,
-      address: ckBTCAdress,
+      address: mockCkBTCAddress,
       selectedNetwork: TransactionNetwork.BTC_TESTNET,
     });
 
@@ -59,16 +57,13 @@ describe("AddressInput", () => {
 
     const input = container.querySelector("input") as HTMLInputElement;
 
-    const ckBTCAdress =
-      "73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe";
-
-    await fireEvent.input(input, { target: { value: ckBTCAdress } });
+    await fireEvent.input(input, { target: { value: mockCkBTCAddress } });
     await fireEvent.blur(input);
     expect(queryByTestId("input-error-message")).toBeNull();
 
     rerender({
       ...props,
-      address: ckBTCAdress,
+      address: mockCkBTCAddress,
       selectedNetwork: TransactionNetwork.BTC_TESTNET,
     });
 
@@ -76,11 +71,9 @@ describe("AddressInput", () => {
       expect(queryByTestId("input-error-message")).toBeInTheDocument()
     );
 
-    const btcAddress = "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn";
-
     rerender({
       ...props,
-      address: btcAddress,
+      address: mockBTCAddressTestnet,
       selectedNetwork: TransactionNetwork.BTC_TESTNET,
     });
 

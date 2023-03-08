@@ -23,6 +23,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import {mockBTCAddressTestnet} from "../../../mocks/ckbtc-accounts.mock";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -90,7 +91,7 @@ describe("CkBTCTransactionModal", () => {
     await testTransferTokens({
       result,
       selectedNetwork: TransactionNetwork.BTC_TESTNET,
-      destinationAddress: "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn",
+      destinationAddress: mockBTCAddressTestnet,
     });
 
     await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());

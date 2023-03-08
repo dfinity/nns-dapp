@@ -34,6 +34,7 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import {mockBTCAddressMainnet, mockBTCAddressTestnet} from "../../mocks/ckbtc-accounts.mock";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];
@@ -158,12 +159,10 @@ describe("accounts-utils", () => {
         ).toBeFalsy();
       });
 
-      const btcAddressTestnet = "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn";
-
       it("should return false for BTC", () => {
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_TESTNET,
           })
         ).toBeFalsy();
@@ -190,21 +189,21 @@ describe("accounts-utils", () => {
       it("should return invalid for BTC", () => {
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_MAINNET,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.ICP_CKBTC,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: undefined,
           })
         ).toBeTruthy();
@@ -228,20 +227,17 @@ describe("accounts-utils", () => {
     });
 
     describe("invalidBtcAddress", () => {
-      const btcAddressTestnet = "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn";
-      const btcAddressMainnet = "17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem";
-
       it("should return false for BTC", () => {
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_TESTNET,
           })
         ).toBeFalsy();
 
         expect(
           invalidAddress({
-            address: btcAddressMainnet,
+            address: mockBTCAddressMainnet,
             network: TransactionNetwork.BTC_MAINNET,
           })
         ).toBeFalsy();
@@ -250,42 +246,42 @@ describe("accounts-utils", () => {
       it("should return invalid for BTC", () => {
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_MAINNET,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: TransactionNetwork.ICP_CKBTC,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressTestnet,
+            address: mockBTCAddressTestnet,
             network: undefined,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressMainnet,
+            address: mockBTCAddressMainnet,
             network: TransactionNetwork.BTC_TESTNET,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressMainnet,
+            address: mockBTCAddressMainnet,
             network: TransactionNetwork.ICP_CKBTC,
           })
         ).toBeTruthy();
 
         expect(
           invalidAddress({
-            address: btcAddressMainnet,
+            address: mockBTCAddressMainnet,
             network: undefined,
           })
         ).toBeTruthy();

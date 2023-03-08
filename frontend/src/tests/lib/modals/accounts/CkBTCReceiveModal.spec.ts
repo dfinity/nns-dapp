@@ -6,7 +6,7 @@ import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
-  mockCkBTCAddress,
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -30,7 +30,7 @@ describe("CkBTCReceiveModal", () => {
       props: {
         data: {
           account: mockCkBTCMainAccount,
-          btcAddress: mockCkBTCAddress,
+          btcAddress: mockBTCAddressTestnet,
           reloadAccount: reloadAccountSpy,
           canisters: mockCkBTCAdditionalCanisters,
         },
@@ -41,7 +41,7 @@ describe("CkBTCReceiveModal", () => {
   it("should render BTC address", async () => {
     const { getByText } = await renderTransactionModal();
 
-    expect(getByText(mockCkBTCAddress)).toBeInTheDocument();
+    expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
   });
 
   const selectCkBTC = async (container: HTMLElement) => {
