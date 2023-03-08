@@ -2,15 +2,33 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { notEmptyString } from "@dfinity/utils";
+  import {debounce, nonNullish, notEmptyString} from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import {invalidICPOrIcrcAddress} from "$lib/utils/accounts.utils";
 
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let selectedDestinationAddress: string | undefined = undefined;
 
   let ckTESTBTC = false;
   $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
+
+  const onDestinationAddressInput = debounce(() => {
+    if (nonNullish(selectedNetwork)) {
+      // TODO: display invalid network
+      return;
+    }
+
+    if (!invalidICPOrIcrcAddress(selectedDestinationAddress)) {
+      selectedNetwork = ckTESTBTC ? TransactionNetwork.ICP_CKTESTBTC : TransactionNetwork.ICP_CKBTC;
+      return;
+    }
+
+    // TODO: BTC testnet and mainnet
+  });
+
+  $: selectedDestinationAddress, onDestinationAddressInput()
 </script>
 
 <div class:placeholder={!notEmptyString(selectedNetwork)}>

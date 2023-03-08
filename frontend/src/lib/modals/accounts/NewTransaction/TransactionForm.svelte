@@ -150,7 +150,7 @@
   {/if}
 
   {#if mustSelectNetwork}
-    <SelectNetworkDropdown bind:selectedNetwork universeId={rootCanisterId} />
+    <SelectNetworkDropdown bind:selectedNetwork universeId={rootCanisterId} {selectedDestinationAddress} />
   {/if}
 
   <div class="amount">

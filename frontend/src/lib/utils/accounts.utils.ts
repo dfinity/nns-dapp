@@ -37,7 +37,7 @@ export const getAccountByPrincipal = ({
  *
  * e.g. this check is used in the Send / convert ckBTC to test if an address is a valid Bitcoin address
  */
-const invalidBtcAddress = (address: BtcAddress): boolean => {
+export const invalidBtcAddress = (address: BtcAddress): boolean => {
   try {
     parseBtcAddress(address);
   } catch (_: unknown) {
