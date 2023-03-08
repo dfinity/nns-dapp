@@ -6,11 +6,12 @@
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
 
   export let address: string;
-  export let renderQRCode = false;
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
   export let logoSize: "huge" | "big" = "huge";
+  // Render the QR-code when the space is available / rendered to avoid UI glitch.
+  export let renderQRCode = false;
 
   export let qrCodeRendered: boolean = QR_CODE_RENDERED;
 </script>
