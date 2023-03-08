@@ -30,7 +30,9 @@ describe("ckbtc-minter api", () => {
   describe("getBTCAddress", () => {
     it("returns the bitcoin address", async () => {
       const getBTCAddressSpy =
-        minterCanisterMock.getBtcAddress.mockResolvedValue(mockBTCAddressTestnet);
+        minterCanisterMock.getBtcAddress.mockResolvedValue(
+          mockBTCAddressTestnet
+        );
 
       const result = await getBTCAddress(params);
 

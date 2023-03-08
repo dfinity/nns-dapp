@@ -34,7 +34,10 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import {mockBTCAddressMainnet, mockBTCAddressTestnet} from "../../mocks/ckbtc-accounts.mock";
+import {
+  mockBTCAddressMainnet,
+  mockBTCAddressTestnet,
+} from "../../mocks/ckbtc-accounts.mock";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];

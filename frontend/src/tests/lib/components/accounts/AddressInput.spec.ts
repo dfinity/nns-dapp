@@ -6,7 +6,10 @@ import AddressInput from "$lib/components/accounts/AddressInput.svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
-import {mockBTCAddressTestnet, mockCkBTCAddress} from "../../../mocks/ckbtc-accounts.mock";
+import {
+  mockBTCAddressTestnet,
+  mockCkBTCAddress,
+} from "../../../mocks/ckbtc-accounts.mock";
 
 describe("AddressInput", () => {
   const props = { address: undefined };
