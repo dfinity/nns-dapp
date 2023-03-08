@@ -44,18 +44,19 @@
     logoSize="big"
     bind:qrCodeRendered
   >
-    <svelte:fragment slot="description">TODO A DESCRIPTION</svelte:fragment>
+    <slot name="title" slot="title" />
+    <slot name="description" slot="description" />
   </ReceiveAddressQRCode>
 
   {#if modalRendered}
     <div class="toolbar">
       {#if qrCodeRendered}
-      <button
-              class="primary"
-              on:click={reloadAccountAndClose}
-              data-tid="reload-ckbtc-account">{$i18n.core.done}</button
-      >
-        {/if}
+        <button
+          class="primary"
+          on:click={reloadAccountAndClose}
+          data-tid="reload-ckbtc-account">{$i18n.core.finish}</button
+        >
+      {/if}
     </div>
   {/if}
 </Modal>

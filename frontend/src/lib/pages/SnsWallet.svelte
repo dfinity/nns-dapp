@@ -27,6 +27,7 @@
     loadSnsAccountNextTransactions,
     loadSnsAccountTransactions,
   } from "$lib/services/sns-transactions.services";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   let showModal: "send" | "receive" | undefined = undefined;
 
@@ -90,6 +91,9 @@
   let logo: string;
   $: logo = $selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO;
 
+  let tokenSymbol: string | undefined;
+  $: tokenSymbol = $selectedUniverseStore?.summary?.token.symbol;
+
   // Spread to update store which triggers the reload
   const reloadAccount = async () => {
     load();
@@ -129,7 +133,7 @@
     <button
       class="secondary"
       on:click={() => (showModal = "receive")}
-      {disabled}
+      disabled={disabled || isNullish(tokenSymbol)}
       data-tid="receive-sns-transaction">{$i18n.ckbtc.receive}</button
     >
   </Footer>
@@ -143,7 +147,7 @@
   />
 {/if}
 
-<!-- For TS - action button is disabled anyway if account is undefined -->
+<!-- For TS - action button is disabled anyway if account is undefined and token not defined -->
 {#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
   <ReceiveModal
     account={$selectedAccountStore.account}
@@ -152,5 +156,16 @@
     {logo}
     logoArialLabel={$i18n.core.icp}
     {reloadAccount}
-  />
+  >
+    <svelte:fragment slot="title"
+      >{replacePlaceholders($i18n.wallet.sns_receive_note_title, {
+        $tokenSymbol: tokenSymbol,
+      })}</svelte:fragment
+    >
+    <svelte:fragment slot="description"
+      >{replacePlaceholders($i18n.wallet.sns_receive_note_text, {
+        $tokenSymbol: tokenSymbol,
+      })}</svelte:fragment
+    >
+  </ReceiveModal>
 {/if}

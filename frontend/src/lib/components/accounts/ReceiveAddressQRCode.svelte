@@ -2,6 +2,7 @@
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let address: string;
   export let renderQRCode = false;
@@ -15,14 +16,13 @@
 </script>
 
 <div class="content">
-  <div>
-    <KeyValuePair>
-      <span slot="key" class="label">{$i18n.accounts.address}</span>
-      <div slot="value" class="address">
-        <span class="value">{address}</span>
-        <Copy value={address} />
-      </div>
-    </KeyValuePair>
+  <div class="description">
+    <h3><slot name="title" /></h3>
+    <p><slot name="description" /></p>
+
+    <div class="separator">
+      <Separator />
+    </div>
   </div>
 
   <article class="qrcode">
@@ -47,9 +47,15 @@
     {/if}
   </article>
 
-  <p class="description">
-    <slot name="description" />
-  </p>
+  <div>
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.accounts.address}</span>
+      <div slot="value" class="address">
+        <span class="value">{address}</span>
+        <Copy value={address} />
+      </div>
+    </KeyValuePair>
+  </div>
 </div>
 
 <style lang="scss">
@@ -64,9 +70,17 @@
       display: grid;
       grid-template-columns: repeat(2, 50%);
       grid-template-rows: auto 1fr;
-      grid-row-gap: var(--padding-4x);
+      grid-row-gap: 0;
 
       padding: var(--padding-2x) 0;
+    }
+  }
+
+  .separator {
+    display: none;
+
+    @include media.min-width(medium) {
+      display: block;
     }
   }
 

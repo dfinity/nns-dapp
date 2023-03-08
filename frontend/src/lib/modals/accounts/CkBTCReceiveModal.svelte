@@ -119,10 +119,15 @@
     {logoArialLabel}
     bind:qrCodeRendered
   >
+    <svelte:fragment slot="title"
+      >{bitcoin
+        ? $i18n.ckbtc.btc_receive_note_title
+        : $i18n.ckbtc.ckbtc_receive_note_title}</svelte:fragment
+    >
     <svelte:fragment slot="description"
       >{bitcoin
-        ? $i18n.ckbtc.btc_receive_note
-        : $i18n.ckbtc.ckbtc_receive_note}</svelte:fragment
+        ? $i18n.ckbtc.btc_receive_note_text
+        : $i18n.ckbtc.ckbtc_receive_note_text}</svelte:fragment
     >
   </ReceiveAddressQRCode>
 

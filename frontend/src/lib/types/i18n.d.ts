@@ -30,6 +30,7 @@ interface I18nCore {
   next: string;
   principal_is: string;
   done: string;
+  finish: string;
 }
 
 interface I18nError {
@@ -438,6 +439,10 @@ interface I18nWallet {
   direction_to: string;
   no_transactions: string;
   qrcode_aria_label_icp: string;
+  icp_receive_note_title: string;
+  icp_receive_note_text: string;
+  sns_receive_note_title: string;
+  sns_receive_note_text: string;
 }
 
 interface I18nBusy_screen {
@@ -867,8 +872,10 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  btc_receive_note: string;
-  ckbtc_receive_note: string;
+  btc_receive_note_title: string;
+  ckbtc_receive_note_title: string;
+  btc_receive_note_text: string;
+  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;

@@ -185,5 +185,12 @@
     logo={IC_LOGO}
     logoArialLabel={$i18n.core.icp}
     {reloadAccount}
-  />
+  >
+    <svelte:fragment slot="title"
+      >{$i18n.wallet.icp_receive_note_title}</svelte:fragment
+    >
+    <svelte:fragment slot="description"
+      >{$i18n.wallet.icp_receive_note_text}</svelte:fragment
+    >
+  </ReceiveModal>
 {/if}
