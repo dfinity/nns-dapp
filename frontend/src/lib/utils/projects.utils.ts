@@ -27,7 +27,7 @@ export const filterProjectsStatus = ({
   );
 
 export const filterCommittedProjects = (
-  projects: SnsFullProject[] | undefined
+  projects: SnsFullProject[]
 ): SnsFullProject[] | undefined =>
   filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Committed,
