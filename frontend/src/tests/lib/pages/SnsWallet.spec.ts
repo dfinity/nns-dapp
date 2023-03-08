@@ -163,7 +163,7 @@ describe("SnsWallet", () => {
       expect(getByTestId("receive-modal")).not.toBeNull();
     });
 
-    it("should reload account", async () => {
+    it("should reload account after finish receiving tokens", async () => {
       const spy = jest.spyOn(services, "loadSnsAccountTransactions");
 
       const result = render(SnsWallet, props);

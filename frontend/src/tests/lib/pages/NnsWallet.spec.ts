@@ -198,7 +198,7 @@ describe("NnsWallet", () => {
       expect(getByText(en.wallet.icp_receive_note_text)).toBeInTheDocument();
     });
 
-    it("should reload account", async () => {
+    it("should reload account after finish receiving tokens", async () => {
       const spy = jest.spyOn(services, "getAccountTransactions");
 
       const result = render(NnsWallet, props);
