@@ -52,7 +52,7 @@
   });
 
   let governanceCanisterId: Principal | undefined;
-  $: governanceCanisterId = $snsProjectsStore?.find(
+  $: governanceCanisterId = $snsProjectsStore.find(
     ({ rootCanisterId: currentId }) =>
       currentId.toText() === rootCanisterId.toText()
   )?.summary.governanceCanisterId;

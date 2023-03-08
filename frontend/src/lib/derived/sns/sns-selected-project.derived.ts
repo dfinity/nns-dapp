@@ -24,7 +24,7 @@ export const snsProjectSelectedStore: Readable<SnsFullProject | undefined> =
   derived(
     [selectedUniverseIdStore, snsProjectsStore],
     ([$selectedUniverseIdStore, $projectsStore]) =>
-      $projectsStore?.find(
+      $projectsStore.find(
         ({ rootCanisterId }) =>
           rootCanisterId.toText() === $selectedUniverseIdStore.toText()
       )
