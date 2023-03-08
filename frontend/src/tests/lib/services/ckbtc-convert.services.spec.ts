@@ -13,7 +13,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
-  mockCkBTCAddress,
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
@@ -37,7 +37,7 @@ describe("ckbtc-convert-services", () => {
 
   const params = {
     source: mockCkBTCMainAccount,
-    destinationAddress: mockCkBTCAddress,
+    destinationAddress: mockBTCAddressTestnet,
     amount: 1,
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
     canisters: mockCkBTCAdditionalCanisters,
@@ -143,7 +143,7 @@ describe("ckbtc-convert-services", () => {
           await convert(updateProgressSpy);
 
           expect(retrieveBtcSpy).toBeCalledWith({
-            address: mockCkBTCAddress,
+            address: mockBTCAddressTestnet,
             amount: amountE8s,
           });
 

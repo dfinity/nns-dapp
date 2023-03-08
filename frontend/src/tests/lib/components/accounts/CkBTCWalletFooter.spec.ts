@@ -8,7 +8,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import {
-  mockCkBTCAddress,
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
@@ -22,7 +22,7 @@ import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    getBTCAddress: jest.fn().mockImplementation(() => mockCkBTCAddress),
+    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
   };
 });
 

@@ -14,7 +14,7 @@ import type { UniverseCanisterId } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
-  mockCkBTCAddress,
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
@@ -26,6 +26,7 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
+import { mockCkBTCAddress } from "../../../mocks/ckbtc-accounts.mock";
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
@@ -52,7 +53,7 @@ describe("BtcCkBTCReceiveModal", () => {
           universeId,
           displayBtcAddress,
           account: mockCkBTCMainAccount,
-          btcAddress: mockCkBTCAddress,
+          btcAddress: mockBTCAddressTestnet,
           reloadAccount: reloadAccountSpy,
           canisters: mockCkBTCAdditionalCanisters,
         },
@@ -69,7 +70,7 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render BTC address", async () => {
       const { getByText } = await renderReceiveModal({});
 
-      expect(getByText(mockCkBTCAddress)).toBeInTheDocument();
+      expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
     });
 
     const selectCkBTC = async (container: HTMLElement) => {
