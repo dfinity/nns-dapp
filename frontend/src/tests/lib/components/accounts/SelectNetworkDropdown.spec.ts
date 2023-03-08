@@ -3,11 +3,13 @@
  */
 
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
   mockBTCAddressMainnet,
   mockBTCAddressTestnet,
