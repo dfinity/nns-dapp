@@ -69,7 +69,9 @@ describe("Verifies that neurons can be merged", () => {
   });
   it("Merged balances are correct", async () => {
     const neuronsTab = new NeuronsTab(browser);
-    const targetNeuronIcpAfter = await neuronsTab.getNeuronBalance(targetNeuronId);
+    const targetNeuronIcpAfter = await neuronsTab.getNeuronBalance(
+      targetNeuronId
+    );
     // Source neuron is not displayed because the stake is 0.
     try {
       await neuronsTab.getNeuronBalance(sourceNeuronId);
@@ -77,7 +79,8 @@ describe("Verifies that neurons can be merged", () => {
     } catch (_) {
       expect(true).toBe(true);
     }
-    const fees = sourceNeuronIcpBefore + targetNeuronIcpBefore - targetNeuronIcpAfter;
+    const fees =
+      sourceNeuronIcpBefore + targetNeuronIcpBefore - targetNeuronIcpAfter;
     const expectedMaxFees = 0.000101;
     if (fees < 0 || fees > expectedMaxFees) {
       throw new Error(
