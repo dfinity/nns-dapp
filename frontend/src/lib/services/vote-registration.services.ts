@@ -1,5 +1,4 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import { registerVote } from "$lib/api/proposals.api";
+import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { i18n } from "$lib/stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
@@ -278,12 +277,13 @@ const registerNeuronsVote = async ({
   try {
     const requests = neuronIds.map(
       (neuronId: NeuronId): Promise<void> =>
-        registerVote({
-          neuronId,
-          vote,
-          proposalId,
-          identity,
-        })
+        governanceApiService
+          .registerVote({
+            neuronId,
+            vote,
+            proposalId,
+            identity,
+          })
           // call it only after successful registration
           .then(() =>
             neuronRegistrationComplete({
@@ -379,10 +379,6 @@ const updateAfterVoteRegistration = async (
         strategy: "update",
       })
     );
-
-  // TODO(JIRA-1975): improve quick fix
-  // We need to list the neurons with the very last ballots because the user just voted
-  resetNeuronsApiService();
 
   return Promise.all([
     listNeurons({

@@ -13,7 +13,8 @@ import {
   createMockKnownNeuron,
   createMockNeuron,
 } from "$tests/mocks/neurons.mock";
-import { Topic } from "@dfinity/nns";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { Topic, Vote } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 
@@ -894,6 +895,37 @@ describe("neurons api-service", () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stopDissolving,
         apiServiceFunc: governanceApiService.stopDissolving,
+        params,
+      });
+    });
+  });
+
+  describe("registerVote", () => {
+    const params = {
+      neuronId,
+      identity: mockIdentity,
+      proposalId: mockProposalInfo.id,
+      vote: Vote.Yes,
+    };
+
+    it("should call stopDissolving api", () => {
+      governanceApiService.registerVote(params);
+      expect(api.registerVote).toHaveBeenCalledWith(params);
+      expect(api.registerVote).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.registerVote,
+        apiServiceFunc: governanceApiService.registerVote,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.registerVote,
+        apiServiceFunc: governanceApiService.registerVote,
         params,
       });
     });
