@@ -28,6 +28,9 @@
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
 
+  let minter = false;
+  $: minter = nonNullish(canisters?.minterCanisterId);
+
   const openReceive = async () => {
     // Button is disabled if no account anyway
     if (isNullish($store.account)) {
@@ -45,6 +48,26 @@
       return;
     }
 
+    // TODO: to be removed when ckBTC with minter is live.
+    // Remove displayBtcAddress at the same time.
+    if (!isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore)) {
+      emit<CkBTCWalletModal>({
+        message: "ckBTCWalletModal",
+        detail: {
+          type: "ckbtc-receive",
+          data: {
+            displayBtcAddress: false,
+            btcAddress: "",
+            account: $store.account,
+            reloadAccount,
+            universeId: $selectedCkBTCUniverseIdStore,
+            canisters,
+          },
+        },
+      });
+      return;
+    }
+
     startBusy({
       initiator: "get-btc-address",
     });
@@ -58,6 +81,7 @@
         detail: {
           type: "ckbtc-receive",
           data: {
+            displayBtcAddress: true,
             btcAddress,
             account: $store.account,
             reloadAccount,
@@ -113,12 +137,9 @@
     isNullish($selectedCkBTCUniverseIdStore) ||
     isNullish(canisters);
   $busy;
-
-  let minter = false;
-  $: minter = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);
 </script>
 
-<Footer columns={minter ? 2 : 1}>
+<Footer columns={2}>
   <button
     class="primary"
     on:click={openSend}
@@ -126,12 +147,10 @@
     data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
   >
 
-  {#if minter}
-    <button
-      class="secondary"
-      on:click={openReceive}
-      disabled={disableButton}
-      data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
-    >
-  {/if}
+  <button
+          class="secondary"
+          on:click={openReceive}
+          disabled={disableButton}
+          data-tid="receive-ckbtc-transaction">{$i18n.ckbtc.receive}</button
+  >
 </Footer>

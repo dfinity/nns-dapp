@@ -19,7 +19,7 @@ jest.mock("$lib/services/ckbtc-minter.services", () => {
   };
 });
 
-describe("CkBTCReceiveModal", () => {
+describe("BtcCkBTCReceiveModal", () => {
   const reloadAccountSpy = jest.fn();
 
   afterEach(() => jest.clearAllMocks());
@@ -72,7 +72,8 @@ describe("CkBTCReceiveModal", () => {
   it("should render a bitcoin description", async () => {
     const { getByText } = await renderTransactionModal();
 
-    expect(getByText(en.ckbtc.btc_receive_note)).toBeInTheDocument();
+    expect(getByText(en.ckbtc.btc_receive_note_title)).toBeInTheDocument();
+    expect(getByText(en.ckbtc.btc_receive_note_text)).toBeInTheDocument();
   });
 
   it("should render a ckBTC description", async () => {
@@ -81,7 +82,10 @@ describe("CkBTCReceiveModal", () => {
     await selectCkBTC(container);
 
     await waitFor(() =>
-      expect(getByText(en.ckbtc.ckbtc_receive_note)).toBeInTheDocument()
+      expect(getByText(en.ckbtc.ckbtc_receive_note_title)).toBeInTheDocument()
+    );
+    await waitFor(() =>
+        expect(getByText(en.ckbtc.ckbtc_receive_note_text)).toBeInTheDocument()
     );
   });
 

@@ -8,25 +8,32 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
-  import type { CkBTCWalletReceiveModalData } from "$lib/types/wallet.modal";
+  import type { CkBTCWalletBtcCkBTCReceiveModalData } from "$lib/types/wallet.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
+  import type {TokensStoreUniverseData} from "$lib/stores/tokens.store";
+  import {nonNullish} from "@dfinity/utils";
+  import {selectedCkBTCUniverseIdStore} from "$lib/derived/selected-universe.derived";
+  import {ckBTCTokenStore} from "$lib/derived/universes-tokens.derived";
+  import {replacePlaceholders} from "$lib/utils/i18n.utils";
 
-  export let data: CkBTCWalletReceiveModalData;
+  export let data: CkBTCWalletBtcCkBTCReceiveModalData;
 
   let universeId: UniverseCanisterId;
   let canisters: CkBTCAdditionalCanisters;
   let account: Account;
   let btcAddress: string;
   let reloadAccount: () => Promise<void>;
+  let displayBtcAddress: boolean;
 
-  $: ({ account, btcAddress, reloadAccount, canisters, universeId } = data);
+  $: ({ account, btcAddress, reloadAccount, canisters, universeId, displayBtcAddress } = data);
 
-  let bitcoinSegmentId = Symbol();
-  let ckBTCSegmentId = Symbol();
-  let selectedSegmentId = bitcoinSegmentId;
+  let bitcoinSegmentId = Symbol("bitcoin");
+  let ckBTCSegmentId = Symbol("ckBTC");
+  let selectedSegmentId: symbol;
+  $: selectedSegmentId = displayBtcAddress ? bitcoinSegmentId : ckBTCSegmentId;
 
   let modalRendered = false;
   let segment: Segment;
@@ -95,19 +102,45 @@
 
     stopBusy("reload-ckbtc-account");
   };
+
+  // TODO: to be removed when ckBTC with minter is live.
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+          ? $ckBTCTokenStore[universeId.toText()]
+          : undefined;
+
+  let title: string;
+  $: title = !displayBtcAddress && nonNullish(token) ?
+          replacePlaceholders($i18n.wallet.sns_receive_note_title, {
+            $tokenSymbol: token.token.symbol,
+          })
+          : bitcoin
+          ? $i18n.ckbtc.btc_receive_note_title
+          : $i18n.ckbtc.ckbtc_receive_note_title;
+
+  let description: string;
+  $: description = !displayBtcAddress && nonNullish(token) ?
+          replacePlaceholders($i18n.wallet.sns_receive_note_text, {
+            $tokenSymbol: token.token.symbol,
+          })
+          : bitcoin
+          ? $i18n.ckbtc.btc_receive_note_text
+          : $i18n.ckbtc.ckbtc_receive_note_text
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  <div class="receive">
-    <Segment bind:selectedSegmentId bind:this={segment}>
-      <SegmentButton segmentId={bitcoinSegmentId}
-        >{$i18n.ckbtc.bitcoin}</SegmentButton
-      >
-      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
-    </Segment>
-  </div>
+  {#if displayBtcAddress}
+    <div class="receive">
+      <Segment bind:selectedSegmentId bind:this={segment}>
+        <SegmentButton segmentId={bitcoinSegmentId}
+          >{$i18n.ckbtc.bitcoin}</SegmentButton
+        >
+        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
+      </Segment>
+    </div>
+  {/if}
 
   <ReceiveAddressQRCode
     address={bitcoin ? btcAddress : account.identifier}
@@ -120,14 +153,10 @@
     bind:qrCodeRendered
   >
     <svelte:fragment slot="title"
-      >{bitcoin
-        ? $i18n.ckbtc.btc_receive_note_title
-        : $i18n.ckbtc.ckbtc_receive_note_title}</svelte:fragment
+      >{title}</svelte:fragment
     >
     <svelte:fragment slot="description"
-      >{bitcoin
-        ? $i18n.ckbtc.btc_receive_note_text
-        : $i18n.ckbtc.ckbtc_receive_note_text}</svelte:fragment
+      >{description}</svelte:fragment
     >
   </ReceiveAddressQRCode>
 
@@ -138,13 +167,13 @@
           class="primary"
           on:click={updateBalance}
           disabled={$busy}
-          data-tid="update-ckbtc-balance">{$i18n.core.done}</button
+          data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
         >
       {:else}
         <button
           class="primary"
           on:click={reloadAccountAndClose}
-          data-tid="reload-ckbtc-account">{$i18n.core.done}</button
+          data-tid="reload-ckbtc-account">{$i18n.core.finish}</button
         >
       {/if}
     {/if}
