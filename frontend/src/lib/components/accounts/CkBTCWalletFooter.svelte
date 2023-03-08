@@ -28,9 +28,6 @@
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
 
-  let minter = false;
-  $: minter = nonNullish(canisters?.minterCanisterId);
-
   const openReceive = async () => {
     // Button is disabled if no account anyway
     if (isNullish($store.account)) {
