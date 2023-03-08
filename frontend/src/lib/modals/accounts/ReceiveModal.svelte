@@ -12,7 +12,8 @@
   export let logoArialLabel: string;
   export let reloadAccount: () => Promise<void>;
 
-  let qrCodeRendered = false;
+  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
+  export let qrCodeRendered = false;
 
   let modalRendered = false;
 
@@ -22,13 +23,13 @@
 
   const reloadAccountAndClose = async () => {
     startBusy({
-      initiator: "reload-ckbtc-account",
+      initiator: "reload-receive-account",
     });
 
     await reloadAccount();
     dispatcher("nnsClose");
 
-    stopBusy("reload-ckbtc-account");
+    stopBusy("reload-receive-account");
   };
 </script>
 
@@ -54,7 +55,7 @@
         <button
           class="primary"
           on:click={reloadAccountAndClose}
-          data-tid="reload-ckbtc-account">{$i18n.core.finish}</button
+          data-tid="reload-receive-account">{$i18n.core.finish}</button
         >
       {/if}
     </div>

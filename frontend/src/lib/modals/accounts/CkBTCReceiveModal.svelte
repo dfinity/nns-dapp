@@ -101,13 +101,13 @@
 
   const reloadAccountAndClose = async () => {
     startBusy({
-      initiator: "reload-ckbtc-account",
+      initiator: "reload-receive-account",
     });
 
     await reloadAccount();
     dispatcher("nnsClose");
 
-    stopBusy("reload-ckbtc-account");
+    stopBusy("reload-receive-account");
   };
 
   // TODO: to be removed when ckBTC with minter is live.
@@ -178,7 +178,7 @@
         <button
           class="primary"
           on:click={reloadAccountAndClose}
-          data-tid="reload-ckbtc-account">{$i18n.core.finish}</button
+          data-tid="reload-receive-account">{$i18n.core.finish}</button
         >
       {/if}
     {/if}
