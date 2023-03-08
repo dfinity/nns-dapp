@@ -94,15 +94,26 @@
     </p>
   </div>
 
-  <p class="additional-text description">
-    {replacePlaceholders($i18n.neurons.merge_neurons_source_neuron_no_stake, {
-      $neuronId: String(sourceNeuron.neuronId),
-    })}
-  </p>
+  <div class="additional-text">
+    <p class="description">
+      <Html
+        text={replacePlaceholders(
+          $i18n.neurons.merge_neurons_source_neuron_disappear,
+          {
+            $neuronId: String(sourceNeuron.neuronId),
+          }
+        )}
+      />
+    </p>
 
-  <p class="additional-text description">
-    {$i18n.neurons.irreversible_action}
-  </p>
+    <p class="description">
+      <Html text={$i18n.neurons.merge_neurons_more_info} />
+    </p>
+
+    <p class="description">
+      {$i18n.neurons.irreversible_action}
+    </p>
+  </div>
 
   <div class="toolbar">
     <button class="secondary" on:click={() => dispatcher("nnsBack")}>

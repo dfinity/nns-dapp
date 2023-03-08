@@ -301,6 +301,9 @@ interface I18nNeurons {
   top_up_neuron: string;
   top_up_description: string;
   community_fund_title: string;
+  merge_neurons_select_info: string;
+  merge_neurons_source_neuron_disappear: string;
+  merge_neurons_more_info: string;
   stake_amount: string;
 }
 
