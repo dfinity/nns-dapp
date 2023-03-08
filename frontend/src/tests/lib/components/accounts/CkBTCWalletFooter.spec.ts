@@ -64,9 +64,7 @@ describe("CkBTCWalletFooter", () => {
     const { getByTestId, container } =
       renderWalletActions(mockCkBTCMainAccount);
 
-    fireEvent.click(
-      getByTestId("receive-ckbtc") as HTMLButtonElement
-    );
+    fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
 
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()
