@@ -900,6 +900,12 @@ interface I18nError__ckbtc {
   estimated_fee: string;
 }
 
+interface I18nFeature_flags_prompt {
+  override_true: string;
+  override_false: string;
+  remove_override: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1136,6 +1142,7 @@ interface I18n {
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
   error__ckbtc: I18nError__ckbtc;
+  feature_flags_prompt: I18nFeature_flags_prompt;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
