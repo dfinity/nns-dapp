@@ -226,6 +226,71 @@ describe("accounts-utils", () => {
         expect(invalidICPOrIcrcAddress(subaccountString)).toBeFalsy();
       });
     });
+
+    describe("invalidBtcAddress", () => {
+      const btcAddressTestnet = "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn";
+      const btcAddressMainnet = "17VZNX1SN5NtKa8UQFxwQbFeFc3iqRYhem";
+
+      it("should return false for BTC", () => {
+        expect(
+          invalidAddress({
+            address: btcAddressTestnet,
+            network: TransactionNetwork.BTC_TESTNET,
+          })
+        ).toBeFalsy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressMainnet,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeFalsy();
+      });
+
+      it("should return invalid for BTC", () => {
+        expect(
+          invalidAddress({
+            address: btcAddressTestnet,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressTestnet,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressTestnet,
+            network: undefined,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressMainnet,
+            network: TransactionNetwork.BTC_TESTNET,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressMainnet,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: btcAddressMainnet,
+            network: undefined,
+          })
+        ).toBeTruthy();
+      });
+    });
   });
 
   describe("emptyAddress", () => {
