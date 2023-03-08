@@ -1,7 +1,6 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
 
-// TODO(Maks): rename: querySwapMetrics
 export const querySnsSwapMetrics = async ({
   swapCanisterId,
 }: {
