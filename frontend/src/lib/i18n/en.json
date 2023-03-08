@@ -26,7 +26,9 @@
     "previous": "Previous",
     "next": "Next",
     "principal_is": "Your principal is",
-    "done": "Done"
+    "done": "Done",
+    "this_may_take_a_few_minutes": "This may take a few minutes",
+    "do_not_close": "Please do not close your browser tab"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -622,8 +624,6 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "this_may_take_a_few_minutes": "This may take a few minutes",
-    "do_not_close": "Please do not close your browser tab",
     "connecting_sale_canister": "Connecting to sale canister"
   },
   "sns_neuron_detail": {
@@ -827,7 +827,12 @@
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
     "btc": "BTC",
-    "ckbtc_balance_updated": "Balance successfully updated."
+    "ckbtc_balance_updated": "Balance successfully updated.",
+    "step_initialization": "Initializing transaction",
+    "step_locking_ckbtc": "Confirming ckBTC",
+    "step_send_btc": "Sending BTC",
+    "step_reload": "Refreshing UI Balances",
+    "sending_ckbtc_to_btc": "Sending ckBTC —> BTC"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
