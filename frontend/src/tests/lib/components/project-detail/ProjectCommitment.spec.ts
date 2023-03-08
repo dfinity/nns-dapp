@@ -3,16 +3,16 @@
  */
 
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
+import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken } from "$lib/utils/token.utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { snsSwapMetricsStore } from "../../../../lib/stores/sns-swap-metrics.store";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectCommitment", () => {
   const summary = summaryForLifecycle(SnsSwapLifecycle.Open);

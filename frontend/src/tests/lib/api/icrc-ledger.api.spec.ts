@@ -3,11 +3,11 @@ import {
   getIcrcToken,
   icrcTransfer,
 } from "$lib/api/icrc-ledger.api";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,
   mockSnsToken,
-} from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 
 describe("icrc-ledger api", () => {
   describe("getIcrcMainAccount", () => {

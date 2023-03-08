@@ -211,8 +211,8 @@
     "network": "Network",
     "network_icp_ckbtc": "Internet Computer (ckBTC)",
     "network_icp_cktestbtc": "Internet Computer (ckTESTBTC)",
-    "network_bitcoin": "Bitcoin (BTC)",
-    "network_test_bitcoin": "Bitcoin (Test BTC)",
+    "network_btc_mainnet": "Bitcoin (BTC)",
+    "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
     "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
   },
@@ -844,5 +844,10 @@
     "insufficient_funds": "Insufficient funds.",
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched."
+  },
+  "feature_flags_prompt": {
+    "override_true": "Enter the number for the feature you want to enable.",
+    "override_false": "Enter the number for the feature you want to disabled.",
+    "remove_override": "Enter the number for the feature you want to set back to its default value."
   }
 }

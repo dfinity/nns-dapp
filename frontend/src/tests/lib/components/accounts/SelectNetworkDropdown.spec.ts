@@ -5,8 +5,8 @@
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("SelectNetworkDropdown", () => {
   const props = { props: { universeId: CKBTC_UNIVERSE_CANISTER_ID } };
@@ -44,10 +44,12 @@ describe("SelectNetworkDropdown", () => {
   it("should display an option to select bitcoin", () => {
     const { container } = render(SelectNetworkDropdown, props);
 
-    const option = container.querySelector("option[value='network_bitcoin']");
+    const option = container.querySelector(
+      "option[value='network_btc_mainnet']"
+    );
 
     expect(option).not.toBeNull();
-    expect(option.innerHTML).toEqual(en.accounts.network_bitcoin);
+    expect(option.innerHTML).toEqual(en.accounts.network_btc_mainnet);
   });
 
   it("should bind select to selected network", async () => {

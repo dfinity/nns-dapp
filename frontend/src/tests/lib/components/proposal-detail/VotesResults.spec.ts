@@ -5,10 +5,10 @@ import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatNumber } from "$lib/utils/format.utils";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;

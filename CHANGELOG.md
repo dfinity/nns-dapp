@@ -1,5 +1,14 @@
 # Changelog
 
+## Proposal 111317
+* Stake maturity for SNS neurons.
+* Reenable update calls.
+* Optimize project calls.
+* Minor text updates and fixes.
+* Fix bug after voting.
+* Upgrade Sveltekit.
+* Clean up unused state.
+
 ## Proposal 110588
 * "high-load" warning fix.
 

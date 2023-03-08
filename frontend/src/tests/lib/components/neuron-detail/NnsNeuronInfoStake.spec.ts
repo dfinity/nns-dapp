@@ -5,15 +5,15 @@
 import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronInfoStake", () => {

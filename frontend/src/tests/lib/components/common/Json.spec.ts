@@ -4,10 +4,10 @@
 
 import Json from "$lib/components/common/Json.svelte";
 import { bytesToHexString, stringifyJson } from "$lib/utils/utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
 
 // remove (array-index:|spaces|")
 export const simplifyJson = (json: string | null) =>

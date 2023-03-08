@@ -6,11 +6,11 @@ import {
 import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
 export const snsTicketMock = ({
   rootCanisterId,

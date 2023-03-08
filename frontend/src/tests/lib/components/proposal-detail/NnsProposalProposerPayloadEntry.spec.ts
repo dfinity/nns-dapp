@@ -5,13 +5,13 @@
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
-import type { Proposal } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
+import type { Proposal } from "@dfinity/nns";
+import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import { simplifyJson } from "../common/Json.spec";
 
 const proposalWithNnsFunctionAction = {

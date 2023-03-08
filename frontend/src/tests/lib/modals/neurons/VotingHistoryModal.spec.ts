@@ -4,13 +4,13 @@
 
 import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../../mocks/governance.canister.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
-import { mockProposals } from "../../../mocks/proposals.store.mock";
 
 describe("VotingHistoryModal", () => {
   const props = {

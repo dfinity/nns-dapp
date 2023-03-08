@@ -10,15 +10,13 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { SaleStep } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../../mocks/accounts.store.mock";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   createTransferableAmount,
   mockSnsFullProject,
@@ -26,10 +24,12 @@ import {
   mockSnsSwapCommitment,
   principal,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
-import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest

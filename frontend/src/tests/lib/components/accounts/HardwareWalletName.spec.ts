@@ -3,11 +3,11 @@
  */
 
 import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
+import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { addAccountStoreMock } from "../../../mocks/add-account.store.mock";
-import en from "../../../mocks/i18n.mock";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {
