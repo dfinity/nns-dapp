@@ -8,11 +8,7 @@
   export let progressStep: string;
   export let steps: [ProgressStep, ...ProgressStep[]];
 
-  let dynamicSteps: [ProgressStep, ...ProgressStep[]] = [] as [
-    ProgressStep,
-    ...ProgressStep[]
-  ];
-  $: dynamicSteps = [...steps];
+  let dynamicSteps: [ProgressStep, ...ProgressStep[]] = [...steps];
 
   const updateSteps = () => {
     const progressIndex = dynamicSteps.findIndex(
