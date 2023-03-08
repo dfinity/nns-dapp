@@ -378,19 +378,16 @@ describe("sns-utils", () => {
   });
 
   describe("parseSnsSwapSaleBuyerCount", () => {
-    it("returns sale_buyer_count value", () => {
-      const RAW_METRICS = `
+    const RAW_METRICS = `
 # TYPE sale_buyer_count gauge
 sale_buyer_count 33 1677707139456
 # HELP sale_cf_participants_count`;
+
+    it("returns sale_buyer_count value", () => {
       expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toEqual(33);
     });
 
     it("returns undefined when sale_buyer_count not found", () => {
-      const RAW_METRICS = `
-# TYPE sale_buyer_count gauge
-sale_participants_count 33 1677707139456
-# HELP sale_cf_participants_count`;
       expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toBeUndefined();
     });
 
