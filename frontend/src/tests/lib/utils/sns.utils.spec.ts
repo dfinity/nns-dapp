@@ -389,7 +389,11 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     it("returns undefined when sale_buyer_count not found", () => {
-      expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toBeUndefined();
+      const WRONG_METRICS = `
+# TYPE sale_buyer_count gauge
+sale_participants_count ${saleBuyerCount} 1677707139456
+# HELP sale_cf_participants_count`;
+      expect(parseSnsSwapSaleBuyerCount(WRONG_METRICS)).toBeUndefined();
     });
 
     it("returns false on unknown error", () => {

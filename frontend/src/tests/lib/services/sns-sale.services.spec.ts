@@ -187,7 +187,7 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: spyOnNotifyParticipation,
-        loadNewSaleTicket: spyOnNewSaleTicketApi,
+        newSaleTicket: spyOnNewSaleTicketApi,
         notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
       })
     );
@@ -514,7 +514,7 @@ describe("sns-api", () => {
         amount_icp_e8s: 0n,
       });
 
-      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
     });
 
     it("should add new ticket to the store", async () => {
@@ -554,7 +554,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
