@@ -26,16 +26,20 @@
     }
   }
 
+  let targetNeuron: NeuronInfo;
+  let sourceNeuron: NeuronInfo;
+  $: [sourceNeuron, targetNeuron] = neurons;
+
   const merge = async () => {
     startBusyNeuron({
       initiator: "merge-neurons",
-      neuronId: neurons[0].neuronId,
+      neuronId: sourceNeuron.neuronId,
     });
     // We know that neurons has 2 neurons.
     // We have a check above that closes the modal if not.
     const id = await mergeNeurons({
-      targetNeuronId: neurons[0].neuronId,
-      sourceNeuronId: neurons[1].neuronId,
+      targetNeuronId: targetNeuron.neuronId,
+      sourceNeuronId: sourceNeuron.neuronId,
     });
 
     if (id !== undefined) {
@@ -47,35 +51,54 @@
     dispatcher("nnsClose");
     stopBusy("merge-neurons");
   };
-
-  const sectionTitleMapper = [
-    $i18n.neurons.merge_neurons_modal_title_2,
-    $i18n.neurons.merge_neurons_modal_with,
-  ];
 </script>
 
 <div class="wrapper">
-  {#each neurons as neuron, index}
-    <h3>{sectionTitleMapper[index]}</h3>
+  <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-    <div>
-      <p class="label">{$i18n.neurons.neuron_id}</p>
-      <p class="value">{neuron.neuronId}</p>
-    </div>
+  <div>
+    <p class="label">{$i18n.neurons.neuron_id}</p>
+    <p class="value">{sourceNeuron.neuronId}</p>
+  </div>
 
-    <div>
-      <p class="label">{$i18n.neurons.neuron_balance}</p>
-      <p>
-        <Html
-          text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-            $amount: valueSpan(
-              formatToken({ value: neuronStake(neuron), detailed: true })
-            ),
-          })}
-        />
-      </p>
-    </div>
-  {/each}
+  <div>
+    <p class="label">{$i18n.neurons.neuron_balance}</p>
+    <p>
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(
+            formatToken({ value: neuronStake(sourceNeuron), detailed: true })
+          ),
+        })}
+      />
+    </p>
+  </div>
+
+  <h3>{$i18n.neurons.merge_neurons_modal_with}</h3>
+
+  <div>
+    <p class="label">{$i18n.neurons.neuron_id}</p>
+    <p class="value">{targetNeuron.neuronId}</p>
+  </div>
+
+  <div>
+    <p class="label">{$i18n.neurons.neuron_balance}</p>
+    <p>
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(
+            formatToken({ value: neuronStake(targetNeuron), detailed: true })
+          ),
+        })}
+      />
+    </p>
+  </div>
+
+  <p class="additional-text description">
+    {replacePlaceholders($i18n.neurons.merge_neurons_source_neuron_no_stake, {
+      $neuronId: String(sourceNeuron.neuronId),
+    })}
+  </p>
 
   <p class="additional-text description">
     {$i18n.neurons.irreversible_action}

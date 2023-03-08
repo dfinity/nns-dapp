@@ -230,7 +230,7 @@
     "merge_neurons_edit_selection": "Edit Selection",
     "merge_neurons_modal_merge_button": "Merge Neurons",
     "merge_neurons_modal_title_2": "Merge neuron",
-    "merge_neurons_modal_with": "with",
+    "merge_neurons_modal_with": "into",
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
@@ -291,6 +291,8 @@
     "top_up_neuron": "Increase Neuron Stake",
     "top_up_description": "Increase stake of neuron $neuronId",
     "community_fund_title": "Community Fund Membership",
+    "merge_neurons_select_info": "The order of selection matters. The first neuron will be merged into the second one.",
+    "merge_neurons_source_neuron_no_stake": "The neuron with id $neuronId will have stake 0.",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
