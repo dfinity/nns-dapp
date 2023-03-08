@@ -18,17 +18,16 @@ const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
  * - toastsSuccess: display a message of type "success" - something went really well ;)
  * - toastsError: display an error and print the issue in the console as well
  * - toastsHide: remove the toast message with that timestamp or the first one.
- * - toastsReset: reset toasts
+ * - toastsClean: clean toasts with relatively low levels. Used after user sign-in.
  */
 
 export const toastsShow = (msg: ToastMsg): symbol => {
-  const { level, spinner, duration } = msg;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { labelKey, substitutions, detail, ...rest } = msg;
 
   return toastsStore.show({
     text: mapToastText(msg),
-    level,
-    spinner,
-    duration,
+    ...rest,
   });
 };
 
@@ -66,7 +65,10 @@ export const toastsError = ({
 
 export const toastsHide = (idToHide: symbol) => toastsStore.hide(idToHide);
 
-export const toastsReset = () => toastsStore.reset();
+/**
+ * We keep error and custom (used for particular notifications such as high-load messages).
+ */
+export const toastsClean = () => toastsStore.reset(["success", "warn", "info"]);
 
 export const toastsUpdate = ({
   id,

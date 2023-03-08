@@ -10,8 +10,8 @@ import {
   listCanisters,
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
+import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockCanister, mockCanisterDetails } from "../../mocks/canisters.mock";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;
@@ -77,6 +77,21 @@ describe("CanisterDetail", () => {
   it("should render cards", async () => {
     // Need to be the same that routePathCanisterId returns.
     canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
+    const { queryByTestId } = render(CanisterDetail, props);
+
+    await waitFor(() =>
+      expect(queryByTestId("canister-cycles-card")).toBeInTheDocument()
+    );
+    // Waiting for the one above is enough
+    expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
+  });
+
+  it("should render cards when not certified", async () => {
+    // Need to be the same that routePathCanisterId returns.
+    canistersStore.setCanisters({
+      canisters: [mockCanister],
+      certified: false,
+    });
     const { queryByTestId } = render(CanisterDetail, props);
 
     await waitFor(() =>

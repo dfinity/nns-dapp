@@ -1,13 +1,16 @@
 /**
  * @jest-environment jsdom
  */
+import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
+import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
-import { mockAccountDetails } from "../../mocks/accounts.store.mock";
+
+jest.mock("$lib/api/sns-aggregator.api");
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
@@ -25,6 +28,8 @@ describe("app-services", () => {
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
     jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+    jest.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([]);
   });
 
   it("should init Nns", async () => {
@@ -42,6 +47,12 @@ describe("app-services", () => {
     await expect(mockLedgerCanister.accountBalance).toHaveBeenCalledTimes(
       numberOfCalls
     );
+  });
+
+  it("shuold init SNS", async () => {
+    await initAppPrivateData();
+
+    await expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
   });
 
   it("should not show errors if loading accounts fails", async () => {

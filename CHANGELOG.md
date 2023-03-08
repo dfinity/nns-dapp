@@ -1,5 +1,24 @@
 # Changelog
 
+## Proposal 111317
+* Stake maturity for SNS neurons.
+* Reenable update calls.
+* Optimize project calls.
+* Minor text updates and fixes.
+* Fix bug after voting.
+* Upgrade Sveltekit.
+* Clean up unused state.
+
+## Proposal 110588
+* "high-load" warning fix.
+
+## Proposal 110166
+* SNS participation progress screen.
+* SNS aggregator improvements.
+* Network "high load" notification.
+* Polling and request optimization.
+* Minor UI and text updates
+
 ## Proposal 110166
 * Enable SNS aggregator.
 * Switch to TVL canister.

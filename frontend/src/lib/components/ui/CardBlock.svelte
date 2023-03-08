@@ -27,8 +27,8 @@
 </article>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/interaction";
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   article {
     text-decoration: none;

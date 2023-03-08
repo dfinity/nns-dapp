@@ -9,9 +9,9 @@ import {
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
 import type { SnsSummary } from "$lib/types/sns";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("ProjectInfoSection", () => {

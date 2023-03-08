@@ -3,18 +3,18 @@
  */
 
 import Summary from "$lib/components/summary/Summary.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
-import { mockStoreSubscribe } from "../../../mocks/commont.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
   it("should render a logo", () => {

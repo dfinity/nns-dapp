@@ -1,4 +1,8 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import {
   ckBTCTokenFeeStore,
@@ -6,13 +10,13 @@ import {
   nnsTokenStore,
 } from "$lib/derived/universes-tokens.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
-import { mockCkBTCToken } from "../../mocks/ckbtc-accounts.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
+import { TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
   describe("complete data set", () => {
@@ -32,24 +36,32 @@ describe("universes-tokens", () => {
     it("should derive ckBTC token only", () => {
       const token = get(ckBTCTokenStore);
 
-      expect(token).toEqual({
+      const expectedToken = {
         token: mockCkBTCToken,
         certified: true,
+      };
+
+      expect(token).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: expectedToken,
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: expectedToken,
       });
     });
 
     it("should derive ckBTC token fee", () => {
       const tokenFee = get(ckBTCTokenFeeStore);
 
-      expect(tokenFee).toEqual(
-        TokenAmount.fromE8s({
-          amount: mockCkBTCToken.fee,
-          token: {
-            name: mockCkBTCToken.name,
-            symbol: mockCkBTCToken.symbol,
-          },
-        })
-      );
+      const expectedFee = TokenAmount.fromE8s({
+        amount: mockCkBTCToken.fee,
+        token: {
+          name: mockCkBTCToken.name,
+          symbol: mockCkBTCToken.symbol,
+        },
+      });
+
+      expect(tokenFee).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: expectedFee,
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: expectedFee,
+      });
     });
   });
 
@@ -67,7 +79,10 @@ describe("universes-tokens", () => {
     it("should derive no ckBTC token", () => {
       const token = get(ckBTCTokenStore);
 
-      expect(token).toBeUndefined();
+      expect(token).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: undefined,
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: undefined,
+      });
     });
   });
 });

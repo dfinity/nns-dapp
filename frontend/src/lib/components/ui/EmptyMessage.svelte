@@ -1,7 +1,7 @@
 <p class="description empty"><slot /></p>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .empty {
     @include media.min-width(medium) {

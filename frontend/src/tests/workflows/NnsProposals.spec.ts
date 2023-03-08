@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { queryProposals } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -11,12 +11,15 @@ import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { authStore, type AuthStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { mockAuthStoreSubscribe, mockIdentity } from "../mocks/auth.store.mock";
-import { mockProposalInfo } from "../mocks/proposal.mock";
 
 const proposal = {
   ...mockProposalInfo,

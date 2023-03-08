@@ -1,7 +1,8 @@
 import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
+import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("ckbtc-index api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
@@ -20,6 +21,7 @@ describe("ckbtc-index api", () => {
       owner: mockPrincipal,
     },
     maxResults: BigInt(10),
+    indexCanisterId: CKBTC_INDEX_CANISTER_ID,
   };
 
   const transaction = {

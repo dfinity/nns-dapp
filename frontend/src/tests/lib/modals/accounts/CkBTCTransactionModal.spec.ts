@@ -2,27 +2,37 @@
  * @jest-environment jsdom
  */
 
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import * as minterApi from "$lib/api/ckbtc-minter.api";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
+import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
 import { authStore } from "$lib/stores/auth.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { page } from "$mocks/$app/stores";
-import { TokenAmount } from "@dfinity/nns";
-import { waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../../mocks/ckbtc-accounts.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { TokenAmount } from "@dfinity/nns";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
     ckBTCTransferTokens: jest.fn().mockResolvedValue({ success: true }),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-convert.services", () => {
+  return {
+    convertCkBTCToBtc: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -37,33 +47,53 @@ describe("CkBTCTransactionModal", () => {
           amount: mockCkBTCToken.fee,
           token: mockCkBTCToken,
         }),
+        canisters: mockCkBTCAdditionalCanisters,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       },
     });
 
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
 
-  beforeAll(() => {
-    ckBTCAccountsStore.set({
-      accounts: [mockCkBTCMainAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      accounts: {
+        accounts: [mockCkBTCMainAccount],
+        certified: true,
+      },
+      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     });
 
     page.mock({
-      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
+
+    jest.spyOn(minterApi, "estimateFee").mockResolvedValue(123n);
   });
 
   it("should transfer tokens", async () => {
     const result = await renderTransactionModal();
 
-    await testTransferTokens({ result, selectedNetwork: true });
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+    });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+  });
+
+  it("should convert ckBTC to Bitcoin", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn",
+    });
+
+    await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
   });
 
   it("should not render the select account dropdown if selected account is passed", async () => {

@@ -4,7 +4,9 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -15,22 +17,26 @@ import {
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { writable } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import { renderModalContextWrapper } from "../../../mocks/modal.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -52,11 +58,12 @@ jest.mock("$lib/services/sns-sale.services", () => ({
 }));
 
 describe("ParticipateSwapModal", () => {
-  beforeAll(() =>
+  beforeEach(() => {
+    cancelPollAccounts();
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
 
   const reload = jest.fn();
   const renderSwapModal = (
@@ -271,6 +278,47 @@ describe("ParticipateSwapModal", () => {
         identity: mockIdentity,
         certified: false,
       });
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderSwapModal();
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

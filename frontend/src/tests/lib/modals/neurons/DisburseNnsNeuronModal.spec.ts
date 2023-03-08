@@ -4,23 +4,29 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
+import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { get } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -32,6 +38,10 @@ jest.mock("$lib/services/neurons.services", () => {
 });
 
 describe("DisburseNnsNeuronModal", () => {
+  beforeEach(() => {
+    cancelPollAccounts();
+  });
+
   const renderDisburseModal = async (
     neuron: NeuronInfo
   ): Promise<RenderResult<SvelteComponent>> => {
@@ -151,6 +161,47 @@ describe("DisburseNnsNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("account-card")).toBeInTheDocument()
       );
+    });
+  });
+
+  describe("when no accounts and user navigates away", () => {
+    let spyQueryAccount: jest.SpyInstance;
+    beforeEach(() => {
+      accountsStore.reset();
+      jest.clearAllTimers();
+      jest.clearAllMocks();
+      const now = Date.now();
+      jest.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = BigInt(10_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should stop polling", async () => {
+      const { unmount } = await renderDisburseModal(mockNeuron);
+
+      await runResolvedPromises();
+      let expectedCalls = 1;
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+
+      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+      const callsBeforeLeaving = 3;
+      while (expectedCalls < callsBeforeLeaving) {
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expectedCalls += 1;
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      }
+      unmount();
+
+      // Even after waiting a long time there shouldn't be more calls.
+      await advanceTime(99 * retryDelay);
+      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
     });
   });
 });

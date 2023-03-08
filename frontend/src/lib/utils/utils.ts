@@ -192,9 +192,30 @@ export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
   });
 
 export class PollingLimitExceededError extends Error {}
+
+export class PollingCancelledError extends Error {
+  public id: symbol;
+  constructor(id: symbol) {
+    super(`Polling cancelled, id: ${String(id)}`);
+    this.id = id;
+  }
+}
+
 // Exported for testing purposes
 export const DEFAULT_MAX_POLLING_ATTEMPTS = 10;
 const DEFAULT_WAIT_TIME_MS = 500;
+
+// Map symbol to `reject` function
+const currentPolls = new Map<symbol, (error: PollingCancelledError) => void>();
+
+export const cancelPoll = (id: symbol) => {
+  if (currentPolls.has(id)) {
+    // Call reject function to stop polling
+    const reject = currentPolls.get(id);
+    // TS doesn't know that `reject` is defined here
+    reject?.(new PollingCancelledError(id));
+  }
+};
 
 /**
  * Function that polls a specific function, checking error with passed argument to recall or not.
@@ -216,6 +237,7 @@ export const poll = async <T>({
   millisecondsToWait = DEFAULT_WAIT_TIME_MS,
   useExponentialBackoff = false,
   failuresBeforeHighLoadMessage = 6,
+  pollId,
 }: {
   fn: () => Promise<T>;
   shouldExit: (err: unknown) => boolean;
@@ -223,41 +245,65 @@ export const poll = async <T>({
   millisecondsToWait?: number;
   useExponentialBackoff?: boolean;
   failuresBeforeHighLoadMessage?: number;
+  pollId?: symbol;
 }): Promise<T> => {
   let highLoadToast: symbol | null = null;
-  for (let counter = 0; counter < maxAttempts; counter++) {
-    if (counter > 0) {
-      if (
-        nonNullish(failuresBeforeHighLoadMessage) &&
-        counter === failuresBeforeHighLoadMessage
-      ) {
-        highLoadToast = toastsError({
-          labelKey: "error.high_load_retrying",
-        });
-      }
-      await waitForMilliseconds(millisecondsToWait);
-      if (useExponentialBackoff) {
-        millisecondsToWait *= 2;
-      }
-    }
-
-    try {
-      const result = await fn();
-      highLoadToast && toastsHide(highLoadToast);
-      return result;
-    } catch (error: unknown) {
-      if (shouldExit(error)) {
-        throw error;
-      }
-      // Log swallowed errors
-      console.error(`Error polling: ${errorToString(error)}`);
-    }
+  // If we are already polling for this id, don't poll twice.
+  if (nonNullish(pollId) && currentPolls.has(pollId)) {
+    throw new PollingCancelledError(pollId);
   }
-  throw new PollingLimitExceededError();
+  // We'll never call `resolve`, therefore the type doesn't matter.
+  // `T` just makes TS happy.
+  const cancelPromise = new Promise<T>((_resolve, reject) => {
+    if (nonNullish(pollId)) {
+      currentPolls.set(pollId, (err) => {
+        reject(err);
+      });
+    }
+  });
+  try {
+    for (let counter = 0; counter < maxAttempts; counter++) {
+      if (counter > 0) {
+        if (
+          nonNullish(failuresBeforeHighLoadMessage) &&
+          counter === failuresBeforeHighLoadMessage
+        ) {
+          highLoadToast = toastsError({
+            labelKey: "error.high_load_retrying",
+          });
+        }
+        await Promise.race([
+          waitForMilliseconds(millisecondsToWait),
+          cancelPromise,
+        ]);
+        if (useExponentialBackoff) {
+          millisecondsToWait *= 2;
+        }
+      }
+
+      try {
+        const result = await Promise.race([fn(), cancelPromise]);
+        return result;
+      } catch (error: unknown) {
+        if (shouldExit(error)) {
+          throw error;
+        }
+        // Log swallowed errors
+        console.error(`Error polling: ${errorToString(error)}`);
+      }
+    }
+    throw new PollingLimitExceededError();
+  } finally {
+    highLoadToast && toastsHide(highLoadToast);
+    pollId && currentPolls.delete(pollId);
+  }
 };
 
 export const pollingLimit = (error: unknown): boolean =>
   error instanceof PollingLimitExceededError;
+
+export const pollingCancelled = (error: unknown): boolean =>
+  error instanceof PollingCancelledError;
 
 /**
  * Use to highlight a placeholder in a text rendered from i18n labels.

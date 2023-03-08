@@ -4,14 +4,14 @@
 
 import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
 import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
-import type { Action, Proposal } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
 import {
   mockProposalInfo,
   proposalActionMotion,
   proposalActionNnsFunction21,
   proposalActionRewardNodeProvider,
-} from "../../../mocks/proposal.mock";
+} from "$tests/mocks/proposal.mock";
+import type { Action, Proposal } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 
 const proposalWithMotionAction = {
   ...mockProposalInfo.proposal,

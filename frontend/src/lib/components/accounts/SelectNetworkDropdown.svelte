@@ -3,8 +3,14 @@
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
   import { notEmptyString } from "@dfinity/utils";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
+  export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
 </script>
 
 <div class:placeholder={!notEmptyString(selectedNetwork)}>
@@ -18,12 +24,21 @@
     <option disabled selected value={undefined} class="hidden"
       ><span class="description">{$i18n.accounts.select_network}</span></option
     >
-    <DropdownItem value={TransactionNetwork.ICP_CKBTC}
-      >{$i18n.accounts[TransactionNetwork.ICP_CKBTC]}</DropdownItem
-    >
-    <DropdownItem value={TransactionNetwork.BITCOIN}
-      >{$i18n.accounts[TransactionNetwork.BITCOIN]}</DropdownItem
-    >
+    {#if ckTESTBTC}
+      <DropdownItem value={TransactionNetwork.ICP_CKTESTBTC}
+        >{$i18n.accounts.network_icp_cktestbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_TESTNET}
+        >{$i18n.accounts.network_btc_testnet}</DropdownItem
+      >
+    {:else}
+      <DropdownItem value={TransactionNetwork.ICP_CKBTC}
+        >{$i18n.accounts.network_icp_ckbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_MAINNET}
+        >{$i18n.accounts.network_btc_mainnet}</DropdownItem
+      >
+    {/if}
   </Dropdown>
 </div>
 

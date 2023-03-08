@@ -3,18 +3,28 @@
  */
 
 import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
-import { mockTokens } from "../../../mocks/tokens.mock";
+import { page } from "../../../../../__mocks__/$app/stores";
 
 describe("CkBTCAccountsFooter", () => {
-  afterEach(() => {
+  beforeAll(() => {
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+  });
+
+  beforeEach(() => {
     jest.clearAllMocks();
 
-    ckBTCAccountsStore.reset();
+    icrcAccountsStore.reset();
     tokensStore.reset();
   });
 
@@ -26,9 +36,12 @@ describe("CkBTCAccountsFooter", () => {
     });
 
     it("should not render action if only accounts loaded", () => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       const { getByTestId } = render(CkBTCAccountsFooter);
@@ -47,9 +60,12 @@ describe("CkBTCAccountsFooter", () => {
 
   describe("loaded", () => {
     beforeEach(() => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockTokens);

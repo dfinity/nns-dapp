@@ -18,6 +18,7 @@ import {
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -28,7 +29,12 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { poll, pollingLimit } from "$lib/utils/utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -158,6 +164,7 @@ export const syncAccounts = (
       errorHandler({ err, certified });
     },
     logMessage: "Syncing Accounts",
+    strategy: FORCE_CALL_STRATEGY,
   });
 };
 
@@ -249,6 +256,7 @@ export const getAccountTransactions = async ({
   }) => void;
 }): Promise<void> =>
   queryAndUpdate<Transaction[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getTransactions({
         identity,
@@ -262,7 +270,7 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
         return;
       }
 
@@ -355,6 +363,7 @@ const renameError = ({
 };
 
 const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+const pollAccountsId = Symbol();
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
@@ -363,6 +372,7 @@ const pollLoadAccounts = async (params: {
     fn: () => loadAccounts(params),
     // Any error is an unknown error and worth a retry
     shouldExit: () => false,
+    pollId: pollAccountsId,
     useExponentialBackoff: true,
     maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
     millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
@@ -378,6 +388,7 @@ const pollLoadAccounts = async (params: {
  * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
+  const overrideCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
@@ -391,10 +402,14 @@ export const pollAccounts = async (certified = true) => {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({
       identity,
-      certified,
+      certified: overrideCertified,
     });
     accountsStore.set(certifiedAccounts);
   } catch (err) {
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
+      return;
+    }
     const errorKey = pollingLimit(err)
       ? "error.accounts_not_found_poll"
       : "error.accounts_not_found";
@@ -406,3 +421,5 @@ export const pollAccounts = async (certified = true) => {
     );
   }
 };
+
+export const cancelPollAccounts = () => cancelPoll(pollAccountsId);

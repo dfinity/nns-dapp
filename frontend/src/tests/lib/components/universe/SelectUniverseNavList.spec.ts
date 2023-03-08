@@ -7,12 +7,12 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("SelectUniverseNavList", () => {
   jest
@@ -30,15 +30,15 @@ describe("SelectUniverseNavList", () => {
 
   it("should render universe cards as links", () => {
     const { getAllByRole } = render(SelectUniverseNavList);
-    // 1 for Sns project + 1 for Internet Computer / NNS + 1 for ckBTC
-    expect(getAllByRole("link").length).toEqual(3);
+    // 1 for Sns project + 1 for Internet Computer / NNS + 1 for ckBTC + 1 for ckTESTBTC
+    expect(getAllByRole("link").length).toEqual(4);
   });
 
   it("should navigate", async () => {
     const { getAllByTestId } = render(SelectUniverseNavList);
 
     const cards = getAllByTestId("select-universe-card");
-    cards && (await fireEvent.click(cards[2]));
+    cards && (await fireEvent.click(cards[3]));
 
     const { universe } = get(pageStore);
     await waitFor(() =>

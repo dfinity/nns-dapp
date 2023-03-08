@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { resetNeuronsApiService } from "$lib/api-services/neurons.api-service";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { queryProposal } from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -11,18 +11,18 @@ import NnsProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
+import {
+  mockAuthStoreNoIdentitySubscribe,
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "../mocks/auth.store.mock";
-import { mockNeuron } from "../mocks/neurons.mock";
-import { mockProposalInfo } from "../mocks/proposal.mock";
 
 jest.mock("$lib/api/governance.api");
 

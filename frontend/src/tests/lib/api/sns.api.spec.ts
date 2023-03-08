@@ -20,6 +20,22 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createBuyersState,
+  mockQueryMetadata,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
+  mockSwap,
+} from "$tests/mocks/sns-projects.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
@@ -29,22 +45,6 @@ import {
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
-import {
-  createBuyersState,
-  mockQueryMetadata,
-  mockQueryMetadataResponse,
-  mockQueryTokenResponse,
-  mockSwap,
-} from "../../mocks/sns-projects.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  ledgerCanisterIdMock,
-  rootCanisterIdMock,
-  swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -84,7 +84,7 @@ describe("sns-api", () => {
   const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
   const increaseStakeNeuronSpy = jest.fn();
 
-  beforeEach(() => {
+  beforeAll(() => {
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => ledgerCanisterMock);
@@ -120,7 +120,7 @@ describe("sns-api", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });

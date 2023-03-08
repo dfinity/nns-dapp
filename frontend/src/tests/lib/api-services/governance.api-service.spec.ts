@@ -1,19 +1,19 @@
 import {
-  neuronsApiService,
+  governanceApiService,
   resetNeuronsApiService,
-} from "$lib/api-services/neurons.api-service";
+} from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { Topic } from "@dfinity/nns";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockIdentity,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   createMockKnownNeuron,
   createMockNeuron,
-} from "../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 
@@ -41,14 +41,14 @@ const shouldNotInvalidateCache = async <P, R>({
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   await apiServiceFunc(params);
   expect(apiFunc).toHaveBeenCalledTimes(1);
 
   // Still getting results from the cache.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 };
 
@@ -70,18 +70,18 @@ const shouldInvalidateCache = async <P, R>({
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   const servicePromise = apiServiceFunc(params);
   expect(apiFunc).toHaveBeenCalledTimes(1);
 
   // Still getting results from the cache.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   // Still getting results from the cache.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   // Once the API result resolves, the cache is cleared.
@@ -89,11 +89,11 @@ const shouldInvalidateCache = async <P, R>({
   await servicePromise;
 
   // Now the cache was invalidated.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(2);
 
   // Getting results from the cache once again.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(2);
 };
 
@@ -115,18 +115,18 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   const servicePromise = apiServiceFunc(params);
   expect(apiFunc).toHaveBeenCalledTimes(1);
 
   // Still getting results from the cache.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   // Still getting results from the cache.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 
   // Once the API call fails, the cache is cleared.
@@ -141,11 +141,11 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
   }
 
   // Now the cache was invalidated.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(2);
 
   // Getting results from the cache once again.
-  await neuronsApiService.queryNeurons(qParams);
+  await governanceApiService.queryNeurons(qParams);
   expect(api.queryNeurons).toHaveBeenCalledTimes(2);
 };
 
@@ -180,17 +180,23 @@ describe("neurons api-service", () => {
 
     it("should call queryNeuron api", async () => {
       expect(
-        await neuronsApiService.queryNeuron({ neuronId: BigInt(1), ...params })
+        await governanceApiService.queryNeuron({
+          neuronId: BigInt(1),
+          ...params,
+        })
       ).toEqual(neuron1);
       expect(
-        await neuronsApiService.queryNeuron({ neuronId: BigInt(2), ...params })
+        await governanceApiService.queryNeuron({
+          neuronId: BigInt(2),
+          ...params,
+        })
       ).toEqual(neuron2);
       expect(api.queryNeuron).toHaveBeenCalledTimes(2);
     });
 
     it("should fail if queryNeuron api fails", async () => {
       expect(() =>
-        neuronsApiService.queryNeuron({ neuronId: BigInt(999), ...params })
+        governanceApiService.queryNeuron({ neuronId: BigInt(999), ...params })
       ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
@@ -198,7 +204,7 @@ describe("neurons api-service", () => {
     it("should not invalidate the cache", async () => {
       await shouldNotInvalidateCache({
         apiFunc: api.queryNeuron,
-        apiServiceFunc: neuronsApiService.queryNeuron,
+        apiServiceFunc: governanceApiService.queryNeuron,
         params: { neuronId: BigInt(1), ...params },
       });
     });
@@ -224,33 +230,44 @@ describe("neurons api-service", () => {
     it("should call queryNeurons api", async () => {
       const params1 = { identity: identity1, ...params };
       const params2 = { identity: identity2, ...params };
-      expect(await neuronsApiService.queryNeurons(params1)).toEqual([neuron1]);
-      expect(await neuronsApiService.queryNeurons(params2)).toEqual([neuron2]);
+      expect(await governanceApiService.queryNeurons(params1)).toEqual([
+        neuron1,
+      ]);
+      expect(await governanceApiService.queryNeurons(params2)).toEqual([
+        neuron2,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(2);
     });
 
     it("should fail if queryNeurons api fails", async () => {
       expect(() =>
-        neuronsApiService.queryNeurons({ identity: unknownIdentity, ...params })
+        governanceApiService.queryNeurons({
+          identity: unknownIdentity,
+          ...params,
+        })
       ).rejects.toThrow("Unknown identity");
     });
 
     it("should call queryNeurons api once for duplicate certified calls", async () => {
       const params = { identity: identity1, certified: true };
       // Calls API.
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(1);
       // Uses cache.
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(1);
     });
 
     it("should call queryNeurons api twice for simultaneous certified calls", async () => {
       const params = { identity: identity1, certified: true };
-      const promise1 = neuronsApiService.queryNeurons(params);
+      const promise1 = governanceApiService.queryNeurons(params);
       // We didn't await the promise so nothing is cached yet when we make
       // the second call.
-      const promise2 = neuronsApiService.queryNeurons(params);
+      const promise2 = governanceApiService.queryNeurons(params);
       expect(promise1).not.toBe(promise2);
       expect(await promise1).toEqual([neuron1]);
       expect(await promise2).toEqual([neuron1]);
@@ -259,8 +276,12 @@ describe("neurons api-service", () => {
 
     it("should call queryNeurons api twice for duplicate uncertified calls", async () => {
       const params = { identity: identity1, certified: false };
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       // We don't cache uncertified calls.
       expect(api.queryNeurons).toHaveBeenCalledTimes(2);
     });
@@ -268,10 +289,10 @@ describe("neurons api-service", () => {
     it("should respond to an uncertified call from the cache", async () => {
       const params = { identity: identity1 };
       expect(
-        await neuronsApiService.queryNeurons({ ...params, certified: true })
+        await governanceApiService.queryNeurons({ ...params, certified: true })
       ).toEqual([neuron1]);
       expect(
-        await neuronsApiService.queryNeurons({ ...params, certified: false })
+        await governanceApiService.queryNeurons({ ...params, certified: false })
       ).toEqual([neuron1]);
       expect(api.queryNeurons).toHaveBeenCalledWith({
         ...params,
@@ -284,10 +305,12 @@ describe("neurons api-service", () => {
       const params = { identity: identity1, certified: true };
       jest.spyOn(api, "queryNeurons").mockRejectedValueOnce(new Error("500"));
 
-      expect(() => neuronsApiService.queryNeurons(params)).rejects.toThrow(
+      expect(() => governanceApiService.queryNeurons(params)).rejects.toThrow(
         "500"
       );
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(2);
     });
 
@@ -296,12 +319,18 @@ describe("neurons api-service", () => {
       jest.setSystemTime(new Date("2020-8-1 21:55:00"));
 
       const params = { identity: identity1, certified: true };
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       jest.setSystemTime(new Date("2020-8-1 21:59:59"));
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(1);
       jest.setSystemTime(new Date("2020-8-1 22:00:01"));
-      expect(await neuronsApiService.queryNeurons(params)).toEqual([neuron1]);
+      expect(await governanceApiService.queryNeurons(params)).toEqual([
+        neuron1,
+      ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(2);
     });
   });
@@ -326,10 +355,10 @@ describe("neurons api-service", () => {
     it("should call queryKnownNeurons api", async () => {
       const params1 = { identity: identity1, ...params };
       const params2 = { identity: identity2, ...params };
-      expect(await neuronsApiService.queryKnownNeurons(params1)).toEqual([
+      expect(await governanceApiService.queryKnownNeurons(params1)).toEqual([
         knownNeuron1,
       ]);
-      expect(await neuronsApiService.queryKnownNeurons(params2)).toEqual([
+      expect(await governanceApiService.queryKnownNeurons(params2)).toEqual([
         knownNeuron2,
       ]);
       expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
@@ -337,7 +366,7 @@ describe("neurons api-service", () => {
 
     it("should fail if queryKnownNeurons api fails", async () => {
       expect(() =>
-        neuronsApiService.queryKnownNeurons({
+        governanceApiService.queryKnownNeurons({
           identity: unknownIdentity,
           ...params,
         })
@@ -348,7 +377,7 @@ describe("neurons api-service", () => {
     it("should not invalidate the cache", async () => {
       await shouldNotInvalidateCache({
         apiFunc: api.queryKnownNeurons,
-        apiServiceFunc: neuronsApiService.queryKnownNeurons,
+        apiServiceFunc: governanceApiService.queryKnownNeurons,
         params: { identity: identity1, ...params },
       });
     });
@@ -364,7 +393,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call addHotkey api", () => {
-      neuronsApiService.addHotkey(params);
+      governanceApiService.addHotkey(params);
       expect(api.addHotkey).toHaveBeenCalledWith(params);
       expect(api.addHotkey).toHaveBeenCalledTimes(1);
     });
@@ -372,7 +401,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.addHotkey,
-        apiServiceFunc: neuronsApiService.addHotkey,
+        apiServiceFunc: governanceApiService.addHotkey,
         params,
       });
     });
@@ -380,7 +409,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.addHotkey,
-        apiServiceFunc: neuronsApiService.addHotkey,
+        apiServiceFunc: governanceApiService.addHotkey,
         params,
       });
     });
@@ -394,7 +423,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call autoStakeMaturity api", () => {
-      neuronsApiService.autoStakeMaturity(params);
+      governanceApiService.autoStakeMaturity(params);
       expect(api.autoStakeMaturity).toHaveBeenCalledWith(params);
       expect(api.autoStakeMaturity).toHaveBeenCalledTimes(1);
     });
@@ -402,7 +431,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.autoStakeMaturity,
-        apiServiceFunc: neuronsApiService.autoStakeMaturity,
+        apiServiceFunc: governanceApiService.autoStakeMaturity,
         params,
       });
     });
@@ -410,7 +439,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.autoStakeMaturity,
-        apiServiceFunc: neuronsApiService.autoStakeMaturity,
+        apiServiceFunc: governanceApiService.autoStakeMaturity,
         params,
       });
     });
@@ -424,7 +453,7 @@ describe("neurons api-service", () => {
 
     it("should call claimOrRefreshNeuron api", async () => {
       jest.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
-      expect(await neuronsApiService.claimOrRefreshNeuron(params)).toEqual(
+      expect(await governanceApiService.claimOrRefreshNeuron(params)).toEqual(
         neuronId
       );
       expect(api.claimOrRefreshNeuron).toHaveBeenCalledWith(params);
@@ -434,7 +463,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.claimOrRefreshNeuron,
-        apiServiceFunc: neuronsApiService.claimOrRefreshNeuron,
+        apiServiceFunc: governanceApiService.claimOrRefreshNeuron,
         params,
       });
     });
@@ -442,7 +471,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.claimOrRefreshNeuron,
-        apiServiceFunc: neuronsApiService.claimOrRefreshNeuron,
+        apiServiceFunc: governanceApiService.claimOrRefreshNeuron,
         params,
       });
     });
@@ -457,7 +486,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call disburse api", () => {
-      neuronsApiService.disburse(params);
+      governanceApiService.disburse(params);
       expect(api.disburse).toHaveBeenCalledWith(params);
       expect(api.disburse).toHaveBeenCalledTimes(1);
     });
@@ -465,7 +494,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.disburse,
-        apiServiceFunc: neuronsApiService.disburse,
+        apiServiceFunc: governanceApiService.disburse,
         params,
       });
     });
@@ -473,7 +502,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.disburse,
-        apiServiceFunc: neuronsApiService.disburse,
+        apiServiceFunc: governanceApiService.disburse,
         params,
       });
     });
@@ -487,7 +516,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call increaseDissolveDelay api", () => {
-      neuronsApiService.increaseDissolveDelay(params);
+      governanceApiService.increaseDissolveDelay(params);
       expect(api.increaseDissolveDelay).toHaveBeenCalledWith(params);
       expect(api.increaseDissolveDelay).toHaveBeenCalledTimes(1);
     });
@@ -495,7 +524,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.increaseDissolveDelay,
-        apiServiceFunc: neuronsApiService.increaseDissolveDelay,
+        apiServiceFunc: governanceApiService.increaseDissolveDelay,
         params,
       });
     });
@@ -503,7 +532,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.increaseDissolveDelay,
-        apiServiceFunc: neuronsApiService.increaseDissolveDelay,
+        apiServiceFunc: governanceApiService.increaseDissolveDelay,
         params,
       });
     });
@@ -516,7 +545,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call joinCommunityFund api", () => {
-      neuronsApiService.joinCommunityFund(params);
+      governanceApiService.joinCommunityFund(params);
       expect(api.joinCommunityFund).toHaveBeenCalledWith(params);
       expect(api.joinCommunityFund).toHaveBeenCalledTimes(1);
     });
@@ -524,7 +553,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.joinCommunityFund,
-        apiServiceFunc: neuronsApiService.joinCommunityFund,
+        apiServiceFunc: governanceApiService.joinCommunityFund,
         params,
       });
     });
@@ -532,7 +561,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.joinCommunityFund,
-        apiServiceFunc: neuronsApiService.joinCommunityFund,
+        apiServiceFunc: governanceApiService.joinCommunityFund,
         params,
       });
     });
@@ -545,7 +574,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call leaveCommunityFund api", () => {
-      neuronsApiService.leaveCommunityFund(params);
+      governanceApiService.leaveCommunityFund(params);
       expect(api.leaveCommunityFund).toHaveBeenCalledWith(params);
       expect(api.leaveCommunityFund).toHaveBeenCalledTimes(1);
     });
@@ -553,7 +582,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.leaveCommunityFund,
-        apiServiceFunc: neuronsApiService.leaveCommunityFund,
+        apiServiceFunc: governanceApiService.leaveCommunityFund,
         params,
       });
     });
@@ -561,7 +590,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.leaveCommunityFund,
-        apiServiceFunc: neuronsApiService.leaveCommunityFund,
+        apiServiceFunc: governanceApiService.leaveCommunityFund,
         params,
       });
     });
@@ -575,7 +604,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call mergeMaturity api", () => {
-      neuronsApiService.mergeMaturity(params);
+      governanceApiService.mergeMaturity(params);
       expect(api.mergeMaturity).toHaveBeenCalledWith(params);
       expect(api.mergeMaturity).toHaveBeenCalledTimes(1);
     });
@@ -583,7 +612,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.mergeMaturity,
-        apiServiceFunc: neuronsApiService.mergeMaturity,
+        apiServiceFunc: governanceApiService.mergeMaturity,
         params,
       });
     });
@@ -591,7 +620,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.mergeMaturity,
-        apiServiceFunc: neuronsApiService.mergeMaturity,
+        apiServiceFunc: governanceApiService.mergeMaturity,
         params,
       });
     });
@@ -605,7 +634,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call mergeNeurons api", () => {
-      neuronsApiService.mergeNeurons(params);
+      governanceApiService.mergeNeurons(params);
       expect(api.mergeNeurons).toHaveBeenCalledWith(params);
       expect(api.mergeNeurons).toHaveBeenCalledTimes(1);
     });
@@ -613,7 +642,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.mergeNeurons,
-        apiServiceFunc: neuronsApiService.mergeNeurons,
+        apiServiceFunc: governanceApiService.mergeNeurons,
         params,
       });
     });
@@ -621,7 +650,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.mergeNeurons,
-        apiServiceFunc: neuronsApiService.mergeNeurons,
+        apiServiceFunc: governanceApiService.mergeNeurons,
         params,
       });
     });
@@ -635,7 +664,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call removeHotkey api", () => {
-      neuronsApiService.removeHotkey(params);
+      governanceApiService.removeHotkey(params);
       expect(api.removeHotkey).toHaveBeenCalledWith(params);
       expect(api.removeHotkey).toHaveBeenCalledTimes(1);
     });
@@ -643,7 +672,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.removeHotkey,
-        apiServiceFunc: neuronsApiService.removeHotkey,
+        apiServiceFunc: governanceApiService.removeHotkey,
         params,
       });
     });
@@ -651,7 +680,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.removeHotkey,
-        apiServiceFunc: neuronsApiService.removeHotkey,
+        apiServiceFunc: governanceApiService.removeHotkey,
         params,
       });
     });
@@ -666,7 +695,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call setFollowees api", () => {
-      neuronsApiService.setFollowees(params);
+      governanceApiService.setFollowees(params);
       expect(api.setFollowees).toHaveBeenCalledWith(params);
       expect(api.setFollowees).toHaveBeenCalledTimes(1);
     });
@@ -674,7 +703,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.setFollowees,
-        apiServiceFunc: neuronsApiService.setFollowees,
+        apiServiceFunc: governanceApiService.setFollowees,
         params,
       });
     });
@@ -682,7 +711,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.setFollowees,
-        apiServiceFunc: neuronsApiService.setFollowees,
+        apiServiceFunc: governanceApiService.setFollowees,
         params,
       });
     });
@@ -696,7 +725,7 @@ describe("neurons api-service", () => {
 
     it("should call spawnNeuron api", async () => {
       jest.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
-      expect(await neuronsApiService.spawnNeuron(params)).toEqual(neuronId);
+      expect(await governanceApiService.spawnNeuron(params)).toEqual(neuronId);
       expect(api.spawnNeuron).toHaveBeenCalledWith(params);
       expect(api.spawnNeuron).toHaveBeenCalledTimes(1);
     });
@@ -704,7 +733,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.spawnNeuron,
-        apiServiceFunc: neuronsApiService.spawnNeuron,
+        apiServiceFunc: governanceApiService.spawnNeuron,
         params,
       });
     });
@@ -712,7 +741,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.spawnNeuron,
-        apiServiceFunc: neuronsApiService.spawnNeuron,
+        apiServiceFunc: governanceApiService.spawnNeuron,
         params,
       });
     });
@@ -727,7 +756,7 @@ describe("neurons api-service", () => {
 
     it("should call splitNeuron api", async () => {
       jest.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
-      expect(await neuronsApiService.splitNeuron(params)).toEqual(neuronId);
+      expect(await governanceApiService.splitNeuron(params)).toEqual(neuronId);
       expect(api.splitNeuron).toHaveBeenCalledWith(params);
       expect(api.splitNeuron).toHaveBeenCalledTimes(1);
     });
@@ -735,7 +764,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.splitNeuron,
-        apiServiceFunc: neuronsApiService.splitNeuron,
+        apiServiceFunc: governanceApiService.splitNeuron,
         params,
       });
     });
@@ -743,7 +772,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.splitNeuron,
-        apiServiceFunc: neuronsApiService.splitNeuron,
+        apiServiceFunc: governanceApiService.splitNeuron,
         params,
       });
     });
@@ -757,7 +786,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call stakeMaturity api", () => {
-      neuronsApiService.stakeMaturity(params);
+      governanceApiService.stakeMaturity(params);
       expect(api.stakeMaturity).toHaveBeenCalledWith(params);
       expect(api.stakeMaturity).toHaveBeenCalledTimes(1);
     });
@@ -765,7 +794,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.stakeMaturity,
-        apiServiceFunc: neuronsApiService.stakeMaturity,
+        apiServiceFunc: governanceApiService.stakeMaturity,
         params,
       });
     });
@@ -773,7 +802,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stakeMaturity,
-        apiServiceFunc: neuronsApiService.stakeMaturity,
+        apiServiceFunc: governanceApiService.stakeMaturity,
         params,
       });
     });
@@ -790,7 +819,7 @@ describe("neurons api-service", () => {
 
     it("should call stakeNeuron api", async () => {
       jest.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);
-      expect(await neuronsApiService.stakeNeuron(params)).toEqual(neuronId);
+      expect(await governanceApiService.stakeNeuron(params)).toEqual(neuronId);
       expect(api.stakeNeuron).toHaveBeenCalledWith(params);
       expect(api.stakeNeuron).toHaveBeenCalledTimes(1);
     });
@@ -798,7 +827,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.stakeNeuron,
-        apiServiceFunc: neuronsApiService.stakeNeuron,
+        apiServiceFunc: governanceApiService.stakeNeuron,
         params,
       });
     });
@@ -806,7 +835,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stakeNeuron,
-        apiServiceFunc: neuronsApiService.stakeNeuron,
+        apiServiceFunc: governanceApiService.stakeNeuron,
         params,
       });
     });
@@ -819,7 +848,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call startDissolving api", () => {
-      neuronsApiService.startDissolving(params);
+      governanceApiService.startDissolving(params);
       expect(api.startDissolving).toHaveBeenCalledWith(params);
       expect(api.startDissolving).toHaveBeenCalledTimes(1);
     });
@@ -827,7 +856,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.startDissolving,
-        apiServiceFunc: neuronsApiService.startDissolving,
+        apiServiceFunc: governanceApiService.startDissolving,
         params,
       });
     });
@@ -835,7 +864,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.startDissolving,
-        apiServiceFunc: neuronsApiService.startDissolving,
+        apiServiceFunc: governanceApiService.startDissolving,
         params,
       });
     });
@@ -848,7 +877,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call stopDissolving api", () => {
-      neuronsApiService.stopDissolving(params);
+      governanceApiService.stopDissolving(params);
       expect(api.stopDissolving).toHaveBeenCalledWith(params);
       expect(api.stopDissolving).toHaveBeenCalledTimes(1);
     });
@@ -856,7 +885,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache", async () => {
       await shouldInvalidateCache({
         apiFunc: api.stopDissolving,
-        apiServiceFunc: neuronsApiService.stopDissolving,
+        apiServiceFunc: governanceApiService.stopDissolving,
         params,
       });
     });
@@ -864,7 +893,7 @@ describe("neurons api-service", () => {
     it("should invalidate the cache on failure", async () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stopDissolving,
-        apiServiceFunc: neuronsApiService.stopDissolving,
+        apiServiceFunc: governanceApiService.stopDissolving,
         params,
       });
     });

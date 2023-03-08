@@ -3,9 +3,9 @@
  */
 
 import { removeController } from "$lib/services/canisters.services";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { clickByTestId } from "../../../utils/utils.test-utils";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
 
 jest.mock("$lib/services/canisters.services", () => {

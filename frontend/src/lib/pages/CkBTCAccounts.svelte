@@ -1,35 +1,54 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { hasAccounts } from "$lib/utils/accounts.utils";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
 
-  onMount(async () => {
-    if (hasAccounts($ckBTCAccountsStore.accounts)) {
+  const syncAccounts = async (
+    selectedCkBTCUniverseId: UniverseCanisterId | undefined
+  ) => {
+    if (isNullish(selectedCkBTCUniverseId)) {
+      return;
+    }
+
+    if (
+      hasAccounts(
+        $icrcAccountsStore[selectedCkBTCUniverseId.toText()]?.accounts ?? []
+      )
+    ) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;
     }
 
     loading = true;
-    await syncCkBTCAccounts({});
+    await syncCkBTCAccounts({ universeId: selectedCkBTCUniverseId });
     loading = false;
-  });
+  };
+
+  $: (async () => syncAccounts($selectedCkBTCUniverseIdStore))();
+
+  let accounts: Account[] = [];
+  $: accounts = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
+    : [];
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
   {#if loading}
     <SkeletonCard size="medium" />
   {:else}
-    {#each $ckBTCAccountsStore.accounts ?? [] as account}
+    {#each accounts as account}
       <AccountCard
         role="link"
         on:click={() => goToWallet(account)}

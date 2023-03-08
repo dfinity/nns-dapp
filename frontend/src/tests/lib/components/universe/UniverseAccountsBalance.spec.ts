@@ -3,37 +3,36 @@
  */
 
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
-import {
-  CKBTC_UNIVERSE,
-  NNS_UNIVERSE,
-} from "$lib/derived/selectable-universes.derived";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
+import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Universe } from "$lib/types/universe";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
-import { mockSnsCanisterId } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
+import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {
@@ -140,9 +139,12 @@ describe("UniverseAccountsBalance", () => {
     it("should render a total balance for ckBTC", () => {
       const totalBalance = mockCkBTCMainAccount.balance;
 
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       const { getByTestId } = render(ProjectAccountsBalance, {

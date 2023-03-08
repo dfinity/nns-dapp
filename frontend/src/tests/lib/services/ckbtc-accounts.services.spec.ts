@@ -1,22 +1,26 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
-import { ckBTCAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { tick } from "svelte";
-import { get } from "svelte/store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
-import { mockIcrcTransactionWithId } from "../../mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockTokens } from "../../mocks/tokens.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
+import { tick } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
@@ -28,7 +32,7 @@ describe("ckbtc-accounts-services", () => {
   describe("loadCkBTCAccounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      ckBTCAccountsStore.reset();
+      icrcAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
@@ -37,13 +41,15 @@ describe("ckbtc-accounts-services", () => {
         .spyOn(ledgerApi, "getCkBTCAccounts")
         .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
-      await loadCkBTCAccounts({});
+      await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
       await tick();
 
-      const store = get(ckBTCAccountsStore);
+      const store = get(icrcAccountsStore);
 
-      expect(store.accounts).toHaveLength(1);
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts).toHaveLength(
+        1
+      );
       expect(spyQuery).toBeCalled();
 
       spyQuery.mockClear();
@@ -58,6 +64,7 @@ describe("ckbtc-accounts-services", () => {
 
       await loadCkBTCAccounts({
         handleError: spy,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       expect(spy).toBeCalled();
@@ -66,10 +73,14 @@ describe("ckbtc-accounts-services", () => {
     });
 
     it("should empty store if update call fails", async () => {
-      ckBTCAccountsStore.set({
-        accounts: [mockCkBTCMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
+
       icrcTransactionsStore.addTransactions({
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
         accountIdentifier: mockCkBTCMainAccount.identifier,
@@ -82,10 +93,10 @@ describe("ckbtc-accounts-services", () => {
         .spyOn(ledgerApi, "getCkBTCAccounts")
         .mockImplementation(() => Promise.reject(undefined));
 
-      await loadCkBTCAccounts({});
+      await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
-      const store = get(ckBTCAccountsStore);
-      expect(store.accounts).toHaveLength(0);
+      const store = get(icrcAccountsStore);
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toBeUndefined();
 
       const transactionsStore = get(icrcTransactionsStore);
       expect(
@@ -97,7 +108,7 @@ describe("ckbtc-accounts-services", () => {
   describe("syncCkBTCAccounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      ckBTCAccountsStore.reset();
+      icrcAccountsStore.reset();
     });
 
     it("should call ckBTC accounts and token and load them in store", async () => {
@@ -109,20 +120,27 @@ describe("ckbtc-accounts-services", () => {
         .spyOn(ledgerApi, "getCkBTCToken")
         .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
-      await services.syncCkBTCAccounts({});
+      await services.syncCkBTCAccounts({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
 
       await tick();
 
       expect(spyAccountsQuery).toBeCalled();
       expect(spyTokenQuery).toBeCalled();
 
-      const accountsStore = get(ckBTCAccountsStore);
-      expect(accountsStore.accounts).toHaveLength(1);
+      const accountsStore = get(icrcAccountsStore);
+      expect(
+        accountsStore[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts
+      ).toHaveLength(1);
 
       const tokenStore = get(ckBTCTokenStore);
       expect(tokenStore).toEqual({
-        token: mockCkBTCToken,
-        certified: true,
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+          token: mockCkBTCToken,
+          certified: true,
+        },
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: undefined,
       });
     });
   });
@@ -134,7 +152,7 @@ describe("ckbtc-accounts-services", () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      ckBTCAccountsStore.reset();
+      icrcAccountsStore.reset();
     });
 
     afterEach(() => {
@@ -153,6 +171,8 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(success).toBe(true);
@@ -172,6 +192,8 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: true,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(success).toBe(true);
@@ -195,6 +217,8 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(success).toBe(false);
@@ -217,6 +241,8 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(success).toBe(false);

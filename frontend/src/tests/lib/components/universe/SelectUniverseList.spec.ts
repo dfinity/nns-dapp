@@ -6,12 +6,12 @@ import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svel
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, render } from "@testing-library/svelte";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   principal,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("SelectUniverseList", () => {
   const projects = [
@@ -44,9 +44,9 @@ describe("SelectUniverseList", () => {
 
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList);
-    // +1 for Internet Computer / NNS and +1 for ckBTC
+    // +1 for Internet Computer / NNS and +1 for ckBTC +1 for ckTESTBTC
     expect(getAllByTestId("select-universe-card").length).toEqual(
-      projects.length + 2
+      projects.length + 3
     );
   });
 

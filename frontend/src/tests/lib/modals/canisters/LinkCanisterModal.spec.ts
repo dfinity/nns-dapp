@@ -4,16 +4,16 @@
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

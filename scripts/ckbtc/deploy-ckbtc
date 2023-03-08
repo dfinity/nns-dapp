@@ -3,16 +3,16 @@
 # Original source
 # https://github.com/dfinity/ckBTC-Minter-Frontend/blob/master/local_deploy.sh
 
-dfx canister create ckbtc_test_ledger
-dfx canister create ckbtc_test_minter
+dfx canister create ckbtc_test_ledger --network "$DFX_NETWORK"
+dfx canister create ckbtc_test_minter --network "$DFX_NETWORK"
 
-MINTERID="$(dfx canister id ckbtc_test_minter)"
+MINTERID="$(dfx canister id ckbtc_test_minter --network "$DFX_NETWORK")"
 echo "$MINTERID"
-LEDGERID="$(dfx canister id ckbtc_test_ledger)"
+LEDGERID="$(dfx canister id ckbtc_test_ledger --network "$DFX_NETWORK")"
 echo "$LEDGERID"
 
-echo "Step 2: deploying minter canister..."
-dfx deploy ckbtc_test_minter --argument "(record {
+# echo "Step 2: deploying minter canister..."
+dfx deploy ckbtc_test_minter --network "$DFX_NETWORK" --argument "(record {
     btc_network = variant { Regtest };
     ledger_id = principal \"$LEDGERID\";
     ecdsa_key_name = \"dfx_test_key\";
@@ -24,23 +24,25 @@ dfx deploy ckbtc_test_minter --argument "(record {
 
 echo "Step 3: deploying ledger canister..."
 PRINCIPAL="$(dfx identity get-principal)"
-dfx deploy ckbtc_test_ledger --argument "(record {
-    token_symbol = \"ckBTC\";
-    token_name = \"Token ckBTC\";
-    minting_account = record { owner = principal \"$MINTERID\" };
-    transfer_fee = 11_500;
-    metadata = vec {};
-    initial_balances = vec { record { record { owner = principal \"$PRINCIPAL\"; }; 10_000_000; }; };
-    archive_options = record {
-        num_blocks_to_archive = 10_000;
-        trigger_threshold = 20_000;
-        controller_id = principal \"$PRINCIPAL\";
-        cycles_for_archive_creation = opt 4_000_000_000_000;
-    };
+dfx deploy ckbtc_test_ledger --network "$DFX_NETWORK" --argument "(variant {
+  Init = record {
+     token_symbol = \"ckBTC\";
+     token_name = \"Token ckBTC\";
+     minting_account = record { owner = principal \"$MINTERID\" };
+     transfer_fee = 11_500;
+     metadata = vec {};
+     initial_balances = vec { record { record { owner = principal \"$PRINCIPAL\"; }; 10_000_000; }; };
+     archive_options = record {
+         num_blocks_to_archive = 10_000;
+         trigger_threshold = 20_000;
+         controller_id = principal \"$PRINCIPAL\";
+         cycles_for_archive_creation = opt 4_000_000_000_000;
+     };
+ }
 })" --mode=reinstall
 
 echo "Step 4: deploying index canister..."
-dfx deploy ckbtc_test_index --argument "(record { ledger_id = principal \"$LEDGERID\" })" --mode=reinstall
+dfx deploy ckbtc_test_index --network "$DFX_NETWORK" --argument "(record { ledger_id = principal \"$LEDGERID\" })" --mode=reinstall
 
 # Example to mint ckBTC
 
@@ -59,4 +61,4 @@ dfx deploy ckbtc_test_index --argument "(record { ledger_id = principal \"$LEDGE
 
 echo "Step 5: transfer ckBTC to principal..."
 # record { owner= principal “”;}
-dfx canister call ckbtc_test_ledger icrc1_transfer "(record {from=null; to=record { owner= principal \"zapga-qy4oi-6wufm-hyjvl-tgcuy-6jfcn-zcfeh-i7yap-aupxz-s2bj7-cae\";}; amount=1000000; fee=null; memo=null; created_at_time=null;})"
+dfx canister call ckbtc_test_ledger --network "$DFX_NETWORK" icrc1_transfer "(record {from=null; to=record { owner= principal \"73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe\";}; amount=1000000; fee=null; memo=null; created_at_time=null;})"

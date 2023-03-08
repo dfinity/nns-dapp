@@ -3,10 +3,10 @@
  */
 
 import HardwareWalletInfo from "$lib/components/accounts/HardwareWalletInfo.svelte";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
 
 describe("HardwareWalletInfo", () => {
   const props = { ledgerIdentity: mockIdentity };
