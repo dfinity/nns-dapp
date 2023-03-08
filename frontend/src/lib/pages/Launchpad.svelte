@@ -20,7 +20,7 @@
   $: $authStore.identity, (async () => await loadSnsSale())();
 
   let showCommitted = false;
-  $: showCommitted = ($snsProjectsCommittedStore?.length ?? []) > 0;
+  $: showCommitted = $snsProjectsCommittedStore.length > 0;
 
   let showAdopted = false;
   $: showAdopted = $snsProjectsAdoptedStore.length > 0;

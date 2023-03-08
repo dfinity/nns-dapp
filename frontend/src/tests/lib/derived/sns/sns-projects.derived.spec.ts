@@ -84,13 +84,13 @@ describe("projects.derived", () => {
       );
 
       const committed = get(snsProjectsCommittedStore);
-      expect(committed?.length).toEqual(1);
+      expect(committed.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const noCommitted = get(snsProjectsCommittedStore);
-      expect(noCommitted?.length).toEqual(0);
+      expect(noCommitted.length).toEqual(0);
     });
 
     it("should filter projects that are adopted only", () => {
