@@ -28,6 +28,7 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import { tick, type SvelteComponent } from "svelte";
+import en from "../../mocks/i18n.mock";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
@@ -184,6 +185,17 @@ describe("NnsWallet", () => {
       const { getByTestId } = result;
 
       expect(getByTestId("receive-modal")).not.toBeNull();
+    });
+
+    it("should display receive modal information", async () => {
+      const result = render(NnsWallet, props);
+
+      await testModal({ result, testId: "receive-icp" });
+
+      const { getByText } = result;
+
+      expect(getByText(en.wallet.icp_receive_note_title)).toBeInTheDocument();
+      expect(getByText(en.wallet.icp_receive_note_text)).toBeInTheDocument();
     });
 
     it("should reload account", async () => {
