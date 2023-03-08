@@ -260,7 +260,7 @@ export const hasOpenTicketInProcess = ({
 };
 
 /**
- * Exported for testing purposes
+ * Parse the `sale_buyer_count` value from metrics text.
  *
  * @example text
  * ...

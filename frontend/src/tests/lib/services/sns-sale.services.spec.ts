@@ -12,8 +12,8 @@ import {
 import * as accountsServices from "$lib/services/accounts.services";
 import {
   initiateSnsSaleParticipation,
+  loadNewSaleTicket,
   loadOpenTicket,
-  loadNewSaleTicket ,
   participateInSnsSale,
   restoreSnsSaleParticipation,
 } from "$lib/services/sns-sale.services";
@@ -187,7 +187,7 @@ describe("sns-api", () => {
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: spyOnNotifyParticipation,
-        loadNewSaleTicket : spyOnNewSaleTicketApi,
+        loadNewSaleTicket: spyOnNewSaleTicketApi,
         notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
       })
     );
@@ -509,7 +509,7 @@ describe("sns-api", () => {
       jest.useFakeTimers().setSystemTime(now);
     });
     it("should call newSaleTicket  api", async () => {
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -518,7 +518,7 @@ describe("sns-api", () => {
     });
 
     it("should add new ticket to the store", async () => {
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -533,7 +533,7 @@ describe("sns-api", () => {
         })
       );
 
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -555,7 +555,7 @@ describe("sns-api", () => {
         })
       );
 
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -586,7 +586,7 @@ describe("sns-api", () => {
         })
       );
 
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -611,7 +611,7 @@ describe("sns-api", () => {
         })
       );
 
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -632,7 +632,7 @@ describe("sns-api", () => {
         })
       );
 
-      await loadNewSaleTicket ({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -655,7 +655,7 @@ describe("sns-api", () => {
         .mockRejectedValueOnce(new Error("connection error"))
         .mockResolvedValue(testSnsTicket.ticket);
 
-      loadNewSaleTicket ({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -689,7 +689,7 @@ describe("sns-api", () => {
           })
         );
 
-      loadNewSaleTicket ({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -713,7 +713,7 @@ describe("sns-api", () => {
     it("should show 'high load' toast after 6 failures", async () => {
       const expectFailuresBeforeToast = 6;
       spyOnNewSaleTicketApi.mockRejectedValue(new Error("network error"));
-      loadNewSaleTicket ({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });

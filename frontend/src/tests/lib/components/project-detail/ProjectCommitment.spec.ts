@@ -16,6 +16,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectCommitment", () => {
   const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
+  const saleBuyerCount = 1_000_000;
 
   it("should render min and max commitment", () => {
     const { queryByTestId } = renderContextCmp({
@@ -35,7 +36,7 @@ describe("ProjectCommitment", () => {
     snsSwapMetricsStore.setMetrics({
       rootCanisterId: mockSnsFullProject.swapCommitment.rootCanisterId,
       metrics: {
-        saleBuyerCount: 666,
+        saleBuyerCount,
       },
     });
 
@@ -52,7 +53,7 @@ describe("ProjectCommitment", () => {
       textContent.includes(en.sns_project_detail.current_sale_buyer_count)
     ).toBeTruthy();
 
-    expect(textContent.includes(`666`)).toBeTruthy();
+    expect(textContent.includes(`${saleBuyerCount}`)).toBeTruthy();
   });
 
   it("should render overall current commitment", () => {
