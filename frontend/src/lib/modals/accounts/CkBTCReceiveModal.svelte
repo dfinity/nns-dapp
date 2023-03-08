@@ -18,6 +18,7 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
 
   export let data: CkBTCWalletBtcCkBTCReceiveModalData;
 
@@ -68,8 +69,7 @@
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
 
-  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
-  export let qrCodeRendered = false;
+  let qrCodeRendered = QR_CODE_RENDERED;
 
   const dispatcher = createEventDispatcher();
 

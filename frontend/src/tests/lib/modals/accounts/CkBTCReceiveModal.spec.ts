@@ -56,7 +56,6 @@ describe("BtcCkBTCReceiveModal", () => {
           reloadAccount: reloadAccountSpy,
           canisters: mockCkBTCAdditionalCanisters,
         },
-        qrCodeRendered: true,
       },
     });
 

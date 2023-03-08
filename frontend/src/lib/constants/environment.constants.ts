@@ -69,3 +69,7 @@ export const IS_TESTNET: boolean =
 export const ENABLE_METRICS = !DEV;
 
 export const FORCE_CALL_STRATEGY: "query" | undefined = undefined;
+
+// For test purpose only because we are testing with jest without effectively loading the QR code.
+// We are running the jest suite as if the QR code would be rendered. We are setting this value to `true` in the jest configuration.
+export const QR_CODE_RENDERED = false;

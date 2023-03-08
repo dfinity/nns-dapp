@@ -162,7 +162,7 @@
       class="secondary"
       on:click={() => (showModal = "receive")}
       {disabled}
-      data-tid="receive-nns-transaction">{$i18n.ckbtc.receive}</button
+      data-tid="receive-icp">{$i18n.ckbtc.receive}</button
     >
   </Footer>
 </Island>

@@ -25,7 +25,6 @@ describe("ReceiveModal", () => {
         logo,
         logoArialLabel,
         reloadAccount: reloadAccountSpy,
-        qrCodeRendered: true,
       },
     });
 
@@ -44,7 +43,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a logo", async () => {
-    const { getByTestId, container } = await renderReceiveModal();
+    const { getByTestId } = await renderReceiveModal();
 
     await waitFor(() =>
       expect(getByTestId("logo")?.getAttribute("alt")).toEqual(logoArialLabel)
@@ -52,7 +51,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should reload account", async () => {
-    const { getByTestId, container } = await renderReceiveModal();
+    const { getByTestId } = await renderReceiveModal();
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 

@@ -5,6 +5,7 @@
   import type { Account } from "$lib/types/account";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
+  import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
 
   export let account: Account;
   export let qrCodeLabel: string;
@@ -12,8 +13,7 @@
   export let logoArialLabel: string;
   export let reloadAccount: () => Promise<void>;
 
-  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
-  export let qrCodeRendered = false;
+  let qrCodeRendered = QR_CODE_RENDERED;
 
   let modalRendered = false;
 

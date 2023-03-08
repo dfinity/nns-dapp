@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
 
   export let address: string;
   export let renderQRCode = false;
@@ -11,8 +12,7 @@
   export let logoArialLabel: string;
   export let logoSize: "huge" | "big" = "huge";
 
-  // Exposed for test purpose only because we are testing with jest without effectively loading the QR code
-  export let qrCodeRendered = false;
+  export let qrCodeRendered = QR_CODE_RENDERED;
 </script>
 
 <div class="content">
