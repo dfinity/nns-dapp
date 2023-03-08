@@ -41,7 +41,9 @@ export const filterCommittedProjects = (
  * - complete - we display completed project for a while to make the screen user-friendly
  * @param projects
  */
-export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
+export const filterActiveProjects = (
+  projects: SnsFullProject[]
+): SnsFullProject[] =>
   projects?.filter(
     ({
       summary: {
