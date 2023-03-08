@@ -369,7 +369,7 @@ export const newSaleTicket = async ({
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
-  get(snsProjectsStore)?.find(
+  get(snsProjectsStore).find(
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 

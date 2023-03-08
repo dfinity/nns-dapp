@@ -97,6 +97,33 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
   });
 
+  it("should render progress when converting ckBTC to Bitcoin", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn",
+    });
+
+    await waitFor(
+      expect(result.getByTestId("in-progress-warning")).not.toBeNull
+    );
+  });
+
+  it("should not render progress when transferring ckBTC", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+    });
+
+    await waitFor(
+      expect(() => result.getByTestId("in-progress-warning")).toThrow
+    );
+  });
+
   it("should not render the select account dropdown if selected account is passed", async () => {
     const { queryByTestId } = await renderTransactionModal(
       mockCkBTCMainAccount

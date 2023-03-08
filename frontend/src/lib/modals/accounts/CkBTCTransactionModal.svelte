@@ -20,6 +20,8 @@
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+  import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
+  import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -38,33 +40,30 @@
   $: title =
     currentStep?.name === "Form"
       ? $i18n.accounts.send
+      : currentStep?.name === "Progress"
+      ? $i18n.ckbtc.sending_ckbtc_to_btc
       : $i18n.accounts.you_are_sending;
+
+  let modal: TransactionModal;
+  let progressStep: ConvertBtcStep = ConvertBtcStep.INITIALIZATION;
 
   const dispatcher = createEventDispatcher();
 
-  const transfer = async ({
+  const transferTokens = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "accounts",
     });
 
-    const { success } = await (isTransactionNetworkBtc(selectedNetwork)
-      ? convertCkBTCToBtc({
-          source: sourceAccount,
-          destinationAddress,
-          amount,
-          universeId,
-          canisters,
-        })
-      : ckBTCTransferTokens({
-          source: sourceAccount,
-          destinationAddress,
-          amount,
-          loadTransactions,
-          universeId,
-          indexCanisterId: canisters.indexCanisterId,
-        }));
+    const { success } = await ckBTCTransferTokens({
+      source: sourceAccount,
+      destinationAddress,
+      amount,
+      loadTransactions,
+      universeId,
+      indexCanisterId: canisters.indexCanisterId,
+    });
 
     stopBusy("accounts");
 
@@ -72,6 +71,37 @@
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsTransfer");
     }
+  };
+
+  const convert = async ({
+    detail: { sourceAccount, amount, destinationAddress },
+  }: CustomEvent<NewTransaction>) => {
+    modal?.goProgress();
+
+    const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
+
+    const { success } = await convertCkBTCToBtc({
+      source: sourceAccount,
+      destinationAddress,
+      amount,
+      universeId,
+      canisters,
+      updateProgress,
+    });
+
+    if (success) {
+      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      dispatcher("nnsTransfer");
+    }
+  };
+
+  const transfer = async ($event: CustomEvent<NewTransaction>) => {
+    if (isTransactionNetworkBtc(selectedNetwork)) {
+      await convert($event);
+      return;
+    }
+
+    await transferTokens($event);
   };
 
   let userAmount: number | undefined = undefined;
@@ -85,6 +115,7 @@
 
 <TransactionModal
   rootCanisterId={universeId}
+  bind:this={modal}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
@@ -112,4 +143,5 @@
     {bitcoinEstimatedFee}
     slot="additional-info-review"
   />
+  <ConvertBtcInProgress slot="in_progress" {progressStep} />
 </TransactionModal>
