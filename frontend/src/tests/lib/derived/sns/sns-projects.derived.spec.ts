@@ -61,7 +61,7 @@ describe("projects.derived", () => {
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const open = get(snsProjectsActivePadStore);
-      expect(open?.length).toEqual(1);
+      expect(open.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({
@@ -69,13 +69,13 @@ describe("projects.derived", () => {
         })
       );
       const open2 = get(snsProjectsActivePadStore);
-      expect(open2?.length).toEqual(2);
+      expect(open2.length).toEqual(2);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Unspecified] })
       );
       const noOpen = get(snsProjectsActivePadStore);
-      expect(noOpen?.length).toEqual(0);
+      expect(noOpen.length).toEqual(0);
     });
 
     it("should filter projects that are committed only", () => {

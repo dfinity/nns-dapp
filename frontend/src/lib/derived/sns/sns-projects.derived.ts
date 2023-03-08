@@ -51,7 +51,7 @@ export const snsProjectsStore = derived<
 
 export const snsProjectsActivePadStore = derived<
   Readable<SnsFullProject[]>,
-  SnsFullProject[] | undefined
+  SnsFullProject[]
 >(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterActiveProjects(projects)
 );
