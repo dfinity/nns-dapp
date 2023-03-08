@@ -6,7 +6,7 @@ import type { SvelteComponent } from "svelte";
 const amount = "10";
 
 export const testTransferReviewTokens = async ({
-  result: { getByTestId, container, queryAllByText },
+  result: { getByTestId, container },
   selectedNetwork = undefined,
   destinationAddress = "aaaaa-aa",
 }: {
@@ -56,7 +56,7 @@ export const testTransferTokens = async ({
   selectedNetwork?: TransactionNetwork;
   destinationAddress?: string;
 }) => {
-  const { getByTestId, container, queryAllByText } = result;
+  const { getByTestId, queryAllByText } = result;
 
   await testTransferReviewTokens({
     result,
