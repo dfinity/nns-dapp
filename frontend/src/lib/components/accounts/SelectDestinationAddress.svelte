@@ -12,7 +12,7 @@
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import {nonNullish} from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
