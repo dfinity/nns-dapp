@@ -29,6 +29,7 @@ describe("BtcCkBTCReceiveModal", () => {
       component: CkBTCReceiveModal,
       props: {
         data: {
+          displayBtcAddress: true,
           account: mockCkBTCMainAccount,
           btcAddress: mockCkBTCAddress,
           reloadAccount: reloadAccountSpy,
