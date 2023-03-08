@@ -23,10 +23,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import {
-    loadSnsAccountNextTransactions,
-    loadSnsAccountTransactions,
-  } from "$lib/services/sns-transactions.services";
+  import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   let showModal: "send" | "receive" | undefined = undefined;
@@ -134,7 +131,7 @@
       class="secondary"
       on:click={() => (showModal = "receive")}
       disabled={disabled || isNullish(tokenSymbol)}
-      data-tid="receive-sns-transaction">{$i18n.ckbtc.receive}</button
+      data-tid="receive-sns">{$i18n.ckbtc.receive}</button
     >
   </Footer>
 </Island>
