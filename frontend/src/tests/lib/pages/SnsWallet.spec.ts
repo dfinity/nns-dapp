@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 
+import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
@@ -26,8 +28,6 @@ import {
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
-import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import en from "../../mocks/i18n.mock";
 import { waitModalIntroEnd } from "../../mocks/modal.mock";
 
