@@ -1,6 +1,7 @@
 <script lang="ts">
   import type {
-    CkBTCWalletModal, CkBTCWalletModalData,
+    CkBTCWalletModal,
+    CkBTCWalletModalData,
     CkBTCWalletModalType,
   } from "$lib/types/wallet.modal";
   import { nonNullish } from "@dfinity/utils";

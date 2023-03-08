@@ -10,7 +10,10 @@ export interface WalletModal {
 }
 
 // CkBTC
-export type CkBTCWalletModalType = "ckbtc-receive" | "ckbtc-receive" | "ckbtc-transaction";
+export type CkBTCWalletModalType =
+  | "ckbtc-receive"
+  | "ckbtc-receive"
+  | "ckbtc-transaction";
 
 export interface CkBTCWalletModalData {
   account: Account;
@@ -22,7 +25,8 @@ export interface CkBTCWalletTransactionModalData extends CkBTCWalletModalData {
   reloadAccountFromStore: () => void;
 }
 
-export interface CkBTCWalletBtcCkBTCReceiveModalData extends CkBTCWalletModalData {
+export interface CkBTCWalletBtcCkBTCReceiveModalData
+  extends CkBTCWalletModalData {
   // @deprecated remove when ckBTC with minter is live
   displayBtcAddress: boolean;
   btcAddress: string;

@@ -85,7 +85,7 @@ describe("BtcCkBTCReceiveModal", () => {
       expect(getByText(en.ckbtc.ckbtc_receive_note_title)).toBeInTheDocument()
     );
     await waitFor(() =>
-        expect(getByText(en.ckbtc.ckbtc_receive_note_text)).toBeInTheDocument()
+      expect(getByText(en.ckbtc.ckbtc_receive_note_text)).toBeInTheDocument()
     );
   });
 

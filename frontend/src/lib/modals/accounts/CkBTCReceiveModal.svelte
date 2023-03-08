@@ -13,11 +13,11 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
-  import type {TokensStoreUniverseData} from "$lib/stores/tokens.store";
-  import {nonNullish} from "@dfinity/utils";
-  import {selectedCkBTCUniverseIdStore} from "$lib/derived/selected-universe.derived";
-  import {ckBTCTokenStore} from "$lib/derived/universes-tokens.derived";
-  import {replacePlaceholders} from "$lib/utils/i18n.utils";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { nonNullish } from "@dfinity/utils";
+  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let data: CkBTCWalletBtcCkBTCReceiveModalData;
 
@@ -28,7 +28,14 @@
   let reloadAccount: () => Promise<void>;
   let displayBtcAddress: boolean;
 
-  $: ({ account, btcAddress, reloadAccount, canisters, universeId, displayBtcAddress } = data);
+  $: ({
+    account,
+    btcAddress,
+    reloadAccount,
+    canisters,
+    universeId,
+    displayBtcAddress,
+  } = data);
 
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
@@ -106,26 +113,28 @@
   // TODO: to be removed when ckBTC with minter is live.
   let token: TokensStoreUniverseData | undefined = undefined;
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
-          ? $ckBTCTokenStore[universeId.toText()]
-          : undefined;
+    ? $ckBTCTokenStore[universeId.toText()]
+    : undefined;
 
   let title: string;
-  $: title = !displayBtcAddress && nonNullish(token) ?
-          replacePlaceholders($i18n.wallet.sns_receive_note_title, {
-            $tokenSymbol: token.token.symbol,
-          })
-          : bitcoin
-          ? $i18n.ckbtc.btc_receive_note_title
-          : $i18n.ckbtc.ckbtc_receive_note_title;
+  $: title =
+    !displayBtcAddress && nonNullish(token)
+      ? replacePlaceholders($i18n.wallet.sns_receive_note_title, {
+          $tokenSymbol: token.token.symbol,
+        })
+      : bitcoin
+      ? $i18n.ckbtc.btc_receive_note_title
+      : $i18n.ckbtc.ckbtc_receive_note_title;
 
   let description: string;
-  $: description = !displayBtcAddress && nonNullish(token) ?
-          replacePlaceholders($i18n.wallet.sns_receive_note_text, {
-            $tokenSymbol: token.token.symbol,
-          })
-          : bitcoin
-          ? $i18n.ckbtc.btc_receive_note_text
-          : $i18n.ckbtc.ckbtc_receive_note_text
+  $: description =
+    !displayBtcAddress && nonNullish(token)
+      ? replacePlaceholders($i18n.wallet.sns_receive_note_text, {
+          $tokenSymbol: token.token.symbol,
+        })
+      : bitcoin
+      ? $i18n.ckbtc.btc_receive_note_text
+      : $i18n.ckbtc.ckbtc_receive_note_text;
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
@@ -152,12 +161,8 @@
     {logoArialLabel}
     bind:qrCodeRendered
   >
-    <svelte:fragment slot="title"
-      >{title}</svelte:fragment
-    >
-    <svelte:fragment slot="description"
-      >{description}</svelte:fragment
-    >
+    <svelte:fragment slot="title">{title}</svelte:fragment>
+    <svelte:fragment slot="description">{description}</svelte:fragment>
   </ReceiveAddressQRCode>
 
   <div class="toolbar">
