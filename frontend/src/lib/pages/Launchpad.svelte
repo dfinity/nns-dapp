@@ -23,7 +23,7 @@
   $: showCommitted = ($snsProjectsCommittedStore?.length ?? []) > 0;
 
   let showAdopted = false;
-  $: showAdopted = ($snsProjectsAdoptedStore?.length ?? []) > 0;
+  $: showAdopted = $snsProjectsAdoptedStore.length > 0;
 </script>
 
 <main>

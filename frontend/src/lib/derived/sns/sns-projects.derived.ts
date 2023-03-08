@@ -65,7 +65,7 @@ export const snsProjectsCommittedStore = derived<
 
 export const snsProjectsAdoptedStore = derived<
   Readable<SnsFullProject[]>,
-  SnsFullProject[] | undefined
+  SnsFullProject[]
 >(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterProjectsStatus({ swapLifecycle: SnsSwapLifecycle.Adopted, projects })
 );

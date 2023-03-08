@@ -99,13 +99,13 @@ describe("projects.derived", () => {
       );
 
       const adopted = get(snsProjectsAdoptedStore);
-      expect(adopted?.length).toEqual(1);
+      expect(adopted.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const noAdopted = get(snsProjectsAdoptedStore);
-      expect(noAdopted?.length).toEqual(0);
+      expect(noAdopted.length).toEqual(0);
     });
   });
 });
