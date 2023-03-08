@@ -382,7 +382,7 @@ describe("sns-utils", () => {
     const RAW_METRICS = `
 # TYPE sale_buyer_count gauge
 sale_buyer_count ${saleBuyerCount} 1677707139456
-# HELP sale_cf_participants_count`;le_buyer_count 33 167770
+# HELP sale_cf_participants_count`;
 
     it("returns sale_buyer_count value", () => {
       expect(parseSnsSwapSaleBuyerCount(RAW_METRICS)).toEqual(saleBuyerCount);
