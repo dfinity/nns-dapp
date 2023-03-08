@@ -2,10 +2,19 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import {debounce, nonNullish, notEmptyString} from "@dfinity/utils";
+  import {
+    debounce,
+    isNullish,
+    nonNullish,
+    notEmptyString,
+  } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import {invalidICPOrIcrcAddress} from "$lib/utils/accounts.utils";
+  import {
+    invalidBtcAddress,
+    invalidICPOrIcrcAddress,
+  } from "$lib/utils/accounts.utils";
+  import { BtcNetwork } from "@dfinity/ckbtc";
 
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
@@ -16,19 +25,37 @@
 
   const onDestinationAddressInput = debounce(() => {
     if (nonNullish(selectedNetwork)) {
-      // TODO: display invalid network
+      // If the network does not match the address an error "Please enter a valid address." is displayed next to the input.
+      return;
+    }
+
+    if (
+      isNullish(selectedDestinationAddress) ||
+      selectedDestinationAddress === ""
+    ) {
       return;
     }
 
     if (!invalidICPOrIcrcAddress(selectedDestinationAddress)) {
-      selectedNetwork = ckTESTBTC ? TransactionNetwork.ICP_CKTESTBTC : TransactionNetwork.ICP_CKBTC;
+      selectedNetwork = ckTESTBTC
+        ? TransactionNetwork.ICP_CKTESTBTC
+        : TransactionNetwork.ICP_CKBTC;
       return;
     }
 
-    // TODO: BTC testnet and mainnet
+    if (
+      !invalidBtcAddress({
+        address: selectedDestinationAddress,
+        network: ckTESTBTC ? BtcNetwork.Testnet : BtcNetwork.Mainnet,
+      })
+    ) {
+      selectedNetwork = ckTESTBTC
+        ? TransactionNetwork.BTC_TESTNET
+        : TransactionNetwork.BTC_MAINNET;
+    }
   });
 
-  $: selectedDestinationAddress, onDestinationAddressInput()
+  $: selectedDestinationAddress, onDestinationAddressInput();
 </script>
 
 <div class:placeholder={!notEmptyString(selectedNetwork)}>
