@@ -4,6 +4,7 @@
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
+  // The current step of the process that is in progress
   export let progressStep: string;
   export let steps: [ProgressStep, ...ProgressStep[]];
 
