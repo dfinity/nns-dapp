@@ -2,17 +2,17 @@
  * @jest-environment jsdom
  */
 
-import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
-import { SaleStep } from "$lib/types/sale";
+import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
+import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import en from "$tests/mocks/i18n.mock";
 import { testProgress } from "$tests/utils/progress.test-utils";
 import { render } from "@testing-library/svelte";
 
-describe("SaleInProgress", () => {
+describe("ConvertBtcInProgress", () => {
   it("should render a warning to not close the browser", () => {
-    const { getByTestId } = render(SaleInProgress, {
+    const { getByTestId } = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.INITIALIZATION,
+        progressStep: ConvertBtcStep.INITIALIZATION,
       },
     });
 
@@ -24,125 +24,125 @@ describe("SaleInProgress", () => {
   });
 
   it("should render steps", () => {
-    const { container } = render(SaleInProgress, {
+    const { container } = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.INITIALIZATION,
+        progressStep: ConvertBtcStep.INITIALIZATION,
       },
     });
 
-    // SaleStep minus SaleStep.DONE
+    // ConvertBtcStep minus ConvertBtcStep.DONE
     expect(container.querySelectorAll(".step").length).toEqual(4);
   });
 
   it("should render step initialization in progress", () => {
-    const result = render(SaleInProgress, {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.INITIALIZATION,
+        progressStep: ConvertBtcStep.INITIALIZATION,
       },
     });
 
     testProgress({
       result,
       position: 1,
-      label: en.sns_sale.step_initialization,
+      label: en.ckbtc.step_initialization,
       status: "In progress",
     });
   });
 
   it("should render step initialization completed", () => {
-    const result = render(SaleInProgress, {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.TRANSFER,
+        progressStep: ConvertBtcStep.LOCKING_CKBTC,
       },
     });
 
     testProgress({
       result,
       position: 1,
-      label: en.sns_sale.step_initialization,
+      label: en.ckbtc.step_initialization,
       status: "Completed",
     });
   });
 
-  it("should render step transfer in progress", () => {
-    const result = render(SaleInProgress, {
+  it("should render step locking ckbtc in progress", () => {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.TRANSFER,
+        progressStep: ConvertBtcStep.LOCKING_CKBTC,
       },
     });
 
     testProgress({
       result,
       position: 2,
-      label: en.sns_sale.step_transfer,
+      label: en.ckbtc.step_locking_ckbtc,
       status: "In progress",
     });
   });
 
-  it("should render step transfer completed", () => {
-    const result = render(SaleInProgress, {
+  it("should render step locking ckbtc completed", () => {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.NOTIFY,
+        progressStep: ConvertBtcStep.SEND_BTC,
       },
     });
 
     testProgress({
       result,
       position: 2,
-      label: en.sns_sale.step_transfer,
+      label: en.ckbtc.step_locking_ckbtc,
       status: "Completed",
     });
   });
 
-  it("should render step notify in progress", () => {
-    const result = render(SaleInProgress, {
+  it("should render step send btc in progress", () => {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.NOTIFY,
+        progressStep: ConvertBtcStep.SEND_BTC,
       },
     });
 
     testProgress({
       result,
       position: 3,
-      label: en.sns_sale.step_notify,
+      label: en.ckbtc.step_send_btc,
       status: "In progress",
     });
   });
 
-  it("should render step notify completed", () => {
-    const result = render(SaleInProgress, {
+  it("should render step send btc completed", () => {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.RELOAD,
+        progressStep: ConvertBtcStep.RELOAD,
       },
     });
 
     testProgress({
       result,
       position: 3,
-      label: en.sns_sale.step_notify,
+      label: en.ckbtc.step_send_btc,
       status: "Completed",
     });
   });
 
   it("should render step reload in progress", () => {
-    const result = render(SaleInProgress, {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.RELOAD,
+        progressStep: ConvertBtcStep.RELOAD,
       },
     });
 
     testProgress({
       result,
       position: 4,
-      label: en.sns_sale.step_reload,
+      label: en.ckbtc.step_reload,
       status: "In progress",
     });
   });
 
   it("should render step reload completed", () => {
-    const result = render(SaleInProgress, {
+    const result = render(ConvertBtcInProgress, {
       props: {
-        progressStep: SaleStep.DONE,
+        progressStep: ConvertBtcStep.DONE,
       },
     });
 

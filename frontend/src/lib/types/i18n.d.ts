@@ -30,6 +30,9 @@ interface I18nCore {
   next: string;
   principal_is: string;
   done: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
+  finish: string;
 }
 
 interface I18nError {
@@ -162,6 +165,7 @@ interface I18nAccounts {
   icp_transaction_description: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
+  ckbtc_to_btc_transaction_description: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -437,6 +441,11 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
+  qrcode_aria_label_icp: string;
+  icp_receive_note_title: string;
+  icp_receive_note_text: string;
+  sns_receive_note_title: string;
+  sns_receive_note_text: string;
 }
 
 interface I18nBusy_screen {
@@ -647,8 +656,6 @@ interface I18nSns_sale {
   step_transfer: string;
   step_notify: string;
   step_reload: string;
-  this_may_take_a_few_minutes: string;
-  do_not_close: string;
   connecting_sale_canister: string;
 }
 
@@ -866,14 +873,20 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  address: string;
-  btc_receive_note: string;
-  ckbtc_receive_note: string;
+  btc_receive_note_title: string;
+  ckbtc_receive_note_title: string;
+  btc_receive_note_text: string;
+  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
+  step_initialization: string;
+  step_locking_ckbtc: string;
+  step_send_btc: string;
+  step_reload: string;
+  sending_ckbtc_to_btc: string;
 }
 
 interface I18nError__ckbtc {

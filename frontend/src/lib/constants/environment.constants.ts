@@ -69,3 +69,9 @@ export const IS_TESTNET: boolean =
 export const ENABLE_METRICS = !DEV;
 
 export const FORCE_CALL_STRATEGY: "query" | undefined = undefined;
+
+// When the QR code is rendered (draw), it triggers and event that is replicated to a property to get to know if the QR code has been or not rendered.
+// Because we map it to a `boolean` property, it needs a default state which is `false` - i.e. `QR_CODE_RENDERED`
+// We use a constant / environment variable here because we set it to `true` for test purpose.
+// Indeed, we are running the jest suite as if the QR code would be rendered because Jest as trouble loading the QR-code dependency and because the QR-code content is anyway covered by e2e snapshot testing in gix-cmp.
+export const QR_CODE_RENDERED = false;
