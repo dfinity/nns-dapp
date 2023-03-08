@@ -147,7 +147,7 @@ describe("ParticipateSwapModal", () => {
       await participate(result);
 
       await waitFor(
-        expect(result.getByTestId("sale-in-progress-warning")).not.toBeNull
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull
       );
     });
   });

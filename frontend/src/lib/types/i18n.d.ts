@@ -30,6 +30,8 @@ interface I18nCore {
   next: string;
   principal_is: string;
   done: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
   finish: string;
 }
 
@@ -653,8 +655,6 @@ interface I18nSns_sale {
   step_transfer: string;
   step_notify: string;
   step_reload: string;
-  this_may_take_a_few_minutes: string;
-  do_not_close: string;
   connecting_sale_canister: string;
 }
 
@@ -881,6 +881,11 @@ interface I18nCkbtc {
   bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
+  step_initialization: string;
+  step_locking_ckbtc: string;
+  step_send_btc: string;
+  step_reload: string;
+  sending_ckbtc_to_btc: string;
 }
 
 interface I18nError__ckbtc {
