@@ -363,7 +363,7 @@ const renameError = ({
 };
 
 const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-const pollAccountsId = Symbol();
+const pollAccountsId = Symbol("poll-accounts");
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
