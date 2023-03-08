@@ -26,7 +26,7 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import {mockCkBTCAddress} from "../../../mocks/ckbtc-accounts.mock";
+import { mockCkBTCAddress } from "../../../mocks/ckbtc-accounts.mock";
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
