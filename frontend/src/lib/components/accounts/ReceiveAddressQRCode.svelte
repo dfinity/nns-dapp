@@ -12,7 +12,7 @@
   export let logoArialLabel: string;
   export let logoSize: "huge" | "big" = "huge";
 
-  export let qrCodeRendered = QR_CODE_RENDERED;
+  export let qrCodeRendered: boolean = QR_CODE_RENDERED;
 </script>
 
 <div class="content">

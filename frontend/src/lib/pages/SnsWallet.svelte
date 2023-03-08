@@ -138,14 +138,14 @@
 
 {#if showModal}
   <SnsTransactionModal
-    on:nnsClose={() => (showModal = false)}
+    on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}
     loadTransactions
   />
 {/if}
 
 <!-- For TS - action button is disabled anyway if account is undefined and token not defined -->
-{#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
+{#if showModal === "receive" && nonNullish($selectedAccountStore.account) && nonNullish(tokenSymbol)}
   <ReceiveModal
     account={$selectedAccountStore.account}
     on:nnsClose={() => (showModal = undefined)}
