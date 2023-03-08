@@ -95,8 +95,11 @@
     }
   };
 
+  let networkBtc = false;
+  $: networkBtc = isTransactionNetworkBtc(selectedNetwork);
+
   const transfer = async ($event: CustomEvent<NewTransaction>) => {
-    if (isTransactionNetworkBtc(selectedNetwork)) {
+    if (networkBtc) {
       await convert($event);
       return;
     }
@@ -128,9 +131,13 @@
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
-    {replacePlaceholders($i18n.accounts.ckbtc_transaction_description, {
-      $token: token.symbol,
-    })}
+    {#if networkBtc}
+      {$i18n.accounts.ckbtc_to_btc_transaction_description}
+    {:else}
+      {replacePlaceholders($i18n.accounts.ckbtc_transaction_description, {
+        $token: token.symbol,
+      })}
+    {/if}
   </p>
   <BitcoinEstimatedFee
     slot="additional-info-form"
