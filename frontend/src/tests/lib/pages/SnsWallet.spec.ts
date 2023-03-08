@@ -26,8 +26,8 @@ import {
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
-import { selectedUniverseStore } from "../../../lib/derived/selected-universe.derived";
-import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
+import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import en from "../../mocks/i18n.mock";
 import { waitModalIntroEnd } from "../../mocks/modal.mock";
 
