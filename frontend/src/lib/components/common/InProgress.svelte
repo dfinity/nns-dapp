@@ -12,7 +12,9 @@
   $: dynamicSteps = [...steps];
 
   const updateSteps = () => {
-    const progressIndex = dynamicSteps.findIndex(({ step }) => step === progressStep);
+    const progressIndex = dynamicSteps.findIndex(
+      ({ step }) => step === progressStep
+    );
 
     dynamicSteps = dynamicSteps.map((step, index) =>
       step.step === progressStep
