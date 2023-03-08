@@ -3,7 +3,6 @@
  */
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -96,7 +95,7 @@ describe("SelectUniverseCard", () => {
         props,
       });
       expect(getByTestId("logo")).not.toBeNull();
-      expect(getByTestId("logo").getAttribute("src")).toEqual(IC_LOGO);
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(en.auth.ic_logo);
     });
 
     it("should display internet computer", () => {

@@ -11,7 +11,7 @@ import { writable } from "svelte/store";
 
 // TODO: rename and move this modal.mock.ts to modal.test-utils.ts
 
-const waitModalIntroEnd = async ({
+export const waitModalIntroEnd = async ({
   container,
   selector,
 }: {
@@ -25,7 +25,7 @@ const waitModalIntroEnd = async ({
   await waitFor(() => expect(container.querySelector(selector)).not.toBeNull());
 };
 
-const modalToolbarSelector = "div.content";
+export const modalToolbarSelector = "div.content";
 
 export const renderModal = async ({
   component,
