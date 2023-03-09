@@ -8,7 +8,7 @@ help_text() {
 
 	Note: This deploys nns-dapp_local.wasm for the upgrade.
 	      If the wasm is already present, it will be used.
-	      Please make sure that hte wasm is up to date.
+	      Please make sure that the wasm is up to date.
 	      If the wasm is absent, it will be built.
 
 	Note: If the nns-dapp is already deployed, the deployment
