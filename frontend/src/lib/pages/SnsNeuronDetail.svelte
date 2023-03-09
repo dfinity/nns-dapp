@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
@@ -133,7 +134,7 @@
     transactionFee === undefined;
 </script>
 
-<div data-tid="sns-neuron-detail-component" class="component">
+<TestIdWrapper testId="sns-neuron-detail-component">
   <Island>
     <main class="legacy">
       <section data-tid="sns-neuron-detail-page">
@@ -166,10 +167,4 @@
   </Island>
 
   <SnsNeuronModals />
-</div>
-
-<style lang="scss">
-  .component {
-    display: contents;
-  }
-</style>
+</TestIdWrapper>

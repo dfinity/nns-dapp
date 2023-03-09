@@ -75,11 +75,11 @@ describe("NeuronDetail", () => {
       const { container } = render(NeuronDetail, nnsProps);
       const po = NeuronDetailPo.under(container);
 
-      expect(po.hasSnsNeuronDetail()).toBe(false);
-      expect(po.hasNnsNeuronDetail()).toBe(true);
-      expect(po.getNnsNeuronDetail().isContentLoaded()).toBe(false);
+      expect(po.hasSnsNeuronDetailPo()).toBe(false);
+      expect(po.hasNnsNeuronDetailPo()).toBe(true);
+      expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(false);
       await waitFor(() => {
-        expect(po.getNnsNeuronDetail().isContentLoaded()).toBe(true);
+        expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(true);
       });
     });
   });
@@ -120,9 +120,9 @@ describe("NeuronDetail", () => {
       await waitFor(() => {
         expect(po.isContentLoaded()).toBe(true);
       });
-      expect(po.hasNnsNeuronDetail()).toBe(false);
-      expect(po.hasSnsNeuronDetail()).toBe(true);
-      expect(po.getSnsNeuronDetail().isContentLoaded()).toBe(true);
+      expect(po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
 
     it("should load if sns projects are loaded after initial rendering", async () => {
@@ -137,9 +137,9 @@ describe("NeuronDetail", () => {
       await waitFor(() => {
         expect(po.isContentLoaded()).toBe(true);
       });
-      expect(po.hasNnsNeuronDetail()).toBe(false);
-      expect(po.hasSnsNeuronDetail()).toBe(true);
-      expect(po.getSnsNeuronDetail().isContentLoaded()).toBe(true);
+      expect(po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
   });
 });

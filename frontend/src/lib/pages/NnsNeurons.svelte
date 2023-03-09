@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
@@ -29,7 +30,7 @@
     );
 </script>
 
-<div data-tid="nns-neurons-component" class="component">
+<TestIdWrapper testId="nns-neurons-component">
   <div class="card-grid" data-tid="neurons-body">
     {#if isLoading}
       <SkeletonCard />
@@ -62,10 +63,4 @@
   {#if !isLoading && $sortedNeuronStore.length === 0}
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
-</div>
-
-<style lang="scss">
-  .component {
-    display: contents;
-  }
-</style>
+</TestIdWrapper>

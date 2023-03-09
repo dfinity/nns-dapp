@@ -18,11 +18,11 @@ export class NnsNeuronCardPo {
     ).map((el) => new NnsNeuronCardPo(el));
   }
 
-  getCardTitle(): NnsNeuronCardTitlePo {
+  getCardTitlePo(): NnsNeuronCardTitlePo {
     return NnsNeuronCardTitlePo.under(this.root);
   }
 
   getNeuronId(): string {
-    return this.getCardTitle().getNeuronId();
+    return this.getCardTitlePo().getNeuronId();
   }
 }

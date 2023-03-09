@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import {
     sortedSnsCFNeuronsStore,
@@ -66,7 +67,7 @@
   $: summary = $snsProjectSelectedStore?.summary;
 </script>
 
-<div data-tid="sns-neurons-component" class="component">
+<TestIdWrapper testId="sns-neurons-component">
   {#if $sortedSnsUserNeuronsStore.length > 0 || loading}
     <div class="card-grid" data-tid="sns-neurons-body">
       {#if loading}
@@ -113,12 +114,9 @@
       })}</EmptyMessage
     >
   {/if}
-</div>
+</TestIdWrapper>
 
 <style lang="scss">
-  .component {
-    display: contents;
-  }
   .top-margin {
     margin-top: var(--padding-4x);
   }
