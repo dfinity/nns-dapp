@@ -15,9 +15,11 @@ const failOnCall = ({
   fn: string;
   args: unknown;
 }): never => {
-  const message = `"${modulePath}".${fn} is called (with ${JSON.stringify(
-    args
-  )}) but not mocked.`;
+  // Without this, JSON.stringify crashes on objects with bgint values.
+  const argsString = JSON.stringify(args, (_key, value) =>
+    typeof value === "bigint" ? value.toString() : value
+  );
+  const message = `"${modulePath}".${fn} is called (with ${argsString}) but not mocked.`;
   blockedCalls.push(message);
   throw new Error(message);
 };

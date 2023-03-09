@@ -4,7 +4,7 @@ export class SkeletonCardPo {
   root: Element;
 
   constructor(root: Element) {
-    if (root.getAttribute("testId") !== SkeletonCardPo.tid) {
+    if (root.getAttribute("data-tid") !== SkeletonCardPo.tid) {
       throw new Error(`${root} is not a SkeletonCard`);
     }
     this.root = root;
@@ -12,7 +12,7 @@ export class SkeletonCardPo {
 
   static allUnder(element: Element): SkeletonCardPo[] {
     return Array.from(
-      element.querySelectorAll(`[testId=${SkeletonCardPo.tid}]`)
+      element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
     ).map((el) => new SkeletonCardPo(el));
   }
 }
