@@ -25,6 +25,7 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   let showModal: "send" | "receive" | undefined = undefined;
 
@@ -91,11 +92,25 @@
   let tokenSymbol: string | undefined;
   $: tokenSymbol = $selectedUniverseStore?.summary?.token.symbol;
 
-  // Spread to update store which triggers the reload
   const reloadAccount = async () => {
-    load();
+    try {
+      await Promise.all([
+        nonNullish($snsOnlyProjectStore)
+          ? syncSnsAccounts({ rootCanisterId: $snsOnlyProjectStore })
+          : Promise.resolve(),
+        reloadTransactions(),
+      ]);
 
-    await reloadTransactions();
+      // Apply reloaded values - balance - to UI
+      load();
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_reload, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+        err,
+      });
+    }
   };
 </script>
 

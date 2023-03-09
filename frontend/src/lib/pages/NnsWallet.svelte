@@ -6,6 +6,7 @@
     cancelPollAccounts,
     getAccountTransactions,
     pollAccounts,
+    syncAccounts,
   } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
@@ -125,11 +126,23 @@
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
 
-  // Spread to update store which triggers the reload
-  const reloadAccount = async () =>
-    selectedAccountStore.set({
-      ...$selectedAccountStore,
-    } as WalletStore);
+  const reloadAccount = async () => {
+    try {
+      await Promise.all([
+        syncAccounts(),
+        nonNullish($selectedAccountStore.account)
+          ? reloadTransactions($selectedAccountStore.account.identifier)
+          : Promise.resolve(),
+      ]);
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_reload, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+        err,
+      });
+    }
+  };
 </script>
 
 <Island>

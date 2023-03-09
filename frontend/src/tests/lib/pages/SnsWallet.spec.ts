@@ -164,7 +164,10 @@ describe("SnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spy = jest.spyOn(services, "loadSnsAccountTransactions");
+      const spyLoadSnsAccountTransactions = jest.spyOn(
+        services,
+        "loadSnsAccountTransactions"
+      );
 
       const result = render(SnsWallet, props);
 
@@ -181,7 +184,8 @@ describe("SnsWallet", () => {
         getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
-      await waitFor(() => expect(spy).toHaveBeenCalled());
+      await waitFor(() => expect(syncSnsAccounts).toHaveBeenCalled());
+      expect(spyLoadSnsAccountTransactions).toHaveBeenCalled();
     });
 
     it("should display receive modal information", async () => {

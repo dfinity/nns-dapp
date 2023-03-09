@@ -40,6 +40,7 @@ jest.mock("$lib/api/ledger.api");
 jest.mock("$lib/services/accounts.services", () => ({
   ...(jest.requireActual("$lib/services/accounts.services") as object),
   getAccountTransactions: jest.fn(),
+  syncAccounts: jest.fn(),
 }));
 
 describe("NnsWallet", () => {
@@ -199,7 +200,11 @@ describe("NnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spy = jest.spyOn(services, "getAccountTransactions");
+      const spyGetAccountTransactions = jest.spyOn(
+        services,
+        "getAccountTransactions"
+      );
+      const spySyncAccounts = jest.spyOn(services, "syncAccounts");
 
       const result = render(NnsWallet, props);
 
@@ -215,7 +220,8 @@ describe("NnsWallet", () => {
         getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
-      await waitFor(() => expect(spy).toHaveBeenCalled());
+      await waitFor(() => expect(spySyncAccounts).toHaveBeenCalled());
+      expect(spyGetAccountTransactions).toHaveBeenCalled();
     });
   });
 
