@@ -177,6 +177,37 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  */
 export const initAccounts = () => syncAccounts(ignoreErrors);
 
+export const loadBalance = async ({
+  accountIdentifier,
+}: {
+  accountIdentifier: string;
+}): Promise<void> => {
+  return queryAndUpdate<bigint, unknown>({
+    request: ({ identity, certified }) =>
+      queryAccountBalance({ identity, certified, accountIdentifier }),
+    onLoad: ({ response: balanceE8s }) => {
+      accountsStore.setBalance({ accountIdentifier, balanceE8s });
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+        return;
+      }
+
+      toastsError({
+        ...toToastError({
+          err,
+          fallbackErrorLabelKey: "error.query_balance",
+        }),
+        substitutions: { $accountId: accountIdentifier },
+      });
+    },
+    logMessage: `Syncing Balance for ${accountIdentifier}`,
+    strategy: FORCE_CALL_STRATEGY,
+  });
+};
+
 export const addSubAccount = async ({
   name,
 }: {

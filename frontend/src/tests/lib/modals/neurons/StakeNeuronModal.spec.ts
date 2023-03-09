@@ -22,9 +22,13 @@ import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
+  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -86,9 +90,11 @@ jest.mock("$lib/stores/toasts.store", () => {
 describe("StakeNeuronModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
+    jest.clearAllMocks();
   });
 
   describe("main account selection", () => {
+    let queryBalanceSpy: jest.SpyInstance;
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       accountsStore.set({
@@ -105,12 +111,9 @@ describe("StakeNeuronModal", () => {
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
+      queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
     });
 
     afterEach(() => {
@@ -330,6 +333,42 @@ describe("StakeNeuronModal", () => {
       expect(
         getByText(formatVotingPower(neuronStakeE8s), { exact: false })
       ).not.toBeNull();
+    });
+
+    it("should sync account after staking neuron", async () => {
+      const { container } = await renderModal({
+        component: StakeNeuronModal,
+      });
+
+      const accountCard = container.querySelector('article[role="button"]');
+      expect(accountCard).not.toBeNull();
+
+      accountCard && (await fireEvent.click(accountCard));
+
+      const input = container.querySelector('input[name="amount"]');
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      input &&
+        (await fireEvent.input(input, { target: { value: neuronStake } }));
+
+      const createButton = container.querySelector('button[type="submit"]');
+
+      expect(queryBalanceSpy).not.toBeCalled();
+      createButton && (await fireEvent.click(createButton));
+
+      await waitFor(() => expect(queryBalanceSpy).toBeCalledTimes(2));
+      // First card is clicked. First card is the main account.
+      const selectedAccountIdentifier = mockMainAccount.identifier;
+      expect(queryBalanceSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: true,
+        accountIdentifier: selectedAccountIdentifier,
+      });
+      expect(queryBalanceSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        accountIdentifier: selectedAccountIdentifier,
+      });
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
