@@ -1,6 +1,7 @@
 import {
   openSnsProposalsStore,
   snsProposalsStore,
+  snsProposalsStoreIsLoading,
   snsQueryStore,
   snsQueryStoreIsLoading,
   snsSwapCommitmentsStore,
@@ -87,6 +88,19 @@ describe("sns.store", () => {
 
       expect($openSnsProposalsStore.length).toBe(1);
       expect($openSnsProposalsStore[0]).toEqual(proposals[1]);
+    });
+
+    it("should set the store as loading state", () => {
+      const proposals = {
+        proposals: [{ ...mockProposalInfo }],
+        certified: false,
+      };
+      snsProposalsStore.setProposals(proposals);
+
+      expect(get(snsProposalsStoreIsLoading)).toBe(false);
+
+      snsProposalsStore.reset();
+      expect(get(snsProposalsStoreIsLoading)).toBe(true);
     });
   });
 

@@ -152,7 +152,7 @@ export const loadSnsSummaries = (): Promise<void> => {
 };
 
 export const loadProposalsSnsCF = async (): Promise<void> => {
-  snsProposalsStore.setLoadingState();
+  snsProposalsStore.reset();
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
@@ -175,7 +175,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         identity.getPrincipal().isAnonymous() ||
         FORCE_CALL_STRATEGY === "query"
       ) {
-        snsProposalsStore.setLoadingState();
+        snsProposalsStore.reset();
 
         toastsError(
           toToastError({

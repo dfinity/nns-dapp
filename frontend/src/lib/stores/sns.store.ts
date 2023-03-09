@@ -30,10 +30,6 @@ const initSnsProposalsStore = () => {
       set(undefined);
     },
 
-    setLoadingState() {
-      set(null);
-    },
-
     setProposals({
       proposals,
       certified,
@@ -60,6 +56,11 @@ const initOpenSnsProposalsStore = () =>
 
 export const snsProposalsStore = initSnsProposalsStore();
 export const openSnsProposalsStore = initOpenSnsProposalsStore();
+
+export const snsProposalsStoreIsLoading = derived<
+  Readable<SnsProposalsStore>,
+  boolean
+>(snsProposalsStore, (data: SnsProposalsStore) => isNullish(data));
 
 // ************** Sns summaries and swaps **************
 

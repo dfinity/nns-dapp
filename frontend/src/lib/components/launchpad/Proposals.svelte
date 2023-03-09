@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
-    snsProposalsStore,
+    snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
   import { isNullish } from "@dfinity/utils";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
@@ -11,10 +11,10 @@
   import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 
   let loading = false;
-  $: loading = isNullish($snsProposalsStore);
+  $: loading = $snsProposalsStoreIsLoading;
 
   const load = () => {
-    if (isNullish($snsProposalsStore)) {
+    if ($snsProposalsStoreIsLoading) {
       loadProposalsSnsCF();
     }
   };
