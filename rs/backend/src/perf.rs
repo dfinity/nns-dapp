@@ -30,16 +30,17 @@ fn raw_instruction_counter() -> u64 {
     unsafe { ic0::performance_counter(0) }
 }
 
-/// Saves an instruction counter.
-pub fn save_instruction_counter(counter: PerformanceCounter) {
-    STATE.with(|s| s.accounts_store.borrow_mut().save_instruction_counter(counter))
-}
-
-/// Records an instruction counter.
+/// Gets the value of the instruction counter and saves it with the given label.
 pub fn record_instruction_counter(name: &str) {
     STATE.with(|s| {
         s.accounts_store
             .borrow_mut()
             .save_instruction_counter(PerformanceCounter::new(name))
     })
+}
+
+/// Saves an instruction counter; useful if the instruction count was captured in a non-standard
+/// way.
+pub fn save_instruction_counter(counter: PerformanceCounter) {
+    STATE.with(|s| s.accounts_store.borrow_mut().save_instruction_counter(counter))
 }
