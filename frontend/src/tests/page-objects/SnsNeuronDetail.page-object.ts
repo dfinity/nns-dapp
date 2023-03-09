@@ -17,11 +17,11 @@ export class SnsNeuronDetailPo {
     return el && new SnsNeuronDetailPo(el);
   }
 
-  getSkeletonCards(): SkeletonCardPo[] {
+  getSkeletonCardPos(): SkeletonCardPo[] {
     return SkeletonCardPo.allUnder(this.root);
   }
 
   isContentLoaded(): boolean {
-    return this.getSkeletonCards().length === 0;
+    return this.getSkeletonCardPos().length === 0;
   }
 }

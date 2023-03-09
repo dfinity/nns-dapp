@@ -19,26 +19,26 @@ export class NeuronDetailPo {
     return el && new NeuronDetailPo(el);
   }
 
-  getNnsNeuronDetail(): NnsNeuronDetailPo | null {
+  getNnsNeuronDetailPo(): NnsNeuronDetailPo | null {
     return NnsNeuronDetailPo.under(this.root);
   }
 
-  getSnsNeuronDetail(): SnsNeuronDetailPo | null {
+  getSnsNeuronDetailPo(): SnsNeuronDetailPo | null {
     return SnsNeuronDetailPo.under(this.root);
   }
 
-  hasNnsNeuronDetail(): boolean {
-    return nonNullish(this.getNnsNeuronDetail());
+  hasNnsNeuronDetailPo(): boolean {
+    return nonNullish(this.getNnsNeuronDetailPo());
   }
 
-  hasSnsNeuronDetail(): boolean {
-    return nonNullish(this.getSnsNeuronDetail());
+  hasSnsNeuronDetailPo(): boolean {
+    return nonNullish(this.getSnsNeuronDetailPo());
   }
 
   isContentLoaded() {
     return (
-      this.getNnsNeuronDetail()?.isContentLoaded() ||
-      this.getSnsNeuronDetail()?.isContentLoaded() ||
+      this.getNnsNeuronDetailPo()?.isContentLoaded() ||
+      this.getSnsNeuronDetailPo()?.isContentLoaded() ||
       false
     );
   }
