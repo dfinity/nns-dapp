@@ -2,20 +2,31 @@
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
+PROD_WASM="nns-dapp-prod_local.wasm"
+CURRENT_WASM="nns-dapp.wasm"
+
 help_text() {
   cat <<-EOF
 	Downgrade and then upgrade a local deployment.
 
-	Note: This deploys nns-dapp_local.wasm for the upgrade.
-	      If the wasm is already present, it will be used.
-	      Please make sure that the wasm is up to date.
-	      If the wasm is absent, it will be built.
-
-	Note: If the nns-dapp is already deployed, the deployment
-	      will be used in the downgrade and upgrade.  You may
-	      find it useful to verify that the state has been preserved.
-	      If the existing deployment is unhealthy, upgrades may fail.
+	1) Prepare:
+	  1.1) Make sure that $CURRENT_WASM exists:
+	       - If it does not exist, build it.
+	       - If it does exits, it is the caller's responsibility
+	         to make sure that it is the wasm that is to be tested.
+	  1.2) Make sure that $CURRENT_WASM is deployed:
+	       - If the nns-dapp has already been created, upgrade the wasm
+	         to $CURRENT_WASM.  If successful, this will preserve
+	         existing state.
+	       - If nns-dapp has NOT been created, deploy it.
+	2) Test:
+	  2.1) Perform a basic health check.
+	  2.2) Downgrade to the prod release.
+	  2.3) Perform a basic health check.
+	  2.4) Upgrade to $CURRENT_WASM
+	  2.5) Perform a basic health check.
 	EOF
+	# Note: If the code changes, please update the summary above to match.
 }
 
 # Source the clap.bash file ---------------------------------------------------
@@ -24,9 +35,6 @@ source "$SOURCE_DIR/../clap.bash"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 set -euo pipefail
-
-PROD_WASM="nns-dapp-prod_local.wasm"
-CURRENT_WASM="nns-dapp.wasm"
 
 verify_healthy() {
   dfx canister call nns-dapp get_stats
@@ -45,31 +53,27 @@ upgrade_nnsdapp() {
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
 }
 
-test -e "$CURRENT_WASM" || {
-  echo "Please build '$CURRENT_WASM' before running this test."
-  exit 1
-} >&2
-
-echo "Build the wasm, if it doesn't exist yet."
+echo "Ensuring that $CURRENT_WASM exists..."
 test -e "$CURRENT_WASM" || {
   echo "Building $CURRENT_WASM..."
   DFX_NETWORK=local ./scripts/docker-build
 }
-echo "Make sure that the current wasm is the one currently installed"
+echo "Installing $CURRENT_WASM..."
 if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
   upgrade_nnsdapp "$CURRENT_WASM"
 else
   dfx canister create nns-dapp
   dfx canister install nns-dapp --wasm "$CURRENT_WASM"
 fi
-echo "Make sure that the current wasm is running healthily..."
+echo "Checking that the current wasm is healthy..."
 verify_healthy
-echo "Download and install the prod wasm..."
+echo "Downloading and installing the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
-echo "Verify that the rollback is healthy..."
+echo "Checking that the rollback is healthy..."
 verify_healthy
-echo "Roll forwards and test again"
+echo "Rolling forwards..."
 upgrade_nnsdapp "$CURRENT_WASM"
+echo "Checking that the upgrade is healthy..."
 verify_healthy
 echo SUCCESS
