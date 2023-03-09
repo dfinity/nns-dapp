@@ -26,7 +26,7 @@ help_text() {
 	  2.4) Upgrade to $CURRENT_WASM
 	  2.5) Perform a basic health check.
 	EOF
-	# Note: If the code changes, please update the summary above to match.
+  # Note: If the code changes, please update the summary above to match.
 }
 
 # Source the clap.bash file ---------------------------------------------------
