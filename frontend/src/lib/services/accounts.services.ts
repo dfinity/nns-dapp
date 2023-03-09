@@ -177,6 +177,11 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  */
 export const initAccounts = () => syncAccounts(ignoreErrors);
 
+/**
+ * Queries the balance of an account and loads it in the store.
+ *
+ * It assumes that the account is already in the store.
+ */
 export const loadBalance = async ({
   accountIdentifier,
 }: {
