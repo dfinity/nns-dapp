@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerVotes } from "$lib/services/vote-registration.services";
@@ -53,7 +54,7 @@ describe("vote-registration-services", () => {
     return Promise.resolve();
   };
   const spyRegisterVote = jest
-    .spyOn(proposalsApi, "registerVote")
+    .spyOn(governanceApi, "registerVote")
     .mockImplementation(mockRegisterVote);
 
   beforeAll(() => {
@@ -120,7 +121,7 @@ describe("vote-registration-services", () => {
           .mockImplementation(() => Promise.resolve(proposalInfo()));
 
         jest
-          .spyOn(proposalsApi, "registerVote")
+          .spyOn(governanceApi, "registerVote")
           .mockImplementation(() => waitForMilliseconds(10));
       });
 
@@ -340,7 +341,7 @@ describe("vote-registration-services", () => {
 
     beforeAll(() => {
       jest
-        .spyOn(proposalsApi, "registerVote")
+        .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
 
       jest
@@ -382,7 +383,7 @@ describe("vote-registration-services", () => {
     afterAll(() => {
       jest.clearAllMocks();
 
-      jest.spyOn(proposalsApi, "registerVote").mockClear();
+      jest.spyOn(governanceApi, "registerVote").mockClear();
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
@@ -404,7 +405,7 @@ describe("vote-registration-services", () => {
 
     it("should show error.register_vote on nns-js-based errors", async () => {
       jest
-        .spyOn(proposalsApi, "registerVote")
+        .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
       await registerVotes({
@@ -427,7 +428,7 @@ describe("vote-registration-services", () => {
     it("should display proopsalId in error detail", async () => {
       const proposal = proposalInfo();
       jest
-        .spyOn(proposalsApi, "registerVote")
+        .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
       await registerVotes({
@@ -451,7 +452,7 @@ describe("vote-registration-services", () => {
 
     it("should show reason per neuron Error in detail", async () => {
       jest
-        .spyOn(proposalsApi, "registerVote")
+        .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
       await registerVotes({
@@ -474,7 +475,7 @@ describe("vote-registration-services", () => {
 
     it("should show reason per neuron GovernanceError in detail", async () => {
       jest
-        .spyOn(proposalsApi, "registerVote")
+        .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteGovernanceError);
 
       await registerVotes({
