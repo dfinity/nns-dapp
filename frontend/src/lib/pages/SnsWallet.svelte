@@ -53,8 +53,7 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  let load: () => void;
-  $: load = () => {
+  const load = () => {
     if (nonNullish(accountIdentifier)) {
       const selectedAccount = $snsProjectAccountsStore?.find(
         ({ identifier }) => identifier === accountIdentifier
@@ -81,7 +80,7 @@
     });
   };
 
-  $: accountIdentifier, load();
+  $: accountIdentifier, $snsProjectAccountsStore, load();
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
