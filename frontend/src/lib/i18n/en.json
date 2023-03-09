@@ -61,6 +61,7 @@
     "accounts_not_found": "An error occurred while loading the accounts information.",
     "accounts_not_found_poll": "An error occurred while loading the accounts information. The Internet Computer seems to be under high load, please try in a few minutes.",
     "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
+    "account_not_reload": "Sorry, the account \"$account_identifier\" cannot be reloaded",
     "transactions_not_found": "An error occurred while loading the transactions.",
     "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
