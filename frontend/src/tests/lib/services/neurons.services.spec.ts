@@ -1147,7 +1147,7 @@ describe("neurons-services", () => {
       expect(spySetFollowees).toHaveBeenCalledWith(expectedArgument);
     });
 
-    it("should not call api if trying follow itself", async () => {
+    it("should call api if trying follow itself", async () => {
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1157,8 +1157,13 @@ describe("neurons-services", () => {
         followee: controlledNeuron.neuronId,
       });
 
-      expectToastError(en.new_followee.same_neuron);
-      expect(spySetFollowees).not.toHaveBeenCalled();
+      expect(spySetFollowees).toHaveBeenCalledWith({
+        neuronId: controlledNeuron.neuronId,
+        topic,
+        followees: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+      });
+      expect(spySetFollowees).toHaveBeenCalledTimes(1);
     });
 
     it("should not call api if trying follow a neuron already added", async () => {

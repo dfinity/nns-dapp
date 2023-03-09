@@ -35,7 +35,6 @@ import {
   followeesByFunction,
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
-  getSnsNeuronIdAsHexString,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
   nextMemo,
@@ -597,14 +596,6 @@ export const addFollowee = async ({
   followeeHex: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
-  // Do not allow a neuron to follow itself
-  if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
-    toastsError({
-      labelKey: "new_followee.same_neuron",
-    });
-    return { success: false };
-  }
-
   const identity = await getSnsNeuronIdentity();
   const followee: SnsNeuronId = {
     id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
