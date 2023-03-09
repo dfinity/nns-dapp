@@ -3,8 +3,7 @@
   import ProjectCard from "./ProjectCard.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { isNullish } from "@dfinity/utils";
-  import { snsQueryStore, snsSummariesStore } from "$lib/stores/sns.store";
+  import { snsQueryStoreIsLoading } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
     type SnsFullProject,
@@ -22,7 +21,7 @@
   });
 
   let loading = false;
-  $: loading = isNullish($snsSummariesStore) || isNullish($snsQueryStore);
+  $: loading = $snsQueryStoreIsLoading;
 
   const mapper: Record<SnsSwapLifecycle, string> = {
     [SnsSwapLifecycle.Open]: "no_open_projects",

@@ -2,6 +2,7 @@ import {
   openSnsProposalsStore,
   snsProposalsStore,
   snsQueryStore,
+  snsQueryStoreIsLoading,
   snsSwapCommitmentsStore,
   type SnsQueryStoreData,
 } from "$lib/stores/sns.store";
@@ -127,10 +128,10 @@ describe("sns.store", () => {
       });
 
       snsQueryStore.setData(data);
-      snsQueryStore.setLoadingState();
+      expect(get(snsQueryStoreIsLoading)).toBe(false);
 
-      const store = get(snsQueryStore);
-      expect(store).toBeNull();
+      snsQueryStore.reset();
+      expect(get(snsQueryStoreIsLoading)).toBe(true);
     });
 
     it("should update the data", () => {
