@@ -110,6 +110,10 @@ jobs:
           rm -rf screenshots
           set -o pipefail
           SCREENSHOT=1 npm run test | tee -a wdio.log
+      - name: Get the postinstall instruction count
+        run: |
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
+          postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
