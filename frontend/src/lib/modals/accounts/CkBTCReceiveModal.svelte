@@ -18,7 +18,6 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
 
   export let data: CkBTCWalletBtcCkBTCReceiveModalData;
 
@@ -69,7 +68,8 @@
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
 
-  let qrCodeRendered = QR_CODE_RENDERED;
+  // Avoid a UI glich by not showing the buttons until the QR Code is rendered
+  let qrCodeRendered: boolean;
 
   const dispatcher = createEventDispatcher();
 

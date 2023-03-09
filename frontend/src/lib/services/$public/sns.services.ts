@@ -118,7 +118,7 @@ export const loadSnsProjects = async (): Promise<void> => {
 };
 
 export const loadSnsSummaries = (): Promise<void> => {
-  snsQueryStore.setLoadingState();
+  snsQueryStore.reset();
 
   return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
     identityType: "anonymous",
@@ -137,7 +137,7 @@ export const loadSnsSummaries = (): Promise<void> => {
         identity.getPrincipal().isAnonymous() ||
         FORCE_CALL_STRATEGY === "query"
       ) {
-        snsQueryStore.setLoadingState();
+        snsQueryStore.reset();
 
         toastsError(
           toToastError({
@@ -152,7 +152,7 @@ export const loadSnsSummaries = (): Promise<void> => {
 };
 
 export const loadProposalsSnsCF = async (): Promise<void> => {
-  snsProposalsStore.setLoadingState();
+  snsProposalsStore.reset();
 
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
@@ -175,7 +175,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
         identity.getPrincipal().isAnonymous() ||
         FORCE_CALL_STRATEGY === "query"
       ) {
-        snsProposalsStore.setLoadingState();
+        snsProposalsStore.reset();
 
         toastsError(
           toToastError({

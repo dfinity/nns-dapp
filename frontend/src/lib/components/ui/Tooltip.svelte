@@ -75,7 +75,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="tooltip-wrapper">
+<div class="tooltip-wrapper" data-tid="tooltip-component">
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>

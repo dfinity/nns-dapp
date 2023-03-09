@@ -18,24 +18,30 @@
   $: neuronState = getSnsNeuronState(neuron);
 </script>
 
-<NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
+<div data-tid="sns-neuron-card-component" class="component">
+  <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
+    <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
 
-  <div class="content">
-    <SnsNeuronAmount {neuron} />
+    <div class="content">
+      <SnsNeuronAmount {neuron} />
 
-    <NeuronStateInfo state={neuronState} />
-  </div>
+      <NeuronStateInfo state={neuronState} />
+    </div>
 
-  <SnsNeuronStateRemainingTime {neuron} />
+    <SnsNeuronStateRemainingTime {neuron} />
 
-  <slot />
-</NeuronCardContainer>
+    <slot />
+  </NeuronCardContainer>
+</div>
 
 <style lang="scss">
   @use "../../themes/mixins/neuron";
 
   .content {
     @include neuron.neuron-card-content;
+  }
+
+  .component {
+    display: contents;
   }
 </style>
