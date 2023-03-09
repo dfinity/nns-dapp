@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
@@ -132,7 +133,7 @@
   });
 </script>
 
-<div data-tid="nns-neuron-detail-component" class="component">
+<TestIdWrapper testId="nns-neuron-detail-component">
   <Island>
     <main class="legacy">
       <section data-tid="neuron-detail">
@@ -162,10 +163,4 @@
   </Island>
 
   <NnsNeuronModals />
-</div>
-
-<style lang="scss">
-  .component {
-    display: contents;
-  }
-</style>
+</TestIdWrapper>

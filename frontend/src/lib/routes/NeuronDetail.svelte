@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
   import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
@@ -12,16 +13,10 @@
   layoutTitleStore.set($i18n.neuron_detail.title);
 </script>
 
-<div data-tid="neuron-detail-component" class="component">
+<TestIdWrapper testId="neuron-detail-component">
   {#if $isNnsUniverseStore}
     <NnsNeuronDetail neuronIdText={neuronId} />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsNeuronDetail {neuronId} />
   {/if}
-</div>
-
-<style lang="scss">
-  .component {
-    display: contents;
-  }
-</style>
+</TestIdWrapper>
