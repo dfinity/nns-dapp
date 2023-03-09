@@ -53,7 +53,8 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  const load = () => {
+  let load: () => void;
+  $: load = () => {
     if (nonNullish(accountIdentifier)) {
       const selectedAccount = $snsProjectAccountsStore?.find(
         ({ identifier }) => identifier === accountIdentifier
