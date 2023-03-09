@@ -29,10 +29,7 @@ PROD_WASM="nns-dapp-prod_local.wasm"
 CURRENT_WASM="nns-dapp.wasm"
 
 verify_healthy() {
-	dfx canister id nns-dapp || {
-		echo "ERROR: Canister ID not defined."
-		exit 1	
-	} >&2
+	dfx canister call nns-dapp get_stats
 }
 
 get_current_wasm() {
@@ -54,25 +51,25 @@ test -e "$CURRENT_WASM" || {
 	exit 1
 } >&2
 
-# Build the wasm, if it doesn't exist yet.
+echo "Build the wasm, if it doesn't exist yet."
 test -e "$CURRENT_WASM" || {
 	echo "Building $CURRENT_WASM..."
 	DFX_NETWORK=local ./scripts/docker-build
 }
-# Make sure that the current wasm is the one currently installed
+echo "Make sure that the current wasm is the one currently installed"
 if dfx canister id nns-dapp >/dev/null 2>/dev/null
 then upgrade_nnsdapp "$CURRENT_WASM"
 else dfx canister create nns-dapp
      dfx canister install nns-dapp --wasm "$CURRENT_WASM"
 fi
-# Make sure that the current wasm is running healthily.
+echo "Make sure that the current wasm is running healthily..."
 verify_healthy
-# Downlaod and install the prod wasm
+echo "Download and install the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
-# Verify that the rollback is healthy
+echo "Verify that the rollback is healthy..."
 verify_healthy
-# Roll forwards and test again
+echo "Roll forwards and test again"
 upgrade_nnsdapp "$CURRENT_WASM"
 verify_healthy
 echo SUCCESS
