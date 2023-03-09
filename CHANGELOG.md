@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXX
+* Upgrade agent-js.
+* Bugfixes and minor improvements.
+
 ## Proposal 111317
 * Stake maturity for SNS neurons.
 * Reenable update calls.
