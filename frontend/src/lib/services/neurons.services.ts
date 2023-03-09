@@ -793,13 +793,6 @@ export const addFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  // Do not allow a neuron to follow itself
-  if (followee === neuronId) {
-    toastsError({
-      labelKey: "new_followee.same_neuron",
-    });
-    return;
-  }
   const neuron = getNeuronFromStore(neuronId);
 
   const topicFollowees = followeesByTopic({ neuron, topic });
