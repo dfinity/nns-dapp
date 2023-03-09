@@ -3,7 +3,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 help_text() {
-	cat <<-EOF
+  cat <<-EOF
 	Downgrade and then upgrade a local deployment.
 
 	Note: This deploys nns-dapp_local.wasm for the upgrade.
@@ -29,38 +29,38 @@ PROD_WASM="nns-dapp-prod_local.wasm"
 CURRENT_WASM="nns-dapp.wasm"
 
 verify_healthy() {
-	dfx canister call nns-dapp get_stats
+  dfx canister call nns-dapp get_stats
 }
 
 get_current_wasm() {
-	DFX_NETWORK=local ./scripts/docker-build
+  DFX_NETWORK=local ./scripts/docker-build
 }
 
 get_prod_wasm() {
-	curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm > "$PROD_WASM"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm >"$PROD_WASM"
 }
 
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
-	dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
 }
 
-
 test -e "$CURRENT_WASM" || {
-	echo "Please build '$CURRENT_WASM' before running this test."
-	exit 1
+  echo "Please build '$CURRENT_WASM' before running this test."
+  exit 1
 } >&2
 
 echo "Build the wasm, if it doesn't exist yet."
 test -e "$CURRENT_WASM" || {
-	echo "Building $CURRENT_WASM..."
-	DFX_NETWORK=local ./scripts/docker-build
+  echo "Building $CURRENT_WASM..."
+  DFX_NETWORK=local ./scripts/docker-build
 }
 echo "Make sure that the current wasm is the one currently installed"
-if dfx canister id nns-dapp >/dev/null 2>/dev/null
-then upgrade_nnsdapp "$CURRENT_WASM"
-else dfx canister create nns-dapp
-     dfx canister install nns-dapp --wasm "$CURRENT_WASM"
+if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
+  upgrade_nnsdapp "$CURRENT_WASM"
+else
+  dfx canister create nns-dapp
+  dfx canister install nns-dapp --wasm "$CURRENT_WASM"
 fi
 echo "Make sure that the current wasm is running healthily..."
 verify_healthy
