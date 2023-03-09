@@ -80,7 +80,7 @@
     });
   };
 
-  $: accountIdentifier, load();
+  $: accountIdentifier, $snsProjectAccountsStore, load();
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
