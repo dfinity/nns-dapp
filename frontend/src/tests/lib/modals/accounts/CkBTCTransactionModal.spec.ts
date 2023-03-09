@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
@@ -11,6 +12,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
@@ -22,6 +24,9 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import { mockBTCAddressTestnet } from "../../../mocks/ckbtc-accounts.mock";
+import en from "../../../mocks/i18n.mock";
+import { testTransferReviewTokens } from "../../../utils/transaction-modal.test.utils";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -51,13 +56,11 @@ describe("CkBTCTransactionModal", () => {
       },
     });
 
-  beforeAll(() =>
+  beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
 
-  beforeAll(() => {
     icrcAccountsStore.set({
       accounts: {
         accounts: [mockCkBTCMainAccount],
@@ -70,6 +73,8 @@ describe("CkBTCTransactionModal", () => {
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
+
+    jest.spyOn(minterApi, "estimateFee").mockResolvedValue(123n);
   });
 
   it("should transfer tokens", async () => {
@@ -77,7 +82,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKBTC,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
     });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
@@ -88,10 +93,38 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.BITCOIN,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
     });
 
     await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
+  });
+
+  it("should render progress when converting ckBTC to Bitcoin", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+    });
+
+    await waitFor(
+      expect(result.getByTestId("in-progress-warning")).not.toBeNull
+    );
+  });
+
+  it("should not render progress when transferring ckBTC", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+    });
+
+    await waitFor(
+      expect(() => result.getByTestId("in-progress-warning")).toThrow
+    );
   });
 
   it("should not render the select account dropdown if selected account is passed", async () => {
@@ -103,5 +136,37 @@ describe("CkBTCTransactionModal", () => {
       expect(queryByTestId("transaction-step-1")).toBeInTheDocument()
     );
     expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();
+  });
+
+  it("should render ckBTC transaction description", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferReviewTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+    });
+
+    const description = replacePlaceholders(
+      en.accounts.ckbtc_transaction_description,
+      {
+        $token: mockCkBTCToken.symbol,
+      }
+    );
+
+    expect(result.getByText(description)).toBeInTheDocument();
+  });
+
+  it("should render BTC transaction description", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferReviewTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+    });
+
+    expect(
+      result.getByText(en.accounts.ckbtc_to_btc_transaction_description)
+    ).toBeInTheDocument();
   });
 });

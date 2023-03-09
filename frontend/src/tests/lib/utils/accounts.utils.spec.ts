@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { TransactionNetwork } from "$lib/types/transaction";
 import {
   accountName,
   assertEnoughAccountFunds,
@@ -10,6 +11,7 @@ import {
   getPrincipalFromString,
   hasAccounts,
   invalidAddress,
+  invalidICPOrIcrcAddress,
   isAccountHardwareWallet,
   mainAccount,
   sumAccounts,
@@ -32,6 +34,10 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import {
+  mockBTCAddressMainnet,
+  mockBTCAddressTestnet,
+} from "../../mocks/ckbtc-accounts.mock";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];
@@ -69,26 +75,220 @@ describe("accounts-utils", () => {
     });
   });
 
-  describe("invalidAddress", () => {
-    it("should be a invalid address", () => {
-      expect(invalidAddress(undefined)).toBeTruthy();
-      expect(invalidAddress("test")).toBeTruthy();
-      expect(invalidAddress(mockAddressInputInvalid)).toBeTruthy();
+  describe("address", () => {
+    const subaccount = new Uint8Array(32).fill(0);
+    subaccount[31] = 1;
+    const account = {
+      owner: new AnonymousIdentity().getPrincipal(),
+      subaccount: subaccount,
+    };
+    const subaccountString = encodeIcrcAccount(account);
+
+    describe("invalidAddress", () => {
+      it("should be an invalid address", () => {
+        expect(
+          invalidAddress({ address: undefined, network: undefined })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({ address: "test", network: undefined })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({
+            address: mockAddressInputInvalid,
+            network: undefined,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: undefined,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({
+            address: "test",
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({
+            address: mockAddressInputInvalid,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: undefined,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({
+            address: "test",
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+        expect(
+          invalidAddress({
+            address: mockAddressInputInvalid,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+      });
+
+      it("should be a valid ICP address", () => {
+        expect(
+          invalidAddress({ address: mockAddressInputValid, network: undefined })
+        ).toBeFalsy();
+        expect(
+          invalidAddress({
+            address: mockAddressInputValid,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeFalsy();
+      });
+
+      it("should return false for Icrc accounts", () => {
+        expect(
+          invalidAddress({ address: subaccountString, network: undefined })
+        ).toBeFalsy();
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeFalsy();
+      });
+
+      it("should return false for BTC", () => {
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.BTC_TESTNET,
+          })
+        ).toBeFalsy();
+      });
+
+      it("should not be a valid ICP address", () => {
+        expect(
+          invalidAddress({
+            address: mockAddressInputValid,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+      });
+
+      it("should not be a valid for Icrc accounts", () => {
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+      });
+
+      it("should return invalid for BTC", () => {
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: undefined,
+          })
+        ).toBeTruthy();
+      });
     });
 
-    it("should be a valid address", () => {
-      expect(invalidAddress(mockAddressInputValid)).toBeFalsy();
+    describe("invalidICPOrIcrcAddress", () => {
+      it("should be a invalid address", () => {
+        expect(invalidICPOrIcrcAddress(undefined)).toBeTruthy();
+        expect(invalidICPOrIcrcAddress("test")).toBeTruthy();
+        expect(invalidICPOrIcrcAddress(mockAddressInputInvalid)).toBeTruthy();
+      });
+
+      it("should be a valid address", () => {
+        expect(invalidICPOrIcrcAddress(mockAddressInputValid)).toBeFalsy();
+      });
+
+      it("should return false for sns accounts", () => {
+        expect(invalidICPOrIcrcAddress(subaccountString)).toBeFalsy();
+      });
     });
 
-    it("should return false for sns accounts", () => {
-      const subaccount = new Uint8Array(32).fill(0);
-      subaccount[31] = 1;
-      const account = {
-        owner: new AnonymousIdentity().getPrincipal(),
-        subaccount: subaccount,
-      };
-      const subaccountString = encodeIcrcAccount(account);
-      expect(invalidAddress(subaccountString)).toBeFalsy();
+    describe("invalidBtcAddress", () => {
+      it("should return false for BTC", () => {
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.BTC_TESTNET,
+          })
+        ).toBeFalsy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressMainnet,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeFalsy();
+      });
+
+      it("should return invalid for BTC", () => {
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.BTC_MAINNET,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressTestnet,
+            network: undefined,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressMainnet,
+            network: TransactionNetwork.BTC_TESTNET,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressMainnet,
+            network: TransactionNetwork.ICP_CKBTC,
+          })
+        ).toBeTruthy();
+
+        expect(
+          invalidAddress({
+            address: mockBTCAddressMainnet,
+            network: undefined,
+          })
+        ).toBeTruthy();
+      });
     });
   });
 

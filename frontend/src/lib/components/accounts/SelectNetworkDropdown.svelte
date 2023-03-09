@@ -2,22 +2,60 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { notEmptyString } from "@dfinity/utils";
+  import {
+    debounce,
+    isNullish,
+    nonNullish,
+    notEmptyString,
+  } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import {
+    invalidBtcAddress,
+    invalidICPOrIcrcAddress,
+  } from "$lib/utils/accounts.utils";
+  import { BtcNetwork } from "@dfinity/ckbtc";
 
   export let universeId: UniverseCanisterId;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let selectedDestinationAddress: string | undefined = undefined;
 
-  let networkCkBTCLabel = $i18n.accounts.network_icp_ckbtc;
-  $: networkCkBTCLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.accounts.network_icp_cktestbtc
-    : $i18n.accounts.network_icp_ckbtc;
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
 
-  let networkBitcoinLabel = $i18n.accounts.network_bitcoin;
-  $: networkBitcoinLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.accounts.network_test_bitcoin
-    : $i18n.accounts.network_bitcoin;
+  const onDestinationAddressInput = debounce(() => {
+    if (nonNullish(selectedNetwork)) {
+      // If the network does not match the address an error "Please enter a valid address." is displayed next to the input.
+      return;
+    }
+
+    if (
+      isNullish(selectedDestinationAddress) ||
+      selectedDestinationAddress === ""
+    ) {
+      return;
+    }
+
+    if (!invalidICPOrIcrcAddress(selectedDestinationAddress)) {
+      selectedNetwork = ckTESTBTC
+        ? TransactionNetwork.ICP_CKTESTBTC
+        : TransactionNetwork.ICP_CKBTC;
+      return;
+    }
+
+    if (
+      !invalidBtcAddress({
+        address: selectedDestinationAddress,
+        network: ckTESTBTC ? BtcNetwork.Testnet : BtcNetwork.Mainnet,
+      })
+    ) {
+      selectedNetwork = ckTESTBTC
+        ? TransactionNetwork.BTC_TESTNET
+        : TransactionNetwork.BTC_MAINNET;
+    }
+  });
+
+  $: selectedDestinationAddress, onDestinationAddressInput();
 </script>
 
 <div class:placeholder={!notEmptyString(selectedNetwork)}>
@@ -31,12 +69,21 @@
     <option disabled selected value={undefined} class="hidden"
       ><span class="description">{$i18n.accounts.select_network}</span></option
     >
-    <DropdownItem value={TransactionNetwork.ICP_CKBTC}
-      >{networkCkBTCLabel}</DropdownItem
-    >
-    <DropdownItem value={TransactionNetwork.BITCOIN}
-      >{networkBitcoinLabel}</DropdownItem
-    >
+    {#if ckTESTBTC}
+      <DropdownItem value={TransactionNetwork.ICP_CKTESTBTC}
+        >{$i18n.accounts.network_icp_cktestbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_TESTNET}
+        >{$i18n.accounts.network_btc_testnet}</DropdownItem
+      >
+    {:else}
+      <DropdownItem value={TransactionNetwork.ICP_CKBTC}
+        >{$i18n.accounts.network_icp_ckbtc}</DropdownItem
+      >
+      <DropdownItem value={TransactionNetwork.BTC_MAINNET}
+        >{$i18n.accounts.network_btc_mainnet}</DropdownItem
+      >
+    {/if}
   </Dropdown>
 </div>
 

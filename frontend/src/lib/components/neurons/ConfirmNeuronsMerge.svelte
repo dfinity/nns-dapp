@@ -8,10 +8,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
-  import { neuronStake } from "$lib/utils/neuron.utils";
-  import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
+  import NnsNeuronInfo from "./NnsNeuronInfo.svelte";
 
   export let neurons: NeuronInfo[];
 
@@ -26,16 +24,20 @@
     }
   }
 
+  let targetNeuron: NeuronInfo;
+  let sourceNeuron: NeuronInfo;
+  $: [sourceNeuron, targetNeuron] = neurons;
+
   const merge = async () => {
     startBusyNeuron({
       initiator: "merge-neurons",
-      neuronId: neurons[0].neuronId,
+      neuronId: sourceNeuron.neuronId,
     });
     // We know that neurons has 2 neurons.
     // We have a check above that closes the modal if not.
     const id = await mergeNeurons({
-      targetNeuronId: neurons[0].neuronId,
-      sourceNeuronId: neurons[1].neuronId,
+      targetNeuronId: targetNeuron.neuronId,
+      sourceNeuronId: sourceNeuron.neuronId,
     });
 
     if (id !== undefined) {
@@ -47,39 +49,37 @@
     dispatcher("nnsClose");
     stopBusy("merge-neurons");
   };
-
-  const sectionTitleMapper = [
-    $i18n.neurons.merge_neurons_modal_title_2,
-    $i18n.neurons.merge_neurons_modal_with,
-  ];
 </script>
 
 <div class="wrapper">
-  {#each neurons as neuron, index}
-    <h3>{sectionTitleMapper[index]}</h3>
+  <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-    <div>
-      <p class="label">{$i18n.neurons.neuron_id}</p>
-      <p class="value">{neuron.neuronId}</p>
-    </div>
+  <NnsNeuronInfo neuron={sourceNeuron} />
 
-    <div>
-      <p class="label">{$i18n.neurons.neuron_balance}</p>
-      <p>
-        <Html
-          text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-            $amount: valueSpan(
-              formatToken({ value: neuronStake(neuron), detailed: true })
-            ),
-          })}
-        />
-      </p>
-    </div>
-  {/each}
+  <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  <p class="additional-text description">
-    {$i18n.neurons.irreversible_action}
-  </p>
+  <NnsNeuronInfo neuron={targetNeuron} />
+
+  <div class="additional-text">
+    <p class="description">
+      <Html
+        text={replacePlaceholders(
+          $i18n.neurons.merge_neurons_source_neuron_disappear,
+          {
+            $neuronId: String(sourceNeuron.neuronId),
+          }
+        )}
+      />
+    </p>
+
+    <p class="description">
+      <Html text={$i18n.neurons.merge_neurons_more_info} />
+    </p>
+
+    <p class="description">
+      {$i18n.neurons.irreversible_action}
+    </p>
+  </div>
 
   <div class="toolbar">
     <button class="secondary" on:click={() => dispatcher("nnsBack")}>

@@ -1,30 +1,30 @@
 <script lang="ts">
   import type { ProgressStep } from "@dfinity/gix-components";
-  import { SaleStep } from "$lib/types/sale";
   import { i18n } from "$lib/stores/i18n";
   import InProgress from "$lib/components/common/InProgress.svelte";
+  import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 
-  export let progressStep: SaleStep;
+  export let progressStep: ConvertBtcStep;
 
   let steps: [ProgressStep, ...ProgressStep[]] = [
     {
-      step: SaleStep.INITIALIZATION,
-      text: $i18n.sns_sale.step_initialization,
+      step: ConvertBtcStep.INITIALIZATION,
+      text: $i18n.ckbtc.step_initialization,
       state: "next",
     } as ProgressStep,
     {
-      step: SaleStep.TRANSFER,
-      text: $i18n.sns_sale.step_transfer,
+      step: ConvertBtcStep.LOCKING_CKBTC,
+      text: $i18n.ckbtc.step_locking_ckbtc,
       state: "next",
     } as ProgressStep,
     {
-      step: SaleStep.NOTIFY,
-      text: $i18n.sns_sale.step_notify,
+      step: ConvertBtcStep.SEND_BTC,
+      text: $i18n.ckbtc.step_send_btc,
       state: "next",
     } as ProgressStep,
     {
-      step: SaleStep.RELOAD,
-      text: $i18n.sns_sale.step_reload,
+      step: ConvertBtcStep.RELOAD,
+      text: $i18n.ckbtc.step_reload,
       state: "next",
     } as ProgressStep,
   ];

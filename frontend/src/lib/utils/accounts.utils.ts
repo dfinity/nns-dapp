@@ -2,7 +2,10 @@ import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -30,28 +33,71 @@ export const getAccountByPrincipal = ({
 };
 
 /**
- * Is the address a valid entry to proceed with any action such as transferring ICP?
+ * Is the address a valid entry to proceed with?
+ *
+ * e.g. this check is used in the Send / convert ckBTC to test if an address is a valid Bitcoin address
  */
-export const invalidAddress = (address: string | undefined): boolean => {
-  if (address === undefined) {
+export const invalidBtcAddress = (address: BtcAddress): boolean => {
+  try {
+    parseBtcAddress(address);
+  } catch (_: unknown) {
     return true;
   }
+
+  return false;
+};
+
+/**
+ * Is the address a valid entry to proceed with any action such as transferring ICP?
+ *
+ * Note: undefined is considered here as a valid address
+ */
+export const invalidAddress = ({
+  address,
+  network,
+}: {
+  address: string | undefined;
+  network: TransactionNetwork | undefined;
+}): boolean => {
+  if (isNullish(address)) {
+    return true;
+  }
+
+  if (isTransactionNetworkBtc(network)) {
+    return invalidBtcAddress({
+      address,
+      network:
+        network === TransactionNetwork.BTC_TESTNET
+          ? BtcNetwork.Testnet
+          : BtcNetwork.Mainnet,
+    });
+  }
+
+  return invalidICPOrIcrcAddress(address);
+};
+
+export const invalidICPOrIcrcAddress = (
+  address: string | undefined
+): boolean => {
+  if (isNullish(address)) {
+    return true;
+  }
+
   try {
     checkAccountId(address);
     return false;
-  } catch (_) {
+  } catch (_: unknown) {
     try {
-      // TODO: Find a better solution to check if the address is valid for SNS as well.
-      // It might also be an SNS address
+      // TODO: Find a better solution to check if the address is valid for Icrc as well.
+      // It might also be an Icrc address
       decodeIcrcAccount(address);
       return false;
-    } catch {
-      _;
-    }
-    {
-      return true;
+    } catch (_: unknown) {
+      // We do not parse the error
     }
   }
+
+  return true;
 };
 
 /**

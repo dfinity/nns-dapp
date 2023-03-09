@@ -64,7 +64,10 @@
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
-    invalidAddress(selectedDestinationAddress) ||
+    invalidAddress({
+      address: selectedDestinationAddress,
+      network: selectedNetwork,
+    }) ||
     errorMessage !== undefined ||
     (mustSelectNetwork && isNullish(selectedNetwork));
 
@@ -142,11 +145,16 @@
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
+      {selectedNetwork}
     />
   {/if}
 
   {#if mustSelectNetwork}
-    <SelectNetworkDropdown bind:selectedNetwork universeId={rootCanisterId} />
+    <SelectNetworkDropdown
+      bind:selectedNetwork
+      universeId={rootCanisterId}
+      {selectedDestinationAddress}
+    />
   {/if}
 
   <div class="amount">

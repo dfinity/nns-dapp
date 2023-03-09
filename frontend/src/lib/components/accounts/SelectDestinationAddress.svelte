@@ -4,18 +4,21 @@
   import {
     getAccountByRootCanister,
     getAccountsByRootCanister,
-    invalidAddress,
+    invalidICPOrIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
   export let showManualAddress = true;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountByRootCanister({
@@ -25,11 +28,11 @@
   });
   let address: string;
   $: {
-    if (!invalidAddress(address)) {
+    if (!invalidICPOrIcrcAddress(address)) {
       selectedDestinationAddress = address;
     }
     // Keep in sync the selected destination address
-    if (selectedAccount !== undefined) {
+    if (nonNullish(selectedAccount) && !showManualAddress) {
       selectedDestinationAddress = selectedAccount.identifier;
     }
   }
@@ -65,7 +68,7 @@
     {/if}
   </div>
   {#if showManualAddress}
-    <AddressInput bind:address={selectedDestinationAddress} />
+    <AddressInput bind:address={selectedDestinationAddress} {selectedNetwork} />
   {:else}
     <SelectAccountDropdown
       {rootCanisterId}
