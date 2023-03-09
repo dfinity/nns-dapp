@@ -18,7 +18,10 @@ export const normalizeWhitespace = (
   text: string | undefined
 ): string | undefined => text && text.replace(/\s+/g, " ");
 
-export const assertNonNullish = <T>(value: T): NonNullable<T> => {
-  dfinityAssertNonNullish(value);
+export const assertNonNullish = <T>(
+  value: T,
+  message?: string
+): NonNullable<T> => {
+  dfinityAssertNonNullish(value, message);
   return value;
 };
