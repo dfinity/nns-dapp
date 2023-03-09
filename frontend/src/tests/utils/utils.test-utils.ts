@@ -1,3 +1,4 @@
+import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
 export const silentConsoleErrors = () =>
@@ -16,3 +17,8 @@ export const clickByTestId = async (
 export const normalizeWhitespace = (
   text: string | undefined
 ): string | undefined => text && text.replace(/\s+/g, " ");
+
+export const assertNonNullish = <T>(value: T): NonNullable<T> => {
+  dfinityAssertNonNullish(value);
+  return value;
+};

@@ -46,8 +46,6 @@ const blockedApiPaths = [
 const testCommittedSnsCanisterId = Principal.fromHex("897654");
 const testOpenSnsCanisterId = Principal.fromHex("567812");
 
-const testFee = BigInt(25000);
-
 describe("Neurons", () => {
   blockAllCallsTo(blockedApiPaths);
 

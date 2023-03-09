@@ -1,3 +1,5 @@
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
+
 export class TooltipPo {
   static readonly tid = "tooltip-component";
 
@@ -16,6 +18,6 @@ export class TooltipPo {
   }
 
   getText(): string {
-    return this.root.querySelector(".tooltip").textContent;
+    return assertNonNullish(this.root.querySelector(".tooltip")).textContent;
   }
 }
