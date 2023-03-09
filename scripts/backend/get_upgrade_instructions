@@ -3,6 +3,11 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
 	Gets the instructions used by the last post_upgrade function call.
+
+	Note: The instruction consumption is independent of network, it depends
+	      on the replica which is usually the same.  The cycle cost is a factor
+	      if the instruction count and the factor depends on the number of nodes
+	      in a subnet, and that does differ significantly between subnets.
 	EOF
 }
 # Source the clap.bash file ---------------------------------------------------
