@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+help_text() {
+	cat <<-EOF
+	Downgrade and then upgrade a local deployment.
+
+	Note: This deploys nns-dapp_local.wasm for the upgrade.
+	      If the wasm is already present, it will be used.
+	      Please make sure that hte wasm is up to date.
+	      If the wasm is absent, it will be built.
+
+	Note: If the nns-dapp is already deployed, the deployment
+	      will be used in the downgrade and upgrade.  You may
+	      find it useful to verify that the state has been preserved.
+	      If the existing deployment is unhealthy, upgrades may fail.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+PROD_WASM="nns-dapp-prod_local.wasm"
+CURRENT_WASM="nns-dapp.wasm"
+
+verify_healthy() {
+	dfx canister id nns-dapp || {
+		echo "ERROR: Canister ID not defined."
+		exit 1	
+	} >&2
+}
+
+get_current_wasm() {
+	DFX_NETWORK=local ./scripts/docker-build
+}
+
+get_prod_wasm() {
+	curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm > "$PROD_WASM"
+}
+
+# Installs the current build of nns-dapp
+upgrade_nnsdapp() {
+	dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
+}
+
+
+test -e "$CURRENT_WASM" || {
+	echo "Please build '$CURRENT_WASM' before running this test."
+	exit 1
+} >&2
+
+# Build the wasm, if it doesn't exist yet.
+test -e "$CURRENT_WASM" || {
+	echo "Building $CURRENT_WASM..."
+	DFX_NETWORK=local ./scripts/docker-build
+}
+# Make sure that the current wasm is the one currently installed
+if dfx canister id nns-dapp >/dev/null 2>/dev/null
+then upgrade_nnsdapp "$CURRENT_WASM"
+else dfx canister create nns-dapp
+     dfx canister install nns-dapp --wasm "$CURRENT_WASM"
+fi
+# Make sure that the current wasm is running healthily.
+verify_healthy
+# Downlaod and install the prod wasm
+get_prod_wasm
+upgrade_nnsdapp "$PROD_WASM"
+# Verify that the rollback is healthy
+verify_healthy
+# Roll forwards and test again
+upgrade_nnsdapp "$CURRENT_WASM"
+verify_healthy
+echo SUCCESS
