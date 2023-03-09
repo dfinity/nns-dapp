@@ -5,7 +5,6 @@
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
-  import { isNullish } from "@dfinity/utils";
   import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
   import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
   import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
