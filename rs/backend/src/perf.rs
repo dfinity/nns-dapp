@@ -1,6 +1,6 @@
+use crate::STATE;
 use candid::CandidType;
 use dfn_core::api::ic0;
-use crate::STATE;
 use serde::Deserialize;
 
 #[derive(CandidType, Deserialize, Clone)]
@@ -14,16 +14,20 @@ impl PerformanceCounter {
         let name = name.to_string();
         let timestamp_ns_since_epoch = crate::time::time();
         let instruction_counter = crate::perf::raw_instruction_counter();
-        PerformanceCounter{timestamp_ns_since_epoch, name, instruction_counter}
+        PerformanceCounter {
+            timestamp_ns_since_epoch,
+            name,
+            instruction_counter,
+        }
     }
 }
 
 /// Gets the instruction counter.
-/// 
+///
 /// See: https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-performance-counter
 fn raw_instruction_counter() -> u64 {
     // Note: The spec says that this is an i64 but the type is actually a u64.
-    unsafe {ic0::performance_counter(0)}
+    unsafe { ic0::performance_counter(0) }
 }
 
 /// Saves an instruction counter.
@@ -33,5 +37,9 @@ pub fn save_instruction_counter(counter: PerformanceCounter) {
 
 /// Records an instruction counter.
 pub fn record_instruction_counter(name: &str) {
-    STATE.with(|s| s.accounts_store.borrow_mut().save_instruction_counter(PerformanceCounter::new(name)))
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .save_instruction_counter(PerformanceCounter::new(name))
+    })
 }
