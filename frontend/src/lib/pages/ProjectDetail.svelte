@@ -28,7 +28,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
   import {
-    loadSnsMetrics,
+    loadSnsSwapMetrics,
     watchSnsMetrics,
   } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -66,7 +66,7 @@
       return;
     }
 
-    await loadSnsMetrics({
+    await loadSnsSwapMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
       swapCanisterId,
       forceFetch,

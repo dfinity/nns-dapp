@@ -17,26 +17,28 @@
   export let cardType: CardType = "card";
 </script>
 
-<NeuronCardContainer
-  {role}
-  {selected}
-  {disabled}
-  {ariaLabel}
-  on:click
-  {cardType}
->
-  <NnsNeuronCardTitle {neuron} slot="start" />
+<div data-tid="nns-neuron-card-component" class="component">
+  <NeuronCardContainer
+    {role}
+    {selected}
+    {disabled}
+    {ariaLabel}
+    on:click
+    {cardType}
+  >
+    <NnsNeuronCardTitle {neuron} slot="start" />
 
-  <div class:disabled class="content">
-    <NnsNeuronAmount {neuron} {proposerNeuron} />
+    <div class:disabled class="content">
+      <NnsNeuronAmount {neuron} {proposerNeuron} />
 
-    <NeuronStateInfo state={neuron.state} />
-  </div>
+      <NeuronStateInfo state={neuron.state} />
+    </div>
 
-  <NnsNeuronRemainingTime {neuron} />
+    <NnsNeuronRemainingTime {neuron} />
 
-  <slot />
-</NeuronCardContainer>
+    <slot />
+  </NeuronCardContainer>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";
@@ -53,5 +55,9 @@
 
   .content {
     @include neuron.neuron-card-content;
+  }
+
+  .component {
+    display: contents;
   }
 </style>
