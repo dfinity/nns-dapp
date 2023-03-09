@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 111715
 * Upgrade agent-js.
 * Bugfixes and minor improvements.
 
