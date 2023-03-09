@@ -49,6 +49,4 @@ const initSnsSwapMetricsStore = (): SnsSwapMetricsStore => {
   };
 };
 
-// TODO(Maks): tests
-// TODO: store the whole response and get params via derived stores
 export const snsSwapMetricsStore = initSnsSwapMetricsStore();
