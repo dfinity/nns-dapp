@@ -66,13 +66,36 @@
   $: summary = $snsProjectSelectedStore?.summary;
 </script>
 
-{#if $sortedSnsUserNeuronsStore.length > 0 || loading}
-  <div class="card-grid" data-tid="sns-neurons-body">
-    {#if loading}
-      <SkeletonCard />
-      <SkeletonCard />
-    {:else}
-      {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+<div data-tid="sns-neurons-component" class="component">
+  {#if $sortedSnsUserNeuronsStore.length > 0 || loading}
+    <div class="card-grid" data-tid="sns-neurons-body">
+      {#if loading}
+        <SkeletonCard />
+        <SkeletonCard />
+      {:else}
+        {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+          <SnsNeuronCard
+            role="link"
+            {neuron}
+            ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={async () => await goToNeuronDetails(neuron)}
+          />
+        {/each}
+      {/if}
+    </div>
+  {/if}
+
+  {#if $sortedSnsCFNeuronsStore.length > 0}
+    <h2
+      data-tid="community-fund-title"
+      class={`bottom-margin ${
+        $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
+      }`}
+    >
+      {$i18n.sns_neuron_detail.community_fund_section}
+    </h2>
+    <div class="card-grid">
+      {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
         <SnsNeuronCard
           role="link"
           {neuron}
@@ -80,40 +103,22 @@
           on:click={async () => await goToNeuronDetails(neuron)}
         />
       {/each}
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
 
-{#if $sortedSnsCFNeuronsStore.length > 0}
-  <h2
-    data-tid="community-fund-title"
-    class={`bottom-margin ${
-      $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
-    }`}
-  >
-    {$i18n.sns_neuron_detail.community_fund_section}
-  </h2>
-  <div class="card-grid">
-    {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
-      <SnsNeuronCard
-        role="link"
-        {neuron}
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={async () => await goToNeuronDetails(neuron)}
-      />
-    {/each}
-  </div>
-{/if}
-
-{#if !loading && empty && nonNullish(summary)}
-  <EmptyMessage
-    >{replacePlaceholders($i18n.sns_neurons.text, {
-      $project: summary.metadata.name,
-    })}</EmptyMessage
-  >
-{/if}
+  {#if !loading && empty && nonNullish(summary)}
+    <EmptyMessage
+      >{replacePlaceholders($i18n.sns_neurons.text, {
+        $project: summary.metadata.name,
+      })}</EmptyMessage
+    >
+  {/if}
+</div>
 
 <style lang="scss">
+  .component {
+    display: contents;
+  }
   .top-margin {
     margin-top: var(--padding-4x);
   }

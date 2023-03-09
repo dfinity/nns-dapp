@@ -29,35 +29,43 @@
     );
 </script>
 
-<div class="card-grid" data-tid="neurons-body">
-  {#if isLoading}
-    <SkeletonCard />
-    <SkeletonCard />
-  {:else}
-    {#each $sortedNeuronStore as neuron}
-      {#if isSpawning(neuron)}
-        <Tooltip
-          id="spawning-neuron-card"
-          text={$i18n.neuron_detail.spawning_neuron_info}
-        >
+<div data-tid="nns-neurons-component" class="component">
+  <div class="card-grid" data-tid="neurons-body">
+    {#if isLoading}
+      <SkeletonCard />
+      <SkeletonCard />
+    {:else}
+      {#each $sortedNeuronStore as neuron}
+        {#if isSpawning(neuron)}
+          <Tooltip
+            id="spawning-neuron-card"
+            text={$i18n.neuron_detail.spawning_neuron_info}
+          >
+            <NnsNeuronCard
+              disabled
+              ariaLabel={$i18n.neurons.aria_label_neuron_card}
+              {neuron}
+            />
+          </Tooltip>
+        {:else}
           <NnsNeuronCard
-            disabled
+            role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={async () => await goToNeuronDetails(neuron.neuronId)}
             {neuron}
           />
-        </Tooltip>
-      {:else}
-        <NnsNeuronCard
-          role="link"
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={async () => await goToNeuronDetails(neuron.neuronId)}
-          {neuron}
-        />
-      {/if}
-    {/each}
+        {/if}
+      {/each}
+    {/if}
+  </div>
+
+  {#if !isLoading && $sortedNeuronStore.length === 0}
+    <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
 </div>
 
-{#if !isLoading && $sortedNeuronStore.length === 0}
-  <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
-{/if}
+<style lang="scss">
+  .component {
+    display: contents;
+  }
+</style>

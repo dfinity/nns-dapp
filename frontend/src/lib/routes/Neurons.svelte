@@ -9,24 +9,29 @@
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 </script>
 
-<main>
-  <SummaryUniverse />
+<div data-tid="neurons-component" class="component">
+  <main>
+    <SummaryUniverse />
+
+    {#if $isNnsUniverseStore}
+      <NnsNeurons />
+    {:else if nonNullish($snsProjectSelectedStore)}
+      <SnsNeurons />
+    {/if}
+  </main>
 
   {#if $isNnsUniverseStore}
-    <NnsNeurons />
+    <NnsNeuronsFooter />
+    <!-- Staking SNS Neurons has not yet been reviewed by security -->
   {:else if nonNullish($snsProjectSelectedStore)}
-    <SnsNeurons />
+    <SnsNeuronsFooter />
   {/if}
-</main>
-
-{#if $isNnsUniverseStore}
-  <NnsNeuronsFooter />
-  <!-- Staking SNS Neurons has not yet been reviewed by security -->
-{:else if nonNullish($snsProjectSelectedStore)}
-  <SnsNeuronsFooter />
-{/if}
+</div>
 
 <style lang="scss">
+  .component {
+    display: contents;
+  }
   main {
     padding-bottom: var(--footer-height);
   }
