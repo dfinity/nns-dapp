@@ -199,6 +199,14 @@ type Stats =
         neurons_created_count: nat64;
         neurons_topped_up_count: nat64;
         transactions_to_process_queue_length: nat32;
+        instruction_counters: vec PerformanceCounter;
+    };
+
+type PerformanceCounter =
+    record {
+        timestamp_ns_since_epoch: nat64;
+        name: text;
+        instruction_counter: nat64;
     };
 
 type HeaderField =

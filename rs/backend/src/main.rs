@@ -42,8 +42,10 @@ fn pre_upgrade() {
 
 #[export_name = "canister_post_upgrade"]
 fn post_upgrade() {
+    // Saving the instruction counter now will not have the desired effect
+    // as the storage is about to be wiped out and replaced with stable memory.
+    let counter_before = perf::PerformanceCounter::new("post_upgrade start");
     STATE.with(|s| {
-        perf::record_instruction_counter("post_upgrade before state_recovery");
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {:?}", e));
@@ -51,12 +53,13 @@ fn post_upgrade() {
         });
 
         s.replace(new_state);
-        perf::record_instruction_counter("post_upgrade after state_recovery");
     });
 
-    perf::record_instruction_counter("post_upgrade before init_assets");
+    perf::save_instruction_counter(counter_before);
+    perf::record_instruction_counter("post_upgrade after state_recovery");
     assets::init_assets();
     perf::record_instruction_counter("post_upgrade after init_assets");
+    perf::record_instruction_counter("post_upgrade stop");
 }
 
 #[export_name = "canister_query http_request"]

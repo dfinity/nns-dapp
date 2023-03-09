@@ -3,6 +3,7 @@ use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor, MultiPartTransactionsProcessorWithRemovedFields,
 };
+use crate::perf::PerformanceCounter;
 use crate::state::StableState;
 use crate::time::time_millis;
 use crate::STATE;
@@ -44,20 +45,6 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 
     instruction_counters: VecDeque<PerformanceCounter>,
-}
-
-#[derive(CandidType, Deserialize, Clone)]
-struct PerformanceCounter {
-    timestamp_ns_since_epoch: u64,
-    name: String,
-    instruction_counter: u64,
-}
-impl PerformanceCounter {
-    pub fn new(name: String) -> Self {
-        let timestamp_ns_since_epoch = crate::time::time();
-        let instruction_counter = crate::perf::instruction_counter();
-        PerformanceCounter{timestamp_ns_since_epoch, name, instruction_counter}
-    }
 }
 
 #[derive(CandidType, Deserialize)]
@@ -867,8 +854,8 @@ impl AccountsStore {
         self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
-    pub fn record_instruction_counter(&mut self, name: String) {
-        let counter = PerformanceCounter::new(name);
+    /// Adds an instruction counter to the circular buffer.
+    pub fn save_instruction_counter(&mut self, counter: PerformanceCounter) {
         if self.instruction_counters.len() >= 100 {
             self.instruction_counters.pop_front();
         }
