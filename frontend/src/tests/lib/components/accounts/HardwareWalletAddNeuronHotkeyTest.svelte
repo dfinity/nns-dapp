@@ -3,7 +3,7 @@
   import {
     mockHardwareWalletNeuronsStore,
     mockNeuronStake,
-  } from "../../../mocks/hardware-wallet-neurons.store.mock";
+  } from "$tests/mocks/hardware-wallet-neurons.store.mock";
   import { WALLET_CONTEXT_KEY, WalletContext } from "$lib/types/wallet.context";
 
   export let testComponent: typeof SvelteComponent;

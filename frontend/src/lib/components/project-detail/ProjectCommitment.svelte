@@ -40,7 +40,6 @@
     token: ICPToken,
   });
 
-  // TODO(Maks): extend test to see the field
   let saleBuyerCount: number | undefined;
   $: saleBuyerCount =
     $projectDetailStore?.summary?.rootCanisterId &&

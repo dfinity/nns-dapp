@@ -79,7 +79,7 @@
   let busy = true;
   $: busy = status !== "none";
 
-  // TODO(sale): find a better solution
+  // Flag to avoid second getOpenTicket call on same page navigation
   let loadingTicketRootCanisterId: string | undefined;
 
   let progressStep: SaleStep | undefined = undefined;
