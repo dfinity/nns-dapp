@@ -40,7 +40,7 @@ fn pre_upgrade() {
         stable::set(&bytes);
     });
     // Note:  To see the instruction counter after pre-upgrade, see post-upgrade.
-    //        Until stable memory has been restored more measurement scannot be saved.
+    //        Until stable memory has been restored more measurements cannot be saved.
 }
 
 #[export_name = "canister_post_upgrade"]
