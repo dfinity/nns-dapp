@@ -39,8 +39,7 @@ pub fn record_instruction_counter(name: &str) {
     })
 }
 
-/// Saves an instruction counter; useful if the instruction count was captured in a non-standard
-/// way.
+/// Saves an instruction counter; useful if the instruction count was captured independently.
 pub fn save_instruction_counter(counter: PerformanceCounter) {
     STATE.with(|s| s.accounts_store.borrow_mut().save_instruction_counter(counter))
 }
