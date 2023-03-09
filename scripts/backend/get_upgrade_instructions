@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Gets the instructions used by the last post_upgrade function call.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+set -euo pipefail
+
+dfx canister call --network "$DFX_NETWORK" nns-dapp get_stats | idl2json | node -e 'counters=JSON.parse(require("fs").readFileSync(0).toString()).instruction_counters.reduce((d,e)=>(d[e.name]=Number(e.instruction_counter),d), {});console.log(counters["post_upgrade stop"] - counters["post_upgrade start"])'
