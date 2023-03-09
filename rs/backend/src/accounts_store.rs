@@ -12,7 +12,7 @@ use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
-use icp_ledger::Operation::{self, Burn, Mint, Transfer};
+use icp_ledger::Operation::{self, Burn, Mint, Transfer, TransferFrom, Approve};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -21,6 +21,7 @@ use std::cmp::min;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use ic_ledger_core::tokens::SignedTokens;
 
 type TransactionIndex = u64;
 
@@ -125,6 +126,8 @@ pub enum TransactionType {
     Burn,
     Mint,
     Transfer,
+    Approve,
+    TransferFrom,
     StakeNeuron,
     StakeNeuronNotification,
     TopUpNeuron,
@@ -310,15 +313,21 @@ impl AccountsStore {
                             to,
                             amount,
                             fee: _,
-                        } => {
+                        } | TransferFrom {spender, to, amount, fee: _, from} => {
+                            let default_transaction_type = if matches!(transaction.transfer, Transfer {..}) {
+                                TransactionType::Transfer
+                            } else {
+                                TransactionType::TransferFrom
+                            };
+
                             if self.accounts.get(&to.to_vec()).is_some() {
                                 // If the recipient is a known account then the transaction must be a basic Transfer,
                                 // since for all the 'special' transaction types the recipient is not a user account
-                                TransactionType::Transfer
+                                default_transaction_type
                             } else {
                                 let memo = transaction.memo;
                                 let transaction_type =
-                                    self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids);
+                                    self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids, default_transaction_type);
                                 let block_height = transaction.block_height;
                                 self.process_transaction_type(
                                     transaction_type,
@@ -331,7 +340,8 @@ impl AccountsStore {
                                 );
                                 transaction_type
                             }
-                        }
+                        },
+                        Approve {..} => TransactionType::Approve
                     };
                     self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
                 }
@@ -567,18 +577,24 @@ impl AccountsStore {
                 to,
                 amount,
                 fee: _,
-            } => {
+            } | TransferFrom {spender: _, to, amount, fee: _, from: _}  => {
+                let default_transaction_type = if matches!(transfer, Transfer {..}) {
+                    TransactionType::Transfer
+                } else {
+                    TransactionType::TransferFrom
+                };
+
                 if self.try_add_transaction_to_account(to, transaction_index) {
                     self.try_add_transaction_to_account(from, transaction_index);
                     should_store_transaction = true;
-                    transaction_type = Some(TransactionType::Transfer);
+                    transaction_type = Some(default_transaction_type);
                 } else if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
                         transaction_type =
-                            Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
+                            Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids, default_transaction_type));
                         self.process_transaction_type(
                             transaction_type.unwrap(),
                             principal,
@@ -596,7 +612,8 @@ impl AccountsStore {
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
                     );
                 }
-            }
+            },
+            Approve {..} => TransactionType::Approve
         }
 
         if should_store_transaction {
@@ -677,13 +694,22 @@ impl AccountsStore {
                     transfer: match transaction.transfer {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
-                        Transfer { from, to, amount, fee } => {
+                        Transfer { from, to, amount, fee }  | TransferFrom {spender, to, amount, fee, from} => {
                             if from == request.account_identifier {
                                 TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
                             }
-                        }
+                        },
+                        Approve {from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee} => TransferResult::Approve {from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee}
                     },
                     transaction_type: transaction.transaction_type,
                 }
@@ -823,18 +849,21 @@ impl AccountsStore {
             let min_transaction_index = self.transactions.front().unwrap().transaction_index;
 
             for transaction in transactions {
-                match transaction.transfer {
-                    Burn { from, amount: _ } => self.prune_transactions_from_account(from, min_transaction_index),
-                    Mint { to, amount: _ } => self.prune_transactions_from_account(to, min_transaction_index),
+                let accounts = match transaction.transfer {
+                    Burn { from, amount: _ } => vec![from],
+                    Mint { to, amount: _ } => vec![to],
                     Transfer {
                         from,
                         to,
                         amount: _,
                         fee: _,
-                    } => {
-                        self.prune_transactions_from_account(from, min_transaction_index);
-                        self.prune_transactions_from_account(to, min_transaction_index);
-                    }
+                    } => vec![from, to],
+                    TransferFrom {spender: _, to, amount: _, fee: _, from} => vec![from, to],
+                    //     {
+                    //     self.prune_transactions_from_account(from, min_transaction_index);
+                    //     self.prune_transactions_from_account(to, min_transaction_index);
+                    // },
+                    Approve {..} => {}
                 }
             }
         }
@@ -1065,9 +1094,10 @@ impl AccountsStore {
         memo: Memo,
         principal: &PrincipalId,
         canister_ids: &[CanisterId],
+        default_transaction_type: TransactionType,
     ) -> TransactionType {
         if from == to {
-            TransactionType::Transfer
+            default_transaction_type
         } else if self.neuron_accounts.contains_key(&to) {
             if self.is_stake_neuron_notification(memo, &from, &to, amount) {
                 TransactionType::StakeNeuronNotification
@@ -1084,10 +1114,10 @@ impl AccountsStore {
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {
-                TransactionType::Transfer
+                default_transaction_type
             }
         } else {
-            TransactionType::Transfer
+            default_transaction_type
         }
     }
 
@@ -1501,6 +1531,13 @@ pub enum TransferResult {
     Receive {
         from: AccountIdentifier,
         amount: Tokens,
+        fee: Tokens,
+    },
+    Approve {
+        from: AccountIdentifier,
+        spender: AccountIdentifier,
+        allowance: SignedTokens,
+        expires_at: Option<TimeStamp>,
         fee: Tokens,
     },
 }
