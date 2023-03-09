@@ -80,6 +80,13 @@ jobs:
           # - The II version specified in dfx.json
           # - Functional SNS canisters
           ./scripts/dfx-nns-deploy-custom --features sns
+      - name: Basic downgrade-upgrade test
+        run: |
+          git fetch --depth 1 origin tag prod
+          if git diff tags/prod rs/backend | grep -q .
+          then ./scripts/nns-dapp/downgrade-upgrade-test
+          else echo "Skipping test as there are no relevant code changes"
+          fi
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -110,12 +117,6 @@ jobs:
           rm -rf screenshots
           set -o pipefail
           SCREENSHOT=1 npm run test | tee -a wdio.log
-      - name: Basic downgrade-upgrade test
-        run: |
-          if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test
-          esle echo "Skipping test as there are no relevant code changes"
-          fi
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
