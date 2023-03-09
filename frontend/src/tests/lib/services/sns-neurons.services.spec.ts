@@ -789,7 +789,7 @@ describe("sns-neurons-services", () => {
       expect(toastsError).toBeCalled();
     });
 
-    it("should not call sns api setFollowees when new followee is the same neuron", async () => {
+    it("should call sns api setFollowees when new followee is the same neuron", async () => {
       jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
@@ -799,8 +799,14 @@ describe("sns-neurons-services", () => {
         followeeHex: neuronIdHext,
       });
 
-      expect(setFolloweesSpy).not.toBeCalled();
-      expect(toastsError).toBeCalled();
+      expect(setFolloweesSpy).toBeCalledWith({
+        neuronId: fromNullable(mockSnsNeuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        followees: [mockSnsNeuron.id[0] as SnsNeuronId],
+        functionId,
+      });
+      expect(setFolloweesSpy).toBeCalledTimes(1);
     });
 
     it("should not call sns api setFollowees when new followee does not exist", async () => {

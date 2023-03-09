@@ -10,6 +10,7 @@ import {
   queryKnownNeurons,
   queryNeuron,
   queryNeurons,
+  registerVote,
   removeHotkey,
   setFollowees,
   spawnNeuron,
@@ -23,7 +24,7 @@ import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister, LedgerCanister, Topic } from "@dfinity/nns";
+import { GovernanceCanister, LedgerCanister, Topic, Vote } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 
@@ -48,6 +49,7 @@ describe("neurons-api", () => {
     mockGovernanceCanister.getNeuron.mockImplementation(
       jest.fn().mockResolvedValue(mockNeuron)
     );
+    mockGovernanceCanister.registerVote.mockResolvedValue(undefined);
     jest
       .spyOn(GovernanceCanister, "create")
       .mockImplementation(() => mockGovernanceCanister);
@@ -627,6 +629,27 @@ describe("neurons-api", () => {
         });
       expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
       await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("registerVote", () => {
+    const neuronId = BigInt(110);
+    const identity = mockIdentity;
+    const proposalId = BigInt(110);
+
+    it("should call the canister to cast vote neuronIds count", async () => {
+      await registerVote({
+        neuronId,
+        proposalId,
+        vote: Vote.Yes,
+        identity,
+      });
+      expect(mockGovernanceCanister.registerVote).toHaveBeenCalledTimes(1);
+      expect(mockGovernanceCanister.registerVote).toHaveBeenCalledWith({
+        neuronId,
+        proposalId,
+        vote: Vote.Yes,
+      });
     });
   });
 });
