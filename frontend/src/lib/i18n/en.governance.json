@@ -134,7 +134,8 @@
     "UpdateSnsWasmSnsSubnetIds": "Update SNS-WASM Subnet Ids",
     "UpdateAllowedPrincipals": "Update Allowed Principals",
     "RetireReplicaVersion": "Retire Replica Version",
-    "InsertSnsWasmUpgradePathEntries": "Insert SNS-WASM Upgrade Path Entries"
+    "InsertSnsWasmUpgradePathEntries": "Insert SNS-WASM Upgrade Path Entries",
+    "UpdateElectedReplicaVersions": "Update Elected Replica Versions"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -174,6 +175,7 @@
     "UpdateSnsWasmSnsSubnetIds": "Update the list of SNS subnet IDs that SNS-WASM will deploy SNS instances to.",
     "UpdateAllowedPrincipals": "Update the SNS-WASM canister's list of allowed principals. This list guards which principals can deploy an SNS.",
     "RetireReplicaVersion": "A proposal to retire previously elected and unused replica versions. The specified versions are removed from the list of blessed replica versions in the registry. This ensures that a replica can no longer be upgraded to these versions. The proposal will fail to remove replica version if that version is currently used by a subnet or unassigned node.",
-    "InsertSnsWasmUpgradePathEntries": "Insert custom upgrade path entries into SNS-WASM for all SNSs, or for an SNS specified by its governance canister ID."
+    "InsertSnsWasmUpgradePathEntries": "Insert custom upgrade path entries into SNS-WASM for all SNSs, or for an SNS specified by its governance canister ID.",
+    "UpdateElectedReplicaVersions": "A proposal to update currently elected replica versions, by electing a new version, and/or unelecting multiple unused versions.<br/><br/>The version to elect (identified by the hash of the installation image) is added to the registry. Besides creating a record for that version, the proposal also appends that version to the list of elected versions that can be installed on a subnet. By itself, this proposal does not affect any upgrade.<br/><br/>The specified versions to unelect are removed from the registry and the elected versions record. This ensures that the replica cannot upgrade to these versions anymore."
   }
 }
