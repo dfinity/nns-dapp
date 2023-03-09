@@ -10,6 +10,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import { checkAccountId, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import { isUniverseNns } from "./universe.utils";
 
 /*
  * Returns the principal's main or hardware account
@@ -50,14 +51,16 @@ export const invalidBtcAddress = (address: BtcAddress): boolean => {
 /**
  * Is the address a valid entry to proceed with any action such as transferring ICP?
  *
- * Note: undefined is considered here as a valid address
+ * The address format depends on the universe. Therefore, the root canister ID is required.
  */
 export const invalidAddress = ({
   address,
   network,
+  rootCanisterId,
 }: {
   address: string | undefined;
   network: TransactionNetwork | undefined;
+  rootCanisterId: Principal;
 }): boolean => {
   if (isNullish(address)) {
     return true;
@@ -73,12 +76,16 @@ export const invalidAddress = ({
     });
   }
 
-  return invalidICPOrIcrcAddress(address);
+  // NNS universe doesn't use ICRC yet
+  if (isUniverseNns(rootCanisterId)) {
+    return invalidIcpAddress(address);
+  }
+
+  // Consider it as an ICRC address
+  return invalidIcrcAddress(address);
 };
 
-export const invalidICPOrIcrcAddress = (
-  address: string | undefined
-): boolean => {
+export const invalidIcpAddress = (address: string | undefined): boolean => {
   if (isNullish(address)) {
     return true;
   }
@@ -87,14 +94,22 @@ export const invalidICPOrIcrcAddress = (
     checkAccountId(address);
     return false;
   } catch (_: unknown) {
-    try {
-      // TODO: Find a better solution to check if the address is valid for Icrc as well.
-      // It might also be an Icrc address
-      decodeIcrcAccount(address);
-      return false;
-    } catch (_: unknown) {
-      // We do not parse the error
-    }
+    // We do not parse the error
+  }
+
+  return true;
+};
+
+export const invalidIcrcAddress = (address: string | undefined): boolean => {
+  if (isNullish(address)) {
+    return true;
+  }
+
+  try {
+    decodeIcrcAccount(address);
+    return false;
+  } catch (_: unknown) {
+    // We do not parse the error
   }
 
   return true;
