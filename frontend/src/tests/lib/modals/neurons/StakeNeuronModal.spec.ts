@@ -90,6 +90,9 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("StakeNeuronModal", () => {
+  const getAccountCard = (container) =>
+    container.querySelector('article[role="button"]');
+
   beforeEach(() => {
     cancelPollAccounts();
     jest.clearAllMocks();
@@ -131,7 +134,7 @@ describe("StakeNeuronModal", () => {
     it("should display accounts as cards", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      expect(container.querySelector('article[role="button"]')).not.toBeNull();
+      expect(getAccountCard(container)).not.toBeNull();
     });
 
     it("should be able to select an account and move to the next view", async () => {
@@ -139,7 +142,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -170,7 +173,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -186,7 +189,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -205,7 +208,7 @@ describe("StakeNeuronModal", () => {
     it("should be able to create a new neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -225,7 +228,7 @@ describe("StakeNeuronModal", () => {
     it("should move to update dissolve delay after creating a neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -249,7 +252,7 @@ describe("StakeNeuronModal", () => {
     it("should have the update delay button disabled", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -277,7 +280,7 @@ describe("StakeNeuronModal", () => {
     it("should have disabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -313,7 +316,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -342,7 +345,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       nonNullish(accountCard) && (await fireEvent.click(accountCard));
@@ -380,7 +383,7 @@ describe("StakeNeuronModal", () => {
     it("should be able to change dissolve delay in the confirmation screen", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -436,7 +439,7 @@ describe("StakeNeuronModal", () => {
       });
 
       // SCREEN: Select Account
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
