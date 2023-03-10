@@ -25,7 +25,10 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -71,6 +74,7 @@ import {
   SnsSwapLifecycle,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 
@@ -952,6 +956,39 @@ describe("sns-api", () => {
       });
 
       expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+    });
+
+    it("should update subaccounts's balance in the store", async () => {
+      const snsTicket = snsTicketMock({
+        rootCanisterId: rootCanisterIdMock,
+        owner: mockIdentity.getPrincipal(),
+        subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
+      });
+      snsTicketsStore.setTicket({
+        rootCanisterId: rootCanisterIdMock,
+        ticket: snsTicket.ticket,
+      });
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      expect(get(accountsStore).main.balance.toE8s()).not.toEqual(
+        newBalanceE8s
+      );
+
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+      });
+
+      expect(get(accountsStore).subAccounts[0].balance.toE8s()).toEqual(
+        newBalanceE8s
+      );
     });
 
     it("should poll refresh_buyer_tokens until successful", async () => {

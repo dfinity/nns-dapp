@@ -261,11 +261,9 @@ export const transferICP = async ({
     });
     await Promise.all([
       loadBalance({ accountIdentifier: identifier }),
-      ...[
-        nonNullish(toAccount)
-          ? loadBalance({ accountIdentifier: to })
-          : Promise.resolve(),
-      ],
+      nonNullish(toAccount)
+        ? loadBalance({ accountIdentifier: to })
+        : Promise.resolve(),
     ]);
 
     return { success: true };
