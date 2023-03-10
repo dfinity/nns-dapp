@@ -110,6 +110,7 @@ jobs:
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
           set -o pipefail
+          export WDIO_BROWSER=chrome
           SCREENSHOT=1 npm run test | tee -a wdio.log
       - name: Stop replica
         run: dfx stop
