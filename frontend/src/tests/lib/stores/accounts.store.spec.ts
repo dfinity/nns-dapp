@@ -82,9 +82,9 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.subAccounts[0].balance.toE8s()).toEqual(
-        newBalanceE8s
-      );
+      const store = get(accountsStore);
+      expect(store?.subAccounts[0].balance.toE8s()).toEqual(newBalanceE8s);
+      expect(store.main.balance).toEqual(mockMainAccount.balance);
     });
 
     it("should set balance for hw account", () => {

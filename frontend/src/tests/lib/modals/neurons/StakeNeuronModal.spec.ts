@@ -38,6 +38,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { assertNonNullish, nonNullish } from "@dfinity/utils";
 import {
   fireEvent,
   waitFor,
@@ -45,6 +46,7 @@ import {
   type queries,
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -95,6 +97,7 @@ describe("StakeNeuronModal", () => {
 
   describe("main account selection", () => {
     let queryBalanceSpy: jest.SpyInstance;
+    const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       accountsStore.set({
@@ -110,10 +113,9 @@ describe("StakeNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
-      const mainBalanceE8s = BigInt(10_000_000);
       queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+        .mockResolvedValue(newBalanceE8s);
     });
 
     afterEach(() => {
@@ -335,7 +337,7 @@ describe("StakeNeuronModal", () => {
       ).not.toBeNull();
     });
 
-    it("should sync account after staking neuron", async () => {
+    it("should sync balance after staking neuron", async () => {
       const { container } = await renderModal({
         component: StakeNeuronModal,
       });
@@ -343,9 +345,10 @@ describe("StakeNeuronModal", () => {
       const accountCard = container.querySelector('article[role="button"]');
       expect(accountCard).not.toBeNull();
 
-      accountCard && (await fireEvent.click(accountCard));
+      nonNullish(accountCard) && (await fireEvent.click(accountCard));
 
       const input = container.querySelector('input[name="amount"]');
+      assertNonNullish(input);
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
       input &&
@@ -369,6 +372,8 @@ describe("StakeNeuronModal", () => {
         certified: false,
         accountIdentifier: selectedAccountIdentifier,
       });
+      // New balance is set in the store.
+      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {

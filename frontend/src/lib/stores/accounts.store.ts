@@ -63,10 +63,7 @@ const initAccountsStore = (): AccountsStore => {
             : account;
         };
         return {
-          main:
-            main.identifier === accountIdentifier
-              ? { ...main, balance: newBalance }
-              : main,
+          main: mapNewBalance(main),
           subAccounts: (subAccounts || []).map(mapNewBalance),
           hardwareWallets: (hardwareWallets || []).map(mapNewBalance),
         };
