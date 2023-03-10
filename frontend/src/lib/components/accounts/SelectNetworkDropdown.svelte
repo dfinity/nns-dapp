@@ -46,11 +46,11 @@
       return;
     }
 
-    const validBtcAddres = !invalidBtcAddress({
+    const validBtcAddress = !invalidBtcAddress({
       address: selectedDestinationAddress,
       network: ckTESTBTC ? BtcNetwork.Testnet : BtcNetwork.Mainnet,
     });
-    if (validBtcAddres) {
+    if (validBtcAddress) {
       selectedNetwork = ckTESTBTC
         ? TransactionNetwork.BTC_TESTNET
         : TransactionNetwork.BTC_MAINNET;
