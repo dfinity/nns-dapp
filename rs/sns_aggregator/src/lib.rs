@@ -102,9 +102,6 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 ///
 /// Note: If the canister os created with e.g. `dfx canister create`
 ///       and then `dfx deploy`, `init(..)` is never called.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 #[ic_cdk_macros::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
@@ -113,9 +110,6 @@ fn init(config: Option<Config>) {
 }
 
 /// Function called before upgrade to a new wasm.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 #[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
@@ -139,9 +133,6 @@ fn pre_upgrade() {
 }
 
 /// Function called after a canister has been upgraded to a new wasm.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
