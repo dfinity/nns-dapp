@@ -4,7 +4,6 @@
 
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { IC_LOGO } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -19,18 +18,18 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import { fireEvent, waitFor } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockSummary,
-} from "../../mocks/sns-projects.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../mocks/transaction-fee.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { fireEvent, waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -110,7 +109,7 @@ describe("Accounts", () => {
     const logo = getByTestId("project-logo");
     const img = logo.querySelector('[data-tid="logo"]');
 
-    expect(img?.getAttribute("src") ?? "").toEqual(IC_LOGO);
+    expect(img?.getAttribute("alt") ?? "").toEqual(en.auth.ic_logo);
   });
 
   it("should open nns transaction modal", async () => {

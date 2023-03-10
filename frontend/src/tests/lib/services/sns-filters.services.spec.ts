@@ -1,9 +1,9 @@
 import { loadSnsFilters } from "$lib/services/sns-filters.services";
 import { snsFiltesStore } from "$lib/stores/sns-filters.store";
 import { enumSize } from "$lib/utils/enum.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("sns-filters services", () => {
   describe("loadSnsFilters", () => {

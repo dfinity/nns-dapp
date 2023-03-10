@@ -3,17 +3,18 @@ import {
   resetNeuronsApiService,
 } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { Topic } from "@dfinity/nns";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockIdentity,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
   createMockKnownNeuron,
   createMockNeuron,
-} from "../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { Topic, Vote } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 
@@ -894,6 +895,37 @@ describe("neurons api-service", () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stopDissolving,
         apiServiceFunc: governanceApiService.stopDissolving,
+        params,
+      });
+    });
+  });
+
+  describe("registerVote", () => {
+    const params = {
+      neuronId,
+      identity: mockIdentity,
+      proposalId: mockProposalInfo.id,
+      vote: Vote.Yes,
+    };
+
+    it("should call registerVote api", () => {
+      governanceApiService.registerVote(params);
+      expect(api.registerVote).toHaveBeenCalledWith(params);
+      expect(api.registerVote).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.registerVote,
+        apiServiceFunc: governanceApiService.registerVote,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.registerVote,
+        apiServiceFunc: governanceApiService.registerVote,
         params,
       });
     });

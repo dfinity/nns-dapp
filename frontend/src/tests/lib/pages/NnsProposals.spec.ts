@@ -13,29 +13,29 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import {
+  authStoreMock,
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import en from "$tests/mocks/i18n.mock";
+import {
+  buildMockNeuronsStoreSubscribe,
+  mockNeuron,
+} from "$tests/mocks/neurons.mock";
+import {
+  mockEmptyProposalsStoreSubscribe,
+  mockProposals,
+  mockProposalsStoreSubscribe,
+} from "$tests/mocks/proposals.store.mock";
+import {
   GovernanceCanister,
   type Proposal,
   type ProposalInfo,
 } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import {
-  authStoreMock,
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import en from "../../mocks/i18n.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockNeuron,
-} from "../../mocks/neurons.mock";
-import {
-  mockEmptyProposalsStoreSubscribe,
-  mockProposals,
-  mockProposalsStoreSubscribe,
-} from "../../mocks/proposals.store.mock";
 
 jest.mock("$lib/api/governance.api");
 

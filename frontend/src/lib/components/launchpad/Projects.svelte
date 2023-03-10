@@ -15,7 +15,7 @@
 
   export let status: SnsSwapLifecycle;
 
-  let projects: SnsFullProject[] | undefined;
+  let projects: SnsFullProject[];
   $: projects = filterProjectsStatus({
     swapLifecycle: status,
     projects: $snsProjectsActivePadStore,
@@ -39,7 +39,7 @@
   });
 </script>
 
-{#if loading || projects === undefined}
+{#if loading}
   <div class="card-grid">
     <SkeletonProjectCard />
     <SkeletonProjectCard />

@@ -28,6 +28,14 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import {
+  buildMockSnsNeuronsStoreSubscribe,
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import {
@@ -43,14 +51,6 @@ import {
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import {
-  buildMockSnsNeuronsStoreSubscribe,
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../mocks/sns-projects.mock";
 
 const {
   syncSnsNeurons,
@@ -789,7 +789,7 @@ describe("sns-neurons-services", () => {
       expect(toastsError).toBeCalled();
     });
 
-    it("should not call sns api setFollowees when new followee is the same neuron", async () => {
+    it("should call sns api setFollowees when new followee is the same neuron", async () => {
       jest.spyOn(api, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
@@ -799,8 +799,14 @@ describe("sns-neurons-services", () => {
         followeeHex: neuronIdHext,
       });
 
-      expect(setFolloweesSpy).not.toBeCalled();
-      expect(toastsError).toBeCalled();
+      expect(setFolloweesSpy).toBeCalledWith({
+        neuronId: fromNullable(mockSnsNeuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        followees: [mockSnsNeuron.id[0] as SnsNeuronId],
+        functionId,
+      });
+      expect(setFolloweesSpy).toBeCalledTimes(1);
     });
 
     it("should not call sns api setFollowees when new followee does not exist", async () => {

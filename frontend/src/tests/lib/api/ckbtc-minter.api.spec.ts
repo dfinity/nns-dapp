@@ -6,10 +6,10 @@ import {
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCkBTCAddress } from "../../mocks/ckbtc-accounts.mock";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
@@ -30,11 +30,13 @@ describe("ckbtc-minter api", () => {
   describe("getBTCAddress", () => {
     it("returns the bitcoin address", async () => {
       const getBTCAddressSpy =
-        minterCanisterMock.getBtcAddress.mockResolvedValue(mockCkBTCAddress);
+        minterCanisterMock.getBtcAddress.mockResolvedValue(
+          mockBTCAddressTestnet
+        );
 
       const result = await getBTCAddress(params);
 
-      expect(result).toEqual(mockCkBTCAddress);
+      expect(result).toEqual(mockBTCAddressTestnet);
 
       expect(getBTCAddressSpy).toBeCalled();
     });
@@ -109,7 +111,7 @@ describe("ckbtc-minter api", () => {
   describe("retrieveBtc", () => {
     const retrieveParams = {
       ...params,
-      address: mockCkBTCAddress,
+      address: mockBTCAddressTestnet,
       amount: 123n,
     };
 

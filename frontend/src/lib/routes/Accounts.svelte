@@ -13,7 +13,7 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
@@ -35,11 +35,9 @@
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
 
-  const loadSnsAccountsBalances = async (
-    projects: SnsFullProject[] | undefined
-  ) => {
+  const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
-    if (isNullish(projects) || projects.length === 0) {
+    if (projects.length === 0) {
       return;
     }
 
