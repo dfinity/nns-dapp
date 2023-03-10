@@ -18,6 +18,9 @@ use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::str::FromStr;
 
+#[cfg(test)]
+mod tests;
+
 /// Semi-Persistent state, not guaranteed to be preserved across upgrades but persistent enough to store a cache.
 #[derive(Default)]
 pub struct State {
