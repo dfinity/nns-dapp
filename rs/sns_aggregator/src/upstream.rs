@@ -1,4 +1,7 @@
 //! Functions that get data from upstream SNS and NNS canisters.
+#![deny(clippy::panic)]
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
 
 use std::str::FromStr;
 
@@ -38,13 +41,21 @@ pub async fn update_cache() {
     }
 }
 
+/// The NNS SNS wasm canister ID
+/// 
+/// This canister contains a lit of all SNS root canisters it has created.
+#[allow(clippy::expect_used)]
+fn nns_sns_wasm_canister_id() -> CanisterId {
+    CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!")
+}
+
 /// Gets a list of SNSs from the nns-sns-wasm canister and puts it in the queue of SNSs to query.
 ///
 /// Note: We can improve on this by filtering out SNSs that have become const.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asking for more SNSs".to_string());
     let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> = ic_cdk::api::call::call(
-        CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!"),
+        nns_sns_wasm_canister_id(),
         "list_deployed_snses",
         (EmptyRecord {},),
     )
