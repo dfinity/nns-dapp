@@ -12,7 +12,8 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
     invalidBtcAddress,
-    invalidICPOrIcrcAddress,
+    invalidIcpAddress,
+    invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { BtcNetwork } from "@dfinity/ckbtc";
 
@@ -36,19 +37,20 @@
       return;
     }
 
-    if (!invalidICPOrIcrcAddress(selectedDestinationAddress)) {
+    const validIcpAddress = !invalidIcpAddress(selectedDestinationAddress);
+    const validIcrcAddress = !invalidIcrcAddress(selectedDestinationAddress);
+    if (validIcpAddress || validIcrcAddress) {
       selectedNetwork = ckTESTBTC
         ? TransactionNetwork.ICP_CKTESTBTC
         : TransactionNetwork.ICP_CKBTC;
       return;
     }
 
-    if (
-      !invalidBtcAddress({
-        address: selectedDestinationAddress,
-        network: ckTESTBTC ? BtcNetwork.Testnet : BtcNetwork.Mainnet,
-      })
-    ) {
+    const validBtcAddress = !invalidBtcAddress({
+      address: selectedDestinationAddress,
+      network: ckTESTBTC ? BtcNetwork.Testnet : BtcNetwork.Mainnet,
+    });
+    if (validBtcAddress) {
       selectedNetwork = ckTESTBTC
         ? TransactionNetwork.BTC_TESTNET
         : TransactionNetwork.BTC_MAINNET;
