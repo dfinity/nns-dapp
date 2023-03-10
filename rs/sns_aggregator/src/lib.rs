@@ -137,7 +137,8 @@ fn pre_upgrade() {
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
     // Make an effort to restore state.  If it doesn't work, give up.
-    if false {
+    if true {
+        crate::state::log("Starting state recovery...".to_string());
         // Disabled until stable serde is fixed.
         STATE.with(|state| {
             match ic_cdk::storage::stable_restore()
@@ -147,6 +148,7 @@ fn post_upgrade(config: Option<Config>) {
                 Ok(data) => {
                     *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
                     *state.stable.borrow_mut() = data;
+                    crate::state::log("Successfully restored stable memory.".to_string());
                 }
                 Err(message) => {
                     crate::state::log(message);

@@ -2,6 +2,8 @@
 
 use std::cell::RefCell;
 
+use candid::Nat;
+
 use crate::{types::upstream::SnsCache, assets::Assets};
 
 use super::{Config, StableState}; // Is this the EU?
@@ -46,5 +48,42 @@ fn serializing_and_deserializing_returns_original() {
         for fun in [|state: &StableState| state.sns_cache.borrow().all_sns.len()] {
             assert_eq!(fun(state), fun(&deserialized));
         }
+    }
+}
+
+#[test]
+fn nat_serde_json_works() {
+    let test_vectors = [Nat::from(0)];
+    for number in test_vectors {
+        let serialized = serde_json::to_string(&number).expect("Failed to serialize Nat");
+        let parsed: Nat = serde_json::from_str(&serialized).expect("Failed to parse Nat");
+        assert_eq!(number, parsed);
+    }
+}
+
+#[test]
+fn nat_serde_cbor_works() {
+    let test_vectors = [Nat::from(0)];
+    for number in test_vectors {
+        let serialized = serde_cbor::to_vec(&number).expect("Failed to serialize Nat");
+        let parsed: Nat = serde_json::from_slice(&serialized).expect("Failed to parse Nat");
+        assert_eq!(number, parsed);
+    }
+}
+
+#[test]
+fn nat_candid_works() {
+    let test_vectors = [Nat::from(0)];
+    for number in test_vectors {
+        let serialized = {
+            let mut ser = candid::ser::IDLBuilder::new();
+            ser.arg(&number).expect("Failed to serialize Nat");
+ser.serialize_to_vec().expect("Failed to convert serializer to bytes")
+        };
+        let parsed: Nat = {
+            let mut de = candid::de::IDLDeserialize::new(&serialized).expect("Failed to make serializer");
+            de.get_value().expect("Failed to parse Nat")
+        };
+        assert_eq!(number, parsed);
     }
 }

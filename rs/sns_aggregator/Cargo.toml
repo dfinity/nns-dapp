@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 base64 = "0.13.0"
-candid = "0.8.2"
+candid = "0.8.4"
 ic-cdk = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a", features = ["timers"] }
 ic-cdk-macros = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
