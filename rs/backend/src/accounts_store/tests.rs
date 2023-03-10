@@ -1216,7 +1216,9 @@ fn hardware_wallet_account_name_too_long() {
 fn get_stats() {
     let mut store = setup_test_store();
 
-    let stats = store.get_stats();
+    let mut stats = crate::stats::Stats::default();
+    store.get_stats(&mut stats);
+
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
@@ -1232,13 +1234,13 @@ fn get_stats() {
     store.add_account(principal3);
     store.add_account(principal4);
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
 
     assert_eq!(4, stats.accounts_count);
 
     for i in 1..10 {
         store.create_sub_account(principal3, i.to_string());
-        let stats = store.get_stats();
+        store.get_stats(&mut stats);
         assert_eq!(i, stats.sub_accounts_count);
     }
 
@@ -1259,11 +1261,11 @@ fn get_stats() {
         },
     );
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert_eq!(2, stats.hardware_wallet_accounts_count);
 
     store.mark_ledger_sync_complete();
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
