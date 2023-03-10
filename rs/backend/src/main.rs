@@ -2,7 +2,7 @@ use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, Stats, TransactionType,
+    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::periodic_tasks_runner::run_periodic_tasks;
@@ -22,6 +22,7 @@ mod multi_part_transactions_processor;
 mod periodic_tasks_runner;
 mod proposals;
 mod state;
+mod stats;
 mod time;
 
 type Cycles = u128;
@@ -227,8 +228,8 @@ pub fn get_stats() {
     over(candid, |()| get_stats_impl());
 }
 
-fn get_stats_impl() -> Stats {
-    STATE.with(|s| s.accounts_store.borrow().get_stats())
+fn get_stats_impl() -> stats::Stats {
+    STATE.with(stats::get_stats)
 }
 
 /// Executes on every block height and is used to run background processes.
