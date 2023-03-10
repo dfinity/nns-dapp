@@ -103,15 +103,24 @@ jobs:
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
-      - name: prepare and run the test suite
+      - name: Prepare for e2e tests
         working-directory: e2e-tests
         run: |
           npm ci
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
+      - name: Run chrome e2e tests
+        working-directory: e2e-tests
+        run: |
           set -o pipefail
           export WDIO_BROWSER=chrome
-          SCREENSHOT=1 npm run test | tee -a wdio.log
+          SCREENSHOT=1 npm run test | tee -a chrome-wdio.log
+      - name: Run firefox e2e tests
+        working-directory: e2e-tests
+        run: |
+          set -o pipefail
+          export WDIO_BROWSER=firefox
+          SCREENSHOT=1 npm run test | tee -a firefox-wdio.log
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
@@ -119,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wdio-logs
-          path: e2e-tests/wdio.log
+          path: e2e-tests/*-wdio.log
           # Disable screenshot saving until screenshots are stable.
           #      - name: Commit screenshots
           #        if: ${{ github.ref != 'refs/heads/main' }}
