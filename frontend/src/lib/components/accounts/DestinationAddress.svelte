@@ -1,7 +1,7 @@
 <script lang="ts">
   import { emptyAddress } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
-  import Address from "./Address.svelte";
+  import NnsAddress from "./NnsAddress.svelte";
   import SelectAccount from "./SelectAccount.svelte";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -24,7 +24,7 @@
     dispatcher("nnsAddress", { address: destinationAddress });
 </script>
 
-<Address bind:address on:submit={onEnterAddress} />
+<NnsAddress bind:address on:submit={onEnterAddress} />
 
 <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
 <!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->

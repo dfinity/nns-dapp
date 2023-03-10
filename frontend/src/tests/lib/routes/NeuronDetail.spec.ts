@@ -24,6 +24,7 @@ import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/api/sns-aggregator.api");
@@ -74,9 +75,12 @@ describe("NeuronDetail", () => {
       const { container } = render(NeuronDetail, nnsProps);
       const po = NeuronDetailPo.under(container);
 
-      expect(po.hasSnsNeuronDetail()).toBe(false);
-      expect(po.hasNnsNeuronDetail()).toBe(true);
-      expect(po.getNnsNeuronDetail().isContentLoaded()).toBe(true);
+      expect(po.hasSnsNeuronDetailPo()).toBe(false);
+      expect(po.hasNnsNeuronDetailPo()).toBe(true);
+      expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(false);
+      await waitFor(() => {
+        expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(true);
+      });
     });
   });
 
@@ -112,10 +116,13 @@ describe("NeuronDetail", () => {
       const { container } = render(NeuronDetail, snsProps);
 
       const po = NeuronDetailPo.under(container);
-      expect(po.isContentLoaded()).toBe(true);
-      expect(po.hasNnsNeuronDetail()).toBe(false);
-      expect(po.hasSnsNeuronDetail()).toBe(true);
-      expect(po.getSnsNeuronDetail().isContentLoaded()).toBe(true);
+      expect(po.isContentLoaded()).toBe(false);
+      await waitFor(() => {
+        expect(po.isContentLoaded()).toBe(true);
+      });
+      expect(po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
 
     it("should load if sns projects are loaded after initial rendering", async () => {
@@ -126,10 +133,13 @@ describe("NeuronDetail", () => {
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
-      expect(po.isContentLoaded()).toBe(true);
-      expect(po.hasNnsNeuronDetail()).toBe(false);
-      expect(po.hasSnsNeuronDetail()).toBe(true);
-      expect(po.getSnsNeuronDetail().isContentLoaded()).toBe(true);
+      expect(po.isContentLoaded()).toBe(false);
+      await waitFor(() => {
+        expect(po.isContentLoaded()).toBe(true);
+      });
+      expect(po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
   });
 });

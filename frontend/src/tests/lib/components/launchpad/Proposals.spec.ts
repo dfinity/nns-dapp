@@ -19,7 +19,7 @@ jest.mock("$lib/services/$public/sns.services", () => {
 describe("Proposals", () => {
   const mockProposals = (proposals: ProposalInfo[] | null) =>
     proposals === null
-      ? snsProposalsStore.setLoadingState()
+      ? snsProposalsStore.reset()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
   beforeEach(snsProposalsStore.reset);

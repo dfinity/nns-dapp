@@ -1,7 +1,9 @@
 import {
   openSnsProposalsStore,
   snsProposalsStore,
+  snsProposalsStoreIsLoading,
   snsQueryStore,
+  snsQueryStoreIsLoading,
   snsSwapCommitmentsStore,
   type SnsQueryStoreData,
 } from "$lib/stores/sns.store";
@@ -87,6 +89,19 @@ describe("sns.store", () => {
       expect($openSnsProposalsStore.length).toBe(1);
       expect($openSnsProposalsStore[0]).toEqual(proposals[1]);
     });
+
+    it("should set the store as loading state", () => {
+      const proposals = {
+        proposals: [{ ...mockProposalInfo }],
+        certified: false,
+      };
+      snsProposalsStore.setProposals(proposals);
+
+      expect(get(snsProposalsStoreIsLoading)).toBe(false);
+
+      snsProposalsStore.reset();
+      expect(get(snsProposalsStoreIsLoading)).toBe(true);
+    });
   });
 
   describe("query store", () => {
@@ -127,10 +142,10 @@ describe("sns.store", () => {
       });
 
       snsQueryStore.setData(data);
-      snsQueryStore.setLoadingState();
+      expect(get(snsQueryStoreIsLoading)).toBe(false);
 
-      const store = get(snsQueryStore);
-      expect(store).toBeNull();
+      snsQueryStore.reset();
+      expect(get(snsQueryStoreIsLoading)).toBe(true);
     });
 
     it("should update the data", () => {

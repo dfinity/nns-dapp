@@ -34,7 +34,7 @@ jest.mock("$lib/services/sns.services", () => {
 const mockUnwatchMetricsCall = jest.fn();
 jest.mock("$lib/services/sns-swap-metrics.services", () => {
   return {
-    loadSnsMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
     watchSnsMetrics: jest.fn().mockImplementation(() => mockUnwatchMetricsCall),
   };
 });

@@ -67,6 +67,7 @@
     invalidAddress({
       address: selectedDestinationAddress,
       network: selectedNetwork,
+      rootCanisterId,
     }) ||
     errorMessage !== undefined ||
     (mustSelectNetwork && isNullish(selectedNetwork));

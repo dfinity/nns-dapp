@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
   import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
@@ -29,35 +30,37 @@
     );
 </script>
 
-<div class="card-grid" data-tid="neurons-body">
-  {#if isLoading}
-    <SkeletonCard />
-    <SkeletonCard />
-  {:else}
-    {#each $sortedNeuronStore as neuron}
-      {#if isSpawning(neuron)}
-        <Tooltip
-          id="spawning-neuron-card"
-          text={$i18n.neuron_detail.spawning_neuron_info}
-        >
+<TestIdWrapper testId="nns-neurons-component">
+  <div class="card-grid" data-tid="neurons-body">
+    {#if isLoading}
+      <SkeletonCard />
+      <SkeletonCard />
+    {:else}
+      {#each $sortedNeuronStore as neuron}
+        {#if isSpawning(neuron)}
+          <Tooltip
+            id="spawning-neuron-card"
+            text={$i18n.neuron_detail.spawning_neuron_info}
+          >
+            <NnsNeuronCard
+              disabled
+              ariaLabel={$i18n.neurons.aria_label_neuron_card}
+              {neuron}
+            />
+          </Tooltip>
+        {:else}
           <NnsNeuronCard
-            disabled
+            role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={async () => await goToNeuronDetails(neuron.neuronId)}
             {neuron}
           />
-        </Tooltip>
-      {:else}
-        <NnsNeuronCard
-          role="link"
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={async () => await goToNeuronDetails(neuron.neuronId)}
-          {neuron}
-        />
-      {/if}
-    {/each}
-  {/if}
-</div>
+        {/if}
+      {/each}
+    {/if}
+  </div>
 
-{#if !isLoading && $sortedNeuronStore.length === 0}
-  <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
-{/if}
+  {#if !isLoading && $sortedNeuronStore.length === 0}
+    <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
+  {/if}
+</TestIdWrapper>
