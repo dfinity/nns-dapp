@@ -7,6 +7,7 @@ import {
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import {
   getAccountIdentityByPrincipal,
+  loadBalance,
   transferICP,
 } from "$lib/services/accounts.services";
 import * as services from "$lib/services/neurons.services";
@@ -75,7 +76,7 @@ const setAccountIdentity = (newIdentity: Identity) =>
 
 jest.mock("$lib/services/accounts.services", () => {
   return {
-    syncAccounts: jest.fn(),
+    loadBalance: jest.fn(),
     transferICP: jest.fn().mockResolvedValue({ success: true }),
     getAccountIdentityByPrincipal: jest
       .fn()
@@ -559,6 +560,16 @@ describe("neurons-services", () => {
 
       expect(spyDisburse).toHaveBeenCalled();
       expect(success).toBe(true);
+    });
+
+    it("should sync account balance", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await services.disburse({
+        neuronId: controlledNeuron.neuronId,
+        toAccountId: mockMainAccount.identifier,
+      });
+
+      expect(loadBalance).toHaveBeenCalledTimes(1);
     });
 
     it("should not disburse neuron if no identity", async () => {

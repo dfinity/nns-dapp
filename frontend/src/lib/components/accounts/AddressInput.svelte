@@ -4,16 +4,18 @@
   import { invalidAddress } from "$lib/utils/accounts.utils";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
+  import type { Principal } from "@dfinity/principal";
 
   export let address = "";
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let rootCanisterId: Principal;
 
   let showError = false;
   const dispatcher = createEventDispatcher();
   const showErrorIfAny = () => {
     showError =
       address.length > 0 &&
-      invalidAddress({ address, network: selectedNetwork });
+      invalidAddress({ address, network: selectedNetwork, rootCanisterId });
   };
   // Hide error on change
   $: address, (showError = false);

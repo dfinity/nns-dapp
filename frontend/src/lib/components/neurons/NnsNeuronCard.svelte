@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import type { CardType } from "$lib/types/card";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
   import NnsNeuronCardTitle from "./NnsNeuronCardTitle.svelte";
@@ -17,7 +18,7 @@
   export let cardType: CardType = "card";
 </script>
 
-<div data-tid="nns-neuron-card-component" class="component">
+<TestIdWrapper testId="nns-neuron-card-component">
   <NeuronCardContainer
     {role}
     {selected}
@@ -38,7 +39,7 @@
 
     <slot />
   </NeuronCardContainer>
-</div>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";
@@ -55,9 +56,5 @@
 
   .content {
     @include neuron.neuron-card-content;
-  }
-
-  .component {
-    display: contents;
   }
 </style>

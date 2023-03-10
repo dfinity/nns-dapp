@@ -87,15 +87,15 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(container);
 
-    expect(po.hasSnsNeurons()).toBe(false);
-    expect(po.hasNnsNeurons()).toBe(true);
-    expect(po.getNnsNeurons().isContentLoaded()).toBe(false);
+    expect(po.hasSnsNeuronsPo()).toBe(false);
+    expect(po.hasNnsNeuronsPo()).toBe(true);
+    expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
     await waitFor(() => {
-      expect(po.getNnsNeurons().isContentLoaded()).toBe(true);
+      expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = mockNeuron.neuronId.toString();
-    expect(po.getNnsNeurons().getNeuronIds()).toContain(neuronIdText);
+    expect(po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should render project page when a committed project is selected", async () => {
@@ -106,15 +106,15 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(container);
 
-    expect(po.hasNnsNeurons()).toBe(false);
-    expect(po.hasSnsNeurons()).toBe(true);
-    expect(po.getSnsNeurons().isContentLoaded()).toBe(false);
+    expect(po.hasNnsNeuronsPo()).toBe(false);
+    expect(po.hasSnsNeuronsPo()).toBe(true);
+    expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
     await waitFor(() => {
-      expect(po.getSnsNeurons().isContentLoaded()).toBe(true);
+      expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(mockSnsNeuron);
-    expect(po.getSnsNeurons().getNeuronIds()).toContain(neuronIdText);
+    expect(po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should not render neurons when an open project is selected", async () => {
@@ -125,16 +125,7 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(container);
 
-    expect(po.hasNnsNeurons()).toBe(false);
-    expect(po.hasSnsNeurons()).toBe(true);
-    expect(po.getSnsNeurons().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getSnsNeurons().isContentLoaded()).toBe(true);
-    });
-
-    const neuronIdText = getSnsNeuronIdAsHexString(mockSnsNeuron);
-    // This should actually fail but doesn't because of
-    // https://dfinity.atlassian.net/browse/GIX-1328
-    expect(po.getSnsNeurons().getNeuronIds()).toContain(neuronIdText);
+    expect(po.hasNnsNeuronsPo()).toBe(false);
+    expect(po.hasSnsNeuronsPo()).toBe(false);
   });
 });

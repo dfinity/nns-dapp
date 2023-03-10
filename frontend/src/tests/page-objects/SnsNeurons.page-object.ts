@@ -18,20 +18,20 @@ export class SnsNeuronsPo {
     return el && new SnsNeuronsPo(el);
   }
 
-  getSkeletonCards(): SkeletonCardPo[] {
+  getSkeletonCardPos(): SkeletonCardPo[] {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  getNeuronCards(): SnsNeuronCardPo[] {
+  getNeuronCardPos(): SnsNeuronCardPo[] {
     return SnsNeuronCardPo.allUnder(this.root);
   }
 
   isContentLoaded(): boolean {
-    return this.getSkeletonCards().length === 0;
+    return this.getSkeletonCardPos().length === 0;
   }
 
   getNeuronIds(): string[] {
-    const cards = this.getNeuronCards();
+    const cards = this.getNeuronCardPos();
     return cards.map((card) => card.getNeuronId());
   }
 }

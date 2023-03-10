@@ -17,11 +17,11 @@ export class HashPo {
     return el && new HashPo(el);
   }
 
-  getTooltip(): TooltipPo {
+  getTooltipPo(): TooltipPo {
     return TooltipPo.under(this.root);
   }
 
   getText(): string {
-    return this.getTooltip().getText();
+    return this.getTooltipPo().getText();
   }
 }
