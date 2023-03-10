@@ -10,7 +10,6 @@ help_text() {
 	  - downgrading the local build to prod.
 	  - upgrading prod to the local build.
 	EOF
-  # Note: If the code changes, please update the summary above to match.
 }
 
 # Source the clap.bash file ---------------------------------------------------
