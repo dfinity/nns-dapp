@@ -1,4 +1,5 @@
 //! The state of the canister
+use anyhow::anyhow;
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
@@ -193,8 +194,8 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
-            });
+                serde_json::to_string(&slow_data).map_err(|err| anyhow!("Failed to serialise latest SNSs: {err:?}"))
+            })?;
             let asset = Asset {
                 headers: Vec::new(),
                 bytes: json_data.into_bytes(),

@@ -1,8 +1,4 @@
 //! Functions that get data from upstream SNS and NNS canisters.
-#![deny(clippy::panic)]
-#![deny(clippy::expect_used)]
-#![deny(clippy::unwrap_used)]
-
 use std::str::FromStr;
 
 use crate::convert_canister_id;

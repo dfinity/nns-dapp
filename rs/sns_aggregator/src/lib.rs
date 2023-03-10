@@ -1,6 +1,9 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
+#![deny(clippy::panic)]
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
 pub mod assets;
 mod conversion;
 mod state;
@@ -44,6 +47,7 @@ fn health_check() -> String {
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
 #[ic_cdk_macros::update]
+#[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
     let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
@@ -53,6 +57,7 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
 /// API method to dump stable data, preserved across upgrades, as JSON.
 #[candid_method(query)]
 #[ic_cdk_macros::query]
+#[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
 fn stable_data() -> String {
     STATE.with(|state| {
         let to_serialize: &StableState = &(*state.stable.borrow());
