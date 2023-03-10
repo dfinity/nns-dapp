@@ -134,6 +134,17 @@ jobs:
             cat ,logs
             exit 1
           }
+      - name: Upgrade the aggregator with a slow refresh rate
+        run: dfx canister install --mode reinstall --wasm sns_aggregator_dev.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+      - name: Expect the first page of data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
       - name: Stop replica
         run: dfx stop
   aggregator-pass:
