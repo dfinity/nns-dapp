@@ -36,9 +36,9 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import { assertNonNullish, nonNullish } from "@dfinity/utils";
 import {
   fireEvent,
   waitFor,
@@ -346,22 +346,23 @@ describe("StakeNeuronModal", () => {
       });
 
       const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
+      const nonNullishCard = assertNonNullish(accountCard);
 
-      nonNullish(accountCard) && (await fireEvent.click(accountCard));
+      await fireEvent.click(nonNullishCard);
 
       const input = container.querySelector('input[name="amount"]');
-      assertNonNullish(input);
+      const nonNullishInput = assertNonNullish(input);
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-      input &&
-        (await fireEvent.input(input, { target: { value: neuronStake } }));
+      await fireEvent.input(nonNullishInput, {
+        target: { value: neuronStake },
+      });
 
       expect(queryBalanceSpy).not.toBeCalled();
 
       const createButton = container.querySelector('button[type="submit"]');
-      assertNonNullish(createButton);
-      createButton && (await fireEvent.click(createButton));
+      const nonNullishButton = assertNonNullish(createButton);
+      await fireEvent.click(nonNullishButton);
 
       await waitFor(() => expect(queryBalanceSpy).toBeCalledTimes(2));
       // First card is clicked. First card is the main account.
