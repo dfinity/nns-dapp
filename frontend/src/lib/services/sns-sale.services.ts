@@ -7,11 +7,12 @@ import {
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { syncAccounts } from "$lib/services/accounts.services";
+import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -22,6 +23,7 @@ import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
+import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
@@ -660,7 +662,7 @@ const pollTransfer = ({
  *
  * 1. nnsLedger.transfer
  * 2. snsSale.notifyParticipation (refresh_buyer_tokens)
- * 3. syncAccounts
+ * 3. load new balance in store
  *
  * @param snsTicket
  * @param rootCanisterId
@@ -801,11 +803,27 @@ export const participateInSnsSale = async ({
   }
 
   // Step 4.
-  logWithTimestamp("[sale] 3. syncAccounts");
+  logWithTimestamp("[sale] 3. loadBalance");
 
   updateProgress(SaleStep.RELOAD);
 
-  await syncAccounts();
+  // Ticket return the account as ICRC. We can't compare identifiers directly.
+  // If there is no subaccount, then the account is the main account.
+  // Otherwise, we look for the matching subaccount.
+  const sourceAccount = get(nnsAccountsListStore).find((account) => {
+    if (isNullish(subaccount)) {
+      return account.type === "main";
+    }
+    if (nonNullish(account.subAccount)) {
+      return (
+        subaccountToHexString(subaccount) ===
+        subaccountToHexString(Uint8Array.from(account.subAccount))
+      );
+    }
+  });
+  if (nonNullish(sourceAccount)) {
+    await loadBalance({ accountIdentifier: sourceAccount.identifier });
+  }
 
   logWithTimestamp("[sale] done");
 

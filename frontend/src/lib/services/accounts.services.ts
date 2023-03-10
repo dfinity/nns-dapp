@@ -37,6 +37,7 @@ import {
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -253,7 +254,19 @@ export const transferICP = async ({
       amount: tokenAmount,
     });
 
-    await syncAccounts();
+    // Transfer can be to one of the user's account.
+    const toAccount = findAccount({
+      identifier: to,
+      accounts: get(nnsAccountsListStore),
+    });
+    await Promise.all([
+      loadBalance({ accountIdentifier: identifier }),
+      ...[
+        nonNullish(toAccount)
+          ? loadBalance({ accountIdentifier: to })
+          : Promise.resolve(),
+      ],
+    ]);
 
     return { success: true };
   } catch (err) {
