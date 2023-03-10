@@ -354,9 +354,10 @@ describe("StakeNeuronModal", () => {
       input &&
         (await fireEvent.input(input, { target: { value: neuronStake } }));
 
-      const createButton = container.querySelector('button[type="submit"]');
-
       expect(queryBalanceSpy).not.toBeCalled();
+
+      const createButton = container.querySelector('button[type="submit"]');
+      assertNonNullish(createButton);
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() => expect(queryBalanceSpy).toBeCalledTimes(2));
