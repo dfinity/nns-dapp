@@ -7,8 +7,8 @@ PROD_WASM="nns-dapp-prod_local.wasm"
 help_text() {
   cat <<-EOF
 	Tests:
-	  - downgrading the current build to the prod build.
-	  - upgrading the prod build to the current build.
+	  - downgrading the local build to prod.
+	  - upgrading prod to the local build.
 	EOF
   # Note: If the code changes, please update the summary above to match.
 }
