@@ -59,6 +59,7 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "query_balance": "An error occurred while loading the balance for $accountId.",
     "accounts_not_found_poll": "An error occurred while loading the accounts information. The Internet Computer seems to be under high load, please try in a few minutes.",
     "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
     "account_not_reload": "Sorry, the account \"$account_identifier\" cannot be reloaded",
