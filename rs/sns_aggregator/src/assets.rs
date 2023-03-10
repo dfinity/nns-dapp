@@ -218,7 +218,7 @@ fn update_root_hash(a: &AssetHashes) {
 /// Responds to an HTTP request for an asset.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let mut parts = req.url.splitn(2, '?');
-    let request_path = parts.next().expect("No path");
+    let request_path = parts.next().unwrap_or_else("/");
     STATE.with(|state| {
         let mut headers = security_headers();
         let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
