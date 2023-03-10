@@ -126,15 +126,6 @@ describe("Neurons", () => {
     const po = NeuronsPo.under(container);
 
     expect(po.hasNnsNeuronsPo()).toBe(false);
-    expect(po.hasSnsNeuronsPo()).toBe(true);
-    expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
-    });
-
-    const neuronIdText = getSnsNeuronIdAsHexString(mockSnsNeuron);
-    // This should actually fail but doesn't because of
-    // https://dfinity.atlassian.net/browse/GIX-1328
-    expect(po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(po.hasSnsNeuronsPo()).toBe(false);
   });
 });
