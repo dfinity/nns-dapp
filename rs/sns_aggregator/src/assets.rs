@@ -151,25 +151,25 @@ fn security_headers() -> Vec<HeaderField> {
 }
 
 /// Generates a header used by clients to verify the integrity of the data.
-fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
-    let certificate = ic_cdk::api::data_certificate().unwrap_or_else(|| {
-        panic!("data certificate is only available in query calls");
-    });
+fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<(String, String), String> {
+    let certificate = ic_cdk::api::data_certificate()
+        .ok_or_else(|| "data certificate is only available in query calls".to_string())?;
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
-    serializer.self_describe().unwrap();
-    tree.serialize(&mut serializer).unwrap_or_else(|e| {
-        panic!("failed to serialize a hash tree: {}", e);
-    });
-    (
+    serializer
+        .self_describe()
+        .map_err(|err| format!("failed to provide the CBOR schema: {err}"))?;
+    tree.serialize(&mut serializer)
+        .map_err(|err| format!("failed to serialize a hash tree: {err}"))?;
+    Ok((
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
             base64::encode(&certificate),
             base64::encode(&serializer.into_inner())
         ),
-    )
+    ))
 }
 
 /// Computes the sha256 of some given bytes.
@@ -216,12 +216,14 @@ fn update_root_hash(a: &AssetHashes) {
 }
 
 /// Responds to an HTTP request for an asset.
+#[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let mut parts = req.url.splitn(2, '?');
-    let request_path = parts.next().unwrap_or_else("/");
+    let request_path = parts.next().unwrap_or("/");
     STATE.with(|state| {
         let mut headers = security_headers();
-        let certificate_header = make_asset_certificate_header(&state.asset_hashes.borrow(), request_path);
+        let certificate_header =
+            make_asset_certificate_header(&state.asset_hashes.borrow(), request_path).expect("Failed to get header");
         headers.push(certificate_header);
 
         match state.stable.borrow().assets.borrow().get(request_path) {

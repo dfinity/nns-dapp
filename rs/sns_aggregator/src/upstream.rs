@@ -38,7 +38,7 @@ pub async fn update_cache() {
 }
 
 /// The NNS SNS wasm canister ID
-/// 
+///
 /// This canister contains a lit of all SNS root canisters it has created.
 #[allow(clippy::expect_used)]
 fn nns_sns_wasm_canister_id() -> CanisterId {
@@ -50,12 +50,8 @@ fn nns_sns_wasm_canister_id() -> CanisterId {
 /// Note: We can improve on this by filtering out SNSs that have become const.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asking for more SNSs".to_string());
-    let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> = ic_cdk::api::call::call(
-        nns_sns_wasm_canister_id(),
-        "list_deployed_snses",
-        (EmptyRecord {},),
-    )
-    .await;
+    let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> =
+        ic_cdk::api::call::call(nns_sns_wasm_canister_id(), "list_deployed_snses", (EmptyRecord {},)).await;
     crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err((_rejection_code, message)) => {

@@ -1,5 +1,4 @@
 //! The state of the canister
-use anyhow::anyhow;
 use crate::assets::{insert_asset, Asset};
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
@@ -12,6 +11,7 @@ use crate::{
     assets::{AssetHashes, Assets},
     types::upstream::SnsCache,
 };
+use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::timer::TimerId;
 use std::cell::RefCell;
