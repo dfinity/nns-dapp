@@ -3,28 +3,12 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 PROD_WASM="nns-dapp-prod_local.wasm"
-CURRENT_WASM="nns-dapp.wasm"
 
 help_text() {
   cat <<-EOF
-	Downgrade and then upgrade a local deployment.
-
-	1) Prepare:
-	  1.1) Make sure that $CURRENT_WASM exists:
-	       - If it does not exist, build it.
-	       - If it does exits, it is the caller's responsibility
-	         to make sure that it is the wasm that is to be tested.
-	  1.2) Make sure that $CURRENT_WASM is deployed:
-	       - If the nns-dapp has already been created, upgrade the wasm
-	         to $CURRENT_WASM.  If successful, this will preserve
-	         existing state.
-	       - If nns-dapp has NOT been created, deploy it.
-	2) Test:
-	  2.1) Perform a basic health check.
-	  2.2) Downgrade to the prod release.
-	  2.3) Perform a basic health check.
-	  2.4) Upgrade to $CURRENT_WASM
-	  2.5) Perform a basic health check.
+	Tests:
+	  - downgrading the current build to the prod build.
+	  - upgrading the prod build to the current build.
 	EOF
   # Note: If the code changes, please update the summary above to match.
 }
@@ -32,6 +16,7 @@ help_text() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
+clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 set -euo pipefail
@@ -53,11 +38,16 @@ upgrade_nnsdapp() {
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
 }
 
-echo "Ensuring that $CURRENT_WASM exists..."
-test -e "$CURRENT_WASM" || {
+echo "Getting or building the wasm..."
+test -n "${CURRENT_WASM:-}" || {
+  CURRENT_WASM="nns-dapp.wasm"
   echo "Building $CURRENT_WASM..."
   DFX_NETWORK=local ./scripts/docker-build
 }
+test -e "$CURRENT_WASM" || {
+  echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
+  exit 1
+} >&2
 echo "Installing $CURRENT_WASM..."
 if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
   upgrade_nnsdapp "$CURRENT_WASM"
