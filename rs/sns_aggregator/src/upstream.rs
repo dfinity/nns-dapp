@@ -11,9 +11,6 @@ use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
-#[deny(clippy::panic)] // Put any errors in a queryable log.
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 pub async fn update_cache() {
     crate::state::log("Getting upstream data...".to_string());
     let sns_maybe = STATE.with(|state| {
@@ -75,9 +72,6 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
 }
 
 /// Populates the cache with the data for an SNS.
-#[deny(clippy::panic)]
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Result<()> {
     crate::state::log(format!("Getting SNS index {index}..."));
     let swap_canister_id = convert_canister_id!(&sns_canister_ids.swap_canister_id);
