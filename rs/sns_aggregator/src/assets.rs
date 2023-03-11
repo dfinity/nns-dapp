@@ -93,7 +93,7 @@ impl Asset {
 /// A database of assets indexed by the path to the actual file, e.g.
 /// `/index.html` is a key but `/` is not, although getting the latter
 /// will also return the former.
-#[derive(Default, Serialize, Deserialize, PartialEq, Eq, Debug)]
+#[derive(Default, CandidType, Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// Adds an asset to the assets database.
