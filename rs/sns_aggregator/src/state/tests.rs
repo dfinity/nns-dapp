@@ -4,7 +4,10 @@ use std::{cell::RefCell, collections::BTreeMap};
 
 use candid::{Nat, Principal};
 
-use crate::{types::upstream::{SnsCache, UpstreamData}, assets::Assets};
+use crate::{
+    assets::Assets,
+    types::upstream::{SnsCache, UpstreamData},
+};
 
 use super::{Config, StableState}; // Is this the EU?
 
@@ -24,12 +27,15 @@ fn serializing_and_deserializing_returns_original() {
             name: "toy_with_upstream_data",
             state: StableState {
                 config: RefCell::new(Config::default()),
-                sns_cache: RefCell::new(SnsCache{
+                sns_cache: RefCell::new(SnsCache {
                     sns_to_get: Vec::new(),
                     all_sns: Vec::new(),
                     upstream_data: {
                         let mut map = BTreeMap::new();
-                        map.insert(Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap(), UpstreamData::default());
+                        map.insert(
+                            Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap(),
+                            UpstreamData::default(),
+                        );
                         map
                     },
                     last_partial_update: 1243,
@@ -91,7 +97,7 @@ fn nat_candid_works() {
         let serialized = {
             let mut ser = candid::ser::IDLBuilder::new();
             ser.arg(&number).expect("Failed to serialize Nat");
-ser.serialize_to_vec().expect("Failed to convert serializer to bytes")
+            ser.serialize_to_vec().expect("Failed to convert serializer to bytes")
         };
         let parsed: Nat = {
             let mut de = candid::de::IDLDeserialize::new(&serialized).expect("Failed to make serializer");
