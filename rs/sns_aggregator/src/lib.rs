@@ -11,8 +11,6 @@ mod types;
 mod upstream;
 
 mod fast_scheduler;
-#[cfg(test)]
-mod tests;
 
 use std::collections::VecDeque;
 use std::time::Duration;
