@@ -135,7 +135,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator with a slow refresh rate
-        run: dfx canister install --mode reinstall --wasm sns_aggregator_dev.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode reinstall --wasm sns_aggregator.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
       - name: Expect the first page of data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
