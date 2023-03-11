@@ -593,7 +593,8 @@ mod def {
     // NNS function 38 - UpdateElectedReplicaVersions
     /// The payload of a proposal to update elected replica versions.
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
-    pub type UpdateElectedReplicaVersionsPayload = registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
+    pub type UpdateElectedReplicaVersionsPayload =
+        registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
 }
 
 #[cfg(test)]
