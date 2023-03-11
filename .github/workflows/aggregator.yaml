@@ -145,6 +145,19 @@ jobs:
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
           }
+      - name: Expect the latest data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the upstream data to be retained over the upgrade
+        run: |
+          ./scripts/sns/aggregator/get_stable_data
+          jq '.sns_cache.upstream_data | length' < stable_data.json
       - name: Stop replica
         run: dfx stop
   aggregator-pass:
