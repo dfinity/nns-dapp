@@ -1,10 +1,10 @@
 //! Tests for the aggregator state
 
-use std::cell::RefCell;
+use std::{cell::RefCell, collections::BTreeMap};
 
-use candid::Nat;
+use candid::{Nat, Principal};
 
-use crate::{types::upstream::SnsCache, assets::Assets};
+use crate::{types::upstream::{SnsCache, UpstreamData}, assets::Assets};
 
 use super::{Config, StableState}; // Is this the EU?
 
@@ -21,10 +21,21 @@ fn serializing_and_deserializing_returns_original() {
             state: StableState::default(),
         },
         StateSerdeTestVector {
-            name: "explicit_default",
+            name: "toy_with_upstream_data",
             state: StableState {
                 config: RefCell::new(Config::default()),
-                sns_cache: RefCell::new(SnsCache::default()),
+                sns_cache: RefCell::new(SnsCache{
+                    sns_to_get: Vec::new(),
+                    all_sns: Vec::new(),
+                    upstream_data: {
+                        let mut map = BTreeMap::new();
+                        map.insert(Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap(), UpstreamData::default());
+                        map
+                    },
+                    last_partial_update: 1243,
+                    last_update: 123,
+                    max_index: 999,
+                }),
                 assets: RefCell::new(Assets::default()),
             },
         },
