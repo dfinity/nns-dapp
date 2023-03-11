@@ -90,14 +90,17 @@ pub struct StableState {
 impl StableState {
     /// Serialize stable state in order to store it in stable memory.
     pub fn to_bytes(&self) -> Result<Vec<u8>, String> {
-            let mut ser = candid::ser::IDLBuilder::new();
-            ser.arg(&self).map_err(|err| format!("Failed to serialize stable state to Candid: {err:?}"))?;
-            ser.serialize_to_vec().map_err(|err| format!("Failed to convert stable state serializer to bytes: {err:?}"))
+        let mut ser = candid::ser::IDLBuilder::new();
+        ser.arg(&self)
+            .map_err(|err| format!("Failed to serialize stable state to Candid: {err:?}"))?;
+        ser.serialize_to_vec()
+            .map_err(|err| format!("Failed to convert stable state serializer to bytes: {err:?}"))
     }
     /// Parse stable state from the format used in stable memory.
     pub fn from_bytes(slice: &[u8]) -> Result<Self, String> {
-            let mut de = candid::de::IDLDeserialize::new(slice).map_err(|err| format!("Failed to make deserializer: {err:?}"))?;
-            de.get_value().map_err(|err| format!("Failed to parse state: {err:?}"))
+        let mut de =
+            candid::de::IDLDeserialize::new(slice).map_err(|err| format!("Failed to make deserializer: {err:?}"))?;
+        de.get_value().map_err(|err| format!("Failed to parse state: {err:?}"))
     }
     /// Textual description of serialized data.
     pub fn summarize_bytes(bytes: &[u8]) -> String {
