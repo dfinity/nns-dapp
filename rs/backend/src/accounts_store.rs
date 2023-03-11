@@ -10,9 +10,10 @@ use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
+use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
-use icp_ledger::Operation::{self, Burn, Mint, Transfer, TransferFrom, Approve};
+use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -21,7 +22,6 @@ use std::cmp::min;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
-use ic_ledger_core::tokens::SignedTokens;
 
 type TransactionIndex = u64;
 
@@ -313,8 +313,15 @@ impl AccountsStore {
                             to,
                             amount,
                             fee: _,
-                        } | TransferFrom {spender, to, amount, fee: _, from} => {
-                            let default_transaction_type = if matches!(transaction.transfer, Transfer {..}) {
+                        }
+                        | TransferFrom {
+                            spender: _,
+                            to,
+                            amount,
+                            fee: _,
+                            from,
+                        } => {
+                            let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
                                 TransactionType::Transfer
                             } else {
                                 TransactionType::TransferFrom
@@ -326,8 +333,15 @@ impl AccountsStore {
                                 default_transaction_type
                             } else {
                                 let memo = transaction.memo;
-                                let transaction_type =
-                                    self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids, default_transaction_type);
+                                let transaction_type = self.get_transaction_type(
+                                    from,
+                                    to,
+                                    amount,
+                                    memo,
+                                    &caller,
+                                    &canister_ids,
+                                    default_transaction_type,
+                                );
                                 let block_height = transaction.block_height;
                                 self.process_transaction_type(
                                     transaction_type,
@@ -340,8 +354,8 @@ impl AccountsStore {
                                 );
                                 transaction_type
                             }
-                        },
-                        Approve {..} => TransactionType::Approve
+                        }
+                        Approve { .. } => TransactionType::Approve,
                     };
                     self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
                 }
@@ -577,8 +591,15 @@ impl AccountsStore {
                 to,
                 amount,
                 fee: _,
-            } | TransferFrom {spender: _, to, amount, fee: _, from: _}  => {
-                let default_transaction_type = if matches!(transfer, Transfer {..}) {
+            }
+            | TransferFrom {
+                from,
+                to,
+                spender: _,
+                amount,
+                fee: _,
+            } => {
+                let default_transaction_type = if matches!(transfer, Transfer { .. }) {
                     TransactionType::Transfer
                 } else {
                     TransactionType::TransferFrom
@@ -593,8 +614,15 @@ impl AccountsStore {
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        transaction_type =
-                            Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids, default_transaction_type));
+                        transaction_type = Some(self.get_transaction_type(
+                            from,
+                            to,
+                            amount,
+                            memo,
+                            &principal,
+                            &canister_ids,
+                            default_transaction_type,
+                        ));
                         self.process_transaction_type(
                             transaction_type.unwrap(),
                             principal,
@@ -612,8 +640,8 @@ impl AccountsStore {
                         MultiPartTransactionToBeProcessed::TopUpNeuron(neuron_details.principal, neuron_details.memo),
                     );
                 }
-            },
-            Approve {..} => TransactionType::Approve
+            }
+            Approve { .. } => {} // TODO do we want to show Approvals in the NNS Dapp?
         }
 
         if should_store_transaction {
@@ -694,22 +722,33 @@ impl AccountsStore {
                     transfer: match transaction.transfer {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
-                        Transfer { from, to, amount, fee }  | TransferFrom {spender, to, amount, fee, from} => {
+                        Transfer { from, to, amount, fee }
+                        | TransferFrom {
+                            from,
+                            to,
+                            spender: _,
+                            amount,
+                            fee,
+                        } => {
                             if from == request.account_identifier {
                                 TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
                             }
+                        }
+                        Approve {
+                            from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee,
+                        } => TransferResult::Approve {
+                            from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee,
                         },
-                        Approve {from,
-                            spender,
-                            allowance,
-                            expires_at,
-                            fee} => TransferResult::Approve {from,
-                            spender,
-                            allowance,
-                            expires_at,
-                            fee}
                     },
                     transaction_type: transaction.transaction_type,
                 }
@@ -857,13 +896,18 @@ impl AccountsStore {
                         to,
                         amount: _,
                         fee: _,
+                    }
+                    | TransferFrom {
+                        from,
+                        to,
+                        spender: _,
+                        amount: _,
+                        fee: _,
                     } => vec![from, to],
-                    TransferFrom {spender: _, to, amount: _, fee: _, from} => vec![from, to],
-                    //     {
-                    //     self.prune_transactions_from_account(from, min_transaction_index);
-                    //     self.prune_transactions_from_account(to, min_transaction_index);
-                    // },
-                    Approve {..} => {}
+                    Approve { .. } => vec![],
+                };
+                for account in accounts {
+                    self.prune_transactions_from_account(account, min_transaction_index);
                 }
             }
         }
@@ -1086,6 +1130,7 @@ impl AccountsStore {
         None
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
         &self,
         from: AccountIdentifier,
