@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.23",
+  "version": "2.0.24",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
@@ -11,7 +11,7 @@
     "dev": "npm run i18n && vite dev",
     "build": "npm run i18n && vite build && npm run build:post-process",
     "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && npm run lint",
+    "check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json && npm run lint",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint --max-warnings 0 .",
     "format": "prettier --plugin-search-dir . --write .",
