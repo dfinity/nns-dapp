@@ -22,16 +22,37 @@ describe("Summary", () => {
     expect(getByTestId("project-logo")).not.toBeNull();
   });
 
-  it("should render internet computer if none", () => {
-    const { container } = render(Summary, {
-      props: { displayUniverse: false },
+  describe("no universe", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(snsProjectSelectedStore, "subscribe")
+        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+
+      jest
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     });
-    expect(
-      container?.querySelector("h1")?.textContent?.includes(en.core.ic)
-    ).toBeTruthy();
+
+    it("should render internet computer if none", () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      });
+
+      const { container } = render(Summary, {
+        props: { displayUniverse: false },
+      });
+
+      expect(
+        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
+      ).toBeTruthy();
+    });
   });
 
   describe("nns", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
     beforeAll(() =>
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")
