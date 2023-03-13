@@ -90,7 +90,9 @@
     });
 
     if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({
+        labelKey: "ckbtc.transaction_success_about_thirty_minutes",
+      });
       dispatcher("nnsTransfer");
       return;
     }
