@@ -7,11 +7,12 @@ import {
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { syncAccounts } from "$lib/services/accounts.services";
+import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -22,6 +23,7 @@ import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
+import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
@@ -250,6 +252,12 @@ const handleNewSaleTicketError = ({
           err,
         });
         return;
+      case NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN:
+        toastsError({
+          labelKey: "error__sns.sns_sale_not_open",
+          err,
+        });
+        return;
       case NewSaleTicketResponseErrorType.TYPE_TICKET_EXISTS: {
         const existingTicket = newSaleTicketError.existingTicket;
         if (nonNullish(existingTicket)) {
@@ -324,7 +332,6 @@ const pollNewSaleTicket = async (params: {
     failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
-// TODO(sale): rename to loadNewSaleTicket
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -333,7 +340,7 @@ const pollNewSaleTicket = async (params: {
  * @param {E8s} amount_icp_e8s
  * @param {Uint8Array} subaccount
  */
-export const newSaleTicket = async ({
+export const loadNewSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
   subaccount,
@@ -369,7 +376,7 @@ export const newSaleTicket = async ({
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
-  get(snsProjectsStore)?.find(
+  get(snsProjectsStore).find(
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
@@ -455,7 +462,7 @@ export const initiateSnsSaleParticipation = async ({
     // Step 1.
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
-    await newSaleTicket({
+    await loadNewSaleTicket({
       rootCanisterId,
       subaccount: isNullish(subaccount)
         ? undefined
@@ -655,7 +662,7 @@ const pollTransfer = ({
  *
  * 1. nnsLedger.transfer
  * 2. snsSale.notifyParticipation (refresh_buyer_tokens)
- * 3. syncAccounts
+ * 3. load new balance in store
  *
  * @param snsTicket
  * @param rootCanisterId
@@ -796,11 +803,27 @@ export const participateInSnsSale = async ({
   }
 
   // Step 4.
-  logWithTimestamp("[sale] 3. syncAccounts");
+  logWithTimestamp("[sale] 3. loadBalance");
 
   updateProgress(SaleStep.RELOAD);
 
-  await syncAccounts();
+  // Ticket return the account as ICRC. We can't compare identifiers directly.
+  // If there is no subaccount, then the account is the main account.
+  // Otherwise, we look for the matching subaccount.
+  const sourceAccount = get(nnsAccountsListStore).find((account) => {
+    if (isNullish(subaccount)) {
+      return account.type === "main";
+    }
+    if (nonNullish(account.subAccount)) {
+      return (
+        subaccountToHexString(subaccount) ===
+        subaccountToHexString(Uint8Array.from(account.subAccount))
+      );
+    }
+  });
+  if (nonNullish(sourceAccount)) {
+    await loadBalance({ accountIdentifier: sourceAccount.identifier });
+  }
 
   logWithTimestamp("[sale] done");
 

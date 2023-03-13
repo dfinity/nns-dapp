@@ -22,9 +22,10 @@ module.exports = {
     "<rootDir>/node_modules/(?!(@dfinity/gix-components))",
   ],
   moduleNameMapper: {
-    "^\\$lib(.*)$": "<rootDir>/src/lib$1",
-    "^\\$routes(.*)$": "<rootDir>/src/routes$1",
-    "^\\$mocks(.*)$": "<rootDir>/__mocks__$1",
+    "^\\$lib/(.*)$": "<rootDir>/src/lib/$1",
+    "^\\$routes/(.*)$": "<rootDir>/src/routes/$1",
+    "^\\$mocks/(.*)$": "<rootDir>/__mocks__/$1",
+    "^\\$tests/(.*)$": "<rootDir>/src/tests/$1",
     "@dfinity/gix-components":
       "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },

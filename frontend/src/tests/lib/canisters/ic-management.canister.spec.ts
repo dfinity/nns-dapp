@@ -3,15 +3,15 @@ import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import type { ManagementCanisterRecord } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterId,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
+import type { ManagementCanisterRecord } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ManagementCanisterRecord) => {

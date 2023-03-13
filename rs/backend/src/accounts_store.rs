@@ -1,12 +1,11 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::metrics_encoder::MetricsEncoder;
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor, MultiPartTransactionsProcessorWithRemovedFields,
 };
 use crate::perf::PerformanceCounter;
 use crate::state::StableState;
+use crate::stats::Stats;
 use crate::time::time_millis;
-use crate::STATE;
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -864,7 +863,7 @@ impl AccountsStore {
         self.instruction_counters = Some(instruction_counters);
     }
 
-    pub fn get_stats(&self) -> Stats {
+    pub fn get_stats(&self, stats: &mut Stats) {
         let earliest_transaction = self.transactions.front();
         let latest_transaction = self.transactions.back();
         let timestamp_now_nanos = dfn_core::api::now()
@@ -874,24 +873,21 @@ impl AccountsStore {
         let duration_since_last_sync =
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
-        Stats {
-            accounts_count: self.accounts.len() as u64,
-            sub_accounts_count: self.sub_accounts_count,
-            hardware_wallet_accounts_count: self.hardware_wallet_accounts_count,
-            transactions_count: self.transactions.len() as u64,
-            block_height_synced_up_to: self.block_height_synced_up_to,
-            earliest_transaction_timestamp_nanos: earliest_transaction
-                .map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch()),
-            earliest_transaction_block_height: earliest_transaction.map_or(0, |t| t.block_height),
-            latest_transaction_timestamp_nanos: latest_transaction
-                .map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch()),
-            latest_transaction_block_height: latest_transaction.map_or(0, |t| t.block_height),
-            seconds_since_last_ledger_sync: duration_since_last_sync.as_secs(),
-            neurons_created_count: self.neuron_accounts.len() as u64,
-            neurons_topped_up_count: self.neurons_topped_up_count,
-            transactions_to_process_queue_length: self.multi_part_transactions_processor.get_queue_length(),
-            instruction_counters: self.instruction_counters.clone(),
-        }
+        stats.accounts_count = self.accounts.len() as u64;
+        stats.sub_accounts_count = self.sub_accounts_count;
+        stats.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count;
+        stats.transactions_count = self.transactions.len() as u64;
+        stats.block_height_synced_up_to = self.block_height_synced_up_to;
+        stats.earliest_transaction_timestamp_nanos =
+            earliest_transaction.map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch());
+        stats.earliest_transaction_block_height = earliest_transaction.map_or(0, |t| t.block_height);
+        stats.latest_transaction_timestamp_nanos =
+            latest_transaction.map_or(0, |t| t.timestamp.as_nanos_since_unix_epoch());
+        stats.latest_transaction_block_height = latest_transaction.map_or(0, |t| t.block_height);
+        stats.seconds_since_last_ledger_sync = duration_since_last_sync.as_secs();
+        stats.neurons_created_count = self.neuron_accounts.len() as u64;
+        stats.neurons_topped_up_count = self.neurons_topped_up_count;
+        stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
     }
 
     fn try_add_transaction_to_account(
@@ -1525,65 +1521,5 @@ pub enum TransferResult {
     },
 }
 
-pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
-    STATE.with(|s| {
-        let stats = s.accounts_store.borrow().get_stats();
-        w.encode_gauge(
-            "neurons_created_count",
-            stats.neurons_created_count as f64,
-            "Number of neurons created.",
-        )?;
-        w.encode_gauge(
-            "neurons_topped_up_count",
-            stats.neurons_topped_up_count as f64,
-            "Number of neurons topped up by the canister.",
-        )?;
-        w.encode_gauge(
-            "transactions_count",
-            stats.transactions_count as f64,
-            "Number of transactions processed by the canister.",
-        )?;
-        w.encode_gauge(
-            "accounts_count",
-            stats.accounts_count as f64,
-            "Number of accounts created.",
-        )?;
-        w.encode_gauge(
-            "sub_accounts_count",
-            stats.sub_accounts_count as f64,
-            "Number of sub accounts created.",
-        )?;
-        w.encode_gauge(
-            "hardware_wallet_accounts_count",
-            stats.hardware_wallet_accounts_count as f64,
-            "Number of hardware wallet accounts created.",
-        )?;
-        w.encode_gauge(
-            "seconds_since_last_ledger_sync",
-            stats.seconds_since_last_ledger_sync as f64,
-            "Number of seconds since last ledger sync.",
-        )?;
-        Ok(())
-    })
-}
-
-#[derive(CandidType, Deserialize)]
-pub struct Stats {
-    accounts_count: u64,
-    sub_accounts_count: u64,
-    hardware_wallet_accounts_count: u64,
-    transactions_count: u64,
-    block_height_synced_up_to: Option<u64>,
-    earliest_transaction_timestamp_nanos: u64,
-    earliest_transaction_block_height: BlockIndex,
-    latest_transaction_timestamp_nanos: u64,
-    latest_transaction_block_height: BlockIndex,
-    seconds_since_last_ledger_sync: u64,
-    neurons_created_count: u64,
-    neurons_topped_up_count: u64,
-    transactions_to_process_queue_length: u32,
-    instruction_counters: VecDeque<PerformanceCounter>,
-}
-
 #[cfg(test)]
-mod tests;
+pub(crate) mod tests;

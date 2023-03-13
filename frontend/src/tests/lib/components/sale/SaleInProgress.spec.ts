@@ -4,9 +4,9 @@
 
 import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
 import { SaleStep } from "$lib/types/sale";
-import { render, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import en from "../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
+import { testProgress } from "$tests/utils/progress.test-utils";
+import { render } from "@testing-library/svelte";
 
 describe("SaleInProgress", () => {
   it("should render a warning to not close the browser", () => {
@@ -16,13 +16,11 @@ describe("SaleInProgress", () => {
       },
     });
 
-    const element = getByTestId("sale-in-progress-warning");
+    const element = getByTestId("in-progress-warning");
 
     expect(element).not.toBeNull();
-    expect(element.textContent).toContain(
-      en.sns_sale.this_may_take_a_few_minutes
-    );
-    expect(element.textContent).toContain(en.sns_sale.do_not_close);
+    expect(element.textContent).toContain(en.core.this_may_take_a_few_minutes);
+    expect(element.textContent).toContain(en.core.do_not_close);
   });
 
   it("should render steps", () => {
@@ -36,30 +34,6 @@ describe("SaleInProgress", () => {
     expect(container.querySelectorAll(".step").length).toEqual(4);
   });
 
-  const test = ({
-    result: { container },
-    position,
-    label,
-    status,
-  }: {
-    result: RenderResult<SvelteComponent>;
-    position: number;
-    label: string;
-    status: "In progress" | "Completed";
-  }) => {
-    const element = container.querySelectorAll(".step")[position - 1];
-
-    if (status === "In progress") {
-      expect(element?.textContent ?? "").toContain(`${position}`);
-    } else if (status === "Completed") {
-      // Circle checkmark
-      expect(element.querySelector("svg")).not.toBeNull();
-    }
-
-    expect(element?.textContent ?? "").toContain(label);
-    expect(element?.textContent ?? "").toContain(status);
-  };
-
   it("should render step initialization in progress", () => {
     const result = render(SaleInProgress, {
       props: {
@@ -67,7 +41,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 1,
       label: en.sns_sale.step_initialization,
@@ -82,7 +56,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 1,
       label: en.sns_sale.step_initialization,
@@ -97,7 +71,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 2,
       label: en.sns_sale.step_transfer,
@@ -112,7 +86,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 2,
       label: en.sns_sale.step_transfer,
@@ -127,7 +101,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 3,
       label: en.sns_sale.step_notify,
@@ -142,7 +116,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 3,
       label: en.sns_sale.step_notify,
@@ -157,7 +131,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 4,
       label: en.sns_sale.step_reload,
@@ -172,7 +146,7 @@ describe("SaleInProgress", () => {
       },
     });
 
-    test({
+    testProgress({
       result,
       position: 4,
       label: en.sns_sale.step_reload,

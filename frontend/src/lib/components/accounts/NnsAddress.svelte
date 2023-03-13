@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { invalidAddress } from "$lib/utils/accounts.utils";
+  import { invalidIcpAddress } from "$lib/utils/accounts.utils";
   import AddressInput from "./AddressInput.svelte";
 
   export let address = "";
@@ -8,12 +9,12 @@
 
 <article>
   <form on:submit|preventDefault>
-    <AddressInput bind:address />
+    <AddressInput bind:address rootCanisterId={OWN_CANISTER_ID} />
     <button
       class="primary"
       type="submit"
       data-tid="address-submit-button"
-      disabled={invalidAddress(address)}
+      disabled={invalidIcpAddress(address)}
     >
       {$i18n.core.continue}
     </button>

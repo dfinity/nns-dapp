@@ -10,20 +10,20 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
-import type { Principal } from "@dfinity/principal";
-import { waitFor } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   mockSnsAccountsStoreSubscribe,
   mockSnsMainAccount,
-} from "../../../mocks/sns-accounts.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
-import { testTransferTokens } from "../../../utils/transaction-modal.test.utils";
+} from "$tests/mocks/sns-accounts.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import type { Principal } from "@dfinity/principal";
+import { waitFor } from "@testing-library/svelte";
+import type { Subscriber } from "svelte/store";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

@@ -11,23 +11,23 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import {
+  AMOUNT_INPUT_SELECTOR,
+  enterAmount,
+} from "$tests/utils/neurons-modal.test-utils";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
-import { snsNervousSystemParametersMock } from "../../../mocks/sns-neurons.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "../../../mocks/transaction-fee.mock";
-import {
-  AMOUNT_INPUT_SELECTOR,
-  enterAmount,
-} from "../../../utils/neurons-modal.test-utils";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

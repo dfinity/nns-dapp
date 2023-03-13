@@ -8,7 +8,6 @@ import {
   isHash,
   isPngAsset,
   poll,
-  pollingCancelled,
   PollingCancelledError,
   PollingLimitExceededError,
   removeKeys,
@@ -16,14 +15,14 @@ import {
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
-import { toastsStore } from "@dfinity/gix-components";
-import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -584,9 +583,7 @@ describe("utils", () => {
           })
           .catch((err) => {
             expect(err).toBeInstanceOf(PollingCancelledError);
-            if (pollingCancelled(err)) {
-              cancelled = true;
-            }
+            cancelled = true;
           });
         expect(fnSpy).toBeCalledTimes(1);
         await advanceTime();
@@ -596,6 +593,42 @@ describe("utils", () => {
         expect(cancelled).toBe(true);
         // No further calls after cancel.
         expect(fnSpy).toBeCalledTimes(1);
+      });
+
+      it("should throw PollingCancelledError when canceled during the last attempt", async () => {
+        const maxAttempts = 2;
+        const pollId = Symbol();
+        const fnSpy = jest.fn();
+        let rejectCall: () => void;
+        fnSpy.mockImplementation(
+          () =>
+            new Promise((resolve, reject) => {
+              rejectCall = reject;
+            })
+        );
+        let cancelled = false;
+        poll({
+          fn: fnSpy,
+          shouldExit: () => false,
+          maxAttempts,
+          millisecondsToWait: 20 * 1000,
+          useExponentialBackoff: false,
+          pollId,
+        })
+          .then(() => {
+            throw new Error("This shouldn't happen");
+          })
+          .catch((err) => {
+            expect(err).toBeInstanceOf(PollingCancelledError);
+            cancelled = true;
+          });
+        rejectCall();
+        await advanceTime();
+        expect(fnSpy).toBeCalledTimes(maxAttempts);
+        expect(cancelled).toBe(false);
+        cancelPoll(pollId);
+        await advanceTime();
+        expect(cancelled).toBe(true);
       });
 
       it("should cancel immediately when called again while polling", async () => {

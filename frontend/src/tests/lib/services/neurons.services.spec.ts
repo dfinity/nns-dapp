@@ -7,6 +7,7 @@ import {
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import {
   getAccountIdentityByPrincipal,
+  loadBalance,
   transferICP,
 } from "$lib/services/accounts.services";
 import * as services from "$lib/services/neurons.services";
@@ -17,6 +18,20 @@ import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
+import {
+  mockIdentity,
+  mockIdentityErrorMsg,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
@@ -25,20 +40,6 @@ import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import {
-  mockIdentity,
-  mockIdentityErrorMsg,
-  resetIdentity,
-  setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { MockLedgerIdentity } from "../../mocks/ledger.identity.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
 
 const {
   addHotkey,
@@ -75,7 +76,7 @@ const setAccountIdentity = (newIdentity: Identity) =>
 
 jest.mock("$lib/services/accounts.services", () => {
   return {
-    syncAccounts: jest.fn(),
+    loadBalance: jest.fn(),
     transferICP: jest.fn().mockResolvedValue({ success: true }),
     getAccountIdentityByPrincipal: jest
       .fn()
@@ -559,6 +560,16 @@ describe("neurons-services", () => {
 
       expect(spyDisburse).toHaveBeenCalled();
       expect(success).toBe(true);
+    });
+
+    it("should sync account balance", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await services.disburse({
+        neuronId: controlledNeuron.neuronId,
+        toAccountId: mockMainAccount.identifier,
+      });
+
+      expect(loadBalance).toHaveBeenCalledTimes(1);
     });
 
     it("should not disburse neuron if no identity", async () => {
@@ -1147,7 +1158,7 @@ describe("neurons-services", () => {
       expect(spySetFollowees).toHaveBeenCalledWith(expectedArgument);
     });
 
-    it("should not call api if trying follow itself", async () => {
+    it("should call api if trying follow itself", async () => {
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1157,8 +1168,13 @@ describe("neurons-services", () => {
         followee: controlledNeuron.neuronId,
       });
 
-      expectToastError(en.new_followee.same_neuron);
-      expect(spySetFollowees).not.toHaveBeenCalled();
+      expect(spySetFollowees).toHaveBeenCalledWith({
+        neuronId: controlledNeuron.neuronId,
+        topic,
+        followees: [controlledNeuron.neuronId],
+        identity: mockIdentity,
+      });
+      expect(spySetFollowees).toHaveBeenCalledTimes(1);
     });
 
     it("should not call api if trying follow a neuron already added", async () => {

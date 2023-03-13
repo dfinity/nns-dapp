@@ -7,21 +7,21 @@ import { mergeNeurons } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import type { RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import type { NeuronInfo } from "@dfinity/nns";
+import { fireEvent } from "@testing-library/dom";
+import type { RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {
@@ -135,7 +135,7 @@ describe("MergeNeuronsModal", () => {
     });
 
     it("allows user to select two neurons and move to confirmation screen", async () => {
-      const { queryAllByTestId, queryByTestId, queryByText, queryAllByText } =
+      const { queryAllByTestId, queryByTestId, queryAllByText } =
         await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
@@ -152,7 +152,9 @@ describe("MergeNeuronsModal", () => {
       expect(
         queryAllByText(en.neurons.merge_neurons_modal_confirm).length
       ).toBeGreaterThan(0);
-      expect(queryByText(mergeableNeuron1.neuronId.toString())).not.toBeNull();
+      expect(
+        queryAllByText(mergeableNeuron1.neuronId.toString()).length
+      ).toBeGreaterThan(0);
     });
 
     it("allows user to select two neurons and merge them", async () => {

@@ -19,6 +19,7 @@ import {
   getOrCreateAccount,
   initAccounts,
   loadAccounts,
+  loadBalance,
   pollAccounts,
   renameSubAccount,
   syncAccounts,
@@ -27,9 +28,6 @@ import {
 import { accountsStore } from "$lib/stores/accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
-import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { get } from "svelte/store";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
@@ -37,19 +35,23 @@ import {
   mockMainAccount,
   mockSubAccount,
   mockSubAccountDetails,
-} from "../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockSentToSubAccountTransaction } from "../../mocks/transaction.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
@@ -60,11 +62,17 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/ledger.api");
+const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/ledger.api"];
 
 describe("accounts-services", () => {
+  blockAllCallsTo(blockedApiPaths);
+
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest.clearAllMocks();
+    toastsStore.reset();
+    accountsStore.reset();
   });
 
   describe("getOrCreateAccount", () => {
@@ -98,7 +106,9 @@ describe("accounts-services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValueOnce(new AccountNotFoundError("test"))
         .mockResolvedValue(mockAccountDetails);
-      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+      const addAccountSpy = jest
+        .spyOn(nnsdappApi, "addAccount")
+        .mockResolvedValue(undefined);
 
       await getOrCreateAccount({ identity: mockIdentity, certified: true });
       expect(addAccountSpy).toBeCalledTimes(1);
@@ -179,10 +189,6 @@ describe("accounts-services", () => {
   });
 
   describe("initAccounts", () => {
-    beforeEach(() => {
-      toastsStore.reset();
-    });
-
     it("should sync accounts", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
       const queryAccountBalanceSpy = jest
@@ -312,13 +318,76 @@ describe("accounts-services", () => {
     });
   });
 
+  describe("loadBalance", () => {
+    it("should query account balance and load it in store", async () => {
+      const newBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(newBalanceE8s);
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      expect(get(accountsStore).main.balance).toEqual(mockMainAccount.balance);
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockMainAccount.identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockMainAccount.identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+
+      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+    });
+
+    it("should not show error if only query fails", async () => {
+      const newBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockImplementation(async (args) => {
+          if (args.certified) {
+            return newBalanceE8s;
+          }
+          throw new Error("test");
+        });
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should show error if call fails", async () => {
+      const error = new Error("Test");
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockRejectedValue(error);
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(error.message),
+      });
+    });
+  });
+
   describe("services", () => {
     const mainBalanceE8s = BigInt(10_000_000);
 
     let queryAccountBalanceSpy: jest.SpyInstance;
     let queryAccountSpy: jest.SpyInstance;
     let spyCreateSubAccount: jest.SpyInstance;
-    let spySendICP: jest.SpyInstance;
     beforeEach(() => {
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -329,9 +398,6 @@ describe("accounts-services", () => {
       spyCreateSubAccount = jest
         .spyOn(accountsApi, "createSubAccount")
         .mockResolvedValue(undefined);
-      spySendICP = jest
-        .spyOn(ledgerApi, "sendICP")
-        .mockResolvedValue(BigInt(20));
     });
 
     it("should sync accounts", async () => {
@@ -397,12 +463,26 @@ describe("accounts-services", () => {
 
       resetIdentity();
     });
+  });
 
+  describe("transferICP", () => {
+    const mainBalanceE8s = BigInt(10_000_000);
+    const sourceAccount = mockMainAccount;
     const transferICPParams: NewTransaction = {
-      sourceAccount: mockMainAccount,
+      sourceAccount,
       destinationAddress: mockSubAccount.identifier,
       amount: 1,
     };
+    let queryAccountBalanceSpy: jest.SpyInstance;
+    let spySendICP: jest.SpyInstance;
+    beforeEach(() => {
+      queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      spySendICP = jest
+        .spyOn(ledgerApi, "sendICP")
+        .mockResolvedValue(BigInt(20));
+    });
 
     it("should transfer ICP", async () => {
       await transferICP(transferICPParams);
@@ -410,20 +490,53 @@ describe("accounts-services", () => {
       expect(spySendICP).toHaveBeenCalled();
     });
 
-    it("should sync accounts after transfer ICP", async () => {
+    it("should sync balances after transfer ICP", async () => {
       await transferICP(transferICPParams);
 
-      expect(queryAccountSpy).toHaveBeenCalled();
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        accountIdentifier: sourceAccount.identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        accountIdentifier: sourceAccount.identifier,
         certified: true,
       });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it("should sync destination balances after transfer ICP to own account", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      await transferICP({
+        ...transferICPParams,
+        destinationAddress: mockSubAccount.identifier,
+      });
+
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockSubAccount.identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockSubAccount.identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: sourceAccount.identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: sourceAccount.identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(4);
     });
   });
 

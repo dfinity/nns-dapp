@@ -17,26 +17,26 @@ import {
   type ProjectDetailStore,
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { AccountIdentifier } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { writable } from "svelte/store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import { renderModalContextWrapper } from "../../../mocks/modal.mock";
-import { mockSnsFullProject } from "../../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
+import { AccountIdentifier } from "@dfinity/nns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
+import { writable } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -147,7 +147,7 @@ describe("ParticipateSwapModal", () => {
       await participate(result);
 
       await waitFor(
-        expect(result.getByTestId("sale-in-progress-warning")).not.toBeNull
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull
       );
     });
   });

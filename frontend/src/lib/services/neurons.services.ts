@@ -56,7 +56,7 @@ import { get } from "svelte/store";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
-  syncAccounts,
+  loadBalance,
   transferICP,
 } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -603,7 +603,10 @@ export const disburse = async ({
 
     await governanceApiService.disburse({ neuronId, toAccountId, identity });
 
-    await Promise.all([syncAccounts(), listNeurons()]);
+    await Promise.all([
+      loadBalance({ accountIdentifier: toAccountId }),
+      listNeurons(),
+    ]);
 
     return { success: true };
   } catch (err) {
@@ -793,13 +796,6 @@ export const addFollowee = async ({
   topic: Topic;
   followee: NeuronId;
 }): Promise<void> => {
-  // Do not allow a neuron to follow itself
-  if (followee === neuronId) {
-    toastsError({
-      labelKey: "new_followee.same_neuron",
-    });
-    return;
-  }
   const neuron = getNeuronFromStore(neuronId);
 
   const topicFollowees = followeesByTopic({ neuron, topic });

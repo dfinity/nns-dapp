@@ -5,13 +5,13 @@ import {
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   mockSnsSummaryList,
   mockSnsSwapCommitment,
-} from "../../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("projects.derived", () => {
   describe("projectsDerived", () => {
@@ -61,7 +61,7 @@ describe("projects.derived", () => {
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const open = get(snsProjectsActivePadStore);
-      expect(open?.length).toEqual(1);
+      expect(open.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({
@@ -69,13 +69,13 @@ describe("projects.derived", () => {
         })
       );
       const open2 = get(snsProjectsActivePadStore);
-      expect(open2?.length).toEqual(2);
+      expect(open2.length).toEqual(2);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Unspecified] })
       );
       const noOpen = get(snsProjectsActivePadStore);
-      expect(noOpen?.length).toEqual(0);
+      expect(noOpen.length).toEqual(0);
     });
 
     it("should filter projects that are committed only", () => {
@@ -84,13 +84,13 @@ describe("projects.derived", () => {
       );
 
       const committed = get(snsProjectsCommittedStore);
-      expect(committed?.length).toEqual(1);
+      expect(committed.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const noCommitted = get(snsProjectsCommittedStore);
-      expect(noCommitted?.length).toEqual(0);
+      expect(noCommitted.length).toEqual(0);
     });
 
     it("should filter projects that are adopted only", () => {
@@ -99,13 +99,13 @@ describe("projects.derived", () => {
       );
 
       const adopted = get(snsProjectsAdoptedStore);
-      expect(adopted?.length).toEqual(1);
+      expect(adopted.length).toEqual(1);
 
       snsQueryStore.setData(
         snsResponsesForLifecycle({ lifecycles: [SnsSwapLifecycle.Open] })
       );
       const noAdopted = get(snsProjectsAdoptedStore);
-      expect(noAdopted?.length).toEqual(0);
+      expect(noAdopted.length).toEqual(0);
     });
   });
 });

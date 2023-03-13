@@ -26,7 +26,10 @@
     "previous": "Previous",
     "next": "Next",
     "principal_is": "Your principal is",
-    "done": "Done"
+    "done": "Done",
+    "this_may_take_a_few_minutes": "This may take a few minutes",
+    "do_not_close": "Please do not close your browser tab",
+    "finish": "Finish"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -56,8 +59,10 @@
     "remove_followee": "Sorry, there was an unexpected error while removing the followee. Please try again later.",
     "followee_does_not_exist": "Sorry, this neuron is not followed in that topic, refresh the page to have the latest data.",
     "accounts_not_found": "An error occurred while loading the accounts information.",
+    "query_balance": "An error occurred while loading the balance for $accountId.",
     "accounts_not_found_poll": "An error occurred while loading the accounts information. The Internet Computer seems to be under high load, please try in a few minutes.",
     "account_not_found": "Sorry, the account \"$account_identifier\" was not found",
+    "account_not_reload": "Sorry, the account \"$account_identifier\" cannot be reloaded",
     "transactions_not_found": "An error occurred while loading the transactions.",
     "canister_not_found": "Sorry, the canister \"$canister_id\" was not found",
     "fail": "fail",
@@ -153,6 +158,7 @@
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
     "ckbtc_transaction_description": "$token Transaction",
+    "ckbtc_to_btc_transaction_description": "ckBTC —> BTC Transaction",
     "add_account": "Add Account",
     "new_linked_title": "New Linked Account",
     "new_linked_subtitle": "Create a new linked account",
@@ -211,8 +217,8 @@
     "network": "Network",
     "network_icp_ckbtc": "Internet Computer (ckBTC)",
     "network_icp_cktestbtc": "Internet Computer (ckTESTBTC)",
-    "network_bitcoin": "Bitcoin (BTC)",
-    "network_test_bitcoin": "Bitcoin (Test BTC)",
+    "network_btc_mainnet": "Bitcoin (BTC)",
+    "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
     "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
   },
@@ -226,7 +232,7 @@
     "merge_neurons_edit_selection": "Edit Selection",
     "merge_neurons_modal_merge_button": "Merge Neurons",
     "merge_neurons_modal_title_2": "Merge neuron",
-    "merge_neurons_modal_with": "with",
+    "merge_neurons_modal_into": "into",
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
@@ -287,6 +293,9 @@
     "top_up_neuron": "Increase Neuron Stake",
     "top_up_description": "Increase stake of neuron $neuronId",
     "community_fund_title": "Community Fund Membership",
+    "merge_neurons_select_info": "The order of selection matters. The neuron that you select first will be merged into the second one.",
+    "merge_neurons_source_neuron_disappear": "The neuron <strong>$neuronId</strong> will disappear.",
+    "merge_neurons_more_info": "Learn more about merging neurons <a href=\"https://medium.com/dfinity/internet-computer-nns-neurons-can-now-be-merged-8b4e44584dc2\" rel=\"noopener noreferrer\" aria-label=\"more info about merging neurons\" target=\"_blank\">here</a>.",
     "stake_amount": "Stake Amount"
   },
   "new_followee": {
@@ -360,7 +369,6 @@
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister ($canisterId) was linked successfully",
-    "link_canister": "Link Canister",
     "enter_canister_id": "Enter Canister ID:",
     "canister_id": "Canister ID",
     "enter_amount": "Enter Amount",
@@ -420,7 +428,12 @@
     "principal": "Principal",
     "direction_from": "Source:",
     "direction_to": "To:",
-    "no_transactions": "No transactions"
+    "no_transactions": "No transactions",
+    "qrcode_aria_label_icp": "A QR code that renders the address to receive ICP",
+    "icp_receive_note_title": "Transfer ICP Instantly",
+    "icp_receive_note_text": "This address accepts ICP. Scan the QR Code using a crypto wallet or exchange to transfer funds to this account instantly at low cost.",
+    "sns_receive_note_title": "Transfer $tokenSymbol Instantly",
+    "sns_receive_note_text": "This address accepts $tokenSymbol. Scan the QR Code using a crypto wallet or exchange to transfer funds to this account instantly at low cost."
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve.",
@@ -622,8 +635,6 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "this_may_take_a_few_minutes": "This may take a few minutes",
-    "do_not_close": "Please do not close your browser tab",
     "connecting_sale_canister": "Connecting to sale canister"
   },
   "sns_neuron_detail": {
@@ -820,14 +831,20 @@
     "logo": "Chain-key Bitcoin (ckBTC) logo",
     "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
-    "address": "Address",
-    "btc_receive_note": "BTC sent to your BTC address will be available after 72 confirmations (~12hrs).",
-    "ckbtc_receive_note": "ckBTC sent to your ckBTC address is available after a few seconds.",
+    "btc_receive_note_title": "Send BTC here to receive ckBTC",
+    "ckbtc_receive_note_title": "Transfer ckBTC in seconds",
+    "btc_receive_note_text": "This address accepts BTC. When you receive BTC through the Internet Computer, the funds are converted and transferred as ckBTC. This can take about 12 hours and incur additional transaction costs.",
+    "ckbtc_receive_note_text": "This address accepts ckBTC. When funds are transferred to your ckBTC address, you will see the ckBTC in your account within seconds.",
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
     "btc": "BTC",
-    "ckbtc_balance_updated": "Balance successfully updated."
+    "ckbtc_balance_updated": "Balance successfully updated.",
+    "step_initialization": "Initializing transaction",
+    "step_locking_ckbtc": "Confirming ckBTC",
+    "step_send_btc": "Sending BTC",
+    "step_reload": "Refreshing UI Balances",
+    "sending_ckbtc_to_btc": "Sending ckBTC —> BTC"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
@@ -844,5 +861,10 @@
     "insufficient_funds": "Insufficient funds.",
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched."
+  },
+  "feature_flags_prompt": {
+    "override_true": "Enter the number for the feature you want to enable.",
+    "override_false": "Enter the number for the feature you want to disabled.",
+    "remove_override": "Enter the number for the feature you want to set back to its default value."
   }
 }

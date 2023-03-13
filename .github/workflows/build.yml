@@ -69,10 +69,11 @@ jobs:
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
       - uses: actions/setup-node@v3
         with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
       - name: Deploy NNS and SNS canisters
         run: |
           # Note: This deploys standard NNS canisters but with:
@@ -80,6 +81,13 @@ jobs:
           # - The II version specified in dfx.json
           # - Functional SNS canisters
           ./scripts/dfx-nns-deploy-custom --features sns
+      - name: Basic downgrade-upgrade test
+        run: |
+          git fetch --depth 1 origin tag prod
+          if git diff tags/prod rs/backend | grep -q .
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
+          else echo "Skipping test as there are no relevant code changes"
+          fi
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -102,14 +110,25 @@ jobs:
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
-      - name: prepare and run the test suite
+      - name: Prepare for e2e tests
         working-directory: e2e-tests
         run: |
           npm ci
           # wipe the screenshots, they will be re-committed
           rm -rf screenshots
+      - name: Run chrome e2e tests
+        working-directory: e2e-tests
+        run: |
           set -o pipefail
-          SCREENSHOT=1 npm run test | tee -a wdio.log
+          export WDIO_BROWSER=chrome
+          SCREENSHOT=1 npm run test |& tee -a chrome-wdio.log
+      - name: Run firefox e2e tests
+        working-directory: e2e-tests
+        run: |
+          # Allow Firefox to fail until the source of flakiness is found and fixed.
+          # set -o pipefail
+          export WDIO_BROWSER=firefox
+          SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
           dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
@@ -121,7 +140,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wdio-logs
-          path: e2e-tests/wdio.log
+          path: e2e-tests/*-wdio.log
           # Disable screenshot saving until screenshots are stable.
           #      - name: Commit screenshots
           #        if: ${{ github.ref != 'refs/heads/main' }}

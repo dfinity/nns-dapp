@@ -3,9 +3,9 @@ import {
   mainTransactionFeeStore,
   transactionsFeesStore,
 } from "$lib/stores/transaction-fees.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
 
 describe("transactionsFeesStore", () => {
   beforeEach(() =>

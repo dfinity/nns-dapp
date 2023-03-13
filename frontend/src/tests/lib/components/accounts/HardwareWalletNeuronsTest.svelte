@@ -4,7 +4,7 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import { mockHardwareWalletNeuronsStore } from "../../../mocks/hardware-wallet-neurons.store.mock";
+  import { mockHardwareWalletNeuronsStore } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 
   export let testComponent: typeof SvelteComponent;
 

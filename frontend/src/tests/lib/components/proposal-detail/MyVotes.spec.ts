@@ -5,11 +5,11 @@
 import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
 describe("MyVotes", () => {
   const noVoted = {

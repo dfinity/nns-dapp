@@ -9,12 +9,12 @@ import * as services from "$lib/services/ckbtc-accounts-balance.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { tick } from "svelte";
-import { get } from "svelte/store";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { tick } from "svelte";
+import { get } from "svelte/store";
 
 jest.mock("$lib/stores/toasts.store", () => {
   return {

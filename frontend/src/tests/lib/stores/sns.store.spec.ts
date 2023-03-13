@@ -1,12 +1,20 @@
 import {
   openSnsProposalsStore,
   snsProposalsStore,
+  snsProposalsStoreIsLoading,
   snsQueryStore,
+  snsQueryStoreIsLoading,
   snsSwapCommitmentsStore,
   type SnsQueryStoreData,
 } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsSwapState } from "$lib/types/sns.query";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import {
+  mockSnsSummaryList,
+  mockSnsSwapCommitment,
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { ProposalStatus } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
@@ -15,12 +23,6 @@ import {
 } from "@dfinity/sns";
 import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { get } from "svelte/store";
-import { mockProposalInfo } from "../../mocks/proposal.mock";
-import {
-  mockSnsSummaryList,
-  mockSnsSwapCommitment,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 describe("sns.store", () => {
   describe("snsSwapStatesStore", () => {
@@ -87,6 +89,19 @@ describe("sns.store", () => {
       expect($openSnsProposalsStore.length).toBe(1);
       expect($openSnsProposalsStore[0]).toEqual(proposals[1]);
     });
+
+    it("should set the store as loading state", () => {
+      const proposals = {
+        proposals: [{ ...mockProposalInfo }],
+        certified: false,
+      };
+      snsProposalsStore.setProposals(proposals);
+
+      expect(get(snsProposalsStoreIsLoading)).toBe(false);
+
+      snsProposalsStore.reset();
+      expect(get(snsProposalsStoreIsLoading)).toBe(true);
+    });
   });
 
   describe("query store", () => {
@@ -127,10 +142,10 @@ describe("sns.store", () => {
       });
 
       snsQueryStore.setData(data);
-      snsQueryStore.setLoadingState();
+      expect(get(snsQueryStoreIsLoading)).toBe(false);
 
-      const store = get(snsQueryStore);
-      expect(store).toBeNull();
+      snsQueryStore.reset();
+      expect(get(snsQueryStoreIsLoading)).toBe(true);
     });
 
     it("should update the data", () => {

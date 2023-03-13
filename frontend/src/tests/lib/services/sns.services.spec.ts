@@ -8,6 +8,20 @@ import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constant
 import * as services from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import {
+  mockSnsSwapCommitment,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -18,20 +32,6 @@ import type {
 import { fromNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import {
-  mockSnsSwapCommitment,
-  principal,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "../../utils/timers.test-utils";
 
 const {
   getSwapAccount,
