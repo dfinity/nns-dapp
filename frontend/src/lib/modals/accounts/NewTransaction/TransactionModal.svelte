@@ -27,7 +27,7 @@
   export let selectedAccount: Account | undefined = sourceAccount;
   export let destinationAddress: string | undefined = undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
-  export let amount: number | undefined;
+  export let amount: number | undefined = undefined;
 
   const STEP_PROGRESS = "Progress";
 
