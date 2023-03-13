@@ -19,6 +19,7 @@ import {
   getOrCreateAccount,
   initAccounts,
   loadAccounts,
+  loadBalance,
   pollAccounts,
   renameSubAccount,
   syncAccounts,
@@ -65,6 +66,7 @@ describe("accounts-services", () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest.clearAllMocks();
+    toastsStore.reset();
   });
 
   describe("getOrCreateAccount", () => {
@@ -179,10 +181,6 @@ describe("accounts-services", () => {
   });
 
   describe("initAccounts", () => {
-    beforeEach(() => {
-      toastsStore.reset();
-    });
-
     it("should sync accounts", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
       const queryAccountBalanceSpy = jest
@@ -308,6 +306,70 @@ describe("accounts-services", () => {
       expect(handler).toBeCalledWith({
         err: errorTest,
         certified: true,
+      });
+    });
+  });
+
+  describe("loadBalance", () => {
+    it("should query account balance and load it in store", async () => {
+      const newBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(newBalanceE8s);
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      expect(get(accountsStore).main.balance).toEqual(mockMainAccount.balance);
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockMainAccount.identifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: mockMainAccount.identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+
+      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+    });
+
+    it("should not show error if only query fails", async () => {
+      const newBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockImplementation(async (args) => {
+          if (args.certified) {
+            return newBalanceE8s;
+          }
+          throw new Error("test");
+        });
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should show error if call fails", async () => {
+      const error = new Error("Test");
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockRejectedValue(error);
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(error.message),
       });
     });
   });
