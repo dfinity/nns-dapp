@@ -125,7 +125,6 @@
       bitcoinEstimatedFee,
     });
 
-    // Errors are bubbled
     return undefined;
   };
 </script>
