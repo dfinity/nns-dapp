@@ -20,7 +20,7 @@
     if (success) {
       toastsSuccess({
         labelKey: `neuron_detail.auto_stake_maturity_${
-          hasAutoStakeOn ? "on" : "off"
+          hasAutoStakeOn ? "off" : "on"
         }_success`,
       });
     }
