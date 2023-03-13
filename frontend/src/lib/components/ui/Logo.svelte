@@ -25,7 +25,6 @@
 
     user-select: none;
     -webkit-user-drag: none;
-    user-drag: none;
   }
 
   .framed {
