@@ -73,7 +73,7 @@ impl State {
 /// Note: Ultimately, the canister state is regenerated automatically, so if state cannot be kept across an upgrade,
 ///       the state is discarded in favour of upgrading.
 #[derive(Default, CandidType, Serialize, Deserialize)]
-pub struct  StableState {
+pub struct StableState {
     /// Configuration that is changed only by deployment, upgrade or similar events.
     pub config: RefCell<Config>,
     /// Data collected about SNSs, dumped as received from upstream.
