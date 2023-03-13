@@ -226,9 +226,9 @@ describe("NnsWallet", () => {
       );
 
       await waitFor(() =>
-        expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2)
+        expect(accountsApi.getTransactions).toBeCalledTimes(4)
       );
-      expect(accountsApi.getTransactions).toBeCalledTimes(4);
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
   });
 
