@@ -4,6 +4,8 @@ use crate::STATE;
 use candid::CandidType;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
+#[cfg(test)]
+mod tests;
 
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
@@ -13,7 +15,7 @@ pub fn get_stats(state: &State) -> Stats {
     ans
 }
 
-#[derive(CandidType, Deserialize, Default)]
+#[derive(CandidType, Deserialize, Default, Debug, Eq, PartialEq)]
 pub struct Stats {
     pub accounts_count: u64,
     pub sub_accounts_count: u64,
