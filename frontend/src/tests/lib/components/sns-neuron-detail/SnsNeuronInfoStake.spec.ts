@@ -3,30 +3,35 @@
  */
 
 import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
-import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
-import { mockSnsNeuronWithPermissions } from "$tests/mocks/sns-neurons.mock";
 import {
-  mockSnsFullProject,
-  mockTokenStore,
-} from "$tests/mocks/sns-projects.mock";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
+  mockSnsNeuron,
+  mockSnsNeuronWithPermissions,
+} from "$tests/mocks/sns-neurons.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-obejct";
+import {
+  SnsNeuronPermissionType,
+  SnsSwapLifecycle,
+  type SnsNeuron,
+} from "@dfinity/sns";
 
 describe("SnsNeuronInfoStake", () => {
-  beforeAll(() =>
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    })
-  );
-
+  const data = snsResponsesForLifecycle({
+    lifecycles: [SnsSwapLifecycle.Open],
+    certified: true,
+  });
   beforeEach(() => {
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    const universe = data[0][0].rootCanisterId;
+    page.mock({
+      data: { universe },
+    });
+
+    snsQueryStore.setData(data);
 
     jest
       .spyOn(authStore, "subscribe")
@@ -37,77 +42,115 @@ describe("SnsNeuronInfoStake", () => {
     const neuron = mockSnsNeuronWithPermissions([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE,
     ]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    await waitFor(() =>
-      expect(queryByTestId("disburse-button")).toBeInTheDocument()
-    );
+    expect(po.hasDisburseButton()).toBe(true);
   });
 
-  it("should not render disburse button", async () => {
+  it("should not render disburse button if user has no permissions to disburse", async () => {
     const neuron = mockSnsNeuronWithPermissions([]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    expect(queryByTestId("disburse-button")).not.toBeInTheDocument();
+    expect(po.isContentLoaded()).toBe(true);
+    expect(po.hasDisburseButton()).toBe(false);
   });
 
   it("should render dissolve button", async () => {
-    const neuron = mockSnsNeuronWithPermissions([
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
-    ]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const neuron: SnsNeuron = {
+      ...mockSnsNeuronWithPermissions([
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
+      ]),
+      dissolve_state: [
+        {
+          DissolveDelaySeconds: BigInt(1234444),
+        },
+      ],
+    };
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    expect(queryByTestId("sns-increase-dissolve-delay")).toBeInTheDocument();
+    expect(po.hasDissolveButton()).toBe(true);
   });
 
-  it("should not render dissolve button", async () => {
+  it("should not render dissolve button if user has no permissions to dissolve", async () => {
     const neuron = mockSnsNeuronWithPermissions([]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    expect(
-      queryByTestId("sns-increase-dissolve-delay")
-    ).not.toBeInTheDocument();
+    expect(po.isContentLoaded()).toBe(true);
+    expect(po.hasDissolveButton()).toBe(false);
   });
 
   it("renders increase dissolve delay button", async () => {
     const neuron = mockSnsNeuronWithPermissions([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE,
     ]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    expect(queryByTestId("sns-increase-dissolve-delay")).toBeInTheDocument();
+    expect(po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
   it("should not render increase dissolve delay button", async () => {
     const neuron = mockSnsNeuronWithPermissions([]);
-    const { queryByTestId } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
       reload: jest.fn(),
     });
+    const po = SnsNeuronInfoStakePo.under(container);
 
-    expect(
-      queryByTestId("sns-increase-dissolve-delay")
-    ).not.toBeInTheDocument();
+    expect(po.isContentLoaded()).toBe(true);
+    expect(po.hasIncreaseDissolveDelayButton()).toBe(false);
+  });
+
+  it("should render increase state button if neuron doesn't belong to the Community Fund", async () => {
+    const { container } = renderSelectedSnsNeuronContext({
+      Component: SnsNeuronInfoStake,
+      neuron: mockSnsNeuron,
+      reload: jest.fn(),
+    });
+
+    const po = SnsNeuronInfoStakePo.under(container);
+
+    expect(po.hasIncreaseStakeButton()).toBe(true);
+  });
+
+  it("should not render increase state button if neuron belongs to the Community Fund", async () => {
+    const neuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      source_nns_neuron_id: [BigInt(12345)],
+    };
+    const { container } = renderSelectedSnsNeuronContext({
+      Component: SnsNeuronInfoStake,
+      neuron,
+      reload: jest.fn(),
+    });
+    const po = SnsNeuronInfoStakePo.under(container);
+
+    expect(po.isContentLoaded()).toBe(true);
+    expect(po.hasIncreaseStakeButton()).toBe(false);
   });
 });

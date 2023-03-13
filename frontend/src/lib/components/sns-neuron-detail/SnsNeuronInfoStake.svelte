@@ -14,6 +14,7 @@
     getSnsNeuronState,
     hasPermissionToDisburse,
     hasPermissionToDissolve,
+    isCommunityFund,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { NeuronState } from "@dfinity/nns";
@@ -21,6 +22,7 @@
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/SnsIncreaseStakeButton.svelte";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -52,28 +54,37 @@
     nonNullish(neuronState) &&
     [NeuronState.Dissolving, NeuronState.Locked].includes(neuronState) &&
     allowedToDissolve;
+
+  let isCFNeuron = false;
+  $: isCFNeuron = nonNullish(neuron) ? isCommunityFund(neuron) : false;
 </script>
 
-{#if nonNullish(neuron) && nonNullish(neuronState)}
-  <KeyValuePair>
-    <h3 slot="key">{$i18n.neuron_detail.stake}</h3>
-    <SnsNeuronAmount {neuron} slot="value" />
-  </KeyValuePair>
+<TestIdWrapper testId="sns-neuron-info-stake">
+  {#if nonNullish(neuron) && nonNullish(neuronState)}
+    <KeyValuePair>
+      <h3 slot="key" data-tid="sns-neuron-stake">
+        {$i18n.neuron_detail.stake}
+      </h3>
+      <SnsNeuronAmount {neuron} slot="value" />
+    </KeyValuePair>
 
-  <div class="buttons">
-    {#if allowedToDissolve}
-      <IncreaseSnsDissolveDelayButton />
-    {/if}
-    <SnsIncreaseStakeButton />
-    {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-      <DisburseSnsButton />
-    {:else if canDissolve}
-      <DissolveSnsNeuronButton {neuronState} />
-    {/if}
-  </div>
+    <div class="buttons">
+      {#if allowedToDissolve}
+        <IncreaseSnsDissolveDelayButton />
+      {/if}
+      {#if !isCFNeuron}
+        <SnsIncreaseStakeButton />
+      {/if}
+      {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
+        <DisburseSnsButton />
+      {:else if canDissolve}
+        <DissolveSnsNeuronButton {neuronState} />
+      {/if}
+    </div>
 
-  <Separator />
-{/if}
+    <Separator />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "../../themes/mixins/section";
