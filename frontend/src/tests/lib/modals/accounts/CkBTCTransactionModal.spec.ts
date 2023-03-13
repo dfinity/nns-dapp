@@ -195,7 +195,7 @@ describe("CkBTCTransactionModal", () => {
     ).toBeInTheDocument();
   });
 
-  it("should not be able to continue as amount if lower than fee", async () => {
+  it("should not be able to continue as amount is lower than fee", async () => {
     const result = await renderTransactionModal();
 
     await testTransferFormTokens({
