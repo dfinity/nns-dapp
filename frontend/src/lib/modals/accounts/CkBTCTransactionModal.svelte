@@ -22,10 +22,7 @@
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
-  import { isNullish } from "@dfinity/utils";
-  import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
-  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
-  import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+  import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -120,43 +117,15 @@
 
   let validateAmount: ValidateAmountFn;
   $: validateAmount = (amount: number | undefined) => {
-    // No additional check for ckBTC network
-    if (!networkBtc) {
-      return undefined;
-    }
-
-    // No source account selected yet, we cannot check the available fund
-    if (isNullish(userSelectedAccount)) {
-      return undefined;
-    }
-
-    // No additional check if no amount is entered
-    if (isNullish(amount)) {
-      return undefined;
-    }
-
-    const amountE8s = numberToE8s(amount);
-
-    // No additional check if amount is zero because user might be entering a value such as 0.00000...
-    if (amountE8s === BigInt(0)) {
-      return undefined;
-    }
-
-    if (amountE8s < RETRIEVE_BTC_MIN_AMOUNT) {
-      return replacePlaceholders($i18n.error__ckbtc.retrieve_btc_min_amount, {
-        $amount: formatToken({
-          value: RETRIEVE_BTC_MIN_AMOUNT,
-          detailed: true,
-        }),
-      });
-    }
-
-    assertEnoughAccountFunds({
-      account: userSelectedAccount,
-      amountE8s:
-        amountE8s + transactionFee.toE8s() + (bitcoinEstimatedFee ?? BigInt(0)),
+    assertCkBTCUserInputAmount({
+      networkBtc,
+      sourceAccount: userSelectedAccount,
+      amount,
+      transactionFee: transactionFee.toE8s(),
+      bitcoinEstimatedFee,
     });
 
+    // Errors are bubbled
     return undefined;
   };
 </script>

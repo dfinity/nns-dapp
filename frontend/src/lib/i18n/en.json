@@ -80,7 +80,7 @@
     "split_neuron": "Sorry, there was an unexpected error splitting the neuron. Please try again later.",
     "not_authorized_neuron_action": "Sorry, none of your principals is the controller of the neuron.",
     "invalid_sender": "Sorry, you can't send funds from this account.",
-    "insufficient_funds": "Sorry, there are not enough funds in this account",
+    "insufficient_funds": "Sorry, there are not enough funds in this account.",
     "transfer_error": "Sorry, there was an error with the transaction. Please try again later.",
     "merge_neurons_same_id": "Two neurons with the same id can't be merged.",
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller.",
