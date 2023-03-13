@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXXX
+## Proposal 112386
 * Do not allow increasing stake for CF SNS neurons.
 * Improve validations in address inputs.
 
