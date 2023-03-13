@@ -18,6 +18,9 @@
 
   const autoStake = async () => {
     startBusy({ initiator: "auto-stake-maturity" });
+    const labelKey = `neuron_detail.auto_stake_maturity_${
+      hasAutoStakeOn ? "off" : "on"
+    }_success`;
 
     const { success } = await toggleAutoStakeMaturity({
       neuron,
@@ -29,9 +32,7 @@
 
     if (success) {
       toastsSuccess({
-        labelKey: `neuron_detail.auto_stake_maturity_${
-          hasAutoStakeOn ? "off" : "on"
-        }_success`,
+        labelKey,
       });
     }
 
