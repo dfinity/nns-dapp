@@ -854,7 +854,7 @@ impl AccountsStore {
     }
 
     /// Adds an instruction counter to the circular buffer.
-    pub fn save_instruction_counter(&mut self, counter: PerformanceCounter) {
+    pub fn save_instruction_count(&mut self, counter: PerformanceCounter) {
         let mut instruction_counts = self.instruction_counts.replace(None).unwrap_or_default;
         if instruction_counts.len() >= 100 {
             instruction_counts.pop_front();

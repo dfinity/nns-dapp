@@ -35,7 +35,7 @@ fn main() {
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
-    perf::record_instruction_counter("pre_upgrade start");
+    perf::record_instruction_count("pre_upgrade start");
     STATE.with(|s| {
         let bytes = s.encode();
         stable::set(&bytes);
@@ -59,11 +59,11 @@ fn post_upgrade() {
         s.replace(new_state);
     });
 
-    perf::save_instruction_counter(counter_before);
-    perf::record_instruction_counter("post_upgrade after state_recovery");
+    perf::save_instruction_count(counter_before);
+    perf::record_instruction_count("post_upgrade after state_recovery");
     assets::init_assets();
-    perf::record_instruction_counter("post_upgrade after init_assets");
-    perf::record_instruction_counter("post_upgrade stop");
+    perf::record_instruction_count("post_upgrade after init_assets");
+    perf::record_instruction_count("post_upgrade stop");
 }
 
 #[export_name = "canister_query http_request"]
