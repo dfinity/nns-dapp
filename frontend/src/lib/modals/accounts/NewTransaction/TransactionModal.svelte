@@ -24,6 +24,7 @@
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   // User inputs
+  // TODO: do not export selectedAccount and path the value to `validateAmount({})`
   export let selectedAccount: Account | undefined = sourceAccount;
   export let destinationAddress: string | undefined = undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
