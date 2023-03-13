@@ -526,7 +526,16 @@ describe("accounts-services", () => {
         accountIdentifier: mockSubAccount.identifier,
         certified: true,
       });
-      // 2 times for source account, 2 times for destination account
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: sourceAccount.identifier,
+        certified: false,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        accountIdentifier: sourceAccount.identifier,
+        certified: true,
+      });
       expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(4);
     });
   });
