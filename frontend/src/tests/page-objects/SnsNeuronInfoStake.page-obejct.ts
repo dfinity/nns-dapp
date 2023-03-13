@@ -19,7 +19,7 @@ export class SnsNeuronInfoStakePo {
     return el && new SnsNeuronInfoStakePo(el);
   }
 
-  private getButton(testId: string): ButtonPo {
+  private getButton(testId: string): ButtonPo | null {
     return ButtonPo.under({ element: this.root, testId });
   }
 
