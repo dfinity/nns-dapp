@@ -1,6 +1,7 @@
 import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
-import { RETRIEVE_BTC_MIN_AMOUNT } from "../../../lib/constants/bitcoin.constants";
-import { E8S_PER_ICP } from "../../../lib/constants/icp.constants";
+import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 
 describe("ckbtc.utils", () => {
@@ -76,7 +77,7 @@ describe("ckbtc.utils", () => {
           Number(params.transactionFee) / E8S_PER_ICP +
           Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP,
       })
-    ).toThrow();
+    ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
 
     expect(() =>
       assertCkBTCUserInputAmount({
@@ -87,6 +88,6 @@ describe("ckbtc.utils", () => {
           Number(params.transactionFee) / E8S_PER_ICP +
           0.01,
       })
-    ).toThrow();
+    ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });
 });
