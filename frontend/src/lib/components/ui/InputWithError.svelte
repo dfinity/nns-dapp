@@ -59,6 +59,8 @@
   .wrapper {
     position: relative;
     width: 100%;
+
+    padding: var(--input-error-wrapper-padding);
   }
 
   .error {

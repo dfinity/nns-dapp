@@ -909,6 +909,7 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
+  retrieve_btc_min_amount: string;
 }
 
 interface I18nFeature_flags_prompt {
