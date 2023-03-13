@@ -1360,6 +1360,62 @@ impl AccountsStore {
     }
 }
 
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
+pub enum OldTransactionType {
+    Burn,
+    Mint,
+    Transfer,
+    StakeNeuron,
+    StakeNeuronNotification,
+    TopUpNeuron,
+    CreateCanister,
+    TopUpCanister(CanisterId),
+    ParticipateSwap(CanisterId),
+}
+
+// TODO: REMOVE after migration
+impl TryFrom<OldTransactionType> for TransactionType {
+    type Error = ();
+
+    fn try_from(value: OldTransactionType) -> Result<Self, Self::Error> {
+        match value {
+            OldTransactionType::Burn => Ok(TransactionType::Burn),
+            OldTransactionType::Mint => Ok(TransactionType::Mint),
+            OldTransactionType::Transfer => Ok(TransactionType::Transfer),
+            OldTransactionType::StakeNeuron => Ok(TransactionType::StakeNeuron),
+            OldTransactionType::StakeNeuronNotification => Ok(TransactionType::StakeNeuronNotification),
+            OldTransactionType::TopUpNeuron => Ok(TransactionType::TopUpNeuron),
+            OldTransactionType::CreateCanister => Ok(TransactionType::CreateCanister),
+            OldTransactionType::TopUpCanister(canisterId) => Ok(TransactionType::TopUpCanister(canisterId)),
+            OldTransactionType::ParticipateSwap(canisterId) => Ok(TransactionType::ParticipateSwap(canisterId)),
+        }
+    }
+}
+
+#[derive(CandidType, Deserialize)]
+struct OldTransaction {
+    transaction_index: TransactionIndex,
+    block_height: BlockIndex,
+    timestamp: TimeStamp,
+    memo: Memo,
+    transfer: Operation,
+    transaction_type: Option<OldTransactionType>,
+}
+
+fn convert_transactions(old_txs: VecDeque<OldTransaction>) -> VecDeque<Transaction> {
+    old_txs.iter().map(|&tx| Transaction {
+        transaction_index: tx.transaction_index,
+        block_height: tx.block_height,
+        timestamp: tx.timestamp,
+        memo: tx.memo,
+        transfer: tx.transfer,
+        transaction_type: match tx.transaction_type {
+            Some(tx_type) => Some(TransactionType::try_from(tx_type).unwrap()),
+            None => None,
+        },
+    }).collect()
+}
+
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         // Encode with removed fields intact to make rolling back to
@@ -1382,6 +1438,7 @@ impl StableState for AccountsStore {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+
         #[allow(clippy::type_complexity)]
         let (
             mut accounts,
@@ -1396,8 +1453,8 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-            VecDeque<Transaction>,
+            HashMap<(AccountIdentifier, AccountIdentifier), (OldTransactionType, u64)>,
+            VecDeque<OldTransaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
@@ -1429,8 +1486,8 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            pending_transactions,
-            transactions,
+            pending_transactions: HashMap::new(),
+            transactions: convert_transactions(transactions),
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
