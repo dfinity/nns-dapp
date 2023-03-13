@@ -63,6 +63,7 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  query_balance: string;
   accounts_not_found_poll: string;
   account_not_found: string;
   account_not_reload: string;

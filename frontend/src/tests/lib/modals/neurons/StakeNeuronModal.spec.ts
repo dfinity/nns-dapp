@@ -22,9 +22,13 @@ import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
+  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -32,6 +36,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import {
@@ -41,6 +46,7 @@ import {
   type queries,
 } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/ledger.api");
@@ -84,11 +90,17 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("StakeNeuronModal", () => {
+  const getAccountCard = (container) =>
+    container.querySelector('article[role="button"]');
+
   beforeEach(() => {
     cancelPollAccounts();
+    jest.clearAllMocks();
   });
 
   describe("main account selection", () => {
+    let queryBalanceSpy: jest.SpyInstance;
+    const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       accountsStore.set({
@@ -104,13 +116,9 @@ describe("StakeNeuronModal", () => {
       jest
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(() => mock<GovernanceCanister>());
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
+      queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+        .mockResolvedValue(newBalanceE8s);
     });
 
     afterEach(() => {
@@ -126,7 +134,7 @@ describe("StakeNeuronModal", () => {
     it("should display accounts as cards", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      expect(container.querySelector('article[role="button"]')).not.toBeNull();
+      expect(getAccountCard(container)).not.toBeNull();
     });
 
     it("should be able to select an account and move to the next view", async () => {
@@ -134,7 +142,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -165,7 +173,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -181,7 +189,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -200,7 +208,7 @@ describe("StakeNeuronModal", () => {
     it("should be able to create a new neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -220,7 +228,7 @@ describe("StakeNeuronModal", () => {
     it("should move to update dissolve delay after creating a neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -244,7 +252,7 @@ describe("StakeNeuronModal", () => {
     it("should have the update delay button disabled", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -272,7 +280,7 @@ describe("StakeNeuronModal", () => {
     it("should have disabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -308,7 +316,7 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -332,10 +340,51 @@ describe("StakeNeuronModal", () => {
       ).not.toBeNull();
     });
 
+    it("should sync balance after staking neuron", async () => {
+      const { container } = await renderModal({
+        component: StakeNeuronModal,
+      });
+
+      const accountCard = getAccountCard(container);
+      const nonNullishCard = assertNonNullish(accountCard);
+
+      await fireEvent.click(nonNullishCard);
+
+      const input = container.querySelector('input[name="amount"]');
+      const nonNullishInput = assertNonNullish(input);
+      // Svelte generates code for listening to the `input` event
+      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+      await fireEvent.input(nonNullishInput, {
+        target: { value: neuronStake },
+      });
+
+      expect(queryBalanceSpy).not.toBeCalled();
+
+      const createButton = container.querySelector('button[type="submit"]');
+      const nonNullishButton = assertNonNullish(createButton);
+      await fireEvent.click(nonNullishButton);
+
+      await waitFor(() => expect(queryBalanceSpy).toBeCalledTimes(2));
+      // First card is clicked. First card is the main account.
+      const selectedAccountIdentifier = mockMainAccount.identifier;
+      expect(queryBalanceSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: true,
+        accountIdentifier: selectedAccountIdentifier,
+      });
+      expect(queryBalanceSpy).toBeCalledWith({
+        identity: mockIdentity,
+        certified: false,
+        accountIdentifier: selectedAccountIdentifier,
+      });
+      // New balance is set in the store.
+      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+    });
+
     it("should be able to change dissolve delay in the confirmation screen", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
@@ -391,7 +440,7 @@ describe("StakeNeuronModal", () => {
       });
 
       // SCREEN: Select Account
-      const accountCard = container.querySelector('article[role="button"]');
+      const accountCard = getAccountCard(container);
       expect(accountCard).not.toBeNull();
 
       accountCard && (await fireEvent.click(accountCard));
