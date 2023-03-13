@@ -1,3 +1,8 @@
+// Tests should be able to fail:
+#![allow(clippy::panic)]
+#![allow(clippy::expect_used)]
+#![allow(clippy::unwrap_used)]
+
 use crate::state::StableState;
 
 #[test]
