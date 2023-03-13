@@ -11,6 +11,7 @@
   {alt}
   role="presentation"
   loading="lazy"
+  draggable="false"
   data-tid={testId}
   class:huge={size === "huge"}
   class:big={size === "big"}
