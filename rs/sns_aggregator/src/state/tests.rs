@@ -65,7 +65,10 @@ fn serializing_and_deserializing_returns_original() {
         let deserialized = StableState::from_bytes(&serialized)
             .map_err(|err| format!("Failed to deserialize {name}: {err:?}"))
             .unwrap();
-        for fun in [|state: &StableState| state.sns_cache.borrow().all_sns.len()] {
+        for fun in [
+            |state: &StableState| state.sns_cache.borrow().all_sns.len(),
+            |state: &StableState| state.assets.borrow().len(),
+        ] {
             assert_eq!(fun(state), fun(&deserialized));
         }
     }
