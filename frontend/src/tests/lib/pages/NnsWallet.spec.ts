@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
+import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
-import * as services from "$lib/services/accounts.services";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -17,6 +17,7 @@ import {
   mockMainAccount,
 } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -35,23 +36,32 @@ import {
 } from "../../mocks/modal.mock";
 
 jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/accounts.api");
 jest.mock("$lib/api/ledger.api");
 
-jest.mock("$lib/services/accounts.services", () => ({
-  ...(jest.requireActual("$lib/services/accounts.services") as object),
-  getAccountTransactions: jest.fn(),
-  syncAccounts: jest.fn(),
-}));
+const blockedApiPaths = [
+  "$lib/api/nns-dapp.api",
+  "$lib/api/accounts.api",
+  "$lib/api/ledger.api",
+];
 
 describe("NnsWallet", () => {
+  blockAllCallsTo(blockedApiPaths);
+
   const props = {
     accountIdentifier: mockMainAccount.identifier,
   };
+  const mainBalanceE8s = BigInt(10_000_000);
 
   beforeEach(() => {
+    jest.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest
+      .spyOn(ledgerApi, "queryAccountBalance")
+      .mockResolvedValue(mainBalanceE8s);
+    jest.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
   const testToolbarButton = ({
@@ -73,10 +83,6 @@ describe("NnsWallet", () => {
     beforeEach(() => {
       cancelPollAccounts();
       accountsStore.reset();
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -200,12 +206,6 @@ describe("NnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spyGetAccountTransactions = jest.spyOn(
-        services,
-        "getAccountTransactions"
-      );
-      const spySyncAccounts = jest.spyOn(services, "syncAccounts");
-
       const result = render(NnsWallet, props);
 
       await testModal({ result, testId: "receive-icp" });
@@ -214,14 +214,21 @@ describe("NnsWallet", () => {
 
       await waitModalIntroEnd({ container, selector: modalToolbarSelector });
 
+      await waitFor(() =>
+        expect(accountsApi.getTransactions).toBeCalledTimes(2)
+      );
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
       await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
-      await waitFor(() => expect(spySyncAccounts).toHaveBeenCalled());
-      expect(spyGetAccountTransactions).toHaveBeenCalled();
+      await waitFor(() =>
+        expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2)
+      );
+      expect(accountsApi.getTransactions).toBeCalledTimes(4);
     });
   });
 

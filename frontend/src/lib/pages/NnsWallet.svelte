@@ -5,8 +5,8 @@
   import {
     cancelPollAccounts,
     getAccountTransactions,
+    loadBalance,
     pollAccounts,
-    syncAccounts,
   } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
@@ -128,12 +128,14 @@
 
   const reloadAccount = async () => {
     try {
-      await Promise.all([
-        syncAccounts(),
-        nonNullish($selectedAccountStore.account)
-          ? reloadTransactions($selectedAccountStore.account.identifier)
-          : Promise.resolve(),
-      ]);
+      if (nonNullish($selectedAccountStore.account)) {
+        await Promise.all([
+          loadBalance({
+            accountIdentifier: $selectedAccountStore.account.identifier,
+          }),
+          reloadTransactions($selectedAccountStore.account.identifier),
+        ]);
+      }
     } catch (err: unknown) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_reload, {
