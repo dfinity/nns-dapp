@@ -1212,11 +1212,8 @@ fn hardware_wallet_account_name_too_long() {
     assert!(matches!(res2, RegisterHardwareWalletResponse::NameTooLong));
 }
 
-#[test]
-fn get_stats() {
-    let mut store = setup_test_store();
-
-    let stats = store.get_stats();
+/// Test that the stats are as expected for a new test store.
+pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
@@ -1225,6 +1222,23 @@ fn get_stats() {
     assert_eq!(0, stats.earliest_transaction_block_height);
     assert_eq!(3, stats.latest_transaction_block_height);
     assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
+}
+
+/// The stats test should reject an empty response when we know that there is data in the accounts store.
+#[test]
+#[should_panic]
+fn stats_test_should_fail_for_default_fill() {
+    let stats = Stats::default();
+    assert_initial_test_store_stats_are_correct(&stats);
+}
+
+#[test]
+fn get_stats() {
+    let mut store = setup_test_store();
+
+    let mut stats = crate::stats::Stats::default();
+    store.get_stats(&mut stats);
+    assert_initial_test_store_stats_are_correct(&stats);
 
     let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
     let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
@@ -1232,13 +1246,13 @@ fn get_stats() {
     store.add_account(principal3);
     store.add_account(principal4);
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
 
     assert_eq!(4, stats.accounts_count);
 
     for i in 1..10 {
         store.create_sub_account(principal3, i.to_string());
-        let stats = store.get_stats();
+        store.get_stats(&mut stats);
         assert_eq!(i, stats.sub_accounts_count);
     }
 
@@ -1259,11 +1273,11 @@ fn get_stats() {
         },
     );
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert_eq!(2, stats.hardware_wallet_accounts_count);
 
     store.mark_ledger_sync_complete();
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
@@ -1341,7 +1355,7 @@ fn encode_decode_stable_state() {
     );
 }
 
-fn setup_test_store() -> AccountsStore {
+pub(crate) fn setup_test_store() -> AccountsStore {
     let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
     let account_identifier1 = AccountIdentifier::from(principal1);

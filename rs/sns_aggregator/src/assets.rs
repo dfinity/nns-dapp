@@ -93,9 +93,19 @@ impl Asset {
 /// A database of assets indexed by the path to the actual file, e.g.
 /// `/index.html` is a key but `/` is not, although getting the latter
 /// will also return the former.
-#[derive(Default, Serialize, Deserialize, PartialEq, Eq, Debug)]
+#[derive(Default, CandidType, Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Assets(HashMap<String, Asset>);
 impl Assets {
+    /// Gets the number of assets
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    /// Determines whether the assets are empty
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
     /// Adds an asset to the assets database.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);

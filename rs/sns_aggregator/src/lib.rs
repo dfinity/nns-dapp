@@ -11,8 +11,6 @@ mod types;
 mod upstream;
 
 mod fast_scheduler;
-#[cfg(test)]
-mod tests;
 
 use std::collections::VecDeque;
 use std::time::Duration;
@@ -137,23 +135,21 @@ fn pre_upgrade() {
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
     // Make an effort to restore state.  If it doesn't work, give up.
-    if false {
-        // Disabled until stable serde is fixed.
-        STATE.with(|state| {
-            match ic_cdk::storage::stable_restore()
-                .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
-                .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
-            {
-                Ok(data) => {
-                    *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
-                    *state.stable.borrow_mut() = data;
-                }
-                Err(message) => {
-                    crate::state::log(message);
-                }
+    STATE.with(|state| {
+        match ic_cdk::storage::stable_restore()
+            .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
+            .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
+        {
+            Ok(data) => {
+                *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
+                *state.stable.borrow_mut() = data;
+                crate::state::log("Successfully restored stable memory.".to_string());
             }
-        });
-    }
+            Err(message) => {
+                crate::state::log(message);
+            }
+        }
+    });
     setup(config);
 }
 
