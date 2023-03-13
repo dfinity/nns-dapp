@@ -22,8 +22,7 @@ import {
 
 describe("SnsNeuronInfoStake", () => {
   const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Open],
-    certified: true,
+    lifecycles: [SnsSwapLifecycle.Committed],
   });
   beforeEach(() => {
     const universe = data[0][0].rootCanisterId;

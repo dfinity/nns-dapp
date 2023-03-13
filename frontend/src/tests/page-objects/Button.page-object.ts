@@ -1,4 +1,4 @@
-export class Button {
+export class ButtonPo {
   root: Element;
 
   constructor(root: Element) {
@@ -14,8 +14,8 @@ export class Button {
   }: {
     element: Element;
     testId: string;
-  }): Button | null {
+  }): ButtonPo | null {
     const el = element.querySelector(`button[data-tid=${testId}]`);
-    return el && new Button(el);
+    return el && new ButtonPo(el);
   }
 }

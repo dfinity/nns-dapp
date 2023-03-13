@@ -22,7 +22,7 @@
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/SnsIncreaseStakeButton.svelte";
-  import TestIdWrapper from "$lib/common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -34,20 +34,20 @@
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
   let allowedToDissolve: boolean;
-  $: allowedToDissolve = isNullish(neuron)
-    ? false
-    : hasPermissionToDissolve({
-        neuron,
-        identity: $authStore.identity,
-      });
+  $: allowedToDissolve =
+    nonNullish(neuron) &&
+    hasPermissionToDissolve({
+      neuron,
+      identity: $authStore.identity,
+    });
 
   let allowedToDisburse: boolean;
-  $: allowedToDisburse = isNullish(neuron)
-    ? false
-    : hasPermissionToDisburse({
-        neuron,
-        identity: $authStore.identity,
-      });
+  $: allowedToDisburse =
+    nonNullish(neuron) &&
+    hasPermissionToDisburse({
+      neuron,
+      identity: $authStore.identity,
+    });
 
   let canDissolve = false;
   $: canDissolve =
@@ -55,14 +55,14 @@
     [NeuronState.Dissolving, NeuronState.Locked].includes(neuronState) &&
     allowedToDissolve;
 
-  let isCFNeuron = false;
-  $: isCFNeuron = nonNullish(neuron) ? isCommunityFund(neuron) : false;
+  let isIncreaseStakeAllowed = false;
+  $: isIncreaseStakeAllowed = nonNullish(neuron) && !isCommunityFund(neuron);
 </script>
 
 <TestIdWrapper testId="sns-neuron-info-stake">
   {#if nonNullish(neuron) && nonNullish(neuronState)}
     <KeyValuePair>
-      <h3 slot="key" data-tid="sns-neuron-stake">
+      <h3 slot="key">
         {$i18n.neuron_detail.stake}
       </h3>
       <SnsNeuronAmount {neuron} slot="value" />
@@ -72,7 +72,7 @@
       {#if allowedToDissolve}
         <IncreaseSnsDissolveDelayButton />
       {/if}
-      {#if !isCFNeuron}
+      {#if isIncreaseStakeAllowed}
         <SnsIncreaseStakeButton />
       {/if}
       {#if neuronState === NeuronState.Dissolved && allowedToDisburse}

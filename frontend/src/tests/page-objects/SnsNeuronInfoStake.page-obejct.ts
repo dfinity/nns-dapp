@@ -1,5 +1,6 @@
 import { nonNullish } from "@dfinity/utils";
-import { Button } from "./Button.page-object";
+import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { ButtonPo } from "./Button.page-object";
 
 export class SnsNeuronInfoStakePo {
   static readonly tid = "sns-neuron-info-stake";
@@ -18,48 +19,47 @@ export class SnsNeuronInfoStakePo {
     return el && new SnsNeuronInfoStakePo(el);
   }
 
-  isContentLoaded() {
-    return nonNullish(this.root.querySelector(`[data-tid=sns-neuron-stake]`));
+  private getButton(testId: string): ButtonPo {
+    return ButtonPo.under({ element: this.root, testId });
   }
 
-  getDisburseButton() {
-    return Button.under({ element: this.root, testId: "disburse-button" });
+  isContentLoaded() {
+    return nonNullish(this.getStakeAmount());
+  }
+
+  getStakeAmount() {
+    return AmountDisplayPo.under(this.root)?.getAmount();
+  }
+
+  getDisburseButtonPo() {
+    return this.getButton("disburse-button");
   }
 
   hasDisburseButton() {
-    return nonNullish(this.getDisburseButton());
+    return nonNullish(this.getDisburseButtonPo());
   }
 
-  getIncreaseDissolveDelayButton() {
-    return Button.under({
-      element: this.root,
-      testId: "sns-increase-dissolve-delay",
-    });
+  getIncreaseDissolveDelayButtonPo() {
+    return this.getButton("sns-increase-dissolve-delay");
   }
 
   hasIncreaseDissolveDelayButton() {
-    return nonNullish(this.getIncreaseDissolveDelayButton());
+    return nonNullish(this.getIncreaseDissolveDelayButtonPo());
   }
 
-  getIncreaseStakeButton() {
-    return Button.under({
-      element: this.root,
-      testId: "sns-increase-stake",
-    });
+  getIncreaseStakeButtonPo() {
+    return this.getButton("sns-increase-stake");
   }
 
   hasIncreaseStakeButton() {
-    return nonNullish(this.getIncreaseStakeButton());
+    return nonNullish(this.getIncreaseStakeButtonPo());
   }
 
-  getDissolveButton() {
-    return Button.under({
-      element: this.root,
-      testId: "sns-dissolve-button",
-    });
+  getDissolveButtonPo() {
+    return this.getButton("sns-dissolve-button");
   }
 
   hasDissolveButton() {
-    return nonNullish(this.getDissolveButton());
+    return nonNullish(this.getDissolveButtonPo());
   }
 }
