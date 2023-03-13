@@ -43,7 +43,7 @@ pub struct AccountsStore {
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 
-    instruction_counters: Opt<VecDeque<PerformanceCounter>>,
+    instruction_counts: Opt<VecDeque<PerformanceCounter>>,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -855,12 +855,12 @@ impl AccountsStore {
 
     /// Adds an instruction counter to the circular buffer.
     pub fn save_instruction_counter(&mut self, counter: PerformanceCounter) {
-        let mut instruction_counters = self.instruction_counters.replace(None).unwrap_or_default;
-        if instruction_counters.len() >= 100 {
-            instruction_counters.pop_front();
+        let mut instruction_counts = self.instruction_counts.replace(None).unwrap_or_default;
+        if instruction_counts.len() >= 100 {
+            instruction_counts.pop_front();
         }
-        instruction_counters.push_back(counter);
-        self.instruction_counters = Some(instruction_counters);
+        instruction_counts.push_back(counter);
+        self.instruction_counts = Some(instruction_counts);
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
@@ -1364,7 +1364,7 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
         }
 
-        let instruction_counters = VecDeque::new();
+        let instruction_counts = VecDeque::new();
 
         Ok(AccountsStore {
             accounts,
@@ -1378,7 +1378,7 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-            instruction_counters,
+            instruction_counts,
         })
     }
 }

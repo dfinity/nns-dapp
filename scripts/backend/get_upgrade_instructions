@@ -18,4 +18,4 @@ clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETW
 source "$(clap.build)"
 set -euo pipefail
 
-dfx canister call --network "$DFX_NETWORK" nns-dapp get_stats | idl2json | node -e 'counters=JSON.parse(require("fs").readFileSync(0).toString()).instruction_counters.reduce((d,e)=>(d[e.name]=Number(e.instruction_counter),d), {});console.log(counters["post_upgrade stop"] - counters["post_upgrade start"])'
+dfx canister call --network "$DFX_NETWORK" nns-dapp get_stats | idl2json | node -e 'counters=JSON.parse(require("fs").readFileSync(0).toString()).instruction_counts.reduce((d,e)=>(d[e.name]=Number(e.instruction_count),d), {});console.log(counters["post_upgrade stop"] - counters["post_upgrade start"])'
