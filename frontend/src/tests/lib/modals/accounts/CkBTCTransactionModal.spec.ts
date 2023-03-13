@@ -7,7 +7,7 @@ import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-id
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+import * as services from "$lib/services/ckbtc-convert.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
@@ -34,11 +34,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
-jest.mock("$lib/services/ckbtc-convert.services", () => {
-  return {
-    convertCkBTCToBtc: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
+jest.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
   const renderTransactionModal = (selectedAccount?: Account) =>
@@ -88,8 +84,21 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
   });
 
-  it("should convert ckBTC to Bitcoin", async () => {
+  const testConvertCkBTCToBTC = async ({
+    success,
+    eventName,
+  }: {
+    success: boolean;
+    eventName: "nnsClose" | "nnsTransfer";
+  }) => {
+    const spy = jest
+      .spyOn(services, "convertCkBTCToBtc")
+      .mockResolvedValue({ success });
+
     const result = await renderTransactionModal();
+
+    const onEnd = jest.fn();
+    result.component.$on(eventName, onEnd);
 
     await testTransferTokens({
       result,
@@ -97,10 +106,23 @@ describe("CkBTCTransactionModal", () => {
       destinationAddress: mockBTCAddressTestnet,
     });
 
-    await waitFor(() => expect(convertCkBTCToBtc).toBeCalled());
+    await waitFor(() => expect(spy).toBeCalled());
+    await waitFor(() => expect(onEnd).toBeCalled());
+  };
+
+  it("should convert ckBTC to Bitcoin", async () => {
+    await testConvertCkBTCToBTC({ success: true, eventName: "nnsTransfer" });
+  });
+
+  it("should close modal on ckBTC to Bitcoin error", async () => {
+    await testConvertCkBTCToBTC({ success: false, eventName: "nnsClose" });
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
+    jest
+      .spyOn(services, "convertCkBTCToBtc")
+      .mockResolvedValue({ success: true });
+
     const result = await renderTransactionModal();
 
     await testTransferTokens({
