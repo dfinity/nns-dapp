@@ -36,7 +36,7 @@ pub async fn update_cache() {
 
 /// The NNS SNS wasm canister ID
 ///
-/// This canister contains a lit of all SNS root canisters it has created.
+/// This canister contains a list of all SNS root canisters it has created.
 #[allow(clippy::expect_used)]
 fn nns_sns_wasm_canister_id() -> CanisterId {
     CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!")
