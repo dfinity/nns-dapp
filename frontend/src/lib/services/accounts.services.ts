@@ -37,6 +37,7 @@ import {
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -177,6 +178,42 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  */
 export const initAccounts = () => syncAccounts(ignoreErrors);
 
+/**
+ * Queries the balance of an account and loads it in the store.
+ *
+ * If `accountIdentifier` is not in the store, it will do nothing.
+ */
+export const loadBalance = async ({
+  accountIdentifier,
+}: {
+  accountIdentifier: string;
+}): Promise<void> => {
+  return queryAndUpdate<bigint, unknown>({
+    request: ({ identity, certified }) =>
+      queryAccountBalance({ identity, certified, accountIdentifier }),
+    onLoad: ({ response: balanceE8s }) => {
+      accountsStore.setBalance({ accountIdentifier, balanceE8s });
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+        return;
+      }
+
+      toastsError({
+        ...toToastError({
+          err,
+          fallbackErrorLabelKey: "error.query_balance",
+        }),
+        substitutions: { $accountId: accountIdentifier },
+      });
+    },
+    logMessage: `Syncing Balance for ${accountIdentifier}`,
+    strategy: FORCE_CALL_STRATEGY,
+  });
+};
+
 export const addSubAccount = async ({
   name,
 }: {
@@ -217,7 +254,17 @@ export const transferICP = async ({
       amount: tokenAmount,
     });
 
-    await syncAccounts();
+    // Transfer can be to one of the user's account.
+    const toAccount = findAccount({
+      identifier: to,
+      accounts: get(nnsAccountsListStore),
+    });
+    await Promise.all([
+      loadBalance({ accountIdentifier: identifier }),
+      nonNullish(toAccount)
+        ? loadBalance({ accountIdentifier: to })
+        : Promise.resolve(),
+    ]);
 
     return { success: true };
   } catch (err) {

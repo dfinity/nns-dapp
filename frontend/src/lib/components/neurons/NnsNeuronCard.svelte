@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import type { CardType } from "$lib/types/card";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronCardContainer from "./NeuronCardContainer.svelte";
   import NeuronStateInfo from "./NeuronStateInfo.svelte";
   import NnsNeuronCardTitle from "./NnsNeuronCardTitle.svelte";
@@ -17,26 +18,28 @@
   export let cardType: CardType = "card";
 </script>
 
-<NeuronCardContainer
-  {role}
-  {selected}
-  {disabled}
-  {ariaLabel}
-  on:click
-  {cardType}
->
-  <NnsNeuronCardTitle {neuron} slot="start" />
+<TestIdWrapper testId="nns-neuron-card-component">
+  <NeuronCardContainer
+    {role}
+    {selected}
+    {disabled}
+    {ariaLabel}
+    on:click
+    {cardType}
+  >
+    <NnsNeuronCardTitle {neuron} slot="start" />
 
-  <div class:disabled class="content">
-    <NnsNeuronAmount {neuron} {proposerNeuron} />
+    <div class:disabled class="content">
+      <NnsNeuronAmount {neuron} {proposerNeuron} />
 
-    <NeuronStateInfo state={neuron.state} />
-  </div>
+      <NeuronStateInfo state={neuron.state} />
+    </div>
 
-  <NnsNeuronRemainingTime {neuron} />
+    <NnsNeuronRemainingTime {neuron} />
 
-  <slot />
-</NeuronCardContainer>
+    <slot />
+  </NeuronCardContainer>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";

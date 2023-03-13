@@ -11,7 +11,8 @@ import {
   getPrincipalFromString,
   hasAccounts,
   invalidAddress,
-  invalidICPOrIcrcAddress,
+  invalidIcpAddress,
+  invalidIcrcAddress,
   isAccountHardwareWallet,
   mainAccount,
   sumAccounts,
@@ -25,6 +26,7 @@ import {
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsMainAccount,
@@ -87,15 +89,24 @@ describe("accounts-utils", () => {
     describe("invalidAddress", () => {
       it("should be an invalid address", () => {
         expect(
-          invalidAddress({ address: undefined, network: undefined })
+          invalidAddress({
+            address: undefined,
+            network: undefined,
+            rootCanisterId: mockCanisterId,
+          })
         ).toBeTruthy();
         expect(
-          invalidAddress({ address: "test", network: undefined })
+          invalidAddress({
+            address: "test",
+            network: undefined,
+            rootCanisterId: mockCanisterId,
+          })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: mockAddressInputInvalid,
             network: undefined,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -103,18 +114,21 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: undefined,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: "test",
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: mockAddressInputInvalid,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -122,42 +136,55 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: undefined,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: "test",
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: mockAddressInputInvalid,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
       });
 
       it("should be a valid ICP address", () => {
         expect(
-          invalidAddress({ address: mockAddressInputValid, network: undefined })
+          invalidAddress({
+            address: mockAddressInputValid,
+            network: undefined,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
         ).toBeFalsy();
         expect(
           invalidAddress({
             address: mockAddressInputValid,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: OWN_CANISTER_ID,
           })
         ).toBeFalsy();
       });
 
       it("should return false for Icrc accounts", () => {
         expect(
-          invalidAddress({ address: subaccountString, network: undefined })
+          invalidAddress({
+            address: subaccountString,
+            network: undefined,
+            rootCanisterId: mockCanisterId,
+          })
         ).toBeFalsy();
         expect(
           invalidAddress({
             address: subaccountString,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeFalsy();
       });
@@ -167,6 +194,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_TESTNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeFalsy();
       });
@@ -176,6 +204,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockAddressInputValid,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: OWN_CANISTER_ID,
           })
         ).toBeTruthy();
       });
@@ -185,6 +214,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: subaccountString,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
       });
@@ -194,6 +224,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -201,6 +232,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -208,24 +240,41 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: undefined,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
       });
     });
 
-    describe("invalidICPOrIcrcAddress", () => {
+    describe("invalidIcpAddress", () => {
       it("should be a invalid address", () => {
-        expect(invalidICPOrIcrcAddress(undefined)).toBeTruthy();
-        expect(invalidICPOrIcrcAddress("test")).toBeTruthy();
-        expect(invalidICPOrIcrcAddress(mockAddressInputInvalid)).toBeTruthy();
+        expect(invalidIcpAddress(undefined)).toBeTruthy();
+        expect(invalidIcpAddress("test")).toBeTruthy();
+        expect(invalidIcpAddress(mockAddressInputInvalid)).toBeTruthy();
       });
 
-      it("should be a valid address", () => {
-        expect(invalidICPOrIcrcAddress(mockAddressInputValid)).toBeFalsy();
+      it("should be a valid ICP address", () => {
+        expect(invalidIcpAddress(mockAddressInputValid)).toBeFalsy();
       });
 
       it("should return false for sns accounts", () => {
-        expect(invalidICPOrIcrcAddress(subaccountString)).toBeFalsy();
+        expect(invalidIcpAddress(subaccountString)).toBeTruthy();
+      });
+    });
+
+    describe("invalidIcrcAddress", () => {
+      it("should be a invalid address", () => {
+        expect(invalidIcrcAddress(undefined)).toBeTruthy();
+        expect(invalidIcrcAddress("test")).toBeTruthy();
+        expect(invalidIcrcAddress(mockAddressInputInvalid)).toBeTruthy();
+      });
+
+      it("should be a invalid ICP address", () => {
+        expect(invalidIcrcAddress(mockAddressInputValid)).toBeTruthy();
+      });
+
+      it("should return false for sns accounts", () => {
+        expect(invalidIcrcAddress(subaccountString)).toBeFalsy();
       });
     });
 
@@ -235,6 +284,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_TESTNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeFalsy();
 
@@ -242,6 +292,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressMainnet,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeFalsy();
       });
@@ -251,6 +302,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.BTC_MAINNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -258,6 +310,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -265,6 +318,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressTestnet,
             network: undefined,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -272,6 +326,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressMainnet,
             network: TransactionNetwork.BTC_TESTNET,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -279,6 +334,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressMainnet,
             network: TransactionNetwork.ICP_CKBTC,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
 
@@ -286,6 +342,7 @@ describe("accounts-utils", () => {
           invalidAddress({
             address: mockBTCAddressMainnet,
             network: undefined,
+            rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
       });

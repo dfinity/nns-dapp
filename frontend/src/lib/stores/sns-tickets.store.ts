@@ -6,8 +6,8 @@ import { writable } from "svelte/store";
 
 export interface SnsTicketsStoreEntry {
   /**
-   * undefined: not set
-   * null: no ticket
+   * undefined: not initialized yet
+   * null: no ticket available
    */
   ticket: Ticket | undefined | null;
   keepPolling: boolean;
@@ -112,5 +112,4 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
   };
 };
 
-// TODO(sale): rename to openTickets
 export const snsTicketsStore = initSnsTicketsStore();

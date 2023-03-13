@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal 112386
+* Remove button to increase stake for CF SNS neurons.
+* Improve validations in address inputs.
+
+## Proposal 111715
+* Upgrade agent-js.
+* Bugfixes and minor improvements.
+
 ## Proposal 111317
 * Stake maturity for SNS neurons.
 * Reenable update calls.

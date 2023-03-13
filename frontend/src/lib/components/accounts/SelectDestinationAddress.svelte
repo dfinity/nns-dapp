@@ -4,7 +4,7 @@
   import {
     getAccountByRootCanister,
     getAccountsByRootCanister,
-    invalidICPOrIcrcAddress,
+    invalidAddress,
   } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
@@ -28,7 +28,9 @@
   });
   let address: string;
   $: {
-    if (!invalidICPOrIcrcAddress(address)) {
+    if (
+      !invalidAddress({ address, rootCanisterId, network: selectedNetwork })
+    ) {
       selectedDestinationAddress = address;
     }
     // Keep in sync the selected destination address
@@ -68,7 +70,11 @@
     {/if}
   </div>
   {#if showManualAddress}
-    <AddressInput bind:address={selectedDestinationAddress} {selectedNetwork} />
+    <AddressInput
+      bind:address={selectedDestinationAddress}
+      {selectedNetwork}
+      {rootCanisterId}
+    />
   {:else}
     <SelectAccountDropdown
       {rootCanisterId}
