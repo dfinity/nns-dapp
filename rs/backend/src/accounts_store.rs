@@ -1386,8 +1386,8 @@ impl TryFrom<OldTransactionType> for TransactionType {
             OldTransactionType::StakeNeuronNotification => Ok(TransactionType::StakeNeuronNotification),
             OldTransactionType::TopUpNeuron => Ok(TransactionType::TopUpNeuron),
             OldTransactionType::CreateCanister => Ok(TransactionType::CreateCanister),
-            OldTransactionType::TopUpCanister(canisterId) => Ok(TransactionType::TopUpCanister(canisterId)),
-            OldTransactionType::ParticipateSwap(canisterId) => Ok(TransactionType::ParticipateSwap(canisterId)),
+            OldTransactionType::TopUpCanister(canister_id) => Ok(TransactionType::TopUpCanister(canister_id)),
+            OldTransactionType::ParticipateSwap(canister_id) => Ok(TransactionType::ParticipateSwap(canister_id)),
         }
     }
 }
@@ -1403,12 +1403,12 @@ struct OldTransaction {
 }
 
 fn convert_transactions(old_txs: VecDeque<OldTransaction>) -> VecDeque<Transaction> {
-    old_txs.iter().map(|&tx| Transaction {
+    old_txs.iter().map(|tx| Transaction {
         transaction_index: tx.transaction_index,
         block_height: tx.block_height,
         timestamp: tx.timestamp,
         memo: tx.memo,
-        transfer: tx.transfer,
+        transfer: tx.transfer.clone(),
         transaction_type: match tx.transaction_type {
             Some(tx_type) => Some(TransactionType::try_from(tx_type).unwrap()),
             None => None,
@@ -1443,7 +1443,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            _pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1486,6 +1486,7 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
+            // TODO: Remove pending_transactions, they are not used anymore
             pending_transactions: HashMap::new(),
             transactions: convert_transactions(transactions),
             neuron_accounts,
