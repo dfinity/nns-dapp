@@ -10,7 +10,6 @@
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
-  import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -38,9 +37,6 @@
   const back = () => {
     dispatcher("nnsBack");
   };
-
-  let networkBtc = false;
-  $: networkBtc = isTransactionNetworkBtc(selectedNetwork);
 </script>
 
 <div data-tid="transaction-step-2">
@@ -83,15 +79,6 @@
     </div>
 
     <slot name="additional-info" />
-
-    {#if networkBtc}
-      <div>
-        <p class="label">{$i18n.ckbtc.estimated_receive_time}</p>
-        <p class="value">
-          {$i18n.ckbtc.about_thirty_minutes}
-        </p>
-      </div>
-    {/if}
   </div>
 
   <div class="toolbar">
