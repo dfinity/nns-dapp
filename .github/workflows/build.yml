@@ -133,6 +133,8 @@ jobs:
         run: |
           dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
+          echo "Installation consumed ${postinstall_instructions} instructions."
+          echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
       - name: Stop replica
         run: dfx stop
       - name: Archive wdio logs
