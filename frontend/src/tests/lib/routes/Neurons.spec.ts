@@ -36,7 +36,6 @@ describe("Neurons", () => {
   fakeSnsAggregatorApi.install();
 
   let testCommittedSnsNeuron;
-  let testOpenSnsNeuron;
 
   beforeEach(async () => {
     snsQueryStore.reset();
@@ -45,7 +44,7 @@ describe("Neurons", () => {
     testCommittedSnsNeuron = fakeSnsGovernanceApi.addNeuronWith({
       rootCanisterId: testCommittedSnsCanisterId,
     });
-    testOpenSnsNeuron = fakeSnsGovernanceApi.addNeuronWith({
+    fakeSnsGovernanceApi.addNeuronWith({
       rootCanisterId: testOpenSnsCanisterId,
     });
     fakeSnsLedgerApi.addAccountWith({
