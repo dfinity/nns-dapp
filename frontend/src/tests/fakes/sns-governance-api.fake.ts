@@ -22,7 +22,7 @@ import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
-const impl = {
+const implementedFunctions = {
   nervousSystemParameters,
   getNervousSystemFunctions,
   getNeuronBalance,
@@ -250,10 +250,10 @@ export const install = () => {
   });
   installImplAndBlockRest({
     modulePath,
-    impl,
+    implementedFunctions,
   });
   installImplAndBlockRest({
     modulePath: snsApiPath,
-    impl: snsApiImpl,
+    implementedFunctions: snsApiImpl,
   });
 };

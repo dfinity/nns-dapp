@@ -4,7 +4,7 @@ import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
 import type { SnsSwapLifecycle } from "@dfinity/sns";
 
 const modulePath = "$lib/api/sns-aggregator.api";
-const impl = {
+const implementedFunctions = {
   querySnsProjects,
 };
 
@@ -50,6 +50,6 @@ export const install = () => {
   });
   installImplAndBlockRest({
     modulePath,
-    impl,
+    implementedFunctions,
   });
 };

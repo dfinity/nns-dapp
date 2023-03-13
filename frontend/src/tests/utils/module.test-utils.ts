@@ -14,10 +14,10 @@
  */
 export const installImplAndBlockRest = ({
   modulePath,
-  impl = {},
+  implementedFunctions = {},
 }: {
   modulePath: string;
-  impl: { [key: string]: (args: unknown) => unknown };
+  implementedFunctions: { [key: string]: (args: unknown) => unknown };
 }) => {
   const blockedCalls: string[] = [];
 
@@ -46,8 +46,9 @@ export const installImplAndBlockRest = ({
     for (const fn in module) {
       if (module[fn].mock) {
         hasMockFunction = true;
-        const fnImpl = impl[fn] || failOnCall.bind(null, { modulePath, fn });
-        module[fn].mockImplementation(fnImpl);
+        const fnImplementation =
+          implementedFunctions[fn] || failOnCall.bind(null, { modulePath, fn });
+        module[fn].mockImplementation(fnImplementation);
       }
     }
     if (!hasMockFunction) {
@@ -75,6 +76,6 @@ export const installImplAndBlockRest = ({
 // its own beforeEach() and afterEach().
 export const blockAllCallsTo = (modulePaths: string[]) => {
   for (const modulePath of modulePaths) {
-    installImplAndBlockRest({ modulePath, impl: {} });
+    installImplAndBlockRest({ modulePath, implementedFunctions: {} });
   }
 };

@@ -7,7 +7,7 @@ import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-ledger.api";
-const impl = {
+const implementedFunctions = {
   getSnsAccounts,
 };
 
@@ -15,6 +15,8 @@ const impl = {
 // State and helpers for fake implementations:
 //////////////////////////////////////////////
 
+// Maps a key reppresenting identity + rootCanisterId to a list of accounts for
+// that identity and sns project.
 const accounts: Map<string, Account[]> = new Map();
 
 type KeyParams = { identity: Identity; rootCanisterId: Principal };
@@ -74,6 +76,6 @@ export const install = () => {
   });
   installImplAndBlockRest({
     modulePath,
-    impl,
+    implementedFunctions,
   });
 };

@@ -7,7 +7,7 @@ import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
-const impl = {
+const implementedFunctions = {
   queryNeurons,
   queryKnownNeurons,
 };
@@ -16,6 +16,7 @@ const impl = {
 // State and helpers for fake implementations:
 //////////////////////////////////////////////
 
+// Maps a text principal of an identity to a list of neurons for that identity.
 const neurons: Map<string, NeuronInfo[]> = new Map();
 
 const mapKey = (identity: Identity) => identity.getPrincipal().toText();
@@ -74,6 +75,6 @@ export const install = () => {
   });
   installImplAndBlockRest({
     modulePath,
-    impl,
+    implementedFunctions,
   });
 };
