@@ -92,7 +92,11 @@
     if (success) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsTransfer");
+      return;
     }
+
+    // Unlike "send ckBTC" we close the modal in case of error because the issue can potentially happen after a successful transfer
+    dispatcher("nnsClose");
   };
 
   let networkBtc = false;
