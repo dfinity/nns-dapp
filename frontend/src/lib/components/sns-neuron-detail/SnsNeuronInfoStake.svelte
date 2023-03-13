@@ -22,7 +22,7 @@
   import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
   import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
   import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/SnsIncreaseStakeButton.svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/common/TestIdWrapper.svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
