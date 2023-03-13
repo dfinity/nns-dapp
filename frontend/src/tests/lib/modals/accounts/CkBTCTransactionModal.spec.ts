@@ -17,16 +17,19 @@ import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
+  mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import {
+  testTransferFormTokens,
+  testTransferReviewTokens,
+  testTransferTokens,
+} from "$tests/utils/transaction-modal.test.utils";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
-import { mockBTCAddressTestnet } from "../../../mocks/ckbtc-accounts.mock";
-import en from "../../../mocks/i18n.mock";
-import { testTransferReviewTokens } from "../../../utils/transaction-modal.test.utils";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -190,5 +193,22 @@ describe("CkBTCTransactionModal", () => {
     expect(
       result.getByText(en.accounts.ckbtc_to_btc_transaction_description)
     ).toBeInTheDocument();
+  });
+
+  it("should not be able to continue as amount if lower than fee", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+      amount: "0.00001",
+    });
+
+    expect(() => result.getByTestId("transaction-step-2")).toThrow();
+
+    const participateButton = result.getByTestId("transaction-button-next");
+
+    expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
   });
 });

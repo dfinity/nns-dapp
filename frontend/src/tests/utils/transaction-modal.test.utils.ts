@@ -3,17 +3,21 @@ import { nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-const amount = "10";
+const DEFAULT_AMOUNT = "10";
 
-export const testTransferReviewTokens = async ({
-  result: { getByTestId, container },
-  selectedNetwork = undefined,
-  destinationAddress = "aaaaa-aa",
-}: {
+export interface TestTransferTokens {
   result: RenderResult<SvelteComponent>;
   selectedNetwork?: TransactionNetwork;
   destinationAddress?: string;
-}) => {
+  amount?: string;
+}
+
+export const testTransferFormTokens = async ({
+  result: { getByTestId, container },
+  selectedNetwork = undefined,
+  destinationAddress = "aaaaa-aa",
+  amount = DEFAULT_AMOUNT,
+}: TestTransferTokens) => {
   await waitFor(() =>
     expect(getByTestId("transaction-step-1")).toBeInTheDocument()
   );
@@ -40,6 +44,17 @@ export const testTransferReviewTokens = async ({
         target: { value: selectedNetwork },
       });
   }
+};
+
+export const testTransferReviewTokens = async (params: TestTransferTokens) => {
+  await testTransferFormTokens(params);
+
+  const {
+    result: { getByTestId },
+  } = params;
+
+  const participateButton = getByTestId("transaction-button-next");
+
   await waitFor(() =>
     expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
   );
@@ -51,11 +66,8 @@ export const testTransferTokens = async ({
   result,
   selectedNetwork = undefined,
   destinationAddress = "aaaaa-aa",
-}: {
-  result: RenderResult<SvelteComponent>;
-  selectedNetwork?: TransactionNetwork;
-  destinationAddress?: string;
-}) => {
+  amount = DEFAULT_AMOUNT,
+}: TestTransferTokens) => {
   const { getByTestId, queryAllByText } = result;
 
   await testTransferReviewTokens({
