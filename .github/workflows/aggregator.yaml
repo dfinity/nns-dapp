@@ -166,7 +166,8 @@ jobs:
         run: |
           set -euxo pipefail
           git fetch --depth 1 origin tag aggregator-prod
-          if git diff tags/aggregator-prod rs/sns_aggregator | grep -q .
+          diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
+          if test -n "${diff:-}"
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
