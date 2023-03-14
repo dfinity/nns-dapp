@@ -3,7 +3,7 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
-import type { ParticipateInSnsSaleParameters } from "$lib/services/sns-sale.services";
+import type { ParticipateInSnsSwapParameters } from "$lib/services/sns-sale.services";
 import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -35,7 +35,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest
     .fn()
     .mockImplementation(
-      ({ updateProgress }: ParticipateInSnsSaleParameters) => {
+      ({ updateProgress }: ParticipateInSnsSwapParameters) => {
         updateProgress(SaleStep.INITIALIZATION);
       }
     ),
