@@ -80,6 +80,8 @@ pub struct NamedCanister {
     canister_id: CanisterId,
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 #[derive(CandidType, Deserialize)]
 pub enum OldOperation {
     Burn {
@@ -108,6 +110,8 @@ struct Transaction {
     transaction_type: Option<TransactionType>,
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 #[derive(CandidType, Deserialize)]
 struct OldTransaction {
     transaction_index: TransactionIndex,
@@ -164,6 +168,8 @@ pub enum TransactionType {
     ParticipateSwap(CanisterId),
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum OldTransactionType {
     Burn,
@@ -357,10 +363,10 @@ impl AccountsStore {
                         }
                         | TransferFrom {
                             spender: _,
+                            from,
                             to,
                             amount,
                             fee: _,
-                            from,
                         } => {
                             let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
                                 TransactionType::Transfer
@@ -369,7 +375,7 @@ impl AccountsStore {
                             };
 
                             if self.accounts.get(&to.to_vec()).is_some() {
-                                // If the recipient is a known account then the transaction must be a basic Transfer,
+                                // If the recipient is a known account then the transaction must be either Transfer or TransferFrom,
                                 // since for all the 'special' transaction types the recipient is not a user account
                                 default_transaction_type
                             } else {
@@ -1182,6 +1188,8 @@ impl AccountsStore {
         canister_ids: &[CanisterId],
         default_transaction_type: TransactionType,
     ) -> TransactionType {
+        // In case of the edge case that it's a transaction to itself
+        // use the default value passed when the function is called
         if from == to {
             default_transaction_type
         } else if self.neuron_accounts.contains_key(&to) {
@@ -1401,7 +1409,8 @@ impl AccountsStore {
     }
 }
 
-// TODO: REMOVE after migration
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 impl TryFrom<TransactionType> for OldTransactionType {
     type Error = &'static str;
 
@@ -1422,6 +1431,8 @@ impl TryFrom<TransactionType> for OldTransactionType {
     }
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 impl TryFrom<Operation> for OldOperation {
     type Error = &'static str;
 
@@ -1436,6 +1447,8 @@ impl TryFrom<Operation> for OldOperation {
     }
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransaction> {
     old_txs.iter().map(|tx| OldTransaction {
         transaction_index: tx.transaction_index,
@@ -1459,6 +1472,8 @@ impl StableState for AccountsStore {
         // a version which still has the removed fields safe.
         let mptp_with_removed_fields =
             MultiPartTransactionsProcessorWithRemovedFields::from(&self.multi_part_transactions_processor);
+        // TODO: Remove after safely upgrading canister
+        // This was used for the migration to a new TransactionType and new Operation
         let old_transactions = convert_transactions(&self.transactions);
         Candid((
             &self.accounts,
