@@ -1382,7 +1382,11 @@ fn encode_decode_stable_state() {
             page_size: 10,
         },
     );
-    assert_eq!(results.transactions.len(), decoded_results.transactions.len(), "Decoded transactions doesn't match encoded ones");
+    assert_eq!(
+        results.transactions.len(),
+        decoded_results.transactions.len(),
+        "Decoded transactions doesn't match encoded ones"
+    );
 }
 
 pub(crate) fn setup_test_store() -> AccountsStore {

@@ -1438,8 +1438,20 @@ impl TryFrom<Operation> for OldOperation {
 
     fn try_from(value: Operation) -> Result<Self, Self::Error> {
         match value {
-            Operation::Approve { from: _, spender: _, allowance: _, expires_at: _, fee: _ } => Err("Approve operation not yet supported"),
-            Operation::TransferFrom { from: _, to: _, spender: _, amount: _, fee: _ } => Err("Approve operation not yet supported"),
+            Operation::Approve {
+                from: _,
+                spender: _,
+                allowance: _,
+                expires_at: _,
+                fee: _,
+            } => Err("Approve operation not yet supported"),
+            Operation::TransferFrom {
+                from: _,
+                to: _,
+                spender: _,
+                amount: _,
+                fee: _,
+            } => Err("Approve operation not yet supported"),
             Operation::Transfer { from, to, amount, fee } => Ok(OldOperation::Transfer { from, to, amount, fee }),
             Operation::Burn { from, amount } => Ok(OldOperation::Burn { from, amount }),
             Operation::Mint { to, amount } => Ok(OldOperation::Mint { to, amount }),
@@ -1450,20 +1462,23 @@ impl TryFrom<Operation> for OldOperation {
 // TODO: Remove after safely upgrading canister
 // This was used for the migration to a new TransactionType and new Operation
 fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransaction> {
-    old_txs.iter().map(|tx| OldTransaction {
-        transaction_index: tx.transaction_index,
-        block_height: tx.block_height,
-        timestamp: tx.timestamp,
-        memo: tx.memo,
-        transfer: OldOperation::try_from(tx.transfer.clone()).unwrap(),
-        transaction_type: match tx.transaction_type {
-            Some(tx_type) => match OldTransactionType::try_from(tx_type) {
-                Ok(t) => Some(t),
-                Err(_) => None,
+    old_txs
+        .iter()
+        .map(|tx| OldTransaction {
+            transaction_index: tx.transaction_index,
+            block_height: tx.block_height,
+            timestamp: tx.timestamp,
+            memo: tx.memo,
+            transfer: OldOperation::try_from(tx.transfer.clone()).unwrap(),
+            transaction_type: match tx.transaction_type {
+                Some(tx_type) => match OldTransactionType::try_from(tx_type) {
+                    Ok(t) => Some(t),
+                    Err(_) => None,
+                },
+                None => None,
             },
-            None => None,
-        },
-    }).collect()
+        })
+        .collect()
 }
 
 impl StableState for AccountsStore {
@@ -1492,7 +1507,6 @@ impl StableState for AccountsStore {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-
         #[allow(clippy::type_complexity)]
         let (
             mut accounts,
