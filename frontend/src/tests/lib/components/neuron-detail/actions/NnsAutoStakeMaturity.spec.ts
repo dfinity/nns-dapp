@@ -4,8 +4,11 @@
 
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
+import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
@@ -17,6 +20,7 @@ jest.mock("$lib/services/neurons.services", () => {
 describe("NnsAutoStakeMaturity", () => {
   afterEach(() => {
     jest.clearAllMocks();
+    toastsStore.reset();
   });
 
   it("renders checkbox", () => {
@@ -118,5 +122,21 @@ describe("NnsAutoStakeMaturity", () => {
   it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
     expect(toggleAutoStakeMaturity).toBeCalled();
+  });
+
+  it("should show success message when enabling", async () => {
+    await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
+    expect(get(toastsStore)[0]).toMatchObject({
+      level: "success",
+      text: en.neuron_detail.auto_stake_maturity_on_success,
+    });
+  });
+
+  it("should show success message when disabling", async () => {
+    await toggleAutoStake({ neuronAutoStakeMaturity: true });
+    expect(get(toastsStore)[0]).toMatchObject({
+      level: "success",
+      text: en.neuron_detail.auto_stake_maturity_off_success,
+    });
   });
 });
