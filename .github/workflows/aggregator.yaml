@@ -168,7 +168,7 @@ jobs:
           git fetch --depth 1 origin tag aggregator-prod
           diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
           if test -n "${diff:-}"
-          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Stop replica

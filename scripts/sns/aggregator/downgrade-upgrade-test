@@ -30,7 +30,7 @@ upgrade_canister() {
 
 echo "Getting or building the local wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="sns_aggregator_dev.wasm"
+  CURRENT_WASM="sns_aggregator.wasm"
   echo "Building $CURRENT_WASM..."
   DFX_NETWORK=local ./scripts/docker-build
 }
