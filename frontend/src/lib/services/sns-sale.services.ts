@@ -380,7 +380,7 @@ const getProjectFromStore = (
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
-export interface ParticipateInSnsSwapParameters {
+export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;
   userCommitment: bigint;
   postprocess: () => Promise<void>;
@@ -393,7 +393,7 @@ export const restoreSnsSaleParticipation = async ({
   userCommitment,
   postprocess,
   updateProgress,
-}: ParticipateInSnsSwapParameters & {
+}: ParticipateInSnsSaleParameters & {
   swapCanisterId: Principal;
 }): Promise<void> => {
   // avoid concurrent restores
@@ -415,7 +415,7 @@ export const restoreSnsSaleParticipation = async ({
     return;
   }
 
-  await participateInSnsSwap({
+  await participateInSnsSsale({
     rootCanisterId,
     userCommitment,
     postprocess,
@@ -434,7 +434,7 @@ export const initiateSnsSaleParticipation = async ({
   userCommitment,
   postprocess,
   updateProgress,
-}: ParticipateInSnsSwapParameters & {
+}: ParticipateInSnsSaleParameters & {
   amount: TokenAmount;
   account: Account;
 }): Promise<{ success: boolean }> => {
@@ -474,7 +474,7 @@ export const initiateSnsSaleParticipation = async ({
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
       // Step 2. to finish
-      const { success } = await participateInSnsSwap({
+      const { success } = await participateInSnsSsale({
         rootCanisterId,
         userCommitment,
         postprocess,
@@ -669,18 +669,18 @@ const pollTransfer = ({
  * @param snsTicket
  * @param rootCanisterId
  */
-export const participateInSnsSwap = async ({
+export const participateInSnsSsale = async ({
   rootCanisterId,
   postprocess,
   userCommitment,
   updateProgress,
   ticket,
-}: ParticipateInSnsSwapParameters & { ticket: Ticket }): Promise<{
+}: ParticipateInSnsSaleParameters & { ticket: Ticket }): Promise<{
   success: boolean;
 }> => {
   let hasTooOldError = false;
   logWithTimestamp(
-    "[swap]participateInSnsSwap:",
+    "[sale]participateInSnsSsale:",
     ticket,
     rootCanisterId?.toText()
   );
@@ -701,7 +701,7 @@ export const participateInSnsSwap = async ({
 
   // TODO: add HW support
   if (identity.getPrincipal().toText() !== ownerPrincipal.toText()) {
-    console.error("[swap] identities don't match");
+    console.error("[sale] identities don't match");
     toastsError({
       labelKey: "error__sns.sns_sale_unexpected_error",
     });
@@ -723,7 +723,7 @@ export const participateInSnsSwap = async ({
       controller,
     });
 
-    logWithTimestamp("[swap] 1. transfer (time,id):", creationTime, ticketId);
+    logWithTimestamp("[sale] 1. transfer (time,id):", creationTime, ticketId);
 
     // Step 2.
     // Send amount to the ledger
@@ -738,7 +738,7 @@ export const participateInSnsSwap = async ({
       identity,
     });
   } catch (err) {
-    console.error("[swap] on transfer", err);
+    console.error("[sale] on transfer", err);
 
     switch ((err as object)?.constructor) {
       // if duplicated transfer, silently continue the flow
@@ -801,7 +801,7 @@ export const participateInSnsSwap = async ({
   }
 
   // Step 4.
-  logWithTimestamp("[swap] 3. loadBalance");
+  logWithTimestamp("[sale] 3. loadBalance");
 
   updateProgress(SaleStep.RELOAD);
 
@@ -823,7 +823,7 @@ export const participateInSnsSwap = async ({
     await loadBalance({ accountIdentifier: sourceAccount.identifier });
   }
 
-  logWithTimestamp("[swap] done");
+  logWithTimestamp("[sale] done");
 
   // reload
   await postprocess?.();
