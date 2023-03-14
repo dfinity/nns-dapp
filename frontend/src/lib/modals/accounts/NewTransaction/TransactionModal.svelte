@@ -7,6 +7,7 @@
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type { TransactionNetwork } from "$lib/types/transaction";
+  import TransactionQRCode from "$lib/modals/accounts/NewTransaction/TransactionQRCode.svelte";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
@@ -30,11 +31,13 @@
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let amount: number | undefined = undefined;
 
+  const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";
+  const STEP_QRCODE = "QRCode";
 
   const steps: WizardSteps = [
     {
-      name: "Form",
+      name: STEP_FORM,
       title: "",
     },
     {
@@ -43,6 +46,10 @@
     },
     {
       name: STEP_PROGRESS,
+      title: "",
+    },
+    {
+      name: STEP_QRCODE,
       title: "",
     },
   ];
@@ -63,8 +70,18 @@
   const goBack = () => {
     modal.back();
   };
-  export const goProgress = () =>
-    modal.set(steps.findIndex(({ name }) => name === STEP_PROGRESS));
+
+  const goStep = (step: string) =>
+    modal.set(steps.findIndex(({ name }) => name === step));
+
+  export const goProgress = () => goStep(STEP_PROGRESS);
+  const goQRCode = () => goStep(STEP_QRCODE);
+  const goForm = () => goStep(STEP_FORM);
+
+  const onQRCode = ({ detail: value }: CustomEvent<string>) => {
+    selectedDestinationAddress = value;
+    goForm();
+  };
 </script>
 
 <WizardModal
@@ -93,6 +110,7 @@
       on:nnsClose
       {mustSelectNetwork}
       bind:selectedNetwork
+      on:nnsOpenQRCodeReader={goQRCode}
     >
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
@@ -119,5 +137,8 @@
   {/if}
   {#if currentStep?.name === STEP_PROGRESS}
     <slot name="in_progress" />
+  {/if}
+  {#if currentStep?.name === STEP_QRCODE}
+    <TransactionQRCode on:nnsCancel={goForm} on:nnsQRCode={onQRCode} />
   {/if}
 </WizardModal>

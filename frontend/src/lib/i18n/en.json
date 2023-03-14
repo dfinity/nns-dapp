@@ -212,6 +212,8 @@
     "send_now": "Send Now",
     "select": "Select",
     "manual": "Manual",
+    "scan_qr_code_alt": "Scan a QR code to fill destination address",
+    "scan_qr_code": "Scan a QR code",
     "no_account_select": "No accounts to select",
     "current_balance_detail": "Current balance: $amount $token",
     "network": "Network",

@@ -147,6 +147,7 @@
       bind:selectedDestinationAddress
       bind:showManualAddress
       {selectedNetwork}
+      on:nnsOpenQRCodeReader
     />
   {/if}
 

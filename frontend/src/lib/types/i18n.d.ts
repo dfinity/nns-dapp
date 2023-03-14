@@ -221,6 +221,8 @@ interface I18nAccounts {
   send_now: string;
   select: string;
   manual: string;
+  scan_qr_code_alt: string;
+  scan_qr_code: string;
   no_account_select: string;
   current_balance_detail: string;
   network: string;
