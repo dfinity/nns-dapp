@@ -22,8 +22,10 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mockBTCAddressTestnet } from "../../../mocks/ckbtc-accounts.mock";
 import en from "../../../mocks/i18n.mock";
 import { testTransferReviewTokens } from "../../../utils/transaction-modal.test.utils";
@@ -190,5 +192,32 @@ describe("CkBTCTransactionModal", () => {
     expect(
       result.getByText(en.accounts.ckbtc_to_btc_transaction_description)
     ).toBeInTheDocument();
+  });
+
+  it("should render BTC estimated time", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferReviewTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+    });
+
+    expect(
+      result.getByText(en.ckbtc.estimated_receive_time)
+    ).toBeInTheDocument();
+
+    expect(result.getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
+  });
+
+  it("should display estimated time in modal", async () => {
+    toastsStore.reset();
+
+    await testConvertCkBTCToBTC({ success: true, eventName: "nnsTransfer" });
+
+    const toastData = get(toastsStore);
+    expect(toastData[0].text).toEqual(
+      en.ckbtc.transaction_success_about_thirty_minutes
+    );
   });
 });

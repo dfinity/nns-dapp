@@ -844,7 +844,10 @@
     "step_locking_ckbtc": "Confirming ckBTC",
     "step_send_btc": "Sending BTC",
     "step_reload": "Refreshing UI Balances",
-    "sending_ckbtc_to_btc": "Sending ckBTC —> BTC"
+    "sending_ckbtc_to_btc": "Sending ckBTC —> BTC",
+    "estimated_receive_time": "Estimated receive time",
+    "about_thirty_minutes": "About ≈30 minutes",
+    "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes."
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
