@@ -6,6 +6,7 @@ import type {
   NervousSystemParameters,
   SnsListProposalsParams,
   SnsNervousSystemFunction,
+  SnsNeuron,
   SnsNeuronId,
   SnsNeuronPermissionType,
   SnsProposalId,
@@ -13,6 +14,85 @@ import type {
 } from "@dfinity/sns";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
+
+export const querySnsNeurons = async ({
+  identity,
+  rootCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<SnsNeuron[]> => {
+  logWithTimestamp("Getting sns neurons: call...");
+  const { listNeurons } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neurons = await listNeurons({
+    principal: identity.getPrincipal(),
+  });
+
+  logWithTimestamp("Getting sns neurons: done");
+  return neurons;
+};
+
+/**
+ * Returns the neuron or raises an error if not found.
+ */
+export const getSnsNeuron = async ({
+  identity,
+  rootCanisterId,
+  certified,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+  neuronId: SnsNeuronId;
+}): Promise<SnsNeuron> => {
+  logWithTimestamp("Getting sns neuron: call...");
+  const { getNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neuron = await getNeuron({
+    neuronId,
+  });
+
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
+};
+
+/**
+ * Returns the neuron or undefined.
+ */
+export const querySnsNeuron = async ({
+  identity,
+  rootCanisterId,
+  certified,
+  neuronId,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+  neuronId: SnsNeuronId;
+}): Promise<SnsNeuron | undefined> => {
+  logWithTimestamp("Querying sns neuron: call...");
+  const { queryNeuron } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+  const neuron = await queryNeuron({
+    neuronId,
+  });
+
+  logWithTimestamp("Getting sns neuron: done");
+  return neuron;
+};
 
 export const addNeuronPermissions = async ({
   identity,
