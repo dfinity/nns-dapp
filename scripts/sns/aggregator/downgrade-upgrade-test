@@ -59,11 +59,11 @@ fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Downgrading to the prod wasm..."
-upgrade_nnsdapp "$PROD_WASM"
+upgrade_canister "$PROD_WASM"
 echo "Checking that the rollback is healthy..."
 verify_healthy
 echo "Rolling forwards..."
-upgrade_nnsdapp "$CURRENT_WASM"
+upgrade_canister "$CURRENT_WASM"
 echo "Checking that the upgrade is healthy..."
 verify_healthy
 echo SUCCESS

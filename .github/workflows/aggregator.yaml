@@ -164,6 +164,7 @@ jobs:
           }
       - name: Downgrade to prod and upgrade back again
         run: |
+          set -euxo pipefail
           git fetch --depth 1 origin tag aggregator-prod
           if git diff tags/aggregator-prod rs/sns_aggregator | grep -q .
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm
