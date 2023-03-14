@@ -1,8 +1,12 @@
 import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatToken } from "$lib/utils/token.utils";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 
 describe("ckbtc.utils", () => {
   const params = {
@@ -65,7 +69,16 @@ describe("ckbtc.utils", () => {
         ...params,
         amount: Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP - 0.00001,
       })
-    ).toThrow();
+    ).toThrow(
+      new CkBTCErrorRetrieveBtcMinAmount(
+        replacePlaceholders(en.error__ckbtc.retrieve_btc_min_amount, {
+          $amount: formatToken({
+            value: RETRIEVE_BTC_MIN_AMOUNT,
+            detailed: true,
+          }),
+        })
+      )
+    );
   });
 
   it("should throw error if not enough funds available", () => {
