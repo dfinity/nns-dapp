@@ -134,6 +134,34 @@ jobs:
             cat ,logs
             exit 1
           }
+      - name: Upgrade the aggregator with a slow refresh rate
+        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+      - name: Expect the first page of data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the latest data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the upstream data to be retained over the upgrade
+        run: |
+          ./scripts/sns/aggregator/get_stable_data
+          expect=12
+          actual="$(jq '.sns_cache.upstream_data | length' stable_data.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
+          }
       - name: Stop replica
         run: dfx stop
   aggregator-pass:

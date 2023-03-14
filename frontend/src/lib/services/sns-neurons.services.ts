@@ -3,7 +3,10 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
+  getSnsNeuron as getSnsNeuronApi,
   increaseDissolveDelay as increaseDissolveDelayApi,
+  querySnsNeuron,
+  querySnsNeurons,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
@@ -13,10 +16,7 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
 import {
-  getSnsNeuron as getSnsNeuronApi,
   increaseStakeNeuron as increaseStakeNeuronApi,
-  querySnsNeuron,
-  querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";

@@ -1,7 +1,7 @@
-import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
+import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { mockMainAccount } from "../../mocks/accounts.store.mock";
 
 describe("ckbtc.utils", () => {
