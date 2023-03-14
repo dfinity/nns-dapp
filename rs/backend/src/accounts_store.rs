@@ -81,6 +81,24 @@ pub struct NamedCanister {
 }
 
 #[derive(CandidType, Deserialize)]
+pub enum OldOperation {
+    Burn {
+        from: AccountIdentifier,
+        amount: Tokens,
+    },
+    Mint {
+        to: AccountIdentifier,
+        amount: Tokens,
+    },
+    Transfer {
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        amount: Tokens,
+        fee: Tokens,
+    },
+}
+
+#[derive(CandidType, Deserialize)]
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockIndex,
@@ -88,6 +106,16 @@ struct Transaction {
     memo: Memo,
     transfer: Operation,
     transaction_type: Option<TransactionType>,
+}
+
+#[derive(CandidType, Deserialize)]
+struct OldTransaction {
+    transaction_index: TransactionIndex,
+    block_height: BlockIndex,
+    timestamp: TimeStamp,
+    memo: Memo,
+    transfer: OldOperation,
+    transaction_type: Option<OldTransactionType>,
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize)]
@@ -128,6 +156,19 @@ pub enum TransactionType {
     Transfer,
     Approve,
     TransferFrom,
+    StakeNeuron,
+    StakeNeuronNotification,
+    TopUpNeuron,
+    CreateCanister,
+    TopUpCanister(CanisterId),
+    ParticipateSwap(CanisterId),
+}
+
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
+pub enum OldTransactionType {
+    Burn,
+    Mint,
+    Transfer,
     StakeNeuron,
     StakeNeuronNotification,
     TopUpNeuron,
@@ -1360,57 +1401,53 @@ impl AccountsStore {
     }
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum OldTransactionType {
-    Burn,
-    Mint,
-    Transfer,
-    StakeNeuron,
-    StakeNeuronNotification,
-    TopUpNeuron,
-    CreateCanister,
-    TopUpCanister(CanisterId),
-    ParticipateSwap(CanisterId),
-}
-
 // TODO: REMOVE after migration
-impl TryFrom<OldTransactionType> for TransactionType {
-    type Error = ();
+impl TryFrom<TransactionType> for OldTransactionType {
+    type Error = &'static str;
 
-    fn try_from(value: OldTransactionType) -> Result<Self, Self::Error> {
+    fn try_from(value: TransactionType) -> Result<Self, Self::Error> {
         match value {
-            OldTransactionType::Burn => Ok(TransactionType::Burn),
-            OldTransactionType::Mint => Ok(TransactionType::Mint),
-            OldTransactionType::Transfer => Ok(TransactionType::Transfer),
-            OldTransactionType::StakeNeuron => Ok(TransactionType::StakeNeuron),
-            OldTransactionType::StakeNeuronNotification => Ok(TransactionType::StakeNeuronNotification),
-            OldTransactionType::TopUpNeuron => Ok(TransactionType::TopUpNeuron),
-            OldTransactionType::CreateCanister => Ok(TransactionType::CreateCanister),
-            OldTransactionType::TopUpCanister(canister_id) => Ok(TransactionType::TopUpCanister(canister_id)),
-            OldTransactionType::ParticipateSwap(canister_id) => Ok(TransactionType::ParticipateSwap(canister_id)),
+            TransactionType::Burn => Ok(OldTransactionType::Burn),
+            TransactionType::Mint => Ok(OldTransactionType::Mint),
+            TransactionType::Transfer => Ok(OldTransactionType::Transfer),
+            TransactionType::StakeNeuron => Ok(OldTransactionType::StakeNeuron),
+            TransactionType::StakeNeuronNotification => Ok(OldTransactionType::StakeNeuronNotification),
+            TransactionType::TopUpNeuron => Ok(OldTransactionType::TopUpNeuron),
+            TransactionType::CreateCanister => Ok(OldTransactionType::CreateCanister),
+            TransactionType::TopUpCanister(canister_id) => Ok(OldTransactionType::TopUpCanister(canister_id)),
+            TransactionType::ParticipateSwap(canister_id) => Ok(OldTransactionType::ParticipateSwap(canister_id)),
+            TransactionType::TransferFrom => Err("TransferFrom tx type not yet supported"),
+            TransactionType::Approve => Err("Approve tx type not yet supported"),
         }
     }
 }
 
-#[derive(CandidType, Deserialize)]
-struct OldTransaction {
-    transaction_index: TransactionIndex,
-    block_height: BlockIndex,
-    timestamp: TimeStamp,
-    memo: Memo,
-    transfer: Operation,
-    transaction_type: Option<OldTransactionType>,
+impl TryFrom<Operation> for OldOperation {
+    type Error = &'static str;
+
+    fn try_from(value: Operation) -> Result<Self, Self::Error> {
+        match value {
+            Operation::Approve { from, spender, allowance, expires_at, fee } => Err("Approve operation not yet supported"),
+            Operation::TransferFrom { from, to, spender, amount, fee } => Err("Approve operation not yet supported"),
+            Operation::Transfer { from, to, amount, fee } => Ok(OldOperation::Transfer { from, to, amount, fee }),
+            Operation::Burn { from, amount } => Ok(OldOperation::Burn { from, amount }),
+            Operation::Mint { to, amount } => Ok(OldOperation::Mint { to, amount }),
+        }
+    }
 }
 
-fn convert_transactions(old_txs: VecDeque<OldTransaction>) -> VecDeque<Transaction> {
-    old_txs.iter().map(|tx| Transaction {
+fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransaction> {
+    old_txs.iter().map(|tx| OldTransaction {
         transaction_index: tx.transaction_index,
         block_height: tx.block_height,
         timestamp: tx.timestamp,
         memo: tx.memo,
-        transfer: tx.transfer.clone(),
+        transfer: OldOperation::try_from(tx.transfer.clone()).unwrap(),
         transaction_type: match tx.transaction_type {
-            Some(tx_type) => Some(TransactionType::try_from(tx_type).unwrap()),
+            Some(tx_type) => match OldTransactionType::try_from(tx_type) {
+                Ok(t) => Some(t),
+                Err(_) => None,
+            },
             None => None,
         },
     }).collect()
@@ -1422,11 +1459,13 @@ impl StableState for AccountsStore {
         // a version which still has the removed fields safe.
         let mptp_with_removed_fields =
             MultiPartTransactionsProcessorWithRemovedFields::from(&self.multi_part_transactions_processor);
+        let old_transactions = convert_transactions(&self.transactions);
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
-            &self.pending_transactions,
-            &self.transactions,
+            // TODO: Remove pending_transactions
+            HashMap::<(AccountIdentifier, AccountIdentifier), (OldTransactionType, u64)>::new(),
+            old_transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             mptp_with_removed_fields,
@@ -1443,7 +1482,7 @@ impl StableState for AccountsStore {
         let (
             mut accounts,
             mut hardware_wallets_and_sub_accounts,
-            _pending_transactions,
+            pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
@@ -1453,8 +1492,8 @@ impl StableState for AccountsStore {
         ): (
             HashMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), (OldTransactionType, u64)>,
-            VecDeque<OldTransaction>,
+            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
+            VecDeque<Transaction>,
             HashMap<AccountIdentifier, NeuronDetails>,
             Option<BlockIndex>,
             MultiPartTransactionsProcessor,
@@ -1486,9 +1525,8 @@ impl StableState for AccountsStore {
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
-            // TODO: Remove pending_transactions, they are not used anymore
-            pending_transactions: HashMap::new(),
-            transactions: convert_transactions(transactions),
+            pending_transactions,
+            transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
