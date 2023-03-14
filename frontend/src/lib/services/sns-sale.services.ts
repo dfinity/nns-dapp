@@ -415,7 +415,7 @@ export const restoreSnsSaleParticipation = async ({
     return;
   }
 
-  await participateInSnsSsale({
+  await participateInSnsSale({
     rootCanisterId,
     userCommitment,
     postprocess,
@@ -474,7 +474,7 @@ export const initiateSnsSaleParticipation = async ({
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
       // Step 2. to finish
-      const { success } = await participateInSnsSsale({
+      const { success } = await participateInSnsSale({
         rootCanisterId,
         userCommitment,
         postprocess,
@@ -669,7 +669,7 @@ const pollTransfer = ({
  * @param snsTicket
  * @param rootCanisterId
  */
-export const participateInSnsSsale = async ({
+export const participateInSnsSale = async ({
   rootCanisterId,
   postprocess,
   userCommitment,
@@ -680,7 +680,7 @@ export const participateInSnsSsale = async ({
 }> => {
   let hasTooOldError = false;
   logWithTimestamp(
-    "[sale]participateInSnsSsale:",
+    "[sale]participateInSnsSale:",
     ticket,
     rootCanisterId?.toText()
   );
