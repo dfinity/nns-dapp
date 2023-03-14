@@ -1213,17 +1213,16 @@ describe("sns-api", () => {
       });
 
       it("should handle refresh_buyer_tokens internal errors and manually remove the ticket", async () => {
+        snsTicketsStore.setTicket({
+          rootCanisterId: rootCanisterIdMock,
+          ticket: testTicket,
+        });
         spyOnNotifyParticipation.mockRejectedValue(
           new Error(
             "The token amount can only be refreshed when the canister is in the OPEN state"
           )
         );
         spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
-
-        snsTicketsStore.setTicket({
-          rootCanisterId: rootCanisterIdMock,
-          ticket: testTicket,
-        });
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
