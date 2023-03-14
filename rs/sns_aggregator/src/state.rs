@@ -11,11 +11,15 @@ use crate::{
     assets::{AssetHashes, Assets},
     types::upstream::SnsCache,
 };
+use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::timer::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::str::FromStr;
+
+#[cfg(test)]
+mod tests;
 
 /// Semi-Persistent state, not guaranteed to be preserved across upgrades but persistent enough to store a cache.
 #[derive(Default)]
@@ -68,7 +72,7 @@ impl State {
 ///
 /// Note: Ultimately, the canister state is regenerated automatically, so if state cannot be kept across an upgrade,
 ///       the state is discarded in favour of upgrading.
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, CandidType, Serialize, Deserialize)]
 pub struct StableState {
     /// Configuration that is changed only by deployment, upgrade or similar events.
     pub config: RefCell<Config>,
@@ -86,11 +90,17 @@ pub struct StableState {
 impl StableState {
     /// Serialize stable state in order to store it in stable memory.
     pub fn to_bytes(&self) -> Result<Vec<u8>, String> {
-        serde_cbor::to_vec(self).map_err(|err| format!("Failed to serialize stable data: {err:?}"))
+        let mut ser = candid::ser::IDLBuilder::new();
+        ser.arg(&self)
+            .map_err(|err| format!("Failed to serialize stable state to Candid: {err:?}"))?;
+        ser.serialize_to_vec()
+            .map_err(|err| format!("Failed to convert stable state serializer to bytes: {err:?}"))
     }
     /// Parse stable state from the format used in stable memory.
     pub fn from_bytes(slice: &[u8]) -> Result<Self, String> {
-        serde_cbor::from_slice(slice).map_err(|err| format!("Failed to parse stable data: {err:?}"))
+        let mut de =
+            candid::de::IDLDeserialize::new(slice).map_err(|err| format!("Failed to make deserializer: {err:?}"))?;
+        de.get_value().map_err(|err| format!("Failed to parse state: {err:?}"))
     }
     /// Textual description of serialized data.
     pub fn summarize_bytes(bytes: &[u8]) -> String {
@@ -193,8 +203,8 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).expect("Failed to serialise all SNSs")
-            });
+                serde_json::to_string(&slow_data).map_err(|err| anyhow!("Failed to serialise latest SNSs: {err:?}"))
+            })?;
             let asset = Asset {
                 headers: Vec::new(),
                 bytes: json_data.into_bytes(),

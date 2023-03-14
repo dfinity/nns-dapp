@@ -18,6 +18,7 @@
     "**/*.spec.ts",
     "jest.setup.ts",
     "**/*.mock.ts",
+    "**/*.fake.ts",
     "**/*.page-object.ts",
     "**/*Test.svelte",
     "**/*.test-utils.ts"

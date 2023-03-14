@@ -11,6 +11,7 @@
   {alt}
   role="presentation"
   loading="lazy"
+  draggable="false"
   data-tid={testId}
   class:huge={size === "huge"}
   class:big={size === "big"}
@@ -25,7 +26,6 @@
 
     user-select: none;
     -webkit-user-drag: none;
-    user-drag: none;
   }
 
   .framed {

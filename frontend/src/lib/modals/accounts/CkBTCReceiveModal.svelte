@@ -135,9 +135,22 @@
       : bitcoin
       ? $i18n.ckbtc.btc_receive_note_text
       : $i18n.ckbtc.ckbtc_receive_note_text;
+
+  const onClose = async () => {
+    if (bitcoin) {
+      await updateBalance();
+      return;
+    }
+
+    dispatcher("nnsClose");
+  };
 </script>
 
-<Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
+<Modal
+  testId="ckbtc-receive-modal"
+  on:nnsClose={onClose}
+  on:introend={onIntroEnd}
+>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
   {#if displayBtcAddress}

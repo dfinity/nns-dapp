@@ -1,6 +1,6 @@
-use crate::accounts_store::encode_metrics;
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
+use crate::stats::encode_metrics;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
