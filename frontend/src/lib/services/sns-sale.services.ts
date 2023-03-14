@@ -420,6 +420,7 @@ export const restoreSnsSaleParticipation = async ({
     userCommitment,
     postprocess,
     updateProgress,
+    ticket,
   });
 };
 
@@ -478,6 +479,7 @@ export const initiateSnsSaleParticipation = async ({
         userCommitment,
         postprocess,
         updateProgress,
+        ticket,
       });
 
       return { success };
@@ -672,15 +674,11 @@ export const participateInSnsSale = async ({
   postprocess,
   userCommitment,
   updateProgress,
-}: ParticipateInSnsSaleParameters): Promise<{ success: boolean }> => {
+  ticket,
+}: ParticipateInSnsSaleParameters & { ticket: Ticket }): Promise<{
+  success: boolean;
+}> => {
   let hasTooOldError = false;
-  const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
-  // skip if there is no more ticket (e.g. on retry)
-  if (isNullish(ticket)) {
-    logWithTimestamp("[sale] skip participation - no ticket");
-    return { success: false };
-  }
-
   logWithTimestamp(
     "[sale]participateInSnsSale:",
     ticket,
