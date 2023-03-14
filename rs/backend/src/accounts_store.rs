@@ -1427,8 +1427,8 @@ impl TryFrom<Operation> for OldOperation {
 
     fn try_from(value: Operation) -> Result<Self, Self::Error> {
         match value {
-            Operation::Approve { from, spender, allowance, expires_at, fee } => Err("Approve operation not yet supported"),
-            Operation::TransferFrom { from, to, spender, amount, fee } => Err("Approve operation not yet supported"),
+            Operation::Approve { from: _, spender: _, allowance: _, expires_at: _, fee: _ } => Err("Approve operation not yet supported"),
+            Operation::TransferFrom { from: _, to: _, spender: _, amount: _, fee: _ } => Err("Approve operation not yet supported"),
             Operation::Transfer { from, to, amount, fee } => Ok(OldOperation::Transfer { from, to, amount, fee }),
             Operation::Burn { from, amount } => Ok(OldOperation::Burn { from, amount }),
             Operation::Mint { to, amount } => Ok(OldOperation::Mint { to, amount }),
