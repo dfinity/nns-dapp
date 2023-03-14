@@ -127,7 +127,8 @@
     "canisters": "My Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
-    "launchpad": "Launch Pad"
+    "launchpad": "Launch Pad",
+    "settings": "Settings"
   },
   "header": {
     "menu": "Open menu to access navigation options",

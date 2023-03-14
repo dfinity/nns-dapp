@@ -134,6 +134,7 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   launchpad: string;
+  settings: string;
 }
 
 interface I18nHeader {
