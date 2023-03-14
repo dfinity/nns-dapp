@@ -1335,6 +1335,7 @@ fn encode_decode_stable_state() {
     let mut store = AccountsStore::default();
     let block_index = 312;
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let account_identifier = AccountIdentifier::from(principal);
     let memo = Memo(789);
     let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
         block_index,
@@ -1344,6 +1345,26 @@ fn encode_decode_stable_state() {
         .multi_part_transactions_processor
         .get_mut_queue_for_testing()
         .push_back(queue_item);
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
+    {
+        // We need an account to then retrieve the accounts' transactions
+        store.add_account(principal);
+        let transfer = Mint {
+            amount: Tokens::from_e8s(1_000_000_000),
+            to: account_identifier,
+        };
+        store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
+    }
+    let results = store.get_transactions(
+        principal,
+        GetTransactionsRequest {
+            account_identifier,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+    assert_eq!(1, results.transactions.len(), "Initial transaction is added");
+
     let bytes = store.encode();
     let decoded_store = AccountsStore::decode(bytes).unwrap();
 
@@ -1353,6 +1374,15 @@ fn encode_decode_stable_state() {
         memo,
         decoded_store.multi_part_transactions_processor.get_queue_for_testing(),
     );
+    let decoded_results = decoded_store.get_transactions(
+        principal,
+        GetTransactionsRequest {
+            account_identifier,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+    assert_eq!(results.transactions.len(), decoded_results.transactions.len(), "Decoded transactions doesn't match encoded ones");
 }
 
 pub(crate) fn setup_test_store() -> AccountsStore {
