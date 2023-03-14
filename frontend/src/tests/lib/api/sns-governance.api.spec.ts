@@ -4,6 +4,9 @@
 
 import {
   addNeuronPermissions,
+  getSnsNeuron,
+  querySnsNeuron,
+  querySnsNeurons,
   autoStakeMaturity,
   claimNeuron,
   disburse,
@@ -65,6 +68,9 @@ jest.mock("$lib/api/agent.api", () => {
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const proposals = [mockSnsProposal];
+  const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
+  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
+  const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
   const disburseSpy = jest.fn().mockResolvedValue(undefined);
@@ -113,6 +119,9 @@ describe("sns-api", () => {
         },
         metadata: () =>
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
+        listNeurons: queryNeuronsSpy,
+        getNeuron: getNeuronSpy,
+        queryNeuron: queryNeuronSpy,
         addNeuronPermissions: addNeuronPermissionsSpy,
         removeNeuronPermissions: removeNeuronPermissionsSpy,
         disburse: disburseSpy,
@@ -137,6 +146,42 @@ describe("sns-api", () => {
   afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
+  });
+
+  it("should query sns neurons", async () => {
+    const neurons = await querySnsNeurons({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+    });
+
+    expect(neurons).not.toBeNull();
+    expect(neurons.length).toEqual(1);
+    expect(queryNeuronsSpy).toBeCalled();
+  });
+
+  it("should get one sns neuron", async () => {
+    const neuron = await getSnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(getNeuronSpy).toBeCalled();
+  });
+
+  it("should query one sns neuron", async () => {
+    const neuron = await querySnsNeuron({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
+    });
+
+    expect(neuron).not.toBeNull();
+    expect(queryNeuronSpy).toBeCalled();
   });
 
   it("should add neuron permissions", async () => {

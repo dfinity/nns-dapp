@@ -46,7 +46,7 @@ describe("sns-neurons-check-balances-services", () => {
         id: [neuronId] as [SnsNeuronId],
       };
       const spyQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -79,7 +79,7 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: stake,
       };
       const spyNeuronQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -120,7 +120,7 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: BigInt(0),
       };
       const spyNeuronQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")

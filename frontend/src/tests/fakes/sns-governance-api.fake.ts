@@ -23,18 +23,13 @@ import { isNullish } from "@dfinity/utils";
 const modulePath = "$lib/api/sns-governance.api";
 
 const implementedFunctions = {
+  querySnsNeurons,
+  getSnsNeuron,
   nervousSystemParameters,
   getNervousSystemFunctions,
   getNeuronBalance,
   refreshNeuron,
   claimNeuron,
-};
-
-const snsApiPath = "$lib/api/sns.api";
-const snsApiImpl = {
-  // TODO: Move these functions to sns-governance.api.
-  querySnsNeurons,
-  getSnsNeuron,
 };
 
 //////////////////////////////////////////////
@@ -251,9 +246,5 @@ export const install = () => {
   installImplAndBlockRest({
     modulePath,
     implementedFunctions,
-  });
-  installImplAndBlockRest({
-    modulePath: snsApiPath,
-    implementedFunctions: snsApiImpl,
   });
 };

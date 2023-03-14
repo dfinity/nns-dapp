@@ -60,6 +60,13 @@ export const installImplAndBlockRest = ({
         `You must add 'jest.mock("${modulePath}");' to your test.`
       );
     }
+    for (const fn in implementedFunctions) {
+      if (!module[fn]?.mock) {
+        throw new Error(
+          `${fn} is provided in implementedFunctions but can't be mocked on "${modulePath}".`
+        );
+      }
+    }
   };
 
   beforeEach(async () => {

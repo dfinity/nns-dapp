@@ -13,12 +13,14 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
 import {
-  getSnsNeuron as getSnsNeuronApi,
   increaseStakeNeuron as increaseStakeNeuronApi,
-  querySnsNeuron,
-  querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
+import {
+  getSnsNeuron as getSnsNeuronApi,
+  querySnsNeuron,
+  querySnsNeurons,
+} from "$lib/api/sns-governance.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
