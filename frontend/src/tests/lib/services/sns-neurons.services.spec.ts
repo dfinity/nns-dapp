@@ -751,7 +751,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees with new followee when topic has no followees", async () => {
-      jest.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      jest
+        .spyOn(governanceApi, "querySnsNeuron")
+        .mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[BigInt(4), { followees: [followee1] }]],
@@ -773,7 +775,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when new followee is in the list", async () => {
-      jest.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      jest
+        .spyOn(governanceApi, "querySnsNeuron")
+        .mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -790,7 +794,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees when new followee is the same neuron", async () => {
-      jest.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      jest
+        .spyOn(governanceApi, "querySnsNeuron")
+        .mockResolvedValue(mockSnsNeuron);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
         rootCanisterId,
@@ -883,7 +889,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when followee is not in the list", async () => {
-      jest.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(mockSnsNeuron);
+      jest
+        .spyOn(governanceApi, "querySnsNeuron")
+        .mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],

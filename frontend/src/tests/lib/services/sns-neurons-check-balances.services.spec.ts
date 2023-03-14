@@ -3,7 +3,6 @@
  */
 
 import * as governanceApi from "$lib/api/sns-governance.api";
-import * as api from "$lib/api/sns.api";
 import {
   checkSnsNeuronBalances,
   neuronNeedsRefresh,

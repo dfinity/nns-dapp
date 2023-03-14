@@ -40,7 +40,6 @@ import {
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 
 jest.mock("$lib/proxy/api.import.proxy");

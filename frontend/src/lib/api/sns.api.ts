@@ -13,7 +13,6 @@ import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
-  SnsNeuron,
   SnsNeuronId,
   SnsSwapBuyerState,
   SnsWrapper,
