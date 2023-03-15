@@ -5,6 +5,7 @@ use dfn_core::api::ic0;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
+use crate::stats::Stats;
 #[cfg(test)]
 mod tests;
 
@@ -38,6 +39,10 @@ impl PerformanceCounts {
             self.instruction_counts.pop_front();
         }
         self.instruction_counts.push_back(count);
+    }
+
+    pub fn get_stats(&self, stats: &mut Stats) {
+        stats.instruction_counts = self.instruction_counts.iter().cloned().collect();
     }
 
     #[cfg(test)]

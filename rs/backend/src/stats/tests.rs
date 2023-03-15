@@ -21,4 +21,5 @@ fn populated_state_should_have_populated_stats() {
     let state = setup_test_state();
     let stats = get_stats(&state);
     crate::accounts_store::tests::assert_initial_test_store_stats_are_correct(&stats);
+    assert!(stats.instruction_counts.len() > 0, "Stats should include instruction counts");
 }
