@@ -2,18 +2,27 @@
   import { QRCodeReaderModal } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
+  import {toastsError} from "$lib/stores/toasts.store";
 
   const dispatcher = createEventDispatcher();
-  const onCancel = () => dispatcher("nnsCancel");
+  const cancel = () => dispatcher("nnsCancel");
+
+  const onError = () => {
+    toastsError({
+      labelKey: "error.qrcode_camera_error",
+    });
+
+    cancel();
+  }
 </script>
 
-<QRCodeReaderModal on:nnsQRCode />
+<QRCodeReaderModal on:nnsQRCode on:nnsQRCodeError={onError} />
 
 <div class="toolbar">
   <button
     class="secondary"
     data-tid="transaction-button-cancel"
     type="button"
-    on:click={onCancel}>{$i18n.core.cancel}</button
+    on:click={cancel}>{$i18n.core.cancel}</button
   >
 </div>
