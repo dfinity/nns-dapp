@@ -1,7 +1,7 @@
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
-use crate::perf::{PerformanceCounts, PerformanceCount};
+use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -22,10 +22,6 @@ impl State {
         self.assets.replace(new_state.assets.take());
         self.asset_hashes.replace(new_state.asset_hashes.take());
         self.performance.replace(new_state.performance.take());
-    }
-    /// Adds an instruction count to the internal circular buffer for later retrieval.
-    pub fn save_instruction_counter(&mut self, count: PerformanceCount) {
-        self.performance.borrow_mut().save_instruction_count(count);
     }
 }
 

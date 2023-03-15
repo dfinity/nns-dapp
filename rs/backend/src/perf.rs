@@ -5,6 +5,8 @@ use on_wire::{FromWire, IntoWire};
 use std::collections::VecDeque;
 use dfn_core::api::ic0;
 use serde::Deserialize;
+#[cfg(test)]
+mod tests;
 
 #[derive(CandidType, Deserialize, Default, Clone)]
 pub struct PerformanceCount {
@@ -37,15 +39,27 @@ impl PerformanceCounts {
         }
         self.instruction_counts.push_back(count);
     }
+
+    #[cfg(test)]
+    pub fn test_data() -> Self {
+        let mut ans = PerformanceCounts::default();
+        ans.save_instruction_count(PerformanceCount::default());
+        ans.save_instruction_count(PerformanceCount{ timestamp_ns_since_epoch: 999, name: "Nein".to_string(), instruction_count: 1 });
+        ans.save_instruction_count(PerformanceCount::default());
+        ans
+    }
 }
 
 impl StableState for PerformanceCounts {
+    /// Try to serialize state. On error, return an empty vector.
     fn encode(&self) -> Vec<u8> {
-        Candid((self,)).into_bytes().unwrap()
+        Candid((self,)).into_bytes().unwrap_or_default()
     }
 
+    /// Parse performance counts.  On error, return a blank new structure.
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        todo!()
+      let (ans,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap_or_default();
+      Ok(ans)
     }
 }
 
