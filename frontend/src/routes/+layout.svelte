@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import type { AuthStore } from "$lib/stores/auth.store";
+  import type { AuthStoreData } from "$lib/stores/auth.store";
   import { initAuthWorker } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsClean } from "$lib/stores/toasts.store";
 
   let ready = false;
 
-  let worker: { syncAuthIdle: (auth: AuthStore) => void } | undefined;
+  let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
 
-  const syncAuth = async (auth: AuthStore) => {
+  const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);
 
     if (!auth.identity) {
