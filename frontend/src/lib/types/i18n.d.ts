@@ -892,6 +892,9 @@ interface I18nCkbtc {
   step_send_btc: string;
   step_reload: string;
   sending_ckbtc_to_btc: string;
+  estimated_receive_time: string;
+  about_thirty_minutes: string;
+  transaction_success_about_thirty_minutes: string;
 }
 
 interface I18nError__ckbtc {
@@ -909,6 +912,7 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
+  retrieve_btc_min_amount: string;
 }
 
 interface I18nFeature_flags_prompt {
@@ -1062,6 +1066,7 @@ interface I18nNns_functions {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18nNns_functions_description {
@@ -1103,6 +1108,7 @@ interface I18nNns_functions_description {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18n {

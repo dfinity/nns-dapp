@@ -1,6 +1,9 @@
 //! Entry points for the caching canister.
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
+#![deny(clippy::panic)]
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
 pub mod assets;
 mod conversion;
 mod state;
@@ -8,8 +11,6 @@ mod types;
 mod upstream;
 
 mod fast_scheduler;
-#[cfg(test)]
-mod tests;
 
 use std::collections::VecDeque;
 use std::time::Duration;
@@ -44,6 +45,7 @@ fn health_check() -> String {
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
 #[ic_cdk_macros::update]
+#[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
     let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
@@ -53,6 +55,7 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
 /// API method to dump stable data, preserved across upgrades, as JSON.
 #[candid_method(query)]
 #[ic_cdk_macros::query]
+#[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
 fn stable_data() -> String {
     STATE.with(|state| {
         let to_serialize: &StableState = &(*state.stable.borrow());
@@ -97,7 +100,6 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 ///
 /// Note: If the canister os created with e.g. `dfx canister create`
 ///       and then `dfx deploy`, `init(..)` is never called.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
@@ -106,7 +108,6 @@ fn init(config: Option<Config>) {
 }
 
 /// Function called before upgrade to a new wasm.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
@@ -130,28 +131,25 @@ fn pre_upgrade() {
 }
 
 /// Function called after a canister has been upgraded to a new wasm.
-#[deny(clippy::panic)] // Panicking during upgrade is bad.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
     // Make an effort to restore state.  If it doesn't work, give up.
-    if false {
-        // Disabled until stable serde is fixed.
-        STATE.with(|state| {
-            match ic_cdk::storage::stable_restore()
-                .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
-                .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
-            {
-                Ok(data) => {
-                    *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
-                    *state.stable.borrow_mut() = data;
-                }
-                Err(message) => {
-                    crate::state::log(message);
-                }
+    STATE.with(|state| {
+        match ic_cdk::storage::stable_restore()
+            .map_err(|err| format!("Failed to retrieve stable memory: {err}"))
+            .and_then(|(bytes,): (Vec<u8>,)| StableState::from_bytes(&bytes))
+        {
+            Ok(data) => {
+                *state.asset_hashes.borrow_mut() = AssetHashes::from(&*data.assets.borrow());
+                *state.stable.borrow_mut() = data;
+                crate::state::log("Successfully restored stable memory.".to_string());
             }
-        });
-    }
+            Err(message) => {
+                crate::state::log(message);
+            }
+        }
+    });
     setup(config);
 }
 

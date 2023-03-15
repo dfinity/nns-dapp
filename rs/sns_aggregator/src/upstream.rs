@@ -1,5 +1,4 @@
 //! Functions that get data from upstream SNS and NNS canisters.
-
 use std::str::FromStr;
 
 use crate::convert_canister_id;
@@ -12,9 +11,6 @@ use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
-#[deny(clippy::panic)] // Put any errors in a queryable log.
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 pub async fn update_cache() {
     crate::state::log("Getting upstream data...".to_string());
     let sns_maybe = STATE.with(|state| {
@@ -38,17 +34,21 @@ pub async fn update_cache() {
     }
 }
 
+/// The NNS SNS wasm canister ID
+///
+/// This canister contains a list of all SNS root canisters it has created.
+#[allow(clippy::expect_used)]
+fn nns_sns_wasm_canister_id() -> CanisterId {
+    CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!")
+}
+
 /// Gets a list of SNSs from the nns-sns-wasm canister and puts it in the queue of SNSs to query.
 ///
 /// Note: We can improve on this by filtering out SNSs that have become const.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asking for more SNSs".to_string());
-    let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> = ic_cdk::api::call::call(
-        CanisterId::from_text("qaa6y-5yaaa-aaaaa-aaafa-cai").expect("I don't believe it's not a valid canister ID??!"),
-        "list_deployed_snses",
-        (EmptyRecord {},),
-    )
-    .await;
+    let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> =
+        ic_cdk::api::call::call(nns_sns_wasm_canister_id(), "list_deployed_snses", (EmptyRecord {},)).await;
     crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err((_rejection_code, message)) => {
@@ -72,9 +72,6 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
 }
 
 /// Populates the cache with the data for an SNS.
-#[deny(clippy::panic)]
-#[deny(clippy::expect_used)]
-#[deny(clippy::unwrap_used)]
 async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Result<()> {
     crate::state::log(format!("Getting SNS index {index}..."));
     let swap_canister_id = convert_canister_id!(&sns_canister_ids.swap_canister_id);

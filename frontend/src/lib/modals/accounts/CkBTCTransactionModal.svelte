@@ -22,6 +22,7 @@
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
+  import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -90,7 +91,9 @@
     });
 
     if (success) {
-      toastsSuccess({ labelKey: "accounts.transaction_success" });
+      toastsSuccess({
+        labelKey: "ckbtc.transaction_success_about_thirty_minutes",
+      });
       dispatcher("nnsTransfer");
       return;
     }
@@ -112,10 +115,17 @@
   };
 
   let userAmount: number | undefined = undefined;
-  const validateAmount: ValidateAmountFn = (
-    amount: number | undefined
-  ): string | undefined => {
-    userAmount = amount;
+
+  let validateAmount: ValidateAmountFn;
+  $: validateAmount = ({ amount, selectedAccount }) => {
+    assertCkBTCUserInputAmount({
+      networkBtc,
+      sourceAccount: selectedAccount,
+      amount,
+      transactionFee: transactionFee.toE8s(),
+      bitcoinEstimatedFee,
+    });
+
     return undefined;
   };
 </script>
@@ -132,6 +142,7 @@
   mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
   bind:selectedNetwork
   {validateAmount}
+  bind:amount={userAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">
@@ -150,9 +161,17 @@
     minterCanisterId={canisters.minterCanisterId}
     bind:bitcoinEstimatedFee
   />
-  <BitcoinEstimatedFeeDisplay
-    {bitcoinEstimatedFee}
-    slot="additional-info-review"
-  />
+  <svelte:fragment slot="additional-info-review">
+    <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
+
+    {#if networkBtc}
+      <div>
+        <p class="label">{$i18n.ckbtc.estimated_receive_time}</p>
+        <p class="value">
+          {$i18n.ckbtc.about_thirty_minutes}
+        </p>
+      </div>
+    {/if}
+  </svelte:fragment>
   <ConvertBtcInProgress slot="in_progress" {progressStep} />
 </TransactionModal>

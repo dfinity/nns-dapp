@@ -6,11 +6,13 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
-  export let destinationAddress: string | undefined = undefined;
   export let sourceAccount: Account | undefined = undefined;
   export let token: Token = ICPToken;
   export let transactionFee: TokenAmount;
@@ -19,11 +21,14 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let mustSelectNetwork = false;
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
-  export let validateAmount: (
-    amount: number | undefined
-  ) => string | undefined = () => undefined;
+  export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
+
+  // User inputs
+  let selectedAccount: Account | undefined = sourceAccount;
+  export let destinationAddress: string | undefined = undefined;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let amount: number | undefined = undefined;
 
   const STEP_PROGRESS = "Progress";
 
@@ -49,9 +54,7 @@
   // This way we can identify whether to show a dropdown to select destination or source.
   let selectedDestinationAddress: string | undefined = destinationAddress;
   let canSelectDestination = destinationAddress === undefined;
-  let selectedAccount: Account | undefined = sourceAccount;
   let canSelectSource = sourceAccount === undefined;
-  let amount: number | undefined;
   let showManualAddress = true;
 
   const goNext = () => {
