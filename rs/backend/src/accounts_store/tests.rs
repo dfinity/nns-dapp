@@ -1363,7 +1363,7 @@ fn encode_decode_stable_state() {
             page_size: 10,
         },
     );
-    assert_eq!(1, results.transactions.len(), "Initial transaction is added");
+    assert_eq!(1, results.transactions.len(), "Initial transaction should be added");
 
     let bytes = store.encode();
     let decoded_store = AccountsStore::decode(bytes).unwrap();
@@ -1385,7 +1385,7 @@ fn encode_decode_stable_state() {
     assert_eq!(
         results.transactions.len(),
         decoded_results.transactions.len(),
-        "Decoded transactions doesn't match encoded ones"
+        "Decoded transactions should match encoded ones."
     );
 }
 
