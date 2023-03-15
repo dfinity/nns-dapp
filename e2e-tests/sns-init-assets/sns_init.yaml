@@ -70,7 +70,8 @@ min_icp_e8s: 100000000
 # principal IDs. In most use-cases, this would be the same as the original set
 # of controller(s). Must not be empty.
 #
-fallback_controller_principal_ids: [hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe]
+fallback_controller_principal_ids:
+  [hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe]
 #
 # This field sets the initial token distribution. Initially, there is only support for
 # the FractionalDeveloperVotingPower strategy. The FractionalDeveloperVotingPower token

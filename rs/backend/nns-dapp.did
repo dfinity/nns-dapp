@@ -199,10 +199,10 @@ type Stats =
         neurons_created_count: nat64;
         neurons_topped_up_count: nat64;
         transactions_to_process_queue_length: nat32;
-        instruction_counts: vec PerformanceCounter;
+        instruction_counts: vec PerformanceCount;
     };
 
-type PerformanceCounter =
+type PerformanceCount =
     record {
         timestamp_ns_since_epoch: nat64;
         name: text;

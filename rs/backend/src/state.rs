@@ -1,6 +1,7 @@
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
+use crate::perf::{PerformanceCounts, PerformanceCount};
 use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -12,6 +13,7 @@ pub struct State {
     pub accounts_store: RefCell<AccountsStore>,
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
+    pub performance: RefCell<PerformanceCounts>,
 }
 
 impl State {
@@ -19,6 +21,11 @@ impl State {
         self.accounts_store.replace(new_state.accounts_store.take());
         self.assets.replace(new_state.assets.take());
         self.asset_hashes.replace(new_state.asset_hashes.take());
+        self.performance.replace(new_state.performance.take());
+    }
+    /// Adds an instruction count to the internal circular buffer for later retrieval.
+    pub fn save_instruction_counter(&mut self, count: PerformanceCount) {
+        self.performance.borrow_mut().save_instruction_count(count);
     }
 }
 
@@ -39,15 +46,16 @@ impl StableState for State {
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (account_store_bytes, assets_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
+        let (account_store_bytes, assets_bytes, performance_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
-
+        let performance: PerformanceCounts = PerformanceCounts::decode(performance_bytes).unwrap_or_default();
         Ok(State {
             accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
+            performance: RefCell::new(performance),
         })
     }
 }

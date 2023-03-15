@@ -6,6 +6,7 @@ use crate::accounts_store::{
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::periodic_tasks_runner::run_periodic_tasks;
+use crate::perf::PerformanceCount;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
@@ -48,7 +49,7 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
-    let counter_before = perf::PerformanceCounter::new("post_upgrade start");
+    let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {

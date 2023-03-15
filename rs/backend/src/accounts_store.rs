@@ -2,7 +2,6 @@ use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{
     MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor, MultiPartTransactionsProcessorWithRemovedFields,
 };
-use crate::perf::PerformanceCounter;
 use crate::state::StableState;
 use crate::stats::Stats;
 use crate::time::time_millis;
@@ -42,8 +41,6 @@ pub struct AccountsStore {
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
-
-    instruction_counts: Opt<VecDeque<PerformanceCounter>>,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -853,16 +850,6 @@ impl AccountsStore {
         self.multi_part_transactions_processor.push(block_height, transaction);
     }
 
-    /// Adds an instruction counter to the circular buffer.
-    pub fn save_instruction_count(&mut self, counter: PerformanceCounter) {
-        let mut instruction_counts = self.instruction_counts.replace(None).unwrap_or_default;
-        if instruction_counts.len() >= 100 {
-            instruction_counts.pop_front();
-        }
-        instruction_counts.push_back(counter);
-        self.instruction_counts = Some(instruction_counts);
-    }
-
     pub fn get_stats(&self, stats: &mut Stats) {
         let earliest_transaction = self.transactions.front();
         let latest_transaction = self.transactions.back();
@@ -1364,8 +1351,6 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
         }
 
-        let instruction_counts = VecDeque::new();
-
         Ok(AccountsStore {
             accounts,
             hardware_wallets_and_sub_accounts,
@@ -1378,7 +1363,6 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
-            instruction_counts,
         })
     }
 }
