@@ -1066,6 +1066,7 @@ interface I18nNns_functions {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18nNns_functions_description {
@@ -1107,6 +1108,7 @@ interface I18nNns_functions_description {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18n {
