@@ -4,6 +4,18 @@
   import { createEventDispatcher } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
 
+  // TODO: can we improve the local development experience if the QR code needs to be used locally?
+  /**
+   *
+   * Important note for local development (only):
+   *
+   * Because the QR code web worker is bundled in the Gix component, both local development and npm run test won't be able to load the related web worker.
+   * If you are looking to develop a feature that requires the QR code reader locally, install the gix-components locally:
+   *
+   * npm rm @dfinity/gix-components && npm i /path/to/gix-cmp
+   *
+   */
+
   const dispatcher = createEventDispatcher();
   const cancel = () => dispatcher("nnsCancel");
 
