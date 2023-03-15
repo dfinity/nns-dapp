@@ -7,9 +7,10 @@
   const dispatcher = createEventDispatcher();
   const cancel = () => dispatcher("nnsCancel");
 
-  const onError = () => {
+  const onError = ({ detail: err }: CustomEvent<Error>) => {
     toastsError({
       labelKey: "error.qrcode_camera_error",
+      err,
     });
 
     cancel();
