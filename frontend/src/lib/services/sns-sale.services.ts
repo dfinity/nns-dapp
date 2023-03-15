@@ -14,7 +14,7 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
-import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
@@ -35,7 +35,6 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   ICPToken,
   InsufficientFundsError,
@@ -77,7 +76,7 @@ import { formatToken } from "../utils/token.utils";
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
   if (nonNullish(toastId)) {
-    toastsStore.hide(toastId);
+    toastsHide(toastId);
     toastId = undefined;
   }
 };
@@ -103,9 +102,9 @@ const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 // TODO: Solve problem with importing from sns.constants.ts
 const MAX_ATTEMPS_FOR_TICKET = 50;
 const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
-const pollOpenTicketId = Symbol("poll-open-ticket");
+const pollGetOpenTicketId = Symbol("poll-open-ticket");
 // Export for testing purposes
-export const cancelPollOpenTicket = () => cancelPoll(pollOpenTicketId);
+export const cancelPollGetOpenTicket = () => cancelPoll(pollGetOpenTicketId);
 const pollGetOpenTicket = async ({
   swapCanisterId,
   identity,
@@ -131,7 +130,7 @@ const pollGetOpenTicket = async ({
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
-      pollId: pollOpenTicketId,
+      pollId: pollGetOpenTicketId,
       failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
@@ -191,6 +190,7 @@ export const loadOpenTicket = async ({
   } catch (err) {
     // Don't show error if polling was cancelled
     if (pollingCancelled(err)) {
+      hidePollingToast();
       return;
     }
 

@@ -10,7 +10,7 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import {
-  cancelPollOpenTicket,
+  cancelPollGetOpenTicket,
   initiateSnsSaleParticipation,
   loadNewSaleTicket,
   loadOpenTicket,
@@ -113,6 +113,7 @@ describe("sns-api", () => {
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyOnToastsHide = jest.spyOn(toastsStore, "toastsHide");
   const testRootCanisterId = rootCanisterIdMock;
   const testSnsTicket = snsTicketMock({
     rootCanisterId: testRootCanisterId,
@@ -127,7 +128,7 @@ describe("sns-api", () => {
 
   beforeEach(() => {
     // Make sure there are no open polling timers
-    cancelPollOpenTicket();
+    cancelPollGetOpenTicket();
     spyOnSendICP.mockReset();
     spyOnSendICP.mockReset();
     spyOnNotifyParticipation.mockReset();
@@ -493,14 +494,46 @@ describe("sns-api", () => {
           expectedCalls += 1;
           expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
         }
-        cancelPollOpenTicket();
+        cancelPollGetOpenTicket();
         await advanceTime(retryDelay);
         retryDelay *= 2;
-        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
 
         // Even after waiting a long time, there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+      });
+
+      it("should hide toast when stop retrying", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts: 10,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+        expect(spyOnToastsShow).toBeCalledTimes(1);
+        expect(spyOnToastsHide).not.toBeCalled();
+        cancelPollGetOpenTicket();
+
+        await advanceTime(retryDelay);
+        retryDelay *= 2;
+        expect(spyOnToastsHide).toBeCalledTimes(1);
       });
     });
   });

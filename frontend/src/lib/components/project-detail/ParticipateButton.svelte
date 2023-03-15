@@ -19,7 +19,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
-    cancelPollOpenTicket,
+    cancelPollGetOpenTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
@@ -139,7 +139,7 @@
       rootCanisterId,
       ticket: undefined,
     });
-    cancelPollOpenTicket();
+    cancelPollGetOpenTicket();
 
     // Hide toasts when moving away from the page
     hidePollingToast();

@@ -51,6 +51,9 @@ describe("ProjectStatusSection", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectStatusSection,
     });
+    expect(
+      queryByTestId("sns-project-participate-button")
+    ).not.toBeInTheDocument();
     // Wait for the api call to return no ticket
     await waitFor(() => expect(snsSaleApiGetOpenTicketSpy).toBeCalled());
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();

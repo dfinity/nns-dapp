@@ -4,7 +4,7 @@
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import {
-  cancelPollOpenTicket,
+  cancelPollGetOpenTicket,
   restoreSnsSaleParticipation,
   type ParticipateInSnsSaleParameters,
 } from "$lib/services/sns-sale.services";
@@ -43,7 +43,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
       }
     ),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
-  cancelPollOpenTicket: jest.fn().mockResolvedValue(undefined),
+  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateButton", () => {
@@ -245,11 +245,11 @@ describe("ParticipateButton", () => {
         Component: ParticipateButton,
       });
 
-      expect(cancelPollOpenTicket).not.toBeCalled();
+      expect(cancelPollGetOpenTicket).not.toBeCalled();
 
       unmount();
 
-      expect(cancelPollOpenTicket).toBeCalled();
+      expect(cancelPollGetOpenTicket).toBeCalled();
     });
   });
 

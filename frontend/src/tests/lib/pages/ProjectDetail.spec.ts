@@ -42,7 +42,7 @@ jest.mock("$lib/services/sns-swap-metrics.services", () => {
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
-  cancelPollOpenTicket: jest.fn().mockResolvedValue(undefined),
+  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ProjectDetail", () => {
