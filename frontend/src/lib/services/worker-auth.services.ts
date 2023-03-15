@@ -4,6 +4,7 @@ import type {
   PostMessageDataResponse,
 } from "$lib/types/post-messages";
 import { logout } from "./auth.services";
+import {authRemainingTimeStore} from "$lib/stores/auth.store";
 
 export const initAuthWorker = async () => {
   const AuthWorker = await import("$lib/workers/auth.worker?worker");
@@ -12,7 +13,7 @@ export const initAuthWorker = async () => {
   authWorker.onmessage = async ({
     data,
   }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
-    const { msg } = data;
+    const { msg, data: value } = data;
 
     switch (msg) {
       case "nnsSignOut":
@@ -22,7 +23,9 @@ export const initAuthWorker = async () => {
             level: "warn",
           },
         });
-
+        return;
+      case "nnsDelegationRemainingTime":
+        authRemainingTimeStore.set(value?.authRemainingTime);
         return;
     }
   };

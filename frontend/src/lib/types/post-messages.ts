@@ -16,12 +16,14 @@ export interface PostMessageDataRequest {
 export interface PostMessageDataResponse {
   metrics?: MetricsSync;
   canister?: CanisterSync;
+  authRemainingTime?: number;
 }
 
 export type PostMessageResponse =
   | "nnsSignOut"
   | "nnsSyncMetrics"
-  | "nnsSyncCanister";
+  | "nnsSyncCanister"
+    | "nnsDelegationRemainingTime";
 
 export interface PostMessage<
   T extends PostMessageDataResponse | PostMessageDataRequest
