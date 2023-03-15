@@ -124,6 +124,12 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map(|response: (_,)| response.0)
         .map_err(|err| anyhow!("Failed to get ledger fee: {err:?}"))?;
 
+    let icrc1_total_supply: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_total_supply", ((),))
+        .await
+        .map(|response: (_,)| response.0)
+        .map_err(|err| anyhow!("Failed to get ledger total tokens supply: {err:?}"))
+        .unwrap_or_default();
+
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
     FastScheduler::global_schedule_sns(&swap_state);
@@ -137,6 +143,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         swap_state,
         icrc1_metadata,
         icrc1_fee,
+        icrc1_total_supply,
     };
     State::insert_sns(index, slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))

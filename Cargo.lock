@@ -4309,6 +4309,7 @@ dependencies = [
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
  "lazy_static",
+ "num-traits",
  "serde",
  "serde_bytes",
  "serde_cbor",
