@@ -21,7 +21,7 @@
   import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
   import type {
     TransactionNetwork,
-    type ValidateAmountFn,
+    ValidateAmountFn,
   } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 

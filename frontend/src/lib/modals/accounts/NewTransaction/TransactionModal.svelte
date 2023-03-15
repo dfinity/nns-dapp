@@ -8,7 +8,7 @@
   import type { Principal } from "@dfinity/principal";
   import type {
     TransactionNetwork,
-    type ValidateAmountFn,
+    ValidateAmountFn,
   } from "$lib/types/transaction";
 
   export let rootCanisterId: Principal;
