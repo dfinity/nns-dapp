@@ -427,7 +427,7 @@ describe("TransactionModal", () => {
   });
 
   describe("qr code", () => {
-    it("move to qr code step", async () => {
+    it("should move to qr code step", async () => {
       const { getByTestId } = await renderTransactionModal({
         rootCanisterId: OWN_CANISTER_ID,
       });
@@ -443,6 +443,24 @@ describe("TransactionModal", () => {
       const toasts = get(toastsStore);
       expect(toasts[0].level).toEqual("error");
       expect(toasts[0].text).toEqual(en.error.qrcode_camera_error);
+    });
+
+    it("should move back to first step", async () => {
+      const { getByTestId } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const button = getByTestId(
+        "address-qr-code-scanner"
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      await waitFor(() => expect(get(toastsStore)).not.toEqual([]));
+
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-1")).toBeTruthy()
+      );
     });
   });
 });
