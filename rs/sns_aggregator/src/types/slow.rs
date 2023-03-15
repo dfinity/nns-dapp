@@ -48,7 +48,7 @@ impl From<&UpstreamData> for SlowSnsData {
                 .icrc1_total_supply
                 .0
                 .to_u64()
-                .expect("Error decoding total supply"),
+                .unwrap(),
         }
     }
 }
