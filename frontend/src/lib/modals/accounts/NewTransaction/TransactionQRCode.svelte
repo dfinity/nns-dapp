@@ -2,7 +2,7 @@
   import { QRCodeReaderModal } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
-  import {toastsError} from "$lib/stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   const dispatcher = createEventDispatcher();
   const cancel = () => dispatcher("nnsCancel");
@@ -13,7 +13,7 @@
     });
 
     cancel();
-  }
+  };
 </script>
 
 <QRCodeReaderModal on:nnsQRCode on:nnsQRCodeError={onError} />
