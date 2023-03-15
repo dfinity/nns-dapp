@@ -1,9 +1,9 @@
 /// Tests that the stats data collection is as expected
 use super::get_stats;
 use crate::assets::{AssetHashes, Assets};
+use crate::perf::PerformanceCounts;
 use crate::State;
 use core::cell::RefCell;
-use crate::perf::PerformanceCounts;
 
 /// Creates a populated test state for testing.
 fn setup_test_state() -> State {

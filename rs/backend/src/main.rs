@@ -5,8 +5,8 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
-use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::perf::PerformanceCount;
+use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};

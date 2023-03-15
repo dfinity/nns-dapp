@@ -1,14 +1,14 @@
-use crate::{STATE, StableState};
+use crate::{StableState, STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
-use on_wire::{FromWire, IntoWire};
-use std::collections::VecDeque;
 use dfn_core::api::ic0;
+use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
+use std::collections::VecDeque;
 #[cfg(test)]
 mod tests;
 
-#[derive(CandidType, Deserialize, Default, Clone)]
+#[derive(CandidType, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 pub struct PerformanceCount {
     timestamp_ns_since_epoch: u64,
     name: String,
@@ -27,7 +27,7 @@ impl PerformanceCount {
     }
 }
 
-#[derive(CandidType, Deserialize, Clone, Default)]
+#[derive(CandidType, Deserialize, Clone, Debug, Default, Eq, PartialEq)]
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
 }
@@ -44,7 +44,11 @@ impl PerformanceCounts {
     pub fn test_data() -> Self {
         let mut ans = PerformanceCounts::default();
         ans.save_instruction_count(PerformanceCount::default());
-        ans.save_instruction_count(PerformanceCount{ timestamp_ns_since_epoch: 999, name: "Nein".to_string(), instruction_count: 1 });
+        ans.save_instruction_count(PerformanceCount {
+            timestamp_ns_since_epoch: 999,
+            name: "Nein".to_string(),
+            instruction_count: 1,
+        });
         ans.save_instruction_count(PerformanceCount::default());
         ans
     }
@@ -58,8 +62,8 @@ impl StableState for PerformanceCounts {
 
     /// Parse performance counts.  On error, return a blank new structure.
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-      let (ans,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap_or_default();
-      Ok(ans)
+        let (ans,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap_or_default();
+        Ok(ans)
     }
 }
 
