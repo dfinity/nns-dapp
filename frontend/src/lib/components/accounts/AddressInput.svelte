@@ -45,6 +45,7 @@
   <svelte:fragment slot="inner-end">
     {#if qrCode}
       <button
+        data-tid="address-qr-code-scanner"
         class="icon-only"
         on:click|stopPropagation={onClickQRCode}
         aria-label={$i18n.accounts.scan_qr_code_alt}
