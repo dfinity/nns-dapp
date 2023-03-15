@@ -19,7 +19,10 @@
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
   import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    TransactionNetwork,
+    type ValidateAmountFn,
+  } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 
   // Tested in the TransactionModal
@@ -39,9 +42,7 @@
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
-  export let validateAmount: (
-    amount: number | undefined
-  ) => string | undefined = () => undefined;
+  export let validateAmount: ValidateAmountFn = () => undefined;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -85,7 +86,7 @@
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
-      errorMessage = validateAmount(amount);
+      errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
       if (error instanceof NotEnoughAmountError) {
         errorMessage = $i18n.error.insufficient_funds;
