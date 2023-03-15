@@ -255,8 +255,8 @@ export const hasOpenTicketInProcess = ({
     return { status: "none" };
   }
 
-  // `undefined` means that we could still be polling for the ticket.
-  return { status: projectTicketData.keepPolling ? "polling" : "none" };
+  // As long as we don't have a known state, we assume we're fetching the data.
+  return { status: "loading" };
 };
 
 /**

@@ -28,7 +28,12 @@ import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
 } from "$lib/utils/sns.utils";
-import { poll, pollingLimit } from "$lib/utils/utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import {
@@ -77,43 +82,36 @@ export const hidePollingToast = (): void => {
   }
 };
 
-const shouldStopPollingTicket =
-  (rootCanisterId: Principal) =>
-  (err: unknown): boolean => {
-    const store = get(snsTicketsStore)[rootCanisterId.toText()];
-    // Exit if polling is not enabled
-    if (nonNullish(store) && !store.keepPolling) {
-      return true;
-    }
-    // We want to stop polling if the error is a known error
-    if (err instanceof SnsSwapGetOpenTicketError) {
-      return true;
-    }
-    // Generic error, maybe a network error
-    // We want to keep trying.
-    if (isNullish(toastId)) {
-      toastId = toastsShow({
-        labelKey: "sns_project_detail.getting_sns_open_ticket",
-        level: "info",
-        spinner: true,
-      });
-    }
-    return false;
-  };
+const shouldStopPollingTicket = (err: unknown): boolean => {
+  // We want to stop polling if the error is a known error
+  if (err instanceof SnsSwapGetOpenTicketError) {
+    return true;
+  }
+  // Generic error, maybe a network error
+  // We want to keep trying.
+  if (isNullish(toastId)) {
+    toastId = toastsShow({
+      labelKey: "sns_project_detail.getting_sns_open_ticket",
+      level: "info",
+      spinner: true,
+    });
+  }
+  return false;
+};
 
 const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 // TODO: Solve problem with importing from sns.constants.ts
 const MAX_ATTEMPS_FOR_TICKET = 50;
 const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
+const pollOpenTicketId = Symbol("poll-open-ticket");
 // Export for testing purposes
+export const cancelPollOpenTicket = () => cancelPoll(pollOpenTicketId);
 const pollGetOpenTicket = async ({
-  rootCanisterId,
   swapCanisterId,
   identity,
   certified,
   maxAttempts,
 }: {
-  rootCanisterId: Principal;
   swapCanisterId: Principal;
   identity: Identity;
   certified: boolean;
@@ -129,10 +127,11 @@ const pollGetOpenTicket = async ({
           swapCanisterId,
           certified,
         }),
-      shouldExit: shouldStopPollingTicket(rootCanisterId),
+      shouldExit: shouldStopPollingTicket,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
+      pollId: pollOpenTicketId,
       failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
@@ -172,7 +171,6 @@ export const loadOpenTicket = async ({
     const ticket = await pollGetOpenTicket({
       identity,
       swapCanisterId,
-      rootCanisterId,
       certified,
       maxAttempts,
     });
@@ -191,10 +189,8 @@ export const loadOpenTicket = async ({
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
-    const store = get(snsTicketsStore)[rootCanisterId.toText()];
-    // Do not show errors if the user has stopped polling.
-    if (!store?.keepPolling) {
-      hidePollingToast();
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
       return;
     }
 
@@ -203,7 +199,6 @@ export const loadOpenTicket = async ({
     snsTicketsStore.setTicket({
       rootCanisterId,
       ticket: null,
-      keepPolling: false,
     });
 
     if (err instanceof SnsSwapGetOpenTicketError) {

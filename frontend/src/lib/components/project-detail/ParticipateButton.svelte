@@ -19,6 +19,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
+    cancelPollOpenTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
@@ -96,8 +97,6 @@
       // Typescript guard, user commitment cannot be undefined here
       return;
     }
-    snsTicketsStore.enablePolling(rootCanisterId);
-
     loadingTicketRootCanisterId = rootCanisterId.toText();
 
     const updateProgress = (step: SaleStep) => (progressStep = step);
@@ -139,8 +138,8 @@
     snsTicketsStore.setTicket({
       rootCanisterId,
       ticket: undefined,
-      keepPolling: false,
     });
+    cancelPollOpenTicket();
 
     // Hide toasts when moving away from the page
     hidePollingToast();

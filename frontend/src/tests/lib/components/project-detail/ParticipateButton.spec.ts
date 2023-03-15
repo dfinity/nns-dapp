@@ -3,8 +3,11 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
-import type { ParticipateInSnsSaleParameters } from "$lib/services/sns-sale.services";
-import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+import {
+  cancelPollOpenTicket,
+  restoreSnsSaleParticipation,
+  type ParticipateInSnsSaleParameters,
+} from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -40,6 +43,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
       }
     ),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
+  cancelPollOpenTicket: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateButton", () => {
@@ -53,15 +57,13 @@ describe("ParticipateButton", () => {
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
   describe("signed in", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       authStoreMock.next({
         identity: mockIdentity,
       });
-    });
-
-    beforeEach(() => {
       (restoreSnsSaleParticipation as jest.Mock).mockClear();
       snsTicketsStore.reset();
+      jest.clearAllMocks();
     });
 
     it("should render a text to increase participation", () => {
@@ -234,6 +236,20 @@ describe("ParticipateButton", () => {
         "sns-project-participate-button"
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
+    });
+
+    it("should cancel polling open ticket on destroy", async () => {
+      const { unmount } = renderContextCmp({
+        summary: mockSnsFullProject.summary,
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(cancelPollOpenTicket).not.toBeCalled();
+
+      unmount();
+
+      expect(cancelPollOpenTicket).toBeCalled();
     });
   });
 

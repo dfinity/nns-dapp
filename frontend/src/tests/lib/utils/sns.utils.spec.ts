@@ -259,7 +259,6 @@ describe("sns-utils", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
-        keepPolling: true,
       });
       const store = get(snsTicketsStore);
 
@@ -285,11 +284,10 @@ describe("sns-utils", () => {
       ).toEqual({ status: "unknown" });
     });
 
-    it("returns polling when the ticket is undefined and we keep polling", () => {
+    it("returns polling when the ticket is undefined", () => {
       snsTicketsStore.setTicket({
         rootCanisterId: rootCanisterIdMock,
         ticket: undefined,
-        keepPolling: true,
       });
       const store = get(snsTicketsStore);
 
@@ -298,23 +296,7 @@ describe("sns-utils", () => {
           rootCanisterId: rootCanisterIdMock,
           ticketsStore: store,
         })
-      ).toEqual({ status: "polling" });
-    });
-
-    it("returns none when the ticket is undefined and we stopped keep polling", () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: undefined,
-        keepPolling: false,
-      });
-      const store = get(snsTicketsStore);
-
-      expect(
-        hasOpenTicketInProcess({
-          rootCanisterId: rootCanisterIdMock,
-          ticketsStore: store,
-        })
-      ).toEqual({ status: "none" });
+      ).toEqual({ status: "loading" });
     });
 
     it("returns open when there is an open ticket in the store", () => {

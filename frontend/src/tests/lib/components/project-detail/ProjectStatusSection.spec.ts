@@ -13,14 +13,18 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
+  let snsSaleApiGetOpenTicketSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+    snsSaleApiGetOpenTicketSpy = jest
+      .spyOn(snsSaleApi, "getOpenTicket")
+      .mockResolvedValue(undefined);
   });
 
   it("should render subtitle", () => {
@@ -41,12 +45,14 @@ describe("ProjectStatusSection", () => {
     expect(queryByTestId("sns-project-current-commitment")).toBeInTheDocument();
   });
 
-  it("should render project participate button", () => {
+  it("should render project participate button", async () => {
     const { queryByTestId } = renderContextCmp({
       summary: mockSnsFullProject.summary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectStatusSection,
     });
+    // Wait for the api call to return no ticket
+    await waitFor(() => expect(snsSaleApiGetOpenTicketSpy).toBeCalled());
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
   });
 
