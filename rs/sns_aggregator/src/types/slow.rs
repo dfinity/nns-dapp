@@ -44,11 +44,7 @@ impl From<&UpstreamData> for SlowSnsData {
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
             icrc1_fee: upstream.icrc1_fee.clone(),
-            icrc1_total_supply: upstream
-                .icrc1_total_supply
-                .0
-                .to_u64()
-                .unwrap(),
+            icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().unwrap(),
         }
     }
 }
