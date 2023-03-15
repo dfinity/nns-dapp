@@ -6,7 +6,7 @@ import { resetNeuronsApiService } from "$lib/api-services/governance.api-service
 import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
-import { authStore, type AuthStore } from "$lib/stores/auth.store";
+import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalsFiltersStore,
@@ -211,7 +211,7 @@ describe("NnsProposals", () => {
     beforeEach(() => {
       jest
         .spyOn(authStore, "subscribe")
-        .mockImplementation((run: Subscriber<AuthStore>): (() => void) => {
+        .mockImplementation((run: Subscriber<AuthStoreData>): (() => void) => {
           run({ identity: undefined });
 
           return () => undefined;
