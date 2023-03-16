@@ -15,6 +15,9 @@ screenshots
 target
 out
 web-assets
+frontend/src/tests/
+frontend/src/e2e-tests/
+frontend/node_modules/
 frontend/node_modules/
 frontend/public/build/
 frontend/public/assets/
