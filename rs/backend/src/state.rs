@@ -4,6 +4,8 @@ use crate::assets::Assets;
 use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
+#[cfg(test)]
+pub mod tests;
 
 #[derive(Default)]
 pub struct State {
