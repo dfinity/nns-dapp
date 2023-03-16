@@ -18,7 +18,6 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
 
   export let data: CkBTCReceiveModalData;
@@ -172,9 +171,10 @@
   {/if}
 
   <ReceiveSelectAccountDropdown
-    bind:account
+    {account}
     canSelectAccount={!bitcoin && canSelectAccount}
     {universeId}
+    on:nnsSelectedAccount={({ detail }) => (account = detail)}
   />
 
   {#if nonNullish(address)}

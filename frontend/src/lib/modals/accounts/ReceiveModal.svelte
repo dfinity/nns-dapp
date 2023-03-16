@@ -40,7 +40,12 @@
 <Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  <ReceiveSelectAccountDropdown bind:account {canSelectAccount} {universeId} />
+  <ReceiveSelectAccountDropdown
+    {account}
+    on:nnsSelectedAccount={({ detail }) => (account = detail)}
+    {canSelectAccount}
+    {universeId}
+  />
 
   <ReceiveAddressQRCode
     address={account?.identifier}
