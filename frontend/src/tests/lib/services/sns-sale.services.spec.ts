@@ -10,6 +10,7 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import {
+  cancelPollGetOpenTicket,
   initiateSnsSaleParticipation,
   loadNewSaleTicket,
   loadOpenTicket,
@@ -112,6 +113,7 @@ describe("sns-api", () => {
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyOnToastsHide = jest.spyOn(toastsStore, "toastsHide");
   const testRootCanisterId = rootCanisterIdMock;
   const testSnsTicket = snsTicketMock({
     rootCanisterId: testRootCanisterId,
@@ -125,6 +127,8 @@ describe("sns-api", () => {
     get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
+    // Make sure there are no open polling timers
+    cancelPollGetOpenTicket();
     spyOnSendICP.mockReset();
     spyOnSendICP.mockReset();
     spyOnNotifyParticipation.mockReset();
@@ -216,7 +220,6 @@ describe("sns-api", () => {
     describe("when polling is enabled", () => {
       beforeEach(() => {
         jest.clearAllTimers();
-        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
         const now = Date.now();
         jest.useFakeTimers().setSystemTime(now);
       });
@@ -468,7 +471,6 @@ describe("sns-api", () => {
       });
 
       it("should stop retrying", async () => {
-        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
         snsSwapCanister.getOpenTicket.mockRejectedValue(
           new Error("network error")
         );
@@ -492,18 +494,45 @@ describe("sns-api", () => {
           expectedCalls += 1;
           expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
         }
-        // disablePolling works through shouldExit which is only called after a
-        // failure, so after we disablePolling, it will stop polling only after
-        // 1 more failure.
-        snsTicketsStore.disablePolling(testSnsTicket.rootCanisterId);
-        expectedCalls += 1;
+        cancelPollGetOpenTicket();
         await advanceTime(retryDelay);
         retryDelay *= 2;
-        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
 
         // Even after waiting a long time, there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+      });
+
+      it("should hide toast when stop retrying", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts: 10,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+        expect(spyOnToastsShow).toBeCalledTimes(1);
+        expect(spyOnToastsHide).not.toBeCalled();
+        cancelPollGetOpenTicket();
+
+        await runResolvedPromises();
+        expect(spyOnToastsHide).toBeCalledTimes(1);
       });
     });
   });
@@ -795,7 +824,7 @@ describe("sns-api", () => {
       expect(spyOnToastsError).not.toBeCalled();
     });
 
-    it("should not start flow if no open tickeet", async () => {
+    it("should not start flow if no open ticket", async () => {
       snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
