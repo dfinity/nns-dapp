@@ -79,13 +79,3 @@ fn raw_instruction_count() -> u64 {
     // Note: The spec says that this is an i64 but the type is actually a u64.
     unsafe { ic0::performance_counter(0) }
 }
-
-/// Gets the value of the instruction count and saves it with the given label.
-pub fn record_instruction_count(name: &str) {
-    save_instruction_count(PerformanceCount::new(name));
-}
-
-/// Saves an instruction count; useful if the instruction count was captured independently.
-pub fn save_instruction_count(count: PerformanceCount) {
-    STATE.with(|s| s.performance.borrow_mut().save_instruction_count(count))
-}
