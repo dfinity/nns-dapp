@@ -1,10 +1,11 @@
 <script lang="ts">
-  import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
+  import { SvelteComponent } from "svelte";
 
+  export let testComponent: typeof SvelteComponent;
   export let accountIdentifier: string | undefined | null = undefined;
 </script>
 
-<SnsWallet {accountIdentifier} />
+<svelte:component this={testComponent} {accountIdentifier} />
 
 <AccountsModals />
