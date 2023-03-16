@@ -1,3 +1,4 @@
+use crate::stats::Stats;
 use crate::{StableState, STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -5,7 +6,6 @@ use dfn_core::api::ic0;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
-use crate::stats::Stats;
 #[cfg(test)]
 mod tests;
 
