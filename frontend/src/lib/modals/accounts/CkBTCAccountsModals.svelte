@@ -30,7 +30,7 @@
   $: transactionData = data as CkBTCWalletTransactionModalData | undefined;
 </script>
 
-<svelte:window on:ckBTCWalletModal={({ detail }) => (modal = detail)} />
+<svelte:window on:nnsCBTCAccountsModal={({ detail }) => (modal = detail)} />
 
 {#if type === "ckbtc-receive" && nonNullish(receiveData)}
   <CkBTCReceiveModal data={receiveData} on:nnsClose={close} />

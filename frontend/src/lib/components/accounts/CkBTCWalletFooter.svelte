@@ -49,7 +49,7 @@
     // Remove displayBtcAddress at the same time.
     if (!isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore)) {
       emit<CkBTCWalletModal>({
-        message: "ckBTCWalletModal",
+        message: "nnsCBTCAccountsModal",
         detail: {
           type: "ckbtc-receive",
           data: {
@@ -74,7 +74,7 @@
       const btcAddress = await getBTCAddress(canisters.minterCanisterId);
 
       emit<CkBTCWalletModal>({
-        message: "ckBTCWalletModal",
+        message: "nnsCBTCAccountsModal",
         detail: {
           type: "ckbtc-receive",
           data: {
@@ -115,7 +115,7 @@
     }
 
     emit<CkBTCWalletModal>({
-      message: "ckBTCWalletModal",
+      message: "nnsCBTCAccountsModal",
       detail: {
         type: "ckbtc-wallet-transaction",
         data: {
