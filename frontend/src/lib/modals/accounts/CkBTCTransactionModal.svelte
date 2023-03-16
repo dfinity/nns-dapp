@@ -43,6 +43,8 @@
       ? $i18n.accounts.send
       : currentStep?.name === "Progress"
       ? $i18n.ckbtc.sending_ckbtc_to_btc
+      : currentStep?.name === "QRCode"
+      ? $i18n.accounts.scan_qr_code
       : $i18n.accounts.you_are_sending;
 
   let modal: TransactionModal;

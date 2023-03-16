@@ -71,6 +71,7 @@
   </div>
   {#if showManualAddress}
     <AddressInput
+      on:nnsOpenQRCodeReader
       bind:address={selectedDestinationAddress}
       {selectedNetwork}
       {rootCanisterId}

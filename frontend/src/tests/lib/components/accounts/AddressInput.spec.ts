@@ -24,6 +24,36 @@ describe("AddressInput", () => {
       expect(input).not.toBeNull();
     });
 
+    it("should render a qr code scanner button", () => {
+      const { getByTestId } = render(AddressInput, { props });
+      expect(getByTestId("address-qr-code-scanner")).not.toBeNull();
+    });
+
+    it("should not render a qr code scanner button", () => {
+      const { getByTestId } = render(AddressInput, {
+        props: {
+          ...props,
+          qrCode: false,
+        },
+      });
+      expect(() => getByTestId("address-qr-code-scanner")).toThrow();
+    });
+
+    it("should trigger the event on click on qr code scanner button", () => {
+      const { getByTestId, component } = render(AddressInput, { props });
+
+      const openSpy = jest.fn();
+      component.$on("nnsOpenQRCodeReader", openSpy);
+
+      const button = getByTestId(
+        "address-qr-code-scanner"
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      expect(openSpy).toBeCalled();
+    });
+
     it("should show error message on blur when invalid address", async () => {
       const { container, queryByTestId } = render(AddressInput, { props });
 
