@@ -15,14 +15,6 @@
   export let loadTransactions = false;
 
   const openSend = () => {
-    // Button is disabled if no account anyway
-    if (isNullish(account)) {
-      toastsError({
-        labelKey: "error__ckbtc.get_btc_no_account",
-      });
-      return;
-    }
-
     // Button is disabled if no universe anyway
     if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
       toastsError({
