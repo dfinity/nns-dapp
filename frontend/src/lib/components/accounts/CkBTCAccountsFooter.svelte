@@ -30,7 +30,7 @@
 </script>
 
 {#if canMakeTransactions}
-  <Footer columns={2}>
+  <Footer>
     <CkBTCSendButton disableButton={$busy} {canisters} />
 
     <CkBTCReceiveButton canSelectAccount disableButton={$busy} {canisters} />

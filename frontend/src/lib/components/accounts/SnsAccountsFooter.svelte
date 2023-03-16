@@ -16,7 +16,7 @@
 {/if}
 
 {#if $snsProjectAccountsStore !== undefined}
-  <Footer columns={2}>
+  <Footer>
     <button
       class="primary full-width"
       on:click={openNewTransaction}

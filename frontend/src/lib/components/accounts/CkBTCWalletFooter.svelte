@@ -31,7 +31,7 @@
     $busy;
 </script>
 
-<Footer columns={2}>
+<Footer>
   <CkBTCSendButton
     {disableButton}
     {canisters}

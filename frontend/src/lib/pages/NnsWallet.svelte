@@ -164,7 +164,7 @@
     </section>
   </main>
 
-  <Footer columns={2}>
+  <Footer>
     <button
       class="primary"
       on:click={() => (showModal = "send")}
