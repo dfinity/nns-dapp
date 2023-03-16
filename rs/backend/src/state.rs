@@ -7,7 +7,7 @@ use std::cell::RefCell;
 #[cfg(test)]
 pub mod tests;
 
-#[derive(Default)]
+#[derive(Default, Debug, Eq, PartialEq)]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
