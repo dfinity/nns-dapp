@@ -26,6 +26,7 @@
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import type { Universe } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
+  import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -107,6 +108,8 @@
 {:else if nonNullish($snsProjectSelectedStore)}
   <SnsAccountsFooter />
 {/if}
+
+<AccountsModals />
 
 <style lang="scss">
   main {

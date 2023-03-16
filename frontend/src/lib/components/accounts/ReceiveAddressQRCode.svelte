@@ -4,8 +4,9 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
+  import { nonNullish } from "@dfinity/utils";
 
-  export let address: string;
+  export let address: string | undefined;
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
@@ -14,6 +15,9 @@
   export let renderQRCode = false;
 
   export let qrCodeRendered: boolean = QR_CODE_RENDERED;
+
+  let addressSelected = false;
+  $: addressSelected = nonNullish(address);
 </script>
 
 <div class="content">
@@ -21,13 +25,15 @@
     <h3><slot name="title" /></h3>
     <p><slot name="description" /></p>
 
-    <div class="separator">
-      <Separator />
-    </div>
+    {#if addressSelected}
+      <div class="separator">
+        <Separator />
+      </div>
+    {/if}
   </div>
 
   <article class="qrcode">
-    {#if renderQRCode}
+    {#if renderQRCode && addressSelected}
       <QRCode
         value={address}
         ariaLabel={qrCodeLabel}
@@ -48,15 +54,17 @@
     {/if}
   </article>
 
-  <div>
-    <KeyValuePair>
-      <span slot="key" class="label">{$i18n.accounts.address}</span>
-      <div slot="value" class="address">
-        <span class="value">{address}</span>
-        <Copy value={address} />
-      </div>
-    </KeyValuePair>
-  </div>
+  {#if addressSelected}
+    <div>
+      <KeyValuePair>
+        <span slot="key" class="label">{$i18n.accounts.address}</span>
+        <div slot="value" class="address">
+          <span class="value">{address}</span>
+          <Copy value={address} />
+        </div>
+      </KeyValuePair>
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">

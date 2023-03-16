@@ -4,14 +4,18 @@
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import type { Account } from "$lib/types/account";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
+  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
-  export let account: Account;
+  export let universeId: UniverseCanisterId;
+  export let account: Account | undefined;
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
   export let reloadAccount: () => Promise<void>;
+  export let canSelectAccount: boolean;
 
   let qrCodeRendered = QR_CODE_RENDERED;
 
@@ -36,8 +40,19 @@
 <Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
+  {#if canSelectAccount}
+    <div class="source">
+      <span class="label">{$i18n.accounts.receive_account}</span>
+
+      <SelectAccountDropdown
+        rootCanisterId={universeId}
+        bind:selectedAccount={account}
+      />
+    </div>
+  {/if}
+
   <ReceiveAddressQRCode
-    address={account.identifier}
+    address={account?.identifier}
     renderQRCode={modalRendered}
     {qrCodeLabel}
     {logo}
@@ -65,5 +80,12 @@
 <style lang="scss">
   button.primary {
     width: 100%;
+  }
+
+  .source {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    padding: 0 0 var(--padding-2x);
   }
 </style>

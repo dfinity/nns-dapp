@@ -4,6 +4,7 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import NnsReceive from "$lib/components/accounts/NnsReceive.svelte";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -15,11 +16,13 @@
 {/if}
 
 {#if nonNullish($accountsStore)}
-  <Footer columns={1}>
+  <Footer>
     <button
       class="primary full-width"
       on:click={openNewTransaction}
       data-tid="open-new-transaction">{$i18n.accounts.send}</button
     >
+
+    <NnsReceive canSelectAccount />
   </Footer>
 {/if}

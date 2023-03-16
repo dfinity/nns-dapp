@@ -10,10 +10,7 @@ export interface WalletModal {
 }
 
 // CkBTC
-export type CkBTCWalletModalType =
-  | "ckbtc-receive"
-  | "ckbtc-receive"
-  | "ckbtc-transaction";
+export type CkBTCWalletModalType = "ckbtc-receive" | "ckbtc-transaction";
 
 export interface CkBTCWalletModalData {
   account: Account;

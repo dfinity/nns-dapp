@@ -10,6 +10,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
+  import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -23,3 +24,5 @@
 {:else if nonNullish($snsProjectSelectedStore)}
   <SnsWallet {accountIdentifier} />
 {/if}
+
+<AccountsModals />

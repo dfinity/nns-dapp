@@ -223,7 +223,8 @@
     "network_btc_mainnet": "Bitcoin (BTC)",
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
-    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
+    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee",
+    "receive_account": "Account"
   },
   "neurons": {
     "title": "Neurons",

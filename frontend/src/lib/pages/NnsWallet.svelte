@@ -40,8 +40,7 @@
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
-  import IC_LOGO from "$lib/assets/icp.svg";
+  import NnsReceive from "$lib/components/accounts/NnsReceive.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -119,7 +118,7 @@
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
 
-  let showModal: "send" | "receive" | undefined = undefined;
+  let showModal: "send" | undefined = undefined;
 
   // TODO(L2-581): Create WalletInfo component
 
@@ -173,12 +172,7 @@
       data-tid="new-transaction">{$i18n.accounts.send}</button
     >
 
-    <button
-      class="secondary"
-      on:click={() => (showModal = "receive")}
-      {disabled}
-      data-tid="receive-icp">{$i18n.ckbtc.receive}</button
-    >
+    <NnsReceive account={$selectedAccountStore.account} {reloadAccount} />
   </Footer>
 </Island>
 
@@ -189,23 +183,4 @@
     on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}
   />
-{/if}
-
-<!-- For TS - action button is disabled anyway if account is undefined -->
-{#if showModal === "receive" && nonNullish($selectedAccountStore.account)}
-  <ReceiveModal
-    account={$selectedAccountStore.account}
-    on:nnsClose={() => (showModal = undefined)}
-    qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
-    logo={IC_LOGO}
-    logoArialLabel={$i18n.core.icp}
-    {reloadAccount}
-  >
-    <svelte:fragment slot="title"
-      >{$i18n.wallet.icp_receive_note_title}</svelte:fragment
-    >
-    <svelte:fragment slot="description"
-      >{$i18n.wallet.icp_receive_note_text}</svelte:fragment
-    >
-  </ReceiveModal>
 {/if}
