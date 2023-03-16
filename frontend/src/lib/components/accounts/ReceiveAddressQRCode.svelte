@@ -59,7 +59,7 @@
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.accounts.address}</span>
         <div slot="value" class="address">
-          <span class="value">{address}</span>
+          <span class="value" data-tid="qrcode-display-address">{address}</span>
           <Copy value={address ?? ""} />
         </div>
       </KeyValuePair>

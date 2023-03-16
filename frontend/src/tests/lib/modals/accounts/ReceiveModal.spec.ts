@@ -4,8 +4,11 @@
 
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
+import {mockMainAccount, mockSubAccount} from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
+import {OWN_CANISTER_ID} from "../../../../lib/constants/canister-ids.constants";
+import {accountsStore} from "../../../../lib/stores/accounts.store";
+import type {Account} from "../../../../lib/types/account";
 
 describe("ReceiveModal", () => {
   const reloadAccountSpy = jest.fn();
@@ -16,26 +19,28 @@ describe("ReceiveModal", () => {
   const logo = "logo";
   const logoArialLabel = "logo aria-label";
 
-  const renderReceiveModal = () =>
+  const renderReceiveModal = ({canSelectAccount = false, account = mockMainAccount}: {canSelectAccount?: boolean, account?: Account}) =>
     renderModal({
       component: ReceiveModal,
       props: {
-        account: mockMainAccount,
+        account,
         qrCodeLabel,
         logo,
         logoArialLabel,
         reloadAccount: reloadAccountSpy,
+        universeId: OWN_CANISTER_ID,
+        canSelectAccount
       },
     });
 
   it("should render a QR code", async () => {
-    const { getByTestId } = await renderReceiveModal();
+    const { getByTestId } = await renderReceiveModal({});
 
     expect(getByTestId("qr-code")).toBeInTheDocument();
   });
 
   it("should render account identifier (without being shortened)", async () => {
-    const { getByText } = await renderReceiveModal();
+    const { getByText } = await renderReceiveModal({});
 
     await waitFor(() =>
       expect(getByText(mockMainAccount.identifier)).toBeInTheDocument()
@@ -43,7 +48,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a logo", async () => {
-    const { getByTestId } = await renderReceiveModal();
+    const { getByTestId } = await renderReceiveModal({});
 
     await waitFor(() =>
       expect(getByTestId("logo")?.getAttribute("alt")).toEqual(logoArialLabel)
@@ -51,10 +56,47 @@ describe("ReceiveModal", () => {
   });
 
   it("should reload account", async () => {
-    const { getByTestId } = await renderReceiveModal();
+    const { getByTestId } = await renderReceiveModal({});
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 
     await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+  });
+
+  it("should render a dropdown to select account", async () => {
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: undefined,
+      hardwareWallets: undefined,
+    });
+
+    const { getByTestId } = await renderReceiveModal({canSelectAccount: true});
+
+    await waitFor(() => expect(getByTestId("select-account-dropdown")).toBeInTheDocument());
+  });
+
+  it("should select account", async () => {
+    accountsStore.set({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+      hardwareWallets: undefined,
+    });
+
+    const { getByTestId, container } = await renderReceiveModal({canSelectAccount: true, account: undefined});
+
+    await waitFor(() => expect(getByTestId("select-account-dropdown")).toBeInTheDocument());
+
+    const selectElement = container.querySelector("select");
+    selectElement &&
+    expect(selectElement.value).toBe(mockMainAccount.identifier);
+
+    expect(getByTestId("qrcode-display-address")?.textContent).toEqual(mockMainAccount.identifier);
+
+    selectElement &&
+    fireEvent.change(selectElement, {
+      target: { value: mockSubAccount.identifier },
+    });
+
+    await waitFor(() => expect(getByTestId("qrcode-display-address")?.textContent).toEqual(mockSubAccount.identifier));
   });
 });
