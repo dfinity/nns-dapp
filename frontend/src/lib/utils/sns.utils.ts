@@ -1,6 +1,5 @@
 import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
-import type { SnsTotalTokenSupplyStoreData } from "$lib/stores/sns-total-token-supply.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { TicketStatus } from "$lib/types/sale";
@@ -16,12 +15,7 @@ import type {
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import {
-  AccountIdentifier,
-  SubAccount,
-  TokenAmount,
-  type Token,
-} from "@dfinity/nns";
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetMetadataResponse,
@@ -285,24 +279,4 @@ export const parseSnsSwapSaleBuyerCount = (
       ?.split(/\s/)?.[1]
   );
   return isNaN(value) ? undefined : value;
-};
-
-export const totalTokenSupply = ({
-  totalSupplies,
-  rootCanisterId,
-  token,
-}: {
-  totalSupplies: SnsTotalTokenSupplyStoreData;
-  rootCanisterId: Principal;
-  token: Token;
-}): TokenAmount | undefined => {
-  const totalSupply = totalSupplies[rootCanisterId.toText()];
-  if (isNullish(totalSupply)) {
-    return undefined;
-  }
-
-  return TokenAmount.fromE8s({
-    amount: totalSupply.totalSupply,
-    token,
-  });
 };

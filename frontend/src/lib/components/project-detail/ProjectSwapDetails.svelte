@@ -12,9 +12,6 @@
   import type { SnsParams } from "@dfinity/sns";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
-  import type { Principal } from "@dfinity/principal";
-  import { totalTokenSupply } from "$lib/utils/sns.utils";
   import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
@@ -24,7 +21,6 @@
 
   let params: SnsParams;
   let token: IcrcTokenMetadata;
-  let rootCanisterId: Principal;
   // type safety validation is done in ProjectDetail component
   $: ({
     swap: { params },
@@ -49,15 +45,11 @@
     token,
   });
 
-  let snsTotalTokenSupply: TokenAmount | undefined;
-  $: snsTotalTokenSupply = totalTokenSupply({
-    totalSupplies: $snsTotalTokenSupplyStore,
-    rootCanisterId,
-    token,
-  });
+  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
 </script>
 
-<TestIdWrapper testId="project-swap-details">
+<TestIdWrapper testId="project-swap-details-component">
   {#if nonNullish(snsTotalTokenSupply)}
     <KeyValuePair testId="sns-total-token-supply">
       <span slot="key">{$i18n.sns_project_detail.total_tokens_supply} </span>

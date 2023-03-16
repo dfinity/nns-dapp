@@ -14,6 +14,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
+import { TokenAmount } from "@dfinity/nns";
 
 describe("ProjectSwapDetails", () => {
   beforeEach(() => {
@@ -91,13 +92,14 @@ describe("ProjectSwapDetails", () => {
 
   it("should render total token supply if present", () => {
     const totalSupply = BigInt(2_000_000_000);
-    const { rootCanisterId } = mockSummary;
-    snsTotalTokenSupplyStore.setTotalTokenSupplies([
-      { rootCanisterId, totalSupply, certified: true },
-    ]);
+    const totalTokensSupply = TokenAmount.fromE8s({
+      amount: totalSupply,
+      token: mockSummary.token,
+    });
     const { container } = renderContextCmp({
       summary: mockSummary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      totalTokensSupply,
       Component: ProjectSwapDetails,
     });
 

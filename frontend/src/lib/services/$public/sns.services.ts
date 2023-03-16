@@ -71,6 +71,7 @@ export const loadSnsProjects = async (): Promise<void> => {
         derived: toNullable(sns.swap_state.derived),
       })),
     ];
+    snsQueryStore.setData(snsQueryStoreData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
       cachedSnses
         .filter(({ icrc1_total_supply }) => nonNullish(icrc1_total_supply))
@@ -81,7 +82,6 @@ export const loadSnsProjects = async (): Promise<void> => {
           certified: true,
         }))
     );
-    snsQueryStore.setData(snsQueryStoreData);
     snsFunctionsStore.setProjectsFunctions(
       cachedSnses.map((sns) => ({
         rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),

@@ -1,13 +1,13 @@
 import { AmountDisplayPo } from "./AmountDisplay.page-object";
 
 export class ProjectSwapDetailsPo {
-  static readonly tid = "project-swap-details";
+  static readonly tid = "project-swap-details-component";
 
   root: Element;
 
   constructor(root: Element) {
     if (root.getAttribute("data-tid") !== ProjectSwapDetailsPo.tid) {
-      throw new Error(`${root} is not an ProjectSwapDetailsPo`);
+      throw new Error(`${root} is not a ProjectSwapDetailsPo`);
     }
     this.root = root;
   }
