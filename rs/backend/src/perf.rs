@@ -3,11 +3,10 @@
 use crate::StableState;
 use candid::CandidType;
 use dfn_candid::Candid;
-use dfn_core::api::ic0;
+use ic_cdk::api::instruction_counter;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
-use ic_cdk::api::instruction_counter;
 #[cfg(test)]
 mod tests;
 
