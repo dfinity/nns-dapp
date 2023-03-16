@@ -11,8 +11,8 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { busy } from "@dfinity/gix-components";
-  import CkBTCReceive from "$lib/components/accounts/CkBTCReceive.svelte";
-  import CkBTCSend from "$lib/components/accounts/CkBTCSend.svelte";
+  import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
+  import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
@@ -31,8 +31,8 @@
 
 {#if canMakeTransactions}
   <Footer columns={2}>
-    <CkBTCSend disableButton={$busy} {canisters} />
+    <CkBTCSendButton disableButton={$busy} {canisters} />
 
-    <CkBTCReceive canSelectAccount disableButton={$busy} {canisters} />
+    <CkBTCReceiveButton canSelectAccount disableButton={$busy} {canisters} />
   </Footer>
 {/if}

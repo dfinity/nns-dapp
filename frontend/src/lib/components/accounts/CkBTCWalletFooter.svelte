@@ -10,8 +10,8 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-  import CkBTCReceive from "$lib/components/accounts/CkBTCReceive.svelte";
-  import CkBTCSend from "$lib/components/accounts/CkBTCSend.svelte";
+  import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
+  import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
 
   const context: CkBTCWalletContext =
     getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
@@ -32,7 +32,7 @@
 </script>
 
 <Footer columns={2}>
-  <CkBTCSend
+  <CkBTCSendButton
     {disableButton}
     {canisters}
     account={$store.account}
@@ -40,7 +40,7 @@
     loadTransactions
   />
 
-  <CkBTCReceive
+  <CkBTCReceiveButton
     {disableButton}
     {canisters}
     account={$store.account}

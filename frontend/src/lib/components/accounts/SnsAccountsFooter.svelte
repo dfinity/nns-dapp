@@ -3,7 +3,7 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
-  import Receive from "$lib/components/accounts/Receive.svelte";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -23,6 +23,6 @@
       data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
     >
 
-    <Receive type="sns-receive" canSelectAccount testId="receive-sns" />
+    <ReceiveButton type="sns-receive" canSelectAccount testId="receive-sns" />
   </Footer>
 {/if}

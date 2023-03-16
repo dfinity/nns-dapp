@@ -25,7 +25,7 @@
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toastsError } from "$lib/stores/toasts.store";
-  import Receive from "$lib/components/accounts/Receive.svelte";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -142,7 +142,7 @@
       data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
     >
 
-    <Receive
+    <ReceiveButton
       type="sns-receive"
       account={$selectedAccountStore.account}
       {reloadAccount}
