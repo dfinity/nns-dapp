@@ -5,5 +5,5 @@ pub fn time_millis() -> u64 {
 }
 
 pub fn time() -> u64 {
-    unsafe { ic0::time() as u64 }
+    unsafe { ic0::time() }
 }
