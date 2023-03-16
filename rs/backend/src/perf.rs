@@ -7,6 +7,7 @@ use dfn_core::api::ic0;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
+use ic_cdk::api::instruction_counter;
 #[cfg(test)]
 mod tests;
 
@@ -21,7 +22,7 @@ impl PerformanceCount {
     pub fn new(name: &str) -> Self {
         let name = name.to_string();
         let timestamp_ns_since_epoch = crate::time::time();
-        let instruction_count = crate::perf::raw_instruction_count();
+        let instruction_count = instruction_counter();
         PerformanceCount {
             timestamp_ns_since_epoch,
             name,
@@ -71,12 +72,4 @@ impl StableState for PerformanceCounts {
         let (ans,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap_or_default();
         Ok(ans)
     }
-}
-
-/// Gets the instruction count.
-///
-/// See: https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-performance-counter
-fn raw_instruction_count() -> u64 {
-    // Note: The spec says that this is an i64 but the type is actually a u64.
-    unsafe { ic0::performance_counter(0) }
 }
