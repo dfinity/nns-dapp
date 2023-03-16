@@ -12,6 +12,7 @@ import { mockTokens } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
+import CkBTCAccountsTest from "./CkBTCAccountsTest.svelte";
 
 describe("CkBTCAccountsFooter", () => {
   beforeAll(() => {
@@ -78,7 +79,9 @@ describe("CkBTCAccountsFooter", () => {
     });
 
     it("should open modal", async () => {
-      const { getByTestId, container } = render(CkBTCAccountsFooter);
+      const { getByTestId, container } = render(CkBTCAccountsTest, {
+        props: { testComponent: CkBTCAccountsFooter },
+      });
 
       fireEvent.click(
         getByTestId("open-ckbtc-transaction") as HTMLButtonElement

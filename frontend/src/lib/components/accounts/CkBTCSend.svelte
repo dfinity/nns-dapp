@@ -43,5 +43,5 @@
   class="primary"
   on:click={openSend}
   disabled={disableButton}
-  data-tid="open-new-ckbtc-transaction">{$i18n.accounts.send}</button
+  data-tid="open-ckbtc-transaction">{$i18n.accounts.send}</button
 >

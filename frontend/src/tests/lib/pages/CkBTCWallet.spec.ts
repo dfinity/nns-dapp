@@ -141,12 +141,10 @@ describe("CkBTCWallet", () => {
       const { queryByTestId, getByTestId } = render(CkBTCWallet, props);
 
       await waitFor(() =>
-        expect(queryByTestId("open-new-ckbtc-transaction")).toBeInTheDocument()
+        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
       );
 
-      const button = getByTestId(
-        "open-new-ckbtc-transaction"
-      ) as HTMLButtonElement;
+      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
       await fireEvent.click(button);
 
       await waitFor(() => {
@@ -168,12 +166,10 @@ describe("CkBTCWallet", () => {
 
       // Make transfer
       await waitFor(() =>
-        expect(queryByTestId("open-new-ckbtc-transaction")).toBeInTheDocument()
+        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
       );
 
-      const button = getByTestId(
-        "open-new-ckbtc-transaction"
-      ) as HTMLButtonElement;
+      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
       await fireEvent.click(button);
 
       await testTransferTokens({
