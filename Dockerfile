@@ -78,6 +78,18 @@ ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
 
+# Title: Image to run unit tests against the frontend
+# Args: A file with env vars at frontend/.env created by config.sh
+FROM builder AS unit_test_frontend
+SHELL ["bash", "-c"]
+COPY ./frontend /build/frontend
+COPY --from=configurator /build/frontend/.env /build/frontend/.env
+COPY ./frontend/src/tests /build/frontend/src/tests
+COPY ./scripts/require-dfx-network.sh /build/scripts/
+WORKDIR /build
+RUN ( cd frontend && npm ci )
+RUN npm test
+
 # Title: Image to build the nns-dapp frontend.
 # Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend

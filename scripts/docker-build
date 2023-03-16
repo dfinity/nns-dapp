@@ -29,7 +29,7 @@ assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm)
 
 set -x
 DOCKER_BUILDKIT=1 docker build \
-  --target scratch \
+  --target unit_test_frontend \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
   -t "$image_name" \
   -o "$OUTDIR" . \
