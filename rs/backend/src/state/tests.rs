@@ -1,9 +1,8 @@
 use super::{AssetHashes, Assets, PerformanceCounts, StableState, State};
+use crate::state::AccountsStore;
 use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
-use crate::state::AccountsStore;
-
 
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
