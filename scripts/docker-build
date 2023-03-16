@@ -9,37 +9,7 @@ SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "$SCRIPTS_DIR/.."
 
-# Note: This script is intended to be extremely robust and work on many platforms
-#       so we parse arguments manually rather than using a clever, feature-rich but
-#       fragile general purpose argument parser.
-print_help() {
-	cat <<-EOF
-	Builds the nns-dapp wasm and artifacts in docker.
-
-	Usage: $(basename "$0") [--network <network>] [--verbose] [--help]
-	EOF
-}
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
-PROGRESS="--progress=auto"
-while (( $# > 0 )); do
-	arg="$1" ; shift 1
-	case "$arg" in
-		--network)
-			DFX_NETWORK="$1"
-			shift 1
-			;;
-		--verbose)
-			PROGRESS="--progress=plain"
-			;;
-		--help)
-			print_help
-			exit 0 ;;
-		*)
-			echo "ERROR: Unsupported flag: '$arg'"
-			print_help
-			exit 1 ;;
-	esac
-done
 
 echo "DFX_NETWORK: $DFX_NETWORK"
 echo "PWD: $PWD"
@@ -60,7 +30,6 @@ assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm)
 set -x
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
-  "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
   -t "$image_name" \
   -o "$OUTDIR" . \
