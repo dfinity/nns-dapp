@@ -1,4 +1,5 @@
 [toolchain]
-channel = "1.64.0"
+# The channel should be updated regularly to stable, as advertised here: https://forge.rust-lang.org/
+channel = "1.68.0"
 components = ["rustfmt", "clippy"]
 targets = [ "wasm32-unknown-unknown"]
