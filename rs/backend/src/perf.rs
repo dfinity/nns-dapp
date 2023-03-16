@@ -9,6 +9,7 @@ use std::collections::VecDeque;
 #[cfg(test)]
 mod tests;
 
+/// A snapshot of performance counters at a specific moment.
 #[derive(CandidType, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 pub struct PerformanceCount {
     timestamp_ns_since_epoch: u64,
@@ -28,12 +29,14 @@ impl PerformanceCount {
     }
 }
 
+/// Storage for recent performance counter snapshots.
 #[derive(CandidType, Deserialize, Clone, Debug, Default, Eq, PartialEq)]
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
 }
 
 impl PerformanceCounts {
+    /// Saves a performance counter snapshot.
     pub fn save_instruction_count(&mut self, count: PerformanceCount) {
         if self.instruction_counts.len() >= 100 {
             self.instruction_counts.pop_front();
@@ -41,10 +44,7 @@ impl PerformanceCounts {
         self.instruction_counts.push_back(count);
     }
 
-    pub fn get_stats(&self, stats: &mut Stats) {
-        stats.instruction_counts = self.instruction_counts.iter().cloned().collect();
-    }
-
+    /// Generates sample data for use in tests
     #[cfg(test)]
     pub fn test_data() -> Self {
         let mut ans = PerformanceCounts::default();
