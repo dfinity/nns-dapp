@@ -49,7 +49,7 @@
       isNullish(token) ||
       isNullish(transactionFee)
     ) {
-      // Button is displayed if any of those condition are not met
+      // Button is disabled if any of those condition are not met
       return;
     }
 
@@ -61,6 +61,8 @@
           account: undefined,
           universeId: $selectedCkBTCUniverseIdStore,
           canisters,
+          reloadAccountFromStore: undefined,
+          loadTransactions: false
         },
       },
     });
@@ -76,6 +78,6 @@
       data-tid="open-ckbtc-transaction">{$i18n.accounts.send}</button
     >
 
-    <CkBTCReceive canSelectAccount />
+    <CkBTCReceive canSelectAccount disableButton={$busy} {canisters} />
   </Footer>
 {/if}

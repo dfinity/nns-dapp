@@ -7,20 +7,16 @@
   import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { getBTCAddress } from "$lib/services/ckbtc-minter.services";
-  import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import type { Account } from "$lib/types/account";
 
   export let account: Account | undefined = undefined;
-  export let reloadAccount: (() => void) | undefined = undefined;
+  export let reloadAccount: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
-
-  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
-  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
-    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
-    : undefined;
+  export let loadTransactions = false;
+  export let disableButton: boolean;
+  export let canisters: CkBTCAdditionalCanisters | undefined;
 
   const openReceive = async () => {
     // Button is disabled if no universe anyway
@@ -88,7 +84,7 @@
 
 <button
   class="secondary"
-  disabled={$busy}
+  disabled={disableButton}
   on:click={openReceive}
   data-tid="receive-ckbtc">{$i18n.ckbtc.receive}</button
 >

@@ -26,7 +26,7 @@
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
   let btcAddress: string;
-  let reloadAccount: (() => void) | undefined;
+  let reloadAccount: (() => Promise<void>) | undefined;
   let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 

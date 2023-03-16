@@ -4,12 +4,11 @@
     CkBTCWalletModalData,
     CkBTCWalletModalType,
     CkBTCReceiveModalData,
-    CkBTCWalletTransactionModalData,
+    CkBTCTransactionModalData,
   } from "$lib/types/ckbtc-accounts.modal";
   import { nonNullish } from "@dfinity/utils";
   import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
-  import CkBTCTransactionWalletModal from "$lib/modals/accounts/CkBTCTransactionWalletModal.svelte";
-  import CkBTCTransactionAccountsModal from "$lib/modals/accounts/CkBTCTransactionAccountsModal.svelte";
+  import CkBTCTransactionTokenModal from "$lib/modals/accounts/CkBTCTransactionTokenModal.svelte";
 
   let modal: CkBTCWalletModal | undefined;
   const close = () => (modal = undefined);
@@ -17,18 +16,14 @@
   let type: CkBTCWalletModalType | undefined;
   $: type = modal?.type;
 
-  let data:
-    | CkBTCWalletModalData
-    | CkBTCWalletTransactionModalData
-    | CkBTCReceiveModalData
-    | undefined;
+  let data: CkBTCWalletModalData | CkBTCReceiveModalData | undefined;
   $: data = (modal as CkBTCWalletModal | undefined)?.data;
 
   let receiveData: CkBTCReceiveModalData | undefined;
   $: receiveData = data as CkBTCReceiveModalData | undefined;
 
-  let transactionData: CkBTCWalletTransactionModalData | undefined;
-  $: transactionData = data as CkBTCWalletTransactionModalData | undefined;
+  let transactionData: CkBTCTransactionModalData | undefined;
+  $: transactionData = data as CkBTCTransactionModalData | undefined;
 </script>
 
 <svelte:window on:nnsCkBTCAccountsModal={({ detail }) => (modal = detail)} />
@@ -37,10 +32,6 @@
   <CkBTCReceiveModal data={receiveData} on:nnsClose={close} />
 {/if}
 
-{#if type === "ckbtc-wallet-transaction" && nonNullish(transactionData)}
-  <CkBTCTransactionWalletModal data={transactionData} on:nnsClose={close} />
-{/if}
-
 {#if type === "ckbtc-transaction" && nonNullish(transactionData)}
-  <CkBTCTransactionAccountsModal data={transactionData} on:nnsClose={close} />
+  <CkBTCTransactionTokenModal data={transactionData} on:nnsClose={close} />
 {/if}
