@@ -3,19 +3,19 @@
   import { i18n } from "$lib/stores/i18n";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { busy } from "@dfinity/gix-components";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import type {AccountsModalType} from "$lib/types/accounts.modal";
 
+  export let type: AccountsModalType;
   export let account: Account | undefined = undefined;
   export let reloadAccount: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
 
   const openModal = () =>
     openAccountsModal({
-      type: "receive",
+      type,
       data: {
         account,
         reloadAccount,
-        universeId: OWN_CANISTER_ID,
         canSelectAccount,
       },
     });

@@ -4,7 +4,7 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import NnsReceive from "$lib/components/accounts/NnsReceive.svelte";
+  import Receive from "$lib/components/accounts/Receive.svelte";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -23,6 +23,6 @@
       data-tid="open-new-transaction">{$i18n.accounts.send}</button
     >
 
-    <NnsReceive canSelectAccount />
+    <Receive type="nns-receive" canSelectAccount />
   </Footer>
 {/if}

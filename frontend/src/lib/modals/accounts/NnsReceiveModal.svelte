@@ -4,26 +4,25 @@
   import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import IC_LOGO from "$lib/assets/icp.svg";
-  import type { UniverseCanisterId } from "$lib/types/universe";
+  import {OWN_CANISTER_ID} from "$lib/constants/canister-ids.constants";
 
   export let data: AccountsReceiveModalData;
 
   let account: Account | undefined;
   let reloadAccount: (() => Promise<void>) | undefined;
-  let universeId: UniverseCanisterId;
   let canSelectAccount: boolean;
 
-  $: ({ account, reloadAccount, universeId, canSelectAccount } = data);
+  $: ({ account, reloadAccount, canSelectAccount } = data);
 </script>
 
 <ReceiveModal
   {account}
   on:nnsClose
-  qrCodeLabel={$i18n.wallet.qrcode_aria_label_icp}
+  qrCodeLabel={$i18n.wallet.icp_qrcode_aria_label}
   logo={IC_LOGO}
   logoArialLabel={$i18n.core.icp}
   {reloadAccount}
-  {universeId}
+  universeId={OWN_CANISTER_ID}
   {canSelectAccount}
 >
   <svelte:fragment slot="title"

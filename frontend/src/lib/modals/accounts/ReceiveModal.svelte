@@ -14,7 +14,7 @@
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
-  export let reloadAccount: () => Promise<void>;
+  export let reloadAccount: (() => Promise<void>) | undefined;
   export let canSelectAccount: boolean;
 
   let qrCodeRendered = QR_CODE_RENDERED;
@@ -30,7 +30,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount();
+    await reloadAccount?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");

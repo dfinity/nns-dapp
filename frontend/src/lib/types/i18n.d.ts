@@ -450,7 +450,8 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
-  qrcode_aria_label_icp: string;
+  icp_qrcode_aria_label: string;
+  sns_qrcode_aria_label: string;
   icp_receive_note_title: string;
   icp_receive_note_text: string;
   sns_receive_note_title: string;

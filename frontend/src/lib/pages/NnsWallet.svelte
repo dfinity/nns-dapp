@@ -40,7 +40,7 @@
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import NnsReceive from "$lib/components/accounts/NnsReceive.svelte";
+  import Receive from "$lib/components/accounts/Receive.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -172,7 +172,7 @@
       data-tid="new-transaction">{$i18n.accounts.send}</button
     >
 
-    <NnsReceive account={$selectedAccountStore.account} {reloadAccount} />
+    <Receive type="nns-receive" account={$selectedAccountStore.account} {reloadAccount} />
   </Footer>
 </Island>
 
