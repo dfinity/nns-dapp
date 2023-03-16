@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { IconAdd } from '@dfinity/gix-components';
+  import { IconAdd } from "@dfinity/gix-components";
 
   let modal: "AddAccountModal" | undefined = undefined;
   const openAddAccountModal = () => (modal = "AddAccountModal");
@@ -16,11 +16,11 @@
 
 {#if nonNullish($accountsStore)}
   <button
-          class="card"
-          on:click={openAddAccountModal}
-          data-tid="open-add-account-modal">
+    class="card"
+    on:click={openAddAccountModal}
+    data-tid="open-add-account-modal"
+  >
     <IconAdd />
     {$i18n.accounts.add_account}
-  </button
-  >
+  </button>
 {/if}
