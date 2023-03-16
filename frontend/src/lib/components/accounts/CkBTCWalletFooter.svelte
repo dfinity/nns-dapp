@@ -45,6 +45,5 @@
     {canisters}
     account={$store.account}
     {reloadAccount}
-    loadTransactions
   />
 </Footer>

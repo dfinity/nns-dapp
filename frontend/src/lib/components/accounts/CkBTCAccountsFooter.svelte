@@ -62,7 +62,7 @@
           universeId: $selectedCkBTCUniverseIdStore,
           canisters,
           reloadAccountFromStore: undefined,
-          loadTransactions: false
+          loadTransactions: false,
         },
       },
     });

@@ -179,7 +179,7 @@
 
   {#if nonNullish(address)}
     <ReceiveAddressQRCode
-      address={bitcoin ? btcAddress : account.identifier}
+      {address}
       renderQRCode={modalRendered}
       qrCodeLabel={bitcoin
         ? $i18n.ckbtc.qrcode_aria_label_bitcoin

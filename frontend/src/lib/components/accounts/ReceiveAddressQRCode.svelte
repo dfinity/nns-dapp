@@ -35,7 +35,7 @@
   <article class="qrcode">
     {#if renderQRCode && addressSelected}
       <QRCode
-        value={address}
+        value={address ?? ""}
         ariaLabel={qrCodeLabel}
         on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
       >
@@ -60,7 +60,7 @@
         <span slot="key" class="label">{$i18n.accounts.address}</span>
         <div slot="value" class="address">
           <span class="value">{address}</span>
-          <Copy value={address} />
+          <Copy value={address ?? ""} />
         </div>
       </KeyValuePair>
     </div>

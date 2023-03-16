@@ -14,7 +14,6 @@
   export let account: Account | undefined = undefined;
   export let reloadAccount: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
-  export let loadTransactions = false;
   export let disableButton: boolean;
   export let canisters: CkBTCAdditionalCanisters | undefined;
 
