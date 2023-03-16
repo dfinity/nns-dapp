@@ -3,14 +3,12 @@
     CkBTCWalletModal,
     CkBTCWalletModalData,
     CkBTCWalletModalType,
-  } from "$lib/types/wallet.modal";
+    CkBTCReceiveModalData,
+    CkBTCWalletTransactionModalData,
+  } from "$lib/types/ckbtc-accounts.modal";
   import { nonNullish } from "@dfinity/utils";
   import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
   import CkBTCTransactionWalletModal from "$lib/modals/accounts/CkBTCTransactionWalletModal.svelte";
-  import type {
-    CkBTCWalletBtcCkBTCReceiveModalData,
-    CkBTCWalletTransactionModalData,
-  } from "$lib/types/wallet.modal";
 
   let modal: CkBTCWalletModal | undefined;
   const close = () => (modal = undefined);
@@ -21,12 +19,12 @@
   let data:
     | CkBTCWalletModalData
     | CkBTCWalletTransactionModalData
-    | CkBTCWalletBtcCkBTCReceiveModalData
+    | CkBTCReceiveModalData
     | undefined;
   $: data = (modal as CkBTCWalletModal | undefined)?.data;
 
-  let receiveData: CkBTCWalletBtcCkBTCReceiveModalData | undefined;
-  $: receiveData = data as CkBTCWalletBtcCkBTCReceiveModalData | undefined;
+  let receiveData: CkBTCReceiveModalData | undefined;
+  $: receiveData = data as CkBTCReceiveModalData | undefined;
 
   let transactionData: CkBTCWalletTransactionModalData | undefined;
   $: transactionData = data as CkBTCWalletTransactionModalData | undefined;
@@ -38,6 +36,6 @@
   <CkBTCReceiveModal data={receiveData} on:nnsClose={close} />
 {/if}
 
-{#if type === "ckbtc-transaction" && nonNullish(transactionData)}
+{#if type === "ckbtc-wallet-transaction" && nonNullish(transactionData)}
   <CkBTCTransactionWalletModal data={transactionData} on:nnsClose={close} />
 {/if}

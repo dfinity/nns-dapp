@@ -11,6 +11,7 @@
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
+  import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -25,4 +26,8 @@
   <SnsWallet {accountIdentifier} />
 {/if}
 
+{#if $isCkBTCUniverseStore}
+  <CkBTCAccountsModals />
+  {:else}
 <AccountsModals />
+{/if}

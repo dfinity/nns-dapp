@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import type { CkBTCWalletTransactionModalData } from "$lib/types/wallet.modal";
+  import type { CkBTCWalletTransactionModalData } from "$lib/types/ckbtc-accounts.modal";
   import { createEventDispatcher } from "svelte";
   import { nonNullish } from "@dfinity/utils";
   import {

@@ -12,7 +12,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import type { CkBTCWalletModal } from "$lib/types/wallet.modal";
+  import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -117,7 +117,7 @@
     emit<CkBTCWalletModal>({
       message: "ckBTCWalletModal",
       detail: {
-        type: "ckbtc-transaction",
+        type: "ckbtc-wallet-transaction",
         data: {
           account: $store.account,
           reloadAccountFromStore,

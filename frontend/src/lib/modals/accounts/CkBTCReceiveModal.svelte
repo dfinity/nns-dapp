@@ -8,7 +8,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
-  import type { CkBTCWalletBtcCkBTCReceiveModalData } from "$lib/types/wallet.modal";
+  import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
@@ -19,7 +19,7 @@
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let data: CkBTCWalletBtcCkBTCReceiveModalData;
+  export let data: CkBTCReceiveModalData;
 
   let universeId: UniverseCanisterId;
   let canisters: CkBTCAdditionalCanisters;
