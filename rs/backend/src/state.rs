@@ -6,7 +6,7 @@ use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
