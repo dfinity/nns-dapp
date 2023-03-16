@@ -1,5 +1,6 @@
-use crate::stats::Stats;
-use crate::{StableState, STATE};
+//! Capture snd store performance counters.
+#![allow(dead_code)]
+use crate::StableState;
 use candid::CandidType;
 use dfn_candid::Candid;
 use dfn_core::api::ic0;
