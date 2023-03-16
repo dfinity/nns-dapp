@@ -531,8 +531,7 @@ describe("sns-api", () => {
         expect(spyOnToastsHide).not.toBeCalled();
         cancelPollGetOpenTicket();
 
-        await advanceTime(retryDelay);
-        retryDelay *= 2;
+        await runResolvedPromises();
         expect(spyOnToastsHide).toBeCalledTimes(1);
       });
     });

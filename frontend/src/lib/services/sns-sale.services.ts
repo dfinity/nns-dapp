@@ -190,7 +190,6 @@ export const loadOpenTicket = async ({
   } catch (err) {
     // Don't show error if polling was cancelled
     if (pollingCancelled(err)) {
-      hidePollingToast();
       return;
     }
 
@@ -218,7 +217,7 @@ export const loadOpenTicket = async ({
         err,
       });
     }
-
+  } finally {
     // There is an issue with toastStore.hide if we show a new toast right after.
     // The workaround was to show the error toast first and then hide the info toast.
     // TODO: solve the issue with toastStore.hide
