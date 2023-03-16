@@ -4,7 +4,7 @@
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import type { Account } from "$lib/types/account";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
