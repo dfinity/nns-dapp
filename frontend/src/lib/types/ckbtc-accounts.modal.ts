@@ -19,12 +19,14 @@ export type CkBTCWalletTransactionModalData = {
 
 export type CkBTCTransactionModalData = CkBTCWalletModalData;
 
-export interface CkBTCReceiveModalData extends CkBTCWalletModalData {
+export type CkBTCReceiveModalData = {
   // @deprecated remove when ckBTC with minter is live
   displayBtcAddress: boolean;
   btcAddress: string;
-  reloadAccount: () => Promise<void>;
-}
+  reloadAccount: (() => Promise<void>) | undefined;
+  canSelectAccount: boolean;
+} & Omit<CkBTCWalletModalData, "account"> &
+  Partial<Pick<CkBTCWalletModalData, "account">>;
 
 export interface CkBTCWalletModal {
   type: CkBTCWalletModalType;

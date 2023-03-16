@@ -6,8 +6,8 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher, onMount } from "svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
-  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
 
   export let universeId: UniverseCanisterId;
   export let account: Account | undefined;
@@ -40,16 +40,7 @@
 <Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  {#if canSelectAccount}
-    <div class="source">
-      <span class="label">{$i18n.accounts.receive_account}</span>
-
-      <SelectAccountDropdown
-        rootCanisterId={universeId}
-        bind:selectedAccount={account}
-      />
-    </div>
-  {/if}
+  <ReceiveSelectAccountDropdown bind:account {canSelectAccount} {universeId} />
 
   <ReceiveAddressQRCode
     address={account?.identifier}
@@ -80,12 +71,5 @@
 <style lang="scss">
   button.primary {
     width: 100%;
-  }
-
-  .source {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-    padding: 0 0 var(--padding-2x);
   }
 </style>

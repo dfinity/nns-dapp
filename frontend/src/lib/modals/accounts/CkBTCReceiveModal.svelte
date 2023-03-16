@@ -18,15 +18,18 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
+  import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
 
   export let data: CkBTCReceiveModalData;
 
   let universeId: UniverseCanisterId;
   let canisters: CkBTCAdditionalCanisters;
-  let account: Account;
+  let account: Account | undefined;
   let btcAddress: string;
-  let reloadAccount: () => Promise<void>;
+  let reloadAccount: (() => void) | undefined;
   let displayBtcAddress: boolean;
+  let canSelectAccount: boolean;
 
   $: ({
     account,
@@ -35,6 +38,7 @@
     canisters,
     universeId,
     displayBtcAddress,
+    canSelectAccount,
   } = data);
 
   let bitcoinSegmentId = Symbol("bitcoin");
@@ -82,7 +86,7 @@
     try {
       await updateBalanceService(canisters.minterCanisterId);
 
-      await reloadAccount();
+      await reloadAccount?.();
 
       toastsSuccess({
         labelKey: "ckbtc.ckbtc_balance_updated",
@@ -104,7 +108,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount();
+    await reloadAccount?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");
@@ -144,6 +148,9 @@
 
     dispatcher("nnsClose");
   };
+
+  let address: string | undefined;
+  $: address = bitcoin ? btcAddress : account?.identifier;
 </script>
 
 <Modal
@@ -164,19 +171,27 @@
     </div>
   {/if}
 
-  <ReceiveAddressQRCode
-    address={bitcoin ? btcAddress : account.identifier}
-    renderQRCode={modalRendered}
-    qrCodeLabel={bitcoin
-      ? $i18n.ckbtc.qrcode_aria_label_bitcoin
-      : $i18n.ckbtc.qrcode_aria_label_ckBTC}
-    {logo}
-    {logoArialLabel}
-    bind:qrCodeRendered
-  >
-    <svelte:fragment slot="title">{title}</svelte:fragment>
-    <svelte:fragment slot="description">{description}</svelte:fragment>
-  </ReceiveAddressQRCode>
+  <ReceiveSelectAccountDropdown
+    bind:account
+    canSelectAccount={!bitcoin && canSelectAccount}
+    {universeId}
+  />
+
+  {#if nonNullish(address)}
+    <ReceiveAddressQRCode
+      address={bitcoin ? btcAddress : account.identifier}
+      renderQRCode={modalRendered}
+      qrCodeLabel={bitcoin
+        ? $i18n.ckbtc.qrcode_aria_label_bitcoin
+        : $i18n.ckbtc.qrcode_aria_label_ckBTC}
+      {logo}
+      {logoArialLabel}
+      bind:qrCodeRendered
+    >
+      <svelte:fragment slot="title">{title}</svelte:fragment>
+      <svelte:fragment slot="description">{description}</svelte:fragment>
+    </ReceiveAddressQRCode>
+  {/if}
 
   <div class="toolbar">
     {#if qrCodeRendered}

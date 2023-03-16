@@ -15,6 +15,8 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
+  import { busy } from "@dfinity/gix-components";
+  import CkBTCReceive from "$lib/components/accounts/CkBTCReceive.svelte";
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
@@ -66,11 +68,14 @@
 </script>
 
 {#if canMakeTransactions}
-  <Footer columns={1}>
+  <Footer columns={2}>
     <button
       class="primary full-width"
       on:click={openSend}
+      disabled={$busy}
       data-tid="open-ckbtc-transaction">{$i18n.accounts.send}</button
     >
+
+    <CkBTCReceive canSelectAccount />
   </Footer>
 {/if}

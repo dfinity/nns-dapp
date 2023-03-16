@@ -18,14 +18,14 @@
   let canisters: CkBTCAdditionalCanisters;
   let universeId: UniverseCanisterId;
   let account: Account;
-  let reloadAccountFromStore: () => void;
+  let reloadAccountFromStore: (() => void) | undefined;
 
   $: ({ account, reloadAccountFromStore, universeId, canisters } = data);
 
   const dispatcher = createEventDispatcher();
 
   const onTransferReloadSelectedAccount = async () => {
-    reloadAccountFromStore();
+    reloadAccountFromStore?.();
     dispatcher("nnsClose");
   };
 
