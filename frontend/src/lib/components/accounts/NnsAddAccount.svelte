@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-
+  import { IconAdd } from '@dfinity/gix-components';
 
   let modal: "AddAccountModal" | undefined = undefined;
   const openAddAccountModal = () => (modal = "AddAccountModal");
