@@ -24,11 +24,9 @@ FROM base as tool_versions
 SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
-ARG rust_version=1.64.0
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
-RUN printf "%s" "$rust_version" > config/rust_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -46,9 +44,7 @@ ENV RUSTUP_HOME=/opt/rustup \
     CARGO_HOME=/opt/cargo \
     PATH=/opt/cargo/bin:$PATH
 RUN curl --fail https://sh.rustup.rs -sSf \
-        | sh -s -- -y --default-toolchain "$(cat config/rust_version)-x86_64-unknown-linux-gnu" --no-modify-path && \
-    rustup default "$(cat config/rust_version)-x86_64-unknown-linux-gnu" && \
-    rustup target add wasm32-unknown-unknown
+        | sh -s -- -y --no-modify-path
 ENV PATH=/cargo/bin:$PATH
 # Install IC CDK optimizer
 RUN cargo install --version "$(cat config/optimizer_version)" ic-cdk-optimizer
