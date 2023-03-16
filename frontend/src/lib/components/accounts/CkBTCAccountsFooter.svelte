@@ -1,23 +1,20 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
-  import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import type { TokenAmount } from "@dfinity/nns";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-
-  let modal: "NewTransaction" | undefined = undefined;
-  const openNewTransaction = () => (modal = "NewTransaction");
-  const closeModal = () => (modal = undefined);
+  import { emit } from "$lib/utils/events.utils";
+  import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
@@ -42,24 +39,37 @@
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
-</script>
 
-{#if modal === "NewTransaction" && nonNullish(canisters) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token) && nonNullish(transactionFee)}
-  <CkBTCTransactionModal
-    on:nnsClose={closeModal}
-    on:nnsTransfer={closeModal}
-    token={token.token}
-    {transactionFee}
-    universeId={$selectedCkBTCUniverseIdStore}
-    {canisters}
-  />
-{/if}
+  const openSend = () => {
+    if (
+      isNullish(canisters) ||
+      isNullish($selectedCkBTCUniverseIdStore) ||
+      isNullish(token) ||
+      isNullish(transactionFee)
+    ) {
+      // Button is displayed if any of those condition are not met
+      return;
+    }
+
+    emit<CkBTCWalletModal>({
+      message: "nnsCkBTCAccountsModal",
+      detail: {
+        type: "ckbtc-transaction",
+        data: {
+          account: undefined,
+          universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
+        },
+      },
+    });
+  };
+</script>
 
 {#if canMakeTransactions}
   <Footer columns={1}>
     <button
       class="primary full-width"
-      on:click={openNewTransaction}
+      on:click={openSend}
       data-tid="open-ckbtc-transaction">{$i18n.accounts.send}</button
     >
   </Footer>

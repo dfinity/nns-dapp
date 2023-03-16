@@ -9,6 +9,7 @@
   import { nonNullish } from "@dfinity/utils";
   import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
   import CkBTCTransactionWalletModal from "$lib/modals/accounts/CkBTCTransactionWalletModal.svelte";
+  import CkBTCTransactionAccountsModal from "$lib/modals/accounts/CkBTCTransactionAccountsModal.svelte";
 
   let modal: CkBTCWalletModal | undefined;
   const close = () => (modal = undefined);
@@ -38,4 +39,8 @@
 
 {#if type === "ckbtc-wallet-transaction" && nonNullish(transactionData)}
   <CkBTCTransactionWalletModal data={transactionData} on:nnsClose={close} />
+{/if}
+
+{#if type === "ckbtc-transaction" && nonNullish(transactionData)}
+  <CkBTCTransactionAccountsModal data={transactionData} on:nnsClose={close} />
 {/if}
