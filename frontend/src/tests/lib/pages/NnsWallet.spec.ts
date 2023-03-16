@@ -34,7 +34,7 @@ import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "../../mocks/modal.mock";
-import WalletTest from "./WalletTest.svelte";
+import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/accounts.api");
@@ -167,13 +167,13 @@ describe("NnsWallet", () => {
     };
 
     it("should open transaction modal", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "new-transaction" });
     });
 
     it("should open transaction modal on step select destination because selected account is current account", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "new-transaction" });
 
@@ -191,7 +191,7 @@ describe("NnsWallet", () => {
     });
 
     it("should open receive modal", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-icp" });
 
@@ -201,7 +201,7 @@ describe("NnsWallet", () => {
     });
 
     it("should display receive modal information", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-icp" });
 
@@ -212,7 +212,7 @@ describe("NnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-icp" });
 

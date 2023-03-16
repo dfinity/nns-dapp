@@ -30,6 +30,7 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import WalletTest from "../pages/AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -123,6 +124,18 @@ describe("Accounts", () => {
     });
   });
 
+  it("should open nns receive modal", async () => {
+    const { getByTestId, container } = render(WalletTest, {
+      props: { testComponent: Accounts },
+    });
+
+    fireEvent.click(getByTestId("receive-icp") as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
+  });
+
   it("should open add account modal", async () => {
     const { container, getByTestId, getByText } = render(Accounts);
 
@@ -176,6 +189,22 @@ describe("Accounts", () => {
     await waitFor(() => {
       expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
+  });
+
+  it("should open sns receive modal", async () => {
+    page.mock({
+      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+    });
+
+    const { getByTestId, container } = render(WalletTest, {
+      props: { testComponent: Accounts },
+    });
+
+    fireEvent.click(getByTestId("receive-sns") as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
   });
 
   it("should load Sns accounts balances", async () => {

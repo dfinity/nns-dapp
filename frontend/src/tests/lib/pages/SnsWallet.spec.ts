@@ -32,7 +32,7 @@ import { get } from "svelte/store";
 import { selectedUniverseIdStore } from "../../../lib/derived/selected-universe.derived";
 import en from "../../mocks/i18n.mock";
 import { waitModalIntroEnd } from "../../mocks/modal.mock";
-import WalletTest from "./WalletTest.svelte";
+import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -178,7 +178,7 @@ describe("SnsWallet", () => {
     };
 
     it("should open receive modal", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
@@ -193,7 +193,7 @@ describe("SnsWallet", () => {
         "loadSnsAccountTransactions"
       );
 
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
@@ -213,7 +213,7 @@ describe("SnsWallet", () => {
     });
 
     it("should display receive modal information", async () => {
-      const result = render(WalletTest, { props: modalProps });
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
