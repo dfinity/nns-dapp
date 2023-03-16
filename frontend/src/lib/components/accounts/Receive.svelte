@@ -5,6 +5,7 @@
   import { busy } from "@dfinity/gix-components";
   import type { AccountsModalType } from "$lib/types/accounts.modal";
 
+  export let testId = "receive-icp";
   export let type: AccountsModalType;
   export let account: Account | undefined = undefined;
   export let reloadAccount: (() => Promise<void>) | undefined = undefined;
@@ -25,5 +26,5 @@
   class="secondary"
   on:click={openModal}
   disabled={$busy}
-  data-tid="receive-icp">{$i18n.ckbtc.receive}</button
+  data-tid={testId}>{$i18n.ckbtc.receive}</button
 >

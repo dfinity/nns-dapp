@@ -146,6 +146,7 @@
       type="sns-receive"
       account={$selectedAccountStore.account}
       {reloadAccount}
+      testId="receive-sns"
     />
   </Footer>
 </Island>

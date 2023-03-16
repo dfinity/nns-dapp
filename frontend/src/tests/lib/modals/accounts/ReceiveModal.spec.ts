@@ -4,11 +4,14 @@
 
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import {mockMainAccount, mockSubAccount} from "../../../mocks/accounts.store.mock";
+import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
+import { accountsStore } from "../../../../lib/stores/accounts.store";
+import type { Account } from "../../../../lib/types/account";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "../../../mocks/accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
-import {OWN_CANISTER_ID} from "../../../../lib/constants/canister-ids.constants";
-import {accountsStore} from "../../../../lib/stores/accounts.store";
-import type {Account} from "../../../../lib/types/account";
 
 describe("ReceiveModal", () => {
   const reloadAccountSpy = jest.fn();
@@ -19,7 +22,13 @@ describe("ReceiveModal", () => {
   const logo = "logo";
   const logoArialLabel = "logo aria-label";
 
-  const renderReceiveModal = ({canSelectAccount = false, account = mockMainAccount}: {canSelectAccount?: boolean, account?: Account}) =>
+  const renderReceiveModal = ({
+    canSelectAccount = false,
+    account = mockMainAccount,
+  }: {
+    canSelectAccount?: boolean;
+    account?: Account;
+  }) =>
     renderModal({
       component: ReceiveModal,
       props: {
@@ -29,7 +38,7 @@ describe("ReceiveModal", () => {
         logoArialLabel,
         reloadAccount: reloadAccountSpy,
         universeId: OWN_CANISTER_ID,
-        canSelectAccount
+        canSelectAccount,
       },
     });
 
@@ -70,9 +79,13 @@ describe("ReceiveModal", () => {
       hardwareWallets: undefined,
     });
 
-    const { getByTestId } = await renderReceiveModal({canSelectAccount: true});
+    const { getByTestId } = await renderReceiveModal({
+      canSelectAccount: true,
+    });
 
-    await waitFor(() => expect(getByTestId("select-account-dropdown")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(getByTestId("select-account-dropdown")).toBeInTheDocument()
+    );
   });
 
   it("should select account", async () => {
@@ -82,21 +95,32 @@ describe("ReceiveModal", () => {
       hardwareWallets: undefined,
     });
 
-    const { getByTestId, container } = await renderReceiveModal({canSelectAccount: true, account: undefined});
+    const { getByTestId, container } = await renderReceiveModal({
+      canSelectAccount: true,
+      account: undefined,
+    });
 
-    await waitFor(() => expect(getByTestId("select-account-dropdown")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(getByTestId("select-account-dropdown")).toBeInTheDocument()
+    );
 
     const selectElement = container.querySelector("select");
     selectElement &&
-    expect(selectElement.value).toBe(mockMainAccount.identifier);
+      expect(selectElement.value).toBe(mockMainAccount.identifier);
 
-    expect(getByTestId("qrcode-display-address")?.textContent).toEqual(mockMainAccount.identifier);
+    expect(getByTestId("qrcode-display-address")?.textContent).toEqual(
+      mockMainAccount.identifier
+    );
 
     selectElement &&
-    fireEvent.change(selectElement, {
-      target: { value: mockSubAccount.identifier },
-    });
+      fireEvent.change(selectElement, {
+        target: { value: mockSubAccount.identifier },
+      });
 
-    await waitFor(() => expect(getByTestId("qrcode-display-address")?.textContent).toEqual(mockSubAccount.identifier));
+    await waitFor(() =>
+      expect(getByTestId("qrcode-display-address")?.textContent).toEqual(
+        mockSubAccount.identifier
+      )
+    );
   });
 });
