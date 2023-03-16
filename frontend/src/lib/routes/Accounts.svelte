@@ -113,7 +113,7 @@
 {#if $isCkBTCUniverseStore}
   <CkBTCAccountsModals />
 {:else}
-<AccountsModals />
+  <AccountsModals />
 {/if}
 
 <style lang="scss">

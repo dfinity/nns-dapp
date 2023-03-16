@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { busy } from "@dfinity/gix-components";
-  import type {AccountsModalType} from "$lib/types/accounts.modal";
+  import type { AccountsModalType } from "$lib/types/accounts.modal";
 
   export let type: AccountsModalType;
   export let account: Account | undefined = undefined;

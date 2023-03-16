@@ -172,7 +172,11 @@
       data-tid="new-transaction">{$i18n.accounts.send}</button
     >
 
-    <Receive type="nns-receive" account={$selectedAccountStore.account} {reloadAccount} />
+    <Receive
+      type="nns-receive"
+      account={$selectedAccountStore.account}
+      {reloadAccount}
+    />
   </Footer>
 </Island>
 

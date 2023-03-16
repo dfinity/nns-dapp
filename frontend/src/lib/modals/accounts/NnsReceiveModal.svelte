@@ -4,7 +4,7 @@
   import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import IC_LOGO from "$lib/assets/icp.svg";
-  import {OWN_CANISTER_ID} from "$lib/constants/canister-ids.constants";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 
   export let data: AccountsReceiveModalData;
 
