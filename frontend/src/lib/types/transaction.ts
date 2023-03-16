@@ -8,9 +8,10 @@ export type NewTransaction = {
   amount: number;
 };
 
-export type ValidateAmountFn = (
-  amount: number | undefined
-) => string | undefined;
+export type ValidateAmountFn = (params: {
+  amount: number | undefined;
+  selectedAccount: Account | undefined;
+}) => string | undefined;
 
 export interface IcrcTransactionData {
   toSelfTransaction: boolean;

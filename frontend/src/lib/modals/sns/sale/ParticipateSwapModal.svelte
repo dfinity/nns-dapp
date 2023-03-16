@@ -157,7 +157,7 @@
 
   // Used for form inline validation
   let validateAmount: ValidateAmountFn;
-  $: validateAmount = (amount: number | undefined) => {
+  $: validateAmount = ({ amount }) => {
     if (
       swapCommitment !== undefined &&
       swapCommitment !== null &&

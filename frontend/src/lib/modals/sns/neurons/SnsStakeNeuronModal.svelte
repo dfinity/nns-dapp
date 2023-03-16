@@ -49,7 +49,7 @@
         ) / E8S_PER_ICP
       : undefined;
   let checkMinimumStake: ValidateAmountFn;
-  $: checkMinimumStake = (amount: number | undefined) => {
+  $: checkMinimumStake = ({ amount }) => {
     if (
       nonNullish(amount) &&
       nonNullish(minimumStake) &&

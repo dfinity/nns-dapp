@@ -116,14 +116,13 @@
     await transferTokens($event);
   };
 
-  let userSelectedAccount: Account | undefined;
   let userAmount: number | undefined = undefined;
 
   let validateAmount: ValidateAmountFn;
-  $: validateAmount = (amount: number | undefined) => {
+  $: validateAmount = ({ amount, selectedAccount }) => {
     assertCkBTCUserInputAmount({
       networkBtc,
-      sourceAccount: userSelectedAccount,
+      sourceAccount: selectedAccount,
       amount,
       transactionFee: transactionFee.toE8s(),
       bitcoinEstimatedFee,
@@ -146,7 +145,6 @@
   bind:selectedNetwork
   {validateAmount}
   bind:amount={userAmount}
-  bind:selectedAccount={userSelectedAccount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">

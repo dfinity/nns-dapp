@@ -6,7 +6,10 @@
   import TransactionReview from "./TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import TransactionQRCode from "$lib/modals/accounts/NewTransaction/TransactionQRCode.svelte";
 
   export let rootCanisterId: Principal;
@@ -19,14 +22,11 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let mustSelectNetwork = false;
-  export let validateAmount: (
-    amount: number | undefined
-  ) => string | undefined = () => undefined;
+  export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   // User inputs
-  // TODO: do not export selectedAccount and path the value to `validateAmount({})`
-  export let selectedAccount: Account | undefined = sourceAccount;
+  let selectedAccount: Account | undefined = sourceAccount;
   export let destinationAddress: string | undefined = undefined;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let amount: number | undefined = undefined;

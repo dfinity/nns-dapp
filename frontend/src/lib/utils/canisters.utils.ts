@@ -2,7 +2,7 @@ import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { ONE_TRILLION } from "$lib/constants/icp.constants";
-import type { AuthStore } from "$lib/stores/auth.store";
+import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
 import { get } from "svelte/store";
@@ -55,7 +55,7 @@ export const isUserController = ({
   authStore,
 }: {
   controller: string;
-  authStore: AuthStore;
+  authStore: AuthStoreData;
 }): boolean => controller === authStore.identity?.getPrincipal().toText();
 
 export const canisterStatusToText = (status: CanisterStatus): string => {
