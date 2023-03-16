@@ -25,7 +25,7 @@ use std::time::{Duration, SystemTime};
 
 type TransactionIndex = u64;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
@@ -44,13 +44,13 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Eq, PartialEq)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8),      // Account Identifier + Sub Account Identifier
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Eq, PartialEq)]
 struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -60,14 +60,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Eq, PartialEq)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Eq, PartialEq)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -100,7 +100,7 @@ pub enum OldOperation {
     },
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Eq, PartialEq)]
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockIndex,
@@ -122,20 +122,20 @@ struct OldTransaction {
     transaction_type: Option<OldTransactionType>,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Eq, PartialEq)]
 pub enum TransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
     TopUpNeuron(PrincipalId, Memo),
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Eq, PartialEq)]
 pub struct CreateCanisterArgs {
     pub controller: PrincipalId,
     pub amount: Tokens,
     pub refund_address: AccountIdentifier,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Eq, PartialEq)]
 pub struct TopUpCanisterArgs {
     pub principal: PrincipalId,
     pub canister_id: CanisterId,
@@ -143,7 +143,7 @@ pub struct TopUpCanisterArgs {
     pub refund_address: AccountIdentifier,
 }
 
-#[derive(Clone, CandidType, Deserialize)]
+#[derive(Clone, CandidType, Deserialize, Eq, PartialEq)]
 pub struct RefundTransactionArgs {
     pub recipient_principal: PrincipalId,
     pub from_sub_account: Subaccount,
@@ -183,7 +183,7 @@ pub enum OldTransactionType {
     ParticipateSwap(CanisterId),
 }
 
-#[derive(Clone, CandidType, Deserialize)]
+#[derive(Clone, CandidType, Deserialize, Eq, PartialEq)]
 pub struct NeuronDetails {
     account_identifier: AccountIdentifier,
     principal: PrincipalId,

@@ -52,7 +52,7 @@ impl ContentEncoding {
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 
 impl From<&Assets> for AssetHashes {
