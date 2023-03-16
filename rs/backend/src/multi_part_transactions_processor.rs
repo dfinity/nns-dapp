@@ -7,7 +7,7 @@ use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
 use std::collections::{BTreeMap, VecDeque};
 
-#[derive(Default, CandidType, Deserialize, Eq, PartialEq)]
+#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
 }
@@ -34,7 +34,7 @@ impl MultiPartTransactionsProcessorWithRemovedFields {
     }
 }
 
-#[derive(Clone, CandidType, Deserialize, Eq, PartialEq)]
+#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
     TopUpNeuron(PrincipalId, Memo),
