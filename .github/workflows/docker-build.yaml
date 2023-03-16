@@ -94,6 +94,17 @@ jobs:
           echo "WASM size:          $wasm_size"
           echo "Max supported size: $max_size"
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
+
+  docker-build-cli-flags:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker-build prints help
+        run: ./scripts/docker-build --help | grep Usage
+      - name: docker-build complains about garbage
+        run: |
+                { ./scripts/docker-build safdashfdkj || true ; } |& grep 'ERROR: Unsupported flag:'
+
   docker-build:
     needs: assets
     runs-on: ubuntu-20.04
@@ -101,7 +112,7 @@ jobs:
       - name: Extract assets for verification
         run: echo TODO
   docker-build-passes:
-    needs: ["assets", "docker-build"]
+    needs: ["assets", "docker-build", "docker-build-cli-flags"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
