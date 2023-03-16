@@ -1,4 +1,5 @@
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import type { SnsTotalTokenSupplyStoreData } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
   getCommitmentE8s,
@@ -7,6 +8,7 @@ import {
   isInternalRefreshBuyerTokensError,
   mapAndSortSnsQueryToSummaries,
   parseSnsSwapSaleBuyerCount,
+  totalTokenSupply,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
@@ -23,7 +25,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -391,6 +393,52 @@ sale_participants_count ${saleBuyerCount} 1677707139456
           "The swap has already reached its target"
         )
       ).toBeFalsy();
+    });
+  });
+
+  describe("totalTokenSupply", () => {
+    it("returns total token supply for the specific project", () => {
+      const rootCanisterId = principal(1);
+      const totalSupply = BigInt(2_000_000_000);
+      const storeData: SnsTotalTokenSupplyStoreData = {
+        [rootCanisterId.toText()]: {
+          totalSupply,
+          certified: true,
+        },
+      };
+      const token = {
+        name: "Test Token",
+        symbol: "TT",
+      };
+      expect(
+        totalTokenSupply({
+          rootCanisterId,
+          totalSupplies: storeData,
+          token,
+        })
+      ).toEqual(TokenAmount.fromE8s({ amount: totalSupply, token }));
+    });
+
+    it("returns undefiend if project is not in the store", () => {
+      const rootCanisterId = principal(1);
+      const totalSupply = BigInt(2_000_000_000);
+      const storeData: SnsTotalTokenSupplyStoreData = {
+        [rootCanisterId.toText()]: {
+          totalSupply,
+          certified: true,
+        },
+      };
+      const token = {
+        name: "Test Token",
+        symbol: "TT",
+      };
+      expect(
+        totalTokenSupply({
+          rootCanisterId: principal(2),
+          totalSupplies: storeData,
+          token,
+        })
+      ).toBeUndefined();
     });
   });
 });

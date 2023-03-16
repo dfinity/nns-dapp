@@ -600,6 +600,7 @@
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "total_tokens": "Tokens Distributed to Participants",
+    "total_tokens_supply": "Total Supply",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
