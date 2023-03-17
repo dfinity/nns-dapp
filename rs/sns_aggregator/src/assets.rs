@@ -176,8 +176,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64::encode(&certificate),
-            base64::encode(&serializer.into_inner())
+            base64::encode(certificate),
+            base64::encode(serializer.into_inner())
         ),
     ))
 }
