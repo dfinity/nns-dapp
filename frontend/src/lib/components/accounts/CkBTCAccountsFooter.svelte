@@ -32,7 +32,6 @@
 {#if canMakeTransactions}
   <Footer>
     <CkBTCSendButton disableButton={$busy} {canisters} />
-
     <CkBTCReceiveButton canSelectAccount disableButton={$busy} {canisters} />
   </Footer>
 {/if}
