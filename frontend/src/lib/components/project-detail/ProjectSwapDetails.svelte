@@ -25,7 +25,6 @@
   $: ({
     swap: { params },
     token,
-    rootCanisterId,
   } = $projectDetailStore.summary as SnsSummary);
 
   let minCommitmentIcp: TokenAmount;

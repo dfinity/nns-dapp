@@ -3,14 +3,14 @@ import {
   type SnsTotalTokenSupplyStoreData,
 } from "$lib/stores/sns-total-token-supply.store";
 import { snsSummariesStore } from "$lib/stores/sns.store";
-import type { SnsSummary } from "$lib/types/sns";
+import type { RootCanisterIdText, SnsSummary } from "$lib/types/sns";
 import { TokenAmount } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const snsTotalSupplyTokenAmountStore = derived<
   [Readable<SnsTotalTokenSupplyStoreData>, Readable<SnsSummary[]>],
-  Record<string, TokenAmount>
+  Record<RootCanisterIdText, TokenAmount>
 >(
   [snsTotalTokenSupplyStore, snsSummariesStore],
   ([$snsTotalTokenSupplyStore, $snsSummariesStore]) => {

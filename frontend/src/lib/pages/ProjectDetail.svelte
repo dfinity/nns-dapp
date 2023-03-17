@@ -142,7 +142,7 @@
   };
 
   // TODO: Change to a `let` that is recalculated when the store changes
-  let setProjectStore = (rootCanisterId: string) => {
+  const setProjectStore = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
     if ($snsSummariesStore.length === 0) {
       return;
