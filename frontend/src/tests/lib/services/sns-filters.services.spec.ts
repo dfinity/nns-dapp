@@ -24,5 +24,18 @@ describe("sns-filters services", () => {
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED
       );
     });
+
+    it("should not change filters if they are already present", async () => {
+      const decisionStatus = [];
+      snsFiltesStore.setDecisionStatus({
+        rootCanisterId: mockPrincipal,
+        decisionStatus,
+      });
+
+      await loadSnsFilters(mockPrincipal);
+
+      const projectStore = get(snsFiltesStore)[mockPrincipal.toText()];
+      expect(projectStore.decisionStatus).toHaveLength(decisionStatus.length);
+    });
   });
 });
