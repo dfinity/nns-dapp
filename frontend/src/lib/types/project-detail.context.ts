@@ -1,22 +1,17 @@
+import type { TokenAmount } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "./sns";
 
 /**
+ * SnsSummary or SnsSwapCommitment is a valid project
+ *
  * `null` means not initialized
  * `undefined` means not found
- * SnsSummary or SnsSwapCommitment is a valid project
  */
 export type ProjectDetailStore = {
-  /**
-   * `null` - not initialized<br>
-   * `undefined` - not found
-   */
   summary: SnsSummary | undefined | null;
-  /**
-   * `null` - not initialized<br>
-   * `undefined` - not found
-   */
   swapCommitment: SnsSwapCommitment | undefined | null;
+  totalTokensSupply?: TokenAmount | undefined | null;
 };
 
 export interface ProjectDetailContext {

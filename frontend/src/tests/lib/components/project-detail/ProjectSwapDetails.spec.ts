@@ -3,16 +3,24 @@
  */
 
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
+import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { secondsToDate, secondsToTime } from "$lib/utils/date.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   mockSnsFullProject,
   mockSnsParams,
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
+import { TokenAmount } from "@dfinity/nns";
 
 describe("ProjectSwapDetails", () => {
+  beforeEach(() => {
+    snsTotalTokenSupplyStore.reset();
+  });
+
   it("should render total tokens", () => {
     const { container } = renderContextCmp({
       summary: mockSummary,
@@ -80,5 +88,23 @@ describe("ProjectSwapDetails", () => {
     expect(element?.innerHTML).toEqual(
       `${secondsToDate(seconds)} ${secondsToTime(seconds)}`
     );
+  });
+
+  it("should render total token supply if present", () => {
+    const totalSupply = BigInt(2_000_000_000);
+    const totalTokensSupply = TokenAmount.fromE8s({
+      amount: totalSupply,
+      token: mockSummary.token,
+    });
+    const { container } = renderContextCmp({
+      summary: mockSummary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      totalTokensSupply,
+      Component: ProjectSwapDetails,
+    });
+
+    const po = ProjectSwapDetailsPo.under(container);
+
+    expect(po.getTotalSupply()).toMatch(formatToken({ value: totalSupply }));
   });
 });

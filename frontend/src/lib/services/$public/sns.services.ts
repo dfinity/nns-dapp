@@ -7,6 +7,7 @@ import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
@@ -71,6 +72,16 @@ export const loadSnsProjects = async (): Promise<void> => {
       })),
     ];
     snsQueryStore.setData(snsQueryStoreData);
+    snsTotalTokenSupplyStore.setTotalTokenSupplies(
+      cachedSnses
+        .filter(({ icrc1_total_supply }) => nonNullish(icrc1_total_supply))
+        .map(({ icrc1_total_supply, canister_ids }) => ({
+          rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
+          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
+          totalSupply: icrc1_total_supply as bigint,
+          certified: true,
+        }))
+    );
     snsFunctionsStore.setProjectsFunctions(
       cachedSnses.map((sns) => ({
         rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
