@@ -11,11 +11,16 @@ import {
   watchSnsTotalCommitment,
 } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -46,10 +51,6 @@ jest.mock("$lib/services/sns-sale.services", () => ({
 }));
 
 describe("ProjectDetail", () => {
-  const props = {
-    rootCanisterId: mockSnsFullProject.rootCanisterId.toText(),
-  };
-
   describe("not logged in user", () => {
     page.mock({ data: { universe: null } });
 
@@ -60,13 +61,16 @@ describe("ProjectDetail", () => {
     });
 
     describe("Open project", () => {
+      const responses = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
+      });
+      const rootCanisterId = responses[0][0].rootCanisterId;
+      const props = {
+        rootCanisterId,
+      };
       beforeEach(() => {
-        snsQueryStore.setData(
-          snsResponsesForLifecycle({
-            lifecycles: [SnsSwapLifecycle.Open],
-            certified: true,
-          })
-        );
+        snsQueryStore.setData(responses);
       });
 
       it("should start watching derived state", async () => {
@@ -135,13 +139,16 @@ describe("ProjectDetail", () => {
     });
 
     describe("Committed project project", () => {
+      const responses = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Committed],
+        certified: true,
+      });
+      const rootCanisterId = responses[0][0].rootCanisterId;
+      const props = {
+        rootCanisterId,
+      };
       beforeEach(() => {
-        snsQueryStore.setData(
-          snsResponsesForLifecycle({
-            lifecycles: [SnsSwapLifecycle.Committed],
-            certified: true,
-          })
-        );
+        snsQueryStore.setData(responses);
       });
 
       it("should not start watching derived state", async () => {
@@ -171,13 +178,16 @@ describe("ProjectDetail", () => {
     });
 
     describe("Open project", () => {
+      const responses = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
+      });
+      const rootCanisterId = responses[0][0].rootCanisterId;
+      const props = {
+        rootCanisterId,
+      };
       beforeEach(() => {
-        snsQueryStore.setData(
-          snsResponsesForLifecycle({
-            lifecycles: [SnsSwapLifecycle.Open],
-            certified: true,
-          })
-        );
+        snsQueryStore.setData(responses);
       });
 
       it("should start watching derived state", async () => {
@@ -219,16 +229,40 @@ describe("ProjectDetail", () => {
 
         await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
       });
+
+      it.only("should show progress modal if open ticket is found", async () => {
+        const { ticket: testTicket } = snsTicketMock({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          owner: mockPrincipal,
+        });
+        snsTicketsStore.setTicket({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          ticket: testTicket,
+        });
+
+        const { getByTestId } = render(ProjectDetail, {
+          props: {
+            rootCanisterId: "invalid-project",
+          },
+        });
+
+        await waitFor(() =>
+          expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
+        );
+      });
     });
 
     describe("Committed project", () => {
+      const responses = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Committed],
+        certified: true,
+      });
+      const rootCanisterId = responses[0][0].rootCanisterId;
+      const props = {
+        rootCanisterId,
+      };
       beforeEach(() => {
-        snsQueryStore.setData(
-          snsResponsesForLifecycle({
-            lifecycles: [SnsSwapLifecycle.Committed],
-            certified: true,
-          })
-        );
+        snsQueryStore.setData(responses);
       });
 
       it("should not start watching derived state", async () => {
@@ -254,7 +288,9 @@ describe("ProjectDetail", () => {
   });
 
   describe("invalid root canister id", () => {
-    page.mock({ data: { universe: null } });
+    beforeEach(() => {
+      page.mock({ data: { universe: null } });
+    });
 
     it("should redirect to launchpad", () => {
       render(ProjectDetail, {
@@ -271,7 +307,9 @@ describe("ProjectDetail", () => {
   });
 
   describe("not found canister id", () => {
-    page.mock({ data: { universe: null } });
+    beforeEach(() => {
+      page.mock({ data: { universe: null } });
+    });
 
     it("should redirect to launchpad", () => {
       render(ProjectDetail, {
