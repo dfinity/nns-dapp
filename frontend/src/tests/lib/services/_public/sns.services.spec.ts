@@ -10,6 +10,7 @@ import {
 } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -20,9 +21,11 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import {
   aggregatorSnsMock,
+  aggregatorSnsMockWith,
   aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -126,6 +129,42 @@ describe("SNS public services", () => {
       expect(token).not.toBeUndefined();
       expect(token?.certified).toBeTruthy();
       expect(token?.token).toEqual(aggregatorTokenMock);
+    });
+
+    it("should load and map total token supply", async () => {
+      const rootCanisterId = principal(0);
+      const totalSupply = BigInt(2_000_000_000);
+      const response = {
+        ...aggregatorSnsMockWith({
+          rootCanisterId: rootCanisterId.toText(),
+          lifecycle: undefined,
+        }),
+        icrc1_total_supply: totalSupply,
+      };
+      jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([response]));
+
+      await loadSnsProjects();
+
+      const supplies = get(snsTotalTokenSupplyStore);
+      const data = supplies[rootCanisterId.toText()];
+      expect(data).not.toBeUndefined();
+      expect(data?.certified).toBeTruthy();
+      expect(data?.totalSupply).toEqual(totalSupply);
+    });
+
+    it("should not load the store if total token supply not present", async () => {
+      jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+
+      await loadSnsProjects();
+
+      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
+      const supplies = get(snsTotalTokenSupplyStore);
+      const data = supplies[rootCanisterId];
+      expect(data).toBeUndefined();
     });
   });
 });

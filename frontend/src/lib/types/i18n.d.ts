@@ -233,6 +233,7 @@ interface I18nAccounts {
   network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
+  receive_account: string;
 }
 
 interface I18nNeurons {
@@ -449,7 +450,8 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
-  qrcode_aria_label_icp: string;
+  icp_qrcode_aria_label: string;
+  sns_qrcode_aria_label: string;
   icp_receive_note_title: string;
   icp_receive_note_text: string;
   sns_receive_note_title: string;
@@ -625,6 +627,7 @@ interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
   total_tokens: string;
+  total_tokens_supply: string;
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;

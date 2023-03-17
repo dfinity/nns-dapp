@@ -223,7 +223,8 @@
     "network_btc_mainnet": "Bitcoin (BTC)",
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
-    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee"
+    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network transaction fee",
+    "receive_account": "Account"
   },
   "neurons": {
     "title": "Neurons",
@@ -432,7 +433,8 @@
     "direction_from": "Source:",
     "direction_to": "To:",
     "no_transactions": "No transactions",
-    "qrcode_aria_label_icp": "A QR code that renders the address to receive ICP",
+    "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
+    "sns_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
     "icp_receive_note_title": "Transfer ICP Instantly",
     "icp_receive_note_text": "This address accepts ICP. Scan the QR Code using a crypto wallet or exchange to transfer funds to this account instantly at low cost.",
     "sns_receive_note_title": "Transfer $tokenSymbol Instantly",
@@ -600,6 +602,7 @@
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "total_tokens": "Tokens Distributed to Participants",
+    "total_tokens_supply": "Total Supply",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
     "current_overall_commitment": "Current Overall Commitment",
