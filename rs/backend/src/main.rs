@@ -13,6 +13,7 @@ use dfn_core::{api::trap_with, over, over_async, stable};
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
+mod arguments;
 mod assets;
 mod canisters;
 mod constants;

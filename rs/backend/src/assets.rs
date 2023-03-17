@@ -10,6 +10,11 @@ use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::io::Read;
+use std::io::prelude::*;
+use flate2::Compression;
+use flate2::write::ZlibEncoder;
+use crate::arguments::CANISTER_ARGUMENTS;
+
 
 type HeaderField = (String, String);
 
@@ -365,6 +370,8 @@ pub fn init_assets() {
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
+    let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
+    let  arguments_html_gz = gz(arguments_html.as_bytes());
     STATE.with(|state| {
         for entry in tar.entries().unwrap() {
             let mut entry = entry.unwrap();
@@ -388,6 +395,11 @@ pub fn init_assets() {
             entry.read_to_end(&mut bytes).unwrap();
 
             dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
+
+            if name.ends_with("index.html.gz") {
+                bytes.extend_from_slice(&arguments_html_gz);
+            }
+
             insert_asset_into_state(state, name, Asset::new(bytes));
         }
         update_root_hash(&state.asset_hashes.borrow_mut());
@@ -430,3 +442,10 @@ fn encode_decode() {
         })
     );
 }
+
+/// Compress data
+pub fn gz(uncompressed: &[u8]) -> Vec<u8> {
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    encoder.write_all(uncompressed).unwrap_or_default();
+    encoder.finish().unwrap_or_default()
+  }
