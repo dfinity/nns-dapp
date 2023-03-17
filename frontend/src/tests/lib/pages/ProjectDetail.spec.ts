@@ -328,6 +328,27 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           )?.innerHTML
         ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
       });
+
+      it.only("should show progress modal if open ticket is found", async () => {
+        const { ticket: testTicket } = snsTicketMock({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          owner: mockPrincipal,
+        });
+        snsTicketsStore.setTicket({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          ticket: testTicket,
+        });
+
+        const { getByTestId } = render(ProjectDetail, {
+          props: {
+            rootCanisterId: "invalid-project",
+          },
+        });
+
+        await waitFor(() =>
+          expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
+        );
+      });
     });
 
     describe("Committed project", () => {
