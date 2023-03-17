@@ -1649,6 +1649,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "774b653cecdd15b6ae0731cce9e655b9cb2489b88458fd80a5b48aace55dfc1d"
+dependencies = [
+ "candid",
+ "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic0 0.18.9 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
 name = "ic-cdk-macros"
 version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3171,6 +3184,7 @@ dependencies = [
  "futures",
  "hex",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
+ "ic-cdk 0.7.3",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
