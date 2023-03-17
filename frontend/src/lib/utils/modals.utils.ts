@@ -1,3 +1,4 @@
+import type { AccountsModal } from "$lib/types/accounts.modal";
 import type {
   NnsNeuronModal,
   NnsNeuronModalData,
@@ -23,5 +24,11 @@ export const openSnsNeuronModal = (detail: SnsNeuronModal) =>
 export const openWalletModal = (detail: WalletModal) =>
   emit<WalletModal>({
     message: "nnsWalletModal",
+    detail,
+  });
+
+export const openAccountsModal = (detail: AccountsModal) =>
+  emit<AccountsModal>({
+    message: "nnsAccountsModal",
     detail,
   });
