@@ -27,7 +27,7 @@ describe("snsFilteredProposalsStore", () => {
     snsFiltesStore.reset();
     snsProposalsStore.reset();
   });
-  it("should return all proposals if filter store is not loaded", () => {
+  it("should return undefined if filter store is not loaded", () => {
     const rootCanisterId = mockPrincipal;
     const proposals: SnsProposalData[] = [
       snsProposal1,
@@ -42,8 +42,8 @@ describe("snsFilteredProposalsStore", () => {
     });
 
     expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(proposals.length);
+      get(snsFilteredProposalsStore)[rootCanisterId.toText()]
+    ).toBeUndefined();
   });
 
   it("should return all proposals if no decisions filter is checked", () => {
