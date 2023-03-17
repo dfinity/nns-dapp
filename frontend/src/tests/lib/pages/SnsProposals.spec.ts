@@ -54,7 +54,7 @@ describe("SnsProposals", () => {
     const functionName = "test_function";
     const functionId = BigInt(3);
     beforeEach(() => {
-      fakeSnsGovernanceApi.addNervousFunctionWith({
+      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         rootCanisterId,
         name: functionName,
         id: functionId,
@@ -146,7 +146,7 @@ describe("SnsProposals", () => {
         identity: new AnonymousIdentity(),
         rootCanisterId,
       });
-      fakeSnsGovernanceApi.addNervousFunctionWith({
+      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
       });
@@ -193,7 +193,7 @@ describe("SnsProposals", () => {
         ...proposals[1],
         action: functionId,
       });
-      fakeSnsGovernanceApi.addNervousFunctionWith({
+      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         id: functionId,

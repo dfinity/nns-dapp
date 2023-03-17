@@ -20,7 +20,8 @@ export const snsFilteredProposalsStore = derived<
     const filteredProposals = Object.entries(proposalsStore).reduce(
       (acc, [rootCanisterIdText, projectProposals]) => {
         const projectSelectedFilters = selectedFilters[rootCanisterIdText];
-        // Do not add proposals filters are loaded
+        // Skip the project if there are no filters for it.
+        // This will cause the proposals to be `undefined` for a specific project.
         if (isNullish(projectSelectedFilters)) {
           return acc;
         }

@@ -239,6 +239,7 @@ async function queryProposals({
 const reset = () => {
   neurons.clear();
   proposals.clear();
+  nervousFunctions.clear();
 };
 
 const createNeuronId = ({
@@ -299,7 +300,7 @@ export const addProposalWith = ({
   return proposal;
 };
 
-export const addNervousFunctionWith = ({
+export const addNervousSystemFunctionWith = ({
   identity = mockIdentity,
   rootCanisterId,
   ...functionParams

@@ -35,15 +35,11 @@
   let currentProjectCanisterId: Principal | undefined = undefined;
   const unsubscribeProjectIdStore: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
-      if (
-        nonNullish(selectedProjectCanisterId) &&
-        currentProjectCanisterId?.toText() !==
-          selectedProjectCanisterId.toText()
-      ) {
-        currentProjectCanisterId = selectedProjectCanisterId;
+      currentProjectCanisterId = selectedProjectCanisterId;
+      if (nonNullish(selectedProjectCanisterId)) {
         await Promise.all([
-          loadSnsNervousSystemFunctions(currentProjectCanisterId),
-          loadSnsFilters(currentProjectCanisterId),
+          loadSnsNervousSystemFunctions(selectedProjectCanisterId),
+          loadSnsFilters(selectedProjectCanisterId),
         ]);
       }
     }
