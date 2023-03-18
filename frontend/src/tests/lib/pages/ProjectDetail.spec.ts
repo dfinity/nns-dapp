@@ -2,62 +2,88 @@
  * @jest-environment jsdom
  */
 
+import * as ledgerApi from "$lib/api/ledger.api";
+import * as snsSaleApi from "$lib/api/sns-sale.api";
+import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
+import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
+import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
-import { watchSnsMetrics } from "$lib/services/sns-swap-metrics.services";
-import {
-  loadSnsSwapCommitment,
-  watchSnsTotalCommitment,
-} from "$lib/services/sns.services";
+import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
-import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import {
+  mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-const mockUnwatchCommitmentsCall = jest.fn();
-jest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsTotalCommitment: jest.fn().mockResolvedValue(Promise.resolve()),
-    watchSnsTotalCommitment: jest
-      .fn()
-      .mockImplementation(() => mockUnwatchCommitmentsCall),
-  };
-});
+jest.mock("$lib/api/sns.api");
+jest.mock("$lib/api/sns-swap-metrics.api");
+jest.mock("$lib/api/sns-sale.api");
+jest.mock("$lib/api/ledger.api");
 
-const mockUnwatchMetricsCall = jest.fn();
-jest.mock("$lib/services/sns-swap-metrics.services", () => {
-  return {
-    loadSnsSwapMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
-    watchSnsMetrics: jest.fn().mockImplementation(() => mockUnwatchMetricsCall),
-  };
-});
-
-jest.mock("$lib/services/sns-sale.services", () => ({
-  restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
-  hidePollingToast: jest.fn().mockResolvedValue(undefined),
-  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
-}));
+const blockedApiPaths = [
+  "$lib/api/sns.api",
+  "$lib/api/sns-swap-metrics.api",
+  "$lib/api/sns-sale.api",
+  "$lib/api/ledger.api",
+];
 
 describe("ProjectDetail", () => {
-  describe("not logged in user", () => {
-    page.mock({ data: { universe: null } });
+  blockAllCallsTo(blockedApiPaths);
+  const newBalance = BigInt(1_000_000_000);
+  const saleBuyerCount = 1_000_000;
+  const rawMetricsText = `
+# TYPE sale_buyer_count gauge
+sale_buyer_count ${saleBuyerCount} 1677707139456
+# HELP sale_cf_participants_count`;
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    snsQueryStore.reset();
+    snsSwapCommitmentsStore.reset();
+    snsSwapMetricsStore.reset();
+
+    jest.clearAllTimers();
+    const now = Date.now();
+    jest.useFakeTimers().setSystemTime(now);
+
+    jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
+    jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+
+    jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
+      sns_tokens_per_icp: [1],
+      buyer_total_icp_e8s: [BigInt(200_000_000)],
+    });
+
+    jest
+      .spyOn(snsMetricsApi, "querySnsSwapMetrics")
+      .mockResolvedValue(rawMetricsText);
+  });
+
+  describe("not logged in user", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      snsQueryStore.reset();
-      snsSwapCommitmentsStore.reset();
+      page.mock({ data: { universe: null } });
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
     describe("Open project", () => {
@@ -73,56 +99,70 @@ describe("ProjectDetail", () => {
         snsQueryStore.setData(responses);
       });
 
-      it("should start watching derived state", async () => {
-        render(ProjectDetail, props);
-
-        await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
-      });
-
-      it("should clear watch commitments on unmount", async () => {
+      it("should start watching swap metrics and stop on unmounting", async () => {
         const { unmount } = render(ProjectDetail, props);
 
-        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
+          expectedCalls
+        );
 
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          expectedCalls += 1;
+          expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
+            expectedCalls
+          );
+        }
         unmount();
 
-        await waitFor(() =>
-          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+        await runResolvedPromises();
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
+          expectedCalls
+        );
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
+          expectedCalls
         );
       });
 
-      it("should start watching metrics", async () => {
+      it("should start watching derived state and stop on unmounting", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        await runResolvedPromises();
+        let expectedCalls = 0;
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(expectedCalls);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          expectedCalls += 1;
+          expect(snsApi.querySnsDerivedState).toBeCalledTimes(expectedCalls);
+        }
+        unmount();
+
+        await runResolvedPromises();
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(expectedCalls);
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(expectedCalls);
+      });
+
+      it("should not load user's commitment", async () => {
         render(ProjectDetail, props);
-
-        await waitFor(() => expect(watchSnsMetrics).toBeCalled());
-      });
-
-      it("should clear watch metrics on unmount", async () => {
-        const { unmount } = render(ProjectDetail, props);
-
-        expect(mockUnwatchMetricsCall).not.toBeCalled();
-
-        unmount();
-
-        await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
-      });
-
-      it("should clear watch commitments on unmount", async () => {
-        const { unmount } = render(ProjectDetail, props);
-
-        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
-
-        unmount();
 
         await waitFor(() =>
-          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+          expect(snsApi.querySnsSwapCommitment).not.toBeCalled()
         );
-      });
-
-      it("should not load user's commitnemtn", async () => {
-        render(ProjectDetail, props);
-
-        await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
       });
 
       it("should render info section", async () => {
@@ -151,30 +191,48 @@ describe("ProjectDetail", () => {
         snsQueryStore.setData(responses);
       });
 
-      it("should not start watching derived state", async () => {
+      it("should query metrics but not watch them", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
-        expect(watchSnsTotalCommitment).not.toBeCalled();
+
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
       });
 
-      it("should not start watching metrics", async () => {
+      it("should not query total commitments, nor start watching them", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
-        expect(watchSnsMetrics).not.toBeCalled();
+        expect(snsApi.querySnsDerivedState).not.toBeCalled();
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
       });
     });
   });
 
   describe("logged in user", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      snsQueryStore.reset();
-      snsSwapCommitmentsStore.reset();
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
+
+      jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+      jest.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
+        decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
+        lifecycle: [SnsSwapLifecycle.Open],
+      });
+
+      cancelPollGetOpenTicket();
     });
 
     describe("Open project", () => {
@@ -186,69 +244,89 @@ describe("ProjectDetail", () => {
       const props = {
         rootCanisterId,
       };
+      const { ticket: testTicket } = snsTicketMock({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        owner: mockPrincipal,
+      });
       beforeEach(() => {
         snsQueryStore.setData(responses);
-      });
-
-      it("should start watching derived state", async () => {
-        render(ProjectDetail, props);
-
-        await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
-      });
-
-      it("should clear watch on unmount", async () => {
-        const { unmount } = render(ProjectDetail, props);
-
-        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
-
-        unmount();
-
-        await waitFor(() =>
-          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
-        );
-      });
-
-      it("should start watching metrics", async () => {
-        render(ProjectDetail, props);
-
-        await waitFor(() => expect(watchSnsMetrics).toBeCalled());
-      });
-
-      it("should clear watch metrics on unmount", async () => {
-        const { unmount } = render(ProjectDetail, props);
-
-        expect(mockUnwatchMetricsCall).not.toBeCalled();
-
-        unmount();
-
-        await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
-      });
-
-      it("should load user's commitment", async () => {
-        render(ProjectDetail, props);
-
-        await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
-      });
-
-      it.only("should show progress modal if open ticket is found", async () => {
-        const { ticket: testTicket } = snsTicketMock({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          owner: mockPrincipal,
+        jest.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
+          icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
+          icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        snsTicketsStore.setTicket({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          ticket: testTicket,
-        });
+        jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        jest
+          .spyOn(ledgerApi, "queryAccountBalance")
+          .mockResolvedValue(BigInt(10_000_000));
+      });
 
-        const { getByTestId } = render(ProjectDetail, {
-          props: {
-            rootCanisterId: "invalid-project",
+      it("should show user's commitment", async () => {
+        const userCommitment = BigInt(100_000_000);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          myCommitment: {
+            icp: [
+              {
+                transfer_start_timestamp_seconds: BigInt(123444),
+                amount_e8s: userCommitment,
+                transfer_success_timestamp_seconds: BigInt(123445),
+              },
+            ],
           },
         });
+        const { queryByTestId } = render(ProjectDetail, props);
 
         await waitFor(() =>
-          expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
+          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
         );
+
+        expect(
+          queryByTestId("sns-user-commitment")?.querySelector(
+            "[data-tid='token-value']"
+          )?.innerHTML
+        ).toMatch(formatToken({ value: userCommitment }));
+      });
+
+      it("should participate without user interaction if there is an open ticket.", async () => {
+        const initialCommitment = { icp: [] };
+        const finalCommitment = {
+          icp: [
+            {
+              transfer_start_timestamp_seconds: BigInt(123444),
+              amount_e8s: testTicket.amount_icp_e8s,
+              transfer_success_timestamp_seconds: BigInt(123445),
+            },
+          ],
+        };
+        jest
+          .spyOn(snsApi, "querySnsSwapCommitment")
+          .mockResolvedValueOnce({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: initialCommitment,
+          } as SnsSwapCommitment)
+          .mockResolvedValue({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: finalCommitment,
+          } as SnsSwapCommitment);
+        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+
+        const { getByTestId, queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+
+        await waitFor(() =>
+          expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
+        );
+
+        await waitFor(() =>
+          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+        );
+
+        expect(
+          queryByTestId("sns-user-commitment")?.querySelector(
+            "[data-tid='token-value']"
+          )?.innerHTML
+        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
       });
     });
 
@@ -261,66 +339,116 @@ describe("ProjectDetail", () => {
       const props = {
         rootCanisterId,
       };
+      const userCommitment = BigInt(100_000_000);
       beforeEach(() => {
         snsQueryStore.setData(responses);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          myCommitment: {
+            icp: [
+              {
+                transfer_start_timestamp_seconds: BigInt(123444),
+                amount_e8s: userCommitment,
+                transfer_success_timestamp_seconds: BigInt(123445),
+              },
+            ],
+          },
+        });
       });
 
-      it("should not start watching derived state", async () => {
+      it("should query metrics but not watch them", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
-        expect(watchSnsTotalCommitment).not.toBeCalled();
+
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
       });
 
-      it("should not start watching metrics", async () => {
+      it("should not query total commitments, nor start watching them", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
-        expect(watchSnsMetrics).not.toBeCalled();
+        expect(snsApi.querySnsDerivedState).not.toBeCalled();
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
       });
 
       it("should load user's commitment", async () => {
-        render(ProjectDetail, props);
+        const { queryByTestId } = render(ProjectDetail, props);
 
-        await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+        await waitFor(() =>
+          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+        );
+
+        expect(
+          queryByTestId("sns-user-commitment")?.querySelector(
+            "[data-tid='token-value']"
+          )?.innerHTML
+        ).toMatch(formatToken({ value: userCommitment }));
       });
     });
   });
 
   describe("invalid root canister id", () => {
+    const responses = snsResponsesForLifecycle({
+      lifecycles: [SnsSwapLifecycle.Open],
+      certified: true,
+    });
     beforeEach(() => {
+      snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
-    it("should redirect to launchpad", () => {
+    it("should redirect to launchpad", async () => {
       render(ProjectDetail, {
         props: {
           rootCanisterId: "invalid-project",
         },
       });
 
-      waitFor(() => {
+      await waitFor(() => {
         const { path } = get(pageStore);
-        expect(path).toEqual(AppPath.Launchpad);
+        return expect(path).toEqual(AppPath.Launchpad);
       });
     });
   });
 
   describe("not found canister id", () => {
+    const responses = snsResponsesForLifecycle({
+      lifecycles: [SnsSwapLifecycle.Open],
+      certified: true,
+    });
     beforeEach(() => {
+      snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
-    it("should redirect to launchpad", () => {
+    it("should redirect to launchpad", async () => {
       render(ProjectDetail, {
         props: {
           rootCanisterId: "aaaaa-aa",
         },
       });
 
-      waitFor(() => {
+      await waitFor(() => {
         const { path } = get(pageStore);
-        expect(path).toEqual(AppPath.Launchpad);
+        return expect(path).toEqual(AppPath.Launchpad);
       });
     });
   });
