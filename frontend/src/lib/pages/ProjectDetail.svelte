@@ -41,11 +41,16 @@
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import { SaleStep } from "$lib/types/sale";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { browser } from "$app/environment";
+  import { IS_TEST_ENV } from "$lib/constants/environment.constants";
 
   export let rootCanisterId: string | undefined | null;
 
   const goBack = async (): Promise<void> => {
-    return goto(AppPath.Launchpad, { replaceState: true });
+    // We want `goto` to be called only in the browser or in the test environment
+    if (browser || IS_TEST_ENV) {
+      goto(AppPath.Launchpad, { replaceState: true });
+    }
   };
 
   /////////////////////////////////
