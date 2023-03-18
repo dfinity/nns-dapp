@@ -1,21 +1,20 @@
+use crate::arguments::CANISTER_ARGUMENTS;
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
-use std::io::Read;
 use std::io::prelude::*;
-use flate2::Compression;
-use flate2::write::GzEncoder;
-use flate2::read::GzDecoder;
-use crate::arguments::CANISTER_ARGUMENTS;
-
+use std::io::Read;
 
 type HeaderField = (String, String);
 
@@ -453,7 +452,7 @@ pub fn gzip(uncompressed: &[u8]) -> Vec<u8> {
     let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
     encoder.write_all(uncompressed).unwrap_or_default();
     encoder.finish().unwrap_or_default()
-  }
+}
 /// Uncompress data
 pub fn gunzip_string(compressed: &[u8]) -> String {
     let mut d = GzDecoder::new(compressed);

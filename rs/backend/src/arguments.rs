@@ -15,20 +15,21 @@ thread_local! {
 impl CanisterArguments {
     /// HTML to be appended onto _every_ index.html
     pub fn to_html(&self) -> String {
-      let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
-      for (key, value) in &self.args {
-        ans.push(' ');
-        ans.push_str(&configname2attributename(&key));
-        ans.push('=');
-        ans.push_str(&configvalue2attributevalue(&value));
-      }
-      ans.push('>');
-      ans
+        let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
+        for (key, value) in &self.args {
+            ans.push(' ');
+            ans.push_str(&configname2attributename(&key));
+            ans.push('=');
+            ans.push_str(&configvalue2attributevalue(&value));
+        }
+        ans.push('>');
+        ans
     }
 
     pub fn with_own_canister_id(mut self) -> Self {
-      self.args.push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
-      self
+        self.args
+            .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
+        self
     }
 }
 
@@ -40,5 +41,5 @@ pub fn configname2attributename(name: &str) -> String {
 
 /// Escapes a configuration value
 pub fn configvalue2attributevalue(value: &str) -> String {
-  serde_json::Value::String(value.to_string()).to_string()
+    serde_json::Value::String(value.to_string()).to_string()
 }
