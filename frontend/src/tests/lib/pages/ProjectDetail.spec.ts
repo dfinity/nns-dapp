@@ -338,16 +338,79 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           rootCanisterId: Principal.fromText(rootCanisterId),
           ticket: testTicket,
         });
+        jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        jest
+          .spyOn(ledgerApi, "queryAccountBalance")
+          .mockResolvedValue(BigInt(10_000_000));
+      });
 
-        const { getByTestId } = render(ProjectDetail, {
-          props: {
-            rootCanisterId: "invalid-project",
+      it("should show user's commitment", async () => {
+        const userCommitment = BigInt(100_000_000);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          myCommitment: {
+            icp: [
+              {
+                transfer_start_timestamp_seconds: BigInt(123444),
+                amount_e8s: userCommitment,
+                transfer_success_timestamp_seconds: BigInt(123445),
+              },
+            ],
           },
         });
+        const { queryByTestId } = render(ProjectDetail, props);
 
         await waitFor(() =>
-          expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
+          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
         );
+
+        expect(
+          queryByTestId("sns-user-commitment")?.querySelector(
+            "[data-tid='token-value']"
+          )?.innerHTML
+        ).toMatch(formatToken({ value: userCommitment }));
+      });
+
+      it("should participate without user interaction if there is an open ticket.", async () => {
+        const initialCommitment = { icp: [] };
+        const finalCommitment = {
+          icp: [
+            {
+              transfer_start_timestamp_seconds: BigInt(123444),
+              amount_e8s: testTicket.amount_icp_e8s,
+              transfer_success_timestamp_seconds: BigInt(123445),
+            },
+          ],
+        };
+        jest
+          .spyOn(snsApi, "querySnsSwapCommitment")
+          .mockResolvedValueOnce({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: initialCommitment,
+          } as SnsSwapCommitment)
+          .mockResolvedValue({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: finalCommitment,
+          } as SnsSwapCommitment);
+        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+
+        const { getByTestId, queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+
+        await waitFor(() =>
+          expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
+        );
+
+        await waitFor(() =>
+          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+        );
+
+        expect(
+          queryByTestId("sns-user-commitment")?.querySelector(
+            "[data-tid='token-value']"
+          )?.innerHTML
+        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
       });
     });
 
