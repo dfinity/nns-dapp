@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext, onDestroy } from "svelte";
+  import { getContext } from "svelte";
   import { BottomSheet } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
