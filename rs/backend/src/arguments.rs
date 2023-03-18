@@ -15,7 +15,7 @@ thread_local! {
 impl CanisterArguments {
     /// HTML to be appended onto _every_ index.html
     pub fn to_html(&self) -> String {
-      let mut ans = r#"<meta name="nns-dapp-vars"#.to_string();
+      let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
       for (key, value) in &self.args {
         ans.push(' ');
         ans.push_str(&configname2attributename(&key));
