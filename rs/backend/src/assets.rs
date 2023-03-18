@@ -12,7 +12,8 @@ use std::collections::HashMap;
 use std::io::Read;
 use std::io::prelude::*;
 use flate2::Compression;
-use flate2::write::ZlibEncoder;
+use flate2::write::GzEncoder;
+use flate2::read::GzDecoder;
 use crate::arguments::CANISTER_ARGUMENTS;
 
 
@@ -371,7 +372,6 @@ pub fn init_assets() {
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
     let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
-    let  arguments_html_gz = gz(arguments_html.as_bytes());
     STATE.with(|state| {
         for entry in tar.entries().unwrap() {
             let mut entry = entry.unwrap();
@@ -394,10 +394,15 @@ pub fn init_assets() {
             let mut bytes = Vec::new();
             entry.read_to_end(&mut bytes).unwrap();
 
-            dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
-
             if name.ends_with("index.html.gz") {
-                bytes.extend_from_slice(&arguments_html_gz);
+                dfn_core::api::print(format!("{}: {} + arguments", &name, bytes.len()));
+                let mut html = gunzip_string(&bytes);
+                if let Some(insertion_point) = html.find("</head>") {
+                    html.insert_str(insertion_point, &arguments_html);
+                }
+                bytes = gzip(html.as_bytes());
+            } else {
+                dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
             }
 
             insert_asset_into_state(state, name, Asset::new(bytes));
@@ -444,8 +449,15 @@ fn encode_decode() {
 }
 
 /// Compress data
-pub fn gz(uncompressed: &[u8]) -> Vec<u8> {
-    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+pub fn gzip(uncompressed: &[u8]) -> Vec<u8> {
+    let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
     encoder.write_all(uncompressed).unwrap_or_default();
     encoder.finish().unwrap_or_default()
   }
+/// Uncompress data
+pub fn gunzip_string(compressed: &[u8]) -> String {
+    let mut d = GzDecoder::new(compressed);
+    let mut s = String::new();
+    d.read_to_string(&mut s).unwrap_or_default();
+    s
+}
