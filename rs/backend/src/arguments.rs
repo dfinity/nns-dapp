@@ -18,9 +18,9 @@ impl CanisterArguments {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
         for (key, value) in &self.args {
             ans.push(' ');
-            ans.push_str(&configname2attributename(&key));
+            ans.push_str(&configname2attributename(key));
             ans.push('=');
-            ans.push_str(&configvalue2attributevalue(&value));
+            ans.push_str(&configvalue2attributevalue(value));
         }
         ans.push('>');
         ans
@@ -36,7 +36,7 @@ impl CanisterArguments {
 /// Converts an upper-snake-case configuration variable to a lower-kebab-case name prefixed with data-.
 /// This, in turn, will appear in JavaScript & family as camel case.
 pub fn configname2attributename(name: &str) -> String {
-    "data-".to_owned() + &name.replace("_", "-").to_lowercase()
+    "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
 
 /// Escapes a configuration value
