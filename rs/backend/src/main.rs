@@ -20,6 +20,7 @@ mod constants;
 mod ledger_sync;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
+mod perf;
 mod periodic_tasks_runner;
 mod proposals;
 mod state;
