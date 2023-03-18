@@ -26,7 +26,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { browser } from "$app/environment";
   import {
     loadSnsSwapMetrics,
     watchSnsMetrics,
@@ -46,10 +45,6 @@
   export let rootCanisterId: string | undefined | null;
 
   const goBack = async (): Promise<void> => {
-    if (!browser) {
-      return;
-    }
-
     return goto(AppPath.Launchpad, { replaceState: true });
   };
 
@@ -161,25 +156,24 @@
 
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
-  $: if (
-    nonNullish(rootCanisterId) &&
-    enableWatchers &&
-    nonNullish(swapCanisterId)
-  ) {
-    unsubscribeWatchCommitment?.();
-    unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
-
+  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
     // We load the metrics to have them initially available before setInterval starts
     loadSnsSwapMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
       swapCanisterId,
       forceFetch: false,
     });
-    unsubscribeWatchMetrics?.();
-    unsubscribeWatchMetrics = watchSnsMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId: swapCanisterId,
-    });
+
+    if (enableWatchers) {
+      unsubscribeWatchCommitment?.();
+      unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
+
+      unsubscribeWatchMetrics?.();
+      unsubscribeWatchMetrics = watchSnsMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId: swapCanisterId,
+      });
+    }
   }
 
   /////////////////////////////////
@@ -187,7 +181,7 @@
   /////////////////////////////////
 
   // Flag to avoid second getOpenTicket call on same page navigation
-  let loadingTicketRootCanisterIdText: string | undefined;
+  let loadingTicketRootCanisterIdText: string | undefined = undefined;
   let userCommitment: undefined | bigint;
   $: userCommitment = getCommitmentE8s($projectDetailStore.swapCommitment);
   let progressStep: SaleStep | undefined = undefined;
