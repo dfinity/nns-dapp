@@ -199,7 +199,7 @@ type Stats =
         neurons_created_count: nat64;
         neurons_topped_up_count: nat64;
         transactions_to_process_queue_length: nat32;
-        instruction_counts: vec PerformanceCount;
+        performance_counts: vec PerformanceCount;
     };
 
 type PerformanceCount =

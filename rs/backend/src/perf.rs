@@ -3,7 +3,6 @@ use crate::stats::Stats;
 use crate::{StableState, STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
-use dfn_core::api::ic0;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
@@ -47,7 +46,7 @@ impl PerformanceCounts {
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
-        stats.instruction_counts = self.instruction_counts.iter().cloned().collect();
+        stats.performance_counts = self.instruction_counts.iter().cloned().collect();
     }
 
     /// Generates sample data for use in tests

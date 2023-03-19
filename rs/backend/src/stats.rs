@@ -32,7 +32,7 @@ pub struct Stats {
     pub neurons_created_count: u64,
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
-    pub instruction_counts: Vec<PerformanceCount>,
+    pub performance_counts: Vec<PerformanceCount>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
