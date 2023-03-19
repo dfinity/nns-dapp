@@ -34,6 +34,7 @@ dfn_macro = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
+ic-cdk = "0.7.3"
 ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
