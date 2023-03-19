@@ -959,7 +959,7 @@ impl AccountsStore {
             }
         }
 
-        count_to_prune as u32
+        count_to_prune
     }
 
     pub fn enqueue_multi_part_transaction(

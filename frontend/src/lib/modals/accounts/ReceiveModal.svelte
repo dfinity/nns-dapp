@@ -6,12 +6,16 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
 
-  export let account: Account;
+  export let universeId: UniverseCanisterId;
+  export let account: Account | undefined;
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
-  export let reloadAccount: () => Promise<void>;
+  export let reloadAccount: (() => Promise<void>) | undefined;
+  export let canSelectAccount: boolean;
 
   let qrCodeRendered = QR_CODE_RENDERED;
 
@@ -26,7 +30,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount();
+    await reloadAccount?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");
@@ -36,8 +40,15 @@
 <Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
+  <ReceiveSelectAccountDropdown
+    {account}
+    on:nnsSelectedAccount={({ detail }) => (account = detail)}
+    {canSelectAccount}
+    {universeId}
+  />
+
   <ReceiveAddressQRCode
-    address={account.identifier}
+    address={account?.identifier}
     renderQRCode={modalRendered}
     {qrCodeLabel}
     {logo}

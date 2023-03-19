@@ -9,7 +9,11 @@
 
 <article>
   <form on:submit|preventDefault>
-    <AddressInput bind:address rootCanisterId={OWN_CANISTER_ID} />
+    <AddressInput
+      bind:address
+      rootCanisterId={OWN_CANISTER_ID}
+      qrCode={false}
+    />
     <button
       class="primary"
       type="submit"

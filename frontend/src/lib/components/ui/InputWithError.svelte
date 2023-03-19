@@ -41,6 +41,7 @@
     <slot name="start" slot="start" />
     <slot name="label" slot="label" />
     <slot name="end" slot="end" />
+    <slot name="inner-end" slot="inner-end" />
   </Input>
 
   {#if error}

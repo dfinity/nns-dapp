@@ -12,6 +12,8 @@
   import type { SnsParams } from "@dfinity/sns";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { nonNullish } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -41,25 +43,36 @@
     amount: params.sns_token_e8s,
     token,
   });
+
+  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
 </script>
 
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
-  <AmountDisplay slot="value" amount={snsTokens} singleLine />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-  <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
-  <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
-  <DateSeconds
-    slot="value"
-    seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
-    tagName="span"
-  />
-</KeyValuePair>
+<TestIdWrapper testId="project-swap-details-component">
+  {#if nonNullish(snsTotalTokenSupply)}
+    <KeyValuePair testId="sns-total-token-supply">
+      <span slot="key">{$i18n.sns_project_detail.total_tokens_supply} </span>
+      <AmountDisplay slot="value" amount={snsTotalTokenSupply} singleLine />
+    </KeyValuePair>
+  {/if}
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
+    <AmountDisplay slot="value" amount={snsTokens} singleLine />
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
+    <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
+    <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
+    <DateSeconds
+      slot="value"
+      seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
+      tagName="span"
+    />
+  </KeyValuePair>
+</TestIdWrapper>

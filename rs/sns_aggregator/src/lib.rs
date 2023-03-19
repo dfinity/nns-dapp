@@ -58,7 +58,7 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
 #[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
 fn stable_data() -> String {
     STATE.with(|state| {
-        let to_serialize: &StableState = &(*state.stable.borrow());
+        let to_serialize: &StableState = &state.stable.borrow();
         serde_json::to_string(to_serialize).expect("Failed to serialize")
     })
 }
@@ -69,7 +69,7 @@ fn stable_data() -> String {
 fn tail_log(limit: Option<u16>) -> String {
     let limit = limit.unwrap_or(200) as usize;
     STATE.with(|state| {
-        let to_serialize: &VecDeque<String> = &(*state.log.borrow());
+        let to_serialize: &VecDeque<String> = &state.log.borrow();
         to_serialize
             .iter()
             .rev()
@@ -119,7 +119,7 @@ fn pre_upgrade() {
     //       seems to be to serialize with Serde, omitting asset hashes which can
     //       be serialized with neither.
     STATE.with(|state| {
-        let to_serialize: &StableState = &(*state.stable.borrow());
+        let to_serialize: &StableState = &state.stable.borrow();
         if let Ok(bytes) = to_serialize.to_bytes() {
             let bytes_summary = StableState::summarize_bytes(&bytes);
             match ic_cdk::storage::stable_save((bytes,)) {
