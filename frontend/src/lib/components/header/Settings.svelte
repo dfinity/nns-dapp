@@ -5,7 +5,11 @@
   // TODO: extract icon to gix-cmp
 </script>
 
-<button data-tid="logout" on:click={async () => goto("/settings")} class="text">
+<button
+  data-tid="settings"
+  on:click={async () => goto("/settings")}
+  class="text"
+>
   <svg
     xmlns="http://www.w3.org/2000/svg"
     height="24"

@@ -52,5 +52,13 @@ describe("AccountMenu", () => {
 
       expect(renderResult.getByTestId("logout")).not.toBeNull();
     });
+
+    it("should display settings button if signed in", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      expect(renderResult.getByTestId("settings")).not.toBeNull();
+    });
   });
 });
