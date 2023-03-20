@@ -234,6 +234,7 @@ interface I18nAccounts {
   network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
+  estimated_amount_received: string;
   receive_account: string;
 }
 
