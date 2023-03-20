@@ -27,6 +27,10 @@ export const loadSnsProjects = async (): Promise<void> => {
   try {
     const cachedSnses = await querySnsProjects();
     const identity = getCurrentIdentity();
+    // TODO: Remove after SNS aggregator is upgraded and persists data after upgrades.
+    if (cachedSnses.length < 2) {
+      throw new Error("SNS aggregator did not return enough projects.");
+    }
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
     await Promise.all(
