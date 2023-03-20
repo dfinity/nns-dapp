@@ -2,7 +2,6 @@
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
 
