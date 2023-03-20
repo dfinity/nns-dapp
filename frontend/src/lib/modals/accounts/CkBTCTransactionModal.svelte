@@ -23,6 +23,7 @@
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
+  import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -156,13 +157,16 @@
       })}
     {/if}
   </p>
-  <BitcoinEstimatedFee
-    slot="additional-info-form"
-    {selectedNetwork}
-    amount={userAmount}
-    minterCanisterId={canisters.minterCanisterId}
-    bind:bitcoinEstimatedFee
-  />
+  <svelte:fragment slot="additional-info-form">
+    <BitcoinEstimatedFee
+      {selectedNetwork}
+      amount={userAmount}
+      minterCanisterId={canisters.minterCanisterId}
+      bind:bitcoinEstimatedFee
+    />
+
+    <BitcoinEstimatedAmountReceived {bitcoinEstimatedFee} amount={userAmount} />
+  </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
     <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
 

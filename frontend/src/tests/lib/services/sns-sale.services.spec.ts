@@ -115,6 +115,7 @@ describe("sns-api", () => {
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
   const spyOnToastsHide = jest.spyOn(toastsStore, "toastsHide");
   const testRootCanisterId = rootCanisterIdMock;
+  const swapCanisterId = swapCanisterIdMock;
   const testSnsTicket = snsTicketMock({
     rootCanisterId: testRootCanisterId,
     owner: mockPrincipal,
@@ -942,6 +943,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
@@ -972,6 +974,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
@@ -1000,6 +1003,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
@@ -1029,6 +1033,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
@@ -1072,6 +1077,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
@@ -1113,6 +1119,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1146,6 +1153,7 @@ describe("sns-api", () => {
 
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
@@ -1178,6 +1186,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1199,6 +1208,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1222,6 +1232,7 @@ describe("sns-api", () => {
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
+          swapCanisterId,
           userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1255,6 +1266,7 @@ describe("sns-api", () => {
 
         await participateInSnsSale({
           rootCanisterId: testRootCanisterId,
+          swapCanisterId,
           userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1282,6 +1294,7 @@ describe("sns-api", () => {
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1303,6 +1316,7 @@ describe("sns-api", () => {
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1328,6 +1342,7 @@ describe("sns-api", () => {
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1351,6 +1366,7 @@ describe("sns-api", () => {
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 7n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
@@ -1371,6 +1387,7 @@ describe("sns-api", () => {
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
@@ -1409,6 +1426,7 @@ describe("sns-api", () => {
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
       participateInSnsSale({
         rootCanisterId: testRootCanisterId,
+        swapCanisterId,
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,

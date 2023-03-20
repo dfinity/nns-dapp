@@ -10,6 +10,7 @@ export enum AppPath {
   Canister = "/canister",
   Launchpad = "/launchpad",
   Project = "/project",
+  Settings = "/settings",
 }
 
 // SvelteKit uses the group defined in src/routes/(app)/ as part of the routeId. It also prefixes it with /.

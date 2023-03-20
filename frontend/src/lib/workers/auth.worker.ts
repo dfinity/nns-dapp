@@ -41,13 +41,14 @@ export const stopIdleTimer = () => {
 };
 
 const onIdleSignOut = async () => {
-  const [auth, delegation] = await Promise.all([
+  const [auth, chain] = await Promise.all([
     checkAuthentication(),
     checkDelegationChain(),
   ]);
 
   // Both identity and delegation are alright, so all good
-  if (auth && delegation) {
+  if (auth && chain.valid && chain.delegation !== null) {
+    emitExpirationTime(chain.delegation);
     return;
   }
 
@@ -64,21 +65,34 @@ const checkAuthentication = async (): Promise<boolean> => {
   return authClient.isAuthenticated();
 };
 
-/**
- * If there is no delegation or if not valid, then delegation is not valid
- *
- * @returns true if delegation is valid
- */
-const checkDelegationChain = async (): Promise<boolean> => {
+const delegation = async (): Promise<DelegationChain | null> => {
   const idbStorage: IdbStorage = new IdbStorage();
   const delegationChain: string | null = await idbStorage.get(
     KEY_STORAGE_DELEGATION
   );
 
-  return (
-    delegationChain !== null &&
-    isDelegationValid(DelegationChain.fromJSON(delegationChain))
-  );
+  if (delegationChain === null) {
+    return null;
+  }
+
+  return DelegationChain.fromJSON(delegationChain);
+};
+
+/**
+ * If there is no delegation or if not valid, then delegation is not valid
+ *
+ * @returns true if delegation is valid
+ */
+const checkDelegationChain = async (): Promise<{
+  valid: boolean;
+  delegation: DelegationChain | null;
+}> => {
+  const delegationChain = await delegation();
+
+  return {
+    valid: delegationChain !== null && isDelegationValid(delegationChain),
+    delegation: delegationChain,
+  };
 };
 
 // We do the logout on the client side because we reload the window to reload stores afterwards
@@ -87,4 +101,25 @@ const logout = () => {
   stopIdleTimer();
 
   postMessage({ msg: "nnsSignOut" });
+};
+
+const emitExpirationTime = (delegation: DelegationChain) => {
+  const expirationTime: bigint | undefined =
+    delegation.delegations[0]?.delegation.expiration;
+
+  // That would be unexpected here because the delegation has just been tested and is valid
+  if (expirationTime === undefined) {
+    return;
+  }
+
+  // 1_000_000 as NANO_SECONDS_IN_MILLISECOND. Constant not imported to not break prod build.
+  const authRemainingTime =
+    new Date(Number(expirationTime / BigInt(1_000_000))).getTime() - Date.now();
+
+  postMessage({
+    msg: "nnsDelegationRemainingTime",
+    data: {
+      authRemainingTime,
+    },
+  });
 };

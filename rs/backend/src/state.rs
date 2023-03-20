@@ -38,23 +38,18 @@ thread_local! {
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
-        Candid((
-            self.accounts_store.borrow().encode(),
-            self.assets.borrow().encode(),
-            Some(self.performance.borrow().encode()),
-        ))
-        .into_bytes()
-        .unwrap()
+        Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
+            .into_bytes()
+            .unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
-        let (account_store_bytes, assets_bytes, performance_bytes): (Vec<u8>, Vec<u8>, Option<Vec<u8>>) =
-            Candid::from_bytes(bytes).map(|c| c.0)?;
+        let (account_store_bytes, assets_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
-        let performance: PerformanceCounts =
-            PerformanceCounts::decode(performance_bytes.unwrap_or_default()).unwrap_or_default();
+        let performance = PerformanceCounts::default();
+
         Ok(State {
             accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
             assets: RefCell::new(assets),
