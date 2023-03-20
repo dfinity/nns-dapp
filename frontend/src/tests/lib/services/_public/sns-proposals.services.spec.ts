@@ -9,6 +9,7 @@ import {
   registerVote,
 } from "$lib/services/$public/sns-proposals.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsFiltesStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import {
@@ -19,8 +20,11 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import type { SnsProposalData } from "@dfinity/sns";
-import { SnsVote } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  SnsVote,
+  type SnsProposalData,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -46,6 +50,7 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
+        snsFiltesStore.reset();
         snsProposalsStore.reset();
         jest.clearAllMocks();
         jest
@@ -60,6 +65,7 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
+            includeStatus: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -77,6 +83,47 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: proposalId,
+            includeStatus: [],
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
+      it("should call queryProposals with selected decision status filters", async () => {
+        const proposalId = { id: BigInt(1) };
+        const rootCanisterId = mockPrincipal;
+        const decisionStatus = [
+          {
+            id: "1",
+            value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
+            name: "Adopted",
+            checked: true,
+          },
+          {
+            id: "2",
+            value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+            name: "Open",
+            checked: false,
+          },
+        ];
+        const selectedDecisionStatus = decisionStatus
+          .filter(({ checked }) => checked)
+          .map(({ value }) => value);
+        snsFiltesStore.setDecisionStatus({
+          rootCanisterId,
+          decisionStatus,
+        });
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: selectedDecisionStatus,
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -126,6 +173,7 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
+            includeStatus: [],
           },
           identity: mockIdentity,
           certified: false,

@@ -52,5 +52,27 @@ describe("AccountMenu", () => {
 
       expect(renderResult.getByTestId("logout")).not.toBeNull();
     });
+
+    it("should display settings button if signed in", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      expect(renderResult.getByTestId("settings")).not.toBeNull();
+    });
+
+    it("should close popover on click on settings", async () => {
+      const renderResult = render(AccountMenu);
+
+      await show(renderResult);
+
+      const settings = renderResult.getByTestId("settings");
+
+      settings !== null && fireEvent.click(settings);
+
+      await waitFor(() =>
+        expect(() => renderResult.getByRole("menu")).toThrow()
+      );
+    });
   });
 });
