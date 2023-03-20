@@ -4,6 +4,7 @@
 
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
+import * as snsApi from "$lib/api/sns.api";
 import {
   loadSnsNervousSystemFunctions,
   loadSnsProjects,
@@ -26,16 +27,28 @@ import {
 } from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+jest.mock("$lib/api/sns.api");
+jest.mock("$lib/api/sns-aggregator.api");
+jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: jest.fn(),
   };
 });
 
+const blockedPaths = [
+  "$lib/api/sns-aggregator.api",
+  "$lib/api/sns-governance.api",
+  "$lib/api/sns.api",
+];
+
 describe("SNS public services", () => {
+  blockAllCallsTo(blockedPaths);
+
   describe("loadSnsNervousSystemFunctions", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
@@ -87,7 +100,7 @@ describe("SNS public services", () => {
   });
 
   describe("loadSnsProjects", () => {
-    afterEach(() => {
+    beforeEach(() => {
       snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
@@ -95,11 +108,15 @@ describe("SNS public services", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
+      jest.spyOn(snsApi, "queryAllSnsMetadata").mockResolvedValue([]);
+      jest.spyOn(snsApi, "querySnsSwapStates").mockResolvedValue([]);
     });
     it("loads sns stores with data", async () => {
       const spyQuerySnsProjects = jest
         .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+        .mockImplementation(() =>
+          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+        );
 
       await loadSnsProjects();
 
@@ -118,7 +135,9 @@ describe("SNS public services", () => {
     it("should load and map tokens", async () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+        .mockImplementation(() =>
+          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+        );
 
       await loadSnsProjects();
 
@@ -134,16 +153,19 @@ describe("SNS public services", () => {
     it("should load and map total token supply", async () => {
       const rootCanisterId = principal(0);
       const totalSupply = BigInt(2_000_000_000);
-      const response = {
-        ...aggregatorSnsMockWith({
-          rootCanisterId: rootCanisterId.toText(),
-          lifecycle: undefined,
-        }),
-        icrc1_total_supply: totalSupply,
-      };
+      const response = [
+        {
+          ...aggregatorSnsMockWith({
+            rootCanisterId: rootCanisterId.toText(),
+            lifecycle: undefined,
+          }),
+          icrc1_total_supply: totalSupply,
+        },
+        aggregatorSnsMock,
+      ];
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([response]));
+        .mockImplementation(() => Promise.resolve(response));
 
       await loadSnsProjects();
 
@@ -157,7 +179,9 @@ describe("SNS public services", () => {
     it("should not load the store if total token supply not present", async () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+        .mockImplementation(() =>
+          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+        );
 
       await loadSnsProjects();
 
@@ -165,6 +189,17 @@ describe("SNS public services", () => {
       const supplies = get(snsTotalTokenSupplyStore);
       const data = supplies[rootCanisterId];
       expect(data).toBeUndefined();
+    });
+
+    it("should use fallback if the sns aggregator returns less than 2 projects", async () => {
+      jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+
+      await loadSnsProjects();
+
+      expect(snsApi.queryAllSnsMetadata).toBeCalled();
+      expect(snsApi.querySnsSwapStates).toBeCalled();
     });
   });
 });
