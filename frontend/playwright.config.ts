@@ -6,7 +6,7 @@ dotenv.config();
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "./src/tests/e2e",
+  testDir: "./src/e2e",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -30,14 +30,14 @@ export default defineConfig({
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.CI
-      ? process.env.VITE_OWN_CANISTER_URL
-      : "http://localhost:5173",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    testIdAttribute: "data-tid",
   },
-
+  webServer: {
+    command: "npm run build && npm run preview",
+    port: 4173,
+  },
   /* Configure projects for major browsers */
   projects: [
     {
