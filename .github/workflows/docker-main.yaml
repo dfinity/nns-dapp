@@ -14,10 +14,15 @@ jobs:
     strategy:
       matrix:
         include:
+          # Note: It seems that having several entries here upsets the cache.
+          # Having just one entry makes others faster, but we use local builds more
+          # than mainnet, so let's prioritize that.  Soon this will be a non-issue
+          # anyway as we will pass the network as an argument.
+          # It would still be nice to figure out why; presumably there is a single
+          # cache that gets wiped out and replaced, not added to.  And there is probably
+          # a namespace one can provide to prevent differing builds from clobbering each other.
           - BUILD_NAME: "local"
             DFX_NETWORK: "local"
-          - BUILD_NAME: "mainnet"
-            DFX_NETWORK: "mainnet"
     steps:
       - uses: actions/checkout@v3
       # We use buildx and its GitHub Actions caching support `type=gha`. For
