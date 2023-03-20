@@ -1,5 +1,4 @@
 use crate::metrics_encoder::MetricsEncoder;
-use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
@@ -31,7 +30,6 @@ pub struct Stats {
     pub neurons_created_count: u64,
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
-    pub performance_counts: Vec<PerformanceCount>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
