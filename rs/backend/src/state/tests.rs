@@ -41,8 +41,6 @@ impl State {
             accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
-            // Not included in the old stable memory:
-            performance: RefCell::new(PerformanceCounts::default()),
         })
     }
 }
