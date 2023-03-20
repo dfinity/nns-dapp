@@ -1,19 +1,35 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
-import { writable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
-export interface ProjectProposalStore {
+export interface ProjectProposalData {
   proposals: SnsProposalData[];
   // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
   // Whether all proposals have been loaded
   completed: boolean;
 }
-export interface SnsProposalsStore {
+export interface SnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the proposals for a specific project.
-  [rootCanisterId: string]: ProjectProposalStore;
+  [rootCanisterId: string]: ProjectProposalData;
+}
+
+export interface SnsProposalsStore extends Readable<SnsProposalsStoreData> {
+  setProposals: (data: {
+    rootCanisterId: Principal;
+    proposals: SnsProposalData[];
+    certified: boolean | undefined;
+    completed: boolean;
+  }) => void;
+  addProposals: (data: {
+    rootCanisterId: Principal;
+    proposals: SnsProposalData[];
+    certified: boolean | undefined;
+    completed: boolean;
+  }) => void;
+  reset: () => void;
 }
 
 /**
@@ -23,7 +39,7 @@ export interface SnsProposalsStore {
  * - addProposals: add new proposals to the list of proposals for a specific sns project
  */
 const initSnsProposalsStore = () => {
-  const { subscribe, update, set } = writable<SnsProposalsStore>({});
+  const { subscribe, update, set } = writable<SnsProposalsStoreData>({});
 
   return {
     subscribe,
@@ -39,7 +55,7 @@ const initSnsProposalsStore = () => {
       certified: boolean | undefined;
       completed: boolean;
     }) {
-      update((currentState: SnsProposalsStore) => ({
+      update((currentState: SnsProposalsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           proposals: proposals,
@@ -60,7 +76,7 @@ const initSnsProposalsStore = () => {
       certified: boolean | undefined;
       completed: boolean;
     }) {
-      update((currentState: SnsProposalsStore) => {
+      update((currentState: SnsProposalsStoreData) => {
         const newIds = new Set(proposals.map(({ id }) => fromNullable(id)?.id));
         return {
           ...currentState,
