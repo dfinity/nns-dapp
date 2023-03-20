@@ -3,10 +3,10 @@ use crate::stats::Stats;
 use crate::{StableState, STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
+use ic_cdk::api::instruction_counter;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::VecDeque;
-use ic_cdk::api::instruction_counter;
 #[cfg(test)]
 mod tests;
 
