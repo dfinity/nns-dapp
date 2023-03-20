@@ -58,6 +58,7 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import {
+  assertNonNullish,
   fromDefinedNullable,
   fromNullable,
   isNullish,
@@ -466,8 +467,10 @@ export const initiateSnsSaleParticipation = async ({
     });
 
     const swapCanisterId = project?.summary.swapCanisterId;
+    // Edge case: `initiateSnsSaleParticipation` can't be called if there is no swap canister id
+    assertNonNullish(swapCanisterId);
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
-    if (nonNullish(ticket) && nonNullish(swapCanisterId)) {
+    if (nonNullish(ticket)) {
       // Step 2. to finish
       const { success } = await participateInSnsSale({
         rootCanisterId,
