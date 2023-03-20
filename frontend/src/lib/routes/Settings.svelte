@@ -1,15 +1,20 @@
 <script lang="ts">
-  import { Island, KeyValuePairInfo } from "@dfinity/gix-components";
+  import {
+    Island,
+    KeyValuePairInfo,
+    SkeletonText,
+  } from "@dfinity/gix-components";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import { nonNullish } from "@dfinity/utils";
 
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
-  let remainingTimeMilliseconds: number;
-  $: remainingTimeMilliseconds = $authRemainingTimeStore ?? 0;
+  let remainingTimeMilliseconds: number | undefined;
+  $: remainingTimeMilliseconds = $authRemainingTimeStore;
 </script>
 
 <Island>
@@ -32,9 +37,13 @@
         <KeyValuePairInfo>
           <p slot="key" class="label">{$i18n.settings.your_session}</p>
           <p slot="value" class="value session" data-tid="session-duration">
-            {remainingTimeMilliseconds <= 0
-              ? "0"
-              : secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+            {#if nonNullish(remainingTimeMilliseconds)}
+              {remainingTimeMilliseconds <= 0
+                ? "0"
+                : secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+            {:else}
+              <div class="skeleton"><SkeletonText /></div>
+            {/if}
           </p>
 
           <svelte:fragment slot="info">
@@ -56,5 +65,10 @@
 
   .session {
     padding-right: var(--padding);
+    margin: 0;
+  }
+
+  .skeleton {
+    width: 80px;
   }
 </style>

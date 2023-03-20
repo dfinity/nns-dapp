@@ -24,11 +24,18 @@ describe("Settings", () => {
     expect(getByText(mockPrincipalText)).toBeInTheDocument();
   });
 
+  it("should render a skeleton while loading expired session time", () => {
+    const { getByTestId } = render(Settings);
+
+    const element = getByTestId("skeleton-text");
+    expect(element).not.toBeNull();
+  });
+
   it("should render a dynamic expired session time", () => {
     const { getByTestId, rerender } = render(Settings);
 
     const element = getByTestId("session-duration");
-    expect(element?.textContent ?? "").toEqual("0");
+    expect(element?.textContent.trim() ?? "").toEqual("");
 
     authRemainingTimeStore.set(250000);
 
