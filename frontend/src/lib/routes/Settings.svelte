@@ -69,6 +69,6 @@
   }
 
   .skeleton {
-    width: 80px;
+    width: calc(var(--padding) * 10);
   }
 </style>
