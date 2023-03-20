@@ -41,8 +41,12 @@ const implementedFunctions = {
 // State and helpers for fake implementations:
 //////////////////////////////////////////////
 
+// Maps a key representing identity + rootCanisterId (`mapKey` function) to a list of:
+// neurons
 const neurons: Map<string, SnsNeuron[]> = new Map();
+// proposals
 const proposals: Map<string, SnsProposalData[]> = new Map();
+// nervous functions
 const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
 
 type KeyParams = { identity: Identity; rootCanisterId: Principal };
