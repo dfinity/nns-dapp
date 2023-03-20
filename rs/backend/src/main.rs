@@ -36,13 +36,10 @@ fn main() {
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
-    perf::record_instruction_count("pre_upgrade start");
     STATE.with(|s| {
         let bytes = s.encode();
         stable::set(&bytes);
     });
-    // Note:  To see the instruction counter after pre-upgrade, see post-upgrade.
-    //        Until stable memory has been restored more measurements cannot be saved.
 }
 
 #[export_name = "canister_post_upgrade"]
