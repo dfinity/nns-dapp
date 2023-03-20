@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import Settings from "$lib/components/header/Settings.svelte";
+  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
 
   export let settings = true;
 
@@ -34,7 +34,7 @@
       <ThemeToggle />
 
       {#if settings}
-        <Settings />
+        <SettingsButton />
       {/if}
 
       <Logout on:nnsLogoutTriggered={toggle} />
