@@ -64,6 +64,12 @@ const rejectedTally: SnsTally = {
   timestamp_seconds: BigInt(123455),
 };
 
+/**
+ * Returns a proposal with the cusotmized parameters.
+ *
+ * For the status, the logic of the function is based on the code in `snsDecisionStatus` sns proposal util.
+ * Refecence: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L717
+ */
 export const createSnsProposal = ({
   status,
   proposalId,

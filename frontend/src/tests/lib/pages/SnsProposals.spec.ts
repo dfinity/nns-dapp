@@ -147,7 +147,6 @@ describe("SnsProposals", () => {
         rootCanisterId,
       });
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        identity: new AnonymousIdentity(),
         rootCanisterId,
       });
     });
@@ -194,7 +193,6 @@ describe("SnsProposals", () => {
         action: functionId,
       });
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        identity: new AnonymousIdentity(),
         rootCanisterId,
         id: functionId,
       });

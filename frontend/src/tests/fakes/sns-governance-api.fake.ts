@@ -91,8 +91,8 @@ const getProposals = (keyParams: KeyParams) => {
   return proposalsList;
 };
 
-const getNervousFunctions = (keyParams: KeyParams) => {
-  const key = mapKey(keyParams);
+const getNervousFunctions = (rootCanisterId: Principal) => {
+  const key = rootCanisterId.toText();
   let nervousFunctionsList = nervousFunctions.get(key);
   if (isNullish(nervousFunctionsList)) {
     nervousFunctionsList = [];
@@ -119,14 +119,14 @@ async function nervousSystemParameters({
 
 async function getNervousSystemFunctions({
   rootCanisterId,
-  identity,
-  certified: _,
+  identity: _,
+  certified: __,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
 }): Promise<SnsNervousSystemFunction[]> {
-  return nervousFunctions.get(mapKey({ identity, rootCanisterId })) || [];
+  return nervousFunctions.get(rootCanisterId.toText()) || [];
 }
 
 async function getNeuronBalance({
@@ -305,14 +305,12 @@ export const addProposalWith = ({
 };
 
 export const addNervousSystemFunctionWith = ({
-  identity = mockIdentity,
   rootCanisterId,
   ...functionParams
 }: {
-  identity?: Identity;
   rootCanisterId: Principal;
 } & Partial<SnsNervousSystemFunction>): SnsNervousSystemFunction => {
-  const nervousFunctions = getNervousFunctions({ identity, rootCanisterId });
+  const nervousFunctions = getNervousFunctions(rootCanisterId);
   const index = nervousFunctions.length;
   const defaultFunctionId = BigInt(index + 1);
   const nervousFunction: SnsNervousSystemFunction = {
