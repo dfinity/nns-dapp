@@ -44,7 +44,12 @@ import {
   mockSwap,
 } from "$tests/mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { deployedSnsMock, swapCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import {
   advanceTime,
@@ -183,6 +188,12 @@ describe("sns-api", () => {
     });
     (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
       Promise.resolve({
+        canisterIds: {
+          rootCanisterId: rootCanisterIdMock,
+          ledgerCanisterId: ledgerCanisterIdMock,
+          governanceCanisterId: governanceCanisterIdMock,
+          swapCanisterId: swapCanisterIdMock,
+        },
         metadata: () =>
           Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
         swapState: () => Promise.resolve(mockQuerySwap),
