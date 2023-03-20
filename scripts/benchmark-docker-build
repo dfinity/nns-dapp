@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+echo "Populate docker cache - time here is irrelevant"
+chronic ./scripts/docker-build
+
+echo "Time a change to the frontend"
+echo >>frontend/src/app.html
+time chronic ./scripts/docker-build
+
+echo "Time a change to the backend"
+echo >>rs/backend/src/main.rs
+time chronic ./scripts/docker-build
+
+echo "Time a change to the aggregator"
+echo >>rs/sns_aggregator/src/lib.rs
+time chronic ./scripts/docker-build
