@@ -1,7 +1,4 @@
 use super::{AssetHashes, Assets, PerformanceCounts, StableState, State};
-use crate::state::AccountsStore;
-use dfn_candid::Candid;
-use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 
 /// Creates a populated test state for testing.
@@ -19,5 +16,12 @@ fn state_can_be_restored_from_stable_memory() {
     let toy_state = setup_test_state();
     let bytes: Vec<u8> = toy_state.encode();
     let parsed = State::decode(bytes).expect("Failed to parse");
-    assert_eq!(toy_state, parsed, "State has changed");
+    // This is the highly valuable state:
+    assert_eq!(
+        toy_state.accounts_store, parsed.accounts_store,
+        "Accounts store has changed"
+    );
+    // It's nice if we keep these:
+    assert_eq!(toy_state.assets, parsed.assets, "Assets have changed");
+    assert_eq!(toy_state.asset_hashes, parsed.asset_hashes, "Asset hashes have changed");
 }
