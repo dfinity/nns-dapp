@@ -6,10 +6,13 @@
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
+  let amountE8s = BigInt(0);
+  $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : BigInt(0);
+
   let estimatedAmount = BigInt(0);
   $: estimatedAmount =
-    nonNullish(bitcoinEstimatedFee) && nonNullish(amount) && amount > bitcoinEstimatedFee
-      ? numberToE8s(amount) - bitcoinEstimatedFee
+    nonNullish(bitcoinEstimatedFee) && amountE8s > bitcoinEstimatedFee
+      ? amountE8s - bitcoinEstimatedFee
       : BigInt(0);
 </script>
 
