@@ -31,8 +31,10 @@
 
         <KeyValuePairInfo>
           <p slot="key" class="label">{$i18n.settings.your_session}</p>
-          <p slot="value" class="value session">
-            {secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+          <p slot="value" class="value session" data-tid="session-duration">
+            {remainingTimeMilliseconds <= 0
+              ? "0"
+              : secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
           </p>
 
           <svelte:fragment slot="info">
