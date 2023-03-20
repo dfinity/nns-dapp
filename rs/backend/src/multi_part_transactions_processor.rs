@@ -11,16 +11,6 @@ pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
 }
 
-impl MultiPartTransactionsProcessorWithRemovedFields {
-    pub fn from(mptp: &MultiPartTransactionsProcessor) -> MultiPartTransactionsProcessorWithRemovedFields {
-        MultiPartTransactionsProcessorWithRemovedFields {
-            queue: mptp.queue.clone(),
-            statuses: BTreeMap::default(),
-            errors: VecDeque::default(),
-        }
-    }
-}
-
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
