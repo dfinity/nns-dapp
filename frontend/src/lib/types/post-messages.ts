@@ -23,7 +23,7 @@ export type PostMessageResponse =
   | "nnsSignOut"
   | "nnsSyncMetrics"
   | "nnsSyncCanister"
-    | "nnsDelegationRemainingTime";
+  | "nnsDelegationRemainingTime";
 
 export interface PostMessage<
   T extends PostMessageDataResponse | PostMessageDataRequest

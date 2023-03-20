@@ -877,5 +877,11 @@
     "override_true": "Enter the number for the feature you want to enable.",
     "override_false": "Enter the number for the feature you want to disabled.",
     "remove_override": "Enter the number for the feature you want to set back to its default value."
+  },
+  "settings": {
+    "your_principal": "Your Principal",
+    "your_principal_description": "Your ID for the NNS dapp. Created by your Internet Identity.",
+    "your_session": "Your session expires in",
+    "your_session_description": "All sessions last 30 minutes. After 30 minutes, you will need to authenticate again with Internet Identity."
   }
 }

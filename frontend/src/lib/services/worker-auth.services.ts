@@ -1,10 +1,10 @@
 import type { AuthStoreData } from "$lib/stores/auth.store";
+import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import type {
   PostMessage,
   PostMessageDataResponse,
 } from "$lib/types/post-messages";
 import { logout } from "./auth.services";
-import {authRemainingTimeStore} from "$lib/stores/auth.store";
 
 export const initAuthWorker = async () => {
   const AuthWorker = await import("$lib/workers/auth.worker?worker");
