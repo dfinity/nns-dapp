@@ -37,7 +37,7 @@ describe("Settings page", () => {
       });
     });
 
-    it("should render sign-in if not logged in", () => {
+    it("should render principal", () => {
       const { getByText } = render(SettingsPage);
 
       expect(
