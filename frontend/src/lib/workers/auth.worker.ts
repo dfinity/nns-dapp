@@ -46,12 +46,9 @@ const onIdleSignOut = async () => {
     checkDelegationChain(),
   ]);
 
-  const validDelegation = (): boolean =>
-    chain.valid && chain.delegation !== null;
-
   // Both identity and delegation are alright, so all good
-  if (auth && validDelegation()) {
-    emitExpirationTime(chain.delegation!);
+  if (auth && chain.valid && chain.delegation !== null) {
+    emitExpirationTime(chain.delegation);
     return;
   }
 
