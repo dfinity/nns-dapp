@@ -34,7 +34,6 @@ jobs:
           unzip state.zip
           popd
           mv "$HOME/.dfx" .
-      - name: Set the local sns_aggregator canister ID
       - name: Upgrade to the current aggregator
         run: dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
