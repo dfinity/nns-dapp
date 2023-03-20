@@ -1,6 +1,10 @@
 name: Docker build
 on:
   push:
+    branch:
+      - main
+      # Use this branch for tests:
+      - docker-main-test
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
