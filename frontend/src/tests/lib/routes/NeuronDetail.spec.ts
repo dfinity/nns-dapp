@@ -13,6 +13,7 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { Principal } from "@dfinity/principal";
@@ -72,6 +73,10 @@ describe("NeuronDetail", () => {
     beforeEach(() => {
       fakeSnsAggregatorApi.addProjectWith({
         rootCanisterId: testSnsCanisterId.toText(),
+        lifecycle: SnsSwapLifecycle.Committed,
+      });
+      fakeSnsAggregatorApi.addProjectWith({
+        rootCanisterId: mockPrincipal.toText(),
         lifecycle: SnsSwapLifecycle.Committed,
       });
 

@@ -5,7 +5,6 @@ import {
   notifyParticipation,
   notifyPaymentFailure as notifyPaymentFailureApi,
 } from "$lib/api/sns-sale.api";
-import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import {
@@ -59,6 +58,7 @@ import type {
 } from "@dfinity/sns/dist/candid/sns_swap";
 import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import {
+  assertNonNullish,
   fromDefinedNullable,
   fromNullable,
   isNullish,
@@ -411,6 +411,7 @@ export const restoreSnsSaleParticipation = async ({
 
   await participateInSnsSale({
     rootCanisterId,
+    swapCanisterId,
     userCommitment,
     postprocess,
     updateProgress,
@@ -465,11 +466,15 @@ export const initiateSnsSaleParticipation = async ({
       amount_icp_e8s: amount.toE8s(),
     });
 
+    const swapCanisterId = project?.summary.swapCanisterId;
+    // Edge case: `initiateSnsSaleParticipation` can't be called if there is no swap canister id
+    assertNonNullish(swapCanisterId);
     const ticket = get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
     if (nonNullish(ticket)) {
       // Step 2. to finish
       const { success } = await participateInSnsSale({
         rootCanisterId,
+        swapCanisterId,
         userCommitment,
         postprocess,
         updateProgress,
@@ -665,18 +670,22 @@ const pollTransfer = ({
  */
 export const participateInSnsSale = async ({
   rootCanisterId,
+  swapCanisterId,
   postprocess,
   userCommitment,
   updateProgress,
   ticket,
-}: ParticipateInSnsSaleParameters & { ticket: Ticket }): Promise<{
+}: ParticipateInSnsSaleParameters & {
+  ticket: Ticket;
+  swapCanisterId: Principal;
+}): Promise<{
   success: boolean;
 }> => {
   let hasTooOldError = false;
   logWithTimestamp(
     "[sale]participateInSnsSale:",
     ticket,
-    rootCanisterId?.toText()
+    rootCanisterId.toText()
   );
 
   updateProgress(SaleStep.TRANSFER);
@@ -702,13 +711,6 @@ export const participateInSnsSale = async ({
     return { success: false };
   }
 
-  const {
-    canisterIds: { swapCanisterId },
-  } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
   const controller = identity.getPrincipal();
 
   try {

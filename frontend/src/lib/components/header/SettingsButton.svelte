@@ -1,20 +1,22 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import { i18n } from "$lib/stores/i18n";
-  import { logout } from "$lib/services/auth.services";
-  import { IconLogout } from "@dfinity/gix-components";
+  import { IconSettings } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   const dispatcher = createEventDispatcher();
-
-  const signOut = () => {
-    dispatcher("nnsLogoutTriggered");
-    logout({});
-  };
 </script>
 
-<button data-tid="logout" on:click={signOut} class="text">
-  <IconLogout />
-  {$i18n.header.logout}
+<button
+  data-tid="settings"
+  on:click={async () => {
+    await goto("/settings");
+    dispatcher("nnsLink");
+  }}
+  class="text"
+>
+  <IconSettings />
+  {$i18n.navigation.settings}
 </button>
 
 <style lang="scss">

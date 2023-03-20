@@ -1,4 +1,9 @@
-import type { SnsProposalData } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  type SnsProposalData,
+  type SnsProposalId,
+  type SnsTally,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 export const mockSnsProposal: SnsProposalData = {
@@ -43,4 +48,78 @@ export const mockSnsProposal: SnsProposalData = {
   is_eligible_for_rewards: true,
   executed_timestamp_seconds: BigInt(0),
   reward_event_end_timestamp_seconds: [],
+};
+
+const acceptedTally: SnsTally = {
+  no: BigInt(1),
+  yes: BigInt(10),
+  total: BigInt(11),
+  timestamp_seconds: BigInt(123455),
+};
+
+const rejectedTally: SnsTally = {
+  no: BigInt(10),
+  yes: BigInt(1),
+  total: BigInt(11),
+  timestamp_seconds: BigInt(123455),
+};
+
+/**
+ * Returns a proposal with the cusotmized parameters.
+ *
+ * For the status, the logic of the function is based on the code in `snsDecisionStatus` sns proposal util.
+ * Refecence: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L717
+ */
+export const createSnsProposal = ({
+  status,
+  proposalId,
+}: {
+  status: SnsProposalDecisionStatus;
+  proposalId: bigint;
+}): SnsProposalData => {
+  const id: [SnsProposalId] = [{ id: proposalId }];
+  switch (status) {
+    case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN:
+      return {
+        ...mockSnsProposal,
+        id,
+        decided_timestamp_seconds: BigInt(0),
+      };
+    case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED:
+      return {
+        ...mockSnsProposal,
+        id,
+        latest_tally: [acceptedTally],
+        decided_timestamp_seconds: BigInt(11223),
+        executed_timestamp_seconds: BigInt(0),
+        failed_timestamp_seconds: BigInt(0),
+      };
+    case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED:
+      return {
+        ...mockSnsProposal,
+        id,
+        latest_tally: [acceptedTally],
+        decided_timestamp_seconds: BigInt(11223),
+        executed_timestamp_seconds: BigInt(0),
+        failed_timestamp_seconds: BigInt(112231320),
+      };
+    case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED:
+      return {
+        ...mockSnsProposal,
+        id,
+        latest_tally: [acceptedTally],
+        decided_timestamp_seconds: BigInt(11223),
+        executed_timestamp_seconds: BigInt(112231320),
+        failed_timestamp_seconds: BigInt(0),
+      };
+    case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED:
+      return {
+        ...mockSnsProposal,
+        id,
+        latest_tally: [rejectedTally],
+        decided_timestamp_seconds: BigInt(11223),
+        executed_timestamp_seconds: BigInt(0),
+        failed_timestamp_seconds: BigInt(0),
+      };
+  }
 };
