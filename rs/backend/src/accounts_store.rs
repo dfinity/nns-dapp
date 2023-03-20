@@ -10,9 +10,10 @@ use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
+use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
-use icp_ledger::Operation::{self, Burn, Mint, Transfer};
+use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -24,7 +25,7 @@ use std::time::{Duration, SystemTime};
 
 type TransactionIndex = u64;
 
-#[derive(Default)]
+#[derive(Default, Debug, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts: HashMap<Vec<u8>, Account>,
@@ -43,13 +44,13 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8),      // Account Identifier + Sub Account Identifier
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
@@ -59,14 +60,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -79,7 +80,27 @@ pub struct NamedCanister {
     canister_id: CanisterId,
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
 #[derive(CandidType, Deserialize)]
+pub enum OldOperation {
+    Burn {
+        from: AccountIdentifier,
+        amount: Tokens,
+    },
+    Mint {
+        to: AccountIdentifier,
+        amount: Tokens,
+    },
+    Transfer {
+        from: AccountIdentifier,
+        to: AccountIdentifier,
+        amount: Tokens,
+        fee: Tokens,
+    },
+}
+
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct Transaction {
     transaction_index: TransactionIndex,
     block_height: BlockIndex,
@@ -89,20 +110,32 @@ struct Transaction {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
+#[derive(CandidType, Deserialize)]
+struct OldTransaction {
+    transaction_index: TransactionIndex,
+    block_height: BlockIndex,
+    timestamp: TimeStamp,
+    memo: Memo,
+    transfer: OldOperation,
+    transaction_type: Option<OldTransactionType>,
+}
+
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum TransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
     TopUpNeuron(PrincipalId, Memo),
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct CreateCanisterArgs {
     pub controller: PrincipalId,
     pub amount: Tokens,
     pub refund_address: AccountIdentifier,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize)]
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct TopUpCanisterArgs {
     pub principal: PrincipalId,
     pub canister_id: CanisterId,
@@ -110,7 +143,7 @@ pub struct TopUpCanisterArgs {
     pub refund_address: AccountIdentifier,
 }
 
-#[derive(Clone, CandidType, Deserialize)]
+#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct RefundTransactionArgs {
     pub recipient_principal: PrincipalId,
     pub from_sub_account: Subaccount,
@@ -125,6 +158,8 @@ pub enum TransactionType {
     Burn,
     Mint,
     Transfer,
+    Approve,
+    TransferFrom,
     StakeNeuron,
     StakeNeuronNotification,
     TopUpNeuron,
@@ -133,7 +168,22 @@ pub enum TransactionType {
     ParticipateSwap(CanisterId),
 }
 
-#[derive(Clone, CandidType, Deserialize)]
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
+#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
+pub enum OldTransactionType {
+    Burn,
+    Mint,
+    Transfer,
+    StakeNeuron,
+    StakeNeuronNotification,
+    TopUpNeuron,
+    CreateCanister,
+    TopUpCanister(CanisterId),
+    ParticipateSwap(CanisterId),
+}
+
+#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct NeuronDetails {
     account_identifier: AccountIdentifier,
     principal: PrincipalId,
@@ -310,15 +360,35 @@ impl AccountsStore {
                             to,
                             amount,
                             fee: _,
+                        }
+                        | TransferFrom {
+                            spender: _,
+                            from,
+                            to,
+                            amount,
+                            fee: _,
                         } => {
-                            if self.accounts.get(&to.to_vec()).is_some() {
-                                // If the recipient is a known account then the transaction must be a basic Transfer,
-                                // since for all the 'special' transaction types the recipient is not a user account
+                            let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
                                 TransactionType::Transfer
                             } else {
+                                TransactionType::TransferFrom
+                            };
+
+                            if self.accounts.get(&to.to_vec()).is_some() {
+                                // If the recipient is a known account then the transaction must be either Transfer or TransferFrom,
+                                // since for all the 'special' transaction types the recipient is not a user account
+                                default_transaction_type
+                            } else {
                                 let memo = transaction.memo;
-                                let transaction_type =
-                                    self.get_transaction_type(from, to, amount, memo, &caller, &canister_ids);
+                                let transaction_type = self.get_transaction_type(
+                                    from,
+                                    to,
+                                    amount,
+                                    memo,
+                                    &caller,
+                                    &canister_ids,
+                                    default_transaction_type,
+                                );
                                 let block_height = transaction.block_height;
                                 self.process_transaction_type(
                                     transaction_type,
@@ -332,6 +402,7 @@ impl AccountsStore {
                                 transaction_type
                             }
                         }
+                        Approve { .. } => TransactionType::Approve,
                     };
                     self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
                 }
@@ -567,18 +638,38 @@ impl AccountsStore {
                 to,
                 amount,
                 fee: _,
+            }
+            | TransferFrom {
+                from,
+                to,
+                spender: _,
+                amount,
+                fee: _,
             } => {
+                let default_transaction_type = if matches!(transfer, Transfer { .. }) {
+                    TransactionType::Transfer
+                } else {
+                    TransactionType::TransferFrom
+                };
+
                 if self.try_add_transaction_to_account(to, transaction_index) {
                     self.try_add_transaction_to_account(from, transaction_index);
                     should_store_transaction = true;
-                    transaction_type = Some(TransactionType::Transfer);
+                    transaction_type = Some(default_transaction_type);
                 } else if self.try_add_transaction_to_account(from, transaction_index) {
                     should_store_transaction = true;
                     if let Some(principal) = self.try_get_principal(&from) {
                         let canister_ids: Vec<CanisterId> =
                             self.get_canisters(principal).iter().map(|c| c.canister_id).collect();
-                        transaction_type =
-                            Some(self.get_transaction_type(from, to, amount, memo, &principal, &canister_ids));
+                        transaction_type = Some(self.get_transaction_type(
+                            from,
+                            to,
+                            amount,
+                            memo,
+                            &principal,
+                            &canister_ids,
+                            default_transaction_type,
+                        ));
                         self.process_transaction_type(
                             transaction_type.unwrap(),
                             principal,
@@ -597,6 +688,7 @@ impl AccountsStore {
                     );
                 }
             }
+            Approve { .. } => {} // TODO do we want to show Approvals in the NNS Dapp?
         }
 
         if should_store_transaction {
@@ -677,13 +769,33 @@ impl AccountsStore {
                     transfer: match transaction.transfer {
                         Burn { amount, from: _ } => TransferResult::Burn { amount },
                         Mint { amount, to: _ } => TransferResult::Mint { amount },
-                        Transfer { from, to, amount, fee } => {
+                        Transfer { from, to, amount, fee }
+                        | TransferFrom {
+                            from,
+                            to,
+                            spender: _,
+                            amount,
+                            fee,
+                        } => {
                             if from == request.account_identifier {
                                 TransferResult::Send { to, amount, fee }
                             } else {
                                 TransferResult::Receive { from, amount, fee }
                             }
                         }
+                        Approve {
+                            from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee,
+                        } => TransferResult::Approve {
+                            from,
+                            spender,
+                            allowance,
+                            expires_at,
+                            fee,
+                        },
                     },
                     transaction_type: transaction.transaction_type,
                 }
@@ -823,23 +935,31 @@ impl AccountsStore {
             let min_transaction_index = self.transactions.front().unwrap().transaction_index;
 
             for transaction in transactions {
-                match transaction.transfer {
-                    Burn { from, amount: _ } => self.prune_transactions_from_account(from, min_transaction_index),
-                    Mint { to, amount: _ } => self.prune_transactions_from_account(to, min_transaction_index),
+                let accounts = match transaction.transfer {
+                    Burn { from, amount: _ } => vec![from],
+                    Mint { to, amount: _ } => vec![to],
                     Transfer {
                         from,
                         to,
                         amount: _,
                         fee: _,
-                    } => {
-                        self.prune_transactions_from_account(from, min_transaction_index);
-                        self.prune_transactions_from_account(to, min_transaction_index);
                     }
+                    | TransferFrom {
+                        from,
+                        to,
+                        spender: _,
+                        amount: _,
+                        fee: _,
+                    } => vec![from, to],
+                    Approve { .. } => vec![],
+                };
+                for account in accounts {
+                    self.prune_transactions_from_account(account, min_transaction_index);
                 }
             }
         }
 
-        count_to_prune as u32
+        count_to_prune
     }
 
     pub fn enqueue_multi_part_transaction(
@@ -1057,6 +1177,7 @@ impl AccountsStore {
         None
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn get_transaction_type(
         &self,
         from: AccountIdentifier,
@@ -1065,9 +1186,12 @@ impl AccountsStore {
         memo: Memo,
         principal: &PrincipalId,
         canister_ids: &[CanisterId],
+        default_transaction_type: TransactionType,
     ) -> TransactionType {
+        // In case of the edge case that it's a transaction to itself
+        // use the default value passed when the function is called
         if from == to {
-            TransactionType::Transfer
+            default_transaction_type
         } else if self.neuron_accounts.contains_key(&to) {
             if self.is_stake_neuron_notification(memo, &from, &to, amount) {
                 TransactionType::StakeNeuronNotification
@@ -1084,10 +1208,10 @@ impl AccountsStore {
             } else if Self::is_stake_neuron_transaction(memo, &to, principal) {
                 TransactionType::StakeNeuron
             } else {
-                TransactionType::Transfer
+                default_transaction_type
             }
         } else {
-            TransactionType::Transfer
+            default_transaction_type
         }
     }
 
@@ -1285,17 +1409,93 @@ impl AccountsStore {
     }
 }
 
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
+impl TryFrom<TransactionType> for OldTransactionType {
+    type Error = &'static str;
+
+    fn try_from(value: TransactionType) -> Result<Self, Self::Error> {
+        match value {
+            TransactionType::Burn => Ok(OldTransactionType::Burn),
+            TransactionType::Mint => Ok(OldTransactionType::Mint),
+            TransactionType::Transfer => Ok(OldTransactionType::Transfer),
+            TransactionType::StakeNeuron => Ok(OldTransactionType::StakeNeuron),
+            TransactionType::StakeNeuronNotification => Ok(OldTransactionType::StakeNeuronNotification),
+            TransactionType::TopUpNeuron => Ok(OldTransactionType::TopUpNeuron),
+            TransactionType::CreateCanister => Ok(OldTransactionType::CreateCanister),
+            TransactionType::TopUpCanister(canister_id) => Ok(OldTransactionType::TopUpCanister(canister_id)),
+            TransactionType::ParticipateSwap(canister_id) => Ok(OldTransactionType::ParticipateSwap(canister_id)),
+            TransactionType::TransferFrom => Err("TransferFrom tx type not yet supported"),
+            TransactionType::Approve => Err("Approve tx type not yet supported"),
+        }
+    }
+}
+
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
+impl TryFrom<Operation> for OldOperation {
+    type Error = &'static str;
+
+    fn try_from(value: Operation) -> Result<Self, Self::Error> {
+        match value {
+            Operation::Approve {
+                from: _,
+                spender: _,
+                allowance: _,
+                expires_at: _,
+                fee: _,
+            } => Err("Approve operation not yet supported"),
+            Operation::TransferFrom {
+                from: _,
+                to: _,
+                spender: _,
+                amount: _,
+                fee: _,
+            } => Err("Approve operation not yet supported"),
+            Operation::Transfer { from, to, amount, fee } => Ok(OldOperation::Transfer { from, to, amount, fee }),
+            Operation::Burn { from, amount } => Ok(OldOperation::Burn { from, amount }),
+            Operation::Mint { to, amount } => Ok(OldOperation::Mint { to, amount }),
+        }
+    }
+}
+
+// TODO: Remove after safely upgrading canister
+// This was used for the migration to a new TransactionType and new Operation
+fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransaction> {
+    old_txs
+        .iter()
+        .map(|tx| OldTransaction {
+            transaction_index: tx.transaction_index,
+            block_height: tx.block_height,
+            timestamp: tx.timestamp,
+            memo: tx.memo,
+            transfer: OldOperation::try_from(tx.transfer.clone()).unwrap(),
+            transaction_type: match tx.transaction_type {
+                Some(tx_type) => match OldTransactionType::try_from(tx_type) {
+                    Ok(t) => Some(t),
+                    Err(_) => None,
+                },
+                None => None,
+            },
+        })
+        .collect()
+}
+
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
         // Encode with removed fields intact to make rolling back to
         // a version which still has the removed fields safe.
         let mptp_with_removed_fields =
             MultiPartTransactionsProcessorWithRemovedFields::from(&self.multi_part_transactions_processor);
+        // TODO: Remove after safely upgrading canister
+        // This was used for the migration to a new TransactionType and new Operation
+        let old_transactions = convert_transactions(&self.transactions);
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
-            &self.pending_transactions,
-            &self.transactions,
+            // TODO: Remove pending_transactions
+            HashMap::<(AccountIdentifier, AccountIdentifier), (OldTransactionType, u64)>::new(),
+            old_transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             mptp_with_removed_fields,
@@ -1501,6 +1701,13 @@ pub enum TransferResult {
     Receive {
         from: AccountIdentifier,
         amount: Tokens,
+        fee: Tokens,
+    },
+    Approve {
+        from: AccountIdentifier,
+        spender: AccountIdentifier,
+        allowance: SignedTokens,
+        expires_at: Option<TimeStamp>,
         fee: Tokens,
     },
 }

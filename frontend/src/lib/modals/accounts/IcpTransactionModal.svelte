@@ -19,6 +19,8 @@
   $: title =
     currentStep?.name === "Form"
       ? $i18n.accounts.send
+      : currentStep?.name === "QRCode"
+      ? $i18n.accounts.scan_qr_code
       : $i18n.accounts.you_are_sending;
 
   const dispatcher = createEventDispatcher();

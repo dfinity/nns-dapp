@@ -19,6 +19,7 @@ mod constants;
 mod ledger_sync;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
+mod perf;
 mod periodic_tasks_runner;
 mod proposals;
 mod state;
@@ -252,7 +253,7 @@ pub fn canister_heartbeat() {
 pub fn add_stable_asset() {
     over(candid_one, |asset_bytes: Vec<u8>| {
         let hash_bytes = hash_bytes(&asset_bytes);
-        match hex::encode(&hash_bytes).as_str() {
+        match hex::encode(hash_bytes).as_str() {
             "933c135529499e2ed6b911feb8e8824068dc545298b61b93ae813358b306e7a6" => {
                 // Canvaskit wasm.
                 insert_asset(

@@ -32,6 +32,7 @@
     watchSnsMetrics,
   } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -90,6 +91,7 @@
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: null,
     swapCommitment: null,
+    totalTokensSupply: null,
   });
 
   debugSelectedProjectStore(projectDetailStore);
@@ -154,6 +156,7 @@
       // set values as not found
       $projectDetailStore.summary = undefined;
       $projectDetailStore.swapCommitment = undefined;
+      $projectDetailStore.totalTokensSupply = undefined;
       return;
     }
     $projectDetailStore.summary =
@@ -171,6 +174,11 @@
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
         : undefined;
+
+    $projectDetailStore.totalTokensSupply =
+      rootCanisterId !== undefined
+        ? $snsTotalSupplyTokenAmountStore[rootCanisterId]
+        : undefined;
   };
 
   /**
@@ -178,6 +186,7 @@
    */
   $: $snsSummariesStore,
     $snsSwapCommitmentsStore,
+    $snsTotalSupplyTokenAmountStore,
     (async () => {
       if (rootCanisterId === undefined || rootCanisterId === null) {
         await goBack();

@@ -1,4 +1,4 @@
-import type { AuthStore } from "$lib/stores/auth.store";
+import type { AuthStoreData } from "$lib/stores/auth.store";
 import type {
   PostMessage,
   PostMessageDataResponse,
@@ -31,7 +31,7 @@ export const initAuthWorker = async () => {
   };
 
   return {
-    syncAuthIdle: (auth: AuthStore) => {
+    syncAuthIdle: (auth: AuthStoreData) => {
       if (!auth.identity) {
         authWorker.postMessage({ msg: "nnsStopIdleTimer" });
         return;

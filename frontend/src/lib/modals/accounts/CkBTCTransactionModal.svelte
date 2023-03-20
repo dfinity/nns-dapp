@@ -22,6 +22,7 @@
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
+  import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -42,6 +43,8 @@
       ? $i18n.accounts.send
       : currentStep?.name === "Progress"
       ? $i18n.ckbtc.sending_ckbtc_to_btc
+      : currentStep?.name === "QRCode"
+      ? $i18n.accounts.scan_qr_code
       : $i18n.accounts.you_are_sending;
 
   let modal: TransactionModal;
@@ -114,10 +117,17 @@
   };
 
   let userAmount: number | undefined = undefined;
-  const validateAmount: ValidateAmountFn = (
-    amount: number | undefined
-  ): string | undefined => {
-    userAmount = amount;
+
+  let validateAmount: ValidateAmountFn;
+  $: validateAmount = ({ amount, selectedAccount }) => {
+    assertCkBTCUserInputAmount({
+      networkBtc,
+      sourceAccount: selectedAccount,
+      amount,
+      transactionFee: transactionFee.toE8s(),
+      bitcoinEstimatedFee,
+    });
+
     return undefined;
   };
 </script>
@@ -134,6 +144,7 @@
   mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
   bind:selectedNetwork
   {validateAmount}
+  bind:amount={userAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value">

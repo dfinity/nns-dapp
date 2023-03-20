@@ -52,7 +52,7 @@ impl ContentEncoding {
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
-#[derive(Default)]
+#[derive(Default, Debug, Eq, PartialEq)]
 pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 
 impl From<&Assets> for AssetHashes {
@@ -318,8 +318,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64::encode(&certificate),
-            base64::encode(&serializer.into_inner())
+            base64::encode(certificate),
+            base64::encode(serializer.into_inner())
         ),
     )
 }

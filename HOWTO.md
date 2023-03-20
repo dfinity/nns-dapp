@@ -120,9 +120,20 @@ Yet, a proposal of with that `nnsFunction` won't be rendered properly until the 
   - If needed add the dependency (e.g. "ic-sns-swap") in the Cargo.toml (because the new proposal type is executed by
     new canister)
   - Add new payload type (e.g. `AddWasmRequest`) in `proposals.rs`
-  - If the payload needs to be transformed for display (e.g. if it is too large), define the type into which the payload must be transformed, then implement `From<OriginalPayloadType` for this new type. (see `NNS function 3 - AddNNSCanister`) (use `Trimmed` suffix to define transformed version)
+  - If the payload needs to be transformed for display (e.g. if it is too large), define the type into which the payload must be transformed, then implement `From<OriginalPayloadType` for this new type. (see `NNS function 3 - AddNNSCanister`) (use `HumanReadable` suffix to define transformed version)
   - Update the `match nns_function` expression to include the new function (use either identity or transform depending on if the payload needs to be transformed).
-- In case the payload uses `transform` instead of `identity` update the related types and `transform` function.
+    - `identity` suits for most of the cases (e.g.`1 => identity::<CreateSubnetPayload>(payload_bytes)`)
+      - Supports multiple types:
+        - `p2p_flow_endpoints : vec text;`
+        - `idkg_dealing_encryption_pk : opt vec nat8;`
+        - `node_ids : vec principal;`
+        - `variant { application; verified_application; system }`
+        - `type Gps = record { latitude : float32; longitude : float32 };`
+        - `registry_store_uri : opt record { text; text; nat64 }`
+    - For payload types that can not be shown in the raw form, transformation function needs to be created (e.g. wasm binary → hash string or hash bits → hash string). Common cases:
+      - root_wasm_hash : vec nat8; — format_bytes(&payload.root_wasm_hash)
+      - wasm : vec nat8; — calculate_hash_string(&payload.wasm_module);
+  - In case the payload uses `transform` instead of `identity` update the related types and `transform` function.
 - Build: `cargo build`
 - Deploy and test on available proposals
 

@@ -7,7 +7,7 @@
   } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";
-  import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
+  import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
 
   export let testComponent: typeof SvelteComponent;
   export let account: Account | undefined;
@@ -28,4 +28,4 @@
 
 <svelte:component this={testComponent} />
 
-<CkBTCWalletModals />
+<CkBTCAccountsModals />

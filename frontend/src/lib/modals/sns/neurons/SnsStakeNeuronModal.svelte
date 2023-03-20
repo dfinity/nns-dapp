@@ -48,8 +48,8 @@
           mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
         ) / E8S_PER_ICP
       : undefined;
-  let checkMinimumStake: ValidateAmountFn = () => undefined;
-  $: checkMinimumStake = (amount: number | undefined) => {
+  let checkMinimumStake: ValidateAmountFn;
+  $: checkMinimumStake = ({ amount }) => {
     if (
       nonNullish(amount) &&
       nonNullish(minimumStake) &&

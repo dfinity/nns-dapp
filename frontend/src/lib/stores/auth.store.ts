@@ -9,9 +9,10 @@ import { createAuthClient } from "$lib/utils/auth.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
+import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
-export interface AuthStore {
+export interface AuthStoreData {
   identity: Identity | undefined | null;
 }
 
@@ -46,8 +47,14 @@ const getIdentityProvider = () => {
  * note: clearing idb auth keys does not happen in the state management but afterwards in its caller function (see <Logout/>)
  *
  */
-const initAuthStore = () => {
-  const { subscribe, set, update } = writable<AuthStore>({
+export interface AuthStore extends Readable<AuthStoreData> {
+  sync: () => Promise<void>;
+  signIn: (onError: (error?: string) => void) => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
+const initAuthStore = (): AuthStore => {
+  const { subscribe, set, update } = writable<AuthStoreData>({
     identity: undefined,
   });
 
@@ -73,7 +80,7 @@ const initAuthStore = () => {
         }),
         maxTimeToLive: AUTH_SESSION_DURATION,
         onSuccess: () => {
-          update((state: AuthStore) => ({
+          update((state: AuthStoreData) => ({
             ...state,
             identity: authClient?.getIdentity(),
           }));
@@ -94,7 +101,7 @@ const initAuthStore = () => {
       // This fix a "sign in -> sign out -> sign in again" flow without window reload.
       authClient = null;
 
-      update((state: AuthStore) => ({
+      update((state: AuthStoreData) => ({
         ...state,
         identity: null,
       }));

@@ -27,9 +27,12 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import type { Subscriber } from "svelte/store";
 import { get } from "svelte/store";
+import { selectedUniverseIdStore } from "../../../lib/derived/selected-universe.derived";
 import en from "../../mocks/i18n.mock";
 import { waitModalIntroEnd } from "../../mocks/modal.mock";
+import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -91,6 +94,19 @@ describe("SnsWallet", () => {
       jest
         .spyOn(snsAccountsStore, "subscribe")
         .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+
+      jest
+        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
+        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+
+      jest
+        .spyOn(selectedUniverseIdStore, "subscribe")
+        .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+          run(mockPrincipal);
+          return () => undefined;
+        });
+
+      page.mock({ data: { universe: mockPrincipal.toText() } });
     });
 
     afterAll(() => jest.clearAllMocks());
@@ -129,7 +145,10 @@ describe("SnsWallet", () => {
     }) => {
       const { container, getByTestId } = result;
 
+      await waitFor(expect(getByTestId(testId)).not.toBeNull);
+
       const button = getByTestId(testId) as HTMLButtonElement;
+
       await fireEvent.click(button);
 
       await waitFor(() =>
@@ -153,8 +172,13 @@ describe("SnsWallet", () => {
       });
     });
 
+    const modalProps = {
+      ...props,
+      testComponent: SnsWallet,
+    };
+
     it("should open receive modal", async () => {
-      const result = render(SnsWallet, props);
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
@@ -169,7 +193,7 @@ describe("SnsWallet", () => {
         "loadSnsAccountTransactions"
       );
 
-      const result = render(SnsWallet, props);
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
@@ -189,7 +213,7 @@ describe("SnsWallet", () => {
     });
 
     it("should display receive modal information", async () => {
-      const result = render(SnsWallet, props);
+      const result = render(AccountsTest, { props: modalProps });
 
       await testModal({ result, testId: "receive-sns" });
 
