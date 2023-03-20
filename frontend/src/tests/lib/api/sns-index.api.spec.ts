@@ -1,6 +1,6 @@
 import { getSnsTransactions } from "$lib/api/sns-index.api";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { rootCanisterIdMock } from "../../mocks/sns.api.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 const getTransactionsSpy = jest.fn().mockResolvedValue({

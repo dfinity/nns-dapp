@@ -3,11 +3,11 @@
  */
 
 import WalletActions from "$lib/components/accounts/WalletActions.svelte";
-import { render } from "@testing-library/svelte";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { render } from "@testing-library/svelte";
 import WalletContextTest from "./WalletContextTest.svelte";
 
 describe("WalletActions", () => {

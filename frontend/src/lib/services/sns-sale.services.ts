@@ -7,13 +7,14 @@ import {
 } from "$lib/api/sns-sale.api";
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
-import { syncAccounts } from "$lib/services/accounts.services";
+import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
-import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
@@ -22,13 +23,18 @@ import { SaleStep } from "$lib/types/sale";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { validParticipation } from "$lib/utils/projects.utils";
+import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import {
   getSwapCanisterAccount,
   isInternalRefreshBuyerTokensError,
 } from "$lib/utils/sns.utils";
-import { poll, pollingLimit } from "$lib/utils/utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { toastsStore } from "@dfinity/gix-components";
 import {
   ICPToken,
   InsufficientFundsError,
@@ -70,48 +76,41 @@ import { formatToken } from "../utils/token.utils";
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
   if (nonNullish(toastId)) {
-    toastsStore.hide(toastId);
+    toastsHide(toastId);
     toastId = undefined;
   }
 };
 
-const shouldStopPollingTicket =
-  (rootCanisterId: Principal) =>
-  (err: unknown): boolean => {
-    const store = get(snsTicketsStore)[rootCanisterId.toText()];
-    // Exit if polling is not enabled
-    if (nonNullish(store) && !store.keepPolling) {
-      return true;
-    }
-    // We want to stop polling if the error is a known error
-    if (err instanceof SnsSwapGetOpenTicketError) {
-      return true;
-    }
-    // Generic error, maybe a network error
-    // We want to keep trying.
-    if (isNullish(toastId)) {
-      toastId = toastsShow({
-        labelKey: "sns_project_detail.getting_sns_open_ticket",
-        level: "info",
-        spinner: true,
-      });
-    }
-    return false;
-  };
+const shouldStopPollingTicket = (err: unknown): boolean => {
+  // We want to stop polling if the error is a known error
+  if (err instanceof SnsSwapGetOpenTicketError) {
+    return true;
+  }
+  // Generic error, maybe a network error
+  // We want to keep trying.
+  if (isNullish(toastId)) {
+    toastId = toastsShow({
+      labelKey: "sns_project_detail.getting_sns_open_ticket",
+      level: "info",
+      spinner: true,
+    });
+  }
+  return false;
+};
 
 const WAIT_FOR_TICKET_MILLIS = SALE_PARTICIPATION_RETRY_SECONDS * 1_000;
 // TODO: Solve problem with importing from sns.constants.ts
 const MAX_ATTEMPS_FOR_TICKET = 50;
 const SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE = 6;
+const pollGetOpenTicketId = Symbol("poll-open-ticket");
 // Export for testing purposes
+export const cancelPollGetOpenTicket = () => cancelPoll(pollGetOpenTicketId);
 const pollGetOpenTicket = async ({
-  rootCanisterId,
   swapCanisterId,
   identity,
   certified,
   maxAttempts,
 }: {
-  rootCanisterId: Principal;
   swapCanisterId: Principal;
   identity: Identity;
   certified: boolean;
@@ -127,10 +126,11 @@ const pollGetOpenTicket = async ({
           swapCanisterId,
           certified,
         }),
-      shouldExit: shouldStopPollingTicket(rootCanisterId),
+      shouldExit: shouldStopPollingTicket,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       maxAttempts,
       useExponentialBackoff: true,
+      pollId: pollGetOpenTicketId,
       failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
     });
   } catch (error: unknown) {
@@ -170,7 +170,6 @@ export const loadOpenTicket = async ({
     const ticket = await pollGetOpenTicket({
       identity,
       swapCanisterId,
-      rootCanisterId,
       certified,
       maxAttempts,
     });
@@ -189,10 +188,8 @@ export const loadOpenTicket = async ({
 
     logWithTimestamp("[sale]loadOpenTicket:", ticket);
   } catch (err) {
-    const store = get(snsTicketsStore)[rootCanisterId.toText()];
-    // Do not show errors if the user has stopped polling.
-    if (!store?.keepPolling) {
-      hidePollingToast();
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
       return;
     }
 
@@ -201,7 +198,6 @@ export const loadOpenTicket = async ({
     snsTicketsStore.setTicket({
       rootCanisterId,
       ticket: null,
-      keepPolling: false,
     });
 
     if (err instanceof SnsSwapGetOpenTicketError) {
@@ -221,7 +217,7 @@ export const loadOpenTicket = async ({
         err,
       });
     }
-
+  } finally {
     // There is an issue with toastStore.hide if we show a new toast right after.
     // The workaround was to show the error toast first and then hide the info toast.
     // TODO: solve the issue with toastStore.hide
@@ -247,6 +243,12 @@ const handleNewSaleTicketError = ({
       case NewSaleTicketResponseErrorType.TYPE_SALE_CLOSED:
         toastsError({
           labelKey: "error__sns.sns_sale_closed",
+          err,
+        });
+        return;
+      case NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN:
+        toastsError({
+          labelKey: "error__sns.sns_sale_not_open",
           err,
         });
         return;
@@ -324,7 +326,6 @@ const pollNewSaleTicket = async (params: {
     failuresBeforeHighLoadMessage: SALE_FAILURES_BEFORE_HIGHlOAD_MESSAGE,
   });
 
-// TODO(sale): rename to loadNewSaleTicket
 /**
  * **SHOULD NOT BE CALLED FROM UI**
  * (exported only for testing purposes)
@@ -333,7 +334,7 @@ const pollNewSaleTicket = async (params: {
  * @param {E8s} amount_icp_e8s
  * @param {Uint8Array} subaccount
  */
-export const newSaleTicket = async ({
+export const loadNewSaleTicket = async ({
   rootCanisterId,
   amount_icp_e8s,
   subaccount,
@@ -369,7 +370,7 @@ export const newSaleTicket = async ({
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
-  get(snsProjectsStore)?.find(
+  get(snsProjectsStore).find(
     ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
   );
 
@@ -413,6 +414,7 @@ export const restoreSnsSaleParticipation = async ({
     userCommitment,
     postprocess,
     updateProgress,
+    ticket,
   });
 };
 
@@ -455,7 +457,7 @@ export const initiateSnsSaleParticipation = async ({
     // Step 1.
     // Create a sale ticket
     const subaccount = "subAccount" in account ? account.subAccount : undefined;
-    await newSaleTicket({
+    await loadNewSaleTicket({
       rootCanisterId,
       subaccount: isNullish(subaccount)
         ? undefined
@@ -471,6 +473,7 @@ export const initiateSnsSaleParticipation = async ({
         userCommitment,
         postprocess,
         updateProgress,
+        ticket,
       });
 
       return { success };
@@ -655,7 +658,7 @@ const pollTransfer = ({
  *
  * 1. nnsLedger.transfer
  * 2. snsSale.notifyParticipation (refresh_buyer_tokens)
- * 3. syncAccounts
+ * 3. load new balance in store
  *
  * @param snsTicket
  * @param rootCanisterId
@@ -665,15 +668,11 @@ export const participateInSnsSale = async ({
   postprocess,
   userCommitment,
   updateProgress,
-}: ParticipateInSnsSaleParameters): Promise<{ success: boolean }> => {
+  ticket,
+}: ParticipateInSnsSaleParameters & { ticket: Ticket }): Promise<{
+  success: boolean;
+}> => {
   let hasTooOldError = false;
-  const ticket = get(snsTicketsStore)[rootCanisterId.toText()]?.ticket;
-  // skip if there is no more ticket (e.g. on retry)
-  if (isNullish(ticket)) {
-    logWithTimestamp("[sale] skip participation - no ticket");
-    return { success: false };
-  }
-
   logWithTimestamp(
     "[sale]participateInSnsSale:",
     ticket,
@@ -796,11 +795,27 @@ export const participateInSnsSale = async ({
   }
 
   // Step 4.
-  logWithTimestamp("[sale] 3. syncAccounts");
+  logWithTimestamp("[sale] 3. loadBalance");
 
   updateProgress(SaleStep.RELOAD);
 
-  await syncAccounts();
+  // Ticket return the account as ICRC. We can't compare identifiers directly.
+  // If there is no subaccount, then the account is the main account.
+  // Otherwise, we look for the matching subaccount.
+  const sourceAccount = get(nnsAccountsListStore).find((account) => {
+    if (isNullish(subaccount)) {
+      return account.type === "main";
+    }
+    if (nonNullish(account.subAccount)) {
+      return (
+        subaccountToHexString(subaccount) ===
+        subaccountToHexString(Uint8Array.from(account.subAccount))
+      );
+    }
+  });
+  if (nonNullish(sourceAccount)) {
+    await loadBalance({ accountIdentifier: sourceAccount.identifier });
+  }
 
   logWithTimestamp("[sale] done");
 

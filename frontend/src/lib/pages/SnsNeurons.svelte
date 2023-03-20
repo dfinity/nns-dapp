@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import {
     sortedSnsCFNeuronsStore,
@@ -66,13 +67,36 @@
   $: summary = $snsProjectSelectedStore?.summary;
 </script>
 
-{#if $sortedSnsUserNeuronsStore.length > 0 || loading}
-  <div class="card-grid" data-tid="sns-neurons-body">
-    {#if loading}
-      <SkeletonCard />
-      <SkeletonCard />
-    {:else}
-      {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+<TestIdWrapper testId="sns-neurons-component">
+  {#if $sortedSnsUserNeuronsStore.length > 0 || loading}
+    <div class="card-grid" data-tid="sns-neurons-body">
+      {#if loading}
+        <SkeletonCard />
+        <SkeletonCard />
+      {:else}
+        {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
+          <SnsNeuronCard
+            role="link"
+            {neuron}
+            ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={async () => await goToNeuronDetails(neuron)}
+          />
+        {/each}
+      {/if}
+    </div>
+  {/if}
+
+  {#if $sortedSnsCFNeuronsStore.length > 0}
+    <h2
+      data-tid="community-fund-title"
+      class={`bottom-margin ${
+        $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
+      }`}
+    >
+      {$i18n.sns_neuron_detail.community_fund_section}
+    </h2>
+    <div class="card-grid">
+      {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
         <SnsNeuronCard
           role="link"
           {neuron}
@@ -80,38 +104,17 @@
           on:click={async () => await goToNeuronDetails(neuron)}
         />
       {/each}
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
 
-{#if $sortedSnsCFNeuronsStore.length > 0}
-  <h2
-    data-tid="community-fund-title"
-    class={`bottom-margin ${
-      $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
-    }`}
-  >
-    {$i18n.sns_neuron_detail.community_fund_section}
-  </h2>
-  <div class="card-grid">
-    {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
-      <SnsNeuronCard
-        role="link"
-        {neuron}
-        ariaLabel={$i18n.neurons.aria_label_neuron_card}
-        on:click={async () => await goToNeuronDetails(neuron)}
-      />
-    {/each}
-  </div>
-{/if}
-
-{#if !loading && empty && nonNullish(summary)}
-  <EmptyMessage
-    >{replacePlaceholders($i18n.sns_neurons.text, {
-      $project: summary.metadata.name,
-    })}</EmptyMessage
-  >
-{/if}
+  {#if !loading && empty && nonNullish(summary)}
+    <EmptyMessage
+      >{replacePlaceholders($i18n.sns_neurons.text, {
+        $project: summary.metadata.name,
+      })}</EmptyMessage
+    >
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   .top-margin {

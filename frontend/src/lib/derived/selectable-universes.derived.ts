@@ -14,14 +14,14 @@ export const NNS_UNIVERSE: Universe = {
 };
 
 const universesStore = derived<
-  [Readable<SnsFullProject[] | undefined>, Readable<Universe[]>],
+  [Readable<SnsFullProject[]>, Readable<Universe[]>],
   Universe[]
 >(
   [snsProjectsCommittedStore, ckBTCUniversesStore],
-  ([projects, ckBTCUniverses]: [SnsFullProject[] | undefined, Universe[]]) => [
+  ([projects, ckBTCUniverses]: [SnsFullProject[], Universe[]]) => [
     NNS_UNIVERSE,
     ...ckBTCUniverses,
-    ...(projects?.map(({ rootCanisterId, summary }) => ({
+    ...(projects.map(({ rootCanisterId, summary }) => ({
       canisterId: rootCanisterId.toText(),
       summary,
     })) ?? []),

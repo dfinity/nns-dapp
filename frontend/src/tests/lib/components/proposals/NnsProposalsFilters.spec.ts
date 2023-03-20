@@ -11,14 +11,14 @@ import { authStore } from "$lib/stores/auth.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 
 describe("NnsProposalsFilters", () => {
   const shouldRenderFilter = ({

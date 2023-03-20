@@ -44,7 +44,7 @@ export type BusyStateInitiatorType =
   | "load-sns-accounts"
   | "get-btc-address"
   | "update-ckbtc-balance"
-  | "reload-ckbtc-account";
+  | "reload-receive-account";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

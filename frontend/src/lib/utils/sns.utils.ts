@@ -255,6 +255,28 @@ export const hasOpenTicketInProcess = ({
     return { status: "none" };
   }
 
-  // `undefined` means that we could still be polling for the ticket.
-  return { status: projectTicketData.keepPolling ? "polling" : "none" };
+  // As long as we don't have a known state, we assume we're fetching the data.
+  return { status: "loading" };
+};
+
+/**
+ * Parse the `sale_buyer_count` value from metrics text.
+ *
+ * @example text
+ * ...
+ * # TYPE sale_buyer_count gauge
+ * sale_buyer_count 33 1677707139456
+ * # HELP sale_cf_participants_count
+ * ...
+ */
+export const parseSnsSwapSaleBuyerCount = (
+  text: string
+): number | undefined => {
+  const value = Number(
+    text
+      .split("\n")
+      ?.find((line) => line.startsWith("sale_buyer_count "))
+      ?.split(/\s/)?.[1]
+  );
+  return isNaN(value) ? undefined : value;
 };

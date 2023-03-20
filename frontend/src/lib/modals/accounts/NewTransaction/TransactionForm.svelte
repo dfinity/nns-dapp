@@ -19,7 +19,10 @@
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
   import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    TransactionNetwork,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
 
   // Tested in the TransactionModal
@@ -39,9 +42,7 @@
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
-  export let validateAmount: (
-    amount: number | undefined
-  ) => string | undefined = () => undefined;
+  export let validateAmount: ValidateAmountFn = () => undefined;
 
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
@@ -64,7 +65,11 @@
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
-    invalidAddress(selectedDestinationAddress) ||
+    invalidAddress({
+      address: selectedDestinationAddress,
+      network: selectedNetwork,
+      rootCanisterId,
+    }) ||
     errorMessage !== undefined ||
     (mustSelectNetwork && isNullish(selectedNetwork));
 
@@ -81,7 +86,7 @@
         account: selectedAccount,
         amountE8s: tokens.toE8s() + transactionFee.toE8s(),
       });
-      errorMessage = validateAmount(amount);
+      errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
       if (error instanceof NotEnoughAmountError) {
         errorMessage = $i18n.error.insufficient_funds;
@@ -142,11 +147,17 @@
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
+      {selectedNetwork}
+      on:nnsOpenQRCodeReader
     />
   {/if}
 
   {#if mustSelectNetwork}
-    <SelectNetworkDropdown bind:selectedNetwork universeId={rootCanisterId} />
+    <SelectNetworkDropdown
+      bind:selectedNetwork
+      universeId={rootCanisterId}
+      {selectedDestinationAddress}
+    />
   {/if}
 
   <div class="amount">
@@ -191,6 +202,7 @@
 
   .amount {
     margin-top: var(--padding);
+    --input-error-wrapper-padding: 0 0 var(--padding-2x);
   }
 
   .account-identifier {

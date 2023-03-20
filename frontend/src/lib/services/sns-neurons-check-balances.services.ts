@@ -1,9 +1,9 @@
 import {
   claimNeuron,
   getNeuronBalance,
+  getSnsNeuron,
   refreshNeuron,
 } from "$lib/api/sns-governance.api";
-import { getSnsNeuron } from "$lib/api/sns.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";

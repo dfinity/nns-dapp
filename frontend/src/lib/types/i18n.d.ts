@@ -30,6 +30,9 @@ interface I18nCore {
   next: string;
   principal_is: string;
   done: string;
+  this_may_take_a_few_minutes: string;
+  do_not_close: string;
+  finish: string;
 }
 
 interface I18nError {
@@ -60,8 +63,10 @@ interface I18nError {
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
+  query_balance: string;
   accounts_not_found_poll: string;
   account_not_found: string;
+  account_not_reload: string;
   transactions_not_found: string;
   canister_not_found: string;
   fail: string;
@@ -117,6 +122,7 @@ interface I18nError {
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
   canister_invalid_transaction: string;
+  qrcode_camera_error: string;
 }
 
 interface I18nWarning {
@@ -162,6 +168,7 @@ interface I18nAccounts {
   icp_transaction_description: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
+  ckbtc_to_btc_transaction_description: string;
   add_account: string;
   new_linked_title: string;
   new_linked_subtitle: string;
@@ -215,15 +222,18 @@ interface I18nAccounts {
   send_now: string;
   select: string;
   manual: string;
+  scan_qr_code_alt: string;
+  scan_qr_code: string;
   no_account_select: string;
   current_balance_detail: string;
   network: string;
   network_icp_ckbtc: string;
   network_icp_cktestbtc: string;
-  network_bitcoin: string;
-  network_test_bitcoin: string;
+  network_btc_mainnet: string;
+  network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
+  receive_account: string;
 }
 
 interface I18nNeurons {
@@ -236,7 +246,7 @@ interface I18nNeurons {
   merge_neurons_edit_selection: string;
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
-  merge_neurons_modal_with: string;
+  merge_neurons_modal_into: string;
   set_dissolve_delay: string;
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
@@ -297,6 +307,9 @@ interface I18nNeurons {
   top_up_neuron: string;
   top_up_description: string;
   community_fund_title: string;
+  merge_neurons_select_info: string;
+  merge_neurons_source_neuron_disappear: string;
+  merge_neurons_more_info: string;
   stake_amount: string;
 }
 
@@ -437,6 +450,12 @@ interface I18nWallet {
   direction_from: string;
   direction_to: string;
   no_transactions: string;
+  icp_qrcode_aria_label: string;
+  sns_qrcode_aria_label: string;
+  icp_receive_note_title: string;
+  icp_receive_note_text: string;
+  sns_receive_note_title: string;
+  sns_receive_note_text: string;
 }
 
 interface I18nBusy_screen {
@@ -608,6 +627,7 @@ interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
   total_tokens: string;
+  total_tokens_supply: string;
   min_commitment: string;
   max_commitment: string;
   current_overall_commitment: string;
@@ -647,8 +667,6 @@ interface I18nSns_sale {
   step_transfer: string;
   step_notify: string;
   step_reload: string;
-  this_may_take_a_few_minutes: string;
-  do_not_close: string;
   connecting_sale_canister: string;
 }
 
@@ -866,14 +884,23 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  address: string;
-  btc_receive_note: string;
-  ckbtc_receive_note: string;
+  btc_receive_note_title: string;
+  ckbtc_receive_note_title: string;
+  btc_receive_note_text: string;
+  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
+  step_initialization: string;
+  step_locking_ckbtc: string;
+  step_send_btc: string;
+  step_reload: string;
+  sending_ckbtc_to_btc: string;
+  estimated_receive_time: string;
+  about_thirty_minutes: string;
+  transaction_success_about_thirty_minutes: string;
 }
 
 interface I18nError__ckbtc {
@@ -891,6 +918,13 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
+  retrieve_btc_min_amount: string;
+}
+
+interface I18nFeature_flags_prompt {
+  override_true: string;
+  override_false: string;
+  remove_override: string;
 }
 
 interface I18nNeuron_state {
@@ -1038,6 +1072,7 @@ interface I18nNns_functions {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18nNns_functions_description {
@@ -1079,6 +1114,7 @@ interface I18nNns_functions_description {
   UpdateAllowedPrincipals: string;
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
+  UpdateElectedReplicaVersions: string;
 }
 
 interface I18n {
@@ -1129,6 +1165,7 @@ interface I18n {
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
   error__ckbtc: I18nError__ckbtc;
+  feature_flags_prompt: I18nFeature_flags_prompt;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -1,8 +1,8 @@
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { nervousSystemFunctionMock } from "../../mocks/sns-functions.mock";
 
 describe("sns functions store", () => {
   afterEach(() => snsFunctionsStore.reset());

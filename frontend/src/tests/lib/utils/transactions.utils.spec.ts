@@ -1,8 +1,12 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountTransactionType } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  TransactionNetwork,
+} from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
+  isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
   showTransactionFee,
@@ -10,17 +14,17 @@ import {
   transactionName,
   transactionType,
 } from "$lib/utils/transactions.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
-} from "../../mocks/transaction.mock";
+} from "$tests/mocks/transaction.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {
@@ -363,6 +367,24 @@ describe("transactions-utils", () => {
           tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
+    });
+  });
+
+  describe("isTransactionNetworkBtc", () => {
+    it("should be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_MAINNET)
+      ).toBeTruthy();
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.BTC_TESTNET)
+      ).toBeTruthy();
+    });
+
+    it("should not be network Btc", () => {
+      expect(
+        isTransactionNetworkBtc(TransactionNetwork.ICP_CKTESTBTC)
+      ).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP_CKBTC)).toBeFalsy();
     });
   });
 });

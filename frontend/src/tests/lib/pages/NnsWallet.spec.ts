@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -9,37 +10,59 @@ import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
-} from "../../utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/svelte";
+import { tick, type SvelteComponent } from "svelte";
+import en from "../../mocks/i18n.mock";
+import {
+  modalToolbarSelector,
+  waitModalIntroEnd,
+} from "../../mocks/modal.mock";
+import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/accounts.api");
 jest.mock("$lib/api/ledger.api");
 
-jest.mock("$lib/services/accounts.services", () => ({
-  ...(jest.requireActual("$lib/services/accounts.services") as object),
-  getAccountTransactions: jest.fn(),
-}));
+const blockedApiPaths = [
+  "$lib/api/nns-dapp.api",
+  "$lib/api/accounts.api",
+  "$lib/api/ledger.api",
+];
 
 describe("NnsWallet", () => {
+  blockAllCallsTo(blockedApiPaths);
+
   const props = {
     accountIdentifier: mockMainAccount.identifier,
   };
+  const mainBalanceE8s = BigInt(10_000_000);
 
   beforeEach(() => {
+    jest.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest
+      .spyOn(ledgerApi, "queryAccountBalance")
+      .mockResolvedValue(mainBalanceE8s);
+    jest.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
   const testToolbarButton = ({
@@ -61,10 +84,6 @@ describe("NnsWallet", () => {
     beforeEach(() => {
       cancelPollAccounts();
       accountsStore.reset();
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -125,10 +144,16 @@ describe("NnsWallet", () => {
       await waitFor(() => testToolbarButton({ container, disabled: false }));
     });
 
-    const testModal = async (container: HTMLElement) => {
-      const button = container.querySelector(
-        "footer div.toolbar button"
-      ) as HTMLButtonElement;
+    const testModal = async ({
+      result,
+      testId,
+    }: {
+      result: RenderResult<SvelteComponent>;
+      testId: string;
+    }) => {
+      const { container, getByTestId } = result;
+
+      const button = getByTestId(testId) as HTMLButtonElement;
       await fireEvent.click(button);
 
       await waitFor(() =>
@@ -136,16 +161,23 @@ describe("NnsWallet", () => {
       );
     };
 
-    it("should open transaction modal", async () => {
-      const { container } = render(NnsWallet, props);
+    const modalProps = {
+      ...props,
+      testComponent: NnsWallet,
+    };
 
-      await testModal(container);
+    it("should open transaction modal", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await testModal({ result, testId: "new-transaction" });
     });
 
     it("should open transaction modal on step select destination because selected account is current account", async () => {
-      const { container, getByTestId } = render(NnsWallet, props);
+      const result = render(AccountsTest, { props: modalProps });
 
-      await testModal(container);
+      await testModal({ result, testId: "new-transaction" });
+
+      const { getByTestId } = result;
 
       await waitFor(() =>
         expect(getByTestId("transaction-step-1")).toBeInTheDocument()
@@ -156,6 +188,53 @@ describe("NnsWallet", () => {
       const { getByTestId } = render(NnsWallet, props);
 
       expect(getByTestId("skeleton-card")).toBeInTheDocument();
+    });
+
+    it("should open receive modal", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await testModal({ result, testId: "receive-icp" });
+
+      const { getByTestId } = result;
+
+      expect(getByTestId("receive-modal")).not.toBeNull();
+    });
+
+    it("should display receive modal information", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await testModal({ result, testId: "receive-icp" });
+
+      const { getByText } = result;
+
+      expect(getByText(en.wallet.icp_receive_note_title)).toBeInTheDocument();
+      expect(getByText(en.wallet.icp_receive_note_text)).toBeInTheDocument();
+    });
+
+    it("should reload account after finish receiving tokens", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await testModal({ result, testId: "receive-icp" });
+
+      const { getByTestId, container } = result;
+
+      await waitModalIntroEnd({ container, selector: modalToolbarSelector });
+
+      await waitFor(() =>
+        expect(accountsApi.getTransactions).toBeCalledTimes(2)
+      );
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
+      await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
+
+      fireEvent.click(
+        getByTestId("reload-receive-account") as HTMLButtonElement
+      );
+
+      await waitFor(() =>
+        expect(accountsApi.getTransactions).toBeCalledTimes(4)
+      );
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
   });
 

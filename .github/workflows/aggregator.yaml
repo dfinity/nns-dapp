@@ -54,8 +54,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Thu Feb 23 with dfx 0.13.1
-          ref: '34133493140b01b14a07c1b9fa5e9aee7290ea6d'
+          # Version from Mar 17 2023
+          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -134,6 +134,43 @@ jobs:
             cat ,logs
             exit 1
           }
+      - name: Upgrade the aggregator to self with a slow refresh rate
+        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+      - name: Expect the first page of data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the latest data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the upstream data to be retained over the upgrade
+        run: |
+          ./scripts/sns/aggregator/get_stable_data
+          expect=12
+          actual="$(jq '.sns_cache.upstream_data | length' stable_data.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
+          }
+      - name: Downgrade to prod and upgrade back again
+        run: |
+          set -euxo pipefail
+          git fetch --depth 1 origin tag aggregator-prod
+          diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
+          if test -n "${diff:-}"
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm --verbose
+          else echo "Skipping test as there are no relevant code changes"
+          fi
       - name: Stop replica
         run: dfx stop
   aggregator-pass:

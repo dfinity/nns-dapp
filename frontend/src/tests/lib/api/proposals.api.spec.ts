@@ -2,22 +2,20 @@ import {
   queryProposal,
   queryProposalPayload,
   queryProposals,
-  registerVote,
 } from "$lib/api/proposals.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { GovernanceCanister, Vote } from "@dfinity/nns";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { GovernanceCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import { MockGovernanceCanister } from "../../mocks/governance.canister.mock";
-import { mockProposals } from "../../mocks/proposals.store.mock";
 
 describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
 
   let spyListProposals;
-  let spyRegisterVote;
 
   beforeEach(() => {
     jest
@@ -25,7 +23,6 @@ describe("proposals-api", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
-    spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -78,22 +75,6 @@ describe("proposals-api", () => {
           limit: 1,
         },
       });
-    });
-  });
-
-  describe("registerVote", () => {
-    const neuronId = BigInt(0);
-    const identity = mockIdentity;
-    const proposalId = BigInt(0);
-
-    it("should call the canister to cast vote neuronIds count", async () => {
-      await registerVote({
-        neuronId: neuronId,
-        proposalId,
-        vote: Vote.Yes,
-        identity,
-      });
-      expect(spyRegisterVote).toHaveBeenCalled();
     });
   });
 

@@ -26,7 +26,7 @@ import {
 } from "$lib/utils/error.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { getAccountIdentity, syncAccounts } from "./accounts.services";
+import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
@@ -84,9 +84,9 @@ export const createCanister = async ({
       fromSubAccount: account.subAccount,
     });
     await listCanisters({ clearBeforeQuery: false });
-    // We don't wait for `syncAccounts` to finish to give a better UX to the user.
-    // `syncAccounts` might be slow since it loads all accounts and balances.
-    syncAccounts();
+    // We don't wait for `loadBalance` to finish to give a better UX to the user.
+    // update calls might be slow.
+    loadBalance({ accountIdentifier: account.identifier });
     return canisterId;
   } catch (error: unknown) {
     toastsShow(
@@ -119,9 +119,9 @@ export const topUpCanister = async ({
       amount: icpAmount,
       fromSubAccount: account.subAccount,
     });
-    // We don't wait for `syncAccounts` to finish to give a better UX to the user.
-    // `syncAccounts` might be slow since it loads all accounts and balances.
-    syncAccounts();
+    // We don't wait for `loadBalance` to finish to give a better UX to the user.
+    // update calls might be slow.
+    loadBalance({ accountIdentifier: account.identifier });
     return { success: true };
   } catch (error: unknown) {
     toastsShow(

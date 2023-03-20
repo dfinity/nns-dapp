@@ -19,18 +19,18 @@ import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { get } from "svelte/store";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../mocks/sns-projects.mock";
-import { snsResponseFor } from "../../mocks/sns-response.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import {
   mockSnsCanisterId,
   mockSnsCanisterIdText,
-} from "../../mocks/sns.api.mock";
+} from "$tests/mocks/sns.api.mock";
+import { Principal } from "@dfinity/principal";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("selected universe derived stores", () => {
   beforeEach(() => {

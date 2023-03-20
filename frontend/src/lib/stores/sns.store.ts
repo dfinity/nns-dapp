@@ -30,10 +30,6 @@ const initSnsProposalsStore = () => {
       set(undefined);
     },
 
-    setLoadingState() {
-      set(null);
-    },
-
     setProposals({
       proposals,
       certified,
@@ -61,6 +57,11 @@ const initOpenSnsProposalsStore = () =>
 export const snsProposalsStore = initSnsProposalsStore();
 export const openSnsProposalsStore = initOpenSnsProposalsStore();
 
+export const snsProposalsStoreIsLoading = derived<
+  Readable<SnsProposalsStore>,
+  boolean
+>(snsProposalsStore, (data: SnsProposalsStore) => isNullish(data));
+
 // ************** Sns summaries and swaps **************
 
 export type SnsQueryStoreData =
@@ -73,7 +74,6 @@ export type SnsQueryStoreData =
 
 export interface SnsQueryStore extends Readable<SnsQueryStoreData> {
   reset: () => void;
-  setLoadingState: () => void;
   setData: (data: [QuerySnsMetadata[], QuerySnsSwapState[]]) => void;
   updateData: (data: {
     data: [QuerySnsMetadata | undefined, QuerySnsSwapState | undefined];
@@ -98,7 +98,6 @@ export interface SnsQueryStore extends Readable<SnsQueryStoreData> {
  * Various derived stores will subscribe to this store to prepare, format and map the data in a way that can be use by the components.
  *
  * - reset: mark the store to not have been populated yet
- * - setLoadingState: explicitly set the store to not containing any data. useful to display various loading interaction while data are loaded
  * - setData: the function that initializes the store when the app starts
  * - updateData: a function to update the data of a particular root canister id - e.g. used to reload a particular sns project after user has participated to a sale
  */
@@ -110,10 +109,6 @@ const initSnsQueryStore = (): SnsQueryStore => {
 
     reset() {
       set(undefined);
-    },
-
-    setLoadingState() {
-      set(null);
     },
 
     setData([metadata, swaps]: [QuerySnsMetadata[], QuerySnsSwapState[]]) {
@@ -264,6 +259,11 @@ const initSnsQueryStore = (): SnsQueryStore => {
  * A store which contains the response of the queries performed against the backend to fetch summary and swap information of Snses.
  */
 export const snsQueryStore = initSnsQueryStore();
+
+export const snsQueryStoreIsLoading = derived<SnsQueryStore, boolean>(
+  snsQueryStore,
+  (data: SnsQueryStoreData) => isNullish(data)
+);
 
 /**
  * The response of the Snses about metadata and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency

@@ -6,12 +6,12 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("snsSelectedTransactionFeeStore", () => {
   const data = snsResponsesForLifecycle({

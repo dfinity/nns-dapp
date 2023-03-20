@@ -5,7 +5,7 @@
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
-  import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
+  import { mockCanisterDetailsStore } from "$tests/mocks/canisters.mock";
 
   export let reloadDetails: (canisterId) => Promise<void>;
 

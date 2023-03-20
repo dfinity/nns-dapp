@@ -1,9 +1,9 @@
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { mockPrincipal } from "../../mocks/auth.store.mock";
-import { snsNervousSystemParametersMock } from "../../mocks/sns-neurons.mock";
 
 describe("SNS Parameters store", () => {
   describe("snsParametersStore", () => {

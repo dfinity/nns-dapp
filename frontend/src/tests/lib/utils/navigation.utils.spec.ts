@@ -24,7 +24,7 @@ import {
   isSelectedPath,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 
 describe("navigation-utils", () => {
   describe("reload", () => {

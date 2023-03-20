@@ -6,15 +6,15 @@ import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { formatToken } from "$lib/utils/token.utils";
-import type { Neuron } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import type { Neuron } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
   beforeAll(() => {

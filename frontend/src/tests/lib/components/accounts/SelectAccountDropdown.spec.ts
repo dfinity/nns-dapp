@@ -7,14 +7,14 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-import { fireEvent, render } from "@testing-library/svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {

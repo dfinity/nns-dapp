@@ -5,16 +5,16 @@ import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTo
 import { removeFollowee } from "$lib/services/sns-neurons.services";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import type { SnsNeuron } from "@dfinity/sns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
-import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
-} from "../../../mocks/sns-neurons.mock";
-import { principal } from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import type { SnsNeuron } from "@dfinity/sns";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => ({
   removeFollowee: jest.fn().mockReturnValue({ success: true }),

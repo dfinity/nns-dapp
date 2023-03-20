@@ -6,13 +6,13 @@ import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import App from "$routes/+layout.svelte";
-import { toastsStore } from "@dfinity/gix-components";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { toastsStore } from "@dfinity/gix-components";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: jest.fn(() =>

@@ -6,18 +6,22 @@ import {
 import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
+import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { toNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
 export const snsTicketMock = ({
   rootCanisterId,
   owner,
+  subaccount,
 }: {
   rootCanisterId: Principal;
   owner: Principal;
+  subaccount?: Uint8Array;
 }): SnsTicket => ({
   rootCanisterId,
   ticket: {
@@ -26,7 +30,7 @@ export const snsTicketMock = ({
     account: [
       {
         owner: [owner],
-        subaccount: [],
+        subaccount: toNullable(subaccount),
       },
     ],
     amount_icp_e8s: numberToE8s(10),
@@ -37,10 +41,12 @@ export const renderContextCmp = ({
   Component,
   summary,
   swapCommitment,
+  totalTokensSupply,
   reload,
 }: {
   summary?: SnsSummary;
   swapCommitment?: SnsSwapCommitment;
+  totalTokensSupply?: TokenAmount;
   Component: typeof SvelteComponent;
   reload?: () => void;
 }) =>
@@ -51,6 +57,7 @@ export const renderContextCmp = ({
         store: writable<ProjectDetailStore>({
           summary,
           swapCommitment,
+          totalTokensSupply,
         }),
         reload: reload === undefined ? jest.fn() : reload,
       } as ProjectDetailContext,

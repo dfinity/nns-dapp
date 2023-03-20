@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { syncAccounts } from "$lib/services/accounts.services";
+  import { loadBalance } from "$lib/services/accounts.services";
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
@@ -38,10 +38,10 @@
       loadNeuron: !isHardwareWallet,
     });
     if (neuronId !== undefined) {
-      // We don't wait for `syncAccounts` to finish to give a better UX to the user.
-      // `syncAccounts` might be slow since it loads all accounts and balances.
-      // in the neurons page there are no balances nor accounts
-      syncAccounts();
+      // We don't wait for `loadBalance` to finish to give a better UX to the user.
+      // Update calls might be slow.
+      // But in the neurons page there are no balances nor accounts
+      loadBalance({ accountIdentifier: account.identifier });
 
       dispatcher("nnsNeuronCreated", { neuronId });
     }

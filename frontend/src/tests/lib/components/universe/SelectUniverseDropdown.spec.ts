@@ -10,22 +10,22 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { mockStoreSubscribe } from "../../../mocks/commont.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "../../../mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockTokenStore,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
-} from "../../../mocks/tokens.mock";
+} from "$tests/mocks/tokens.mock";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
   jest

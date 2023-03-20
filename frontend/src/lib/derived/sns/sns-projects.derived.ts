@@ -29,11 +29,11 @@ export interface SnsFullProject {
  */
 export const snsProjectsStore = derived<
   [Readable<SnsSummary[]>, SnsSwapCommitmentsStore],
-  SnsFullProject[] | undefined
+  SnsFullProject[]
 >(
   [snsSummariesStore, snsSwapCommitmentsStore],
-  ([summaries, $snsSwapStatesStore]): SnsFullProject[] | undefined =>
-    summaries?.map((summary) => {
+  ([summaries, $snsSwapStatesStore]): SnsFullProject[] =>
+    summaries.map((summary) => {
       const { rootCanisterId } = summary;
       const summaryPrincipalAsText = rootCanisterId.toText();
       const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
@@ -50,22 +50,22 @@ export const snsProjectsStore = derived<
 );
 
 export const snsProjectsActivePadStore = derived<
-  Readable<SnsFullProject[] | undefined>,
-  SnsFullProject[] | undefined
->(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
+  Readable<SnsFullProject[]>,
+  SnsFullProject[]
+>(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterActiveProjects(projects)
 );
 
 export const snsProjectsCommittedStore = derived<
-  Readable<SnsFullProject[] | undefined>,
-  SnsFullProject[] | undefined
->(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
+  Readable<SnsFullProject[]>,
+  SnsFullProject[]
+>(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterCommittedProjects(projects)
 );
 
 export const snsProjectsAdoptedStore = derived<
-  Readable<SnsFullProject[] | undefined>,
-  SnsFullProject[] | undefined
->(snsProjectsStore, (projects: SnsFullProject[] | undefined) =>
+  Readable<SnsFullProject[]>,
+  SnsFullProject[]
+>(snsProjectsStore, (projects: SnsFullProject[]) =>
   filterProjectsStatus({ swapLifecycle: SnsSwapLifecycle.Adopted, projects })
 );

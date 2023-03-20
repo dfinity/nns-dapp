@@ -6,12 +6,22 @@ use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
 use std::collections::VecDeque;
 
-#[derive(Default, CandidType, Deserialize)]
+#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
 }
 
-#[derive(Clone, CandidType, Deserialize)]
+impl MultiPartTransactionsProcessorWithRemovedFields {
+    pub fn from(mptp: &MultiPartTransactionsProcessor) -> MultiPartTransactionsProcessorWithRemovedFields {
+        MultiPartTransactionsProcessorWithRemovedFields {
+            queue: mptp.queue.clone(),
+            statuses: BTreeMap::default(),
+            errors: VecDeque::default(),
+        }
+    }
+}
+
+#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub enum MultiPartTransactionToBeProcessed {
     StakeNeuron(PrincipalId, Memo),
     TopUpNeuron(PrincipalId, Memo),
@@ -35,6 +45,16 @@ impl MultiPartTransactionsProcessor {
 
     pub fn get_queue_length(&self) -> u32 {
         self.queue.len() as u32
+    }
+
+    #[cfg(test)]
+    pub fn get_queue_for_testing(&self) -> VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
+        self.queue.clone()
+    }
+
+    #[cfg(test)]
+    pub fn get_mut_queue_for_testing(&mut self) -> &mut VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
+        &mut self.queue
     }
 }
 

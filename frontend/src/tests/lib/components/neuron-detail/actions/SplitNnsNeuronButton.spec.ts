@@ -3,9 +3,9 @@
  */
 
 import SplitNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import en from "../../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("SplitNeuronButton", () => {

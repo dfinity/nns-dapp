@@ -6,13 +6,13 @@ import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte
 import { transferICP } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
-import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/accounts.services", () => {
   return {

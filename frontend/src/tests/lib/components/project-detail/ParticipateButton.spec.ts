@@ -3,22 +3,23 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
-import type { ParticipateInSnsSaleParameters } from "$lib/services/sns-sale.services";
-import { restoreSnsSaleParticipation } from "$lib/services/sns-sale.services";
+import {
+  cancelPollGetOpenTicket,
+  restoreSnsSaleParticipation,
+  type ParticipateInSnsSaleParameters,
+} from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { SaleStep } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-import { mockAccountsStoreData } from "../../../mocks/accounts.store.mock";
+import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   createTransferableAmount,
   mockSnsFullProject,
@@ -26,10 +27,12 @@ import {
   mockSnsSwapCommitment,
   principal,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "../../../mocks/sns.api.mock";
-import { renderContextCmp, snsTicketMock } from "../../../mocks/sns.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest
@@ -40,6 +43,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
       }
     ),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
+  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ParticipateButton", () => {
@@ -53,15 +57,13 @@ describe("ParticipateButton", () => {
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
   describe("signed in", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       authStoreMock.next({
         identity: mockIdentity,
       });
-    });
-
-    beforeEach(() => {
       (restoreSnsSaleParticipation as jest.Mock).mockClear();
       snsTicketsStore.reset();
+      jest.clearAllMocks();
     });
 
     it("should render a text to increase participation", () => {
@@ -234,6 +236,20 @@ describe("ParticipateButton", () => {
         "sns-project-participate-button"
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
+    });
+
+    it("should cancel polling open ticket on destroy", async () => {
+      const { unmount } = renderContextCmp({
+        summary: mockSnsFullProject.summary,
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(cancelPollGetOpenTicket).not.toBeCalled();
+
+      unmount();
+
+      expect(cancelPollGetOpenTicket).toBeCalled();
     });
   });
 

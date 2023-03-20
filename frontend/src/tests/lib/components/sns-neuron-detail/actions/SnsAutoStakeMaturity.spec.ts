@@ -5,10 +5,13 @@
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockPrincipal } from "../../../../mocks/auth.store.mock";
-import { mockSnsNeuron } from "../../../../mocks/sns-neurons.mock";
-import { mockTokenStore } from "../../../../mocks/sns-projects.mock";
+import { get } from "svelte/store";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
@@ -18,14 +21,12 @@ jest.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsAutoStakeMaturity", () => {
-  beforeAll(() =>
+  beforeEach(() => {
+    jest.clearAllMocks();
+    toastsStore.reset();
     jest
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore)
-  );
-
-  afterEach(() => {
-    jest.clearAllMocks();
+      .mockImplementation(mockTokenStore);
   });
 
   it("renders checkbox", () => {
@@ -124,5 +125,21 @@ describe("SnsAutoStakeMaturity", () => {
   it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
     expect(toggleAutoStakeMaturity).toBeCalled();
+  });
+
+  it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
+    await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
+    expect(get(toastsStore)[0]).toMatchObject({
+      level: "success",
+      text: en.neuron_detail.auto_stake_maturity_on_success,
+    });
+  });
+
+  it("should show success message when disabling", async () => {
+    await toggleAutoStake({ neuronAutoStakeMaturity: true });
+    expect(get(toastsStore)[0]).toMatchObject({
+      level: "success",
+      text: en.neuron_detail.auto_stake_maturity_off_success,
+    });
   });
 });

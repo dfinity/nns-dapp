@@ -6,10 +6,10 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("currentSnsTokenLabelStore", () => {
   const data = snsResponsesForLifecycle({

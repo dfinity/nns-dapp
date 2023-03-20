@@ -11,6 +11,19 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import {
+  mockAccountsStoreSubscribe,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -20,18 +33,8 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import {
-  mockAccountsStoreSubscribe,
-  mockMainAccount,
-  mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../../mocks/auth.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "../../../mocks/sns-accounts.mock";
-import { clickByTestId } from "../../../utils/utils.test-utils";
+import { get } from "svelte/store";
+import en from "../../../mocks/i18n.mock";
 import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
@@ -79,6 +82,8 @@ describe("TransactionModal", () => {
     jest
       .spyOn(snsAccountsStore, "subscribe")
       .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   const renderEnter10ICPAndNext = async ({
@@ -418,6 +423,44 @@ describe("TransactionModal", () => {
       const { getByTestId } = render(TransactionModalTest);
 
       expect(() => getByTestId("close-modal")).toThrow();
+    });
+  });
+
+  describe("qr code", () => {
+    it("should move to qr code step", async () => {
+      const { getByTestId } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const button = getByTestId(
+        "address-qr-code-scanner"
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      await waitFor(() => expect(get(toastsStore)).not.toEqual([]));
+
+      const toasts = get(toastsStore);
+      expect(toasts[0].level).toEqual("error");
+      expect(toasts[0].text).toEqual(en.error.qrcode_camera_error);
+    });
+
+    it("should move back to first step", async () => {
+      const { getByTestId } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const button = getByTestId(
+        "address-qr-code-scanner"
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      await waitFor(() => expect(get(toastsStore)).not.toEqual([]));
+
+      await waitFor(() =>
+        expect(getByTestId("transaction-step-1")).toBeTruthy()
+      );
     });
   });
 });

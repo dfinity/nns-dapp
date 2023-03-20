@@ -6,21 +6,25 @@ import * as snsSaleApi from "$lib/api/sns-sale.api";
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
+  let snsSaleApiGetOpenTicketSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+    snsSaleApiGetOpenTicketSpy = jest
+      .spyOn(snsSaleApi, "getOpenTicket")
+      .mockResolvedValue(undefined);
   });
 
   it("should render subtitle", () => {
@@ -41,12 +45,17 @@ describe("ProjectStatusSection", () => {
     expect(queryByTestId("sns-project-current-commitment")).toBeInTheDocument();
   });
 
-  it("should render project participate button", () => {
+  it("should render project participate button", async () => {
     const { queryByTestId } = renderContextCmp({
       summary: mockSnsFullProject.summary,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectStatusSection,
     });
+    expect(
+      queryByTestId("sns-project-participate-button")
+    ).not.toBeInTheDocument();
+    // Wait for the api call to return no ticket
+    await waitFor(() => expect(snsSaleApiGetOpenTicketSpy).toBeCalled());
     expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
   });
 

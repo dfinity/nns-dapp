@@ -6,4 +6,4 @@ export enum SaleStep {
   DONE = "done",
 }
 
-export type TicketStatus = "unknown" | "open" | "none" | "polling";
+export type TicketStatus = "unknown" | "open" | "none" | "loading";

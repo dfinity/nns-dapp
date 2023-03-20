@@ -4,7 +4,10 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
 import type { Transaction } from "$lib/types/transaction";
-import { AccountTransactionType } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  TransactionNetwork,
+} from "$lib/types/transaction";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
@@ -205,3 +208,9 @@ export const mapToSelfTransaction = <T>(
 
   return resultTransactions;
 };
+
+export const isTransactionNetworkBtc = (
+  network: TransactionNetwork | undefined
+): boolean =>
+  TransactionNetwork.BTC_MAINNET === network ||
+  TransactionNetwork.BTC_TESTNET === network;

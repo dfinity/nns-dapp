@@ -6,18 +6,18 @@ import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svel
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
-import { ICPToken } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
-} from "../../../mocks/transaction.mock";
-import { normalizeWhitespace } from "../../../utils/utils.test-utils";
+} from "$tests/mocks/transaction.mock";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
+import { ICPToken } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
 
 describe("NnsTransactionCard", () => {
   const renderTransactionCard = (

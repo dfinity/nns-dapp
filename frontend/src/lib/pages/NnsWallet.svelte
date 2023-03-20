@@ -5,6 +5,7 @@
   import {
     cancelPollAccounts,
     getAccountTransactions,
+    loadBalance,
     pollAccounts,
   } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -38,6 +39,8 @@
   import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -115,9 +118,32 @@
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
 
-  let showNewTransactionModal = false;
+  let showModal: "send" | undefined = undefined;
 
   // TODO(L2-581): Create WalletInfo component
+
+  let disabled = false;
+  $: disabled = isNullish($selectedAccountStore.account) || $busy;
+
+  const reloadAccount = async () => {
+    try {
+      if (nonNullish($selectedAccountStore.account)) {
+        await Promise.all([
+          loadBalance({
+            accountIdentifier: $selectedAccountStore.account.identifier,
+          }),
+          reloadTransactions($selectedAccountStore.account.identifier),
+        ]);
+      }
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_reload, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+        err,
+      });
+    }
+  };
 </script>
 
 <Island>
@@ -138,21 +164,27 @@
     </section>
   </main>
 
-  <Footer columns={1}>
+  <Footer>
     <button
       class="primary"
-      on:click={() => (showNewTransactionModal = true)}
-      disabled={$selectedAccountStore.account === undefined || $busy}
+      on:click={() => (showModal = "send")}
+      {disabled}
       data-tid="new-transaction">{$i18n.accounts.send}</button
     >
+
+    <ReceiveButton
+      type="nns-receive"
+      account={$selectedAccountStore.account}
+      {reloadAccount}
+    />
   </Footer>
 </Island>
 
 <WalletModals />
 
-{#if showNewTransactionModal}
+{#if showModal === "send"}
   <IcpTransactionModal
-    on:nnsClose={() => (showNewTransactionModal = false)}
+    on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}
   />
 {/if}

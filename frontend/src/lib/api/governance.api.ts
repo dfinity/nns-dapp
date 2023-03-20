@@ -12,7 +12,9 @@ import type {
   KnownNeuron,
   NeuronId,
   NeuronInfo,
+  ProposalId,
   Topic,
+  Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -432,6 +434,39 @@ export const claimOrRefreshNeuron = async ({
     `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) complete.`
   );
   return response;
+};
+
+export type RegisterVoteParams = {
+  neuronId: NeuronId;
+  proposalId: ProposalId;
+  vote: Vote;
+  identity: Identity;
+};
+export const registerVote = async ({
+  neuronId,
+  proposalId,
+  vote,
+  identity,
+}: RegisterVoteParams): Promise<void> => {
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
+  );
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: HOST }),
+  });
+
+  await governance.registerVote({
+    neuronId,
+    vote,
+    proposalId,
+  });
+
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(
+      neuronId
+    )}) complete.`
+  );
 };
 
 /**

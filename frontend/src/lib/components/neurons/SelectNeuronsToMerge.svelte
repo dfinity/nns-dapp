@@ -53,6 +53,7 @@
 </script>
 
 <div class="wrapper legacy">
+  <p>{$i18n.neurons.merge_neurons_select_info}</p>
   <ul class="items">
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}
       <li>

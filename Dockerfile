@@ -24,11 +24,9 @@ FROM base as tool_versions
 SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
-ARG rust_version=1.64.0
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
-RUN printf "%s" "$NODE_VERSION" > config/node_version
-RUN printf "%s" "$rust_version" > config/rust_version
+RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -42,14 +40,14 @@ RUN n "$(cat config/node_version)"
 RUN node --version
 RUN npm --version
 # Install Rust and Cargo in /opt
+COPY rust-toolchain.toml .
 ENV RUSTUP_HOME=/opt/rustup \
     CARGO_HOME=/opt/cargo \
     PATH=/opt/cargo/bin:$PATH
 RUN curl --fail https://sh.rustup.rs -sSf \
-        | sh -s -- -y --default-toolchain "$(cat config/rust_version)-x86_64-unknown-linux-gnu" --no-modify-path && \
-    rustup default "$(cat config/rust_version)-x86_64-unknown-linux-gnu" && \
-    rustup target add wasm32-unknown-unknown
+        | sh -s -- -y --no-modify-path
 ENV PATH=/cargo/bin:$PATH
+RUN cargo --version
 # Install IC CDK optimizer
 RUN cargo install --version "$(cat config/optimizer_version)" ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
@@ -58,6 +56,7 @@ RUN cargo install --version "$(cat config/optimizer_version)" ic-cdk-optimizer
 # everything once the actual source code is COPYed (and e.g. doesn't trip on
 # timestamps being older)
 WORKDIR /build
+COPY rust-toolchain.toml .
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml

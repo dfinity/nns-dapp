@@ -4,9 +4,7 @@ import {
   initSns,
   wrappers,
 } from "$lib/api/sns-wrapper.api";
-import type { HttpAgent } from "@dfinity/agent";
-import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -14,7 +12,9 @@ import {
   ledgerCanisterIdMock,
   rootCanisterIdMock,
   swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
+} from "$tests/mocks/sns.api.mock";
+import type { HttpAgent } from "@dfinity/agent";
+import mock from "jest-mock-extended/lib/Mock";
 
 const listSnsesSpy = jest.fn().mockResolvedValue(deployedSnsMock);
 const initSnsWrapperSpy = jest.fn().mockResolvedValue(

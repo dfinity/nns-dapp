@@ -28,14 +28,22 @@
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
   import {
-    loadSnsMetrics,
+    loadSnsSwapMetrics,
     watchSnsMetrics,
   } from "$lib/services/sns-swap-metrics.services";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 
   export let rootCanisterId: string | undefined | null;
 
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
+  let enableWatchers = false;
+  $: enableWatchers =
+    $snsSummariesStore.find(
+      ({ rootCanisterId: rootCanister }) =>
+        rootCanister?.toText() === rootCanisterId
+    )?.swap.lifecycle === SnsSwapLifecycle.Open;
 
   onDestroy(() => {
     unsubscribeWatchCommitment?.();
@@ -46,7 +54,7 @@
     loadCommitment({ rootCanisterId, forceFetch: false });
   }
 
-  $: if (nonNullish(rootCanisterId)) {
+  $: if (nonNullish(rootCanisterId) && enableWatchers) {
     unsubscribeWatchCommitment?.();
     unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
   }
@@ -59,7 +67,7 @@
       return;
     }
 
-    await loadSnsMetrics({
+    await loadSnsSwapMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
       swapCanisterId,
       forceFetch,
@@ -83,6 +91,7 @@
   const projectDetailStore = writable<ProjectDetailStore>({
     summary: null,
     swapCommitment: null,
+    totalTokensSupply: null,
   });
 
   debugSelectedProjectStore(projectDetailStore);
@@ -93,9 +102,14 @@
   });
 
   let swapCanisterId: Principal | undefined;
-  $: if (nonNullish(swapCanisterId) && nonNullish(rootCanisterId)) {
+  $: if (
+    nonNullish(swapCanisterId) &&
+    nonNullish(rootCanisterId) &&
+    enableWatchers
+  ) {
     reloadSnsMetrics({ forceFetch: false });
     unsubscribeWatchMetrics?.();
+
     unsubscribeWatchMetrics = watchSnsMetrics({
       rootCanisterId: Principal.fromText(rootCanisterId),
       swapCanisterId: swapCanisterId,
@@ -127,6 +141,7 @@
     return goto(AppPath.Launchpad, { replaceState: true });
   };
 
+  // TODO: Change to a `let` that is recalculated when the store changes
   const setProjectStore = (rootCanisterId: string) => {
     // Check project summaries are loaded in store
     if ($snsSummariesStore.length === 0) {
@@ -141,6 +156,7 @@
       // set values as not found
       $projectDetailStore.summary = undefined;
       $projectDetailStore.swapCommitment = undefined;
+      $projectDetailStore.totalTokensSupply = undefined;
       return;
     }
     $projectDetailStore.summary =
@@ -158,6 +174,11 @@
               item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
           )?.swapCommitment
         : undefined;
+
+    $projectDetailStore.totalTokensSupply =
+      rootCanisterId !== undefined
+        ? $snsTotalSupplyTokenAmountStore[rootCanisterId]
+        : undefined;
   };
 
   /**
@@ -165,6 +186,7 @@
    */
   $: $snsSummariesStore,
     $snsSwapCommitmentsStore,
+    $snsTotalSupplyTokenAmountStore,
     (async () => {
       if (rootCanisterId === undefined || rootCanisterId === null) {
         await goBack();
@@ -174,10 +196,11 @@
 
       // TODO: Understand why this component doesn't subscribe to the store `projectDetailStore`.
       // Is it because it's created in this same component?
-      const newSwapCanisterId = $snsSummariesStore.find(
+      const summary = $snsSummariesStore.find(
         ({ rootCanisterId: rootCanister }) =>
           rootCanister?.toText() === rootCanisterId
-      )?.swapCanisterId;
+      );
+      const newSwapCanisterId = summary?.swapCanisterId;
 
       if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
         swapCanisterId = newSwapCanisterId;

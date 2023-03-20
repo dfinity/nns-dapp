@@ -23,6 +23,16 @@ import {
   replaceProposals,
   selectedNeuronsVotingPower,
 } from "$lib/utils/proposals.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  generateMockProposals,
+  mockProposalInfo,
+  proposalActionNnsFunction21,
+  proposalActionRewardNodeProvider,
+} from "$tests/mocks/proposal.mock";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type {
   Action,
   Ballot,
@@ -39,16 +49,6 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
-import { mockIdentity } from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import {
-  generateMockProposals,
-  mockProposalInfo,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
-} from "../../mocks/proposal.mock";
-import { mockProposals } from "../../mocks/proposals.store.mock";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,

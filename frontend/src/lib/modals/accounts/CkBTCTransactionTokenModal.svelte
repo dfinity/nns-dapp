@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
   import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-  import type { CkBTCWalletTransactionModalData } from "$lib/types/wallet.modal";
+  import type { CkBTCTransactionModalData } from "$lib/types/ckbtc-accounts.modal";
   import { createEventDispatcher } from "svelte";
   import { nonNullish } from "@dfinity/utils";
   import {
@@ -13,19 +13,20 @@
   import type { TokenAmount } from "@dfinity/nns";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
-  export let data: CkBTCWalletTransactionModalData;
+  export let data: CkBTCTransactionModalData;
 
   let canisters: CkBTCAdditionalCanisters;
   let universeId: UniverseCanisterId;
-  let account: Account;
-  let reloadAccountFromStore: () => void;
+  let account: Account | undefined;
+  let reloadAccountFromStore: (() => void) | undefined;
+  let loadTransactions: boolean;
 
   $: ({ account, reloadAccountFromStore, universeId, canisters } = data);
 
   const dispatcher = createEventDispatcher();
 
   const onTransferReloadSelectedAccount = async () => {
-    reloadAccountFromStore();
+    reloadAccountFromStore?.();
     dispatcher("nnsClose");
   };
 
@@ -41,7 +42,7 @@
     on:nnsClose
     on:nnsTransfer={onTransferReloadSelectedAccount}
     selectedAccount={account}
-    loadTransactions
+    {loadTransactions}
     token={token.token}
     {transactionFee}
     {universeId}

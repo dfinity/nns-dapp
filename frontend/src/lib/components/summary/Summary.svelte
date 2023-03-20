@@ -2,6 +2,7 @@
   import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseName from "$lib/components/universe/UniverseName.svelte";
+  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 
   export let displayUniverse = true;
 
@@ -11,7 +12,11 @@
 
 <div class="summary" data-tid="projects-summary">
   <h1 class="title">
-    <span><UniverseName universe={$selectedUniverseStore} /></span>
+    <span
+      ><UniverseName
+        universe={displayUniverse ? $selectedUniverseStore : NNS_UNIVERSE}
+      /></span
+    >
 
     <SummaryLogo {displayUniverse} />
   </h1>

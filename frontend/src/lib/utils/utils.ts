@@ -285,7 +285,7 @@ export const poll = async <T>({
         const result = await Promise.race([fn(), cancelPromise]);
         return result;
       } catch (error: unknown) {
-        if (shouldExit(error)) {
+        if (shouldExit(error) || pollingCancelled(error)) {
           throw error;
         }
         // Log swallowed errors

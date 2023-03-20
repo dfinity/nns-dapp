@@ -35,12 +35,13 @@ jobs:
                   exit 1
                   ;;
           esac
-      - uses: actions/setup-node@v3
-        with:
-          # Note: The node version SHOULD match the dockerfile
-          node-version: 16
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Show versions

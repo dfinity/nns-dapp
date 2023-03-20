@@ -7,10 +7,8 @@ import { enumsExclude } from "$lib/utils/enum.utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   ListProposalsResponse,
-  NeuronId,
   ProposalId,
   ProposalInfo,
-  Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister, Topic } from "@dfinity/nns";
 import { nnsDappCanister } from "./nns-dapp.api";
@@ -124,36 +122,4 @@ export const queryProposalPayload = async ({
   );
 
   return response;
-};
-
-export const registerVote = async ({
-  neuronId,
-  proposalId,
-  vote,
-  identity,
-}: {
-  neuronId: NeuronId;
-  proposalId: ProposalId;
-  vote: Vote;
-  identity: Identity;
-}): Promise<void> => {
-  logWithTimestamp(
-    `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
-  );
-
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: HOST }),
-  });
-
-  await governance.registerVote({
-    neuronId,
-    vote,
-    proposalId,
-  });
-
-  logWithTimestamp(
-    `Registering Vote (${hashCode(proposalId)}, ${hashCode(
-      neuronId
-    )}) complete.`
-  );
 };

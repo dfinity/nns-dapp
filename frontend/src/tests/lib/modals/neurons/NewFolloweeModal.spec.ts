@@ -6,16 +6,16 @@ import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { Topic } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockFullNeuron,
   mockKnownNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/neurons.services", () => {
   return {

@@ -4,9 +4,9 @@
 
 import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
 
 describe("CurrentBalance", () => {
   const props = { balance: mockMainAccount.balance };

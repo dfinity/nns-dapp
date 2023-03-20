@@ -7,11 +7,21 @@ import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-id
 import { AppPath } from "$lib/constants/routes.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import {
+  mockBTCAddressTestnet,
+  mockCkBTCMainAccount,
+} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import { mockCkBTCMainAccount } from "../../../mocks/ckbtc-accounts.mock";
-import { mockTokens } from "../../../mocks/tokens.mock";
+import CkBTCAccountsTest from "./CkBTCAccountsTest.svelte";
+
+jest.mock("$lib/services/ckbtc-minter.services", () => {
+  return {
+    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
+  };
+});
 
 describe("CkBTCAccountsFooter", () => {
   beforeAll(() => {
@@ -77,12 +87,26 @@ describe("CkBTCAccountsFooter", () => {
       expect(getByTestId("open-ckbtc-transaction")).not.toBeNull();
     });
 
-    it("should open modal", async () => {
-      const { getByTestId, container } = render(CkBTCAccountsFooter);
+    it("should open send modal", async () => {
+      const { getByTestId, container } = render(CkBTCAccountsTest, {
+        props: { testComponent: CkBTCAccountsFooter },
+      });
 
       fireEvent.click(
         getByTestId("open-ckbtc-transaction") as HTMLButtonElement
       );
+
+      await waitFor(() =>
+        expect(container.querySelector("div.modal")).not.toBeNull()
+      );
+    });
+
+    it("should open receive modal", async () => {
+      const { getByTestId, container } = render(CkBTCAccountsTest, {
+        props: { testComponent: CkBTCAccountsFooter },
+      });
+
+      fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
 
       await waitFor(() =>
         expect(container.querySelector("div.modal")).not.toBeNull()

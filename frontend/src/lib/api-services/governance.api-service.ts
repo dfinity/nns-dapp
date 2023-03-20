@@ -11,6 +11,7 @@ import {
   queryKnownNeurons,
   queryNeuron,
   queryNeurons,
+  registerVote,
   removeHotkey,
   setFollowees,
   spawnNeuron,
@@ -33,6 +34,7 @@ import {
   type ApiSplitNeuronParams,
   type ApiStakeMaturityParams,
   type ApiStakeNeuronParams,
+  type RegisterVoteParams,
 } from "$lib/api/governance.api";
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -84,7 +86,7 @@ export const resetNeuronsApiService = () => {
   clearCache();
 };
 
-export const neuronsApiService = {
+export const governanceApiService = {
   // Read calls
   queryKnownNeurons(params: ApiQueryParams) {
     return queryKnownNeurons(params);
@@ -136,6 +138,9 @@ export const neuronsApiService = {
   },
   mergeNeurons(params: ApiMergeNeuronsParams) {
     return clearCacheAfter(mergeNeurons(params));
+  },
+  registerVote(params: RegisterVoteParams) {
+    return clearCacheAfter(registerVote(params));
   },
   removeHotkey(params: ApiManageHotkeyParams) {
     return clearCacheAfter(removeHotkey(params));

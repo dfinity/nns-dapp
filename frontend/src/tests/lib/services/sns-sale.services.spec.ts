@@ -9,14 +9,15 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
-import * as accountsServices from "$lib/services/accounts.services";
 import {
+  cancelPollGetOpenTicket,
   initiateSnsSaleParticipation,
+  loadNewSaleTicket,
   loadOpenTicket,
-  newSaleTicket,
   participateInSnsSale,
   restoreSnsSaleParticipation,
 } from "$lib/services/sns-sale.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -25,6 +26,35 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/accounts.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import {
+  mockProjectSubscribe,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
+  mockSnsFullProject,
+  mockSnsToken,
+  mockSwap,
+} from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
+import { snsTicketMock } from "$tests/mocks/sns.mock";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   ICPToken,
@@ -45,34 +75,9 @@ import {
   SnsSwapLifecycle,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import {
-  mockProjectSubscribe,
-  mockQueryMetadataResponse,
-  mockQueryTokenResponse,
-  mockSnsFullProject,
-  mockSnsToken,
-  mockSwap,
-} from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  ledgerCanisterIdMock,
-  swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
-import { snsTicketMock } from "../../mocks/sns.mock";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "../../utils/timers.test-utils";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -102,10 +107,13 @@ describe("sns-api", () => {
   };
 
   const spyOnSendICP = jest.spyOn(ledgerApi, "sendICP");
+  const newBalanceE8s = 100_000_000n;
+  const spyOnQueryBalance = jest.spyOn(ledgerApi, "queryAccountBalance");
   const spyOnNotifyParticipation = jest.fn();
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsSuccess = jest.spyOn(toastsStore, "toastsSuccess");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyOnToastsHide = jest.spyOn(toastsStore, "toastsHide");
   const testRootCanisterId = rootCanisterIdMock;
   const testSnsTicket = snsTicketMock({
     rootCanisterId: testRootCanisterId,
@@ -119,6 +127,8 @@ describe("sns-api", () => {
     get(snsTicketsStore)[rootCanisterId.toText()];
 
   beforeEach(() => {
+    // Make sure there are no open polling timers
+    cancelPollGetOpenTicket();
     spyOnSendICP.mockReset();
     spyOnSendICP.mockReset();
     spyOnNotifyParticipation.mockReset();
@@ -133,13 +143,13 @@ describe("sns-api", () => {
     jest.clearAllMocks();
 
     snsTicketsStore.reset();
+    accountsStore.reset();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
     jest.spyOn(console, "error").mockReturnValue();
     snsQueryStore.reset();
-
-    jest.spyOn(accountsServices, "syncAccounts").mockResolvedValue();
+    spyOnQueryBalance.mockResolvedValue(newBalanceE8s);
 
     jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
@@ -210,7 +220,6 @@ describe("sns-api", () => {
     describe("when polling is enabled", () => {
       beforeEach(() => {
         jest.clearAllTimers();
-        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
         const now = Date.now();
         jest.useFakeTimers().setSystemTime(now);
       });
@@ -462,7 +471,6 @@ describe("sns-api", () => {
       });
 
       it("should stop retrying", async () => {
-        snsTicketsStore.enablePolling(testSnsTicket.rootCanisterId);
         snsSwapCanister.getOpenTicket.mockRejectedValue(
           new Error("network error")
         );
@@ -486,39 +494,66 @@ describe("sns-api", () => {
           expectedCalls += 1;
           expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
         }
-        // disablePolling works through shouldExit which is only called after a
-        // failure, so after we disablePolling, it will stop polling only after
-        // 1 more failure.
-        snsTicketsStore.disablePolling(testSnsTicket.rootCanisterId);
-        expectedCalls += 1;
+        cancelPollGetOpenTicket();
         await advanceTime(retryDelay);
         retryDelay *= 2;
-        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
 
         // Even after waiting a long time, there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
       });
+
+      it("should hide toast when stop retrying", async () => {
+        snsSwapCanister.getOpenTicket.mockRejectedValue(
+          new Error("network error")
+        );
+        loadOpenTicket({
+          rootCanisterId: testSnsTicket.rootCanisterId,
+          swapCanisterId: swapCanisterIdMock,
+          certified: true,
+          maxAttempts: 10,
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 1;
+        expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+
+        let retryDelay = SALE_PARTICIPATION_RETRY_SECONDS * 1000;
+        const callsBeforeStopPolling = 4;
+
+        while (expectedCalls < callsBeforeStopPolling) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
+        }
+        expect(spyOnToastsShow).toBeCalledTimes(1);
+        expect(spyOnToastsHide).not.toBeCalled();
+        cancelPollGetOpenTicket();
+
+        await runResolvedPromises();
+        expect(spyOnToastsHide).toBeCalledTimes(1);
+      });
     });
   });
 
-  describe("newSaleTicket", () => {
+  describe("loadNewSaleTicket ", () => {
     beforeEach(() => {
       jest.clearAllTimers();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
     });
-    it("should call newSaleTicket api", async () => {
-      await newSaleTicket({
+    it("should call newSaleTicket  api", async () => {
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
 
-      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
     });
 
     it("should add new ticket to the store", async () => {
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -533,7 +568,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -547,6 +582,27 @@ describe("sns-api", () => {
       expect(ticketFromStore()?.ticket).toEqual(null);
     });
 
+    it("should handle sale-not-open error", async () => {
+      spyOnNewSaleTicketApi.mockRejectedValue(
+        new SnsSwapNewTicketError({
+          errorType: NewSaleTicketResponseErrorType.TYPE_SALE_NOT_OPEN,
+        })
+      );
+
+      await loadNewSaleTicket({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        amount_icp_e8s: 0n,
+      });
+
+      expect(spyOnNewSaleTicketApi).toBeCalled();
+      expect(spyOnToastsError).toBeCalledWith(
+        expect.objectContaining({
+          labelKey: "error__sns.sns_sale_not_open",
+        })
+      );
+      expect(ticketFromStore()?.ticket).toEqual(null);
+    });
+
     it("should reuse the ticket from the ticket-exist error", async () => {
       spyOnNewSaleTicketApi.mockRejectedValue(
         new SnsSwapNewTicketError({
@@ -555,7 +611,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -586,7 +642,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -611,7 +667,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -632,7 +688,7 @@ describe("sns-api", () => {
         })
       );
 
-      await newSaleTicket({
+      await loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -655,7 +711,7 @@ describe("sns-api", () => {
         .mockRejectedValueOnce(new Error("connection error"))
         .mockResolvedValue(testSnsTicket.ticket);
 
-      newSaleTicket({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -689,7 +745,7 @@ describe("sns-api", () => {
           })
         );
 
-      newSaleTicket({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -713,7 +769,7 @@ describe("sns-api", () => {
     it("should show 'high load' toast after 6 failures", async () => {
       const expectFailuresBeforeToast = 6;
       spyOnNewSaleTicketApi.mockRejectedValue(new Error("network error"));
-      newSaleTicket({
+      loadNewSaleTicket({
         rootCanisterId: testSnsTicket.rootCanisterId,
         amount_icp_e8s: 0n,
       });
@@ -768,7 +824,7 @@ describe("sns-api", () => {
       expect(spyOnToastsError).not.toBeCalled();
     });
 
-    it("should not start flow if no open tickeet", async () => {
+    it("should not start flow if no open ticket", async () => {
       snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
@@ -878,11 +934,9 @@ describe("sns-api", () => {
       jest.useFakeTimers().setSystemTime(now);
     });
     it("should call postprocess and APIs", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
+      accountsStore.set({
+        main: mockMainAccount,
       });
-      const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
@@ -891,12 +945,13 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
       });
 
       expect(spyOnSendICP).toBeCalledTimes(1);
       expect(spyOnNotifyParticipation).toBeCalledTimes(1);
       expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-      expect(spyOnSyncAccounts).toBeCalledTimes(1);
+      expect(spyOnQueryBalance).toBeCalledTimes(2);
       expect(ticketFromStore().ticket).toEqual(null);
       expect(postprocessSpy).toBeCalledTimes(1);
 
@@ -904,13 +959,61 @@ describe("sns-api", () => {
       expect(upgradeProgressSpy).toBeCalledTimes(4);
     });
 
+    it("should update account's balance in the store", async () => {
+      accountsStore.set({
+        main: mockMainAccount,
+      });
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      expect(get(accountsStore).main.balance.toE8s()).not.toEqual(
+        newBalanceE8s
+      );
+
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
+      });
+
+      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+    });
+
+    it("should update subaccounts's balance in the store", async () => {
+      const snsTicket = snsTicketMock({
+        rootCanisterId: rootCanisterIdMock,
+        owner: mockIdentity.getPrincipal(),
+        subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
+      });
+      accountsStore.set({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+      });
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      expect(get(accountsStore).main.balance.toE8s()).not.toEqual(
+        newBalanceE8s
+      );
+
+      await participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+        ticket: snsTicket.ticket,
+      });
+
+      expect(get(accountsStore).subAccounts[0].balance.toE8s()).toEqual(
+        newBalanceE8s
+      );
+    });
+
     it("should poll refresh_buyer_tokens until successful", async () => {
       // Success on the fourth try
       const callsUntilSuccess = 4;
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       const accountBalanceError = new Error(
         "Error calling method 'account_balance_pb'..."
       );
@@ -921,7 +1024,6 @@ describe("sns-api", () => {
         .mockResolvedValue({
           icp_accepted_participation_e8s: 666n,
         });
-      jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
@@ -930,6 +1032,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
       });
 
       await runResolvedPromises();
@@ -959,16 +1062,11 @@ describe("sns-api", () => {
     });
 
     it("should show error if known error is thrown", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnNotifyParticipation.mockRejectedValue(
         new Error(
           "The token amount can only be refreshed when the canister is in the OPEN state"
         )
       );
-      jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
@@ -977,6 +1075,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
+        ticket: testTicket,
       });
 
       await runResolvedPromises();
@@ -994,27 +1093,6 @@ describe("sns-api", () => {
 
       // Initialization and transfer steps
       expect(updateProgressSpy).toBeCalledTimes(2);
-    });
-
-    it("should do nothing if there is no ticket (important for auto retry feature)", async () => {
-      snsTicketsStore.setNoTicket(rootCanisterIdMock);
-      const spyOnSyncAccounts = jest.spyOn(accountsServices, "syncAccounts");
-      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
-      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
-
-      await participateInSnsSale({
-        rootCanisterId: testRootCanisterId,
-        userCommitment: 0n,
-        postprocess: postprocessSpy,
-        updateProgress: updateProgressSpy,
-      });
-
-      expect(spyOnSendICP).not.toBeCalled();
-      expect(spyOnNotifyParticipation).not.toBeCalled();
-      expect(spyOnNotifyPaymentFailureApi).not.toBeCalled();
-      expect(spyOnSyncAccounts).not.toBeCalled();
-      expect(postprocessSpy).not.toBeCalled();
-      expect(updateProgressSpy).not.toBeCalled();
     });
 
     it("should display an error in case the ticket principal not equals to the current identity", async () => {
@@ -1038,6 +1116,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -1052,11 +1131,6 @@ describe("sns-api", () => {
     });
 
     it("should poll transfer during unknown issues or TxCreatedInFutureError", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-      jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
 
@@ -1075,6 +1149,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: updateProgressSpy,
+        ticket: testTicket,
       });
 
       await runResolvedPromises();
@@ -1099,10 +1174,6 @@ describe("sns-api", () => {
     });
 
     it("should display transfer api unknown errors", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnSendICP.mockRejectedValue(new TransferError("test"));
 
       await participateInSnsSale({
@@ -1110,6 +1181,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -1123,10 +1195,6 @@ describe("sns-api", () => {
     });
 
     it("should display InsufficientFundsError errors", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnSendICP.mockRejectedValue(new InsufficientFundsError(0n));
 
       await participateInSnsSale({
@@ -1134,6 +1202,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).not.toBeCalled();
@@ -1149,10 +1218,6 @@ describe("sns-api", () => {
 
     describe("TooOldError", () => {
       it("should succeed when no errors on notify participation", async () => {
-        snsTicketsStore.setTicket({
-          rootCanisterId: rootCanisterIdMock,
-          ticket: testTicket,
-        });
         spyOnSendICP.mockRejectedValue(new TxTooOldError(0));
 
         await participateInSnsSale({
@@ -1160,6 +1225,7 @@ describe("sns-api", () => {
           userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
+          ticket: testTicket,
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -1192,6 +1258,7 @@ describe("sns-api", () => {
           userCommitment: 0n,
           postprocess: jest.fn().mockResolvedValue(undefined),
           updateProgress: jest.fn().mockResolvedValue(undefined),
+          ticket: testTicket,
         });
 
         expect(spyOnNotifyParticipation).toBeCalledTimes(1);
@@ -1209,10 +1276,6 @@ describe("sns-api", () => {
     });
 
     it("should ignore Duplicate error", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnSendICP.mockRejectedValue(new TxDuplicateError(0n));
 
       expect(spyOnToastsError).not.toBeCalled();
@@ -1222,6 +1285,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket: testTicket,
       });
 
       expect(spyOnNotifyParticipation).toBeCalled();
@@ -1230,21 +1294,19 @@ describe("sns-api", () => {
     });
 
     it("should display a waring when current_committed ≠ ticket.amount", async () => {
+      const ticket = {
+        ...testTicket,
+        amount_icp_e8s: 1n,
+      };
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 100n,
-      });
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: {
-          ...testTicket,
-          amount_icp_e8s: 1n,
-        },
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket,
       });
 
       expect(spyOnToastsShow).toBeCalledWith(
@@ -1257,21 +1319,19 @@ describe("sns-api", () => {
     });
 
     it("should not display a waring when current_committed = ticket.amount", async () => {
+      const ticket = {
+        ...testTicket,
+        amount_icp_e8s: 1n,
+      };
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 1n,
-      });
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: {
-          ...testTicket,
-          amount_icp_e8s: 1n,
-        },
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         userCommitment: 0n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket,
       });
 
       expect(spyOnToastsShow).not.toBeCalledWith(
@@ -1282,21 +1342,19 @@ describe("sns-api", () => {
     });
 
     it("should not display a waring when current_committed = ticket.amount for increase participation", async () => {
+      const ticket = {
+        ...testTicket,
+        amount_icp_e8s: 3n,
+      };
       spyOnNotifyParticipation.mockResolvedValue({
         icp_accepted_participation_e8s: 10n,
-      });
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: {
-          ...testTicket,
-          amount_icp_e8s: 3n,
-        },
       });
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
         userCommitment: 7n,
         postprocess: jest.fn().mockResolvedValue(undefined),
         updateProgress: jest.fn().mockResolvedValue(undefined),
+        ticket,
       });
 
       expect(spyOnToastsShow).not.toBeCalledWith(
@@ -1308,12 +1366,7 @@ describe("sns-api", () => {
 
     it("should show 'high load' toast after 6 failures", async () => {
       const expectFailuresBeforeToast = 6;
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnNotifyParticipation.mockRejectedValue(new Error("network error"));
-      jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
       participateInSnsSale({
@@ -1321,6 +1374,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
       });
 
       await runResolvedPromises();
@@ -1350,12 +1404,7 @@ describe("sns-api", () => {
 
     it("transfer should show 'high load' toast after 6 failures", async () => {
       const expectFailuresBeforeToast = 6;
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
       spyOnSendICP.mockRejectedValue(new Error("network error"));
-      jest.spyOn(accountsServices, "syncAccounts");
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
       participateInSnsSale({
@@ -1363,6 +1412,7 @@ describe("sns-api", () => {
         userCommitment: 0n,
         postprocess: postprocessSpy,
         updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
       });
 
       await runResolvedPromises();

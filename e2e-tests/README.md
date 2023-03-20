@@ -59,6 +59,14 @@ All the e2e tests can be run with:
 npm run test
 ```
 
+By default the test will run in the background. If you want to see the test run
+in the browser, set environment variable `WDIO_VIEW` to anything other than
+`headless`:
+
+```bash
+WDIO_VIEW=yes npm run test
+```
+
 **PENDING: Creating proposals is not working yet. Therefore, the related tests are skipped.**
 
 You can specify which test you want to run:

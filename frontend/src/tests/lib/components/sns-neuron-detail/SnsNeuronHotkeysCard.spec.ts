@@ -8,20 +8,20 @@ import { removeHotkey } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { enumValues } from "$lib/utils/enum.utils";
-import { Principal } from "@dfinity/principal";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { fireEvent, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../mocks/auth.store.mock";
-import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   buildMockSnsParametersStore,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/sns-neurons.services", () => {
   return {

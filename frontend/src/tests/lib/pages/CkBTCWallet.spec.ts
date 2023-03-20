@@ -15,16 +15,17 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { TokenAmount } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-} from "../../mocks/ckbtc-accounts.mock";
-import en from "../../mocks/i18n.mock";
-import { mockUniversesTokens } from "../../mocks/tokens.mock";
-import { testTransferTokens } from "../../utils/transaction-modal.test.utils";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { TokenAmount } from "@dfinity/nns";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
 
 const expectedBalanceAfterTransfer = TokenAmount.fromE8s({
   amount: BigInt(11_111),
@@ -137,16 +138,21 @@ describe("CkBTCWallet", () => {
       );
     });
 
+    const modalProps = {
+      ...props,
+      testComponent: CkBTCWallet,
+    };
+
     it("should open new transaction modal", async () => {
-      const { queryByTestId, getByTestId } = render(CkBTCWallet, props);
+      const { queryByTestId, getByTestId } = render(CkBTCAccountsTest, {
+        props: modalProps,
+      });
 
       await waitFor(() =>
-        expect(queryByTestId("open-new-ckbtc-transaction")).toBeInTheDocument()
+        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
       );
 
-      const button = getByTestId(
-        "open-new-ckbtc-transaction"
-      ) as HTMLButtonElement;
+      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
       await fireEvent.click(button);
 
       await waitFor(() => {
@@ -155,7 +161,7 @@ describe("CkBTCWallet", () => {
     });
 
     it("should update account after transfer tokens", async () => {
-      const result = render(CkBTCWallet, props);
+      const result = render(CkBTCAccountsTest, { props: modalProps });
 
       const { queryByTestId, getByTestId } = result;
 
@@ -168,17 +174,15 @@ describe("CkBTCWallet", () => {
 
       // Make transfer
       await waitFor(() =>
-        expect(queryByTestId("open-new-ckbtc-transaction")).toBeInTheDocument()
+        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
       );
 
-      const button = getByTestId(
-        "open-new-ckbtc-transaction"
-      ) as HTMLButtonElement;
+      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
       await fireEvent.click(button);
 
       await testTransferTokens({
         result,
-        selectedNetwork: TransactionNetwork.ICP_CKBTC,
+        selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
       });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());

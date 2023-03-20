@@ -12,14 +12,13 @@ import {
 } from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import type { SnsSwapCommitment } from "$lib/types/sns";
 import { page } from "$mocks/$app/stores";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { mockAuthStoreSubscribe } from "../../mocks/auth.store.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "../../mocks/sns-response.mock";
 
 const mockUnwatchCommitmentsCall = jest.fn();
 jest.mock("$lib/services/sns.services", () => {
@@ -35,7 +34,7 @@ jest.mock("$lib/services/sns.services", () => {
 const mockUnwatchMetricsCall = jest.fn();
 jest.mock("$lib/services/sns-swap-metrics.services", () => {
   return {
-    loadSnsMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapMetrics: jest.fn().mockResolvedValue(Promise.resolve()),
     watchSnsMetrics: jest.fn().mockImplementation(() => mockUnwatchMetricsCall),
   };
 });
@@ -43,6 +42,7 @@ jest.mock("$lib/services/sns-swap-metrics.services", () => {
 jest.mock("$lib/services/sns-sale.services", () => ({
   restoreSnsSaleParticipation: jest.fn().mockResolvedValue(undefined),
   hidePollingToast: jest.fn().mockResolvedValue(undefined),
+  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe("ProjectDetail", () => {
@@ -57,85 +57,106 @@ describe("ProjectDetail", () => {
       jest.clearAllMocks();
       snsQueryStore.reset();
       snsSwapCommitmentsStore.reset();
+    });
 
-      snsQueryStore.setData(
-        snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        })
-      );
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        certified: true,
+    describe("Open project", () => {
+      beforeEach(() => {
+        snsQueryStore.setData(
+          snsResponsesForLifecycle({
+            lifecycles: [SnsSwapLifecycle.Open],
+            certified: true,
+          })
+        );
+      });
+
+      it("should start watching derived state", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
+      });
+
+      it("should clear watch commitments on unmount", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+
+        unmount();
+
+        await waitFor(() =>
+          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+        );
+      });
+
+      it("should start watching metrics", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(watchSnsMetrics).toBeCalled());
+      });
+
+      it("should clear watch metrics on unmount", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        expect(mockUnwatchMetricsCall).not.toBeCalled();
+
+        unmount();
+
+        await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
+      });
+
+      it("should clear watch commitments on unmount", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+
+        unmount();
+
+        await waitFor(() =>
+          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+        );
+      });
+
+      it("should not load user's commitnemtn", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
+      });
+
+      it("should render info section", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
+      });
+
+      it("should render status section", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
       });
     });
 
-    it("should start watching derived state", async () => {
-      render(ProjectDetail, props);
+    describe("Committed project project", () => {
+      beforeEach(() => {
+        snsQueryStore.setData(
+          snsResponsesForLifecycle({
+            lifecycles: [SnsSwapLifecycle.Committed],
+            certified: true,
+          })
+        );
+      });
 
-      await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
-    });
+      it("should not start watching derived state", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
 
-    it("should clear watch commitments on unmount", async () => {
-      const { unmount } = render(ProjectDetail, props);
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsTotalCommitment).not.toBeCalled();
+      });
 
-      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+      it("should not start watching metrics", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
 
-      unmount();
-
-      await waitFor(() =>
-        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
-      );
-    });
-
-    it("should start watching metrics", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(watchSnsMetrics).toBeCalled());
-    });
-
-    it("should clear watch metrics on unmount", async () => {
-      const { unmount } = render(ProjectDetail, props);
-
-      expect(mockUnwatchMetricsCall).not.toBeCalled();
-
-      unmount();
-
-      await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
-    });
-
-    it("should clear watch commitments on unmount", async () => {
-      const { unmount } = render(ProjectDetail, props);
-
-      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
-
-      unmount();
-
-      await waitFor(() =>
-        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
-      );
-    });
-
-    it("should not load user's commitnemtn", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsSwapCommitment).not.toBeCalled());
-    });
-
-    it("should render info section", async () => {
-      const { queryByTestId } = render(ProjectDetail, props);
-
-      await waitFor(() =>
-        expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument()
-      );
-    });
-
-    it("should render status section", async () => {
-      const { queryByTestId } = render(ProjectDetail, props);
-
-      await waitFor(() =>
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument()
-      );
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsMetrics).not.toBeCalled();
+      });
     });
   });
 
@@ -147,57 +168,88 @@ describe("ProjectDetail", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
+    });
 
-      snsQueryStore.setData(
-        snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        })
-      );
-      snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        certified: true,
+    describe("Open project", () => {
+      beforeEach(() => {
+        snsQueryStore.setData(
+          snsResponsesForLifecycle({
+            lifecycles: [SnsSwapLifecycle.Open],
+            certified: true,
+          })
+        );
+      });
+
+      it("should start watching derived state", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
+      });
+
+      it("should clear watch on unmount", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+
+        unmount();
+
+        await waitFor(() =>
+          expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
+        );
+      });
+
+      it("should start watching metrics", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(watchSnsMetrics).toBeCalled());
+      });
+
+      it("should clear watch metrics on unmount", async () => {
+        const { unmount } = render(ProjectDetail, props);
+
+        expect(mockUnwatchMetricsCall).not.toBeCalled();
+
+        unmount();
+
+        await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
+      });
+
+      it("should load user's commitment", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
       });
     });
 
-    it("should start watching derived state", async () => {
-      render(ProjectDetail, props);
+    describe("Committed project", () => {
+      beforeEach(() => {
+        snsQueryStore.setData(
+          snsResponsesForLifecycle({
+            lifecycles: [SnsSwapLifecycle.Committed],
+            certified: true,
+          })
+        );
+      });
 
-      await waitFor(() => expect(watchSnsTotalCommitment).toBeCalled());
-    });
+      it("should not start watching derived state", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
 
-    it("should clear watch on unmount", async () => {
-      const { unmount } = render(ProjectDetail, props);
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsTotalCommitment).not.toBeCalled();
+      });
 
-      expect(mockUnwatchCommitmentsCall).not.toBeCalled();
+      it("should not start watching metrics", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
 
-      unmount();
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(watchSnsMetrics).not.toBeCalled();
+      });
 
-      await waitFor(() =>
-        expect(mockUnwatchCommitmentsCall).toBeCalledTimes(1)
-      );
-    });
+      it("should load user's commitment", async () => {
+        render(ProjectDetail, props);
 
-    it("should start watching metrics", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(watchSnsMetrics).toBeCalled());
-    });
-
-    it("should clear watch metrics on unmount", async () => {
-      const { unmount } = render(ProjectDetail, props);
-
-      expect(mockUnwatchMetricsCall).not.toBeCalled();
-
-      unmount();
-
-      await waitFor(() => expect(mockUnwatchMetricsCall).toBeCalledTimes(1));
-    });
-
-    it("should load user's commitment", async () => {
-      render(ProjectDetail, props);
-
-      await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+        await waitFor(() => expect(loadSnsSwapCommitment).toBeCalled());
+      });
     });
   });
 

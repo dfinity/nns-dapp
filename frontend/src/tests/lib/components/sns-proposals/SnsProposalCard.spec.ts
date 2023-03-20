@@ -7,11 +7,11 @@ import { SECONDS_IN_HOUR } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+import en from "$tests/mocks/i18n.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
-import { nervousSystemFunctionMock } from "../../../mocks/sns-functions.mock";
-import { mockSnsProposal } from "../../../mocks/sns-proposals.mock";
 
 describe("SnsProposalCard", () => {
   const props = { proposalData: mockSnsProposal, nsFunctions: [] };

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
   import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
@@ -132,32 +133,34 @@
   });
 </script>
 
-<Island>
-  <main class="legacy">
-    <section data-tid="neuron-detail">
-      {#if neuron && !inVotingProcess}
-        <Summary displayUniverse={false} />
+<TestIdWrapper testId="nns-neuron-detail-component">
+  <Island>
+    <main class="legacy">
+      <section data-tid="neuron-detail">
+        {#if neuron && !inVotingProcess}
+          <Summary displayUniverse={false} />
 
-        <NnsNeuronMetaInfoCard {neuron} />
-        <NnsNeuronInfoStake {neuron} />
-        <NnsNeuronMaturityCard {neuron} />
-        <NeuronJoinFundCard {neuron} />
-        <NeuronFollowingCard {neuron} />
+          <NnsNeuronMetaInfoCard {neuron} />
+          <NnsNeuronInfoStake {neuron} />
+          <NnsNeuronMaturityCard {neuron} />
+          <NeuronJoinFundCard {neuron} />
+          <NeuronFollowingCard {neuron} />
 
-        {#if IS_TESTNET}
-          <NnsNeuronProposalsCard {neuron} />
+          {#if IS_TESTNET}
+            <NnsNeuronProposalsCard {neuron} />
+          {/if}
+
+          <NnsNeuronHotkeysCard {neuron} />
+          <NeuronVotingHistoryCard {neuron} />
+        {:else}
+          <SkeletonCard size="large" cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
         {/if}
+      </section>
+    </main>
+  </Island>
 
-        <NnsNeuronHotkeysCard {neuron} />
-        <NeuronVotingHistoryCard {neuron} />
-      {:else}
-        <SkeletonCard size="large" cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-      {/if}
-    </section>
-  </main>
-</Island>
-
-<NnsNeuronModals />
+  <NnsNeuronModals />
+</TestIdWrapper>

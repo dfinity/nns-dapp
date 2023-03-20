@@ -38,7 +38,8 @@
   on:keydown
   {showInfo}
 >
-  <svelte:fragment slot="start"><slot name="start" /></svelte:fragment>
-  <svelte:fragment slot="label"><slot name="label" /></svelte:fragment>
-  <svelte:fragment slot="end"><slot name="end" /></svelte:fragment>
+  <slot name="start" slot="start" />
+  <slot name="label" slot="label" />
+  <slot name="end" slot="end" />
+  <slot name="inner-end" slot="inner-end" />
 </Input>

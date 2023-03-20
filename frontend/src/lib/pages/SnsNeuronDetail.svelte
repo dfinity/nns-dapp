@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
   import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
@@ -133,35 +134,37 @@
     transactionFee === undefined;
 </script>
 
-<Island>
-  <main class="legacy">
-    <section data-tid="sns-neuron-detail-page">
-      {#if loading}
-        <SkeletonCard size="large" cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-        <SkeletonCard cardType="info" separator />
-      {:else}
-        <Summary />
-
-        {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
-          <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
-        {:else}
+<TestIdWrapper testId="sns-neuron-detail-component">
+  <Island>
+    <main class="legacy">
+      <section data-tid="sns-neuron-detail-page">
+        {#if loading}
           <SkeletonCard size="large" cardType="info" separator />
-        {/if}
-        <SnsNeuronInfoStake />
-        <SnsNeuronMaturityCard />
-        <SnsNeuronFollowingCard />
-        {#if nonNullish(parameters)}
-          <SnsNeuronHotkeysCard {parameters} />
-        {/if}
-        {#if IS_TESTNET}
-          <SnsNeuronProposalsCard />
-          <SnsPermissionsCard />
-        {/if}
-      {/if}
-    </section>
-  </main>
-</Island>
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+          <SkeletonCard cardType="info" separator />
+        {:else}
+          <Summary />
 
-<SnsNeuronModals />
+          {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
+            <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
+          {:else}
+            <SkeletonCard size="large" cardType="info" separator />
+          {/if}
+          <SnsNeuronInfoStake />
+          <SnsNeuronMaturityCard />
+          <SnsNeuronFollowingCard />
+          {#if nonNullish(parameters)}
+            <SnsNeuronHotkeysCard {parameters} />
+          {/if}
+          {#if IS_TESTNET}
+            <SnsNeuronProposalsCard />
+            <SnsPermissionsCard />
+          {/if}
+        {/if}
+      </section>
+    </main>
+  </Island>
+
+  <SnsNeuronModals />
+</TestIdWrapper>

@@ -3,12 +3,12 @@
  */
 
 import { authStore } from "$lib/stores/auth.store";
-import { render } from "@testing-library/svelte";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
-} from "../../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { render } from "@testing-library/svelte";
 import SignedInOnlyTest from "./SignedInOnlyTest.svelte";
 
 describe("SignedInOnly", () => {

@@ -2,7 +2,7 @@
   import { onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import { authStore } from "$lib/stores/auth.store";
-  import type { AuthStore } from "$lib/stores/auth.store";
+  import type { AuthStoreData } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import SignIn from "$lib/components/common/SignIn.svelte";
@@ -14,7 +14,7 @@
   let signedIn = false;
 
   const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ identity }: AuthStore) => {
+    async ({ identity }: AuthStoreData) => {
       signedIn = isSignedIn(identity);
 
       if (!signedIn) {

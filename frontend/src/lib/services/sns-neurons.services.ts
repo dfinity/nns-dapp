@@ -3,7 +3,10 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
+  getSnsNeuron as getSnsNeuronApi,
   increaseDissolveDelay as increaseDissolveDelayApi,
+  querySnsNeuron,
+  querySnsNeurons,
   refreshNeuron,
   removeNeuronPermissions,
   setFollowees,
@@ -13,10 +16,7 @@ import {
   stopDissolving as stopDissolvingApi,
 } from "$lib/api/sns-governance.api";
 import {
-  getSnsNeuron as getSnsNeuronApi,
   increaseStakeNeuron as increaseStakeNeuronApi,
-  querySnsNeuron,
-  querySnsNeurons,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
@@ -35,7 +35,6 @@ import {
   followeesByFunction,
   getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
-  getSnsNeuronIdAsHexString,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
   nextMemo,
@@ -597,14 +596,6 @@ export const addFollowee = async ({
   followeeHex: string;
   rootCanisterId: Principal;
 }): Promise<{ success: boolean }> => {
-  // Do not allow a neuron to follow itself
-  if (followeeHex === getSnsNeuronIdAsHexString(neuron)) {
-    toastsError({
-      labelKey: "new_followee.same_neuron",
-    });
-    return { success: false };
-  }
-
   const identity = await getSnsNeuronIdentity();
   const followee: SnsNeuronId = {
     id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),

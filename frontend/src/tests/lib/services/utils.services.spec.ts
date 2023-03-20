@@ -1,12 +1,12 @@
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { authStore } from "$lib/stores/auth.store";
 import * as devUtils from "$lib/utils/dev.utils";
-import { tick } from "svelte";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
+import { tick } from "svelte";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {

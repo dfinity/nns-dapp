@@ -1,4 +1,5 @@
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { WithdrawalAccount } from "@dfinity/ckbtc";
 import {
@@ -35,12 +36,16 @@ export const convertCkBTCToBtc = async ({
   source,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
+  updateProgress,
 }: IcrcTransferTokensUserParams & {
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
+  updateProgress: (step: ConvertBtcStep) => void;
 }): Promise<{
   success: boolean;
 }> => {
+  updateProgress(ConvertBtcStep.INITIALIZATION);
+
   const identity = await getAuthenticatedIdentity();
 
   let account: WithdrawalAccount | undefined;
@@ -70,6 +75,8 @@ export const convertCkBTCToBtc = async ({
     subaccount: fromNullable(account.subaccount),
   });
 
+  updateProgress(ConvertBtcStep.LOCKING_CKBTC);
+
   // We reload the transactions only at the end of the process for performance reason.
   const { success: transferSuccess } = await ckBTCTransferTokens({
     source,
@@ -86,6 +93,8 @@ export const convertCkBTCToBtc = async ({
 
   // TODO(GIX-1324): how do we handle failure between these steps UX wise?
 
+  updateProgress(ConvertBtcStep.SEND_BTC);
+
   try {
     await retrieveBtc({
       identity,
@@ -98,12 +107,16 @@ export const convertCkBTCToBtc = async ({
 
     return { success: false };
   } finally {
+    updateProgress(ConvertBtcStep.RELOAD);
+
     await loadCkBTCAccountTransactions({
       account: source,
       canisterId: universeId,
       indexCanisterId,
     });
   }
+
+  updateProgress(ConvertBtcStep.DONE);
 
   return { success: true };
 };

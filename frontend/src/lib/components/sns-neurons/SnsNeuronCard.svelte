@@ -3,6 +3,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import type { CardType } from "$lib/types/card";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronCardContainer from "$lib/components/neurons/NeuronCardContainer.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
@@ -18,19 +19,21 @@
   $: neuronState = getSnsNeuronState(neuron);
 </script>
 
-<NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
+<TestIdWrapper testId="sns-neuron-card-component">
+  <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
+    <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
 
-  <div class="content">
-    <SnsNeuronAmount {neuron} />
+    <div class="content">
+      <SnsNeuronAmount {neuron} />
 
-    <NeuronStateInfo state={neuronState} />
-  </div>
+      <NeuronStateInfo state={neuronState} />
+    </div>
 
-  <SnsNeuronStateRemainingTime {neuron} />
+    <SnsNeuronStateRemainingTime {neuron} />
 
-  <slot />
-</NeuronCardContainer>
+    <slot />
+  </NeuronCardContainer>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "../../themes/mixins/neuron";

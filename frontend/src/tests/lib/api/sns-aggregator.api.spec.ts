@@ -1,6 +1,6 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
-import { aggregatorSnsMock } from "../../mocks/sns-aggregator.mock";
-import aggregatedSnses from "../../mocks/sns-aggregator.mock.json";
+import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
+import aggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
@@ -35,5 +35,22 @@ describe("sns-aggregator api", () => {
       const sns = snses.find(({ index }) => index === aggregatorSnsMock.index);
       expect(sns).toEqual(aggregatorSnsMock);
     });
+  });
+
+  it("should include icrc1_total_supply property", async () => {
+    const mockFetch = jest.fn();
+    const totalSupply = BigInt(2000_000_000);
+    const aggregatedSnsesResponse = [
+      { ...aggregatedSnses[0], icrc1_total_supply: totalSupply },
+    ];
+    mockFetch.mockReturnValueOnce(
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(aggregatedSnsesResponse),
+      })
+    );
+    global.fetch = mockFetch;
+    const snses = await querySnsProjects();
+    expect(snses[0].icrc1_total_supply).toEqual(totalSupply);
   });
 });

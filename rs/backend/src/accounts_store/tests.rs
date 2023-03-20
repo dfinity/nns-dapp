@@ -1,4 +1,5 @@
 use super::*;
+use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
 use std::str::FromStr;
 
@@ -1211,11 +1212,8 @@ fn hardware_wallet_account_name_too_long() {
     assert!(matches!(res2, RegisterHardwareWalletResponse::NameTooLong));
 }
 
-#[test]
-fn get_stats() {
-    let mut store = setup_test_store();
-
-    let stats = store.get_stats();
+/// Test that the stats are as expected for a new test store.
+pub(crate) fn assert_initial_test_store_stats_are_correct(stats: &Stats) {
     assert_eq!(2, stats.accounts_count);
     assert_eq!(0, stats.sub_accounts_count);
     assert_eq!(0, stats.hardware_wallet_accounts_count);
@@ -1224,6 +1222,23 @@ fn get_stats() {
     assert_eq!(0, stats.earliest_transaction_block_height);
     assert_eq!(3, stats.latest_transaction_block_height);
     assert!(stats.seconds_since_last_ledger_sync > 1_000_000_000);
+}
+
+/// The stats test should reject an empty response when we know that there is data in the accounts store.
+#[test]
+#[should_panic]
+fn stats_test_should_fail_for_default_fill() {
+    let stats = Stats::default();
+    assert_initial_test_store_stats_are_correct(&stats);
+}
+
+#[test]
+fn get_stats() {
+    let mut store = setup_test_store();
+
+    let mut stats = crate::stats::Stats::default();
+    store.get_stats(&mut stats);
+    assert_initial_test_store_stats_are_correct(&stats);
 
     let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
     let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
@@ -1231,13 +1246,13 @@ fn get_stats() {
     store.add_account(principal3);
     store.add_account(principal4);
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
 
     assert_eq!(4, stats.accounts_count);
 
     for i in 1..10 {
         store.create_sub_account(principal3, i.to_string());
-        let stats = store.get_stats();
+        store.get_stats(&mut stats);
         assert_eq!(i, stats.sub_accounts_count);
     }
 
@@ -1258,15 +1273,123 @@ fn get_stats() {
         },
     );
 
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert_eq!(2, stats.hardware_wallet_accounts_count);
 
     store.mark_ledger_sync_complete();
-    let stats = store.get_stats();
+    store.get_stats(&mut stats);
     assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
-fn setup_test_store() -> AccountsStore {
+fn assert_queue_item_eq_stake_neuron(
+    expected_block_index: BlockIndex,
+    expected_principal: PrincipalId,
+    expected_memo: Memo,
+    actual_queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
+) {
+    assert_eq!(actual_queue.len(), 1);
+    let actual_queue_item = actual_queue.get(0).unwrap();
+    assert_eq!(expected_block_index, actual_queue_item.0);
+    if let MultiPartTransactionToBeProcessed::StakeNeuron(actual_principal, actual_memo) = actual_queue_item.1 {
+        assert_eq!(expected_principal, actual_principal);
+        assert_eq!(expected_memo, actual_memo);
+    } else {
+        panic!("Queue item should be stake neuron transaction.");
+    }
+}
+
+#[test]
+fn decode_after_fields_removed_from_from_mptp() {
+    let mut mptp_old = MultiPartTransactionsProcessorWithRemovedFields::default();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let block_index = 123;
+    let memo = Memo(789);
+    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
+        block_index,
+        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
+    );
+    mptp_old.queue.push_back(queue_item);
+
+    let bytes = Candid((&mptp_old,)).into_bytes().unwrap();
+    let (mptp_new,): (MultiPartTransactionsProcessor,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap();
+
+    let decoded_queue = mptp_new.get_queue_for_testing();
+
+    assert_queue_item_eq_stake_neuron(block_index, principal, memo, decoded_queue);
+}
+
+#[test]
+fn decode_into_restored_fields_of_mptp_after_rollback() {
+    let new_mptp = MultiPartTransactionsProcessor::default();
+    let bytes = Candid((&new_mptp,)).into_bytes().unwrap();
+
+    let old_mptp_result: Result<(MultiPartTransactionsProcessorWithRemovedFields,), String> =
+        Candid::from_bytes(bytes).map(|c| c.0);
+
+    // This fails, showing that we need special logic to make rollbacks safe.
+    assert!(old_mptp_result.err().unwrap().starts_with("Fail to decode"));
+}
+
+#[test]
+fn encode_decode_stable_state() {
+    let mut store = AccountsStore::default();
+    let block_index = 312;
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let account_identifier = AccountIdentifier::from(principal);
+    let memo = Memo(789);
+    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
+        block_index,
+        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
+    );
+    store
+        .multi_part_transactions_processor
+        .get_mut_queue_for_testing()
+        .push_back(queue_item);
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
+    {
+        // We need an account to then retrieve the accounts' transactions
+        store.add_account(principal);
+        let transfer = Mint {
+            amount: Tokens::from_e8s(1_000_000_000),
+            to: account_identifier,
+        };
+        store.append_transaction(transfer, Memo(0), 0, timestamp).unwrap();
+    }
+    let results = store.get_transactions(
+        principal,
+        GetTransactionsRequest {
+            account_identifier,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+    assert_eq!(1, results.transactions.len(), "Initial transaction should be added");
+
+    let bytes = store.encode();
+    let decoded_store = AccountsStore::decode(bytes).unwrap();
+
+    assert_queue_item_eq_stake_neuron(
+        block_index,
+        principal,
+        memo,
+        decoded_store.multi_part_transactions_processor.get_queue_for_testing(),
+    );
+    let decoded_results = decoded_store.get_transactions(
+        principal,
+        GetTransactionsRequest {
+            account_identifier,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+    assert_eq!(
+        results.transactions.len(),
+        decoded_results.transactions.len(),
+        "Decoded transactions should match encoded ones."
+    );
+}
+
+pub(crate) fn setup_test_store() -> AccountsStore {
     let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
     let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
     let account_identifier1 = AccountIdentifier::from(principal1);

@@ -8,9 +8,10 @@ export type NewTransaction = {
   amount: number;
 };
 
-export type ValidateAmountFn = (
-  amount: number | undefined
-) => string | undefined;
+export type ValidateAmountFn = (params: {
+  amount: number | undefined;
+  selectedAccount: Account | undefined;
+}) => string | undefined;
 
 export interface IcrcTransactionData {
   toSelfTransaction: boolean;
@@ -53,5 +54,7 @@ export interface Transaction {
 
 export enum TransactionNetwork {
   ICP_CKBTC = "network_icp_ckbtc",
-  BITCOIN = "network_bitcoin",
+  ICP_CKTESTBTC = "network_icp_cktestbtc",
+  BTC_MAINNET = "network_btc_mainnet",
+  BTC_TESTNET = "network_btc_testnet",
 }

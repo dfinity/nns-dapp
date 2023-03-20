@@ -29,7 +29,7 @@ const assertEditableFeatureFlag = (flag: FeatureKey) => {
   }
 };
 
-const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
+export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_SNS_AGGREGATOR",
   "ENABLE_SNS_2",
   "TEST_FLAG_EDITABLE",

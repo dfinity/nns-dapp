@@ -3,21 +3,20 @@
  */
 
 import * as governanceApi from "$lib/api/sns-governance.api";
-import * as api from "$lib/api/sns.api";
 import {
   checkSnsNeuronBalances,
   neuronNeedsRefresh,
 } from "$lib/services/sns-neurons-check-balances.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../mocks/sns-neurons.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
+import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("sns-neurons-check-balances-services", () => {
   beforeEach(() => {
@@ -46,7 +45,7 @@ describe("sns-neurons-check-balances-services", () => {
         id: [neuronId] as [SnsNeuronId],
       };
       const spyQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -79,7 +78,7 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: stake,
       };
       const spyNeuronQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")
@@ -120,7 +119,7 @@ describe("sns-neurons-check-balances-services", () => {
         cached_neuron_stake_e8s: BigInt(0),
       };
       const spyNeuronQuery = jest
-        .spyOn(api, "getSnsNeuron")
+        .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
       const spyNeuronBalance = jest
         .spyOn(governanceApi, "getNeuronBalance")

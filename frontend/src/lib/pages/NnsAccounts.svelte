@@ -1,5 +1,6 @@
 <script lang="ts">
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
+  import NnsAddAccount from "$lib/components/accounts/NnsAddAccount.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { accountsStore } from "$lib/stores/accounts.store";
@@ -49,6 +50,8 @@
         account={walletAccount}>{walletAccount.name}</AccountCard
       >
     {/each}
+
+    <NnsAddAccount />
   {:else}
     <SkeletonCard size="medium" />
   {/if}

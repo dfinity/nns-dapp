@@ -6,14 +6,14 @@ import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import { mockCanistersStoreSubscribe } from "../../mocks/canisters.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/canisters.services", () => {
   return {

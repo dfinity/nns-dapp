@@ -4,8 +4,8 @@
 
 import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
 import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
+import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("CyclesCard", () => {
   it("renders title as aria label", () => {

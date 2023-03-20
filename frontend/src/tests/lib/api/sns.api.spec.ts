@@ -3,14 +3,11 @@
  */
 
 import {
-  getSnsNeuron,
   increaseStakeNeuron,
   queryAllSnsMetadata,
   querySnsDerivedState,
   querySnsLifecycle,
   querySnsMetadata,
-  querySnsNeuron,
-  querySnsNeurons,
   querySnsSwapCommitment,
   querySnsSwapState,
   querySnsSwapStates,
@@ -20,6 +17,22 @@ import {
   importInitSnsWrapper,
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createBuyersState,
+  mockQueryMetadata,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
+  mockSwap,
+} from "$tests/mocks/sns-projects.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
@@ -27,24 +40,7 @@ import {
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockSnsNeuron } from "../../mocks/sns-neurons.mock";
-import {
-  createBuyersState,
-  mockQueryMetadata,
-  mockQueryMetadataResponse,
-  mockQueryTokenResponse,
-  mockSwap,
-} from "../../mocks/sns-projects.mock";
-import {
-  deployedSnsMock,
-  governanceCanisterIdMock,
-  ledgerCanisterIdMock,
-  rootCanisterIdMock,
-  swapCanisterIdMock,
-} from "../../mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
@@ -78,9 +74,6 @@ describe("sns-api", () => {
   const getDerivedStateSpy = jest.fn().mockResolvedValue(derivedState);
   const getLifecycleSpy = jest.fn().mockResolvedValue(lifecycleResponse);
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
-  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
   const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
   const increaseStakeNeuronSpy = jest.fn();
 
@@ -109,10 +102,7 @@ describe("sns-api", () => {
         swapState: () => Promise.resolve(mockQuerySwap),
         notifyParticipation: notifyParticipationSpy,
         getUserCommitment: getUserCommitmentSpy,
-        listNeurons: queryNeuronsSpy,
-        getNeuron: getNeuronSpy,
         stakeNeuron: stakeNeuronSpy,
-        queryNeuron: queryNeuronSpy,
         increaseStakeNeuron: increaseStakeNeuronSpy,
         getDerivedState: getDerivedStateSpy,
         getLifecycle: getLifecycleSpy,
@@ -199,42 +189,6 @@ describe("sns-api", () => {
     });
     expect(getLifecycleSpy).toBeCalled();
     expect(receivedData).toEqual(lifecycleResponse);
-  });
-
-  it("should query sns neurons", async () => {
-    const neurons = await querySnsNeurons({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-    });
-
-    expect(neurons).not.toBeNull();
-    expect(neurons.length).toEqual(1);
-    expect(queryNeuronsSpy).toBeCalled();
-  });
-
-  it("should get one sns neuron", async () => {
-    const neuron = await getSnsNeuron({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-    });
-
-    expect(neuron).not.toBeNull();
-    expect(getNeuronSpy).toBeCalled();
-  });
-
-  it("should query one sns neuron", async () => {
-    const neuron = await querySnsNeuron({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-    });
-
-    expect(neuron).not.toBeNull();
-    expect(queryNeuronSpy).toBeCalled();
   });
 
   it("should stake neuron", async () => {

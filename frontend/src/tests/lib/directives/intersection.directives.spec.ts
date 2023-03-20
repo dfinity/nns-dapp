@@ -3,12 +3,12 @@
  */
 
 import * as directives from "$lib/directives/intersection.directives";
-import { render } from "@testing-library/svelte";
 import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
   mockIntersectionObserverIsIntersecting,
-} from "../../mocks/infinitescroll.mock";
+} from "$tests/mocks/infinitescroll.mock";
+import { render } from "@testing-library/svelte";
 import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {

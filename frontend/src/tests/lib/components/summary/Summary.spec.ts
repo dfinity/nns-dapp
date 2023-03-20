@@ -8,13 +8,13 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { page } from "$mocks/$app/stores";
-import { render } from "@testing-library/svelte";
-import { mockStoreSubscribe } from "../../../mocks/commont.mock";
-import en from "../../../mocks/i18n.mock";
+import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-} from "../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
   it("should render a logo", () => {
@@ -22,16 +22,37 @@ describe("Summary", () => {
     expect(getByTestId("project-logo")).not.toBeNull();
   });
 
-  it("should render internet computer if none", () => {
-    const { container } = render(Summary, {
-      props: { displayUniverse: false },
+  describe("no universe", () => {
+    beforeAll(() => {
+      jest
+        .spyOn(snsProjectSelectedStore, "subscribe")
+        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+
+      jest
+        .spyOn(snsProjectsCommittedStore, "subscribe")
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     });
-    expect(
-      container?.querySelector("h1")?.textContent?.includes(en.core.ic)
-    ).toBeTruthy();
+
+    it("should render internet computer if none", () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      });
+
+      const { container } = render(Summary, {
+        props: { displayUniverse: false },
+      });
+
+      expect(
+        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
+      ).toBeTruthy();
+    });
   });
 
   describe("nns", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
     beforeAll(() =>
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")

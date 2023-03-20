@@ -13,7 +13,7 @@
   $: shortenText = shortenWithMiddleEllipsis(text);
 </script>
 
-<span>
+<span data-tid="hash-component">
   <Tooltip {id} {text}>
     <svelte:element this={tagName} data-tid={testId}>
       {shortenText}</svelte:element

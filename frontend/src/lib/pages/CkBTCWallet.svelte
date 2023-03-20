@@ -29,7 +29,6 @@
     ckBTCTokenStore,
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
-  import CkBTCWalletModals from "$lib/modals/accounts/CkBTCWalletModals.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -179,5 +178,3 @@
     <CkBTCWalletFooter />
   {/if}
 </Island>
-
-<CkBTCWalletModals />

@@ -2,13 +2,13 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { get } from "svelte/store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockSnsMainAccount } from "../../mocks/sns-accounts.mock";
-import { mockSnsFullProject } from "../../mocks/sns-projects.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { get } from "svelte/store";
 
 describe("universes-accounts-balance.derived", () => {
   jest

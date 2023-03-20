@@ -6,11 +6,10 @@ import { writable } from "svelte/store";
 
 export interface SnsTicketsStoreEntry {
   /**
-   * undefined: not set
-   * null: no ticket
+   * undefined: not initialized yet
+   * null: no ticket available
    */
   ticket: Ticket | undefined | null;
-  keepPolling: boolean;
 }
 
 export type SnsTicketsStoreData = Record<
@@ -22,10 +21,7 @@ export interface SnsTicketsStore extends Readable<SnsTicketsStoreData> {
   setTicket: (data: {
     rootCanisterId: Principal;
     ticket: Ticket | undefined | null;
-    keepPolling?: boolean;
   }) => void;
-  enablePolling: (rootCanisterId: Principal) => void;
-  disablePolling: (rootCanisterId: Principal) => void;
   setNoTicket: (rootCanisterId: Principal) => void;
   reset: () => void;
 }
@@ -43,49 +39,14 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
     setTicket({
       rootCanisterId,
       ticket,
-      keepPolling,
     }: {
       rootCanisterId: Principal;
       ticket: Ticket | undefined | null;
-      keepPolling?: boolean;
     }) {
       update((currentState: SnsTicketsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
           ticket,
-          keepPolling: keepPolling || false,
-        },
-      }));
-    },
-
-    /**
-     * Enable polling for the ticket
-     *
-     * @param rootCanisterId
-     */
-    enablePolling(rootCanisterId: Principal) {
-      update((currentState: SnsTicketsStoreData) => ({
-        ...currentState,
-        [rootCanisterId.toText()]: {
-          ticket: currentState[rootCanisterId.toText()]?.ticket,
-          keepPolling: true,
-        },
-      }));
-    },
-
-    /**
-     * Disable polling for the ticket
-     *
-     * This is used for testing purposes only at the moment.
-     *
-     * @param rootCanisterId
-     */
-    disablePolling(rootCanisterId: Principal) {
-      update((currentState: SnsTicketsStoreData) => ({
-        ...currentState,
-        [rootCanisterId.toText()]: {
-          ticket: currentState[rootCanisterId.toText()]?.ticket,
-          keepPolling: false,
         },
       }));
     },
@@ -99,8 +60,6 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
         ...currentState,
         [rootCanisterId.toText()]: {
           ticket: null,
-          keepPolling:
-            currentState[rootCanisterId.toText()]?.keepPolling ?? false,
         },
       }));
     },
@@ -112,5 +71,4 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
   };
 };
 
-// TODO(sale): rename to openTickets
 export const snsTicketsStore = initSnsTicketsStore();

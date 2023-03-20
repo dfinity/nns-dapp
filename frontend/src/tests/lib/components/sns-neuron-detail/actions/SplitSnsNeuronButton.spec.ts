@@ -7,13 +7,13 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import en from "../../../../mocks/i18n.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
-} from "../../../../mocks/sns-neurons.mock";
-import { mockToken } from "../../../../mocks/sns-projects.mock";
+} from "$tests/mocks/sns-neurons.mock";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/utils/modals.utils", () => ({
   openSnsNeuronModal: jest.fn(),
