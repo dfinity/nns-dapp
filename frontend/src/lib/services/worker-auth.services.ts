@@ -1,4 +1,5 @@
 import type { AuthStoreData } from "$lib/stores/auth.store";
+import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import type {
   PostMessage,
   PostMessageDataResponse,
@@ -12,7 +13,7 @@ export const initAuthWorker = async () => {
   authWorker.onmessage = async ({
     data,
   }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
-    const { msg } = data;
+    const { msg, data: value } = data;
 
     switch (msg) {
       case "nnsSignOut":
@@ -22,7 +23,9 @@ export const initAuthWorker = async () => {
             level: "warn",
           },
         });
-
+        return;
+      case "nnsDelegationRemainingTime":
+        authRemainingTimeStore.set(value?.authRemainingTime);
         return;
     }
   };

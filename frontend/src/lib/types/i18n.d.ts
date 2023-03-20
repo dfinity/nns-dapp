@@ -135,6 +135,7 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   launchpad: string;
+  settings: string;
 }
 
 interface I18nHeader {
@@ -927,6 +928,13 @@ interface I18nFeature_flags_prompt {
   remove_override: string;
 }
 
+interface I18nSettings {
+  your_principal: string;
+  your_principal_description: string;
+  your_session: string;
+  your_session_description: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1166,6 +1174,7 @@ interface I18n {
   ckbtc: I18nCkbtc;
   error__ckbtc: I18nError__ckbtc;
   feature_flags_prompt: I18nFeature_flags_prompt;
+  settings: I18nSettings;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
