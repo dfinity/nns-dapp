@@ -57,7 +57,6 @@
     bind:qrCodeRendered
   >
     <slot name="title" slot="title" />
-    <slot name="description" slot="description" />
   </ReceiveAddressQRCode>
 
   {#if modalRendered}

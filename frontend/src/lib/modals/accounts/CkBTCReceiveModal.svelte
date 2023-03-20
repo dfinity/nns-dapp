@@ -59,8 +59,8 @@
   let logo: string;
   $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
 
-  let logoArialLabel: string;
-  $: logoArialLabel = bitcoin
+  let tokenLabel: string;
+  $: tokenLabel = bitcoin
     ? $i18n.ckbtc.bitcoin
     : isUniverseCkTESTBTC(universeId)
     ? $i18n.ckbtc.test_title
@@ -120,24 +120,9 @@
     : undefined;
 
   let title: string;
-  $: title =
-    !displayBtcAddress && nonNullish(token)
-      ? replacePlaceholders($i18n.wallet.sns_receive_note_title, {
-          $tokenSymbol: token.token.symbol,
-        })
-      : bitcoin
-      ? $i18n.ckbtc.btc_receive_note_title
-      : $i18n.ckbtc.ckbtc_receive_note_title;
-
-  let description: string;
-  $: description =
-    !displayBtcAddress && nonNullish(token)
-      ? replacePlaceholders($i18n.wallet.sns_receive_note_text, {
-          $tokenSymbol: token.token.symbol,
-        })
-      : bitcoin
-      ? $i18n.ckbtc.btc_receive_note_text
-      : $i18n.ckbtc.ckbtc_receive_note_text;
+  $: title = replacePlaceholders($i18n.wallet.token_address, {
+    $tokenSymbol: tokenLabel,
+  });
 
   const onClose = async () => {
     if (bitcoin) {
@@ -185,11 +170,10 @@
         ? $i18n.ckbtc.qrcode_aria_label_bitcoin
         : $i18n.ckbtc.qrcode_aria_label_ckBTC}
       {logo}
-      {logoArialLabel}
+      logoArialLabel={tokenLabel}
       bind:qrCodeRendered
     >
       <svelte:fragment slot="title">{title}</svelte:fragment>
-      <svelte:fragment slot="description">{description}</svelte:fragment>
     </ReceiveAddressQRCode>
   {/if}
 

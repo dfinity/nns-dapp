@@ -42,12 +42,7 @@
     {canSelectAccount}
   >
     <svelte:fragment slot="title"
-      >{replacePlaceholders($i18n.wallet.sns_receive_note_title, {
-        $tokenSymbol: tokenSymbol,
-      })}</svelte:fragment
-    >
-    <svelte:fragment slot="description"
-      >{replacePlaceholders($i18n.wallet.sns_receive_note_text, {
+      >{replacePlaceholders($i18n.wallet.token_address, {
         $tokenSymbol: tokenSymbol,
       })}</svelte:fragment
     >

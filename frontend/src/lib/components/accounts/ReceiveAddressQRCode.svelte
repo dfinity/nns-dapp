@@ -23,13 +23,6 @@
 <div class="content">
   <div class="description">
     <h3><slot name="title" /></h3>
-    <p><slot name="description" /></p>
-
-    {#if addressSelected}
-      <div class="separator">
-        <Separator />
-      </div>
-    {/if}
   </div>
 
   <article class="qrcode">
@@ -55,7 +48,7 @@
   </article>
 
   {#if addressSelected}
-    <div>
+    <div class="address-block">
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.accounts.address}</span>
         <div slot="value" class="address">
@@ -73,23 +66,15 @@
   .content {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
 
     @include media.min-width(medium) {
       display: grid;
       grid-template-columns: repeat(2, 50%);
       grid-template-rows: auto 1fr;
       grid-row-gap: 0;
+      gap: var(--padding-2x);
 
       padding: var(--padding-2x) 0;
-    }
-  }
-
-  .separator {
-    display: none;
-
-    @include media.min-width(medium) {
-      display: block;
     }
   }
 
@@ -130,5 +115,9 @@
     align-items: center;
 
     border-radius: var(--border-radius);
+  }
+
+  .address-block {
+    margin: var(--padding) 0;
   }
 </style>

@@ -454,10 +454,7 @@ interface I18nWallet {
   no_transactions: string;
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
-  icp_receive_note_title: string;
-  icp_receive_note_text: string;
-  sns_receive_note_title: string;
-  sns_receive_note_text: string;
+  token_address: string;
 }
 
 interface I18nBusy_screen {
