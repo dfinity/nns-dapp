@@ -88,8 +88,7 @@ jobs:
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
       - name: Create more SNSs
         run: |
-          cd "$( dirname "$(command -v snsdemo)" )/.."
-          ./bin/dfx-sns-demo-mksns-parallel --num_sns 11 --majority snsdemo8
+          dfx-sns-demo-mksns-parallel --num_sns 11 --majority snsdemo8
       - name: Make the aggregator collect data quickly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
