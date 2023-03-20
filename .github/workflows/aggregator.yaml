@@ -15,8 +15,16 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Build the nns-dapp
-        run: ./scripts/docker-build --network local
+      - name: Build sns-aggregator image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
@@ -35,7 +43,7 @@ jobs:
           popd
           mv "$HOME/.dfx" .
       - name: Upgrade to the current aggregator
-        run: dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install sns_aggregator --wasm out/sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
         run: sleep 30
       - name: Get the latest data from the sns aggregator
