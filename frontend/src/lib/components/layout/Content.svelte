@@ -4,12 +4,13 @@
   import Title from "$lib/components/header/Title.svelte";
 
   export let back: (() => Promise<void>) | undefined = undefined;
+  export let settings = true;
 </script>
 
 <Content back={back !== undefined} on:nnsBack={async () => await back?.()}>
   <Title slot="title" />
 
-  <AccountMenu slot="toolbar-end" />
+  <AccountMenu slot="toolbar-end" {settings} />
 
   <slot />
 </Content>

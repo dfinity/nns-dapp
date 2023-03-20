@@ -60,5 +60,13 @@ describe("AccountMenu", () => {
 
       expect(renderResult.getByTestId("settings")).not.toBeNull();
     });
+
+    it("should not display settings button if explicitly not required", async () => {
+      const renderResult = render(AccountMenu, { props: { settings: false } });
+
+      await show(renderResult);
+
+      expect(() => renderResult.getByTestId("settings")).toThrow();
+    });
   });
 });

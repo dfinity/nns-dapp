@@ -7,6 +7,8 @@
   import { authStore } from "$lib/stores/auth.store";
   import Settings from "$lib/components/header/Settings.svelte";
 
+  export let settings = true;
+
   let visible = false;
   let button: HTMLButtonElement | undefined;
 
@@ -31,7 +33,9 @@
     <div class="info">
       <ThemeToggle />
 
-      <Settings />
+      {#if settings}
+        <Settings />
+      {/if}
 
       <Logout on:nnsLogoutTriggered={toggle} />
     </div>

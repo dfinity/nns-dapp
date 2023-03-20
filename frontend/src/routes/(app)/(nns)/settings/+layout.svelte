@@ -13,7 +13,7 @@
 </script>
 
 <Layout>
-  <Content {back}>
+  <Content {back} settings={false}>
     <slot />
   </Content>
 </Layout>
