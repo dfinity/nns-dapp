@@ -16,6 +16,8 @@ jobs:
         include:
           - BUILD_NAME: "local"
             DFX_NETWORK: "local"
+          - BUILD_NAME: "mainnet"
+            DFX_NETWORK: "mainnet"
     steps:
       - uses: actions/checkout@v3
       # We use buildx and its GitHub Actions caching support `type=gha`. For
