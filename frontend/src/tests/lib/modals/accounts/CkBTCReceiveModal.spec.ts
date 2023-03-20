@@ -95,8 +95,11 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render a bitcoin description", async () => {
       const { getByText } = await renderReceiveModal({});
 
-      expect(getByText(en.ckbtc.btc_receive_note_title)).toBeInTheDocument();
-      expect(getByText(en.ckbtc.btc_receive_note_text)).toBeInTheDocument();
+      const title = replacePlaceholders(en.wallet.token_address, {
+        $tokenSymbol: en.ckbtc.bitcoin,
+      });
+
+      expect(getByText(title)).toBeInTheDocument();
     });
 
     it("should render a ckBTC description", async () => {
@@ -104,12 +107,11 @@ describe("BtcCkBTCReceiveModal", () => {
 
       await selectCkBTC(container);
 
-      await waitFor(() =>
-        expect(getByText(en.ckbtc.ckbtc_receive_note_title)).toBeInTheDocument()
-      );
-      await waitFor(() =>
-        expect(getByText(en.ckbtc.ckbtc_receive_note_text)).toBeInTheDocument()
-      );
+      const title = replacePlaceholders(en.wallet.token_address, {
+        $tokenSymbol: en.ckbtc.test_title,
+      });
+
+      await waitFor(() => expect(getByText(title)).toBeInTheDocument());
     });
 
     it("should render a bitcoin logo", async () => {
@@ -221,16 +223,11 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render a ckBTC description", async () => {
       const { getByText } = await renderReceiveModal(params);
 
-      const title = replacePlaceholders(en.wallet.sns_receive_note_title, {
-        $tokenSymbol: mockCkBTCToken.symbol,
-      });
-
-      const description = replacePlaceholders(en.wallet.sns_receive_note_text, {
+      const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: mockCkBTCToken.symbol,
       });
 
       await waitFor(() => expect(getByText(title)).toBeInTheDocument());
-      await waitFor(() => expect(getByText(description)).toBeInTheDocument());
     });
 
     it("should only reload account", async () => {

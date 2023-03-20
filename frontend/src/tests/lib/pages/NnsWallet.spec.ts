@@ -29,6 +29,7 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import { tick, type SvelteComponent } from "svelte";
+import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import en from "../../mocks/i18n.mock";
 import {
   modalToolbarSelector,
@@ -207,8 +208,13 @@ describe("NnsWallet", () => {
 
       const { getByText } = result;
 
-      expect(getByText(en.wallet.icp_receive_note_title)).toBeInTheDocument();
-      expect(getByText(en.wallet.icp_receive_note_text)).toBeInTheDocument();
+      expect(
+        getByText(
+          replacePlaceholders(en.wallet.token_address, {
+            $tokenSymbol: en.core.icp,
+          })
+        )
+      ).toBeInTheDocument();
     });
 
     it("should reload account after finish receiving tokens", async () => {

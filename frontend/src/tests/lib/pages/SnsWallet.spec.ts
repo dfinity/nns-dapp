@@ -221,17 +221,11 @@ describe("SnsWallet", () => {
 
       const store = get(selectedUniverseStore);
 
-      const title = replacePlaceholders(en.wallet.sns_receive_note_title, {
+      const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: store.summary?.token.symbol ?? "error-title-is-undefined",
       });
 
-      const description = replacePlaceholders(en.wallet.sns_receive_note_text, {
-        $tokenSymbol:
-          store.summary?.token.symbol ?? "error-description-is-undefined",
-      });
-
       expect(getByText(title)).toBeInTheDocument();
-      expect(getByText(description)).toBeInTheDocument();
     });
   });
 });

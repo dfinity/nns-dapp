@@ -883,10 +883,6 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  btc_receive_note_title: string;
-  ckbtc_receive_note_title: string;
-  btc_receive_note_text: string;
-  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
