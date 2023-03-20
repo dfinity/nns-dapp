@@ -21,7 +21,10 @@ source "$(clap.build)"
 set -euo pipefail
 
 verify_healthy() {
-  dfx canister call nns-dapp get_stats
+  # Checking get_stats() is temporarily disabled, as the get_stats API is changing
+  # and the new schema is incompatible with the old.
+  # dfx canister call nns-dapp get_stats
+  dfx canister call nns-dapp get_canisters
 }
 
 get_current_wasm() {
