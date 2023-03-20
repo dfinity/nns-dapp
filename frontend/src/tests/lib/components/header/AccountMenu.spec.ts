@@ -61,12 +61,18 @@ describe("AccountMenu", () => {
       expect(renderResult.getByTestId("settings")).not.toBeNull();
     });
 
-    it("should not display settings button if explicitly not required", async () => {
-      const renderResult = render(AccountMenu, { props: { settings: false } });
+    it("should close popover on click on settings", async () => {
+      const renderResult = render(AccountMenu);
 
       await show(renderResult);
 
-      expect(() => renderResult.getByTestId("settings")).toThrow();
+      const settings = renderResult.getByTestId("settings");
+
+      settings !== null && fireEvent.click(settings);
+
+      await waitFor(() =>
+        expect(() => renderResult.getByRole("menu")).toThrow()
+      );
     });
   });
 });
