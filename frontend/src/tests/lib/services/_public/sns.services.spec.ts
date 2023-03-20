@@ -115,7 +115,7 @@ describe("SNS public services", () => {
       const spyQuerySnsProjects = jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
         );
 
       await loadSnsProjects();
@@ -136,7 +136,7 @@ describe("SNS public services", () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
         );
 
       await loadSnsProjects();
@@ -180,7 +180,7 @@ describe("SNS public services", () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, { ...aggregatorSnsMock }])
+          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
         );
 
       await loadSnsProjects();
