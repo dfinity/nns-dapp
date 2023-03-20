@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import {formatToken, numberToE8s} from "$lib/utils/token.utils";
+  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -18,7 +18,9 @@
 
 <p data-tid="bitcoin-estimated-amount" class="description">
   {$i18n.accounts.estimated_amount_received}:
-  <span class="value">{formatToken({ value: estimatedAmount, detailed: true})}</span>
+  <span class="value" data-tid="bitcoin-estimated-amount-value"
+    >{formatToken({ value: estimatedAmount, detailed: true })}</span
+  >
   <span class="label">{$i18n.ckbtc.btc}</span>
 </p>
 
