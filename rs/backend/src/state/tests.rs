@@ -22,14 +22,15 @@ fn state_can_be_restored_from_stable_memory() {
     assert_eq!(toy_state, parsed, "State has changed");
 }
 
-// Test upgrading and downgrading from the previous schema.
 impl State {
+    /// Encode stable memory as at tags/proposal-112386
     fn encode_old_001(&self) -> Vec<u8> {
         Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
             .into_bytes()
             .unwrap()
     }
 
+    /// Decode stable memory as at tags/proposal-112386
     fn decode_old_001(bytes: Vec<u8>) -> Result<Self, String> {
         let (account_store_bytes, assets_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
