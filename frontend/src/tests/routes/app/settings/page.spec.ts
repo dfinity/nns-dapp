@@ -9,23 +9,40 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
+import { mockIdentity } from "../../../mocks/auth.store.mock";
 
 describe("Settings page", () => {
   jest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
-  beforeAll(() => {
-    authStoreMock.next({
-      identity: undefined,
+  describe("not signed in", () => {
+    beforeAll(() => {
+      authStoreMock.next({
+        identity: undefined,
+      });
+    });
+
+    it("should render sign-in if not logged in", () => {
+      const { getByTestId } = render(SettingsPage);
+
+      expect(getByTestId("login-button")).not.toBeNull();
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  describe("signed in", () => {
+    beforeAll(() => {
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+    });
 
-  it("should render sign-in if not logged in", () => {
-    const { getByTestId } = render(SettingsPage);
+    it("should render sign-in if not logged in", () => {
+      const { getByText } = render(SettingsPage);
 
-    expect(getByTestId("login-button")).not.toBeNull();
+      expect(
+        getByText(mockIdentity.getPrincipal().toText())
+      ).toBeInTheDocument();
+    });
   });
 });
