@@ -16,7 +16,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
       - name: Build the nns-dapp
-        run: ./scripts/docker-build --network local # Note: This can be optimized by not building the nns-dapp
+        run: ./scripts/docker-build --network local
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
@@ -29,9 +29,11 @@ jobs:
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Get test environment
         run: |
-          cd "$HOME"
+          pushd "$HOME"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           unzip state.zip
+          popd
+          mv "$HOME/.dfx" .
       - name: Set the local sns_aggregator canister ID
       - name: Upgrade to the current aggregator
         run: dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
