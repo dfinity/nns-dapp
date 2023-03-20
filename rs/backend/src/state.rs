@@ -1,6 +1,7 @@
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
+use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -14,6 +15,7 @@ pub struct State {
     pub accounts_store: RefCell<AccountsStore>,
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
+    pub performance: RefCell<PerformanceCounts>,
 }
 
 impl State {
@@ -21,6 +23,7 @@ impl State {
         self.accounts_store.replace(new_state.accounts_store.take());
         self.assets.replace(new_state.assets.take());
         self.asset_hashes.replace(new_state.asset_hashes.take());
+        self.performance.replace(new_state.performance.take());
     }
 }
 
@@ -45,11 +48,13 @@ impl StableState for State {
 
         let assets = Assets::decode(assets_bytes)?;
         let asset_hashes = AssetHashes::from(&assets);
+        let performance = PerformanceCounts::default();
 
         Ok(State {
             accounts_store: RefCell::new(AccountsStore::decode(account_store_bytes)?),
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
+            performance: RefCell::new(performance),
         })
     }
 }
