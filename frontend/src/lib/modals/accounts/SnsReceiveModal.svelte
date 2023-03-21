@@ -13,10 +13,10 @@
   export let data: AccountsReceiveModalData;
 
   let account: Account | undefined;
-  let reloadAccount: (() => Promise<void>) | undefined;
+  let reload: (() => Promise<void>) | undefined;
   let canSelectAccount: boolean;
 
-  $: ({ account, reloadAccount, canSelectAccount } = data);
+  $: ({ account, reload, canSelectAccount } = data);
 
   let universeId: UniverseCanisterId | undefined;
   $: universeId = $snsOnlyProjectStore;
@@ -37,7 +37,7 @@
     })}
     {logo}
     logoArialLabel={tokenSymbol}
-    {reloadAccount}
+    {reload}
     {universeId}
     {canSelectAccount}
   >

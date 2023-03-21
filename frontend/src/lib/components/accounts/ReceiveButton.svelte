@@ -8,7 +8,7 @@
   export let testId = "receive-icp";
   export let type: AccountsModalType;
   export let account: Account | undefined = undefined;
-  export let reloadAccount: (() => Promise<void>) | undefined = undefined;
+  export let reload: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
 
   const openModal = () =>
@@ -16,7 +16,7 @@
       type,
       data: {
         account,
-        reloadAccount,
+        reload,
         canSelectAccount,
       },
     });

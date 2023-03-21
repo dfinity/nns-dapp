@@ -5,10 +5,13 @@
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import {syncAccounts} from "$lib/services/accounts.services";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
+
+  const reload = async () => await syncAccounts();
 </script>
 
 {#if modal === "NewTransaction"}
@@ -23,6 +26,6 @@
       data-tid="open-new-transaction">{$i18n.accounts.send}</button
     >
 
-    <ReceiveButton type="nns-receive" canSelectAccount />
+    <ReceiveButton type="nns-receive" canSelectAccount {reload} />
   </Footer>
 {/if}
