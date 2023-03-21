@@ -65,14 +65,10 @@
   .content {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     @include media.min-width(medium) {
-      display: grid;
-      grid-template-columns: repeat(2, 50%);
-      grid-template-rows: auto 1fr;
-      grid-row-gap: 0;
       gap: var(--padding-2x);
-
       padding: var(--padding-2x) 0;
     }
   }
@@ -90,10 +86,9 @@
     padding: var(--padding-2x) var(--padding-8x);
 
     @include media.min-width(medium) {
-      grid-column: 2 / 3;
-      grid-row: 1 / 3;
-
       padding: 0 var(--padding-4x);
+      width: 100%;
+      max-width: 300px;
     }
   }
 
