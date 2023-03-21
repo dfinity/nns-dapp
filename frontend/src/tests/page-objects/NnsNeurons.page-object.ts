@@ -1,5 +1,5 @@
-import { NnsNeuronCardPo } from "./NnsNeuronCard.page-object";
-import { SkeletonCardPo } from "./SkeletonCard.page-object";
+import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 
 export class NnsNeuronsPo {
   static readonly tid = "nns-neurons-component";

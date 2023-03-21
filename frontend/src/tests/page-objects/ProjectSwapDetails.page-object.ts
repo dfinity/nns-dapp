@@ -1,4 +1,4 @@
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 
 export class ProjectSwapDetailsPo {
   static readonly tid = "project-swap-details-component";

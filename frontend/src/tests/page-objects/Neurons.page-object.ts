@@ -1,6 +1,6 @@
+import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
+import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { nonNullish } from "@dfinity/utils";
-import { NnsNeuronsPo } from "./NnsNeurons.page-object";
-import { SnsNeuronsPo } from "./SnsNeurons.page-object";
 
 export class NeuronsPo {
   static readonly tid = "neurons-component";

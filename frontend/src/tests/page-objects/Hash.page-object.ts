@@ -1,4 +1,4 @@
-import { TooltipPo } from "./Tooltip.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 
 export class HashPo {
   static readonly tid = "hash-component";
