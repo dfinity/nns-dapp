@@ -8,7 +8,7 @@ import {
   type MinterParams,
   type RetrieveBtcOk,
   type RetrieveBtcParams,
-  type UpdateBalanceResult,
+  type UpdateBalanceOk,
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import type { Principal } from "@dfinity/principal";
@@ -46,7 +46,7 @@ export const getBTCAddress = async (params: {
 export const updateBalance = async (params: {
   identity: Identity;
   canisterId: Principal;
-}): Promise<UpdateBalanceResult> => {
+}): Promise<UpdateBalanceOk> => {
   logWithTimestamp("Updating ckBTC balance: call...");
 
   const {
