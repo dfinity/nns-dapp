@@ -49,6 +49,8 @@ interface I18nError {
   sns_accounts_balance_load: string;
   icrc_token_load: string;
   list_proposals: string;
+  get_proposal: string;
+  wrong_proposal_id: string;
   list_canisters: string;
   missing_identity: string;
   rename_subaccount: string;

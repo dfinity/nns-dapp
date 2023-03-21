@@ -1,4 +1,5 @@
 import {
+  queryProposal,
   queryProposals,
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
@@ -27,7 +28,12 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { fromDefinedNullable, isNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
 
@@ -176,6 +182,67 @@ export const loadSnsProposals = async ({
         labelKey: "error.list_proposals",
         err,
       });
+    },
+  });
+};
+
+/**
+ * Calls the callback `setProposal` with the proposal found by the `proposalId` or `undefined` if not found.
+ *
+ * - If proposal is in store and certified, it will be returned immediately.
+ * - Otherwise, use queryAndUpdate and call the callback with the result twice.
+ *
+ * @param {Object} params
+ * @param {Principal} params.rootCanisterId
+ * @param {SnsProposalId} params.proposalId
+ */
+export const getSnsProposalById = async ({
+  rootCanisterId,
+  proposalId,
+  setProposal,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  proposalId: SnsProposalId;
+  setProposal: (params: {
+    proposal: SnsProposalData;
+    certified: boolean;
+  }) => void;
+  handleError?: (err: unknown) => void;
+}): Promise<void> => {
+  const projectStore = get(snsProposalsStore)[rootCanisterId.toText()];
+  const proposal = projectStore?.proposals.find(
+    ({ id }) => fromNullable(id)?.id === proposalId.id
+  );
+  if (
+    nonNullish(projectStore) &&
+    nonNullish(proposal) &&
+    projectStore.certified
+  ) {
+    setProposal({ proposal, certified: true });
+    return;
+  }
+  return queryAndUpdate<SnsProposalData, unknown>({
+    identityType: "current",
+    request: ({ certified, identity }) =>
+      queryProposal({
+        proposalId,
+        identity,
+        certified,
+        rootCanisterId,
+      }),
+    onLoad: ({ response: proposal, certified }) => {
+      setProposal({ proposal, certified });
+    },
+    onError: (err) => {
+      toastsError({
+        labelKey: "error.get_proposal",
+        substitutions: {
+          $proposalId: proposalId.id.toString(),
+        },
+        err,
+      });
+      handleError?.(err);
     },
   });
 };

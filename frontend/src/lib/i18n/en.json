@@ -45,6 +45,8 @@
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
     "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
+    "get_proposal": "There was an unexpected issue while fetching the proposal $proposalId.",
+    "wrong_proposal_id": "The $proposalId is not a valid proposal id.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",
     "missing_identity": "The operation cannot be executed without any identity.",
     "rename_subaccount": "An error occurred while renaming your linked account.",
