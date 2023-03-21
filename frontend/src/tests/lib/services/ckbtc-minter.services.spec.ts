@@ -8,6 +8,7 @@ import * as services from "$lib/services/ckbtc-minter.services";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   MinterAlreadyProcessingError,
@@ -39,14 +40,9 @@ describe("ckbtc-minter-services", () => {
 
   describe("updateBalance", () => {
     it("should update balance", async () => {
-      const ok = {
-        block_index: 1n,
-        amount: 100_000n,
-      };
-
       const spyUpdateBalance = jest
         .spyOn(minterApi, "updateBalance")
-        .mockResolvedValue(ok);
+        .mockResolvedValue(mockUpdateBalanceOk);
 
       const result = await services.updateBalance(CKBTC_MINTER_CANISTER_ID);
 
@@ -57,7 +53,7 @@ describe("ckbtc-minter-services", () => {
         })
       );
 
-      expect(result).toEqual(ok);
+      expect(result).toEqual(mockUpdateBalanceOk);
     });
 
     it("should throw generic error", async () => {

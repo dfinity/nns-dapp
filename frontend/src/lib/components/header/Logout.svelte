@@ -18,16 +18,9 @@
 </button>
 
 <style lang="scss">
+  @use "../../themes/mixins/account-menu";
+
   button {
-    margin: 0;
-
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
-
-    :global(svg) {
-      width: var(--padding-3x);
-      height: var(--padding-3x);
-    }
+    @include account-menu.button;
   }
 </style>

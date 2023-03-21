@@ -240,4 +240,20 @@ describe("CkBTCTransactionModal", () => {
       en.ckbtc.transaction_success_about_thirty_minutes
     );
   });
+
+  it("should render btc estimation info on first step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+      amount: "0.002",
+    });
+
+    await waitFor(() =>
+      expect(result.getByTestId("bitcoin-estimated-fee")).not.toBeNull()
+    );
+    expect(result.getByTestId("bitcoin-estimated-amount")).not.toBeNull();
+  });
 });

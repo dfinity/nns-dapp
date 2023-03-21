@@ -5,6 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -29,6 +30,8 @@
   <Popover bind:visible anchor={button} direction="rtl">
     <div class="info">
       <ThemeToggle />
+
+      <SettingsButton on:nnsLink={() => (visible = false)} />
 
       <Logout on:nnsLogoutTriggered={toggle} />
     </div>

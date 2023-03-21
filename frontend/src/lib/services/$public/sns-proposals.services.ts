@@ -10,6 +10,7 @@ import {
   syncSnsNeurons,
 } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
@@ -145,6 +146,7 @@ export const loadSnsProposals = async ({
   rootCanisterId: Principal;
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
+  const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
   return queryAndUpdate<SnsProposalData[], unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -152,6 +154,10 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
+          includeStatus:
+            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          // TODO: add filter by nervous function
+          // TODO: add filter by reward status
         },
         identity,
         certified,

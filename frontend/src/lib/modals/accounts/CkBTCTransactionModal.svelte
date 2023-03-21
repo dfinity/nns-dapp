@@ -6,7 +6,7 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
-  import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
@@ -23,6 +23,7 @@
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
+  import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -156,13 +157,16 @@
       })}
     {/if}
   </p>
-  <BitcoinEstimatedFee
-    slot="additional-info-form"
-    {selectedNetwork}
-    amount={userAmount}
-    minterCanisterId={canisters.minterCanisterId}
-    bind:bitcoinEstimatedFee
-  />
+  <svelte:fragment slot="additional-info-form">
+    <BitcoinEstimatedFee
+      {selectedNetwork}
+      amount={userAmount}
+      minterCanisterId={canisters.minterCanisterId}
+      bind:bitcoinEstimatedFee
+    />
+
+    <BitcoinEstimatedAmountReceived {bitcoinEstimatedFee} amount={userAmount} />
+  </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
     <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
 
