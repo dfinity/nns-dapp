@@ -28,22 +28,6 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsAccountsFooter", () => {
-  // const rootCanisterId = Principal.fromText("aaaaa-aa");
-  //
-  // beforeEach(() => {
-  //   snsAccountsStore.setAccounts({
-  //     rootCanisterId: rootCanisterId,
-  //     accounts: [mockSnsMainAccount],
-  //     certified: true,
-  //   });
-  //
-  //   page.mock({ data: { universe: rootCanisterId.toText() } });
-  // });
-
-  const props = {
-    accountIdentifier: mockSnsMainAccount.identifier,
-  };
-
   const responses = snsResponseFor({
     principal: mockPrincipal,
     lifecycle: SnsSwapLifecycle.Committed,

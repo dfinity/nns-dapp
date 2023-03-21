@@ -11,6 +11,7 @@
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
 
+  // TODO: for performance reason use `loadBalance` to reload specific account
   const reload = async () => await syncAccounts();
 </script>
 
