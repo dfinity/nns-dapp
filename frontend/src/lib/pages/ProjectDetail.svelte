@@ -59,24 +59,11 @@
     unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
   }
 
-  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
-    const swapCanisterId = $projectDetailStore?.summary
-      ?.swapCanisterId as Principal;
-
-    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
-      return;
-    }
-
-    await loadSnsSwapMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
-      forceFetch,
-    });
-  };
-
   const reload = async () => {
-    if (rootCanisterId === undefined || rootCanisterId === null) {
-      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
+      // We cannot reload data for an undefined rootCanisterd or swapCanisterId
+      // but we silence the error here because it most probably means that the
+      // user has already navigated away of the detail route
       return;
     }
 
@@ -84,7 +71,11 @@
       loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
       loadSnsLifecycle({ rootCanisterId }),
       loadCommitment({ rootCanisterId, forceFetch: true }),
-      reloadSnsMetrics({ forceFetch: true }),
+      loadSnsSwapMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId,
+        forceFetch: true,
+      }),
     ]);
   };
 
@@ -107,7 +98,11 @@
     nonNullish(rootCanisterId) &&
     enableWatchers
   ) {
-    reloadSnsMetrics({ forceFetch: false });
+    loadSnsSwapMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      forceFetch: false,
+    });
     unsubscribeWatchMetrics?.();
 
     unsubscribeWatchMetrics = watchSnsMetrics({
