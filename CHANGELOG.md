@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXXXXX
+* Send ICP by scanning a QR code.
+* New proposal payload.
+* New settings page.
+* New data in the project detail.
+* Better validations in address inputs.
+* Remove unnecessary calls when updating accounts after an action.
+
 ## Proposal 112386
 * Remove button to increase stake for CF SNS neurons.
 * Improve validations in address inputs.
