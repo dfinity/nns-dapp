@@ -7,7 +7,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import type { SnsProposalData } from "@dfinity/sns";
+  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -29,11 +29,11 @@
   $: {
     if (nonNullish(proposalIdText) && nonNullish(rootCanisterId)) {
       try {
-        const proposalId = BigInt(proposalIdText);
+        const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
         proposal = "loading";
         getSnsProposalById({
           rootCanisterId,
-          proposalId: { id: proposalId },
+          proposalId,
           setProposal: ({ proposal: proposalData }) => {
             proposal = proposalData;
           },

@@ -210,14 +210,14 @@ export const getSnsProposalById = async ({
   }) => void;
   handleError?: (err: unknown) => void;
 }): Promise<void> => {
-  const projectStore = get(snsProposalsStore)[rootCanisterId.toText()];
-  const proposal = projectStore?.proposals.find(
+  const projectProposalsData = get(snsProposalsStore)[rootCanisterId.toText()];
+  const proposal = projectProposalsData?.proposals.find(
     ({ id }) => fromNullable(id)?.id === proposalId.id
   );
   if (
-    nonNullish(projectStore) &&
+    nonNullish(projectProposalsData) &&
     nonNullish(proposal) &&
-    projectStore.certified
+    projectProposalsData.certified
   ) {
     setProposal({ proposal, certified: true });
     return;

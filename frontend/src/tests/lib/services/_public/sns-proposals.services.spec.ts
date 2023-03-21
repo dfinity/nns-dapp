@@ -371,9 +371,10 @@ describe("sns-proposals services", () => {
         getSnsProposalById({
           rootCanisterId,
           proposalId,
-          setProposal: ({ certified }) => {
+          setProposal: ({ certified, proposal }) => {
             if (certified) {
               dataCertified = true;
+              expect(proposal).toEqual(mockSnsProposal);
             }
           },
         });
