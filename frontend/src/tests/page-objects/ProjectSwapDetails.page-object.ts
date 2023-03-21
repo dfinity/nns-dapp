@@ -5,10 +5,7 @@ export class ProjectSwapDetailsPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== ProjectSwapDetailsPo.tid) {
-      throw new Error(`${root} is not a ProjectSwapDetailsPo`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

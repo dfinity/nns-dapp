@@ -5,10 +5,7 @@ export class AmountDisplayPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== AmountDisplayPo.tid) {
-      throw new Error(`${root} is not an Tooltip`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

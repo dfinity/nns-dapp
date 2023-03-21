@@ -7,10 +7,7 @@ export class SnsNeuronInfoStakePo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronInfoStakePo.tid) {
-      throw new Error(`${root} is not an SnsNeuronInfoStakePo`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

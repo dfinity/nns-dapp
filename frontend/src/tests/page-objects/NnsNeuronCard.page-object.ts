@@ -5,10 +5,7 @@ export class NnsNeuronCardPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NnsNeuronCardPo.tid) {
-      throw new Error(`${root} is not an NnsNeuronCard`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

@@ -3,10 +3,7 @@ export class SkeletonCardPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SkeletonCardPo.tid) {
-      throw new Error(`${root} is not a SkeletonCard`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 
