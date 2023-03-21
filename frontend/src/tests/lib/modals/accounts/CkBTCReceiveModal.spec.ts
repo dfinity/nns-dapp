@@ -35,7 +35,7 @@ jest.mock("$lib/services/ckbtc-minter.services", () => {
 });
 
 describe("BtcCkBTCReceiveModal", () => {
-  const reloadAccountSpy = jest.fn();
+  const reloadSpy = jest.fn();
 
   beforeEach(() => jest.clearAllMocks());
 
@@ -54,7 +54,7 @@ describe("BtcCkBTCReceiveModal", () => {
           displayBtcAddress,
           account: mockCkBTCMainAccount,
           btcAddress: mockBTCAddressTestnet,
-          reloadAccount: reloadAccountSpy,
+          reload: reloadSpy,
           canisters: mockCkBTCAdditionalCanisters,
         },
       },
@@ -159,7 +159,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
       fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
 
-      await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+      await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
     });
 
     const notUpdateBalance = async (
@@ -179,13 +179,13 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should only reload account", async () => {
       await notUpdateBalance("reload-receive-account");
 
-      await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+      await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
     });
 
     it("should not update balance", async () => {
       await notUpdateBalance("backdrop");
 
-      expect(reloadAccountSpy).not.toHaveBeenCalled();
+      expect(reloadSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -241,7 +241,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
       expect(spyUpdateBalance).not.toHaveBeenCalled();
 
-      await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+      await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
     });
 
     it("should render ckBTC logo", async () => {
