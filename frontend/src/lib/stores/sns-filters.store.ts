@@ -97,12 +97,12 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
   };
 };
 
-export const snsFiltesStore = initSnsFiltersStore();
+export const snsFiltersStore = initSnsFiltersStore();
 
 export const snsSelectedFiltersStore = derived<
   Readable<SnsFiltersStoreData>,
   SnsFiltersStoreData
->(snsFiltesStore, ($snsFilters) =>
+>(snsFiltersStore, ($snsFilters) =>
   Object.entries($snsFilters).reduce(
     (acc, [rootCanisterIdText, filters]) => ({
       ...acc,
