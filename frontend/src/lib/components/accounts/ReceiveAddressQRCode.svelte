@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
 
@@ -21,17 +19,6 @@
 </script>
 
 <div class="content">
-  <div class="description">
-    <h3><slot name="title" /></h3>
-    <p><slot name="description" /></p>
-
-    {#if addressSelected}
-      <div class="separator">
-        <Separator />
-      </div>
-    {/if}
-  </div>
-
   <article class="qrcode">
     {#if renderQRCode && addressSelected}
       <QRCode
@@ -54,10 +41,10 @@
     {/if}
   </article>
 
-  {#if addressSelected}
-    <div>
+  {#if addressSelected && qrCodeRendered}
+    <div class="address-block">
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.address}</span>
+        <span slot="key" class="label"><slot name="address-label" /></span>
         <div slot="value" class="address">
           <span class="value" data-tid="qrcode-display-address">{address}</span>
           <Copy value={address ?? ""} />
@@ -73,28 +60,18 @@
   .content {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
+    align-items: center;
 
     @include media.min-width(medium) {
-      display: grid;
-      grid-template-columns: repeat(2, 50%);
-      grid-template-rows: auto 1fr;
-      grid-row-gap: 0;
-
+      gap: var(--padding-2x);
       padding: var(--padding-2x) 0;
-    }
-  }
-
-  .separator {
-    display: none;
-
-    @include media.min-width(medium) {
-      display: block;
     }
   }
 
   .address {
     display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
   }
 
   .value {
@@ -105,18 +82,11 @@
   .qrcode {
     padding: var(--padding-2x) var(--padding-8x);
 
-    @include media.min-width(medium) {
-      grid-column: 2 / 3;
-      grid-row: 1 / 3;
+    width: 100%;
+    max-width: 300px;
 
+    @include media.min-width(medium) {
       padding: 0 var(--padding-4x);
-    }
-  }
-
-  .description {
-    @include media.min-width(medium) {
-      grid-column: 1 / 2;
-      margin-top: 0;
     }
   }
 
@@ -130,5 +100,9 @@
     align-items: center;
 
     border-radius: var(--border-radius);
+  }
+
+  .address-block {
+    margin: var(--padding) 0;
   }
 </style>

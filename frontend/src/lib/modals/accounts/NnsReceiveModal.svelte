@@ -5,6 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let data: AccountsReceiveModalData;
 
@@ -25,10 +26,9 @@
   universeId={OWN_CANISTER_ID}
   {canSelectAccount}
 >
-  <svelte:fragment slot="title"
-    >{$i18n.wallet.icp_receive_note_title}</svelte:fragment
-  >
-  <svelte:fragment slot="description"
-    >{$i18n.wallet.icp_receive_note_text}</svelte:fragment
+  <svelte:fragment slot="address-label"
+    >{replacePlaceholders($i18n.wallet.token_address, {
+      $tokenSymbol: $i18n.core.icp,
+    })}</svelte:fragment
   >
 </ReceiveModal>

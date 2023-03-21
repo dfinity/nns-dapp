@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -56,11 +57,14 @@
   let bitcoin = true;
   $: bitcoin = selectedSegmentId === bitcoinSegmentId;
 
-  let logo: string;
-  $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
 
-  let logoArialLabel: string;
-  $: logoArialLabel = bitcoin
+  let logo: string;
+  $: logo = bitcoin ? BITCOIN_LOGO : ckTESTBTC ? CKTESTBTC_LOGO : CKBTC_LOGO;
+
+  let tokenLabel: string;
+  $: tokenLabel = bitcoin
     ? $i18n.ckbtc.bitcoin
     : isUniverseCkTESTBTC(universeId)
     ? $i18n.ckbtc.test_title
@@ -120,24 +124,9 @@
     : undefined;
 
   let title: string;
-  $: title =
-    !displayBtcAddress && nonNullish(token)
-      ? replacePlaceholders($i18n.wallet.sns_receive_note_title, {
-          $tokenSymbol: token.token.symbol,
-        })
-      : bitcoin
-      ? $i18n.ckbtc.btc_receive_note_title
-      : $i18n.ckbtc.ckbtc_receive_note_title;
-
-  let description: string;
-  $: description =
-    !displayBtcAddress && nonNullish(token)
-      ? replacePlaceholders($i18n.wallet.sns_receive_note_text, {
-          $tokenSymbol: token.token.symbol,
-        })
-      : bitcoin
-      ? $i18n.ckbtc.btc_receive_note_text
-      : $i18n.ckbtc.ckbtc_receive_note_text;
+  $: title = replacePlaceholders($i18n.wallet.token_address, {
+    $tokenSymbol: tokenLabel,
+  });
 
   const onClose = async () => {
     if (bitcoin) {
@@ -185,11 +174,10 @@
         ? $i18n.ckbtc.qrcode_aria_label_bitcoin
         : $i18n.ckbtc.qrcode_aria_label_ckBTC}
       {logo}
-      {logoArialLabel}
+      logoArialLabel={tokenLabel}
       bind:qrCodeRendered
     >
-      <svelte:fragment slot="title">{title}</svelte:fragment>
-      <svelte:fragment slot="description">{description}</svelte:fragment>
+      <svelte:fragment slot="address-label">{title}</svelte:fragment>
     </ReceiveAddressQRCode>
   {/if}
 

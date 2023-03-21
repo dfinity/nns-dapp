@@ -454,10 +454,7 @@ interface I18nWallet {
   no_transactions: string;
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
-  icp_receive_note_title: string;
-  icp_receive_note_text: string;
-  sns_receive_note_title: string;
-  sns_receive_note_text: string;
+  token_address: string;
 }
 
 interface I18nBusy_screen {
@@ -886,10 +883,6 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  btc_receive_note_title: string;
-  ckbtc_receive_note_title: string;
-  btc_receive_note_text: string;
-  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
