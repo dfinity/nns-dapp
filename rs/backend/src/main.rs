@@ -11,6 +11,7 @@ use candid::{candid_method, CandidType};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use icp_ledger::AccountIdentifier;
+use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 
 mod accounts_store;
 mod assets;
@@ -28,8 +29,7 @@ mod time;
 
 type Cycles = u128;
 
-#[ic_cdk_macros::init]
-#[candid_method(init)]
+#[init]
 fn init() {
     assets::init_assets();
 }
@@ -37,7 +37,7 @@ fn init() {
 /// Redundant function, never called but reqired as this is main.rs.
 fn main() {}
 
-#[ic_cdk_macros::pre_upgrade]
+#[pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
         let bytes = s.encode();
@@ -45,7 +45,7 @@ fn pre_upgrade() {
     });
 }
 
-#[ic_cdk_macros::post_upgrade]
+#[post_upgrade]
 fn post_upgrade() {
     STATE.with(|s| {
         let bytes = stable::get();
@@ -60,7 +60,7 @@ fn post_upgrade() {
     assets::init_assets();
 }
 
-#[export_name = "canister_query http_request"]
+#[query]
 pub fn http_request() {
     over(candid_one, assets::http_request);
 }
@@ -70,7 +70,7 @@ pub fn http_request() {
 /// The account details contain each of the AccountIdentifiers linked to the user's account. These
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
-#[export_name = "canister_query get_account"]
+#[query]
 pub fn get_account() {
     over(candid, |()| get_account_impl());
 }
@@ -87,7 +87,7 @@ fn get_account_impl() -> GetAccountResponse {
 ///
 /// Returns true if the account was created, else false (which happens if the principal already has
 /// an account).
-#[export_name = "canister_update add_account"]
+#[query]
 fn add_account() {
     over(candid, |()| add_account_impl());
 }
@@ -102,7 +102,7 @@ fn add_account_impl() -> AccountIdentifier {
 ///
 /// The AccountIdentifier must be linked to the caller's account, else an empty Vec will be
 /// returned.
-#[export_name = "canister_query get_transactions"]
+#[query]
 pub fn get_transactions() {
     over(candid_one, get_transactions_impl);
 }
@@ -117,7 +117,7 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
 /// This newly created account can be used to send and receive ICP and is controlled only by the
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
-#[export_name = "canister_update create_sub_account"]
+#[query]
 pub fn create_sub_account() {
     over(candid_one, create_sub_account_impl);
 }
@@ -134,7 +134,7 @@ fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse
 /// Changes the alias given to the chosen sub account.
 ///
 /// These aliases are not visible externally or to anyone else.
-#[export_name = "canister_update rename_sub_account"]
+#[query]
 pub fn rename_sub_account() {
     over(candid_one, rename_sub_account_impl);
 }
@@ -149,7 +149,7 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 /// A single hardware wallet can be linked to multiple user accounts, but in order to make calls to
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some readonly calls do not require signing, eg. viewing the account's ICP balance.
-#[export_name = "canister_update register_hardware_wallet"]
+#[query]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
 }
@@ -164,7 +164,7 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
 }
 
 /// Returns the list of canisters which the user has attached to their account.
-#[export_name = "canister_query get_canisters"]
+#[query]
 pub fn get_canisters() {
     over(candid, |()| get_canisters_impl());
 }
@@ -175,7 +175,7 @@ fn get_canisters_impl() -> Vec<NamedCanister> {
 }
 
 /// Attaches a canister to the user's account.
-#[export_name = "canister_update attach_canister"]
+#[update]
 pub fn attach_canister() {
     over(candid_one, attach_canister_impl);
 }
@@ -186,7 +186,7 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
 }
 
 /// Detaches a canister from the user's account.
-#[export_name = "canister_update detach_canister"]
+#[update]
 pub fn detach_canister() {
     over(candid_one, detach_canister_impl);
 }
@@ -196,12 +196,12 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
-#[export_name = "canister_update get_proposal_payload"]
+#[update]
 pub fn get_proposal_payload() {
     over_async(candid_one, proposals::get_proposal_payload)
 }
 
-#[export_name = "canister_update add_pending_notify_swap"]
+#[update]
 pub fn add_pending_notify_swap() {
     over(candid_one, add_pending_notify_swap_impl);
 }
@@ -228,7 +228,7 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
 ///
 /// These stats include things such as the number of accounts registered, the memory usage, the
 /// number of neurons created, etc.
-#[export_name = "canister_query get_stats"]
+#[query]
 pub fn get_stats() {
     over(candid, |()| get_stats_impl());
 }
@@ -243,7 +243,7 @@ fn get_stats_impl() -> stats::Stats {
 /// - Sync transactions from the ledger
 /// - Process any queued 'multi-part' actions (eg. staking a neuron or topping up a canister)
 /// - Prune old transactions if memory usage is too high
-#[export_name = "canister_heartbeat"]
+#[heartbeat]
 pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
@@ -253,7 +253,7 @@ pub fn canister_heartbeat() {
 /// Add an asset to be served by the canister.
 ///
 /// Only a whitelist of assets are accepted.
-#[export_name = "canister_update add_stable_asset"]
+#[update]
 pub fn add_stable_asset() {
     over(candid_one, |asset_bytes: Vec<u8>| {
         let hash_bytes = hash_bytes(&asset_bytes);
