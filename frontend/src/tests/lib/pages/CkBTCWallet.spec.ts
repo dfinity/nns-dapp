@@ -23,6 +23,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
+import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -231,6 +232,8 @@ describe("CkBTCWallet", () => {
       await waitFor(() =>
         expect(container.querySelector("div.modal")).not.toBeNull()
       );
+
+      await selectSegmentBTC(container);
 
       const spy = jest.spyOn(services, "syncCkBTCAccounts");
 

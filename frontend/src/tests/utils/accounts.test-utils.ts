@@ -20,3 +20,12 @@ export const testAccountsModal = async ({
     expect(container.querySelector("div.modal")).not.toBeNull()
   );
 };
+
+export const selectSegmentBTC = async (container: HTMLElement) => {
+  const button = container.querySelector(
+    "div.segment-button:nth-of-type(3) button"
+  ) as HTMLButtonElement;
+  expect(button).not.toBeNull();
+
+  await fireEvent.click(button);
+};

@@ -24,6 +24,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 import { mockCkBTCAddress } from "../../../mocks/ckbtc-accounts.mock";
@@ -67,19 +68,10 @@ describe("BtcCkBTCReceiveModal", () => {
   });
 
   describe("with btc", () => {
-    const selectBTC = async (container: HTMLElement) => {
-      const button = container.querySelector(
-        "div.segment-button:nth-of-type(3) button"
-      ) as HTMLButtonElement;
-      expect(button).not.toBeNull();
-
-      await fireEvent.click(button);
-    };
-
     it("should render BTC address", async () => {
       const { getByText, container } = await renderReceiveModal({});
 
-      await selectBTC(container);
+      await selectSegmentBTC(container);
 
       expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
     });
@@ -95,7 +87,7 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render a bitcoin description", async () => {
       const { getByText, container } = await renderReceiveModal({});
 
-      await selectBTC(container);
+      await selectSegmentBTC(container);
 
       const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: en.ckbtc.bitcoin,
@@ -117,7 +109,7 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render a bitcoin logo", async () => {
       const { getByTestId, container } = await renderReceiveModal({});
 
-      await selectBTC(container);
+      await selectSegmentBTC(container);
 
       expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
         en.ckbtc.bitcoin
@@ -141,7 +133,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
       const { getByTestId, container } = await renderReceiveModal({});
 
-      await selectBTC(container);
+      await selectSegmentBTC(container);
 
       fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
 
@@ -159,7 +151,7 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should reload account after update balance", async () => {
       const { getByTestId, container } = await renderReceiveModal({});
 
-      await selectBTC(container);
+      await selectSegmentBTC(container);
 
       fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
 
