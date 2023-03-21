@@ -30,7 +30,6 @@ ic-cdk = "0.7.3"
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
-dfn_json = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_macro = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
