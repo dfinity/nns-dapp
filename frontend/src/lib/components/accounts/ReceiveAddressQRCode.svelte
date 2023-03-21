@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
@@ -20,10 +19,6 @@
 </script>
 
 <div class="content">
-  <div class="description">
-    <h3><slot name="title" /></h3>
-  </div>
-
   <article class="qrcode">
     {#if renderQRCode && addressSelected}
       <QRCode
@@ -49,7 +44,7 @@
   {#if addressSelected}
     <div class="address-block">
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.accounts.address}</span>
+        <span slot="key" class="label"><slot name="address-label" /></span>
         <div slot="value" class="address">
           <span class="value" data-tid="qrcode-display-address">{address}</span>
           <Copy value={address ?? ""} />
@@ -75,6 +70,8 @@
 
   .address {
     display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
   }
 
   .value {
@@ -90,13 +87,6 @@
 
     @include media.min-width(medium) {
       padding: 0 var(--padding-4x);
-    }
-  }
-
-  .description {
-    @include media.min-width(medium) {
-      grid-column: 1 / 2;
-      margin-top: 0;
     }
   }
 

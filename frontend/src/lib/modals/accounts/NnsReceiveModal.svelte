@@ -26,7 +26,7 @@
   universeId={OWN_CANISTER_ID}
   {canSelectAccount}
 >
-  <svelte:fragment slot="title"
+  <svelte:fragment slot="address-label"
     >{replacePlaceholders($i18n.wallet.token_address, {
       $tokenSymbol: $i18n.core.icp,
     })}</svelte:fragment

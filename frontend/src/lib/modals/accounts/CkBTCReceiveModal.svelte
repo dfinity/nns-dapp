@@ -173,7 +173,7 @@
       logoArialLabel={tokenLabel}
       bind:qrCodeRendered
     >
-      <svelte:fragment slot="title">{title}</svelte:fragment>
+      <svelte:fragment slot="address-label">{title}</svelte:fragment>
     </ReceiveAddressQRCode>
   {/if}
 
