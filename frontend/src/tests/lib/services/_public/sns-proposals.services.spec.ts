@@ -9,7 +9,7 @@ import {
   registerVote,
 } from "$lib/services/$public/sns-proposals.services";
 import { authStore } from "$lib/stores/auth.store";
-import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import {
@@ -50,7 +50,7 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
-        snsFiltesStore.reset();
+        snsFiltersStore.reset();
         snsProposalsStore.reset();
         jest.clearAllMocks();
         jest
@@ -111,7 +111,7 @@ describe("sns-proposals services", () => {
         const selectedDecisionStatus = decisionStatus
           .filter(({ checked }) => checked)
           .map(({ value }) => value);
-        snsFiltesStore.setDecisionStatus({
+        snsFiltersStore.setDecisionStatus({
           rootCanisterId,
           decisionStatus,
         });
