@@ -85,10 +85,11 @@
   .qrcode {
     padding: var(--padding-2x) var(--padding-8x);
 
+    width: 100%;
+    max-width: 300px;
+
     @include media.min-width(medium) {
       padding: 0 var(--padding-4x);
-      width: 100%;
-      max-width: 300px;
     }
   }
 
