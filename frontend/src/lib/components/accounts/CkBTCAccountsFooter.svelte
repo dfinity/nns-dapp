@@ -13,7 +13,6 @@
   import { busy } from "@dfinity/gix-components";
   import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
   import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
-  import { syncAccounts } from "$lib/services/accounts.services";
   import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
 
