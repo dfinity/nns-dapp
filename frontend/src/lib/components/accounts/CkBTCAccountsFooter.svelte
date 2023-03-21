@@ -1,6 +1,6 @@
 <script lang="ts">
   import Footer from "$lib/components/layout/Footer.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import {isNullish, nonNullish} from "@dfinity/utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import {
     ckBTCTokenFeeStore,
@@ -13,6 +13,9 @@
   import { busy } from "@dfinity/gix-components";
   import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
   import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
+  import {syncAccounts} from "$lib/services/accounts.services";
+  import {syncCkBTCAccounts} from "$lib/services/ckbtc-accounts.services";
+  import {toastsError} from "$lib/stores/toasts.store";
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
@@ -27,11 +30,22 @@
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  const reload = async () => {
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
+      });
+      return;
+    }
+
+    await syncCkBTCAccounts({universeId: $selectedCkBTCUniverseIdStore});
+  };
 </script>
 
 {#if canMakeTransactions}
   <Footer>
     <CkBTCSendButton disableButton={$busy} {canisters} />
-    <CkBTCReceiveButton canSelectAccount disableButton={$busy} {canisters} />
+    <CkBTCReceiveButton canSelectAccount disableButton={$busy} {canisters} {reload} />
   </Footer>
 {/if}

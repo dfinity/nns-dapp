@@ -27,14 +27,14 @@
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
   let btcAddress: string;
-  let reloadAccount: (() => Promise<void>) | undefined;
+  let reload: (() => Promise<void>) | undefined;
   let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 
   $: ({
     account,
     btcAddress,
-    reloadAccount,
+    reload,
     canisters,
     universeId,
     displayBtcAddress,
@@ -89,7 +89,7 @@
     try {
       await updateBalanceService(canisters.minterCanisterId);
 
-      await reloadAccount?.();
+      await reload?.();
 
       toastsSuccess({
         labelKey: "ckbtc.ckbtc_balance_updated",
@@ -111,7 +111,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount?.();
+    await reload?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");
