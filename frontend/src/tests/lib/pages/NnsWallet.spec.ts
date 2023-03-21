@@ -28,7 +28,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { replacePlaceholders } from ".$lib/utils/i18n.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import AccountsTest from "./AccountsTest.svelte";
