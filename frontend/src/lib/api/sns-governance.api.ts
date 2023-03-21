@@ -561,16 +561,17 @@ export const queryProposal = async ({
   certified: boolean;
   proposalId: SnsProposalId;
 }) => {
-  logWithTimestamp(`Getting proposal ${proposalId.id} call...`);
+  try {
+    logWithTimestamp(`Getting proposal ${proposalId.id} call...`);
 
-  const { getProposal } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
+    const { getProposal } = await wrapper({
+      identity,
+      rootCanisterId: rootCanisterId.toText(),
+      certified,
+    });
 
-  const proposal = await getProposal({ proposalId });
-
-  logWithTimestamp(`Getting proposal ${proposalId.id} call complete.`);
-  return proposal;
+    return getProposal({ proposalId });
+  } finally {
+    logWithTimestamp(`Getting proposal ${proposalId.id} call complete.`);
+  }
 };
