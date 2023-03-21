@@ -1,3 +1,9 @@
 {
-  "extends": "../../tsconfig.spec.json"
+  "extends": "../../tsconfig.spec.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "$tests/*": ["tests/*"]
+    }
+  }
 }
