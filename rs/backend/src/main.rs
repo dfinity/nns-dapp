@@ -7,7 +7,7 @@ use crate::accounts_store::{
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
-use candid::CandidType;
+use candid::{candid_method, CandidType};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use icp_ledger::AccountIdentifier;
@@ -28,12 +28,16 @@ mod time;
 
 type Cycles = u128;
 
-#[export_name = "canister_init"]
-fn main() {
+#[ic_cdk_macros::init]
+#[candid_method(init)]
+fn init() {
     assets::init_assets();
 }
 
-#[export_name = "canister_pre_upgrade"]
+/// Redundant function, never called but reqired as this is main.rs.
+fn main() {}
+
+#[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
         let bytes = s.encode();
@@ -41,7 +45,7 @@ fn pre_upgrade() {
     });
 }
 
-#[export_name = "canister_post_upgrade"]
+#[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     STATE.with(|s| {
         let bytes = stable::get();
