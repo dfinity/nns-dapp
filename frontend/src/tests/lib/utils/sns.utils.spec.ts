@@ -245,7 +245,7 @@ describe("sns-utils", () => {
       expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
     });
 
-    it("returns commitment not loaded", () => {
+    it("returns undefined if commitment not loaded", () => {
       const noCommitment: SnsSwapCommitment = {
         rootCanisterId: mockPrincipal,
         myCommitment: undefined,
