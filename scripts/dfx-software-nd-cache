@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
@@ -15,7 +16,6 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
 
 DFX_WASMS_DIR="$(dfx cache show)/wasms"
 LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"

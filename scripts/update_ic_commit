@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
@@ -11,7 +12,6 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=c long=ic_commit desc="The IC commit to use" variable=DFX_IC_COMMIT default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
 
 : "Make sure that DFX_IC_COMMIT is defined"
 [[ "${DFX_IC_COMMIT:-}" != "" ]] || {
