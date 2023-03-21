@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import TransactionReview from "$lib/modals/accounts/NewTransaction/TransactionReview.svelte";
+import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {

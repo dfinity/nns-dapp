@@ -2,15 +2,15 @@
   import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
-  import TransactionForm from "./TransactionForm.svelte";
-  import TransactionReview from "./TransactionReview.svelte";
+  import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
+  import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type {
     TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import TransactionQRCode from "$lib/modals/accounts/NewTransaction/TransactionQRCode.svelte";
+  import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
