@@ -4,22 +4,22 @@
 
 import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 import * as accountsServices from "$lib/services/sns-accounts.services";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "$tests/mocks/modal.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import { snsAccountsStore } from "../../../../lib/stores/sns-accounts.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
-import { transactionsFeesStore } from "../../../../lib/stores/transaction-fees.store";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import { mockSnsMainAccount } from "../../../mocks/sns-accounts.mock";
-import { snsResponseFor } from "../../../mocks/sns-response.mock";
-import { testAccountsModal } from "../../../utils/accounts.test-utils";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

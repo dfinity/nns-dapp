@@ -12,15 +12,15 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import en from "../../mocks/i18n.mock";
-import { waitModalIntroEnd } from "../../mocks/modal.mock";
-import { testAccountsModal } from "../../utils/accounts.test-utils";
 import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {

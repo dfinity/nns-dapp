@@ -9,8 +9,8 @@ import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "$tests/mocks/modal.mock";
+import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { testAccountsModal } from "../../../utils/accounts.test-utils";
 
 jest.mock("$lib/services/accounts.services", () => {
   return {

@@ -17,20 +17,20 @@ import {
   mockMainAccount,
 } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import {
+  modalToolbarSelector,
+  waitModalIntroEnd,
+} from "$tests/mocks/modal.mock";
+import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { replacePlaceholders } from ".$lib/utils/i18n.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
-import en from "../../mocks/i18n.mock";
-import {
-  modalToolbarSelector,
-  waitModalIntroEnd,
-} from "../../mocks/modal.mock";
-import { testAccountsModal } from "../../utils/accounts.test-utils";
 import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
