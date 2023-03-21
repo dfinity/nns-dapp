@@ -31,5 +31,4 @@ module.exports = {
   },
   setupFiles: ["fake-indexeddb/auto"],
   testPathIgnorePatterns: ["<rootDir>/src/tests/e2e/"],
-  modulePathIgnorePatterns: ["<rootDir>/src/tests/e2e/"],
 };
