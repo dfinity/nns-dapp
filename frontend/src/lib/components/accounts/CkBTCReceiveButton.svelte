@@ -63,7 +63,7 @@
             displayBtcAddress: true,
             btcAddress,
             account,
-            reload: reload,
+            reload,
             universeId: $selectedCkBTCUniverseIdStore,
             canisters,
             canSelectAccount,
