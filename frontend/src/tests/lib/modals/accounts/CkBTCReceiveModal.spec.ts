@@ -85,7 +85,7 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should render account identifier (without being shortened)", async () => {
-      const { getByText, container } = await renderReceiveModal({});
+      const { getByText } = await renderReceiveModal({});
 
       await waitFor(() =>
         expect(getByText(mockCkBTCMainAccount.identifier)).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should render a ckBTC description", async () => {
-      const { getByText, container } = await renderReceiveModal({});
+      const { getByText } = await renderReceiveModal({});
 
       const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: en.ckbtc.test_title,
@@ -125,7 +125,7 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should render ckBTC logo", async () => {
-      const { getByTestId, container } = await renderReceiveModal({});
+      const { getByTestId } = await renderReceiveModal({});
 
       await waitFor(() =>
         expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
