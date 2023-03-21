@@ -44,7 +44,7 @@
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
   let selectedSegmentId: symbol;
-  $: selectedSegmentId = displayBtcAddress ? bitcoinSegmentId : ckBTCSegmentId;
+  $: selectedSegmentId = ckBTCSegmentId;
 
   let modalRendered = false;
   let segment: Segment;
@@ -151,10 +151,10 @@
   {#if displayBtcAddress}
     <div class="receive">
       <Segment bind:selectedSegmentId bind:this={segment}>
+        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
         <SegmentButton segmentId={bitcoinSegmentId}
           >{$i18n.ckbtc.bitcoin}</SegmentButton
         >
-        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
       </Segment>
     </div>
   {/if}
