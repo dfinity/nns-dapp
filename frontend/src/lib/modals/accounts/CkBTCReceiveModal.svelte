@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -56,8 +57,11 @@
   let bitcoin = true;
   $: bitcoin = selectedSegmentId === bitcoinSegmentId;
 
+  let ckTESTBTC = false;
+  $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
+
   let logo: string;
-  $: logo = bitcoin ? BITCOIN_LOGO : CKBTC_LOGO;
+  $: logo = bitcoin ? BITCOIN_LOGO : ckTESTBTC ? CKTESTBTC_LOGO : CKBTC_LOGO;
 
   let tokenLabel: string;
   $: tokenLabel = bitcoin
