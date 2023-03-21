@@ -16,13 +16,14 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsProposalData,
+  SnsProposalId,
 } from "@dfinity/sns";
 import {
   neuronSubaccount,
   SnsGovernanceError,
   type SnsNeuron,
 } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
@@ -35,6 +36,7 @@ const implementedFunctions = {
   refreshNeuron,
   claimNeuron,
   queryProposals,
+  queryProposal,
 };
 
 //////////////////////////////////////////////
@@ -99,6 +101,11 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   }
   return nervousFunctionsList;
 };
+
+enum ImplementationsKeys {
+  queryProposal = "queryProposal",
+}
+const errorsMap: Map<ImplementationsKeys, Error> = new Map();
 
 ////////////////////////
 // Fake implementations:
@@ -235,6 +242,31 @@ async function queryProposals({
   return proposals.get(mapKey({ identity, rootCanisterId })) || [];
 }
 
+async function queryProposal({
+  identity,
+  rootCanisterId,
+  certified: _,
+  proposalId,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  proposalId: SnsProposalId;
+}): Promise<SnsProposalData | undefined> {
+  if (errorsMap.has(ImplementationsKeys.queryProposal)) {
+    throw errorsMap.get(ImplementationsKeys.queryProposal);
+  }
+  const proposal = proposals
+    .get(mapKey({ identity, rootCanisterId }))
+    .find(({ id }) => fromNullable(id).id === proposalId.id);
+  if (isNullish(proposal)) {
+    throw new SnsGovernanceError(
+      `No proposal for given proposalId ${proposalId.id}`
+    );
+  }
+  return proposal;
+}
+
 /////////////////////////////////
 // Functions to control the fake:
 /////////////////////////////////
@@ -243,6 +275,7 @@ const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
+  errorsMap.clear();
 };
 
 const createNeuronId = ({
@@ -301,6 +334,10 @@ export const addProposalWith = ({
   };
   proposalsList.push(proposal);
   return proposal;
+};
+
+export const setQueryProposalError = (error: Error) => {
+  errorsMap.set(ImplementationsKeys.queryProposal, error);
 };
 
 export const addNervousSystemFunctionWith = ({
