@@ -12,6 +12,7 @@ import {
   getSnsNeuron,
   increaseDissolveDelay,
   nervousSystemParameters,
+  queryProposal,
   queryProposals,
   querySnsNeuron,
   querySnsNeurons,
@@ -54,6 +55,7 @@ import {
   SnsVote,
   type SnsListNervousSystemFunctionsResponse,
   type SnsNeuronId,
+  type SnsProposalId,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
@@ -86,6 +88,7 @@ describe("sns-api", () => {
   const registerVoteSpy = jest.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
+  const getProposalSpy = jest.fn().mockResolvedValue(mockSnsProposal);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -139,6 +142,7 @@ describe("sns-api", () => {
         registerVote: registerVoteSpy,
         autoStakeMaturity: autoStakeMaturitySpy,
         listProposals: listProposalsSpy,
+        getProposal: getProposalSpy,
       })
     );
   });
@@ -374,5 +378,21 @@ describe("sns-api", () => {
 
     expect(listProposalsSpy).toBeCalled();
     expect(res).toEqual(proposals);
+  });
+
+  it("should get proposals", async () => {
+    const proposalId: SnsProposalId = {
+      id: BigInt(2),
+    };
+    const res = await queryProposal({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      proposalId,
+    });
+
+    expect(getProposalSpy).toBeCalledWith({ proposalId });
+    expect(getProposalSpy).toBeCalledTimes(1);
+    expect(res).toEqual(mockSnsProposal);
   });
 });
