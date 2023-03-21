@@ -8,6 +8,7 @@ import {
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
 
@@ -54,17 +55,12 @@ describe("ckbtc-minter api", () => {
 
   describe("updateBalance", () => {
     it("returns successfully updated balance", async () => {
-      const ok = {
-        block_index: 1n,
-        amount: 100_000n,
-      };
-
       const getBTCAddressSpy =
-        minterCanisterMock.updateBalance.mockResolvedValue(ok);
+        minterCanisterMock.updateBalance.mockResolvedValue(mockUpdateBalanceOk);
 
       const result = await updateBalance(params);
 
-      expect(result).toEqual(ok);
+      expect(result).toEqual(mockUpdateBalanceOk);
 
       expect(getBTCAddressSpy).toBeCalled();
     });

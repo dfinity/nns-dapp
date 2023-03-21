@@ -10,7 +10,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
-import type { UpdateBalanceResult } from "@dfinity/ckbtc";
+import type { UpdateBalanceOk } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -68,7 +68,7 @@ export const estimateFee = async ({
 
 export const updateBalance = async (
   minterCanisterId: CanisterId
-): Promise<UpdateBalanceResult> => {
+): Promise<UpdateBalanceOk> => {
   const identity = await getAuthenticatedIdentity();
 
   try {
