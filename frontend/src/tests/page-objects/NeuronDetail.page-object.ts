@@ -7,10 +7,7 @@ export class NeuronDetailPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NeuronDetailPo.tid) {
-      throw new Error(`${root} is not a NeuronDetail`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

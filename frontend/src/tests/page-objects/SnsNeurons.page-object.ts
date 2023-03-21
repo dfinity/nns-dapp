@@ -6,10 +6,7 @@ export class SnsNeuronsPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronsPo.tid) {
-      throw new Error(`${root} is not an SnsNeurons`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

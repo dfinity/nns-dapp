@@ -5,10 +5,7 @@ export class HashPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== HashPo.tid) {
-      throw new Error(`${root} is not an Hash`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 
