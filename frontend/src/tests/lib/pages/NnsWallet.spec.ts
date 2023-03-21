@@ -10,6 +10,7 @@ import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -28,7 +29,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import AccountsTest from "./AccountsTest.svelte";
