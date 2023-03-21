@@ -22,19 +22,15 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
-import { tick, type SvelteComponent } from "svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
 import en from "../../mocks/i18n.mock";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "../../mocks/modal.mock";
+import { testAccountsModal } from "../../utils/accounts.test-utils";
 import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
@@ -145,23 +141,6 @@ describe("NnsWallet", () => {
       await waitFor(() => testToolbarButton({ container, disabled: false }));
     });
 
-    const testModal = async ({
-      result,
-      testId,
-    }: {
-      result: RenderResult<SvelteComponent>;
-      testId: string;
-    }) => {
-      const { container, getByTestId } = result;
-
-      const button = getByTestId(testId) as HTMLButtonElement;
-      await fireEvent.click(button);
-
-      await waitFor(() =>
-        expect(container.querySelector("div.modal")).not.toBeNull()
-      );
-    };
-
     const modalProps = {
       ...props,
       testComponent: NnsWallet,
@@ -170,13 +149,13 @@ describe("NnsWallet", () => {
     it("should open transaction modal", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "new-transaction" });
+      await testAccountsModal({ result, testId: "new-transaction" });
     });
 
     it("should open transaction modal on step select destination because selected account is current account", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "new-transaction" });
+      await testAccountsModal({ result, testId: "new-transaction" });
 
       const { getByTestId } = result;
 
@@ -194,7 +173,7 @@ describe("NnsWallet", () => {
     it("should open receive modal", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-icp" });
+      await testAccountsModal({ result, testId: "receive-icp" });
 
       const { getByTestId } = result;
 
@@ -204,7 +183,7 @@ describe("NnsWallet", () => {
     it("should display receive modal information", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-icp" });
+      await testAccountsModal({ result, testId: "receive-icp" });
 
       const { getByText } = result;
 
@@ -220,7 +199,7 @@ describe("NnsWallet", () => {
     it("should reload account after finish receiving tokens", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-icp" });
+      await testAccountsModal({ result, testId: "receive-icp" });
 
       const { getByTestId, container } = result;
 

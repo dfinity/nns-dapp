@@ -9,13 +9,8 @@ import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "$tests/mocks/modal.mock";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { testAccountsModal } from "../../../utils/accounts.test-utils";
 
 jest.mock("$lib/services/accounts.services", () => {
   return {
@@ -28,27 +23,10 @@ describe("NnsAccountsFooter", () => {
     testComponent: NnsAccountsFooter,
   };
 
-  const testModal = async ({
-    result,
-    testId,
-  }: {
-    result: RenderResult<SvelteComponent>;
-    testId: string;
-  }) => {
-    const { container, getByTestId } = result;
-
-    const button = getByTestId(testId) as HTMLButtonElement;
-    await fireEvent.click(button);
-
-    await waitFor(() =>
-      expect(container.querySelector("div.modal")).not.toBeNull()
-    );
-  };
-
   it("should open receive modal", async () => {
     const result = render(AccountsTest, { props: modalProps });
 
-    await testModal({ result, testId: "receive-icp" });
+    await testAccountsModal({ result, testId: "receive-icp" });
 
     const { getByTestId } = result;
 
@@ -58,7 +36,7 @@ describe("NnsAccountsFooter", () => {
   it("should sync accounts after finish receiving tokens", async () => {
     const result = render(AccountsTest, { props: modalProps });
 
-    await testModal({ result, testId: "receive-icp" });
+    await testAccountsModal({ result, testId: "receive-icp" });
 
     const { getByTestId, container } = result;
 
