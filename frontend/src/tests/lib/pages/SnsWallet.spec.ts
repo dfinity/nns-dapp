@@ -3,21 +3,17 @@
  */
 
 import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import {
@@ -27,9 +23,7 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import type { Subscriber } from "svelte/store";
 import { get } from "svelte/store";
-import { selectedUniverseIdStore } from "../../../lib/derived/selected-universe.derived";
 import en from "../../mocks/i18n.mock";
 import { waitModalIntroEnd } from "../../mocks/modal.mock";
 import AccountsTest from "./AccountsTest.svelte";
@@ -52,29 +46,36 @@ describe("SnsWallet", () => {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
 
+  const responses = snsResponseFor({
+    principal: mockPrincipal,
+    lifecycle: SnsSwapLifecycle.Committed,
+  });
+
+  const rootCanisterIdText = responses[0][0].rootCanisterId;
+  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+
   beforeEach(() => {
     snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockPrincipal,
-        lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+    snsAccountsStore.reset();
+    transactionsFeesStore.reset();
+    snsQueryStore.setData(responses);
+    transactionsFeesStore.setFee({
+      rootCanisterId,
+      fee: BigInt(10_000),
+      certified: true,
+    });
   });
 
   describe("accounts not loaded", () => {
     beforeEach(() => {
       // Load accounts in a different project
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(
-          mockSnsAccountsStoreSubscribe(Principal.fromText("aaaaa-aa"))
-        );
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+      snsAccountsStore.setAccounts({
+        rootCanisterId: Principal.fromText("aaaaa-aa"),
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
-      page.mock({ data: { universe: mockPrincipal.toText() } });
+      page.mock({ data: { universe: rootCanisterIdText } });
     });
     it("should render a spinner while loading", () => {
       const { getByTestId } = render(SnsWallet, props);
@@ -91,22 +92,13 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+      snsAccountsStore.setAccounts({
+        rootCanisterId,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-
-      jest
-        .spyOn(selectedUniverseIdStore, "subscribe")
-        .mockImplementation((run: Subscriber<Principal>): (() => void) => {
-          run(mockPrincipal);
-          return () => undefined;
-        });
-
-      page.mock({ data: { universe: mockPrincipal.toText() } });
+      page.mock({ data: { universe: rootCanisterIdText } });
     });
 
     afterAll(() => jest.clearAllMocks());

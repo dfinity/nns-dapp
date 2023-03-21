@@ -1,37 +1,14 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use candid::CandidType;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_nns_common::types::NeuronId;
 use icp_ledger::AccountIdentifier;
 use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
-use std::collections::{BTreeMap, VecDeque};
+use std::collections::VecDeque;
 
 #[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
-}
-
-// We temporarily use this to encode stable state which can be
-// safely decoded even if we have to roll back to an earlier
-// version.
-#[derive(Default, CandidType, Deserialize)]
-pub struct MultiPartTransactionsProcessorWithRemovedFields {
-    pub queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
-    // Unused but needs a migration to remove safely.
-    statuses: BTreeMap<BlockIndex, (PrincipalId, MultiPartTransactionStatus)>,
-    // Unused but needs a migration to remove safely.
-    errors: VecDeque<MultiPartTransactionError>,
-}
-
-impl MultiPartTransactionsProcessorWithRemovedFields {
-    pub fn from(mptp: &MultiPartTransactionsProcessor) -> MultiPartTransactionsProcessorWithRemovedFields {
-        MultiPartTransactionsProcessorWithRemovedFields {
-            queue: mptp.queue.clone(),
-            statuses: BTreeMap::default(),
-            errors: VecDeque::default(),
-        }
-    }
 }
 
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -45,25 +22,6 @@ pub enum MultiPartTransactionToBeProcessed {
     TopUpCanisterV2(PrincipalId, CanisterId),
     // ParticipateSwap(buyer_id, from, to, swap_canister_id)
     ParticipateSwap(PrincipalId, AccountIdentifier, AccountIdentifier, CanisterId),
-}
-
-#[derive(Clone, CandidType, Deserialize)]
-pub enum MultiPartTransactionStatus {
-    NeuronCreated(NeuronId),
-    CanisterCreated(CanisterId),
-    Complete,
-    Refunded(BlockIndex, String),
-    Error(String),
-    ErrorWithRefundPending(String),
-    NotFound,
-    PendingSync,
-    Queued,
-}
-
-#[derive(Clone, CandidType, Deserialize)]
-pub struct MultiPartTransactionError {
-    block_height: BlockIndex,
-    error_message: String,
 }
 
 impl MultiPartTransactionsProcessor {
