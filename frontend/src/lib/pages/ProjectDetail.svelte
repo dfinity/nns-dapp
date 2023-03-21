@@ -46,6 +46,59 @@
 
   export let rootCanisterId: string | undefined | null;
 
+  let unsubscribeWatchCommitment: () => void | undefined;
+  let unsubscribeWatchMetrics: () => void | undefined;
+
+  let enableWatchers = false;
+  $: enableWatchers =
+    $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
+
+  onDestroy(() => {
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchMetrics?.();
+    if (isNullish(rootCanisterId)) {
+      return;
+    }
+
+    try {
+      // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+      snsTicketsStore.setTicket({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        ticket: undefined,
+      });
+    } catch (error: unknown) {
+      // ignore error
+      // it can happen if the rootCanisterId is not valid
+    }
+
+    // TODO: Improve cancellatoin of actions onDestroy
+    // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
+    cancelPollGetOpenTicket();
+
+    // Hide toasts when moving away from the page
+    hidePollingToast();
+  });
+
+  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
+    // We load the metrics to have them initially available before setInterval starts
+    loadSnsSwapMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      forceFetch: false,
+    });
+
+    if (enableWatchers) {
+      unsubscribeWatchCommitment?.();
+      unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
+
+      unsubscribeWatchMetrics?.();
+      unsubscribeWatchMetrics = watchSnsMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId: swapCanisterId,
+      });
+    }
+  }
+
   const goBack = async (): Promise<void> => {
     // We want `goto` to be called only in the browser or in the test environment
     if (browser || IS_TEST_ENV) {
@@ -142,10 +195,6 @@
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let enableWatchers = false;
-  $: enableWatchers =
-    $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
-
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
 
@@ -157,28 +206,6 @@
         $projectDetailStore.swapCommitment = undefined;
       },
     });
-  }
-
-  let unsubscribeWatchCommitment: () => void | undefined;
-  let unsubscribeWatchMetrics: () => void | undefined;
-  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
-    // We load the metrics to have them initially available before setInterval starts
-    loadSnsSwapMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
-      forceFetch: false,
-    });
-
-    if (enableWatchers) {
-      unsubscribeWatchCommitment?.();
-      unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
-
-      unsubscribeWatchMetrics?.();
-      unsubscribeWatchMetrics = watchSnsMetrics({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId: swapCanisterId,
-      });
-    }
   }
 
   /////////////////////////////////
@@ -242,31 +269,6 @@
     }
   }
 
-  onDestroy(() => {
-    unsubscribeWatchCommitment?.();
-    unsubscribeWatchMetrics?.();
-    if (isNullish(rootCanisterId)) {
-      return;
-    }
-
-    try {
-      // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
-      snsTicketsStore.setTicket({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        ticket: undefined,
-      });
-    } catch (error: unknown) {
-      // ignore error
-      // it can happen if the rootCanisterId is not valid
-    }
-
-    // TODO: Improve cancellatoin of actions onDestroy
-    // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
-    cancelPollGetOpenTicket();
-
-    // Hide toasts when moving away from the page
-    hidePollingToast();
-  });
 </script>
 
 <main>
