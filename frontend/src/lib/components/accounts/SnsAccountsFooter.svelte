@@ -38,6 +38,11 @@
       data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
     >
 
-    <ReceiveButton type="sns-receive" canSelectAccount testId="receive-sns" />
+    <ReceiveButton
+      type="sns-receive"
+      canSelectAccount
+      testId="receive-sns"
+      {reload}
+    />
   </Footer>
 {/if}
