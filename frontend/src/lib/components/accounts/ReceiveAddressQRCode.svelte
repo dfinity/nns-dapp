@@ -41,7 +41,7 @@
     {/if}
   </article>
 
-  {#if addressSelected}
+  {#if addressSelected && qrCodeRendered}
     <div class="address-block">
       <KeyValuePair>
         <span slot="key" class="label"><slot name="address-label" /></span>
