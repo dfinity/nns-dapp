@@ -1,6 +1,6 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { nonNullish } from "@dfinity/utils";
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
-import { ButtonPo } from "./Button.page-object";
 
 export class SnsNeuronInfoStakePo {
   static readonly tid = "sns-neuron-info-stake";

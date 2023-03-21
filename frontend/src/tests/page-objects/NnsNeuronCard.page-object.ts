@@ -1,4 +1,4 @@
-import { NnsNeuronCardTitlePo } from "./NnsNeuronCardTitle.page-object";
+import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.page-object";
 
 export class NnsNeuronCardPo {
   static readonly tid = "nns-neuron-card-component";

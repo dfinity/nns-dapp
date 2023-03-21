@@ -1,4 +1,4 @@
-import { SkeletonCardPo } from "./SkeletonCard.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 
 export class NnsNeuronDetailPo {
   static readonly tid = "nns-neuron-detail-component";

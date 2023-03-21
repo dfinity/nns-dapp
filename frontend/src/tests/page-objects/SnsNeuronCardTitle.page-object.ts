@@ -1,4 +1,4 @@
-import { HashPo } from "./Hash.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
 
 export class SnsNeuronCardTitlePo {
   static readonly tid = "sns-neuron-card-title";

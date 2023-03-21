@@ -1,4 +1,4 @@
-import { assertNonNullish } from "../utils/utils.test-utils";
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class AmountDisplayPo {
   static readonly tid = "token-value-label";

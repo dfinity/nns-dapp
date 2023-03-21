@@ -1,6 +1,6 @@
+import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
+import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { nonNullish } from "@dfinity/utils";
-import { NnsNeuronDetailPo } from "./NnsNeuronDetail.page-object";
-import { SnsNeuronDetailPo } from "./SnsNeuronDetail.page-object";
 
 export class NeuronDetailPo {
   static readonly tid = "neuron-detail-component";
