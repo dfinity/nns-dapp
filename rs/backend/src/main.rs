@@ -37,7 +37,7 @@ fn init() {
 /// Redundant function, never called but reqired as this is main.rs.
 fn main() {}
 
-#[export_name = "canister_pre_upgrade"]
+#[pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
         let bytes = s.encode();
