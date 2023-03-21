@@ -8,7 +8,6 @@
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { SnsProposalData } from "@dfinity/sns";
-  import { toastsError } from "$lib/stores/toasts.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -29,8 +28,6 @@
   // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
   $: {
     if (nonNullish(proposalIdText) && nonNullish(rootCanisterId)) {
-      // We can't be sure that `snsOnlyProjectStore` is the same when `handleError` is called.
-      const rootCanisterIdText = rootCanisterId.toText();
       try {
         const proposalId = BigInt(proposalIdText);
         proposal = "loading";
@@ -41,22 +38,12 @@
             proposal = proposalData;
           },
           handleError: () => {
-            goto(buildProposalsUrl({ universe: rootCanisterIdText }), {
-              replaceState: true,
-            });
+            // TODO: redirect
           },
         });
       } catch (error) {
         proposal = "error";
-        toastsError({
-          labelKey: "error.wrong_proposal_id",
-          substitutions: {
-            $proposalId: proposalIdText,
-          },
-        });
-        goto(buildProposalsUrl({ universe: rootCanisterIdText }), {
-          replaceState: true,
-        });
+        // TODO: Add a toast for this error and redirect
       }
     }
   }
