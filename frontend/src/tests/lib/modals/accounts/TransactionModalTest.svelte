@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/components/transaction/TransactionModal.svelte";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";

@@ -18,7 +18,7 @@
     validParticipation,
   } from "$lib/utils/projects.utils";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-  import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/components/transaction/TransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { getSwapAccount } from "$lib/services/sns.services";
   import type {

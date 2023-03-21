@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import TransactionModal from "$lib/components/transaction/TransactionModal.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
-import TransactionModal from "$lib/modals/accounts/NewTransaction/TransactionModal.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";

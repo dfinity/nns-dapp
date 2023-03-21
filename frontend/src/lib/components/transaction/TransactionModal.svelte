@@ -10,7 +10,7 @@
     TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import TransactionQRCode from "$lib/modals/accounts/NewTransaction/TransactionQRCode.svelte";
+  import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;

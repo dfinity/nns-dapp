@@ -27,7 +27,7 @@
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
-  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
