@@ -48,6 +48,8 @@
 
   const goBack = async (): Promise<void> => {
     // We want `goto` to be called only in the browser or in the test environment
+    // Weirdly enough, the build step failed when I didn't have the `browser` check.
+    // TODO: Find out why and fix it. It should not be needed.
     if (browser || IS_TEST_ENV) {
       goto(AppPath.Launchpad, { replaceState: true });
     }
@@ -60,7 +62,7 @@
   // Used to reload the data after a new swap participation
   const reload = async () => {
     if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
-      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+      // We cannot reload data for an undefined rootCanisterd or swapCanisterId but we silent the error here because it most probably means that the user has already navigated away of the detail route
       return;
     }
 
