@@ -8,7 +8,7 @@ export interface AccountsModal {
 
 export interface AccountsReceiveModalData {
   account: Account | undefined;
-  reloadAccount: (() => Promise<void>) | undefined;
+  reload: (() => Promise<void>) | undefined;
   canSelectAccount: boolean;
 }
 
