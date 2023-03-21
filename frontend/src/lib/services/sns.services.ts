@@ -92,11 +92,11 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
 export const loadSnsSwapCommitment = async ({
   rootCanisterId,
   onError,
-  forceFetch,
+  forceFetch = false,
 }: {
   rootCanisterId: string;
   onError?: () => void;
-  forceFetch: boolean;
+  forceFetch?: boolean;
 }) => {
   const swapCommitment = (get(snsSwapCommitmentsStore) ?? []).find(
     ({ swapCommitment }) =>

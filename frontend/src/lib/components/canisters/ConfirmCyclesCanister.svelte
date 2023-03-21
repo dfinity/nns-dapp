@@ -4,7 +4,7 @@
   import type { Account } from "$lib/types/account";
   import { formatNumber } from "$lib/utils/format.utils";
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
-  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 
   export let amount: number;
   export let account: Account;

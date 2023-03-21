@@ -16,7 +16,7 @@
     transactionsFeesStore,
   } from "$lib/stores/transaction-fees.store";
   import { Value, busy } from "@dfinity/gix-components";
-  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 
   export let account: Account;
   let amount: number;

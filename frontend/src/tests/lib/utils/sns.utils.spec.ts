@@ -235,14 +235,24 @@ describe("sns-utils", () => {
       expect(getCommitmentE8s(commitment)).toEqual(commitmentE8s);
     });
 
-    it("returns undefined if no user commitment", () => {
+    it("returns 0 if no user commitment", () => {
       const commitment: SnsSwapCommitment = {
         rootCanisterId: mockPrincipal,
         myCommitment: {
           icp: [],
         },
       };
-      expect(getCommitmentE8s(commitment)).toBeUndefined();
+      expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
+    });
+
+    it("returns undefined if commitment not loaded", () => {
+      const noCommitment: SnsSwapCommitment = {
+        rootCanisterId: mockPrincipal,
+        myCommitment: undefined,
+      };
+      expect(getCommitmentE8s(noCommitment)).toBeUndefined();
+      expect(getCommitmentE8s(null)).toBeUndefined();
+      expect(getCommitmentE8s(undefined)).toBeUndefined();
     });
   });
 

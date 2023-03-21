@@ -437,10 +437,7 @@
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
     "sns_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
-    "icp_receive_note_title": "Transfer ICP Instantly",
-    "icp_receive_note_text": "This address accepts ICP. Scan the QR Code using a crypto wallet or exchange to transfer funds to this account instantly at low cost.",
-    "sns_receive_note_title": "Transfer $tokenSymbol Instantly",
-    "sns_receive_note_text": "This address accepts $tokenSymbol. Scan the QR Code using a crypto wallet or exchange to transfer funds to this account instantly at low cost."
+    "token_address": "$tokenSymbol Address"
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve.",
@@ -839,10 +836,6 @@
     "logo": "Chain-key Bitcoin (ckBTC) logo",
     "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
     "receive": "Receive",
-    "btc_receive_note_title": "Send BTC here to receive ckBTC",
-    "ckbtc_receive_note_title": "Transfer ckBTC in seconds",
-    "btc_receive_note_text": "This address accepts BTC. When you receive BTC through the Internet Computer, the funds are converted and transferred as ckBTC. This can take about 12 hours and incur additional transaction costs.",
-    "ckbtc_receive_note_text": "This address accepts ckBTC. When funds are transferred to your ckBTC address, you will see the ckBTC in your account within seconds.",
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",

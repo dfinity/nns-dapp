@@ -1299,38 +1299,6 @@ fn assert_queue_item_eq_stake_neuron(
 }
 
 #[test]
-fn decode_after_fields_removed_from_from_mptp() {
-    let mut mptp_old = MultiPartTransactionsProcessorWithRemovedFields::default();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let block_index = 123;
-    let memo = Memo(789);
-    let queue_item: (BlockIndex, MultiPartTransactionToBeProcessed) = (
-        block_index,
-        MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo),
-    );
-    mptp_old.queue.push_back(queue_item);
-
-    let bytes = Candid((&mptp_old,)).into_bytes().unwrap();
-    let (mptp_new,): (MultiPartTransactionsProcessor,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap();
-
-    let decoded_queue = mptp_new.get_queue_for_testing();
-
-    assert_queue_item_eq_stake_neuron(block_index, principal, memo, decoded_queue);
-}
-
-#[test]
-fn decode_into_restored_fields_of_mptp_after_rollback() {
-    let new_mptp = MultiPartTransactionsProcessor::default();
-    let bytes = Candid((&new_mptp,)).into_bytes().unwrap();
-
-    let old_mptp_result: Result<(MultiPartTransactionsProcessorWithRemovedFields,), String> =
-        Candid::from_bytes(bytes).map(|c| c.0);
-
-    // This fails, showing that we need special logic to make rollbacks safe.
-    assert!(old_mptp_result.err().unwrap().starts_with("Fail to decode"));
-}
-
-#[test]
 fn encode_decode_stable_state() {
     let mut store = AccountsStore::default();
     let block_index = 312;

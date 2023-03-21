@@ -1,7 +1,5 @@
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
-use crate::multi_part_transactions_processor::{
-    MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor, MultiPartTransactionsProcessorWithRemovedFields,
-};
+use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::stats::Stats;
 use crate::time::time_millis;
@@ -1483,10 +1481,6 @@ fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransact
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
-        // Encode with removed fields intact to make rolling back to
-        // a version which still has the removed fields safe.
-        let mptp_with_removed_fields =
-            MultiPartTransactionsProcessorWithRemovedFields::from(&self.multi_part_transactions_processor);
         // TODO: Remove after safely upgrading canister
         // This was used for the migration to a new TransactionType and new Operation
         let old_transactions = convert_transactions(&self.transactions);
@@ -1498,7 +1492,7 @@ impl StableState for AccountsStore {
             old_transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
-            mptp_with_removed_fields,
+            &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
         ))

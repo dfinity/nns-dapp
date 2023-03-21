@@ -7,7 +7,7 @@
   import type { Account } from "$lib/types/account";
   import type { NewTransaction } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
