@@ -39,11 +39,20 @@ describe("Proposal", () => {
     );
   });
 
-  it("should render proposer proposal data", async () => {
+  it("should render proposer proposal actions entry", async () => {
     const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
       expect(
         queryByTestId("proposal-proposer-actions-entry-title")
+      ).toBeInTheDocument()
+    );
+  });
+
+  it("should render proposer proposal payload entry", async () => {
+    const { queryByTestId } = renderProposalModern();
+    await waitFor(() =>
+      expect(
+        queryByTestId("proposal-proposer-payload-entry-title")
       ).toBeInTheDocument()
     );
   });
