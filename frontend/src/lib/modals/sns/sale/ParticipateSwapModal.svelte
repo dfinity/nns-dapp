@@ -43,7 +43,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
-  import {TransactionInit} from "$lib/types/transaction";
+  import { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {
     pollAccounts(false);
@@ -68,18 +68,19 @@
 
   let destinationAddress: string | undefined;
   $: (async () => {
-    destinationAddress =
-      nonNullish($projectDetailStore.summary?.swapCanisterId)
-        ? (
-            await getSwapAccount($projectDetailStore.summary?.swapCanisterId)
-          ).toHex()
-        : undefined;
+    destinationAddress = nonNullish($projectDetailStore.summary?.swapCanisterId)
+      ? (
+          await getSwapAccount($projectDetailStore.summary?.swapCanisterId)
+        ).toHex()
+      : undefined;
   })();
 
   let transactionInit: TransactionInit | undefined;
-  $: transactionInit = nonNullish(destinationAddress) ? {
-    destinationAddress
-          } : undefined
+  $: transactionInit = nonNullish(destinationAddress)
+    ? {
+        destinationAddress,
+      }
+    : undefined;
 
   let params: SnsParams;
   $: ({

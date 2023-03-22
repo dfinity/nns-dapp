@@ -12,28 +12,31 @@
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
-  import {isNullish, nonNullish} from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let transactionInit: TransactionInit = {};
 
   // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.
   let sourceAccount: Account | undefined = transactionInit.sourceAccount;
-  let destinationAddress: string | undefined = transactionInit.destinationAddress;
+  let destinationAddress: string | undefined =
+    transactionInit.destinationAddress;
+
+  // User inputs exposed for bind in consumers and initialized with initial parameters
+  export let amount: number | undefined = transactionInit.amount;
+
+  // User inputs exposed for bind in consumers
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
   export let token: Token = ICPToken;
   export let transactionFee: TokenAmount;
   export let disableSubmit = false;
-  // Max amount accepted by the transaction wihout fees
+  // Max amount accepted by the transaction without fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
-
-  // User inputs exposed because bind in consumers
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
-  export let amount: number | undefined = undefined;
 
   const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";

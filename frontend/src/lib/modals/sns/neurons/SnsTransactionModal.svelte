@@ -5,7 +5,7 @@
   import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import type { ValidateAmountFn } from "$lib/types/transaction";
-  import type {TransactionInit} from "$lib/types/transaction";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   export let token: Token;
   export let rootCanisterId: Principal;

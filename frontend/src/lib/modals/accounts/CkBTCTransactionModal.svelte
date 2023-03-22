@@ -35,7 +35,7 @@
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
-    mustSelectNetwork: isUniverseCkTESTBTC(universeId)
+    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
   };
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
