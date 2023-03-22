@@ -1,13 +1,12 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class AmountDisplayPo {
+export class AmountDisplayPo extends BasePageObject {
   static readonly tid = "token-value-label";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): AmountDisplayPo | null {

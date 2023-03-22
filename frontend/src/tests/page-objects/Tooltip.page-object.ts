@@ -1,13 +1,12 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class TooltipPo {
+export class TooltipPo extends BasePageObject {
   static readonly tid = "tooltip-component";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): TooltipPo | null {

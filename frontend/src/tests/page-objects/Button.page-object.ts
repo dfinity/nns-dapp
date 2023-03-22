@@ -1,9 +1,9 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-export class ButtonPo {
-  root: PageObjectElement;
 
+export class ButtonPo extends BasePageObject {
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under({
