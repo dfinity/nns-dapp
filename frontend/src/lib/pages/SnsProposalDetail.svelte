@@ -8,6 +8,8 @@
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { Principal } from "@dfinity/principal";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -23,25 +25,45 @@
     }
   });
 
-  // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+  // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
+  let rootCanisterIdText: undefined | string;
+  $: rootCanisterIdText = $snsOnlyProjectStore?.toText();
   $: {
-    if (nonNullish(proposalIdText) && nonNullish($snsOnlyProjectStore)) {
+    // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+    if (nonNullish(proposalIdText) && nonNullish(rootCanisterIdText)) {
+      const rootCanisterId = Principal.fromText(rootCanisterIdText);
+      // We need this to be used in the handleError callback.
+      // Otherwise, TS doesn't believe that the value of `rootCanisterIdText` won't change.
+      const rootCanisterIdAtTimeOfRequest = rootCanisterIdText;
       try {
         const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
         proposal = "loading";
         getSnsProposalById({
-          rootCanisterId: $snsOnlyProjectStore,
+          rootCanisterId,
           proposalId,
           setProposal: ({ proposal: proposalData }) => {
             proposal = proposalData;
           },
           handleError: () => {
-            // TODO: redirect
+            goto(
+              buildProposalsUrl({ universe: rootCanisterIdAtTimeOfRequest }),
+              {
+                replaceState: true,
+              }
+            );
           },
         });
       } catch (error) {
         proposal = "error";
-        // TODO: Add a toast for this error and redirect
+        toastsError({
+          labelKey: "error.wrong_proposal_id",
+          substitutions: {
+            $proposalId: proposalIdText,
+          },
+        });
+        goto(buildProposalsUrl({ universe: rootCanisterIdText }), {
+          replaceState: true,
+        });
       }
     }
   }

@@ -16,13 +16,14 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsProposalData,
+  SnsProposalId,
 } from "@dfinity/sns";
 import {
   neuronSubaccount,
   SnsGovernanceError,
   type SnsNeuron,
 } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
@@ -35,6 +36,7 @@ const implementedFunctions = {
   refreshNeuron,
   claimNeuron,
   queryProposals,
+  queryProposal,
 };
 
 //////////////////////////////////////////////
@@ -233,6 +235,31 @@ async function queryProposals({
   params: SnsListProposalsParams;
 }): Promise<SnsProposalData[]> {
   return proposals.get(mapKey({ identity, rootCanisterId })) || [];
+}
+
+/**
+ * Throws if no proposal is found for the given proposalId.
+ */
+async function queryProposal({
+  identity,
+  rootCanisterId,
+  certified: _,
+  proposalId,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  proposalId: SnsProposalId;
+}): Promise<SnsProposalData> {
+  const proposal = proposals
+    .get(mapKey({ identity, rootCanisterId }))
+    .find(({ id }) => fromNullable(id).id === proposalId.id);
+  if (isNullish(proposal)) {
+    throw new SnsGovernanceError(
+      `No proposal for given proposalId ${proposalId.id}`
+    );
+  }
+  return proposal;
 }
 
 /////////////////////////////////
