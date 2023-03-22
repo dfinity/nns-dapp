@@ -164,6 +164,10 @@ jobs:
           curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
+      - name: Install chronic
+        num: |
+                sudo apt-get update
+                apt-get install moreutils -yy
       - name: Run the ic_commit code generator
         run: ./scripts/update_ic_commit --verbose --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
       - name: Verify that there are no code changes
