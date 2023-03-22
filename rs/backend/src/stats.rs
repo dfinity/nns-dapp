@@ -1,4 +1,5 @@
 use crate::metrics_encoder::MetricsEncoder;
+use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
@@ -11,6 +12,7 @@ pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
     // Collect values from various subcomponents
     state.accounts_store.borrow().get_stats(&mut ans);
+    state.performance.borrow().get_stats(&mut ans);
     // Return all the values
     ans
 }
@@ -30,6 +32,7 @@ pub struct Stats {
     pub neurons_created_count: u64,
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
+    pub performance_counts: Vec<PerformanceCount>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
