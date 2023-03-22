@@ -19,7 +19,7 @@
 
     // We landed on the "Settings" page from somewhere else than from the dapp
     await goto(AppPath.Accounts);
-  }
+  };
 </script>
 
 <Layout>
