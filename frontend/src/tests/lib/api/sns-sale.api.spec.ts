@@ -13,6 +13,7 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -23,7 +24,7 @@ import {
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { SnsSwapCanister } from "@dfinity/sns";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/proxy/api.import.proxy");
 
@@ -70,8 +71,8 @@ describe("sns-sale.api", () => {
 
   it("should query open ticket", async () => {
     const apiTicket = snsTicketMock({
-      rootCanisterId: rootCanisterIdMock,
-      owner: mockIdentity.getPrincipal(),
+      rootCanisterId: principal(1),
+      owner: principal(2),
     }).ticket;
     const snsSwapCanister = mock<SnsSwapCanister>();
     snsSwapCanister.getOpenTicket.mockResolvedValue(apiTicket);
