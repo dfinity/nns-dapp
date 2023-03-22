@@ -70,12 +70,8 @@ pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
 /// The account details contain each of the AccountIdentifiers linked to the user's account. These
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
-#[export_name = "canister_query get_account"]
-pub fn get_account() {
-    over(candid, |()| get_account_impl());
-}
-
-fn get_account_impl() -> GetAccountResponse {
+#[query]
+pub fn get_account() -> GetAccountResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
         Some(account) => GetAccountResponse::Ok(account),
