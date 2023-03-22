@@ -22,17 +22,14 @@
     }
   });
 
-  // By setting a local variable, we avoid calling the below text when the whole store is changes.
-  let rootCanisterId = $snsOnlyProjectStore;
-
   // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
   $: {
-    if (nonNullish(proposalIdText) && nonNullish(rootCanisterId)) {
+    if (nonNullish(proposalIdText) && nonNullish($snsOnlyProjectStore)) {
       try {
         const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
         proposal = "loading";
         getSnsProposalById({
-          rootCanisterId,
+          rootCanisterId: $snsOnlyProjectStore,
           proposalId,
           setProposal: ({ proposal: proposalData }) => {
             proposal = proposalData;
