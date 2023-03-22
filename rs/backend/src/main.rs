@@ -83,12 +83,8 @@ pub fn get_account() -> GetAccountResponse {
 ///
 /// Returns true if the account was created, else false (which happens if the principal already has
 /// an account).
-#[export_name = "canister_update add_account"]
-fn add_account() {
-    over(candid, |()| add_account_impl());
-}
-
-fn add_account_impl() -> AccountIdentifier {
+#[query]
+fn add_account() -> AccountIdentifier {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().add_account(principal));
     AccountIdentifier::from(principal)
@@ -98,12 +94,8 @@ fn add_account_impl() -> AccountIdentifier {
 ///
 /// The AccountIdentifier must be linked to the caller's account, else an empty Vec will be
 /// returned.
-#[export_name = "canister_query get_transactions"]
-pub fn get_transactions() {
-    over(candid_one, get_transactions_impl);
-}
-
-fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResponse {
+#[query]
+pub fn get_transactions(request: GetTransactionsRequest) -> GetTransactionsResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow().get_transactions(principal, request))
 }
@@ -113,12 +105,8 @@ fn get_transactions_impl(request: GetTransactionsRequest) -> GetTransactionsResp
 /// This newly created account can be used to send and receive ICP and is controlled only by the
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
-#[export_name = "canister_update create_sub_account"]
-pub fn create_sub_account() {
-    over(candid_one, create_sub_account_impl);
-}
-
-fn create_sub_account_impl(sub_account_name: String) -> CreateSubAccountResponse {
+#[query]
+pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| {
         s.accounts_store
