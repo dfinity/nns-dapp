@@ -12,7 +12,10 @@ import {
 } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
-import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import {
+  snsProposalsStore,
+  type ProjectProposalData,
+} from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   getSnsNeuronState,
@@ -186,6 +189,30 @@ export const loadSnsProposals = async ({
   });
 };
 
+const getProposalFromStoreById = ({
+  rootCanisterId,
+  proposalId,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  proposalId: SnsProposalId;
+  certified: boolean;
+}): SnsProposalData | undefined => {
+  const projectProposalsData: ProjectProposalData =
+    get(snsProposalsStore)[rootCanisterId.toText()];
+  const proposal = projectProposalsData?.proposals.find(
+    ({ id }) => fromNullable(id)?.id === proposalId.id
+  );
+  if (
+    proposal &&
+    (projectProposalsData.certified ||
+      certified === projectProposalsData.certified)
+  ) {
+    return proposal;
+  }
+  return undefined;
+};
+
 /**
  * Calls the callback `setProposal` with the proposal found by the `proposalId` or `undefined` if not found.
  *
@@ -210,15 +237,12 @@ export const getSnsProposalById = async ({
   }) => void;
   handleError?: (err: unknown) => void;
 }): Promise<void> => {
-  const projectProposalsData = get(snsProposalsStore)[rootCanisterId.toText()];
-  const proposal = projectProposalsData?.proposals.find(
-    ({ id }) => fromNullable(id)?.id === proposalId.id
-  );
-  if (
-    nonNullish(projectProposalsData) &&
-    nonNullish(proposal) &&
-    projectProposalsData.certified
-  ) {
+  const proposal = getProposalFromStoreById({
+    rootCanisterId,
+    proposalId,
+    certified: true,
+  });
+  if (nonNullish(proposal)) {
     setProposal({ proposal, certified: true });
     return;
   }
