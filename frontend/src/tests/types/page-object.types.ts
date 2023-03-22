@@ -5,5 +5,5 @@
 export interface PageObjectElement {
   querySelector(selector: string): PageObjectElement | null;
   querySelectorAll(selector: string): PageObjectElement[];
-  get textContent(): string;
+  getText(): Promise<string>;
 }

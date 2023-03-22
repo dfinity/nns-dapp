@@ -15,7 +15,7 @@ export class SnsNeuronCardTitlePo {
     return el && new SnsNeuronCardTitlePo(el);
   }
 
-  getNeuronId(): string {
+  getNeuronId(): Promise<string> {
     return HashPo.under(
       this.root.querySelector("[data-tid=neuron-id-container]")
     ).getText();

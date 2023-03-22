@@ -15,7 +15,7 @@ export class TooltipPo {
     return el && new TooltipPo(el);
   }
 
-  getText(): string {
-    return assertNonNullish(this.root.querySelector(".tooltip")).textContent;
+  getText(): Promise<string> {
+    return assertNonNullish(this.root.querySelector(".tooltip")).getText();
   }
 }

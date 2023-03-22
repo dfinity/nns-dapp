@@ -15,8 +15,9 @@ export class AmountDisplayPo {
     return el && new AmountDisplayPo(el);
   }
 
-  getAmount(): string | null {
-    return assertNonNullish(this.root.querySelector(`[data-tid="token-value"]`))
-      .textContent;
+  getAmount(): Promise<string> {
+    return assertNonNullish(
+      this.root.querySelector(`[data-tid="token-value"]`)
+    ).getText();
   }
 }

@@ -19,7 +19,7 @@ export class HashPo {
     return TooltipPo.under(this.root);
   }
 
-  getText(): string {
+  getText(): Promise<string> {
     return this.getTooltipPo().getText();
   }
 }

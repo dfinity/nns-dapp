@@ -20,7 +20,7 @@ export class NnsNeuronCardPo {
     return NnsNeuronCardTitlePo.under(this.root);
   }
 
-  getNeuronId(): string {
+  getNeuronId(): Promise<string> {
     return this.getCardTitlePo().getNeuronId();
   }
 }

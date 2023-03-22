@@ -28,8 +28,8 @@ export class SnsNeuronsPo {
     return this.getSkeletonCardPos().length === 0;
   }
 
-  getNeuronIds(): string[] {
+  getNeuronIds(): Promise<string[]> {
     const cards = this.getNeuronCardPos();
-    return cards.map((card) => card.getNeuronId());
+    return Promise.all(cards.map((card) => card.getNeuronId()));
   }
 }

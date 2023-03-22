@@ -91,7 +91,7 @@ describe("ProjectSwapDetails", () => {
     );
   });
 
-  it("should render total token supply if present", () => {
+  it("should render total token supply if present", async () => {
     const totalSupply = BigInt(2_000_000_000);
     const totalTokensSupply = TokenAmount.fromE8s({
       amount: totalSupply,
@@ -106,6 +106,8 @@ describe("ProjectSwapDetails", () => {
 
     const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
-    expect(po.getTotalSupply()).toMatch(formatToken({ value: totalSupply }));
+    expect(await po.getTotalSupply()).toMatch(
+      formatToken({ value: totalSupply })
+    );
   });
 });

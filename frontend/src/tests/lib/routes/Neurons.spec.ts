@@ -81,7 +81,7 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = testNnsNeuronId.toString();
-    expect(po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should render project page when a committed project is selected", async () => {
@@ -100,7 +100,7 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
-    expect(po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should not render neurons when an open project is selected", async () => {

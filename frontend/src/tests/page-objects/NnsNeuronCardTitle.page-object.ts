@@ -13,7 +13,7 @@ export class NnsNeuronCardTitlePo {
     return el && new NnsNeuronCardTitlePo(el);
   }
 
-  getNeuronId(): string {
-    return this.root.querySelector("[data-tid=neuron-id]").textContent;
+  getNeuronId(): Promise<string> {
+    return this.root.querySelector("[data-tid=neuron-id]").getText();
   }
 }
