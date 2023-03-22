@@ -9,14 +9,15 @@ export class AmountDisplayPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): AmountDisplayPo | null {
-    const el = element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`);
-    return el && new AmountDisplayPo(el);
+  static under(element: PageObjectElement): AmountDisplayPo {
+    return new AmountDisplayPo(
+      element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`)
+    );
   }
 
-  getAmount(): Promise<string> {
+  async getAmount(): Promise<string> {
     return assertNonNullish(
-      this.root.querySelector(`[data-tid="token-value"]`)
-    ).getText();
+      await this.root.querySelector(`[data-tid="token-value"]`).getText()
+    );
   }
 }

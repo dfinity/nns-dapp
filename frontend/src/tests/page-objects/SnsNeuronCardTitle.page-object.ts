@@ -9,9 +9,10 @@ export class SnsNeuronCardTitlePo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): SnsNeuronCardTitlePo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronCardTitlePo.tid}]`);
-    return el && new SnsNeuronCardTitlePo(el);
+  static under(element: PageObjectElement): SnsNeuronCardTitlePo {
+    return new SnsNeuronCardTitlePo(
+      element.querySelector(`[data-tid=${SnsNeuronCardTitlePo.tid}]`)
+    );
   }
 
   getNeuronId(): Promise<string> {

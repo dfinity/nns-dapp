@@ -73,11 +73,11 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasSnsNeuronsPo()).toBe(false);
-    expect(po.hasNnsNeuronsPo()).toBe(true);
-    expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
+    expect(await po.hasSnsNeuronsPo()).toBe(false);
+    expect(await po.hasNnsNeuronsPo()).toBe(true);
+    expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
+    await waitFor(async () => {
+      expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = testNnsNeuronId.toString();
@@ -92,11 +92,11 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasNnsNeuronsPo()).toBe(false);
-    expect(po.hasSnsNeuronsPo()).toBe(true);
-    expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
+    expect(await po.hasNnsNeuronsPo()).toBe(false);
+    expect(await po.hasSnsNeuronsPo()).toBe(true);
+    expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
+    await waitFor(async () => {
+      expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
@@ -111,7 +111,7 @@ describe("Neurons", () => {
     const { container } = render(Neurons);
     const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasNnsNeuronsPo()).toBe(false);
-    expect(po.hasSnsNeuronsPo()).toBe(false);
+    expect(await po.hasNnsNeuronsPo()).toBe(false);
+    expect(await po.hasSnsNeuronsPo()).toBe(false);
   });
 });

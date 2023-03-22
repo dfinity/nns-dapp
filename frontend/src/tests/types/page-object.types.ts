@@ -4,6 +4,7 @@
  */
 export interface PageObjectElement {
   querySelector(selector: string): PageObjectElement | null;
-  querySelectorAll(selector: string): PageObjectElement[];
-  getText(): Promise<string>;
+  querySelectorAll(selector: string): Promise<PageObjectElement[]>;
+  isPresent(): Promise<boolean>;
+  getText(): Promise<string | null>;
 }

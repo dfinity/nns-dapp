@@ -7,9 +7,9 @@ export class SkeletonCardPo extends BasePageObject {
     super(root);
   }
 
-  static allUnder(element: PageObjectElement): SkeletonCardPo[] {
+  static async allUnder(element: PageObjectElement): Promise<SkeletonCardPo[]> {
     return Array.from(
-      element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
+      await element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
     ).map((el) => new SkeletonCardPo(el));
   }
 }

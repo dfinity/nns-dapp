@@ -9,9 +9,11 @@ export class NnsNeuronCardPo extends BasePageObject {
     super(root);
   }
 
-  static allUnder(element: PageObjectElement): NnsNeuronCardPo[] {
+  static async allUnder(
+    element: PageObjectElement
+  ): Promise<NnsNeuronCardPo[]> {
     return Array.from(
-      element.querySelectorAll(`[data-tid=${NnsNeuronCardPo.tid}]`)
+      await element.querySelectorAll(`[data-tid=${NnsNeuronCardPo.tid}]`)
     ).map((el) => new NnsNeuronCardPo(el));
   }
 
