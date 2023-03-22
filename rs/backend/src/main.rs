@@ -199,7 +199,7 @@ pub fn get_stats() -> stats::Stats {
 /// - Sync transactions from the ledger
 /// - Process any queued 'multi-part' actions (eg. staking a neuron or topping up a canister)
 /// - Prune old transactions if memory usage is too high
-#[export_name = "canister_heartbeat"]
+#[heartbeat]
 pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
