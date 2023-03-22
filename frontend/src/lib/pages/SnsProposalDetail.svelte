@@ -11,6 +11,7 @@
 
   export let proposalIdText: string | undefined | null = undefined;
 
+  // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | "loading" | "error" = "loading";
 
   onMount(() => {
