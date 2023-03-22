@@ -20,6 +20,7 @@ import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/api/sns-aggregator.api");
 jest.mock("$lib/api/governance.api");
