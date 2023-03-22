@@ -1,11 +1,10 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-export class NnsNeuronCardTitlePo {
+export class NnsNeuronCardTitlePo extends BasePageObject {
   static readonly tid = "neuron-card-title";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): NnsNeuronCardTitlePo | null {

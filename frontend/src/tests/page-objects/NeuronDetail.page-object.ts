@@ -1,15 +1,14 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
 
-export class NeuronDetailPo {
+export class NeuronDetailPo extends BasePageObject {
   static readonly tid = "neuron-detail-component";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): NeuronDetailPo | null {

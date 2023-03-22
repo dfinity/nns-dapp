@@ -1,14 +1,13 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsNeuronsPo {
+export class SnsNeuronsPo extends BasePageObject {
   static readonly tid = "sns-neurons-component";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): SnsNeuronsPo | null {
