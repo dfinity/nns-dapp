@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXXX
+## Proposal 114127
 * Select send and receive address by scanning a QR code.
 * "Receive" action added to main screen and "Add account" action moved as a card.
 * New settings page which displays user principal and session duration
