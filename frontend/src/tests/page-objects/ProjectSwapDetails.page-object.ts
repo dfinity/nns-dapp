@@ -15,7 +15,7 @@ export class ProjectSwapDetailsPo {
     return el && new ProjectSwapDetailsPo(el);
   }
 
-  getTotalSupply(): string {
+  getTotalSupply(): Promise<string> {
     return AmountDisplayPo.under(
       this.root.querySelector("[data-tid=sns-total-token-supply]")
     ).getAmount();

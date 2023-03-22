@@ -21,7 +21,7 @@ export class JestPageObjectElement implements PageObjectElement {
     );
   }
 
-  get textContent(): string {
+  async getText(): Promise<string> {
     return this.element.textContent;
   }
 }
