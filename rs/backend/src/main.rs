@@ -160,9 +160,9 @@ pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
 
-#[export_name = "canister_update get_proposal_payload"]
-pub fn get_proposal_payload() {
-    over_async(candid_one, proposals::get_proposal_payload)
+#[update]
+pub async fn get_proposal_payload(proposal_id: u64) -> Result<String, String> {
+    proposals::get_proposal_payload(proposal_id).await
 }
 
 #[export_name = "canister_update add_pending_notify_swap"]
