@@ -60,7 +60,6 @@ fn post_upgrade() {
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
     assets::init_assets();
-    perf::record_instruction_count("post_upgrade after init_assets");
     perf::record_instruction_count("post_upgrade stop");
 }
 
