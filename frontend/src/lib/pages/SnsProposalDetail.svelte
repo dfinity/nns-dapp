@@ -22,7 +22,7 @@
   // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | "loading" | "error" = "loading";
 
-  const isProposal = (
+  const isLoadedProposal = (
     proposal: SnsProposalData | "loading" | "error"
   ): proposal is SnsProposalData =>
     proposal !== "loading" && proposal !== "error";
@@ -81,7 +81,7 @@
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if isProposal(proposal)}
+  {#if isLoadedProposal(proposal)}
     <div class="content-a">
       <SnsProposalSystemInfoSection {proposal} />
     </div>
