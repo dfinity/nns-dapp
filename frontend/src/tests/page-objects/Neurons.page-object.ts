@@ -1,17 +1,18 @@
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
 
 export class NeuronsPo {
   static readonly tid = "neurons-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  private constructor(root: Element) {
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: HTMLElement): NeuronsPo | null {
+  static under(element: PageObjectElement): NeuronsPo | null {
     const el = element.querySelector(`[data-tid=${NeuronsPo.tid}]`);
     return el && new NeuronsPo(el);
   }
