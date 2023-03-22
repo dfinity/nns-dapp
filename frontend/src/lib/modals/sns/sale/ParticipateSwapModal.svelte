@@ -43,7 +43,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
-  import { TransactionInit } from "$lib/types/transaction";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {
     pollAccounts(false);

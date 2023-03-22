@@ -59,12 +59,14 @@ describe("TransactionModal", () => {
     renderModal({
       component: TransactionModal,
       props: {
-        destinationAddress,
-        sourceAccount,
         transactionFee,
         rootCanisterId,
         validateAmount,
-        mustSelectNetwork,
+        transactionInit: {
+          sourceAccount,
+          destinationAddress,
+          mustSelectNetwork,
+        },
       },
     });
 
