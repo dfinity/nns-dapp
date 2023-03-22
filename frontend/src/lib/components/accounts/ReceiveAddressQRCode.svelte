@@ -19,7 +19,7 @@
 </script>
 
 <div class="content">
-  <article class="qrcode">
+  <article class="qrcode" class:rendered={qrCodeRendered}>
     {#if renderQRCode && addressSelected}
       <QRCode
         value={address ?? ""}
@@ -80,20 +80,31 @@
   }
 
   .qrcode {
-    padding: var(--padding-2x) var(--padding-8x);
+    margin: var(--padding) var(--padding-6x) var(--padding-2x);
+    padding: var(--padding-2x);
+
+    box-sizing: border-box;
+
+    &.rendered {
+      --qrcode-background-color: white;
+    }
+
+    background: var(--qrcode-background-color);
 
     width: 100%;
     max-width: 300px;
 
+    border-radius: var(--border-radius-0_5x);
+
     @include media.min-width(medium) {
-      padding: 0 var(--padding-4x);
+      margin: 0 var(--padding-2x) var(--padding);
     }
   }
 
   .logo {
     width: calc(10 * var(--padding));
     height: calc(10 * var(--padding));
-    background: var(--overlay-content-background);
+    background: var(--qrcode-background-color);
 
     display: flex;
     justify-content: center;
