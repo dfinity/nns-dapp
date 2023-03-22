@@ -228,12 +228,8 @@ fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPend
 ///
 /// These stats include things such as the number of accounts registered, the memory usage, the
 /// number of neurons created, etc.
-#[export_name = "canister_query get_stats"]
-pub fn get_stats() {
-    over(candid, |()| get_stats_impl());
-}
-
-fn get_stats_impl() -> stats::Stats {
+#[query]
+pub fn get_stats() -> stats::Stats {
     STATE.with(stats::get_stats)
 }
 
