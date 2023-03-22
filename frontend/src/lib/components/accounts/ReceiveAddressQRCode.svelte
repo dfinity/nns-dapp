@@ -91,7 +91,7 @@
     width: 100%;
     max-width: 300px;
 
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-0_5x);
 
     @include media.min-width(medium) {
       margin: 0 var(--padding-2x) var(--padding);
