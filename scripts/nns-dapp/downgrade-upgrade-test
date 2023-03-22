@@ -22,6 +22,7 @@ set -euo pipefail
 
 verify_healthy() {
   dfx canister call nns-dapp get_stats
+  curl "http://$(dfx canister id nns-dapp).localhost:8080" | grep 'Network Nervous System frontend dapp'
 }
 
 get_current_wasm() {

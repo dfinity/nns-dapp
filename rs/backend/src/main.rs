@@ -60,9 +60,9 @@ fn post_upgrade() {
     assets::init_assets();
 }
 
-#[export_name = "canister_query http_request"]
-pub fn http_request() {
-    over(candid_one, assets::http_request);
+#[query]
+pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
+    assets::http_request(req)
 }
 
 /// Returns the user's account details if they have an account, else AccountNotFound.
