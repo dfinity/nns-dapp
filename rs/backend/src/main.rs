@@ -45,7 +45,7 @@ fn pre_upgrade() {
     });
 }
 
-#[export_name = "canister_post_upgrade"]
+#[post_upgrade]
 fn post_upgrade() {
     STATE.with(|s| {
         let bytes = stable::get();
