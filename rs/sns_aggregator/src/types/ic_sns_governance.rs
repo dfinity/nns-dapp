@@ -153,7 +153,6 @@ pub struct TransferSnsTreasuryFunds {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpgradeSnsControlledCanister {
   pub  new_canister_wasm: Vec<u8>,
-  pub  mode: Option<i32>,
   pub  canister_id: Option<candid::Principal>,
   pub  canister_upgrade_arg: Option<Vec<u8>>,
 }

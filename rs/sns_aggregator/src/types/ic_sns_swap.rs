@@ -106,10 +106,8 @@ pub struct GetBuyerStateRequest { principal_id: Option<candid::Principal> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransferableAmount {
-  pub  transfer_fee_paid_e8s: Option<u64>,
   pub  transfer_start_timestamp_seconds: u64,
   pub  amount_e8s: u64,
-  pub  amount_transferred_e8s: Option<u64>,
   pub  transfer_success_timestamp_seconds: u64,
 }
 
