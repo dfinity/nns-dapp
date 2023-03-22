@@ -35,11 +35,11 @@ source "$(clap.build)"
   : "Get the did and wasm files"
   IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
   did_curl() {
-	  local canister="$1"
-	  local upstream_path="$2"
-	  local local_path="declarations/${canister}/${canister}.did"
-	  mkdir -p "$(dirname "$local_path")"
-     curl -sfL --retry 5 "$IC_URL$upstream_path" > "${local_path}"
+    local canister="$1"
+    local upstream_path="$2"
+    local local_path="declarations/${canister}/${canister}.did"
+    mkdir -p "$(dirname "$local_path")"
+    curl -sfL --retry 5 "$IC_URL$upstream_path" >"${local_path}"
   }
   did_curl sns_governance /rs/sns/governance/canister/governance.did
   did_curl sns_root /rs/sns/root/canister/root.did
