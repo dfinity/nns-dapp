@@ -842,6 +842,7 @@
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
+    "test_bitcoin": "Bitcoin Testnet",
     "btc": "BTC",
     "ckbtc_balance_updated": "Balance successfully updated.",
     "step_initialization": "Initializing transaction",
