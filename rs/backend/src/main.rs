@@ -105,7 +105,7 @@ pub fn get_transactions(request: GetTransactionsRequest) -> GetTransactionsRespo
 /// This newly created account can be used to send and receive ICP and is controlled only by the
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
-#[query]
+#[update]
 pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| {
@@ -118,12 +118,8 @@ pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse 
 /// Changes the alias given to the chosen sub account.
 ///
 /// These aliases are not visible externally or to anyone else.
-#[export_name = "canister_update rename_sub_account"]
-pub fn rename_sub_account() {
-    over(candid_one, rename_sub_account_impl);
-}
-
-fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
+#[update]
+pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().rename_sub_account(principal, request))
 }
@@ -133,12 +129,8 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 /// A single hardware wallet can be linked to multiple user accounts, but in order to make calls to
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some readonly calls do not require signing, eg. viewing the account's ICP balance.
-#[export_name = "canister_update register_hardware_wallet"]
-pub fn register_hardware_wallet() {
-    over(candid_one, register_hardware_wallet_impl);
-}
-
-fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
+#[update]
+pub fn register_hardware_wallet(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| {
         s.accounts_store
@@ -148,34 +140,22 @@ fn register_hardware_wallet_impl(request: RegisterHardwareWalletRequest) -> Regi
 }
 
 /// Returns the list of canisters which the user has attached to their account.
-#[export_name = "canister_query get_canisters"]
-pub fn get_canisters() {
-    over(candid, |()| get_canisters_impl());
-}
-
-fn get_canisters_impl() -> Vec<NamedCanister> {
+#[query]
+pub fn get_canisters() -> Vec<NamedCanister> {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().get_canisters(principal))
 }
 
 /// Attaches a canister to the user's account.
-#[export_name = "canister_update attach_canister"]
-pub fn attach_canister() {
-    over(candid_one, attach_canister_impl);
-}
-
-fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
+#[update]
+pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
 }
 
 /// Detaches a canister from the user's account.
-#[export_name = "canister_update detach_canister"]
-pub fn detach_canister() {
-    over(candid_one, detach_canister_impl);
-}
-
-fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterResponse {
+#[update]
+pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().detach_canister(principal, request))
 }
