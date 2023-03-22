@@ -29,8 +29,11 @@ import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 import { mockCkBTCAddress } from "../../../mocks/ckbtc-accounts.mock";
 
+let testBtcAddress = mockBTCAddressTestnet;
+
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
+    getBTCAddress: jest.fn().mockImplementation(() => testBtcAddress),
     updateBalance: jest.fn().mockImplementation(() => undefined),
   };
 });
@@ -73,7 +76,24 @@ describe("BtcCkBTCReceiveModal", () => {
 
       await selectSegmentBTC(container);
 
-      expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument()
+      );
+    });
+
+    it("should render spinner while loading BTC address", async () => {
+      testBtcAddress = undefined;
+
+      const { getByText, getByTestId, container } = await renderReceiveModal(
+        {}
+      );
+
+      await selectSegmentBTC(container);
+
+      expect(getByTestId("spinner")).not.toBeNull();
+      expect(getByText(en.ckbtc.loading_address)).toBeInTheDocument();
+
+      testBtcAddress = mockBTCAddressTestnet;
     });
 
     it("should render account identifier (without being shortened)", async () => {

@@ -899,6 +899,7 @@ interface I18nCkbtc {
   estimated_receive_time: string;
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
+  loading_address: string;
 }
 
 interface I18nError__ckbtc {

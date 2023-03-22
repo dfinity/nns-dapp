@@ -18,7 +18,6 @@ export type CkBTCTransactionModalData = {
 export type CkBTCReceiveModalData = {
   // @deprecated remove when ckBTC with minter is live
   displayBtcAddress: boolean;
-  btcAddress: string;
   reload: (() => Promise<void>) | undefined;
   canSelectAccount: boolean;
 } & Omit<CkBTCWalletModalData, "account"> &

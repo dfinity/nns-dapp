@@ -5,8 +5,6 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { getBTCAddress } from "$lib/services/ckbtc-minter.services";
   import { i18n } from "$lib/stores/i18n";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { Account } from "$lib/types/account";
@@ -35,7 +33,6 @@
           type: "ckbtc-receive",
           data: {
             displayBtcAddress: false,
-            btcAddress: "",
             account,
             reload,
             universeId: $selectedCkBTCUniverseIdStore,
@@ -47,37 +44,20 @@
       return;
     }
 
-    startBusy({
-      initiator: "get-btc-address",
-    });
-
-    try {
-      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      const btcAddress = await getBTCAddress(canisters.minterCanisterId);
-
-      emit<CkBTCWalletModal>({
-        message: "nnsCkBTCAccountsModal",
-        detail: {
-          type: "ckbtc-receive",
-          data: {
-            displayBtcAddress: true,
-            btcAddress,
-            account,
-            reload,
-            universeId: $selectedCkBTCUniverseIdStore,
-            canisters,
-            canSelectAccount,
-          },
+    emit<CkBTCWalletModal>({
+      message: "nnsCkBTCAccountsModal",
+      detail: {
+        type: "ckbtc-receive",
+        data: {
+          displayBtcAddress: true,
+          account,
+          reload,
+          universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
+          canSelectAccount,
         },
-      });
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error__ckbtc.get_btc_address",
-        err,
-      });
-    }
-
-    stopBusy("get-btc-address");
+      },
+    });
   };
 </script>
 

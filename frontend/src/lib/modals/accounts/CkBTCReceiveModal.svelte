@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { busy, Modal, Segment, SegmentButton } from "@dfinity/gix-components";
+  import {
+    busy,
+    Modal,
+    Segment,
+    SegmentButton,
+    Spinner,
+  } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
@@ -7,8 +13,11 @@
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
-  import { createEventDispatcher } from "svelte";
+  import {
+    getBTCAddress,
+    updateBalance as updateBalanceService,
+  } from "$lib/services/ckbtc-minter.services";
+  import { createEventDispatcher, onMount } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -26,14 +35,12 @@
   let universeId: UniverseCanisterId;
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
-  let btcAddress: string;
   let reload: (() => Promise<void>) | undefined;
   let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 
   $: ({
     account,
-    btcAddress,
     reload,
     canisters,
     universeId,
@@ -139,6 +146,27 @@
 
   let address: string | undefined;
   $: address = bitcoin ? btcAddress : account?.identifier;
+
+  let btcAddress: string | undefined;
+
+  const loadBtcAddress = async () => {
+    // TODO: to be removed when ckBTC with minter is live.
+    if (!isUniverseCkTESTBTC(universeId)) {
+      return;
+    }
+
+    try {
+      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
+      btcAddress = await getBTCAddress(canisters.minterCanisterId);
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_address",
+        err,
+      });
+    }
+  };
+
+  onMount(async () => await loadBtcAddress());
 </script>
 
 <Modal
@@ -179,6 +207,11 @@
     >
       <svelte:fragment slot="address-label">{title}</svelte:fragment>
     </ReceiveAddressQRCode>
+  {:else}
+    <div class="loading description">
+      <span>{$i18n.ckbtc.loading_address}</span>
+      <div><Spinner size="small" inline /></div>
+    </div>
   {/if}
 
   <div class="toolbar">
@@ -219,5 +252,18 @@
 
   button.primary {
     width: 100%;
+  }
+
+  .loading {
+    display: flex;
+    margin: var(--padding-4x) 0;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding);
+    font-size: var(--font-size-small);
+
+    div {
+      display: flex;
+    }
   }
 </style>
