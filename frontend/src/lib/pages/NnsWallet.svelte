@@ -175,7 +175,7 @@
     <ReceiveButton
       type="nns-receive"
       account={$selectedAccountStore.account}
-      {reloadAccount}
+      reload={reloadAccount}
     />
   </Footer>
 </Island>

@@ -1,18 +1,16 @@
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ProjectSwapDetailsPo {
   static readonly tid = "project-swap-details-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== ProjectSwapDetailsPo.tid) {
-      throw new Error(`${root} is not a ProjectSwapDetailsPo`);
-    }
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: Element): ProjectSwapDetailsPo | null {
+  static under(element: PageObjectElement): ProjectSwapDetailsPo | null {
     const el = element.querySelector(`[data-tid=${ProjectSwapDetailsPo.tid}]`);
     return el && new ProjectSwapDetailsPo(el);
   }

@@ -1,18 +1,16 @@
-import { TooltipPo } from "./Tooltip.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class HashPo {
   static readonly tid = "hash-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== HashPo.tid) {
-      throw new Error(`${root} is not an Hash`);
-    }
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: Element): HashPo | null {
+  static under(element: PageObjectElement): HashPo | null {
     const el = element.querySelector(`[data-tid=${HashPo.tid}]`);
     return el && new HashPo(el);
   }

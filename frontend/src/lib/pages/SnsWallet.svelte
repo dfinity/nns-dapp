@@ -145,7 +145,7 @@
     <ReceiveButton
       type="sns-receive"
       account={$selectedAccountStore.account}
-      {reloadAccount}
+      reload={reloadAccount}
       testId="receive-sns"
     />
   </Footer>
