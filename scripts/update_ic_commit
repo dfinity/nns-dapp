@@ -32,24 +32,24 @@ source "$(clap.build)"
 
 : "Get the latest sns wasm and did files"
 {
-  : "Remove any existing did and wasm files from the build directory"
-  rm -f target/ic/*.{did,wasm}
-  : "Get or build the did and wasm files"
-  e2e-tests/scripts/nns-canister-build
-  : "Apparently there is a convention of putting did files here:"
-  : "It would be nice to have a general rule rather than listing did files individually"
-  : "and to have a way of making sure that these are in sync with the paths in dfx.json."
-  for canister in sns_governance sns_root sns_swap sns_wasm; do
-    cp "target/ic/${canister}.did" "declarations/${canister}/${canister}.did"
-  done
-  : "Files in unusual locations"
-  : "Maybe update the build command to copy to the standard pattern?"
-  : "Maybe also standardise canister names, such as nns-sns-wasm/sns_wasm?"
-  cp target/ic/ic-icrc1-ledger.did declarations/sns_ledger/sns_ledger.did
+  : "Get the did and wasm files"
+  IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
+  did_curl() {
+    local canister="$1"
+    local upstream_path="$2"
+    local local_path="declarations/${canister}/${canister}.did"
+    mkdir -p "$(dirname "$local_path")"
+    curl -sfL --retry 5 "$IC_URL$upstream_path" >"${local_path}"
+  }
+  did_curl sns_governance /rs/sns/governance/canister/governance.did
+  did_curl sns_root /rs/sns/root/canister/root.did
+  did_curl sns_swap /rs/sns/swap/canister/swap.did
+  did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
+  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/icrc1.did
 }
 
 : "Derive Rust types from candid interfaces"
-scripts/mk_nns_types.sh
+time scripts/mk_nns_types.sh
 
 : "All done"
 echo FIN
