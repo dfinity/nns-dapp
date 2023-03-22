@@ -68,11 +68,12 @@
 
   let destinationAddress: string | undefined;
   $: (async () => {
-    destinationAddress = nonNullish($projectDetailStore.summary?.swapCanisterId)
-      ? (
-          await getSwapAccount($projectDetailStore.summary?.swapCanisterId)
-        ).toHex()
-      : undefined;
+    destinationAddress =
+      $projectDetailStore.summary?.swapCanisterId !== undefined
+        ? (
+            await getSwapAccount($projectDetailStore.summary?.swapCanisterId)
+          ).toHex()
+        : undefined;
   })();
 
   let transactionInit: TransactionInit | undefined;
