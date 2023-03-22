@@ -102,11 +102,6 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   return nervousFunctionsList;
 };
 
-enum ImplementationsKeys {
-  queryProposal = "queryProposal",
-}
-const errorsMap: Map<ImplementationsKeys, Error> = new Map();
-
 ////////////////////////
 // Fake implementations:
 ////////////////////////
@@ -242,6 +237,9 @@ async function queryProposals({
   return proposals.get(mapKey({ identity, rootCanisterId })) || [];
 }
 
+/**
+ * Throws if no proposal is found for the given proposalId.
+ */
 async function queryProposal({
   identity,
   rootCanisterId,
@@ -252,10 +250,7 @@ async function queryProposal({
   identity: Identity;
   certified: boolean;
   proposalId: SnsProposalId;
-}): Promise<SnsProposalData | undefined> {
-  if (errorsMap.has(ImplementationsKeys.queryProposal)) {
-    throw errorsMap.get(ImplementationsKeys.queryProposal);
-  }
+}): Promise<SnsProposalData> {
   const proposal = proposals
     .get(mapKey({ identity, rootCanisterId }))
     .find(({ id }) => fromNullable(id).id === proposalId.id);
@@ -275,7 +270,6 @@ const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
-  errorsMap.clear();
 };
 
 const createNeuronId = ({
@@ -334,10 +328,6 @@ export const addProposalWith = ({
   };
   proposalsList.push(proposal);
   return proposal;
-};
-
-export const setQueryProposalError = (error: Error) => {
-  errorsMap.set(ImplementationsKeys.queryProposal, error);
 };
 
 export const addNervousSystemFunctionWith = ({

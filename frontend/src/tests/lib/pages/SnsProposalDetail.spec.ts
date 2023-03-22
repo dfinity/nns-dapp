@@ -10,16 +10,12 @@ import { page } from "$mocks/$app/stores";
 import * as snsGovernanceFake from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 jest.mock("$lib/api/sns-governance.api");
 
-const blockedApiPaths = ["$lib/api/sns-governance.api"];
-
 describe("SnsProposalDetail", () => {
-  blockAllCallsTo(blockedApiPaths);
   snsGovernanceFake.install();
 
   describe("not logged in", () => {
@@ -46,7 +42,8 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should redirect to the list of sns proposals if proposal is not found", async () => {
-      snsGovernanceFake.setQueryProposalError(new Error("Some error"));
+      // There is no proposal with id 2 in the fake implementation.
+      // Therefore, the page should redirect to the list of proposals.
       render(SnsProposalDetail, {
         props: {
           proposalIdText: "2",

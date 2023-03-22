@@ -9,6 +9,7 @@
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { Principal } from "@dfinity/principal";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -24,34 +25,32 @@
     }
   });
 
-  // By setting a local variable, we avoid calling the below text when the whole store is changes but the value is the same.
+  // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
   let rootCanisterIdText: undefined | string;
-
-  // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+  $: rootCanisterIdText = $snsOnlyProjectStore?.toText();
   $: {
-    if (
-      nonNullish(proposalIdText) &&
-      nonNullish($snsOnlyProjectStore) &&
-      // Call the block only if the root canister id has changed.
-      $snsOnlyProjectStore.toText() !== rootCanisterIdText
-    ) {
-      rootCanisterIdText = $snsOnlyProjectStore.toText();
+    // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+    if (nonNullish(proposalIdText) && nonNullish(rootCanisterIdText)) {
+      const rootCanisterId = Principal.fromText(rootCanisterIdText);
       // We need this to be used in the handleError callback.
       // Otherwise, TS doesn't believe that the value of `rootCanisterIdText` won't change.
-      const scopedId = rootCanisterIdText;
+      const rootCanisterIdAtTimeOfRequest = rootCanisterIdText;
       try {
         const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
         proposal = "loading";
         getSnsProposalById({
-          rootCanisterId: $snsOnlyProjectStore,
+          rootCanisterId,
           proposalId,
           setProposal: ({ proposal: proposalData }) => {
             proposal = proposalData;
           },
           handleError: () => {
-            goto(buildProposalsUrl({ universe: scopedId }), {
-              replaceState: true,
-            });
+            goto(
+              buildProposalsUrl({ universe: rootCanisterIdAtTimeOfRequest }),
+              {
+                replaceState: true,
+              }
+            );
           },
         });
       } catch (error) {
