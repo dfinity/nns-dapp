@@ -128,24 +128,11 @@
     $tokenSymbol: tokenLabel,
   });
 
-  const onClose = async () => {
-    if (bitcoin) {
-      await updateBalance();
-      return;
-    }
-
-    dispatcher("nnsClose");
-  };
-
   let address: string | undefined;
   $: address = bitcoin ? btcAddress : account?.identifier;
 </script>
 
-<Modal
-  testId="ckbtc-receive-modal"
-  on:nnsClose={onClose}
-  on:introend={onIntroEnd}
->
+<Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
   {#if displayBtcAddress}
