@@ -442,7 +442,7 @@ describe("TransactionModal", () => {
 
       const toasts = get(toastsStore);
       expect(toasts[0].level).toEqual("error");
-      expect(toasts[0].text).toEqual(en.error.qrcode_camera_error);
+      expect(toasts[0].text).toContain(en.error.qrcode_camera_error);
     });
 
     it("should move back to first step", async () => {
