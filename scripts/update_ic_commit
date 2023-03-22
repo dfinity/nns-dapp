@@ -33,7 +33,7 @@ source "$(clap.build)"
 : "Get the latest sns wasm and did files"
 {
   : "Get the did and wasm files"
-  IC_URL="https://github.com/dfinity/ic/blob/${DFX_IC_COMMIT}"
+  IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
   did_curl() {
 	  local canister="$1"
 	  local upstream_path="$2"
