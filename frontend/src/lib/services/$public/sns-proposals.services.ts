@@ -200,17 +200,15 @@ const getProposalFromStoreById = ({
 }): SnsProposalData | undefined => {
   const projectProposalsData: ProjectProposalData =
     get(snsProposalsStore)[rootCanisterId.toText()];
-  const proposal = projectProposalsData?.proposals.find(
+  if (
+    !projectProposalsData?.certified &&
+    certified !== projectProposalsData?.certified
+  ) {
+    return undefined;
+  }
+  return projectProposalsData?.proposals.find(
     ({ id }) => fromNullable(id)?.id === proposalId.id
   );
-  if (
-    proposal &&
-    (projectProposalsData.certified ||
-      certified === projectProposalsData.certified)
-  ) {
-    return proposal;
-  }
-  return undefined;
 };
 
 /**
