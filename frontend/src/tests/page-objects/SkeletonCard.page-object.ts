@@ -1,13 +1,13 @@
-export class SkeletonCardPo {
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+export class SkeletonCardPo extends BasePageObject {
   static readonly tid = "skeleton-card";
 
-  root: Element;
-
-  private constructor(root: Element) {
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static allUnder(element: Element): SkeletonCardPo[] {
+  static allUnder(element: PageObjectElement): SkeletonCardPo[] {
     return Array.from(
       element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
     ).map((el) => new SkeletonCardPo(el));

@@ -13,6 +13,7 @@ import {
   importSnsWasmCanister,
 } from "$lib/proxy/api.import.proxy";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -69,13 +70,12 @@ describe("sns-sale.api", () => {
   });
 
   it("should query open ticket", async () => {
+    const apiTicket = snsTicketMock({
+      rootCanisterId: principal(1),
+      owner: principal(2),
+    }).ticket;
     const snsSwapCanister = mock<SnsSwapCanister>();
-    snsSwapCanister.getOpenTicket.mockResolvedValue(
-      snsTicketMock({
-        rootCanisterId: rootCanisterIdMock,
-        owner: mockIdentity.getPrincipal(),
-      }).ticket
-    );
+    snsSwapCanister.getOpenTicket.mockResolvedValue(apiTicket);
     jest
       .spyOn(SnsSwapCanister, "create")
       .mockImplementation((): SnsSwapCanister => snsSwapCanister);
@@ -86,7 +86,7 @@ describe("sns-sale.api", () => {
     });
 
     expect(result).not.toBeNull();
-    expect(result).toEqual(ticket.ticket);
+    expect(result).toEqual(apiTicket);
   });
 
   it("should create new sale ticket", async () => {

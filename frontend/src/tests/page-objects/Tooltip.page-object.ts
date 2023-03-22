@@ -1,20 +1,20 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class TooltipPo {
+export class TooltipPo extends BasePageObject {
   static readonly tid = "tooltip-component";
 
-  root: Element;
-
-  private constructor(root: Element) {
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): TooltipPo | null {
+  static under(element: PageObjectElement): TooltipPo | null {
     const el = element.querySelector(`[data-tid=${TooltipPo.tid}]`);
     return el && new TooltipPo(el);
   }
 
-  getText(): string {
-    return assertNonNullish(this.root.querySelector(".tooltip")).textContent;
+  getText(): Promise<string> {
+    return assertNonNullish(this.root.querySelector(".tooltip")).getText();
   }
 }

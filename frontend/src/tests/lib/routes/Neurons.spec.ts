@@ -13,6 +13,7 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -70,7 +71,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
     expect(po.hasSnsNeuronsPo()).toBe(false);
     expect(po.hasNnsNeuronsPo()).toBe(true);
@@ -80,7 +81,7 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = testNnsNeuronId.toString();
-    expect(po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should render project page when a committed project is selected", async () => {
@@ -89,7 +90,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
     expect(po.hasNnsNeuronsPo()).toBe(false);
     expect(po.hasSnsNeuronsPo()).toBe(true);
@@ -99,7 +100,7 @@ describe("Neurons", () => {
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
-    expect(po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should not render neurons when an open project is selected", async () => {
@@ -108,7 +109,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
     expect(po.hasNnsNeuronsPo()).toBe(false);
     expect(po.hasSnsNeuronsPo()).toBe(false);

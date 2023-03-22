@@ -1,21 +1,22 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class AmountDisplayPo {
+export class AmountDisplayPo extends BasePageObject {
   static readonly tid = "token-value-label";
 
-  root: Element;
-
-  private constructor(root: Element) {
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): AmountDisplayPo | null {
+  static under(element: PageObjectElement): AmountDisplayPo | null {
     const el = element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`);
     return el && new AmountDisplayPo(el);
   }
 
-  getAmount(): string | null {
-    return assertNonNullish(this.root.querySelector(`[data-tid="token-value"]`))
-      .textContent;
+  getAmount(): Promise<string> {
+    return assertNonNullish(
+      this.root.querySelector(`[data-tid="token-value"]`)
+    ).getText();
   }
 }

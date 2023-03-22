@@ -1,15 +1,15 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NnsNeuronCardPo {
+export class NnsNeuronCardPo extends BasePageObject {
   static readonly tid = "nns-neuron-card-component";
 
-  root: Element;
-
-  private constructor(root: Element) {
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static allUnder(element: Element): NnsNeuronCardPo[] {
+  static allUnder(element: PageObjectElement): NnsNeuronCardPo[] {
     return Array.from(
       element.querySelectorAll(`[data-tid=${NnsNeuronCardPo.tid}]`)
     ).map((el) => new NnsNeuronCardPo(el));
@@ -19,7 +19,7 @@ export class NnsNeuronCardPo {
     return NnsNeuronCardTitlePo.under(this.root);
   }
 
-  getNeuronId(): string {
+  getNeuronId(): Promise<string> {
     return this.getCardTitlePo().getNeuronId();
   }
 }
