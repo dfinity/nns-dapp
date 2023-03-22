@@ -19,7 +19,7 @@
 </script>
 
 <div class="content">
-  <article class="qrcode">
+  <article class="qrcode" class:rendered={qrCodeRendered}>
     {#if renderQRCode && addressSelected}
       <QRCode
         value={address ?? ""}
@@ -85,7 +85,10 @@
 
     box-sizing: border-box;
 
-    --qrcode-background-color: white;
+    &.rendered {
+      --qrcode-background-color: white;
+    }
+
     background: var(--qrcode-background-color);
 
     width: 100%;
