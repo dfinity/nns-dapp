@@ -1,15 +1,16 @@
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronDetailPo {
   static readonly tid = "sns-neuron-detail-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  private constructor(root: Element) {
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: Element): SnsNeuronDetailPo | null {
+  static under(element: PageObjectElement): SnsNeuronDetailPo | null {
     const el = element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`);
     return el && new SnsNeuronDetailPo(el);
   }

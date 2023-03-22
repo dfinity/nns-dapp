@@ -1,7 +1,8 @@
+import type { PageObjectElement } from "$tests/types/page-object.types";
 export class ButtonPo {
-  root: Element;
+  root: PageObjectElement;
 
-  private constructor(root: Element) {
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
@@ -9,7 +10,7 @@ export class ButtonPo {
     element,
     testId,
   }: {
-    element: Element;
+    element: PageObjectElement;
     testId: string;
   }): ButtonPo | null {
     const el = element.querySelector(`button[data-tid=${testId}]`);
