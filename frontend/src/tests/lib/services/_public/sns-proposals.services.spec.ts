@@ -35,7 +35,7 @@ import { get } from "svelte/store";
 
 describe("sns-proposals services", () => {
   beforeEach(() => {
-    snsFiltesStore.reset();
+    snsFiltersStore.reset();
     snsProposalsStore.reset();
     toastsStore.reset();
     jest.clearAllMocks();
