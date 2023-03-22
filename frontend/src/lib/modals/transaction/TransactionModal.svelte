@@ -21,7 +21,7 @@
   let destinationAddress: string | undefined =
     transactionInit.destinationAddress;
 
-  // User inputs exposed for bind in consumers and initialized with initial parameters
+  // User inputs exposed for bind in consumers and initialized with initial parameters when component is mounted.
   export let amount: number | undefined = transactionInit.amount;
 
   // User inputs exposed for bind in consumers
@@ -38,6 +38,15 @@
   export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
+  // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
+  let canSelectDestination = isNullish(transactionInit.destinationAddress);
+  let canSelectSource = isNullish(transactionInit.sourceAccount);
+  let mustSelectNetwork = transactionInit.mustSelectNetwork ?? false;
+
+  let selectedDestinationAddress: string | undefined = destinationAddress;
+  let showManualAddress = true;
+
+  // Wizard modal steps and navigation
   const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";
   const STEP_QRCODE = "QRCode";
@@ -60,14 +69,6 @@
       title: "",
     },
   ];
-
-  // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
-  let canSelectDestination = isNullish(transactionInit.destinationAddress);
-  let canSelectSource = isNullish(transactionInit.sourceAccount);
-  let mustSelectNetwork = transactionInit.mustSelectNetwork ?? false;
-
-  let selectedDestinationAddress: string | undefined = destinationAddress;
-  let showManualAddress = true;
 
   let modal: WizardModal;
 
