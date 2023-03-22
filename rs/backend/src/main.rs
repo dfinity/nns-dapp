@@ -165,12 +165,8 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<String, String> {
     proposals::get_proposal_payload(proposal_id).await
 }
 
-#[export_name = "canister_update add_pending_notify_swap"]
-pub fn add_pending_notify_swap() {
-    over(candid_one, add_pending_notify_swap_impl);
-}
-
-fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
+#[update]
+pub fn add_pending_notify_swap(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
     let caller = dfn_core::api::caller();
     STATE.with(|s| {
         if s.accounts_store
