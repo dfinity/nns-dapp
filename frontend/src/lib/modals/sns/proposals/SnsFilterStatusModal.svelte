@@ -1,7 +1,7 @@
 <script lang="ts">
   import FilterModal from "$lib/modals/common/FilterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+  import { snsFiltersStore } from "$lib/stores/sns-filters.store";
   import type { Filter } from "$lib/types/filters";
   import type { Principal } from "@dfinity/principal";
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
@@ -23,7 +23,7 @@
   const dispatch = createEventDispatcher();
   let filter: () => void;
   $: filter = () => {
-    snsFiltesStore.setCheckDecisionStatus({
+    snsFiltersStore.setCheckDecisionStatus({
       checkedDecisionStatus: selectedFilters,
       rootCanisterId,
     });

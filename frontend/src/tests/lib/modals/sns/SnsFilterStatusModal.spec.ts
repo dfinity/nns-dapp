@@ -3,7 +3,7 @@
  */
 
 import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
-import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -14,7 +14,7 @@ import { get } from "svelte/store";
 
 describe("SnsFilterStatusModal", () => {
   afterEach(() => {
-    snsFiltesStore.reset();
+    snsFiltersStore.reset();
   });
   const filters: Filter<SnsProposalDecisionStatus>[] = [
     {
@@ -82,7 +82,7 @@ describe("SnsFilterStatusModal", () => {
       ...filter,
       checked: false,
     }));
-    snsFiltesStore.setDecisionStatus({
+    snsFiltersStore.setDecisionStatus({
       rootCanisterId: mockPrincipal,
       decisionStatus: uncheckedFilters,
     });
@@ -105,7 +105,7 @@ describe("SnsFilterStatusModal", () => {
     await clickByTestId(queryByTestId, "apply-filters");
 
     const statuses =
-      get(snsFiltesStore)[mockPrincipal.toText()]?.decisionStatus;
+      get(snsFiltersStore)[mockPrincipal.toText()]?.decisionStatus;
 
     expect(statuses.filter(({ checked }) => checked).length).toEqual(2);
   });

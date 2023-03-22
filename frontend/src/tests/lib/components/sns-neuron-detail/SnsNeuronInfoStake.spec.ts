@@ -13,7 +13,8 @@ import {
   mockSnsNeuronWithPermissions,
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-obejct";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -46,7 +47,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.hasDisburseButton()).toBe(true);
   });
@@ -58,7 +59,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.isContentLoaded()).toBe(true);
     expect(po.hasDisburseButton()).toBe(false);
@@ -80,7 +81,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.hasDissolveButton()).toBe(true);
   });
@@ -92,7 +93,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.isContentLoaded()).toBe(true);
     expect(po.hasDissolveButton()).toBe(false);
@@ -107,7 +108,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -119,7 +120,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.isContentLoaded()).toBe(true);
     expect(po.hasIncreaseDissolveDelayButton()).toBe(false);
@@ -132,7 +133,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: jest.fn(),
     });
 
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.hasIncreaseStakeButton()).toBe(true);
   });
@@ -147,7 +148,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: jest.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(container);
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(po.isContentLoaded()).toBe(true);
     expect(po.hasIncreaseStakeButton()).toBe(false);

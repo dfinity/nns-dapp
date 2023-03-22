@@ -1,5 +1,5 @@
 import {
-  snsFiltesStore,
+  snsFiltersStore,
   snsSelectedFiltersStore,
 } from "$lib/stores/sns-filters.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -10,7 +10,7 @@ import { get } from "svelte/store";
 describe("sns-filters store", () => {
   describe("snsFiltersStore", () => {
     beforeEach(() => {
-      snsFiltesStore.reset();
+      snsFiltersStore.reset();
     });
 
     it("should setDecisionStatus in different projects", () => {
@@ -30,16 +30,16 @@ describe("sns-filters store", () => {
           checked: true,
         },
       ];
-      snsFiltesStore.setDecisionStatus({ rootCanisterId, decisionStatus });
+      snsFiltersStore.setDecisionStatus({ rootCanisterId, decisionStatus });
 
-      const projectStore = get(snsFiltesStore)[rootCanisterId.toText()];
+      const projectStore = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(projectStore.decisionStatus).toEqual(decisionStatus);
 
-      snsFiltesStore.setDecisionStatus({
+      snsFiltersStore.setDecisionStatus({
         rootCanisterId: rootCanisterId2,
         decisionStatus,
       });
-      const projectStore2 = get(snsFiltesStore)[rootCanisterId2.toText()];
+      const projectStore2 = get(snsFiltersStore)[rootCanisterId2.toText()];
       expect(projectStore2.decisionStatus).toEqual(decisionStatus);
     });
 
@@ -62,57 +62,57 @@ describe("sns-filters store", () => {
       ];
 
       // Project rootCanisterId
-      snsFiltesStore.setDecisionStatus({ rootCanisterId, decisionStatus });
-      const projectStore = get(snsFiltesStore)[rootCanisterId.toText()];
+      snsFiltersStore.setDecisionStatus({ rootCanisterId, decisionStatus });
+      const projectStore = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(
         projectStore.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(0);
 
       const statuses = decisionStatus.map(({ value }) => value);
-      snsFiltesStore.setCheckDecisionStatus({
+      snsFiltersStore.setCheckDecisionStatus({
         rootCanisterId,
         checkedDecisionStatus: statuses,
       });
-      const projectStore2 = get(snsFiltesStore)[rootCanisterId.toText()];
+      const projectStore2 = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(
         projectStore2.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(statuses.length);
 
       // Project rootCanisterId2
-      snsFiltesStore.setDecisionStatus({
+      snsFiltersStore.setDecisionStatus({
         rootCanisterId: rootCanisterId2,
         decisionStatus,
       });
-      const projectStore3 = get(snsFiltesStore)[rootCanisterId2.toText()];
+      const projectStore3 = get(snsFiltersStore)[rootCanisterId2.toText()];
       expect(
         projectStore3.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(0);
 
-      snsFiltesStore.setCheckDecisionStatus({
+      snsFiltersStore.setCheckDecisionStatus({
         rootCanisterId: rootCanisterId2,
         checkedDecisionStatus: [
           SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         ],
       });
-      const projectStore4 = get(snsFiltesStore)[rootCanisterId2.toText()];
+      const projectStore4 = get(snsFiltersStore)[rootCanisterId2.toText()];
       expect(
         projectStore4.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(1);
 
       // Project 1 has not changed
-      const projectStore5 = get(snsFiltesStore)[rootCanisterId.toText()];
+      const projectStore5 = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(
         projectStore5.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(statuses.length);
 
       // Uncheck from Project 2
-      snsFiltesStore.setCheckDecisionStatus({
+      snsFiltersStore.setCheckDecisionStatus({
         rootCanisterId,
         checkedDecisionStatus: [
           SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         ],
       });
-      const projectStore6 = get(snsFiltesStore)[rootCanisterId.toText()];
+      const projectStore6 = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(
         projectStore6.decisionStatus.filter(({ checked }) => checked).length
       ).toEqual(1);
@@ -121,7 +121,7 @@ describe("sns-filters store", () => {
 
   describe("snsSelectedFiltersStore", () => {
     beforeEach(() => {
-      snsFiltesStore.reset();
+      snsFiltersStore.reset();
     });
     it("should return the selected decision status filters", () => {
       const rootCanisterId = mockPrincipal;
@@ -141,13 +141,13 @@ describe("sns-filters store", () => {
       ];
 
       // Project rootCanisterId
-      snsFiltesStore.setDecisionStatus({ rootCanisterId, decisionStatus });
+      snsFiltersStore.setDecisionStatus({ rootCanisterId, decisionStatus });
 
       expect(
         get(snsSelectedFiltersStore)[rootCanisterId.toText()]?.decisionStatus
       ).toHaveLength(0);
 
-      snsFiltesStore.setCheckDecisionStatus({
+      snsFiltersStore.setCheckDecisionStatus({
         rootCanisterId,
         checkedDecisionStatus: [
           SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,

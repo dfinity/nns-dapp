@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
@@ -22,7 +23,6 @@ clap.define short=x long=ic_dir desc="Directory containing the ic source code" v
 clap.define short=y long=nd_dir desc="Directory containing the nns-dapp source code" variable=ND_REPO_DIR default="$HOME/dfn/nns-dapp"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
 
 : Standard dfx sns demo, with standard canisters, not local nns-dapp, as compiling the local dapp takes time and the canister is not needed.
 dfx-sns-demo --network "$DFX_NETWORK" --ic_commit "$DFX_IC_COMMIT" --ic_dir "$IC_REPO_DIR" --nd_dir "$ND_REPO_DIR"

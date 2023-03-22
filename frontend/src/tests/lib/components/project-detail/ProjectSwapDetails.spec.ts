@@ -13,6 +13,7 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
 import { TokenAmount } from "@dfinity/nns";
 
@@ -103,7 +104,7 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(container);
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
     expect(po.getTotalSupply()).toMatch(formatToken({ value: totalSupply }));
   });

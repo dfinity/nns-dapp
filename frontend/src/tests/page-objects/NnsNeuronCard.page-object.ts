@@ -1,18 +1,16 @@
-import { NnsNeuronCardTitlePo } from "./NnsNeuronCardTitle.page-object";
+import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsNeuronCardPo {
   static readonly tid = "nns-neuron-card-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NnsNeuronCardPo.tid) {
-      throw new Error(`${root} is not an NnsNeuronCard`);
-    }
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static allUnder(element: Element): NnsNeuronCardPo[] {
+  static allUnder(element: PageObjectElement): NnsNeuronCardPo[] {
     return Array.from(
       element.querySelectorAll(`[data-tid=${NnsNeuronCardPo.tid}]`)
     ).map((el) => new NnsNeuronCardPo(el));

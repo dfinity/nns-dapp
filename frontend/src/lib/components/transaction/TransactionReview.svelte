@@ -6,7 +6,7 @@
   import type { Account } from "$lib/types/account";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";

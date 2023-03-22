@@ -1,16 +1,14 @@
+import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsNeuronCardTitlePo {
   static readonly tid = "neuron-card-title";
 
-  root: Element;
+  root: PageObjectElement;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NnsNeuronCardTitlePo.tid) {
-      throw new Error(`${root} is not an NnsNeuronCardTitle`);
-    }
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: Element): NnsNeuronCardTitlePo | null {
+  static under(element: PageObjectElement): NnsNeuronCardTitlePo | null {
     const el = element.querySelector(`[data-tid=${NnsNeuronCardTitlePo.tid}]`);
     return el && new NnsNeuronCardTitlePo(el);
   }

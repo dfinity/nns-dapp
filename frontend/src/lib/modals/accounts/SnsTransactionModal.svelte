@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

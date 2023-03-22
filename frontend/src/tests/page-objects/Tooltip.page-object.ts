@@ -1,18 +1,16 @@
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class TooltipPo {
   static readonly tid = "tooltip-component";
 
-  root: Element;
+  root: PageObjectElement;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== TooltipPo.tid) {
-      throw new Error(`${root} is not an Tooltip`);
-    }
+  private constructor(root: PageObjectElement) {
     this.root = root;
   }
 
-  static under(element: Element): TooltipPo | null {
+  static under(element: PageObjectElement): TooltipPo | null {
     const el = element.querySelector(`[data-tid=${TooltipPo.tid}]`);
     return el && new TooltipPo(el);
   }
