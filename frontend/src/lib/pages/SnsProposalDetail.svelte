@@ -24,42 +24,38 @@
     }
   });
 
+  // By setting a local variable, we avoid calling the below text when the whole store is changes but the value is the same.
+  let rootCanisterIdText: undefined | string;
+
   // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
   $: {
-    if (nonNullish(proposalIdText) && nonNullish($snsOnlyProjectStore)) {
+    if (
+      nonNullish(proposalIdText) &&
+      nonNullish($snsOnlyProjectStore) &&
+      // Call the block only if the root canister id has changed.
+      $snsOnlyProjectStore.toText() !== rootCanisterIdText
+    ) {
+      rootCanisterIdText = $snsOnlyProjectStore.toText();
+      // We need this to be used in the handleError callback.
+      // Otherwise, TS doesn't believe that the value of `rootCanisterIdText` won't change.
+      const scopedId = rootCanisterIdText;
       try {
         const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
         proposal = "loading";
         getSnsProposalById({
           rootCanisterId: $snsOnlyProjectStore,
           proposalId,
-  // By setting a local variable, we avoid calling the below text when the whole store is changes.
-  let rootCanisterId = $snsOnlyProjectStore;
-
-  // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
-  $: {
-    if (nonNullish(proposalIdText) && nonNullish(rootCanisterId)) {
-      // We can't be sure that `snsOnlyProjectStore` is the same when `handleError` is called.
-      const rootCanisterIdText = rootCanisterId.toText();
-      try {
-        const proposalId = BigInt(proposalIdText);
-        proposal = "loading";
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId: { id: proposalId },
           setProposal: ({ proposal: proposalData }) => {
             proposal = proposalData;
           },
           handleError: () => {
-            // TODO: redirect
-            goto(buildProposalsUrl({ universe: rootCanisterIdText }), {
+            goto(buildProposalsUrl({ universe: scopedId }), {
               replaceState: true,
             });
           },
         });
       } catch (error) {
         proposal = "error";
-        // TODO: Add a toast for this error and redirect
         toastsError({
           labelKey: "error.wrong_proposal_id",
           substitutions: {
