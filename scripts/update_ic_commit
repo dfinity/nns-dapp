@@ -49,7 +49,7 @@ source "$(clap.build)"
 }
 
 : "Derive Rust types from candid interfaces"
-time chronic scripts/mk_nns_types.sh
+time scripts/mk_nns_types.sh
 
 : "All done"
 echo FIN
