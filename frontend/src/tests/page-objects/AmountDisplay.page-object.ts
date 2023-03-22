@@ -1,14 +1,11 @@
-import { assertNonNullish } from "../utils/utils.test-utils";
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class AmountDisplayPo {
   static readonly tid = "token-value-label";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== AmountDisplayPo.tid) {
-      throw new Error(`${root} is not an Tooltip`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

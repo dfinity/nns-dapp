@@ -12,7 +12,7 @@
   import type { Account } from "$lib/types/account";
 
   export let account: Account | undefined = undefined;
-  export let reloadAccount: (() => Promise<void>) | undefined = undefined;
+  export let reload: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
   export let disableButton: boolean;
   export let canisters: CkBTCAdditionalCanisters | undefined;
@@ -37,7 +37,7 @@
             displayBtcAddress: false,
             btcAddress: "",
             account,
-            reloadAccount,
+            reload,
             universeId: $selectedCkBTCUniverseIdStore,
             canisters,
             canSelectAccount,
@@ -63,7 +63,7 @@
             displayBtcAddress: true,
             btcAddress,
             account,
-            reloadAccount,
+            reload,
             universeId: $selectedCkBTCUniverseIdStore,
             canisters,
             canSelectAccount,

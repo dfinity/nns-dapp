@@ -13,7 +13,7 @@ import {
   mockSnsNeuronWithPermissions,
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-obejct";
+import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,

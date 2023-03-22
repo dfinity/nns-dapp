@@ -1,16 +1,13 @@
+import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
+import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { nonNullish } from "@dfinity/utils";
-import { NnsNeuronsPo } from "./NnsNeurons.page-object";
-import { SnsNeuronsPo } from "./SnsNeurons.page-object";
 
 export class NeuronsPo {
   static readonly tid = "neurons-component";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NeuronsPo.tid) {
-      throw new Error(`${root} is not a Neurons`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

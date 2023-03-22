@@ -1,14 +1,11 @@
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 
 export class ProjectSwapDetailsPo {
   static readonly tid = "project-swap-details-component";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== ProjectSwapDetailsPo.tid) {
-      throw new Error(`${root} is not a ProjectSwapDetailsPo`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

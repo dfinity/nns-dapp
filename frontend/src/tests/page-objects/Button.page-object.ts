@@ -1,10 +1,7 @@
 export class ButtonPo {
   root: Element;
 
-  constructor(root: Element) {
-    if (root.tagName !== "BUTTON") {
-      throw new Error(`${root} is not a button`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

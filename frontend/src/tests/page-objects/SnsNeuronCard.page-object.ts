@@ -1,14 +1,11 @@
-import { SnsNeuronCardTitlePo } from "./SnsNeuronCardTitle.page-object";
+import { SnsNeuronCardTitlePo } from "$tests/page-objects/SnsNeuronCardTitle.page-object";
 
 export class SnsNeuronCardPo {
   static readonly tid = "sns-neuron-card-component";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronCardPo.tid) {
-      throw new Error(`${root} is not an SnsNeuronCard`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

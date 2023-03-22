@@ -5,10 +5,7 @@ export class TooltipPo {
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== TooltipPo.tid) {
-      throw new Error(`${root} is not an Tooltip`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

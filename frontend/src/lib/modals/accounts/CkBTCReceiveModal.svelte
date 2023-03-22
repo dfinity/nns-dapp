@@ -27,14 +27,14 @@
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
   let btcAddress: string;
-  let reloadAccount: (() => Promise<void>) | undefined;
+  let reload: (() => Promise<void>) | undefined;
   let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 
   $: ({
     account,
     btcAddress,
-    reloadAccount,
+    reload,
     canisters,
     universeId,
     displayBtcAddress,
@@ -44,7 +44,7 @@
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
   let selectedSegmentId: symbol;
-  $: selectedSegmentId = displayBtcAddress ? bitcoinSegmentId : ckBTCSegmentId;
+  $: selectedSegmentId = ckBTCSegmentId;
 
   let modalRendered = false;
   let segment: Segment;
@@ -89,7 +89,7 @@
     try {
       await updateBalanceService(canisters.minterCanisterId);
 
-      await reloadAccount?.();
+      await reload?.();
 
       toastsSuccess({
         labelKey: "ckbtc.ckbtc_balance_updated",
@@ -111,7 +111,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount?.();
+    await reload?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");
@@ -151,10 +151,10 @@
   {#if displayBtcAddress}
     <div class="receive">
       <Segment bind:selectedSegmentId bind:this={segment}>
+        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
         <SegmentButton segmentId={bitcoinSegmentId}
           >{$i18n.ckbtc.bitcoin}</SegmentButton
         >
-        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
       </Segment>
     </div>
   {/if}

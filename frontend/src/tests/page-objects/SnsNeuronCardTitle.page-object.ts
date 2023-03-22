@@ -1,14 +1,11 @@
-import { HashPo } from "./Hash.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
 
 export class SnsNeuronCardTitlePo {
   static readonly tid = "sns-neuron-card-title";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronCardTitlePo.tid) {
-      throw new Error(`${root} is not an SnsNeuronCardTitle`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

@@ -1,14 +1,11 @@
-import { SkeletonCardPo } from "./SkeletonCard.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 
 export class NnsNeuronDetailPo {
   static readonly tid = "nns-neuron-detail-component";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NnsNeuronDetailPo.tid) {
-      throw new Error(`${root} is not an NnsNeuronDetail`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 

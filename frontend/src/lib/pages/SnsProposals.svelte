@@ -18,7 +18,7 @@
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
-  import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+  import { snsFiltersStore } from "$lib/stores/sns-filters.store";
   import { nonNullish } from "@dfinity/utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
@@ -45,7 +45,7 @@
     }
   );
 
-  const unsubscribeFiltersStore: Unsubscriber = snsFiltesStore.subscribe(
+  const unsubscribeFiltersStore: Unsubscriber = snsFiltersStore.subscribe(
     async (filters) => {
       // First call will have `filters` as `undefined`.
       // Once we have the initial filters, we load the proposals.

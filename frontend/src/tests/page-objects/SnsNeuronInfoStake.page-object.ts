@@ -1,16 +1,13 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { nonNullish } from "@dfinity/utils";
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
-import { ButtonPo } from "./Button.page-object";
 
 export class SnsNeuronInfoStakePo {
   static readonly tid = "sns-neuron-info-stake";
 
   root: Element;
 
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronInfoStakePo.tid) {
-      throw new Error(`${root} is not an SnsNeuronInfoStakePo`);
-    }
+  private constructor(root: Element) {
     this.root = root;
   }
 
