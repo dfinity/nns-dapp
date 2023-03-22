@@ -10,12 +10,16 @@
   let referrerPath: AppPath | undefined = undefined;
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 
-  const back = (): Promise<void> =>
-    goto(
-      nonNullish(referrerPath) && referrerPath !== AppPath.Settings
-        ? referrerPath
-        : AppPath.Accounts
-    );
+  const back = async () => {
+    if (nonNullish(referrerPath)) {
+      // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back here
+      history.back();
+      return;
+    }
+
+    // We landed on the "Settings" page from somewhere else than from the dapp
+    await goto(AppPath.Accounts);
+  }
 </script>
 
 <Layout>
