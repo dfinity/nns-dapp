@@ -8,8 +8,7 @@ use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
-use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{api::trap_with, stable};
 use ic_cdk_macros::{heartbeat, init, post_upgrade, pre_upgrade, query, update};
 use icp_ledger::AccountIdentifier;
 
