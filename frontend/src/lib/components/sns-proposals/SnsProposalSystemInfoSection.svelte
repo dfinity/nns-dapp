@@ -9,7 +9,6 @@
     SnsNervousSystemFunction,
     SnsNeuronId,
     SnsProposalData,
-    SnsProposalId,
   } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
   import ProposalSystemInfoEntry from "../proposal-detail/ProposalSystemInfoEntry.svelte";
@@ -20,19 +19,16 @@
 
   $: loadSnsNervousSystemFunctions(rootCanisterId);
 
-  let id: SnsProposalId | undefined;
   let topic: string | undefined;
   let topicDescription: string | undefined;
   let statusString: string;
   let statusDescription: string | undefined;
   let rewardStatusString: string;
   let rewardStatusDescription: string | undefined;
-
   let proposal_creation_timestamp_seconds: bigint;
   let decided_timestamp_seconds: bigint;
   let executed_timestamp_seconds: bigint;
   let failed_timestamp_seconds: bigint;
-
   let proposer: SnsNeuronId | undefined;
 
   let nsFunctions: SnsNervousSystemFunction[];
@@ -41,17 +37,16 @@
 
   $: ({
     topic,
-    statusString,
-    rewardStatusString,
     topicDescription,
+    statusString,
     statusDescription,
+    rewardStatusString,
     rewardStatusDescription,
     proposal_creation_timestamp_seconds,
     decided_timestamp_seconds,
     executed_timestamp_seconds,
     failed_timestamp_seconds,
     proposer,
-    id,
   } = mapProposalInfo({ proposalData: proposal, nsFunctions }));
 </script>
 
@@ -70,9 +65,7 @@
         value={topic}
         description={topicDescription}
       />
-    {/if}
 
-    {#if nonNullish(topic)}
       <ProposalSystemInfoEntry
         labelKey="topic_prefix"
         testId="proposal-system-info-topic"

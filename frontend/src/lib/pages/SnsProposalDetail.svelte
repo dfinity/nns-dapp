@@ -83,6 +83,9 @@
           replaceState: true,
         });
       }
+    } else {
+      // Reset proposal to the initial state.
+      proposal = "loading";
     }
   }
 </script>

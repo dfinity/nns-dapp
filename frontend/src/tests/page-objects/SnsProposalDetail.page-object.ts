@@ -24,11 +24,15 @@ export class SnsProposalDetailPo extends BasePageObject {
     );
   }
 
-  getSystemInfoSection(): SnsProposalSystemInfoSectionPo {
+  getSystemInfoSectionPo(): SnsProposalSystemInfoSectionPo {
     return SnsProposalSystemInfoSectionPo.under(this.root);
   }
 
   hasSystemInfoSection(): Promise<boolean> {
-    return this.getSystemInfoSection().isPresent();
+    return this.getSystemInfoSectionPo().isPresent();
+  }
+
+  getSystemInfoSectionTitle(): Promise<string> {
+    return this.getSystemInfoSectionPo().getTitleText();
   }
 }

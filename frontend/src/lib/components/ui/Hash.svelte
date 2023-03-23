@@ -16,7 +16,7 @@
 
 <span data-tid="hash-component">
   <Tooltip {id} {text}>
-    <svelte:element this={tagName} data-tid={testId} class={className ?? ""}>
+    <svelte:element this={tagName} data-tid={testId} class={className}>
       {shortenText}</svelte:element
     >
   </Tooltip>

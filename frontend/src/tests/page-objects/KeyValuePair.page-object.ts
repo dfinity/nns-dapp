@@ -12,13 +12,11 @@ export class KeyValuePairPo extends BasePageObject {
   }: {
     element: PageObjectElement;
     testId: string;
-  }): KeyValuePairPo | null {
-    const el = element.querySelector(`[data-tid=${testId}]`);
-    return el && new KeyValuePairPo(el);
+  }): KeyValuePairPo {
+    return new KeyValuePairPo(element.querySelector(`[data-tid=${testId}]`));
   }
 
   async getValueText(): Promise<string> {
-    const valueElement = await this.root.querySelector("dd");
-    return valueElement.getText();
+    return this.root.querySelector("dd").getText();
   }
 }

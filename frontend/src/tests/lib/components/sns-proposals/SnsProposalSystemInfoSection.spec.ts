@@ -8,7 +8,7 @@ import { secondsToDateTime } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
-import * as snsGovernanceApiFake from "$tests/fakes/sns-governance-api.fake";
+import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -22,7 +22,7 @@ import { get } from "svelte/store";
 jest.mock("$lib/api/sns-governance.api");
 
 describe("ProposalSystemInfoSection", () => {
-  snsGovernanceApiFake.install();
+  fakeSnsGovernanceApi.install();
 
   const rootCanisterId = mockCanisterId;
   const nervousFunction = nervousSystemFunctionMock;
@@ -30,7 +30,7 @@ describe("ProposalSystemInfoSection", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     snsFunctionsStore.reset();
-    snsGovernanceApiFake.addNervousSystemFunctionWith({
+    fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,
       ...nervousFunction,
     });
@@ -58,11 +58,11 @@ describe("ProposalSystemInfoSection", () => {
     };
 
     it("should load the nervous functions in the store", async () => {
-      snsGovernanceApiFake.pause();
+      fakeSnsGovernanceApi.pause();
       render(ProposalSystemInfoSection, { props });
 
       expect(get(snsFunctionsStore)[rootCanisterId.toText()]).toBeUndefined();
-      snsGovernanceApiFake.resume();
+      fakeSnsGovernanceApi.resume();
 
       await waitFor(() =>
         expect(
