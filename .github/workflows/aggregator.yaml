@@ -42,8 +42,10 @@ jobs:
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Install tools
+        run: |
+                dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+                dfx-software-idl2json-install
       - name: Get test environment
         run: |
           set -x
