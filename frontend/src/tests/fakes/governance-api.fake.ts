@@ -21,6 +21,11 @@ const neurons: Map<string, NeuronInfo[]> = new Map();
 
 const mapKey = (identity: Identity) => identity.getPrincipal().toText();
 
+// When the fake is paused, all calls to the fake will be queued until the fake
+// is resumed.
+let isPaused = false;
+const pendingCalls: (() => void)[] = [];
+
 const getNeurons = (identity: Identity) => {
   const key = mapKey(identity);
   let neuronList = neurons.get(key);
@@ -31,22 +36,46 @@ const getNeurons = (identity: Identity) => {
   return neuronList;
 };
 
+/**
+ * Calls the passed function and returns its result.
+ * If the fake is paused, the function will be queued and an unresolved promise
+ * is returned which will resolve when the fake is resumed and the function
+ * called.
+ */
+const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
+  if (!isPaused) {
+    return fn();
+  }
+  let resolve: (value: Promise<T>) => void;
+  const responsePromise = new Promise<T>((res) => {
+    resolve = res;
+  });
+  pendingCalls.push(() => {
+    resolve(fn());
+  });
+  return responsePromise;
+};
+
 ////////////////////////
 // Fake implementations:
 ////////////////////////
 
-async function queryNeurons({
+function queryNeurons({
   identity,
   certified: _,
 }: ApiQueryParams): Promise<NeuronInfo[]> {
-  return getNeurons(identity);
+  return wrapMaybePaused(async () => {
+    return getNeurons(identity);
+  });
 }
 
-async function queryKnownNeurons({
+function queryKnownNeurons({
   identity: _,
   certified: __,
 }: ApiQueryParams): Promise<KnownNeuron[]> {
-  return [];
+  return wrapMaybePaused(async () => {
+    return [];
+  });
 }
 
 /////////////////////////////////
@@ -55,6 +84,26 @@ async function queryKnownNeurons({
 
 const reset = () => {
   neurons.clear();
+  pendingCalls.length = 0;
+  isPaused = false;
+};
+
+export const pause = () => {
+  if (isPaused) {
+    throw new Error("The fake was already paused");
+  }
+  isPaused = true;
+};
+
+export const resume = () => {
+  if (!isPaused) {
+    throw new Error("The fake wasn't paused.");
+  }
+  for (const call of pendingCalls) {
+    call();
+  }
+  pendingCalls.length = 0;
+  isPaused = false;
 };
 
 export const addNeuronWith = ({

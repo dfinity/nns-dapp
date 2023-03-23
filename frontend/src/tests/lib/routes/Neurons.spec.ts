@@ -65,6 +65,7 @@ describe("Neurons", () => {
   });
 
   it("should render NnsNeurons by default", async () => {
+    fakeGovernanceApi.pause();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neurons,
@@ -85,6 +86,7 @@ describe("Neurons", () => {
   });
 
   it("should render project page when a committed project is selected", async () => {
+    fakeSnsGovernanceApi.pause();
     page.mock({
       data: { universe: testCommittedSnsCanisterId.toText() },
     });

@@ -334,6 +334,7 @@ export const resume = () => {
     call();
   }
   pendingCalls.length = 0;
+  isPaused = false;
 };
 
 const createNeuronId = ({
