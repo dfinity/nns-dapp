@@ -10,11 +10,22 @@
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
+  import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
+  import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
+  import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
+  import SnsProposalDataSection from "$lib/components/sns-proposals/SnsProposalDataSection.svelte";
+  import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
   // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | "loading" | "error" = "loading";
+
+  const isLoadedProposal = (
+    proposal: SnsProposalData | "loading" | "error"
+  ): proposal is SnsProposalData =>
+    proposal !== "loading" && proposal !== "error";
 
   onMount(() => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
@@ -70,5 +81,40 @@
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  <h1>SnsProposalDetail: {proposalIdText}</h1>
+  {#if isLoadedProposal(proposal)}
+    <div class="content-a">
+      <SnsProposalSystemInfoSection {proposal} />
+    </div>
+    <div class="content-b expand-content-b">
+      <SnsProposalVotingSection {proposal} />
+    </div>
+    <div class="content-c proposal-data-section">
+      <SnsProposalSummarySection {proposal} />
+      <SnsProposalDataSection {proposal} />
+      <SnsProposalPayloadSection {proposal} />
+    </div>
+  {:else}
+    <div class="content-a">
+      <div class="skeleton">
+        <SkeletonDetails />
+      </div>
+    </div>
+  {/if}
 </div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .proposal-data-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+  }
+
+  @include media.min-width(medium) {
+    // If this would be use elsewhere, we can extract some utility to gix-components
+    .content-b.expand-content-b {
+      grid-row-end: content-c;
+    }
+  }
+</style>
