@@ -24,7 +24,7 @@ describe("SummaryLogo", () => {
     it("should render alt logo", () => {
       const { getByTestId } = render(SummaryLogo);
 
-      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.auth.ic_logo);
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(en.auth.ic_logo);
     });
   });
 
@@ -65,7 +65,7 @@ describe("SummaryLogo", () => {
     it("should render ic logo", async () => {
       const { getByTestId } = render(SummaryLogo);
 
-      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.logo);
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(en.ckbtc.logo);
     });
   });
 });

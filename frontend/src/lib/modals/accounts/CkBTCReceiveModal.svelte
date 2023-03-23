@@ -63,9 +63,16 @@
   let logo: string;
   $: logo = bitcoin ? BITCOIN_LOGO : ckTESTBTC ? CKTESTBTC_LOGO : CKBTC_LOGO;
 
+  let bitcoinSegmentLabel: string;
+  $: bitcoinSegmentLabel = isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_bitcoin
+    : $i18n.ckbtc.bitcoin;
+
   let tokenLabel: string;
   $: tokenLabel = bitcoin
-    ? $i18n.ckbtc.bitcoin
+    ? isUniverseCkTESTBTC(universeId)
+      ? $i18n.ckbtc.test_bitcoin
+      : $i18n.ckbtc.bitcoin
     : isUniverseCkTESTBTC(universeId)
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
@@ -153,7 +160,7 @@
       <Segment bind:selectedSegmentId bind:this={segment}>
         <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
         <SegmentButton segmentId={bitcoinSegmentId}
-          >{$i18n.ckbtc.bitcoin}</SegmentButton
+          >{bitcoinSegmentLabel}</SegmentButton
         >
       </Segment>
     </div>
