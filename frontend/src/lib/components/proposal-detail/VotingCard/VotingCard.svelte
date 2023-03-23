@@ -50,15 +50,17 @@
       (votableNeurons().length > 0 &&
         isProposalDeadlineInTheFuture(proposalInfo)));
 
-  onDestroy(definedNeuronsStore.subscribe(() => {
-    if (!initialSelectionDone) {
-      initialSelectionDone = true;
-      votingNeuronSelectStore.set(votableNeurons());
-    } else {
-      // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(votableNeurons());
-    }
-  }));
+  onDestroy(
+    definedNeuronsStore.subscribe(() => {
+      if (!initialSelectionDone) {
+        initialSelectionDone = true;
+        votingNeuronSelectStore.set(votableNeurons());
+      } else {
+        // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
+        votingNeuronSelectStore.updateNeurons(votableNeurons());
+      }
+    })
+  );
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY

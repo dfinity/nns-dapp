@@ -12,16 +12,16 @@
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
-  onDestroy(snsOnlyProjectStore.subscribe(
-    async (selectedProjectCanisterId) => {
+  onDestroy(
+    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         // TODO: improve loading and use in memory sns neurons or load from backend
         loading = true;
         await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
         loading = false;
       }
-    }
-  ));
+    })
+  );
 </script>
 
 <div class="card-grid" data-tid="sns-accounts-body">

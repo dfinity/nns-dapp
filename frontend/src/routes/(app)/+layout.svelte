@@ -12,10 +12,11 @@
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
-  onDestroy(voteRegistrationStore.subscribe(
-    ({ registrations }) =>
+  onDestroy(
+    voteRegistrationStore.subscribe(({ registrations }) =>
       syncBeforeUnload(voteRegistrationActive(registrations))
-  ));
+    )
+  );
 </script>
 
 <slot />

@@ -29,15 +29,15 @@
 
   let showModal: "send" | undefined = undefined;
 
-  onDestroy(snsOnlyProjectStore.subscribe(
-    async (selectedProjectCanisterId) => {
+  onDestroy(
+    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         // Reload accounts always.
         // Do not set to loading because we might use the account in the store.
         await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
       }
-    }
-  ));
+    })
+  );
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,

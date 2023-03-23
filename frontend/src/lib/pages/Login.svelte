@@ -13,8 +13,8 @@
 
   let signedIn = false;
 
-  onDestroy(authStore.subscribe(
-    async ({ identity }: AuthStoreData) => {
+  onDestroy(
+    authStore.subscribe(async ({ identity }: AuthStoreData) => {
       signedIn = isSignedIn(identity);
 
       if (!signedIn) {
@@ -24,8 +24,8 @@
       await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
         replaceState: true,
       });
-    }
-  ));
+    })
+  );
 </script>
 
 <LoginTitle />

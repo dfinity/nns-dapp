@@ -28,8 +28,8 @@
 
   let loading = true;
 
-  onDestroy(snsOnlyProjectStore.subscribe(
-    async (selectedProjectCanisterId) => {
+  onDestroy(
+    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
 
@@ -43,8 +43,8 @@
         ]);
         loading = false;
       }
-    }
-  ));
+    })
+  );
 
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
