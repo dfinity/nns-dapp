@@ -85,12 +85,26 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should render a bitcoin description", async () => {
-      const { getByText, container } = await renderReceiveModal({});
+      const { getByText, container } = await renderReceiveModal({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
 
       await selectSegmentBTC(container);
 
       const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: en.ckbtc.bitcoin,
+      });
+
+      expect(getByText(title)).toBeInTheDocument();
+    });
+
+    it("should render a test bitcoin description", async () => {
+      const { getByText, container } = await renderReceiveModal({});
+
+      await selectSegmentBTC(container);
+
+      const title = replacePlaceholders(en.wallet.token_address, {
+        $tokenSymbol: en.ckbtc.test_bitcoin,
       });
 
       expect(getByText(title)).toBeInTheDocument();
@@ -107,12 +121,22 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should render a bitcoin logo", async () => {
+      const { getByTestId, container } = await renderReceiveModal({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      await selectSegmentBTC(container);
+
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(en.ckbtc.bitcoin);
+    });
+
+    it("should render a test bitcoin logo", async () => {
       const { getByTestId, container } = await renderReceiveModal({});
 
       await selectSegmentBTC(container);
 
-      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
-        en.ckbtc.bitcoin
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(
+        en.ckbtc.test_bitcoin
       );
     });
 
@@ -120,7 +144,7 @@ describe("BtcCkBTCReceiveModal", () => {
       const { getByTestId } = await renderReceiveModal({});
 
       await waitFor(() =>
-        expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
+        expect(getByTestId("logo").getAttribute("alt")).toEqual(
           en.ckbtc.test_title
         )
       );
@@ -137,15 +161,17 @@ describe("BtcCkBTCReceiveModal", () => {
 
       fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
 
-      await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+      return spyUpdateBalance;
     };
 
     it("should update balance", async () => {
-      await updateBalance("update-ckbtc-balance");
+      const spy = await updateBalance("update-ckbtc-balance");
+      await waitFor(() => expect(spy).toHaveBeenCalled());
     });
 
-    it("should update balance on backdrop close", async () => {
-      await updateBalance("backdrop");
+    it("should not update balance on backdrop close", async () => {
+      const spy = await updateBalance("backdrop");
+      await waitFor(() => expect(spy).not.toHaveBeenCalled());
     });
 
     it("should reload account after update balance", async () => {
@@ -242,7 +268,7 @@ describe("BtcCkBTCReceiveModal", () => {
       const { getByTestId } = await renderReceiveModal(params);
 
       await waitFor(() =>
-        expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.title)
+        expect(getByTestId("logo").getAttribute("alt")).toEqual(en.ckbtc.title)
       );
     });
   });

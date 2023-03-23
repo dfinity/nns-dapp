@@ -169,7 +169,12 @@
       bind:bitcoinEstimatedFee
     />
 
-    <BitcoinEstimatedAmountReceived {bitcoinEstimatedFee} amount={userAmount} />
+    {#if networkBtc}
+      <BitcoinEstimatedAmountReceived
+        {bitcoinEstimatedFee}
+        amount={userAmount}
+      />
+    {/if}
   </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
     <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
