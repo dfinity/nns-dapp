@@ -7,7 +7,7 @@ import { isNullish, nonNullish } from "@dfinity/utils";
 export class JestPageObjectElement implements PageObjectElement {
   private readonly element: Element | null;
 
-  constructor(element: Element) {
+  constructor(element: Element | null) {
     this.element = element;
   }
 
