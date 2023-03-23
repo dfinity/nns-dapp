@@ -48,8 +48,6 @@ jobs:
         run: |
           set -x
           pushd "$HOME"
-          find .local/share/dfx
-          rm -fr ".local/share/dfx"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           unzip state.zip
           popd
