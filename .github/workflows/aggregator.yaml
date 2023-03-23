@@ -42,6 +42,8 @@ jobs:
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Get test environment
         run: |
           pushd "$HOME"
@@ -49,8 +51,7 @@ jobs:
           unzip state.zip
           popd
           mv "$HOME/.dfx" .
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          dfx start --background
       - name: Upgrade to the current aggregator
         run: dfx canister install sns_aggregator --wasm out/sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
