@@ -11,6 +11,7 @@ use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
+use ic_cdk_macros::{init};
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
@@ -29,10 +30,13 @@ mod time;
 
 type Cycles = u128;
 
-#[export_name = "canister_init"]
-fn main() {
+#[init]
+fn init() {
     assets::init_assets();
 }
+
+/// Redundant function, never called but reqired as this is main.rs.
+fn main() {}
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
