@@ -112,7 +112,7 @@ const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
     return fn();
   }
   let resolve: (value: Promise<T>) => void;
-  let responsePromise = new Promise<T>((res) => {
+  const responsePromise = new Promise<T>((res) => {
     resolve = res;
   });
   pendingCalls.push(() => {
