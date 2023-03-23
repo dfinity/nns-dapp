@@ -161,15 +161,17 @@ describe("BtcCkBTCReceiveModal", () => {
 
       fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
 
-      await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+      return spyUpdateBalance;
     };
 
     it("should update balance", async () => {
-      await updateBalance("update-ckbtc-balance");
+      const spy = await updateBalance("update-ckbtc-balance");
+      await waitFor(() => expect(spy).toHaveBeenCalled());
     });
 
-    it("should update balance on backdrop close", async () => {
-      await updateBalance("backdrop");
+    it("should not update balance on backdrop close", async () => {
+      const spy = await updateBalance("backdrop");
+      await waitFor(() => expect(spy).not.toHaveBeenCalled());
     });
 
     it("should reload account after update balance", async () => {
