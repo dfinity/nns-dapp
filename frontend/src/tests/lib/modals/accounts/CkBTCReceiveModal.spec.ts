@@ -15,6 +15,7 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
+  mockCkBTCAddress,
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
@@ -27,18 +28,17 @@ import {
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import { mockCkBTCAddress } from "../../../mocks/ckbtc-accounts.mock";
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
-  return {
-    updateBalance: jest.fn().mockImplementation(() => undefined),
-  };
-});
+jest.mock("$lib/services/ckbtc-minter.services");
 
 describe("BtcCkBTCReceiveModal", () => {
   const reloadSpy = jest.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    jest.spyOn(services, "updateBalance").mockResolvedValue(undefined);
+  });
 
   const renderReceiveModal = ({
     displayBtcAddress = true,
@@ -68,144 +68,177 @@ describe("BtcCkBTCReceiveModal", () => {
   });
 
   describe("with btc", () => {
-    it("should render BTC address", async () => {
-      const { getByText, container } = await renderReceiveModal({});
-
-      await selectSegmentBTC(container);
-
-      expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
-    });
-
-    it("should render account identifier (without being shortened)", async () => {
-      const { getByText } = await renderReceiveModal({});
-
-      await waitFor(() =>
-        expect(getByText(mockCkBTCMainAccount.identifier)).toBeInTheDocument()
-      );
-    });
-
-    it("should render a bitcoin description", async () => {
-      const { getByText, container } = await renderReceiveModal({
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+    describe("with BTC address", () => {
+      beforeEach(() => {
+        jest
+          .spyOn(services, "getBTCAddress")
+          .mockResolvedValue(mockBTCAddressTestnet);
       });
 
-      await selectSegmentBTC(container);
+      it("should render BTC address", async () => {
+        const { getByText, container } = await renderReceiveModal({});
 
-      const title = replacePlaceholders(en.wallet.token_address, {
-        $tokenSymbol: en.ckbtc.bitcoin,
+        expect(() => getByText(mockBTCAddressTestnet)).toThrow();
+
+        await selectSegmentBTC(container);
+
+        expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
       });
 
-      expect(getByText(title)).toBeInTheDocument();
-    });
+      it("should render account identifier (without being shortened)", async () => {
+        const { getByText } = await renderReceiveModal({});
 
-    it("should render a test bitcoin description", async () => {
-      const { getByText, container } = await renderReceiveModal({});
-
-      await selectSegmentBTC(container);
-
-      const title = replacePlaceholders(en.wallet.token_address, {
-        $tokenSymbol: en.ckbtc.test_bitcoin,
+        await waitFor(() =>
+          expect(getByText(mockCkBTCMainAccount.identifier)).toBeInTheDocument()
+        );
       });
 
-      expect(getByText(title)).toBeInTheDocument();
-    });
+      // TODO: to be activated when ckBTC with minter is live
+      it.skip("should render a bitcoin description", async () => {
+        const { getByText, container } = await renderReceiveModal({
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        });
 
-    it("should render a ckBTC description", async () => {
-      const { getByText } = await renderReceiveModal({});
+        await selectSegmentBTC(container);
 
-      const title = replacePlaceholders(en.wallet.token_address, {
-        $tokenSymbol: en.ckbtc.test_title,
+        const title = replacePlaceholders(en.wallet.token_address, {
+          $tokenSymbol: en.ckbtc.bitcoin,
+        });
+
+        expect(getByText(title)).toBeInTheDocument();
       });
 
-      await waitFor(() => expect(getByText(title)).toBeInTheDocument());
-    });
+      it("should render a test bitcoin description", async () => {
+        const { getByText, container } = await renderReceiveModal({});
 
-    it("should render a bitcoin logo", async () => {
-      const { getByTestId, container } = await renderReceiveModal({
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        await selectSegmentBTC(container);
+
+        const title = replacePlaceholders(en.wallet.token_address, {
+          $tokenSymbol: en.ckbtc.test_bitcoin,
+        });
+
+        expect(getByText(title)).toBeInTheDocument();
       });
 
-      await selectSegmentBTC(container);
+      it("should render a ckBTC description", async () => {
+        const { getByText } = await renderReceiveModal({});
 
-      expect(getByTestId("logo").getAttribute("alt")).toEqual(en.ckbtc.bitcoin);
-    });
+        const title = replacePlaceholders(en.wallet.token_address, {
+          $tokenSymbol: en.ckbtc.test_title,
+        });
 
-    it("should render a test bitcoin logo", async () => {
-      const { getByTestId, container } = await renderReceiveModal({});
+        await waitFor(() => expect(getByText(title)).toBeInTheDocument());
+      });
 
-      await selectSegmentBTC(container);
+      // TODO: to be activated when ckBTC with minter is live
+      it.skip("should render a bitcoin logo", async () => {
+        const { getByTestId, container } = await renderReceiveModal({
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        });
 
-      expect(getByTestId("logo").getAttribute("alt")).toEqual(
-        en.ckbtc.test_bitcoin
-      );
-    });
+        await selectSegmentBTC(container);
 
-    it("should render ckBTC logo", async () => {
-      const { getByTestId } = await renderReceiveModal({});
-
-      await waitFor(() =>
         expect(getByTestId("logo").getAttribute("alt")).toEqual(
-          en.ckbtc.test_title
-        )
-      );
+          en.ckbtc.bitcoin
+        );
+      });
+
+      it("should render a test bitcoin logo", async () => {
+        const { getByTestId, container } = await renderReceiveModal({});
+
+        await selectSegmentBTC(container);
+
+        expect(getByTestId("logo").getAttribute("alt")).toEqual(
+          en.ckbtc.test_bitcoin
+        );
+      });
+
+      it("should render ckBTC logo", async () => {
+        const { getByTestId } = await renderReceiveModal({});
+
+        await waitFor(() =>
+          expect(getByTestId("logo").getAttribute("alt")).toEqual(
+            en.ckbtc.test_title
+          )
+        );
+      });
+
+      const shouldCallUpdateBalance = async (
+        dataTid: "update-ckbtc-balance" | "backdrop"
+      ) => {
+        const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+
+        const { getByTestId, container } = await renderReceiveModal({});
+
+        await selectSegmentBTC(container);
+
+        fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
+
+        return spyUpdateBalance;
+      };
+
+      it("should update balance", async () => {
+        const spy = await shouldCallUpdateBalance("update-ckbtc-balance");
+        await waitFor(() => expect(spy).toHaveBeenCalled());
+      });
+
+      it("should not update balance on backdrop close", async () => {
+        const spy = await shouldCallUpdateBalance("backdrop");
+        await waitFor(() => expect(spy).not.toHaveBeenCalled());
+      });
+
+      it("should reload account after update balance", async () => {
+        const { getByTestId, container } = await renderReceiveModal({});
+
+        await selectSegmentBTC(container);
+
+        fireEvent.click(
+          getByTestId("update-ckbtc-balance") as HTMLButtonElement
+        );
+
+        await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
+      });
+
+      const shouldNotCallUpdateBalance = async (
+        dataTid: "reload-receive-account" | "backdrop"
+      ) => {
+        const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+
+        const { getByTestId } = await renderReceiveModal({});
+
+        fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
+
+        expect(spyUpdateBalance).not.toHaveBeenCalled();
+      };
+
+      it("should only reload account", async () => {
+        await shouldNotCallUpdateBalance("reload-receive-account");
+
+        await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
+      });
+
+      it("should not update balance", async () => {
+        await shouldNotCallUpdateBalance("backdrop");
+
+        expect(reloadSpy).not.toHaveBeenCalled();
+      });
     });
 
-    const updateBalance = async (
-      dataTid: "update-ckbtc-balance" | "backdrop"
-    ) => {
-      const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+    describe("without BTC address", () => {
+      beforeEach(() => {
+        jest.spyOn(services, "getBTCAddress").mockResolvedValue(undefined);
+      });
 
-      const { getByTestId, container } = await renderReceiveModal({});
+      it("should render spinner while loading BTC address", async () => {
+        const { getByText, getByTestId, container } = await renderReceiveModal(
+          {}
+        );
 
-      await selectSegmentBTC(container);
+        await selectSegmentBTC(container);
 
-      fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
-
-      return spyUpdateBalance;
-    };
-
-    it("should update balance", async () => {
-      const spy = await updateBalance("update-ckbtc-balance");
-      await waitFor(() => expect(spy).toHaveBeenCalled());
-    });
-
-    it("should not update balance on backdrop close", async () => {
-      const spy = await updateBalance("backdrop");
-      await waitFor(() => expect(spy).not.toHaveBeenCalled());
-    });
-
-    it("should reload account after update balance", async () => {
-      const { getByTestId, container } = await renderReceiveModal({});
-
-      await selectSegmentBTC(container);
-
-      fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
-
-      await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
-    });
-
-    const notUpdateBalance = async (
-      dataTid: "reload-receive-account" | "backdrop"
-    ) => {
-      const spyUpdateBalance = jest.spyOn(services, "updateBalance");
-
-      const { getByTestId } = await renderReceiveModal({});
-
-      fireEvent.click(getByTestId(dataTid) as HTMLButtonElement);
-
-      expect(spyUpdateBalance).not.toHaveBeenCalled();
-    };
-
-    it("should only reload account", async () => {
-      await notUpdateBalance("reload-receive-account");
-
-      await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
-    });
-
-    it("should not update balance", async () => {
-      await notUpdateBalance("backdrop");
-
-      expect(reloadSpy).not.toHaveBeenCalled();
+        expect(getByTestId("spinner")).not.toBeNull();
+        expect(getByText(en.ckbtc.loading_address)).toBeInTheDocument();
+      });
     });
   });
 
