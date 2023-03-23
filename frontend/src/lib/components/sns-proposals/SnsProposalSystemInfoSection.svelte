@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { i18n } from "$lib/stores/i18n";
   import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import { secondsToDateTime } from "$lib/utils/date.utils";
@@ -16,6 +17,8 @@
 
   export let proposal: SnsProposalData;
   export let rootCanisterId: Principal;
+
+  $: loadSnsNervousSystemFunctions(rootCanisterId);
 
   let id: SnsProposalId | undefined;
   let topic: string | undefined;
