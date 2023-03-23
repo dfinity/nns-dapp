@@ -50,13 +50,13 @@ jobs:
           pushd "$HOME"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           unzip state.zip
+          dfx start --background
+          num_canisters="$(curl -s "http://localhost:$(dfx info replica-port)/_/dashboard" | grep '<h3>Execution state</h3>' | wc -l)"
           popd
           mv "$HOME/.dfx" .
-          dfx start --background
           dfx identity list
           dfx identity use snsdemo8
           cat .dfx/local/canister_ids.json
-          num_canisters="$(curl -s "http://localhost:$(dfx info replica-port)/_/dashboard" | grep '<h3>Execution state</h3>' | wc -l)"
           echo "Approx num canisters: $num_canisters"
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
