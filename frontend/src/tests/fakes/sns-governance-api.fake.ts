@@ -107,6 +107,12 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   return nervousFunctionsList;
 };
 
+/**
+ * Calls the passed function and returns its result.
+ * If the fake is paused, the function will be queued and an unresolved promise
+ * is returned which will resolve when the fake is resumed and the function
+ * called.
+ */
 const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
   if (!isPaused) {
     return fn();
