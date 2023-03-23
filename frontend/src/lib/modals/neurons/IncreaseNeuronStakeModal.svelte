@@ -13,8 +13,13 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { pollAccounts } from "$lib/services/accounts.services";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   export let neuron: NeuronInfo;
+
+  let transactionInit: TransactionInit = {
+    destinationAddress: neuron.fullNeuron?.accountIdentifier,
+  };
 
   onMount(() => {
     pollAccounts();
@@ -67,7 +72,7 @@
     on:nnsSubmit={topUp}
     on:nnsClose
     bind:currentStep
-    destinationAddress={neuron.fullNeuron?.accountIdentifier}
+    {transactionInit}
     transactionFee={$mainTransactionFeeStoreAsToken}
   >
     <svelte:fragment slot="title"
