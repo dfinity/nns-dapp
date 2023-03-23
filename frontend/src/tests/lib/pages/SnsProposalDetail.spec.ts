@@ -99,7 +99,9 @@ describe("SnsProposalDetail", () => {
       expect(await po.hasSystemInfoSection()).toBe(false);
       fakeSnsGovernanceApi.resume();
 
-      expect(await po.hasSystemInfoSection()).toBe(true);
+      await waitFor(async () =>
+        expect(await po.hasSystemInfoSection()).toBe(true)
+      );
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
