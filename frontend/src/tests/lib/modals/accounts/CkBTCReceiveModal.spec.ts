@@ -122,7 +122,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
         await selectSegmentBTC(container);
 
-        expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
+        expect(getByTestId("logo").getAttribute("alt")).toEqual(
           en.ckbtc.bitcoin
         );
       });
@@ -131,7 +131,7 @@ describe("BtcCkBTCReceiveModal", () => {
         const { getByTestId } = await renderReceiveModal({});
 
         await waitFor(() =>
-          expect(getByTestId("logo")?.getAttribute("alt")).toEqual(
+          expect(getByTestId("logo").getAttribute("alt")).toEqual(
             en.ckbtc.test_title
           )
         );
@@ -273,7 +273,7 @@ describe("BtcCkBTCReceiveModal", () => {
       const { getByTestId } = await renderReceiveModal(params);
 
       await waitFor(() =>
-        expect(getByTestId("logo")?.getAttribute("alt")).toEqual(en.ckbtc.title)
+        expect(getByTestId("logo").getAttribute("alt")).toEqual(en.ckbtc.title)
       );
     });
   });
