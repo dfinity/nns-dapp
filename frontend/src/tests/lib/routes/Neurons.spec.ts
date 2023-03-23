@@ -77,6 +77,7 @@ describe("Neurons", () => {
     expect(await po.hasSnsNeuronsPo()).toBe(false);
     expect(await po.hasNnsNeuronsPo()).toBe(true);
     expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeGovernanceApi.resume();
     await waitFor(async () => {
       expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
     });
@@ -97,6 +98,7 @@ describe("Neurons", () => {
     expect(await po.hasNnsNeuronsPo()).toBe(false);
     expect(await po.hasSnsNeuronsPo()).toBe(true);
     expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeSnsGovernanceApi.resume();
     await waitFor(async () => {
       expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
     });
