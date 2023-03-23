@@ -59,6 +59,7 @@ describe("SnsProposalDetail", () => {
         rootCanisterId,
         id: [proposalId],
       });
+      fakeSnsGovernanceApi.pause();
 
       const { container } = render(SnsProposalDetail, {
         props: {
@@ -72,6 +73,7 @@ describe("SnsProposalDetail", () => {
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
       expect(await po.isContentLoaded()).toBe(false);
 
+      fakeSnsGovernanceApi.resume();
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
