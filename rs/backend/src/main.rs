@@ -11,7 +11,7 @@ use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
-use ic_cdk_macros::{init};
+use ic_cdk_macros::init;
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
