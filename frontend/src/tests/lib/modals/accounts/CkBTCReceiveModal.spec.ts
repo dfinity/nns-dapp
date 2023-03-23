@@ -137,7 +137,7 @@ describe("BtcCkBTCReceiveModal", () => {
         );
       });
 
-      const updateBalance = async (
+      const shouldCallUpdateBalance = async (
         dataTid: "update-ckbtc-balance" | "backdrop"
       ) => {
         const spyUpdateBalance = jest.spyOn(services, "updateBalance");
@@ -152,11 +152,11 @@ describe("BtcCkBTCReceiveModal", () => {
       };
 
       it("should update balance", async () => {
-        await updateBalance("update-ckbtc-balance");
+        await shouldCallUpdateBalance("update-ckbtc-balance");
       });
 
       it("should update balance on backdrop close", async () => {
-        await updateBalance("backdrop");
+        await shouldCallUpdateBalance("backdrop");
       });
 
       it("should reload account after update balance", async () => {
@@ -171,7 +171,7 @@ describe("BtcCkBTCReceiveModal", () => {
         await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
       });
 
-      const notUpdateBalance = async (
+      const shouldNotCallUpdateBalance = async (
         dataTid: "reload-receive-account" | "backdrop"
       ) => {
         const spyUpdateBalance = jest.spyOn(services, "updateBalance");
@@ -184,13 +184,13 @@ describe("BtcCkBTCReceiveModal", () => {
       };
 
       it("should only reload account", async () => {
-        await notUpdateBalance("reload-receive-account");
+        await shouldNotCallUpdateBalance("reload-receive-account");
 
         await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
       });
 
       it("should not update balance", async () => {
-        await notUpdateBalance("backdrop");
+        await shouldNotCallUpdateBalance("backdrop");
 
         expect(reloadSpy).not.toHaveBeenCalled();
       });
