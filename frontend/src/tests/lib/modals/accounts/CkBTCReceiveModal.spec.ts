@@ -74,6 +74,8 @@ describe("BtcCkBTCReceiveModal", () => {
     it("should render BTC address", async () => {
       const { getByText, container } = await renderReceiveModal({});
 
+      expect(() => getByText(mockBTCAddressTestnet)).toThrow();
+
       await selectSegmentBTC(container);
 
       await waitFor(() =>
