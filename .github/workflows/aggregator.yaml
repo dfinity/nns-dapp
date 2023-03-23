@@ -44,10 +44,10 @@ jobs:
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Install tools
         run: |
-                dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-                dfx-software-idl2json-install
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install
         env:
-                GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
       - name: Get test environment
         run: |
           set -x
