@@ -9,16 +9,19 @@ export class SnsNeuronDetailPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): SnsNeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`);
-    return el && new SnsNeuronDetailPo(el);
+  static under(element: PageObjectElement): SnsNeuronDetailPo {
+    return new SnsNeuronDetailPo(
+      element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`)
+    );
   }
 
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
   }
 }

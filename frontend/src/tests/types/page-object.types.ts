@@ -3,7 +3,8 @@
  * Platforms might include Jest and Playwright.
  */
 export interface PageObjectElement {
-  querySelector(selector: string): PageObjectElement | null;
-  querySelectorAll(selector: string): PageObjectElement[];
-  getText(): Promise<string>;
+  querySelector(selector: string): PageObjectElement;
+  querySelectorAll(selector: string): Promise<PageObjectElement[]>;
+  isPresent(): Promise<boolean>;
+  getText(): Promise<string | null>;
 }

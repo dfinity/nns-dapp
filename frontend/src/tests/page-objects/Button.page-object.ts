@@ -12,8 +12,7 @@ export class ButtonPo extends BasePageObject {
   }: {
     element: PageObjectElement;
     testId: string;
-  }): ButtonPo | null {
-    const el = element.querySelector(`button[data-tid=${testId}]`);
-    return el && new ButtonPo(el);
+  }): ButtonPo {
+    return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
   }
 }
