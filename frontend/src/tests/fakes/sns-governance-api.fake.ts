@@ -50,6 +50,11 @@ const proposals: Map<string, SnsProposalData[]> = new Map();
 // Maps a key representing rootCanisterId to a list of nervous system functions
 const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
 
+// When the fake is paused, all calls to the fake will be queued until the fake
+// is resumed.
+let isPaused = false;
+const pendingCalls: (() => void)[] = [];
+
 type KeyParams = { identity: Identity; rootCanisterId: Principal };
 
 const mapKey = ({ identity, rootCanisterId }: KeyParams) =>
@@ -102,11 +107,31 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   return nervousFunctionsList;
 };
 
+/**
+ * Calls the passed function and returns its result.
+ * If the fake is paused, the function will be queued and an unresolved promise
+ * is returned which will resolve when the fake is resumed and the function
+ * called.
+ */
+const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
+  if (!isPaused) {
+    return fn();
+  }
+  let resolve: (value: Promise<T>) => void;
+  const responsePromise = new Promise<T>((res) => {
+    resolve = res;
+  });
+  pendingCalls.push(() => {
+    resolve(fn());
+  });
+  return responsePromise;
+};
+
 ////////////////////////
 // Fake implementations:
 ////////////////////////
 
-async function nervousSystemParameters({
+function nervousSystemParameters({
   rootCanisterId: _,
   identity: __,
   certified: ___,
@@ -115,10 +140,12 @@ async function nervousSystemParameters({
   identity: Identity;
   certified: boolean;
 }): Promise<NervousSystemParameters> {
-  return snsNervousSystemParametersMock;
+  return wrapMaybePaused(async () => {
+    return snsNervousSystemParametersMock;
+  });
 }
 
-async function getNervousSystemFunctions({
+function getNervousSystemFunctions({
   rootCanisterId,
   identity: _,
   certified: __,
@@ -127,10 +154,12 @@ async function getNervousSystemFunctions({
   identity: Identity;
   certified: boolean;
 }): Promise<SnsNervousSystemFunction[]> {
-  return nervousFunctions.get(rootCanisterId.toText()) || [];
+  return wrapMaybePaused(async () => {
+    return nervousFunctions.get(rootCanisterId.toText()) || [];
+  });
 }
 
-async function getNeuronBalance({
+function getNeuronBalance({
   neuronId,
   rootCanisterId,
   certified,
@@ -141,31 +170,35 @@ async function getNeuronBalance({
   certified: boolean;
   identity: Identity;
 }): Promise<bigint> {
-  const neuron = await querySnsNeuron({
-    neuronId,
-    rootCanisterId,
-    certified,
-    identity,
+  return wrapMaybePaused(async () => {
+    const neuron = await querySnsNeuron({
+      neuronId,
+      rootCanisterId,
+      certified,
+      identity,
+    });
+    if (neuron) {
+      // In reality the neuron balance can be different from the stake if
+      // the user has made a transaction to increase the stake and the
+      // neuron is not yet refreshed. But this is not yet implemented in
+      // the fake.
+      return neuron.cached_neuron_stake_e8s;
+    }
+    return BigInt(0);
   });
-  if (neuron) {
-    // In reality the neuron balance can be different from the stake if
-    // the user has made a transaction to increase the stake and the
-    // neuron is not yet refreshed. But this is not yet implemented in
-    // the fake.
-    return neuron.cached_neuron_stake_e8s;
-  }
-  return BigInt(0);
 }
 
-async function refreshNeuron(params: {
+function refreshNeuron(params: {
   rootCanisterId: Principal;
   identity: Identity;
   neuronId: SnsNeuronId;
 }): Promise<void> {
-  assertNonNullish(getNeuron(params));
+  return wrapMaybePaused(async () => {
+    assertNonNullish(getNeuron(params));
+  });
 }
 
-async function claimNeuron({
+function claimNeuron({
   rootCanisterId: _1,
   identity: _2,
   memo: _3,
@@ -178,10 +211,12 @@ async function claimNeuron({
   controller: Principal;
   subaccount: Uint8Array;
 }): Promise<SnsNeuronId> {
-  return { id: subaccount };
+  return wrapMaybePaused(async () => {
+    return { id: subaccount };
+  });
 }
 
-async function querySnsNeurons({
+function querySnsNeurons({
   identity,
   rootCanisterId,
   certified: _,
@@ -190,10 +225,12 @@ async function querySnsNeurons({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsNeuron[]> {
-  return neurons.get(mapKey({ identity, rootCanisterId })) || [];
+  return wrapMaybePaused(async () => {
+    return neurons.get(mapKey({ identity, rootCanisterId })) || [];
+  });
 }
 
-async function querySnsNeuron({
+function querySnsNeuron({
   certified: _,
   neuronId,
   ...keyParams
@@ -203,10 +240,12 @@ async function querySnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron | undefined> {
-  return getNeuron({ ...keyParams, neuronId });
+  return wrapMaybePaused(async () => {
+    return getNeuron({ ...keyParams, neuronId });
+  });
 }
 
-async function getSnsNeuron({
+function getSnsNeuron({
   certified: _,
   neuronId,
   ...keyParams
@@ -216,14 +255,16 @@ async function getSnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron> {
-  const neuron = getNeuron({ ...keyParams, neuronId });
-  if (isNullish(neuron)) {
-    throw new SnsGovernanceError("No neuron for given NeuronId.");
-  }
-  return neuron;
+  return wrapMaybePaused(async () => {
+    const neuron = getNeuron({ ...keyParams, neuronId });
+    if (isNullish(neuron)) {
+      throw new SnsGovernanceError("No neuron for given NeuronId.");
+    }
+    return neuron;
+  });
 }
 
-async function queryProposals({
+function queryProposals({
   identity,
   rootCanisterId,
   certified: _,
@@ -234,13 +275,15 @@ async function queryProposals({
   certified: boolean;
   params: SnsListProposalsParams;
 }): Promise<SnsProposalData[]> {
-  return proposals.get(mapKey({ identity, rootCanisterId })) || [];
+  return wrapMaybePaused(async () => {
+    return proposals.get(mapKey({ identity, rootCanisterId })) || [];
+  });
 }
 
 /**
  * Throws if no proposal is found for the given proposalId.
  */
-async function queryProposal({
+function queryProposal({
   identity,
   rootCanisterId,
   certified: _,
@@ -251,15 +294,17 @@ async function queryProposal({
   certified: boolean;
   proposalId: SnsProposalId;
 }): Promise<SnsProposalData> {
-  const proposal = proposals
-    .get(mapKey({ identity, rootCanisterId }))
-    .find(({ id }) => fromNullable(id).id === proposalId.id);
-  if (isNullish(proposal)) {
-    throw new SnsGovernanceError(
-      `No proposal for given proposalId ${proposalId.id}`
-    );
-  }
-  return proposal;
+  return wrapMaybePaused(async () => {
+    const proposal = proposals
+      .get(mapKey({ identity, rootCanisterId }))
+      .find(({ id }) => fromNullable(id).id === proposalId.id);
+    if (isNullish(proposal)) {
+      throw new SnsGovernanceError(
+        `No proposal for given proposalId ${proposalId.id}`
+      );
+    }
+    return proposal;
+  });
 }
 
 /////////////////////////////////
@@ -270,6 +315,25 @@ const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
+  pendingCalls.length = 0;
+  isPaused = false;
+};
+
+export const pause = () => {
+  if (isPaused) {
+    throw new Error("The fake was already paused");
+  }
+  isPaused = true;
+};
+
+export const resume = () => {
+  if (!isPaused) {
+    throw new Error("The fake wasn't paused.");
+  }
+  for (const call of pendingCalls) {
+    call();
+  }
+  pendingCalls.length = 0;
 };
 
 const createNeuronId = ({
