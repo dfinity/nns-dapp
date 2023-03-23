@@ -994,27 +994,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dfn_json"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
-dependencies = [
- "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "dfn_macro"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
-dependencies = [
- "proc-macro2",
- "quote",
- "rustversion",
- "syn",
-]
-
-[[package]]
 name = "dfn_protobuf"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
@@ -3178,8 +3157,6 @@ dependencies = [
  "cycles-minting-canister",
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
- "dfn_json",
- "dfn_macro",
  "dfn_protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "futures",
  "hex",
