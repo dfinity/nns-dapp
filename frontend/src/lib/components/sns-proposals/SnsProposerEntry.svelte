@@ -22,7 +22,6 @@
       tagName="span"
       text={proposerText}
       id="proposer-id"
-      testId="proposal-system-info-proposer-value"
     />
   </svelte:fragment>
 

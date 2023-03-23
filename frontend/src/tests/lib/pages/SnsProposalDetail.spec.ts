@@ -78,6 +78,30 @@ describe("SnsProposalDetail", () => {
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
 
+    it("should render system info content", async () => {
+      fakeSnsGovernanceApi.pause();
+      const proposalId = { id: BigInt(3) };
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await po.hasSystemInfoSection()).toBe(false);
+      fakeSnsGovernanceApi.resume();
+
+      expect(await po.hasSystemInfoSection()).toBe(true);
+    });
+
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
       render(SnsProposalDetail, {
         props: {

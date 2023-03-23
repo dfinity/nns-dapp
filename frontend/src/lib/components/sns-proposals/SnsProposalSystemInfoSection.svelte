@@ -37,7 +37,7 @@
 
   let nsFunctions: SnsNervousSystemFunction[];
   $: nsFunctions =
-    $snsFunctionsStore[rootCanisterId.toText()].nsFunctions || [];
+    $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions || [];
 
   $: ({
     topic,
@@ -55,14 +55,13 @@
   } = mapProposalInfo({ proposalData: proposal, nsFunctions }));
 </script>
 
-<div class="content-cell-island">
+<div
+  class="content-cell-island"
+  data-tid="proposal-system-info-details-component"
+>
   <h1 class="content-cell-title">{topic ?? ""}</h1>
 
-  <div
-    class="content-cell-details"
-    data-tid="proposal-system-info-details"
-    data-proposal-id={id?.id}
-  >
+  <div class="content-cell-details">
     <!-- TODO: Confirm with product that we show both Type and Topic as the same for now -->
     {#if nonNullish(topic)}
       <ProposalSystemInfoEntry
