@@ -60,7 +60,7 @@ describe("ReceiveModal", () => {
     const { getByTestId } = await renderReceiveModal({});
 
     await waitFor(() =>
-      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(logoArialLabel)
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(logoArialLabel)
     );
   });
 
