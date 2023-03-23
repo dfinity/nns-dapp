@@ -65,6 +65,7 @@ describe("Neurons", () => {
   });
 
   it("should render NnsNeurons by default", async () => {
+    fakeGovernanceApi.pause();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neurons,
@@ -76,6 +77,7 @@ describe("Neurons", () => {
     expect(await po.hasSnsNeuronsPo()).toBe(false);
     expect(await po.hasNnsNeuronsPo()).toBe(true);
     expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeGovernanceApi.resume();
     await waitFor(async () => {
       expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
     });
@@ -85,6 +87,7 @@ describe("Neurons", () => {
   });
 
   it("should render project page when a committed project is selected", async () => {
+    fakeSnsGovernanceApi.pause();
     page.mock({
       data: { universe: testCommittedSnsCanisterId.toText() },
     });
@@ -95,6 +98,7 @@ describe("Neurons", () => {
     expect(await po.hasNnsNeuronsPo()).toBe(false);
     expect(await po.hasSnsNeuronsPo()).toBe(true);
     expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeSnsGovernanceApi.resume();
     await waitFor(async () => {
       expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
     });

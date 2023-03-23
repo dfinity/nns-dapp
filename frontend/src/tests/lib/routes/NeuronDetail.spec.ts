@@ -56,12 +56,14 @@ describe("NeuronDetail", () => {
     });
 
     it("should load", async () => {
+      fakeGovernanceApi.pause();
       const { container } = render(NeuronDetail, nnsProps);
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
 
       expect(await po.hasSnsNeuronDetailPo()).toBe(false);
       expect(await po.hasNnsNeuronDetailPo()).toBe(true);
       expect(await po.getNnsNeuronDetailPo().isContentLoaded()).toBe(false);
+      fakeGovernanceApi.resume();
       await waitFor(async () => {
         expect(await po.getNnsNeuronDetailPo().isContentLoaded()).toBe(true);
       });
@@ -94,10 +96,12 @@ describe("NeuronDetail", () => {
 
     it("should load", async () => {
       await loadSnsProjects();
+      fakeSnsGovernanceApi.pause();
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
 
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
       expect(await po.isContentLoaded()).toBe(false);
+      fakeSnsGovernanceApi.resume();
       await waitFor(async () => {
         expect(await po.isContentLoaded()).toBe(true);
       });
