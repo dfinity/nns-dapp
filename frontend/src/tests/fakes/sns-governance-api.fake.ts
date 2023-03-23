@@ -121,7 +121,6 @@ const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
   return responsePromise;
 };
 
-
 ////////////////////////
 // Fake implementations:
 ////////////////////////
@@ -150,7 +149,7 @@ function getNervousSystemFunctions({
   certified: boolean;
 }): Promise<SnsNervousSystemFunction[]> {
   return wrapMaybePaused(async () => {
-      return nervousFunctions.get(rootCanisterId.toText()) || [];
+    return nervousFunctions.get(rootCanisterId.toText()) || [];
   });
 }
 
@@ -166,20 +165,20 @@ function getNeuronBalance({
   identity: Identity;
 }): Promise<bigint> {
   return wrapMaybePaused(async () => {
-  const neuron = await querySnsNeuron({
-    neuronId,
-    rootCanisterId,
-    certified,
-    identity,
-  });
-  if (neuron) {
-    // In reality the neuron balance can be different from the stake if
-    // the user has made a transaction to increase the stake and the
-    // neuron is not yet refreshed. But this is not yet implemented in
-    // the fake.
-    return neuron.cached_neuron_stake_e8s;
-  }
-  return BigInt(0);
+    const neuron = await querySnsNeuron({
+      neuronId,
+      rootCanisterId,
+      certified,
+      identity,
+    });
+    if (neuron) {
+      // In reality the neuron balance can be different from the stake if
+      // the user has made a transaction to increase the stake and the
+      // neuron is not yet refreshed. But this is not yet implemented in
+      // the fake.
+      return neuron.cached_neuron_stake_e8s;
+    }
+    return BigInt(0);
   });
 }
 
@@ -189,7 +188,7 @@ function refreshNeuron(params: {
   neuronId: SnsNeuronId;
 }): Promise<void> {
   return wrapMaybePaused(async () => {
-  assertNonNullish(getNeuron(params));
+    assertNonNullish(getNeuron(params));
   });
 }
 
@@ -207,7 +206,7 @@ function claimNeuron({
   subaccount: Uint8Array;
 }): Promise<SnsNeuronId> {
   return wrapMaybePaused(async () => {
-  return { id: subaccount };
+    return { id: subaccount };
   });
 }
 
@@ -221,7 +220,7 @@ function querySnsNeurons({
   certified: boolean;
 }): Promise<SnsNeuron[]> {
   return wrapMaybePaused(async () => {
-  return neurons.get(mapKey({ identity, rootCanisterId })) || [];
+    return neurons.get(mapKey({ identity, rootCanisterId })) || [];
   });
 }
 
@@ -236,7 +235,7 @@ function querySnsNeuron({
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron | undefined> {
   return wrapMaybePaused(async () => {
-  return getNeuron({ ...keyParams, neuronId });
+    return getNeuron({ ...keyParams, neuronId });
   });
 }
 
@@ -251,11 +250,11 @@ function getSnsNeuron({
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron> {
   return wrapMaybePaused(async () => {
-  const neuron = getNeuron({ ...keyParams, neuronId });
-  if (isNullish(neuron)) {
-    throw new SnsGovernanceError("No neuron for given NeuronId.");
-  }
-  return neuron;
+    const neuron = getNeuron({ ...keyParams, neuronId });
+    if (isNullish(neuron)) {
+      throw new SnsGovernanceError("No neuron for given NeuronId.");
+    }
+    return neuron;
   });
 }
 
@@ -271,7 +270,7 @@ function queryProposals({
   params: SnsListProposalsParams;
 }): Promise<SnsProposalData[]> {
   return wrapMaybePaused(async () => {
-  return proposals.get(mapKey({ identity, rootCanisterId })) || [];
+    return proposals.get(mapKey({ identity, rootCanisterId })) || [];
   });
 }
 
@@ -290,15 +289,15 @@ function queryProposal({
   proposalId: SnsProposalId;
 }): Promise<SnsProposalData> {
   return wrapMaybePaused(async () => {
-  const proposal = proposals
-    .get(mapKey({ identity, rootCanisterId }))
-    .find(({ id }) => fromNullable(id).id === proposalId.id);
-  if (isNullish(proposal)) {
-    throw new SnsGovernanceError(
-      `No proposal for given proposalId ${proposalId.id}`
-    );
-  }
-  return proposal;
+    const proposal = proposals
+      .get(mapKey({ identity, rootCanisterId }))
+      .find(({ id }) => fromNullable(id).id === proposalId.id);
+    if (isNullish(proposal)) {
+      throw new SnsGovernanceError(
+        `No proposal for given proposalId ${proposalId.id}`
+      );
+    }
+    return proposal;
   });
 }
 
@@ -328,6 +327,7 @@ export const resume = () => {
   for (const call of pendingCalls) {
     call();
   }
+  pendingCalls.length = 0;
 };
 
 const createNeuronId = ({
