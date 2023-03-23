@@ -38,7 +38,7 @@ jobs:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
+          ref: 'bc1efc11c31bc8b3cfb0a4dc85e81acf6b842e4d'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -52,6 +52,7 @@ jobs:
           popd
           mv "$HOME/.dfx" .
           dfx start --background
+          dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
         run: dfx canister install sns_aggregator --wasm out/sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
