@@ -49,7 +49,7 @@ describe("SnsProposalDetail", () => {
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
       );
-      expect(po.getSkeletonDetails()).not.toBeNull();
+      expect(await po.getSkeletonDetails().isPresent()).toBe(true);
     });
 
     it("should render content once proposal is loaded", async () => {
@@ -69,11 +69,11 @@ describe("SnsProposalDetail", () => {
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
       );
-      expect(po.getSkeletonDetails()).not.toBeNull();
-      expect(po.isContentLoaded()).toBe(false);
+      expect(await po.getSkeletonDetails().isPresent()).toBe(true);
+      expect(await po.isContentLoaded()).toBe(false);
 
-      await waitFor(() => expect(po.isContentLoaded()).toBe(true));
-      expect(po.getSkeletonDetails()).toBeNull();
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
@@ -103,3 +103,4 @@ describe("SnsProposalDetail", () => {
     });
   });
 });
+
