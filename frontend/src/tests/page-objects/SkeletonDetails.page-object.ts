@@ -1,7 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SkeletonDetailsPo {
-  static readonly tid = "skeleton-details";
+  static readonly tid = "skeleton-details-component";
 
   root: PageObjectElement;
 
