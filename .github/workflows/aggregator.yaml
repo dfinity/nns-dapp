@@ -46,6 +46,7 @@ jobs:
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Get test environment
         run: |
+          set -x
           pushd "$HOME"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           unzip state.zip
