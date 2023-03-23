@@ -8,6 +8,7 @@
   export let id: string;
   export let text: string;
   export let showCopy = false;
+  export let className: string | undefined = undefined;
 
   let shortenText: string;
   $: shortenText = shortenWithMiddleEllipsis(text);
@@ -15,7 +16,7 @@
 
 <span data-tid="hash-component">
   <Tooltip {id} {text}>
-    <svelte:element this={tagName} data-tid={testId}>
+    <svelte:element this={tagName} data-tid={testId} class={className ?? ""}>
       {shortenText}</svelte:element
     >
   </Tooltip>
