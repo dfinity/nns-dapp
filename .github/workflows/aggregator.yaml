@@ -50,6 +50,7 @@ jobs:
           pushd "$HOME"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           unzip state.zip
+          # Note: dfx start works here but not in the project dir.  Strange.
           dfx start --background
           num_canisters="$(curl -s "http://localhost:$(dfx info replica-port)/_/dashboard" | grep '<h3>Execution state</h3>' | wc -l)"
           popd
