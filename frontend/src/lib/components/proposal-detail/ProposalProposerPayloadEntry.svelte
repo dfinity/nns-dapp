@@ -38,10 +38,6 @@
 </div>
 
 <style lang="scss">
-  .content-cell-island {
-    margin-top: var(--row-gap);
-  }
-
   .json {
     word-break: break-word;
   }

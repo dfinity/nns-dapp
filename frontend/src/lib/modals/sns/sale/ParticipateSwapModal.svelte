@@ -43,6 +43,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {
     pollAccounts(false);
@@ -74,6 +75,13 @@
           ).toHex()
         : undefined;
   })();
+
+  let transactionInit: TransactionInit | undefined;
+  $: transactionInit = nonNullish(destinationAddress)
+    ? {
+        destinationAddress,
+      }
+    : undefined;
 
   let params: SnsParams;
   $: ({
@@ -188,7 +196,7 @@
 </script>
 
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
-{#if destinationAddress !== undefined}
+{#if nonNullish(transactionInit)}
   <TransactionModal
     rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
@@ -196,7 +204,7 @@
     on:nnsClose
     on:nnsSubmit={participate}
     {validateAmount}
-    {destinationAddress}
+    {transactionInit}
     disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
