@@ -1,5 +1,6 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { fireEvent } from "@testing-library/svelte";
 
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
@@ -32,5 +33,9 @@ export class JestPageObjectElement implements PageObjectElement {
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
     return this.element && this.element.textContent;
+  }
+
+  async click(): Promise<void> {
+    await fireEvent.click(this.element);
   }
 }

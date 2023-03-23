@@ -15,4 +15,8 @@ export class ButtonPo extends BasePageObject {
   }): ButtonPo {
     return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
   }
+
+  click(): Promise<void> {
+    return this.root.click();
+  }
 }

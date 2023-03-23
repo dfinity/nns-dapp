@@ -7,4 +7,5 @@ export interface PageObjectElement {
   querySelectorAll(selector: string): Promise<PageObjectElement[]>;
   isPresent(): Promise<boolean>;
   getText(): Promise<string | null>;
+  click(): Promise<void>;
 }
