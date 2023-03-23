@@ -3,7 +3,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -32,6 +32,11 @@
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
+
+  let transactionInit: TransactionInit = {
+    sourceAccount: selectedAccount,
+    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+  };
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -141,8 +146,7 @@
   bind:currentStep
   {token}
   {transactionFee}
-  sourceAccount={selectedAccount}
-  mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
+  {transactionInit}
   bind:selectedNetwork
   {validateAmount}
   bind:amount={userAmount}
