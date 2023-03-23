@@ -33,7 +33,7 @@
   });
 
   let currentProjectCanisterId: Principal | undefined = undefined;
-  const unsubscribeProjectIdStore: Unsubscriber = snsOnlyProjectStore.subscribe(
+  onDestroy(snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       currentProjectCanisterId = selectedProjectCanisterId;
       if (nonNullish(selectedProjectCanisterId)) {
@@ -43,9 +43,9 @@
         ]);
       }
     }
-  );
+  ));
 
-  const unsubscribeFiltersStore: Unsubscriber = snsFiltersStore.subscribe(
+  onDestroy(snsFiltersStore.subscribe(
     async (filters) => {
       // First call will have `filters` as `undefined`.
       // Once we have the initial filters, we load the proposals.
@@ -56,12 +56,7 @@
         await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
       }
     }
-  );
-
-  onDestroy(() => {
-    unsubscribeProjectIdStore();
-    unsubscribeFiltersStore();
-  });
+  ));
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
