@@ -1,13 +1,12 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class HashPo {
+export class HashPo extends BasePageObject {
   static readonly tid = "hash-component";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): HashPo | null {

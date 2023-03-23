@@ -1,15 +1,14 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
 
-export class SnsNeuronInfoStakePo {
+export class SnsNeuronInfoStakePo extends BasePageObject {
   static readonly tid = "sns-neuron-info-stake";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under(element: PageObjectElement): SnsNeuronInfoStakePo | null {

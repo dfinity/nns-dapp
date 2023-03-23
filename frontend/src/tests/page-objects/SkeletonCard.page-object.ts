@@ -1,11 +1,10 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-export class SkeletonCardPo {
+export class SkeletonCardPo extends BasePageObject {
   static readonly tid = "skeleton-card";
 
-  root: PageObjectElement;
-
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static allUnder(element: PageObjectElement): SkeletonCardPo[] {

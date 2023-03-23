@@ -8,6 +8,13 @@ export type NewTransaction = {
   amount: number;
 };
 
+export interface TransactionInit {
+  sourceAccount?: Account;
+  destinationAddress?: string;
+  mustSelectNetwork?: boolean;
+  amount?: number;
+}
+
 export type ValidateAmountFn = (params: {
   amount: number | undefined;
   selectedAccount: Account | undefined;
