@@ -256,4 +256,17 @@ describe("CkBTCTransactionModal", () => {
     );
     expect(result.getByTestId("bitcoin-estimated-amount")).not.toBeNull();
   });
+
+  it("should not render btc estimation info on first step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      destinationAddress: mockCkBTCMainAccount.identifier,
+      amount: "0.002",
+    });
+
+    expect(() => result.getByTestId("bitcoin-estimated-fee")).toThrow();
+  });
 });
