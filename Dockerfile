@@ -71,7 +71,8 @@ RUN dfx --version
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
-COPY dfx.json config.sh .df[x] canister_ids.jso[n] /build/
+COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
