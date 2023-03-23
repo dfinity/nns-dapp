@@ -3,10 +3,10 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NewTransaction } from "$lib/types/transaction";
+  import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import type { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
-  import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
@@ -23,6 +23,7 @@
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
+  import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -31,6 +32,11 @@
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
+
+  let transactionInit: TransactionInit = {
+    sourceAccount: selectedAccount,
+    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+  };
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -140,8 +146,7 @@
   bind:currentStep
   {token}
   {transactionFee}
-  sourceAccount={selectedAccount}
-  mustSelectNetwork={isUniverseCkTESTBTC(universeId)}
+  {transactionInit}
   bind:selectedNetwork
   {validateAmount}
   bind:amount={userAmount}
@@ -156,13 +161,16 @@
       })}
     {/if}
   </p>
-  <BitcoinEstimatedFee
-    slot="additional-info-form"
-    {selectedNetwork}
-    amount={userAmount}
-    minterCanisterId={canisters.minterCanisterId}
-    bind:bitcoinEstimatedFee
-  />
+  <svelte:fragment slot="additional-info-form">
+    <BitcoinEstimatedFee
+      {selectedNetwork}
+      amount={userAmount}
+      minterCanisterId={canisters.minterCanisterId}
+      bind:bitcoinEstimatedFee
+    />
+
+    <BitcoinEstimatedAmountReceived {bitcoinEstimatedFee} amount={userAmount} />
+  </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
     <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
 

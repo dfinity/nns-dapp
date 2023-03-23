@@ -1,20 +1,17 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
-import { ButtonPo } from "./Button.page-object";
 
-export class SnsNeuronInfoStakePo {
+export class SnsNeuronInfoStakePo extends BasePageObject {
   static readonly tid = "sns-neuron-info-stake";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronInfoStakePo.tid) {
-      throw new Error(`${root} is not an SnsNeuronInfoStakePo`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): SnsNeuronInfoStakePo | null {
+  static under(element: PageObjectElement): SnsNeuronInfoStakePo | null {
     const el = element.querySelector(`[data-tid=${SnsNeuronInfoStakePo.tid}]`);
     return el && new SnsNeuronInfoStakePo(el);
   }

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
@@ -17,7 +18,6 @@ clap.define short=w long=wasm desc="The wasm built from the local code." variabl
 clap.define short=p long=prod_wasm desc="The production wasm." variable=PROD_WASM default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-set -euo pipefail
 
 verify_healthy() {
   dfx canister call sns_aggregator get_canister_status

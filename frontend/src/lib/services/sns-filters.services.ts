@@ -1,14 +1,19 @@
 import { i18n } from "$lib/stores/i18n";
-import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import type { Principal } from "@dfinity/principal";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 // TODO: Set default filters
 export const loadSnsFilters = async (rootCanisterId: Principal) => {
+  const filtersProjectStoreData = get(snsFiltersStore)[rootCanisterId.toText()];
+  if (nonNullish(filtersProjectStoreData)) {
+    return;
+  }
   const i18nKeys = get(i18n);
-  const filtersProjectData = get(snsFiltesStore)[rootCanisterId.toText()] ?? {
+  const filtersProjectData = {
     topics: [],
     rewardStatus: [],
     decisionStatus: [],
@@ -30,7 +35,7 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
         status
     )
     .map(mapDecisionStatus);
-  snsFiltesStore.setDecisionStatus({
+  snsFiltersStore.setDecisionStatus({
     rootCanisterId,
     decisionStatus,
   });

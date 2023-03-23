@@ -2,35 +2,51 @@
   import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
-  import TransactionForm from "./TransactionForm.svelte";
-  import TransactionReview from "./TransactionReview.svelte";
+  import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
+  import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
   import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type {
+    TransactionInit,
     TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import TransactionQRCode from "$lib/modals/accounts/NewTransaction/TransactionQRCode.svelte";
+  import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
+  import { isNullish, nonNullish } from "@dfinity/utils";
+
+  export let transactionInit: TransactionInit = {};
+
+  // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.
+  let sourceAccount: Account | undefined = transactionInit.sourceAccount;
+  let destinationAddress: string | undefined =
+    transactionInit.destinationAddress;
+
+  // User inputs exposed for bind in consumers and initialized with initial parameters when component is mounted.
+  export let amount: number | undefined = transactionInit.amount;
+
+  // User inputs exposed for bind in consumers
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
-  export let sourceAccount: Account | undefined = undefined;
   export let token: Token = ICPToken;
   export let transactionFee: TokenAmount;
   export let disableSubmit = false;
-  // Max amount accepted by the transaction wihout fees
+  // Max amount accepted by the transaction without fees
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
-  export let mustSelectNetwork = false;
   export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
-  // User inputs
-  let selectedAccount: Account | undefined = sourceAccount;
-  export let destinationAddress: string | undefined = undefined;
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
-  export let amount: number | undefined = undefined;
+  // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
+  let canSelectDestination = isNullish(transactionInit.destinationAddress);
+  let canSelectSource = isNullish(transactionInit.sourceAccount);
+  let mustSelectNetwork = transactionInit.mustSelectNetwork ?? false;
 
+  let selectedDestinationAddress: string | undefined = destinationAddress;
+  let showManualAddress = true;
+
+  // Wizard modal steps and navigation
   const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";
   const STEP_QRCODE = "QRCode";
@@ -55,14 +71,6 @@
   ];
 
   let modal: WizardModal;
-
-  // If destination or source are passed as prop, they are used.
-  // But the component doesn't bind them to the props.
-  // This way we can identify whether to show a dropdown to select destination or source.
-  let selectedDestinationAddress: string | undefined = destinationAddress;
-  let canSelectDestination = destinationAddress === undefined;
-  let canSelectSource = sourceAccount === undefined;
-  let showManualAddress = true;
 
   const goNext = () => {
     modal.next();
@@ -100,7 +108,7 @@
       {transactionFee}
       {validateAmount}
       bind:selectedDestinationAddress
-      bind:selectedAccount
+      bind:selectedAccount={sourceAccount}
       bind:amount
       bind:showManualAddress
       {skipHardwareWallets}
@@ -115,11 +123,11 @@
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
   {/if}
-  {#if currentStep?.name === "Review" && selectedAccount !== undefined && amount !== undefined && selectedDestinationAddress !== undefined}
+  {#if currentStep?.name === "Review" && nonNullish(sourceAccount) && amount !== undefined && selectedDestinationAddress !== undefined}
     <TransactionReview
       transaction={{
         destinationAddress: selectedDestinationAddress,
-        sourceAccount: selectedAccount,
+        sourceAccount,
         amount,
       }}
       {transactionFee}

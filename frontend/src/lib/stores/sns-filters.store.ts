@@ -5,7 +5,7 @@ import type {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { writable, type Readable } from "svelte/store";
+import { derived, writable, type Readable } from "svelte/store";
 
 export interface ProjectFiltersStoreData {
   topics: Filter<SnsNervousSystemFunction>[];
@@ -13,11 +13,11 @@ export interface ProjectFiltersStoreData {
   decisionStatus: Filter<SnsProposalDecisionStatus>[];
 }
 
-interface SnsFiltersStoreData {
+export interface SnsFiltersStoreData {
   [rootCanisterId: string]: ProjectFiltersStoreData;
 }
 
-interface ProjectFiltersStore extends Readable<SnsFiltersStoreData> {
+export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
   setDecisionStatus: (data: {
     rootCanisterId: Principal;
     decisionStatus: Filter<SnsProposalDecisionStatus>[];
@@ -34,7 +34,7 @@ interface ProjectFiltersStore extends Readable<SnsFiltersStoreData> {
  *
  * TODO: persist to localstorage
  */
-export const initSnsFiltersStore = (): ProjectFiltersStore => {
+export const initSnsFiltersStore = (): SnsFiltersStore => {
   const { subscribe, set, update } = writable<SnsFiltersStoreData>({});
 
   return {
@@ -97,4 +97,21 @@ export const initSnsFiltersStore = (): ProjectFiltersStore => {
   };
 };
 
-export const snsFiltesStore = initSnsFiltersStore();
+export const snsFiltersStore = initSnsFiltersStore();
+
+export const snsSelectedFiltersStore = derived<
+  Readable<SnsFiltersStoreData>,
+  SnsFiltersStoreData
+>(snsFiltersStore, ($snsFilters) =>
+  Object.entries($snsFilters).reduce(
+    (acc, [rootCanisterIdText, filters]) => ({
+      ...acc,
+      [rootCanisterIdText]: {
+        topics: filters.topics.filter(({ checked }) => checked),
+        rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
+        decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
+      },
+    }),
+    {}
+  )
+);

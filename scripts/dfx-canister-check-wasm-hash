@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Checks that a deployed canister's hash matches a local WASM.
+	If a deployment succeeded, the wasms must match.
+
+	This will not detect whether the canister arguments were as expected.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=c long=canister desc="The canister name or ID" variable=DFX_CANISTER
+clap.define short=w long=wasm desc="The path to the local wasm file" variable=DFX_WASM
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# If the location of the wasm was not supplied, get the default location specified in dfx.json
+DFX_WASM="${DFX_WASM:-$(n="$DFX_CANISTER" jq -r '.canisters[env.n].wasm' dfx.json)}"
+test -e "${DFX_WASM:-}" || {
+  echo "ERROR:  Wasm not found at '${DFX_WASM:-}'"
+  echo "        Please check and specify the correct path."
+  exit 1
+} >&2
+
+build_hash="$(sha256sum "$DFX_WASM" | awk '{print $1}')"
+deployed_hash="$(dfx canister info "$DFX_CANISTER" --network "$DFX_NETWORK" | awk '/Module hash/{print $3}')"
+if [[ "0x$build_hash" == "$deployed_hash" ]]; then
+  echo "Check passed: Installed $DFX_CANISTER matches local wasm."
+else
+  {
+    echo "ERROR: Deployed $DFX_CANISTER hash does not match."
+    echo "Local build: 0x$build_hash"
+    echo "Deployed:    $deployed_hash"
+    exit 1
+  } >&2
+fi

@@ -1,20 +1,17 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
+import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 import { nonNullish } from "@dfinity/utils";
-import { NnsNeuronsPo } from "./NnsNeurons.page-object";
-import { SnsNeuronsPo } from "./SnsNeurons.page-object";
 
-export class NeuronsPo {
+export class NeuronsPo extends BasePageObject {
   static readonly tid = "neurons-component";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NeuronsPo.tid) {
-      throw new Error(`${root} is not a Neurons`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: HTMLElement): NeuronsPo | null {
+  static under(element: PageObjectElement): NeuronsPo | null {
     const el = element.querySelector(`[data-tid=${NeuronsPo.tid}]`);
     return el && new NeuronsPo(el);
   }

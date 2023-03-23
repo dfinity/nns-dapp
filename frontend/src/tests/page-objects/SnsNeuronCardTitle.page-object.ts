@@ -1,23 +1,20 @@
-import { HashPo } from "./Hash.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsNeuronCardTitlePo {
+export class SnsNeuronCardTitlePo extends BasePageObject {
   static readonly tid = "sns-neuron-card-title";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronCardTitlePo.tid) {
-      throw new Error(`${root} is not an SnsNeuronCardTitle`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): SnsNeuronCardTitlePo | null {
+  static under(element: PageObjectElement): SnsNeuronCardTitlePo | null {
     const el = element.querySelector(`[data-tid=${SnsNeuronCardTitlePo.tid}]`);
     return el && new SnsNeuronCardTitlePo(el);
   }
 
-  getNeuronId(): string {
+  getNeuronId(): Promise<string> {
     return HashPo.under(
       this.root.querySelector("[data-tid=neuron-id-container]")
     ).getText();

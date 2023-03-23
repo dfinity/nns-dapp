@@ -61,7 +61,7 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -rf rs/backend/src rs/sns_aggregator/src
+RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -71,7 +71,8 @@ RUN dfx --version
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
-COPY dfx.json config.sh .df[x] canister_ids.jso[n] /build/
+COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
@@ -97,7 +98,7 @@ FROM builder AS build_nnsdapp
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
-COPY ./rs /build/rs
+COPY ./rs/backend /build/rs/backend
 COPY ./build-backend.sh /build/
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
@@ -114,7 +115,7 @@ RUN ./build-backend.sh
 #       configurable
 FROM builder AS build_aggregate
 SHELL ["bash", "-c"]
-COPY ./rs /build/rs
+COPY ./rs/sns_aggregator /build/rs/sns_aggregator
 COPY ./build-sns-aggregator.sh /build/build-sns-aggregator.sh
 COPY ./build-rs.sh /build/build-rs.sh
 COPY ./Cargo.toml /build/Cargo.toml

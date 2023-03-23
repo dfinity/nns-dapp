@@ -3,35 +3,24 @@
  */
 
 import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "$tests/mocks/sns-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
-import type { Subscriber } from "svelte/store";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { selectedUniverseIdStore } from "../../../lib/derived/selected-universe.derived";
-import en from "../../mocks/i18n.mock";
-import { waitModalIntroEnd } from "../../mocks/modal.mock";
 import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
@@ -52,29 +41,36 @@ describe("SnsWallet", () => {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
 
+  const responses = snsResponseFor({
+    principal: mockPrincipal,
+    lifecycle: SnsSwapLifecycle.Committed,
+  });
+
+  const rootCanisterIdText = responses[0][0].rootCanisterId;
+  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+
   beforeEach(() => {
     snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockPrincipal,
-        lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+    snsAccountsStore.reset();
+    transactionsFeesStore.reset();
+    snsQueryStore.setData(responses);
+    transactionsFeesStore.setFee({
+      rootCanisterId,
+      fee: BigInt(10_000),
+      certified: true,
+    });
   });
 
   describe("accounts not loaded", () => {
     beforeEach(() => {
       // Load accounts in a different project
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(
-          mockSnsAccountsStoreSubscribe(Principal.fromText("aaaaa-aa"))
-        );
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+      snsAccountsStore.setAccounts({
+        rootCanisterId: Principal.fromText("aaaaa-aa"),
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
-      page.mock({ data: { universe: mockPrincipal.toText() } });
+      page.mock({ data: { universe: rootCanisterIdText } });
     });
     it("should render a spinner while loading", () => {
       const { getByTestId } = render(SnsWallet, props);
@@ -91,22 +87,13 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+      snsAccountsStore.setAccounts({
+        rootCanisterId,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
 
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-
-      jest
-        .spyOn(selectedUniverseIdStore, "subscribe")
-        .mockImplementation((run: Subscriber<Principal>): (() => void) => {
-          run(mockPrincipal);
-          return () => undefined;
-        });
-
-      page.mock({ data: { universe: mockPrincipal.toText() } });
+      page.mock({ data: { universe: rootCanisterIdText } });
     });
 
     afterAll(() => jest.clearAllMocks());
@@ -136,26 +123,6 @@ describe("SnsWallet", () => {
       );
     });
 
-    const testModal = async ({
-      result,
-      testId,
-    }: {
-      result: RenderResult<SvelteComponent>;
-      testId: string;
-    }) => {
-      const { container, getByTestId } = result;
-
-      await waitFor(expect(getByTestId(testId)).not.toBeNull);
-
-      const button = getByTestId(testId) as HTMLButtonElement;
-
-      await fireEvent.click(button);
-
-      await waitFor(() =>
-        expect(container.querySelector("div.modal")).not.toBeNull()
-      );
-    };
-
     it("should open new transaction modal", async () => {
       const result = render(SnsWallet, props);
 
@@ -165,7 +132,7 @@ describe("SnsWallet", () => {
         expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
       );
 
-      await testModal({ result, testId: "open-new-sns-transaction" });
+      await testAccountsModal({ result, testId: "open-new-sns-transaction" });
 
       await waitFor(() => {
         expect(getByTestId("transaction-step-1")).toBeInTheDocument();
@@ -180,7 +147,7 @@ describe("SnsWallet", () => {
     it("should open receive modal", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-sns" });
+      await testAccountsModal({ result, testId: "receive-sns" });
 
       const { getByTestId } = result;
 
@@ -195,7 +162,7 @@ describe("SnsWallet", () => {
 
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-sns" });
+      await testAccountsModal({ result, testId: "receive-sns" });
 
       const { getByTestId, container } = result;
 
@@ -215,23 +182,17 @@ describe("SnsWallet", () => {
     it("should display receive modal information", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
-      await testModal({ result, testId: "receive-sns" });
+      await testAccountsModal({ result, testId: "receive-sns" });
 
       const { getByText } = result;
 
       const store = get(selectedUniverseStore);
 
-      const title = replacePlaceholders(en.wallet.sns_receive_note_title, {
+      const title = replacePlaceholders(en.wallet.token_address, {
         $tokenSymbol: store.summary?.token.symbol ?? "error-title-is-undefined",
       });
 
-      const description = replacePlaceholders(en.wallet.sns_receive_note_text, {
-        $tokenSymbol:
-          store.summary?.token.symbol ?? "error-description-is-undefined",
-      });
-
       expect(getByText(title)).toBeInTheDocument();
-      expect(getByText(description)).toBeInTheDocument();
     });
   });
 });

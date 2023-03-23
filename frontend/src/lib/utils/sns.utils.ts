@@ -195,11 +195,21 @@ export const getSwapCanisterAccount = ({
   return accountIdentifier;
 };
 
+/**
+ * Returns `undefined` if commitment is not loaded yet.
+ * Returns `BigInt(0)` if commitment is loaded but there is no ICP amount.
+ * Returns commitment e8s if commitment is defined.
+ */
 export const getCommitmentE8s = (
   swapCommitment?: SnsSwapCommitment | null
-): bigint | undefined =>
-  fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
-  undefined;
+): bigint | undefined => {
+  if (isNullish(swapCommitment) || isNullish(swapCommitment.myCommitment)) {
+    return undefined;
+  }
+  return (
+    fromNullable(swapCommitment.myCommitment.icp ?? [])?.amount_e8s ?? BigInt(0)
+  );
+};
 
 /**
  * Tests the error message against `refresh_buyer_token` canister function.

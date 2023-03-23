@@ -49,6 +49,8 @@ interface I18nError {
   sns_accounts_balance_load: string;
   icrc_token_load: string;
   list_proposals: string;
+  get_proposal: string;
+  wrong_proposal_id: string;
   list_canisters: string;
   missing_identity: string;
   rename_subaccount: string;
@@ -135,6 +137,7 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   launchpad: string;
+  settings: string;
 }
 
 interface I18nHeader {
@@ -233,6 +236,7 @@ interface I18nAccounts {
   network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
+  estimated_amount_received: string;
   receive_account: string;
 }
 
@@ -452,10 +456,7 @@ interface I18nWallet {
   no_transactions: string;
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
-  icp_receive_note_title: string;
-  icp_receive_note_text: string;
-  sns_receive_note_title: string;
-  sns_receive_note_text: string;
+  token_address: string;
 }
 
 interface I18nBusy_screen {
@@ -806,6 +807,7 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_amount_not_enough_stake_neuron: string;
+  sns_reload_no_universe: string;
 }
 
 interface I18nAuth_accounts {
@@ -884,10 +886,6 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  btc_receive_note_title: string;
-  ckbtc_receive_note_title: string;
-  btc_receive_note_text: string;
-  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
@@ -925,6 +923,13 @@ interface I18nFeature_flags_prompt {
   override_true: string;
   override_false: string;
   remove_override: string;
+}
+
+interface I18nSettings {
+  your_principal: string;
+  your_principal_description: string;
+  your_session: string;
+  your_session_description: string;
 }
 
 interface I18nNeuron_state {
@@ -1166,6 +1171,7 @@ interface I18n {
   ckbtc: I18nCkbtc;
   error__ckbtc: I18nError__ckbtc;
   feature_flags_prompt: I18nFeature_flags_prompt;
+  settings: I18nSettings;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

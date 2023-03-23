@@ -3,7 +3,7 @@
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
-    snsFiltesStore,
+    snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
   import type { Principal } from "@dfinity/principal";
@@ -15,7 +15,7 @@
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
-  $: filtersStore = $snsFiltesStore[rootCanisterId.toText()];
+  $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
   const openFilters = () => {
     modal = "status";

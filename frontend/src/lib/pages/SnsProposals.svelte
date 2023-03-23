@@ -18,6 +18,10 @@
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
+  import { snsFiltersStore } from "$lib/stores/sns-filters.store";
+  import { nonNullish } from "@dfinity/utils";
+  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+  import type { Principal } from "@dfinity/principal";
 
   onMount(async () => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
@@ -28,11 +32,12 @@
     }
   });
 
-  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+  let currentProjectCanisterId: Principal | undefined = undefined;
+  const unsubscribeProjectIdStore: Unsubscriber = snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
-      if (selectedProjectCanisterId !== undefined) {
+      currentProjectCanisterId = selectedProjectCanisterId;
+      if (nonNullish(selectedProjectCanisterId)) {
         await Promise.all([
-          loadSnsProposals({ rootCanisterId: selectedProjectCanisterId }),
           loadSnsNervousSystemFunctions(selectedProjectCanisterId),
           loadSnsFilters(selectedProjectCanisterId),
         ]);
@@ -40,7 +45,23 @@
     }
   );
 
-  onDestroy(unsubscribe);
+  const unsubscribeFiltersStore: Unsubscriber = snsFiltersStore.subscribe(
+    async (filters) => {
+      // First call will have `filters` as `undefined`.
+      // Once we have the initial filters, we load the proposals.
+      if (
+        nonNullish(currentProjectCanisterId) &&
+        nonNullish(filters[currentProjectCanisterId.toText()])
+      ) {
+        await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
+      }
+    }
+  );
+
+  onDestroy(() => {
+    unsubscribeProjectIdStore();
+    unsubscribeFiltersStore();
+  });
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
@@ -60,24 +81,21 @@
 
   // `undefined` means that we haven't loaded the proposals yet.
   let proposals: SnsProposalData[] | undefined;
-  $: proposals =
-    $snsOnlyProjectStore !== undefined
-      ? sortSnsProposalsById(
-          $snsProposalsStore[$snsOnlyProjectStore.toText()]?.proposals
-        )
-      : undefined;
+  $: proposals = nonNullish(currentProjectCanisterId)
+    ? sortSnsProposalsById(
+        $snsFilteredProposalsStore[currentProjectCanisterId.toText()]?.proposals
+      )
+    : undefined;
 
   let nsFunctions: SnsNervousSystemFunction[] | undefined;
-  $: nsFunctions =
-    $snsOnlyProjectStore !== undefined
-      ? $snsFunctionsStore[$snsOnlyProjectStore.toText()]?.nsFunctions
-      : undefined;
+  $: nsFunctions = nonNullish(currentProjectCanisterId)
+    ? $snsFunctionsStore[currentProjectCanisterId.toText()]?.nsFunctions
+    : undefined;
 
   let disableInfiniteScroll: boolean;
-  $: disableInfiniteScroll =
-    $snsOnlyProjectStore !== undefined
-      ? $snsProposalsStore[$snsOnlyProjectStore.toText()]?.completed ?? false
-      : false;
+  $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
+    ? $snsProposalsStore[currentProjectCanisterId.toText()]?.completed ?? false
+    : false;
 </script>
 
 <SnsProposalsList

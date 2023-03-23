@@ -1,4 +1,5 @@
 import {
+  queryProposal,
   queryProposals,
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
@@ -10,7 +11,11 @@ import {
   syncSnsNeurons,
 } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
+import {
+  snsProposalsStore,
+  type ProjectProposalData,
+} from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   getSnsNeuronState,
@@ -26,7 +31,12 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { fromDefinedNullable, isNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "../utils.services";
 
@@ -145,6 +155,7 @@ export const loadSnsProposals = async ({
   rootCanisterId: Principal;
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
+  const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
   return queryAndUpdate<SnsProposalData[], unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -152,6 +163,10 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
+          includeStatus:
+            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          // TODO: add filter by nervous function
+          // TODO: add filter by reward status
         },
         identity,
         certified,
@@ -170,6 +185,86 @@ export const loadSnsProposals = async ({
         labelKey: "error.list_proposals",
         err,
       });
+    },
+  });
+};
+
+const getProposalFromStoreById = ({
+  rootCanisterId,
+  proposalId,
+  certified,
+}: {
+  rootCanisterId: Principal;
+  proposalId: SnsProposalId;
+  certified: boolean;
+}): SnsProposalData | undefined => {
+  const projectProposalsData: ProjectProposalData =
+    get(snsProposalsStore)[rootCanisterId.toText()];
+  if (
+    !projectProposalsData?.certified &&
+    certified !== projectProposalsData?.certified
+  ) {
+    return undefined;
+  }
+  return projectProposalsData?.proposals.find(
+    ({ id }) => fromNullable(id)?.id === proposalId.id
+  );
+};
+
+/**
+ * Calls the callback `setProposal` with the proposal found by the `proposalId` or `undefined` if not found.
+ *
+ * - If proposal is in store and certified, it will be returned immediately.
+ * - Otherwise, use queryAndUpdate and call the callback with the result twice.
+ *
+ * @param {Object} params
+ * @param {Principal} params.rootCanisterId
+ * @param {SnsProposalId} params.proposalId
+ */
+export const getSnsProposalById = async ({
+  rootCanisterId,
+  proposalId,
+  setProposal,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  proposalId: SnsProposalId;
+  setProposal: (params: {
+    proposal: SnsProposalData;
+    certified: boolean;
+  }) => void;
+  handleError?: (err: unknown) => void;
+}): Promise<void> => {
+  const proposal = getProposalFromStoreById({
+    rootCanisterId,
+    proposalId,
+    certified: true,
+  });
+  if (nonNullish(proposal)) {
+    setProposal({ proposal, certified: true });
+    return;
+  }
+  return queryAndUpdate<SnsProposalData, unknown>({
+    identityType: "current",
+    request: ({ certified, identity }) =>
+      queryProposal({
+        proposalId,
+        identity,
+        certified,
+        rootCanisterId,
+      }),
+    onLoad: ({ response: proposal, certified }) => {
+      setProposal({ proposal, certified });
+    },
+    onError: (err) => {
+      toastsError({
+        labelKey: "error.get_proposal",
+        substitutions: {
+          $proposalId: proposalId.id.toString(),
+        },
+        err,
+      });
+      handleError?.(err);
     },
   });
 };

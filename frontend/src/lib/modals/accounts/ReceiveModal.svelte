@@ -14,7 +14,7 @@
   export let qrCodeLabel: string;
   export let logo: string;
   export let logoArialLabel: string;
-  export let reloadAccount: (() => Promise<void>) | undefined;
+  export let reload: (() => Promise<void>) | undefined;
   export let canSelectAccount: boolean;
 
   let qrCodeRendered = QR_CODE_RENDERED;
@@ -30,7 +30,7 @@
       initiator: "reload-receive-account",
     });
 
-    await reloadAccount?.();
+    await reload?.();
     dispatcher("nnsClose");
 
     stopBusy("reload-receive-account");
@@ -56,8 +56,7 @@
     logoSize="big"
     bind:qrCodeRendered
   >
-    <slot name="title" slot="title" />
-    <slot name="description" slot="description" />
+    <slot name="address-label" slot="address-label" />
   </ReceiveAddressQRCode>
 
   {#if modalRendered}

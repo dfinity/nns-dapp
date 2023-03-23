@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
-  import TransactionModal from "./NewTransaction/TransactionModal.svelte";
+  import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -12,11 +12,16 @@
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
   // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
+
+  let transactionInit: TransactionInit = {
+    sourceAccount: selectedAccount,
+  };
 
   let currentStep: WizardStep;
 
@@ -60,7 +65,7 @@
     bind:currentStep
     token={$snsTokenSymbolSelectedStore}
     transactionFee={$snsSelectedTransactionFeeStore}
-    sourceAccount={selectedAccount}
+    {transactionInit}
   >
     <svelte:fragment slot="title"
       >{title ?? $i18n.accounts.send}</svelte:fragment

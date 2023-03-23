@@ -44,6 +44,6 @@
     {disableButton}
     {canisters}
     account={$store.account}
-    {reloadAccount}
+    reload={reloadAccount}
   />
 </Footer>

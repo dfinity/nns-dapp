@@ -5,27 +5,41 @@
 import * as api from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import {
+  getSnsProposalById,
   loadSnsProposals,
   registerVote,
 } from "$lib/services/$public/sns-proposals.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import type { SnsProposalData } from "@dfinity/sns";
-import { SnsVote } from "@dfinity/sns";
+import { toastsStore } from "@dfinity/gix-components";
+import {
+  SnsProposalDecisionStatus,
+  SnsVote,
+  type SnsProposalData,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("sns-proposals services", () => {
+  beforeEach(() => {
+    snsFiltersStore.reset();
+    snsProposalsStore.reset();
+    toastsStore.reset();
+    jest.clearAllMocks();
+  });
   const proposal1: SnsProposalData = {
     ...mockSnsProposal,
     id: [{ id: BigInt(1) }],
@@ -46,6 +60,7 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
+        snsFiltersStore.reset();
         snsProposalsStore.reset();
         jest.clearAllMocks();
         jest
@@ -60,6 +75,7 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
+            includeStatus: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -77,6 +93,47 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: proposalId,
+            includeStatus: [],
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
+      it("should call queryProposals with selected decision status filters", async () => {
+        const proposalId = { id: BigInt(1) };
+        const rootCanisterId = mockPrincipal;
+        const decisionStatus = [
+          {
+            id: "1",
+            value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
+            name: "Adopted",
+            checked: true,
+          },
+          {
+            id: "2",
+            value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+            name: "Open",
+            checked: false,
+          },
+        ];
+        const selectedDecisionStatus = decisionStatus
+          .filter(({ checked }) => checked)
+          .map(({ value }) => value);
+        snsFiltersStore.setDecisionStatus({
+          rootCanisterId,
+          decisionStatus,
+        });
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: selectedDecisionStatus,
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -126,6 +183,7 @@ describe("sns-proposals services", () => {
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
+            includeStatus: [],
           },
           identity: mockIdentity,
           certified: false,
@@ -189,6 +247,217 @@ describe("sns-proposals services", () => {
           labelKey: "error__sns.sns_register_vote",
         })
       );
+    });
+  });
+
+  describe("getSnsProposalById", () => {
+    const rootCanisterId = mockPrincipal;
+    const proposalId = mockSnsProposal.id[0];
+
+    describe("not logged in", () => {
+      beforeEach(() => {
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      });
+
+      it("should use the proposal in store if certified and not call api", (done) => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        snsProposalsStore.setProposals({
+          rootCanisterId,
+          proposals: [mockSnsProposal],
+          certified: true,
+          completed: true,
+        });
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: ({ proposal }) => {
+            expect(queryProposalSpy).not.toBeCalledTimes(1);
+            expect(proposal).toEqual(mockSnsProposal);
+            done();
+          },
+        });
+      });
+
+      it("should not use the proposal in store if not certified and call api", (done) => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        snsProposalsStore.setProposals({
+          rootCanisterId,
+          proposals: [mockSnsProposal],
+          certified: false,
+          completed: true,
+        });
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: () => {
+            expect(queryProposalSpy).toBeCalledWith({
+              identity: new AnonymousIdentity(),
+              certified: false,
+              rootCanisterId,
+              proposalId,
+            });
+            expect(queryProposalSpy).toBeCalledTimes(1);
+            done();
+          },
+        });
+      });
+
+      it("should call api if store is empty", (done) => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: () => {
+            expect(queryProposalSpy).toBeCalledWith({
+              identity: new AnonymousIdentity(),
+              certified: false,
+              rootCanisterId,
+              proposalId,
+            });
+            expect(queryProposalSpy).toBeCalledTimes(1);
+            done();
+          },
+        });
+      });
+    });
+
+    describe("logged in", () => {
+      beforeEach(() => {
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe);
+      });
+
+      it("should use the proposal in store if certified and not call api", (done) => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        snsProposalsStore.setProposals({
+          rootCanisterId,
+          proposals: [mockSnsProposal],
+          certified: true,
+          completed: true,
+        });
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: ({ proposal }) => {
+            expect(queryProposalSpy).not.toBeCalledTimes(1);
+            expect(proposal).toEqual(mockSnsProposal);
+            done();
+          },
+        });
+      });
+
+      it("should not use the proposal in store if not certified and call api", async () => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        snsProposalsStore.setProposals({
+          rootCanisterId,
+          proposals: [mockSnsProposal],
+          certified: false,
+          completed: true,
+        });
+        let dataCertified = false;
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: ({ certified, proposal }) => {
+            if (certified) {
+              dataCertified = true;
+              expect(proposal).toEqual(mockSnsProposal);
+            }
+          },
+        });
+
+        await waitFor(() => expect(dataCertified).toBe(true));
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: false,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: true,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledTimes(2);
+      });
+
+      it("should call api if store is empty", async () => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        let dataCertified = false;
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: ({ certified }) => {
+            if (certified) {
+              dataCertified = true;
+            }
+          },
+        });
+        await waitFor(() => expect(dataCertified).toBe(true));
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: false,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: true,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledTimes(2);
+      });
+
+      it("should call handle error if api call fails", async () => {
+        jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
+        const handleErrorSpy = jest.fn();
+        const setProposalSpy = jest.fn();
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: setProposalSpy,
+          handleError: handleErrorSpy,
+        });
+
+        await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));
+      });
+
+      it("should show error if api call fails", async () => {
+        jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
+        const handleErrorSpy = jest.fn();
+        const setProposalSpy = jest.fn();
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          setProposal: setProposalSpy,
+          handleError: handleErrorSpy,
+        });
+
+        await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));
+        expect(get(toastsStore)[0]).toMatchObject({
+          level: "error",
+          text: replacePlaceholders(en.error.get_proposal, {
+            $proposalId: proposalId.id.toString(),
+          }),
+        });
+      });
     });
   });
 });

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import TransactionSource from "$lib/modals/accounts/NewTransaction/TransactionSource.svelte";
+import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
