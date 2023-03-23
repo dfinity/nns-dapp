@@ -11,6 +11,7 @@ use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
+use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
@@ -29,12 +30,15 @@ mod time;
 
 type Cycles = u128;
 
-#[export_name = "canister_init"]
-fn main() {
+#[init]
+fn init() {
     assets::init_assets();
 }
 
-#[export_name = "canister_pre_upgrade"]
+/// Redundant function, never called but reqired as this is main.rs.
+fn main() {}
+
+#[pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
         let bytes = s.encode();
@@ -42,7 +46,7 @@ fn pre_upgrade() {
     });
 }
 
-#[export_name = "canister_post_upgrade"]
+#[post_upgrade]
 fn post_upgrade() {
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.

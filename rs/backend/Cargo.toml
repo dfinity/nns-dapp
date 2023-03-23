@@ -27,6 +27,7 @@ hex = "0.4.3"
 chrono = "=0.4.19"
 
 ic-cdk = "0.7.3"
+ic-cdk-macros = "0.6.10"
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "21d3a113dc765b5e5803d9ad4dc68e14880ae6a0" }
