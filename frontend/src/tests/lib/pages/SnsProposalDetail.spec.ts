@@ -7,7 +7,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
-import * as snsGovernanceFake from "$tests/fakes/sns-governance-api.fake";
+import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -19,7 +19,7 @@ import { get } from "svelte/store";
 jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
-  snsGovernanceFake.install();
+  fakeSnsGovernanceApi.install();
 
   describe("not logged in", () => {
     const rootCanisterId = mockCanisterId;
@@ -34,7 +34,7 @@ describe("SnsProposalDetail", () => {
 
     it("should show skeleton while loading proposal", async () => {
       const proposalId = { id: BigInt(3) };
-      snsGovernanceFake.addProposalWith({
+      fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         id: [proposalId],
@@ -54,7 +54,7 @@ describe("SnsProposalDetail", () => {
 
     it("should render content once proposal is loaded", async () => {
       const proposalId = { id: BigInt(3) };
-      snsGovernanceFake.addProposalWith({
+      fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         id: [proposalId],
@@ -70,8 +70,10 @@ describe("SnsProposalDetail", () => {
         new JestPageObjectElement(container)
       );
       expect(po.getSkeletonDetails()).not.toBeNull();
+      expect(po.isContentLoaded()).toBe(false);
 
       await waitFor(() => expect(po.isContentLoaded()).toBe(true));
+      expect(po.getSkeletonDetails()).toBeNull();
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
