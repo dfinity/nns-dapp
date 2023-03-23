@@ -12,7 +12,7 @@
 
   const back = async () => {
     if (nonNullish(referrerPath)) {
-      // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back here
+      // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back there
       history.back();
       return;
     }
