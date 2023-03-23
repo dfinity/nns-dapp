@@ -61,9 +61,11 @@ jobs:
           echo "Approx num canisters: $num_canisters"
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
-        run: dfx canister install sns_aggregator --wasm out/sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install sns_aggregator --wasm out/sns_aggregator_dev.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
-        run: sleep 60
+        run: sleep 120
       - name: Get the latest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
