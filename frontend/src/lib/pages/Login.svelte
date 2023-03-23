@@ -13,7 +13,7 @@
 
   let signedIn = false;
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
+  onDestroy(authStore.subscribe(
     async ({ identity }: AuthStoreData) => {
       signedIn = isSignedIn(identity);
 
@@ -25,9 +25,7 @@
         replaceState: true,
       });
     }
-  );
-
-  onDestroy(unsubscribe);
+  ));
 </script>
 
 <LoginTitle />

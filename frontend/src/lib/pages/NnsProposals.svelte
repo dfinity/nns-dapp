@@ -104,7 +104,7 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
+  onDestroy(proposalsFiltersStore.subscribe(
     ({ lastAppliedFilter }) => {
       // We only want to display spinner and reset the proposals store if filters are modified by the user
       if (!initialized) {
@@ -127,11 +127,9 @@
 
       debounceFindProposals?.();
     }
-  );
+  ));
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
-
-  onDestroy(unsubscribe);
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches

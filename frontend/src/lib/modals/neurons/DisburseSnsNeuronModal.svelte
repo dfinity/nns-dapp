@@ -62,7 +62,7 @@
   $: destinationAddress = $snsProjectMainAccountStore?.identifier;
 
   // load project accounts if not available
-  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+  onDestroy(snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (
         selectedProjectCanisterId === undefined ||
@@ -75,9 +75,7 @@
       await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
       loading = false;
     }
-  );
-
-  onDestroy(unsubscribe);
+  ));
 
   const executeTransaction = async () => {
     startBusy({

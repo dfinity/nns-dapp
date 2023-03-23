@@ -50,7 +50,7 @@
       (votableNeurons().length > 0 &&
         isProposalDeadlineInTheFuture(proposalInfo)));
 
-  const unsubscribe = definedNeuronsStore.subscribe(() => {
+  onDestroy(definedNeuronsStore.subscribe(() => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -58,7 +58,7 @@
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
       votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
-  });
+  }));
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -76,8 +76,6 @@
           proposal: proposalId === proposalInfo.id ? proposalInfo : proposal,
         })),
     });
-
-  onDestroy(() => unsubscribe());
 
   // UI loader
   const neuronsStoreReady = (): boolean => {

@@ -28,7 +28,7 @@
 
   let loading = true;
 
-  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+  onDestroy(snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         loading = true;
@@ -44,9 +44,7 @@
         loading = false;
       }
     }
-  );
-
-  onDestroy(unsubscribe);
+  ));
 
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);

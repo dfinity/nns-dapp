@@ -40,9 +40,7 @@
     await syncAuth($authStore);
   });
 
-  const unsubscribeAuth = authStore.subscribe(syncAuth);
-
-  onDestroy(() => unsubscribeAuth());
+  onDestroy(authStore.subscribe(syncAuth));
 </script>
 
 <slot />

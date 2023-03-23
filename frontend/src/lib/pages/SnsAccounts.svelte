@@ -12,7 +12,7 @@
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
-  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
+  onDestroy(snsOnlyProjectStore.subscribe(
     async (selectedProjectCanisterId) => {
       if (selectedProjectCanisterId !== undefined) {
         // TODO: improve loading and use in memory sns neurons or load from backend
@@ -21,9 +21,7 @@
         loading = false;
       }
     }
-  );
-
-  onDestroy(unsubscribe);
+  ));
 </script>
 
 <div class="card-grid" data-tid="sns-accounts-body">
