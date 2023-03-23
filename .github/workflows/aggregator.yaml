@@ -12,9 +12,16 @@ jobs:
   curl_test:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
+    strategy:
+      matrix:
+        include:
+          - BUILD_NAME: "local"
+            DFX_NETWORK: "local"
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
       - name: Build sns-aggregator image
         uses: docker/build-push-action@v3
         with:
