@@ -22,6 +22,18 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build sns-aggregator image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=local
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: .
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
@@ -35,16 +47,6 @@ jobs:
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=local
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: .
       - name: Get test environment
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
