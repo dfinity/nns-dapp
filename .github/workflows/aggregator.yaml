@@ -51,7 +51,8 @@ jobs:
       - name: Get test environment
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
-          bin/dfx-state-install -f state.zip
+          dfx-state-install -f state.zip
+          dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
         run: dfx canister install sns_aggregator --wasm out/sns_aggregator_dev.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
