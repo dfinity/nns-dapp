@@ -38,7 +38,7 @@ jobs:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Mar 17 2023
-          ref: '73ba62d040c90c05b605f5708028efec7a2f5199'
+          ref: 'f4a5b18f84dd3b44b677d12a6088ddcfdd4edced'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
