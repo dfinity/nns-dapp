@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import * as snsSaleApi from "$lib/api/sns-sale.api";
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
@@ -16,15 +16,12 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
-  let snsSaleApiGetOpenTicketSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
+    snsTicketsStore.reset();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-    snsSaleApiGetOpenTicketSpy = jest
-      .spyOn(snsSaleApi, "getOpenTicket")
-      .mockResolvedValue(undefined);
   });
 
   it("should render subtitle", () => {
@@ -46,17 +43,26 @@ describe("ProjectStatusSection", () => {
   });
 
   it("should render project participate button", async () => {
+    const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
+    const { rootCanisterId } = summary;
     const { queryByTestId } = renderContextCmp({
-      summary: mockSnsFullProject.summary,
-      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      summary,
+      swapCommitment: undefined,
       Component: ProjectStatusSection,
     });
     expect(
       queryByTestId("sns-project-participate-button")
     ).not.toBeInTheDocument();
-    // Wait for the api call to return no ticket
-    await waitFor(() => expect(snsSaleApiGetOpenTicketSpy).toBeCalled());
-    expect(queryByTestId("sns-project-participate-button")).toBeInTheDocument();
+
+    snsTicketsStore.setTicket({
+      rootCanisterId,
+      ticket: null,
+    });
+    await waitFor(() =>
+      expect(
+        queryByTestId("sns-project-participate-button")
+      ).toBeInTheDocument()
+    );
   });
 
   it("should not render project participate button for adopted", () => {

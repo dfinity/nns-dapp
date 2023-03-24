@@ -70,7 +70,7 @@
     <div class="actions content-cell-details">
       {#if myCommitmentIcp !== undefined}
         <div>
-          <KeyValuePair>
+          <KeyValuePair testId="sns-user-commitment">
             <ProjectUserCommitmentLabel
               slot="key"
               summary={$projectDetailStore.summary}

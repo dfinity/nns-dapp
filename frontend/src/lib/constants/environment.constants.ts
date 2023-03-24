@@ -75,3 +75,5 @@ export const FORCE_CALL_STRATEGY: "query" | undefined = undefined;
 // We use a constant / environment variable here because we set it to `true` for test purpose.
 // Indeed, we are running the jest suite as if the QR code would be rendered because Jest as trouble loading the QR-code dependency and because the QR-code content is anyway covered by e2e snapshot testing in gix-cmp.
 export const QR_CODE_RENDERED = false;
+
+export const IS_TEST_ENV = process.env.NODE_ENV === "test";

@@ -76,6 +76,7 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   QR_CODE_RENDERED: true,
+  IS_TEST_ENV: true,
 }));
 
 global.localStorage = localStorageMock;
