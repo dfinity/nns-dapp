@@ -125,14 +125,25 @@ const initProposalsStore = () => {
  * - excludeVotedProposals: "Show only proposals you can still vote for"
  *
  */
+console.log('dskloetx initProposalsFiltersStore');
 const initProposalsFiltersStore = () => {
   const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
     key: storeLocalStorageKey.ProposalFilters,
     defaultValue: DEFAULT_PROPOSALS_FILTERS,
   });
 
+  let count = 0;
   return {
-    subscribe,
+    subscribe : (...args) => {
+      count++;
+      console.log('dskloetx subscribe', count);
+      const unsub = subscribe(...args);
+      return () => {
+        count--;
+        console.log('dskloetx unsubscribe', count);
+        unsub();
+      };
+    },
 
     filterTopics(topics: Topic[]) {
       update((filters: ProposalsFiltersStore) => ({

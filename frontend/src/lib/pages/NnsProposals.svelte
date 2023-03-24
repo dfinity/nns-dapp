@@ -104,8 +104,7 @@
     initialized = true;
   });
 
-  onDestroy(
-    proposalsFiltersStore.subscribe(({ lastAppliedFilter }) => {
+  const applyFilter = (lastAppliedFilter) => {
       // We only want to display spinner and reset the proposals store if filters are modified by the user
       if (!initialized) {
         return;
@@ -126,8 +125,9 @@
       proposalsStore.setProposals({ proposals: [], certified: undefined });
 
       debounceFindProposals?.();
-    })
-  );
+  };
+
+  $: applyFilter($proposalsFiltersStore.lastAppliedFilter);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
 
