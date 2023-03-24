@@ -51,6 +51,8 @@ jobs:
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           dfx-state-install -f state.zip
+          dfx-canister-set-id --canister_name nns-dapp --canister_id qsgjb-riaaa-aaaaa-aaaga-cai
+          dfx-canister-set-id --canister_name internet_identity --canister_id qhbym-qaaaa-aaaaa-aaafq-cai
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
