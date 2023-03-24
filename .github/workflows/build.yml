@@ -22,29 +22,35 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Build the nns-dapp
-        run: ./scripts/docker-build --network local # Note: This can be optimized by not building the nns-dapp
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
+          ref: 'b60a9bb045f0f0434057c7d11f4cde3a18abbc85'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=local
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: .
       - name: Get test environment
         run: |
-          cd "$HOME"
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
-          unzip state.zip
-          # TODO: Include these canister IDs in the state
-          dfx-canister-set-id --canister_name nns-dapp --canister_id qsgjb-riaaa-aaaaa-aaaga-cai
-          dfx-canister-set-id --canister_name sns_aggregator --canister_id qvhpv-4qaaa-aaaaa-aaagq-cai
+          dfx-state-install -f state.zip
+          dfx identity use snsdemo8
+          dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
           dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged

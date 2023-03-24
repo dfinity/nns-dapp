@@ -38,7 +38,7 @@ jobs:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Mar 17 2023
-          ref: 'b60a9bb045f0f0434057c7d11f4cde3a18abbc85'
+          ref: '73ba62d040c90c05b605f5708028efec7a2f5199'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -51,7 +51,7 @@ jobs:
       - name: Get test environment
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
-          dfx-state-install -f state.zip
+          dfx-state-install -f state.zip --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
