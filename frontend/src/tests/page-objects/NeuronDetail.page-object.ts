@@ -2,7 +2,6 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { nonNullish } from "@dfinity/utils";
 
 export class NeuronDetailPo extends BasePageObject {
   static readonly tid = "neuron-detail-component";
@@ -11,32 +10,33 @@ export class NeuronDetailPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): NeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${NeuronDetailPo.tid}]`);
-    return el && new NeuronDetailPo(el);
+  static under(element: PageObjectElement): NeuronDetailPo {
+    return new NeuronDetailPo(
+      element.querySelector(`[data-tid=${NeuronDetailPo.tid}]`)
+    );
   }
 
-  getNnsNeuronDetailPo(): NnsNeuronDetailPo | null {
+  getNnsNeuronDetailPo(): NnsNeuronDetailPo {
     return NnsNeuronDetailPo.under(this.root);
   }
 
-  getSnsNeuronDetailPo(): SnsNeuronDetailPo | null {
+  getSnsNeuronDetailPo(): SnsNeuronDetailPo {
     return SnsNeuronDetailPo.under(this.root);
   }
 
-  hasNnsNeuronDetailPo(): boolean {
-    return nonNullish(this.getNnsNeuronDetailPo());
+  hasNnsNeuronDetailPo(): Promise<boolean> {
+    return this.getNnsNeuronDetailPo().isPresent();
   }
 
-  hasSnsNeuronDetailPo(): boolean {
-    return nonNullish(this.getSnsNeuronDetailPo());
+  hasSnsNeuronDetailPo(): Promise<boolean> {
+    return this.getSnsNeuronDetailPo().isPresent();
   }
 
-  isContentLoaded() {
-    return (
-      this.getNnsNeuronDetailPo()?.isContentLoaded() ||
-      this.getSnsNeuronDetailPo()?.isContentLoaded() ||
-      false
-    );
+  async isContentLoaded(): Promise<boolean> {
+    const [nnsLoaded, snsLoaded] = await Promise.all([
+      this.getNnsNeuronDetailPo().isContentLoaded(),
+      this.getSnsNeuronDetailPo().isContentLoaded(),
+    ]);
+    return nnsLoaded || snsLoaded;
   }
 }

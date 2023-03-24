@@ -9,9 +9,8 @@ export class TooltipPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): TooltipPo | null {
-    const el = element.querySelector(`[data-tid=${TooltipPo.tid}]`);
-    return el && new TooltipPo(el);
+  static under(element: PageObjectElement): TooltipPo {
+    return new TooltipPo(element.querySelector(`[data-tid=${TooltipPo.tid}]`));
   }
 
   getText(): Promise<string> {

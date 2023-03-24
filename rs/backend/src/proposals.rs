@@ -61,7 +61,14 @@ pub struct InternetIdentityInit {
     pub assigned_user_number_range: Option<(AnchorNumber, AnchorNumber)>,
     pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
-    pub upgrade_persistent_state: Option<bool>,
+    pub register_rate_limit: Option<RateLimitConfig>,
+}
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct RateLimitConfig {
+    // time it takes for a rate limiting token to be replenished.
+    pub time_per_token_ns: u64,
+    // How many tokens are at most generated (to accommodate peaks).
+    pub max_tokens: u64,
 }
 /// Configuration parameters of the archive to be used on the next deployment.
 #[derive(CandidType, Serialize, Deserialize)]

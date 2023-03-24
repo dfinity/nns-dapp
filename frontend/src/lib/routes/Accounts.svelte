@@ -1,6 +1,7 @@
 <script lang="ts">
   import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
   import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     isCkBTCUniverseStore,
     isNnsUniverseStore,
@@ -90,25 +91,27 @@
     );
 </script>
 
-<main>
-  <SummaryUniverse />
+<TestIdWrapper testId="accounts-component">
+  <main>
+    <SummaryUniverse />
+
+    {#if $isNnsUniverseStore}
+      <NnsAccounts {goToWallet} />
+    {:else if $isCkBTCUniverseStore}
+      <CkBTCAccounts {goToWallet} />
+    {:else if nonNullish($snsProjectSelectedStore)}
+      <SnsAccounts {goToWallet} />
+    {/if}
+  </main>
 
   {#if $isNnsUniverseStore}
-    <NnsAccounts {goToWallet} />
+    <NnsAccountsFooter />
   {:else if $isCkBTCUniverseStore}
-    <CkBTCAccounts {goToWallet} />
+    <CkBTCAccountsFooter />
   {:else if nonNullish($snsProjectSelectedStore)}
-    <SnsAccounts {goToWallet} />
+    <SnsAccountsFooter />
   {/if}
-</main>
-
-{#if $isNnsUniverseStore}
-  <NnsAccountsFooter />
-{:else if $isCkBTCUniverseStore}
-  <CkBTCAccountsFooter />
-{:else if nonNullish($snsProjectSelectedStore)}
-  <SnsAccountsFooter />
-{/if}
+</TestIdWrapper>
 
 {#if $isCkBTCUniverseStore}
   <CkBTCAccountsModals />

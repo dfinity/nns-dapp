@@ -994,27 +994,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dfn_json"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
-dependencies = [
- "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "dfn_macro"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
-dependencies = [
- "proc-macro2",
- "quote",
- "rustversion",
- "syn",
-]
-
-[[package]]
 name = "dfn_protobuf"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0#21d3a113dc765b5e5803d9ad4dc68e14880ae6a0"
@@ -1627,7 +1606,7 @@ checksum = "c98b304a2657bad15bcb547625a018e13cf596676d834cfd93023395a6e2e03a"
 dependencies = [
  "candid",
  "cfg-if 1.0.0",
- "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk-macros 0.6.10",
  "ic0 0.18.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_bytes",
@@ -1641,7 +1620,7 @@ dependencies = [
  "candid",
  "cfg-if 1.0.0",
  "futures",
- "ic-cdk-macros 0.6.8 (git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a)",
+ "ic-cdk-macros 0.6.8",
  "ic0 0.18.9 (git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a)",
  "serde",
  "serde_bytes",
@@ -1655,7 +1634,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "774b653cecdd15b6ae0731cce9e655b9cb2489b88458fd80a5b48aace55dfc1d"
 dependencies = [
  "candid",
- "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk-macros 0.6.10",
  "ic0 0.18.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_bytes",
@@ -1664,8 +1643,7 @@ dependencies = [
 [[package]]
 name = "ic-cdk-macros"
 version = "0.6.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb423dab7c5bf19d4abccabd2ffe35e09b9dde611d478ea3afe0347b50fa727f"
+source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
 dependencies = [
  "candid",
  "proc-macro2",
@@ -1677,8 +1655,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.6.8"
-source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
+version = "0.6.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebf50458685a0fc6b0e414cdba487610aeb199ac94db52d9fd76270565debee7"
 dependencies = [
  "candid",
  "proc-macro2",
@@ -2137,7 +2116,7 @@ dependencies = [
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-canisters-http-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk-macros 0.6.10",
  "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-icrc1-ledger",
  "ic-metrics-encoder",
@@ -2159,7 +2138,7 @@ dependencies = [
  "ic-canister-log 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-canisters-http-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk-macros 0.6.10",
  "ic-crypto-tree-hash",
  "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-icrc1-client",
@@ -3178,13 +3157,12 @@ dependencies = [
  "cycles-minting-canister",
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
- "dfn_json",
- "dfn_macro",
  "dfn_protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "futures",
  "hex",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-cdk 0.7.3",
+ "ic-cdk-macros 0.6.10",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
@@ -4308,7 +4286,7 @@ dependencies = [
  "candid",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
  "ic-cdk 0.6.10 (git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a)",
- "ic-cdk-macros 0.6.8 (git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a)",
+ "ic-cdk-macros 0.6.8",
  "ic-certified-map 0.3.2",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",

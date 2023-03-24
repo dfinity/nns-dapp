@@ -42,7 +42,6 @@ export type BusyStateInitiatorType =
   | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
   | "load-sns-accounts"
-  | "get-btc-address"
   | "update-ckbtc-balance"
   | "reload-receive-account";
 

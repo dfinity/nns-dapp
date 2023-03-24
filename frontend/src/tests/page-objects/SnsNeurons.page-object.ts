@@ -10,25 +10,28 @@ export class SnsNeuronsPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): SnsNeuronsPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronsPo.tid}]`);
-    return el && new SnsNeuronsPo(el);
+  static under(element: PageObjectElement): SnsNeuronsPo {
+    return new SnsNeuronsPo(
+      element.querySelector(`[data-tid=${SnsNeuronsPo.tid}]`)
+    );
   }
 
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  getNeuronCardPos(): SnsNeuronCardPo[] {
+  getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
     return SnsNeuronCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
   }
 
-  getNeuronIds(): Promise<string[]> {
-    const cards = this.getNeuronCardPos();
+  async getNeuronIds(): Promise<string[]> {
+    const cards = await this.getNeuronCardPos();
     return Promise.all(cards.map((card) => card.getNeuronId()));
   }
 }

@@ -6,4 +6,8 @@ export class BasePageObject {
   constructor(root: PageObjectElement) {
     this.root = root;
   }
+
+  isPresent(): Promise<boolean> {
+    return this.root.isPresent();
+  }
 }
