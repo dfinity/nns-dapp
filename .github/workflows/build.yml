@@ -40,7 +40,7 @@ jobs:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
           # Version from Mar 17 2023
-          ref: 'eb219d5c4dc5f5b3511573f5494a6657447b8ff9'
+          ref: '1825d0ec57bf64aef38bfb1f5cadee6ddc710953'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -51,14 +51,12 @@ jobs:
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
           dfx-state-install -f state.zip
-          dfx-canister-set-id --canister_name nns-dapp --canister_id qsgjb-riaaa-aaaaa-aaaga-cai
-          dfx-canister-set-id --canister_name internet_identity --canister_id qhbym-qaaaa-aaaaa-aaafq-cai
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode upgrade
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode upgrade
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
