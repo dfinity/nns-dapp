@@ -101,15 +101,20 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the first page of data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          curl --retry 5 -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json || {
+            echo "ERROR: Failed to get data."
+            scripts/sns/aggregator/get_log
+          }
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the second page of data from the sns aggregator
         run: |
