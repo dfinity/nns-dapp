@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 defaults:
   run:
-    shell: bash
+    shell: bash -euxlo pipefail {0}
 jobs:
   curl_test:
     runs-on: ubuntu-20.04
@@ -83,6 +83,7 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Make the aggregator collect data slowly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
