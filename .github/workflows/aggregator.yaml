@@ -12,43 +12,26 @@ jobs:
   curl_test:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
+    strategy:
+      matrix:
+        include:
+          - BUILD_NAME: "local"
+            DFX_NETWORK: "local"
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
-      # Cache based on the Cargo.lock
-      # The cache key is always an exact match or no match (i.e. no
-      # "restore-keys"-style matching). Because (in case of an exact match)
-      # GitHub actions won't (re-)upload the cache after the build, it means that
-      # our cache won't just grow forever.
-      - uses: actions/cache@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build sns-aggregator image
+        uses: docker/build-push-action@v3
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-      # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/ic-cdk-optimizer
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
-      - name: Install Software
-        run: |
-          ./scripts/setup --profile ~/.bashrc
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      # Helps with debugging
-      - name: Versions
-        run: |
-          set -x
-          dfx --version
-          node --version
-          npm --version
-          rustc --version
-          cargo --version
-          ic-cdk-optimizer --version
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
@@ -64,6 +47,7 @@ jobs:
           dfx-sns-demo-install
       - name: Deploy NNS and SNS canisters
         run: |
+          cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
           ./scripts/deploy-snsdemo-testnet --verbose
       - name: Make the aggregator collect data quickly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
@@ -101,15 +85,20 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the first page of data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          curl --retry 5 -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json || {
+            echo "ERROR: Failed to get data."
+            scripts/sns/aggregator/get_log
+          }
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the second page of data from the sns aggregator
         run: |
