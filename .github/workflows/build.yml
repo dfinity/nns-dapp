@@ -51,13 +51,6 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
-      - name: Install tools
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install
-          dfx cache install
-        env:
-          GH_TOKEN: ${{ github.token }}
       # Helps with debugging
       - name: Versions
         run: |
@@ -81,6 +74,7 @@ jobs:
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
+          dfx cache install
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
       - uses: actions/setup-node@v3
