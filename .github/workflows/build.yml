@@ -55,8 +55,8 @@ jobs:
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
