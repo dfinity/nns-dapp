@@ -57,7 +57,7 @@ jobs:
         run: |
           dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes
           dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
-          curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/download/release-${II_RELEASE}/internet_identity_dev.wasm" -o internet_identity_dev.wasm
+          curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
           dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
       - name: Basic downgrade-upgrade test
         run: |
