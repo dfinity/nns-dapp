@@ -50,6 +50,7 @@ jobs:
           # - The current code for the nns-dapp
           # - The II version specified in dfx.json
           # - Functional SNS canisters
+          ls -l
           ./scripts/dfx-nns-deploy-custom --features sns
       - name: Basic downgrade-upgrade test
         run: |
