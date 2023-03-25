@@ -16,9 +16,6 @@ clap.define short=f long=features desc="The feature set you would like in the te
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-: "Make sure that old wasms are purged"
-rm -f nns-dapp.wasm nns-dapp_local.wasm
-
 : "Inject the nns-dapp into the wasm cache."
 "$SOURCE_DIR"/dfx-software-nd-cache
 
