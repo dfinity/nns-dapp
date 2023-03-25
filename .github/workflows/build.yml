@@ -78,6 +78,11 @@ jobs:
       - name: Install SNS script dependencies
         run: |
           dfx-sns-demo-install
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Deploy NNS and SNS canisters
         run: |
           # Note: This deploys standard NNS canisters but with:
