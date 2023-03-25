@@ -51,10 +51,13 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
-      - name: Install Software
+      - name: Install tools
         run: |
-          ./scripts/setup --profile ~/.bashrc
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install
+          dfx cache install
+        env:
+          GH_TOKEN: ${{ github.token }}
       # Helps with debugging
       - name: Versions
         run: |
