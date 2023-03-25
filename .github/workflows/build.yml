@@ -1,8 +1,4 @@
-# A Native build
-# XXX: This makes some of 'checks.yml' redundant. This will be fixed as soon as
-# we have end-to-end tests working.
-# https://dfinity.atlassian.net/browse/L2-191
-name: Native build
+name: E2e test
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -13,8 +9,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-env:
-  NNS_CACHING_KEY: dv-0004
 jobs:
   build:
     runs-on: ubuntu-20.04
