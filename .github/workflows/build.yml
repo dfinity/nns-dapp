@@ -31,6 +31,14 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
+      - name: Install Software
+        run: |
+          ./scripts/setup --profile ~/.bashrc
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      # Helps with debugging
+      - name: Versions
+        run: |
+          dfx --version
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
