@@ -68,6 +68,8 @@ jobs:
           then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
+      - name: Rename nns-dapp.wasm for upload
+        run: cp nns-dapp.wasm nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
