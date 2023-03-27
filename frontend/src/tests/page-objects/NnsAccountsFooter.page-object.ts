@@ -10,9 +10,7 @@ export class NnsAccountsFooterPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): NnsAccountsFooterPo {
-    return new NnsAccountsFooterPo(
-      element.querySelector(`[data-tid=${NnsAccountsFooterPo.tid}]`)
-    );
+    return new NnsAccountsFooterPo(element.byTestId(NnsAccountsFooterPo.tid));
   }
 
   getSendButtonPo(): ButtonPo {

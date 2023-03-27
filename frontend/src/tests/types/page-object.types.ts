@@ -5,6 +5,8 @@
 export interface PageObjectElement {
   querySelector(selector: string): PageObjectElement;
   querySelectorAll(selector: string): Promise<PageObjectElement[]>;
+  byTestId(tid: string): PageObjectElement;
+  allByTestId(tid: string): Promise<PageObjectElement[]>;
   isPresent(): Promise<boolean>;
   getText(): Promise<string | null>;
   click(): Promise<void>;

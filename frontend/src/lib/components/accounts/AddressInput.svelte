@@ -45,6 +45,7 @@
   <svelte:fragment slot="inner-end">
     {#if qrCode}
       <button
+        type="button"
         data-tid="address-qr-code-scanner"
         class="icon-only"
         on:click|stopPropagation={onClickQRCode}

@@ -10,9 +10,7 @@ export class AmountDisplayPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): AmountDisplayPo {
-    return new AmountDisplayPo(
-      element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`)
-    );
+    return new AmountDisplayPo(element.byTestId(AmountDisplayPo.tid));
   }
 
   async getAmount(): Promise<string> {

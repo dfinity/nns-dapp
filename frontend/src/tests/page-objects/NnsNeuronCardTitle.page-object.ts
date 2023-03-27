@@ -8,9 +8,7 @@ export class NnsNeuronCardTitlePo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): NnsNeuronCardTitlePo {
-    return new NnsNeuronCardTitlePo(
-      element.querySelector(`[data-tid=${NnsNeuronCardTitlePo.tid}]`)
-    );
+    return new NnsNeuronCardTitlePo(element.byTestId(NnsNeuronCardTitlePo.tid));
   }
 
   getNeuronId(): Promise<string> {

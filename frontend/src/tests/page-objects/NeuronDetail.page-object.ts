@@ -11,9 +11,7 @@ export class NeuronDetailPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): NeuronDetailPo {
-    return new NeuronDetailPo(
-      element.querySelector(`[data-tid=${NeuronDetailPo.tid}]`)
-    );
+    return new NeuronDetailPo(element.byTestId(NeuronDetailPo.tid));
   }
 
   getNnsNeuronDetailPo(): NnsNeuronDetailPo {

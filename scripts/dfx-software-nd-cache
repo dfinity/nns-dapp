@@ -3,7 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
-	Builds the nns-dapp wasm and installs it in the dfx cache.
+	Installs the nns-dapp wasm in the dfx cache.
 
 	Note: Doing this will set the nns-dapp version deployed by 'dfx nns install'
 	      to the version in the current codebase.  Our version is usually
@@ -23,9 +23,6 @@ LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
 : "Set the canister ID"
 : "Note: This should be the canister ID used by dfx nns install.  That, in turn, should soon match production.  But not yet."
 "$SOURCE_DIR/dfx-canister-set-id" --network local --canister_name nns-dapp --canister_id "qsgjb-riaaa-aaaaa-aaaga-cai"
-
-: "Build the wasm"
-dfx build nns-dapp
 
 : "Put the wasm into the cache, for use by 'dfx nns install'"
 mkdir -p "$DFX_WASMS_DIR"

@@ -1,7 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
-
+import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AccountsPo extends BasePageObject {
   static readonly tid = "accounts-component";
@@ -11,9 +11,11 @@ export class AccountsPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): AccountsPo | null {
-    return new AccountsPo(
-      element.querySelector(`[data-tid=${AccountsPo.tid}]`)
-    );
+    return new AccountsPo(element.byTestId(AccountsPo.tid));
+  }
+
+  getNnsAccountsPo(): NnsAccountsPo {
+    return NnsAccountsPo.under(this.root);
   }
 
   getNnsAccountsFooterPo(): NnsAccountsFooterPo {

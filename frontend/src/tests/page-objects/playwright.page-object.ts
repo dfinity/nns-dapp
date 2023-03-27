@@ -16,6 +16,22 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return new PlaywrightPageObjectElement(this.locator.locator(selector));
   }
 
+  async querySelectorAll(
+    selector: string
+  ): Promise<PlaywrightPageObjectElement[]> {
+    return (await this.locator.locator(selector).all()).map(
+      (locator) => new PlaywrightPageObjectElement(locator)
+    );
+  }
+
+  byTestId(tid: string): PlaywrightPageObjectElement {
+    return this.querySelector(`[data-tid=${tid}]`);
+  }
+
+  allByTestId(tid: string): Promise<PlaywrightPageObjectElement[]> {
+    return this.querySelectorAll(`[data-tid=${tid}]`);
+  }
+
   getText(): Promise<string> {
     return this.locator.textContent();
   }

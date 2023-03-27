@@ -11,9 +11,7 @@ export class SnsNeuronInfoStakePo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): SnsNeuronInfoStakePo {
-    return new SnsNeuronInfoStakePo(
-      element.querySelector(`[data-tid=${SnsNeuronInfoStakePo.tid}]`)
-    );
+    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.tid));
   }
 
   private getButton(testId: string): ButtonPo {
