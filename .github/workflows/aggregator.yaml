@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 defaults:
   run:
-    shell: bash
+    shell: bash -euxlo pipefail {0}
 jobs:
   curl_test:
     runs-on: ubuntu-20.04
@@ -62,6 +62,7 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Make the aggregator collect data slowly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
@@ -80,15 +81,20 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the first page of data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          curl --retry 5 -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json || {
+            echo "ERROR: Failed to get data."
+            scripts/sns/aggregator/get_log
+          }
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the second page of data from the sns aggregator
         run: |
