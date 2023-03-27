@@ -34,6 +34,16 @@ describe("ProposalSystemInfoSection", () => {
     name: testNervousFunctionName,
   };
 
+  const renderComponent = async (props) => {
+    const { container } = render(ProposalSystemInfoSection, { props });
+
+    await runResolvedPromises();
+
+    return SnsProposalSystemInfoSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     snsFunctionsStore.reset();
@@ -79,46 +89,25 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render topic as title", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
-
-      await runResolvedPromises();
+      const po = await renderComponent(props);
 
       expect(await po.getTitleText()).toEqual(testNervousFunctionName);
     });
 
     it("should render type info from the nervous function", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
-
-      await runResolvedPromises();
+      const po = await renderComponent(props);
 
       expect(await po.getTypeText()).toBe(testNervousFunctionName);
     });
 
     it("should render topic info from the nervous function", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
-
-      await runResolvedPromises();
+      const po = await renderComponent(props);
 
       expect(await po.getTopicText()).toBe(testNervousFunctionName);
     });
 
     it("should render open status", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getDecisionStatusText()).toBe(
         en.sns_status[SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN]
@@ -126,21 +115,13 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render reward status info", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getRewardStatusText()).toBe(rewardStatusString);
     });
 
     it("should render created timestamp", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getCreatedText()).toBe(
         secondsToDateTime(proposal_creation_timestamp_seconds)
@@ -148,11 +129,7 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should not render any timestamps", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getDecidedText()).toBeNull();
       expect(await po.getExecutedText()).toBeNull();
@@ -160,11 +137,7 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render proposer info", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getProposerText()).toContain(
         shortenWithMiddleEllipsis(subaccountToHexString(proposer.id))
@@ -184,11 +157,7 @@ describe("ProposalSystemInfoSection", () => {
       rootCanisterId,
     };
     it("should render adopted status", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getDecisionStatusText()).toBe(
         en.sns_status[
@@ -198,11 +167,7 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render decided timestamp", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getDecidedText()).toBe(
         secondsToDateTime(adoptedProposal.decided_timestamp_seconds)
@@ -222,11 +187,7 @@ describe("ProposalSystemInfoSection", () => {
       rootCanisterId,
     };
     it("should render executed status", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getDecisionStatusText()).toBe(
         en.sns_status[
@@ -236,11 +197,7 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render executed timestamp", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getExecutedText()).toBe(
         secondsToDateTime(executedProposal.executed_timestamp_seconds)
@@ -259,12 +216,9 @@ describe("ProposalSystemInfoSection", () => {
       proposal: failedProposal,
       rootCanisterId,
     };
-    it("should render failed status", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
 
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+    it("should render failed status", async () => {
+      const po = await renderComponent(props);
 
       expect(await po.getDecisionStatusText()).toBe(
         en.sns_status[SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]
@@ -272,11 +226,7 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render fialed timestamp", async () => {
-      const { container } = render(ProposalSystemInfoSection, { props });
-
-      const po = SnsProposalSystemInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent(props);
 
       expect(await po.getFailedText()).toBe(
         secondsToDateTime(failedProposal.failed_timestamp_seconds)
