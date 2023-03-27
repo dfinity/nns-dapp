@@ -41,8 +41,6 @@ jobs:
         run: |
           dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
           dfx-software-idl2json-install
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Get test environment
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
@@ -50,11 +48,15 @@ jobs:
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
-        run: dfx canister install sns_aggregator --wasm out/sns_aggregator_dev.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+        run: |
+          cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Make the aggregator collect data quickly
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
         run: sleep 120
+          # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+          # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -97,7 +99,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm out/sns_aggregator_dev.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
       - name: Expect the first page of data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -130,7 +132,7 @@ jobs:
           git fetch --depth 1 origin tag aggregator-prod
           diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
           if test -n "${diff:-}"
-          then ./scripts/sns/aggregator/downgrade-upgrade-test -w out/sns_aggregator_dev.wasm --verbose
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Stop replica
