@@ -7,7 +7,7 @@
   export let url: string | undefined;
 </script>
 
-<div class="content-cell-island">
+<div class="content-cell-island" data-tid="proposal-proposer-info-component">
   <h2 class="content-cell-title" data-tid="proposal-proposer-info-title">
     {$i18n.proposal_detail.summary}
   </h2>
@@ -18,7 +18,12 @@
         <h1>{title ?? ""}</h1>
 
         {#if url}
-          <a target="_blank" href={url} rel="noopener noreferrer">{url}</a>
+          <a
+            target="_blank"
+            href={url}
+            rel="noopener noreferrer"
+            data-tid="proposal-proposer-info-url">{url}</a
+          >
         {/if}
       </svelte:fragment>
     </ProposalSummary>

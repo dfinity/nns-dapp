@@ -8,7 +8,7 @@
   $: showTitle = $$slots.title !== undefined;
 </script>
 
-<div class="markdown">
+<div class="markdown" data-tid="proposal-summary-component">
   {#if showTitle}
     <div class="title"><slot name="title" /></div>
 
