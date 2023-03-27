@@ -144,8 +144,8 @@
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let enableWatchers = false;
-  $: enableWatchers =
+  let enableOpenProjectWatchers = false;
+  $: enableOpenProjectWatchers =
     $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
 
   let swapCanisterId: Principal | undefined;
@@ -171,7 +171,7 @@
       forceFetch: false,
     });
 
-    if (enableWatchers) {
+    if (enableOpenProjectWatchers) {
       unsubscribeWatchCommitment?.();
       unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
 
@@ -192,15 +192,12 @@
   let userCommitment: undefined | bigint;
   $: userCommitment = getCommitmentE8s($projectDetailStore.swapCommitment);
   let progressStep: SaleStep | undefined = undefined;
-  $: {
-    if (nonNullish(progressStep) && progressStep === SaleStep.DONE) {
-      // Leave some time to the user to see the final step being done
-      setTimeout(() => {
-        progressStep = undefined;
-      }, 1000);
-    }
+  $: if (nonNullish(progressStep) && progressStep === SaleStep.DONE) {
+    // Leave some time to the user to see the final step being done
+    setTimeout(() => {
+      progressStep = undefined;
+    }, 1000);
   }
-
   // skip ticket update if
   // - the sns is not open
   // - the user is not sign in
