@@ -2,8 +2,8 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
 // Don't extend BasePageObject to avoid circular dependency with
-// BasePageObject.getButton().
-export class ButtonPo {
+// BasePageObject.getInput().
+export class InputPo {
   readonly root: PageObjectElement;
 
   private constructor(root: PageObjectElement) {
@@ -16,18 +16,14 @@ export class ButtonPo {
   }: {
     element: PageObjectElement;
     testId?: string;
-  }): ButtonPo {
+  }): InputPo {
     if (isNullish(testId)) {
-      return new ButtonPo(element.querySelector("button"));
+      return new InputPo(element.querySelector("input"));
     }
-    return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
+    return new InputPo(element.querySelector(`input[data-tid=${testId}]`));
   }
 
-  isPresent(): Promise<boolean> {
-    return this.root.isPresent();
-  }
-
-  click(): Promise<void> {
-    return this.root.click();
+  type(text: string): Promise<void> {
+    return this.root.type(text);
   }
 }

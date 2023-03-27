@@ -1,5 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { type Locator, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 export class PlaywrightPageObjectElement implements PageObjectElement {
   readonly locator: Locator;
@@ -40,7 +40,19 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return (await this.locator.count()) > 0;
   }
 
+  waitFor(): Promise<void> {
+    return this.locator.waitFor();
+  }
+
+  waitForAbsent(): Promise<void> {
+    return expect(this.locator).toHaveCount(0);
+  }
+
   click(): Promise<void> {
     return this.locator.click();
+  }
+
+  type(text: string): Promise<void> {
+    return this.locator.type(text);
   }
 }
