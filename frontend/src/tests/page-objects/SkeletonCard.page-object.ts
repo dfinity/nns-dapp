@@ -8,8 +8,8 @@ export class SkeletonCardPo extends BasePageObject {
   }
 
   static async allUnder(element: PageObjectElement): Promise<SkeletonCardPo[]> {
-    return Array.from(
-      await element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
-    ).map((el) => new SkeletonCardPo(el));
+    return Array.from(await element.allByTestId(SkeletonCardPo.tid)).map(
+      (el) => new SkeletonCardPo(el)
+    );
   }
 }
