@@ -18,10 +18,8 @@ export class ProposalProposerInfoSectionPo extends BasePageObject {
     return this.root.querySelector("h1").getText();
   }
 
-  getUrlText(): Promise<string> {
-    return this.root
-      .querySelector("[data-tid='proposal-proposer-info-url']")
-      .getText();
+  getProposalUrlText(): Promise<string> {
+    return this.root.byTestId("proposal-proposer-info-url").getText();
   }
 
   hasContent(): Promise<boolean> {

@@ -57,7 +57,7 @@ describe("SnsProposalSummarySection", () => {
       const po = ProposalProposerInfoSectionPo.under(
         new JestPageObjectElement(container)
       );
-      expect(await po.getUrlText()).toBe(url);
+      expect(await po.getProposalUrlText()).toBe(url);
     });
   });
 
