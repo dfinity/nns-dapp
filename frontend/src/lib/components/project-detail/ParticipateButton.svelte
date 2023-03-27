@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
-  import { getContext, onDestroy } from "svelte";
+  import { getContext } from "svelte";
   import { BottomSheet } from "@dfinity/gix-components";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
@@ -16,32 +16,19 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import {
-    cancelPollGetOpenTicket,
-    hidePollingToast,
-    restoreSnsSaleParticipation,
-  } from "$lib/services/sns-sale.services";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import {
-    getCommitmentE8s,
-    hasOpenTicketInProcess,
-  } from "$lib/utils/sns.utils";
+  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import type { TicketStatus } from "$lib/types/sale";
-  import type { SaleStep } from "$lib/types/sale";
-  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
 
-  const { store: projectDetailStore, reload } =
-    getContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY);
+  const { store: projectDetailStore } = getContext<ProjectDetailContext>(
+    PROJECT_DETAIL_CONTEXT_KEY
+  );
 
   let lifecycle: number;
-  let swapCanisterId: Principal;
   $: ({
     swap: { lifecycle },
-    swapCanisterId,
   } =
     $projectDetailStore.summary ??
     ({
@@ -58,19 +45,12 @@
     swapCommitment: $projectDetailStore.swapCommitment,
   });
 
-  let userCommitment: undefined | bigint;
-  $: userCommitment =
-    // swapCommitment=null - not initialized yet
-    $projectDetailStore.swapCommitment === null
-      ? undefined
-      : getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
-
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  // busy if open ticket is available or not requested
+  // TODO: Receive this as props
   let status: TicketStatus = "unknown";
   $: ({ status } = hasOpenTicketInProcess({
     rootCanisterId,
@@ -80,71 +60,9 @@
   let busy = true;
   $: busy = status !== "none";
 
-  // Flag to avoid second getOpenTicket call on same page navigation
-  let loadingTicketRootCanisterId: string | undefined;
-
-  let progressStep: SaleStep | undefined = undefined;
-
-  const updateTicket = async (swapCanisterId: Principal) => {
-    // Avoid second call for the same rootCanisterId
-    if (
-      rootCanisterId === undefined ||
-      loadingTicketRootCanisterId === rootCanisterId.toText()
-    ) {
-      return;
-    }
-    if (isNullish(userCommitment)) {
-      // Typescript guard, user commitment cannot be undefined here
-      return;
-    }
-    loadingTicketRootCanisterId = rootCanisterId.toText();
-
-    const updateProgress = (step: SaleStep) => (progressStep = step);
-
-    await restoreSnsSaleParticipation({
-      rootCanisterId,
-      userCommitment,
-      swapCanisterId,
-      postprocess: reload,
-      updateProgress,
-    });
-  };
-
-  // skip ticket update if
-  // - the sns is not open
-  // - the user is not sign in
-  // - user commitment information is not loaded
-  // - project swap canister id is not loaded, needed for the ticket call
-  $: if (
-    lifecycle === SnsSwapLifecycle.Open &&
-    isSignedIn($authStore.identity) &&
-    nonNullish(userCommitment) &&
-    nonNullish(swapCanisterId)
-  ) {
-    updateTicket(swapCanisterId);
-  }
-
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
-  });
-
-  onDestroy(() => {
-    if (rootCanisterId === undefined) {
-      return;
-    }
-
-    // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
-    snsTicketsStore.setTicket({
-      rootCanisterId,
-      ticket: undefined,
-    });
-    // TODO: Improve cancellatoin of actions onDestroy
-    // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
-    cancelPollGetOpenTicket();
-
-    // Hide toasts when moving away from the page
-    hidePollingToast();
   });
 </script>
 
@@ -187,10 +105,6 @@
       </SignInGuard>
     </div>
   </BottomSheet>
-{/if}
-
-{#if status === "open" && nonNullish(progressStep)}
-  <SaleInProgressModal {progressStep} />
 {/if}
 
 {#if showModal}
