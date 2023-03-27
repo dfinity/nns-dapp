@@ -9,8 +9,6 @@ export class SkeletonDetailsPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): SkeletonDetailsPo | null {
-    return new SkeletonDetailsPo(
-      element.querySelector(`[data-tid=${SkeletonDetailsPo.tid}]`)
-    );
+    return new SkeletonDetailsPo(element.byTestId(SkeletonDetailsPo.tid));
   }
 }

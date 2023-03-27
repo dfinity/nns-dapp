@@ -10,7 +10,7 @@ export class HashPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): HashPo {
-    return new HashPo(element.querySelector(`[data-tid=${HashPo.tid}]`));
+    return new HashPo(element.byTestId(HashPo.tid));
   }
 
   getTooltipPo(): TooltipPo {

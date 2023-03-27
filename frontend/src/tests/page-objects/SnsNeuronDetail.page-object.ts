@@ -10,9 +10,7 @@ export class SnsNeuronDetailPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): SnsNeuronDetailPo {
-    return new SnsNeuronDetailPo(
-      element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`)
-    );
+    return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.tid));
   }
 
   getSkeletonCardPos(): Promise<SkeletonCardPo[]> {

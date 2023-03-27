@@ -16,6 +16,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return new PlaywrightPageObjectElement(this.locator.locator(selector));
   }
 
+  byTestId(tid: string): PlaywrightPageObjectElement {
+    return this.querySelector(`[data-tid=${tid}]`);
+  }
+
   getText(): Promise<string> {
     return this.locator.textContent();
   }

@@ -10,9 +10,7 @@ export class ProjectSwapDetailsPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): ProjectSwapDetailsPo {
-    return new ProjectSwapDetailsPo(
-      element.querySelector(`[data-tid=${ProjectSwapDetailsPo.tid}]`)
-    );
+    return new ProjectSwapDetailsPo(element.byTestId(ProjectSwapDetailsPo.tid));
   }
 
   getTotalSupply(): Promise<string> {
