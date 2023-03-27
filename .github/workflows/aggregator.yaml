@@ -55,8 +55,8 @@ jobs:
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
         run: sleep 120
-          # sleep time > 12 SnS & 2 block heights each + a few extra calls.
-          # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
+        # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+        # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
