@@ -6,7 +6,10 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
+import {
+  installImplAndBlockRest,
+  makePausable,
+} from "$tests/utils/module.test-utils";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
@@ -27,7 +30,7 @@ import { fromNullable, isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
-const implementedFunctions = {
+const fakeFunctions = {
   querySnsNeurons,
   getSnsNeuron,
   nervousSystemParameters,
@@ -49,11 +52,6 @@ const neurons: Map<string, SnsNeuron[]> = new Map();
 const proposals: Map<string, SnsProposalData[]> = new Map();
 // Maps a key representing rootCanisterId to a list of nervous system functions
 const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
-
-// When the fake is paused, all calls to the fake will be queued until the fake
-// is resumed.
-let isPaused = false;
-const pendingCalls: (() => void)[] = [];
 
 type KeyParams = { identity: Identity; rootCanisterId: Principal };
 
@@ -107,31 +105,11 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   return nervousFunctionsList;
 };
 
-/**
- * Calls the passed function and returns its result.
- * If the fake is paused, the function will be queued and an unresolved promise
- * is returned which will resolve when the fake is resumed and the function
- * called.
- */
-const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
-  if (!isPaused) {
-    return fn();
-  }
-  let resolve: (value: Promise<T>) => void;
-  const responsePromise = new Promise<T>((res) => {
-    resolve = res;
-  });
-  pendingCalls.push(() => {
-    resolve(fn());
-  });
-  return responsePromise;
-};
-
 ////////////////////////
 // Fake implementations:
 ////////////////////////
 
-function nervousSystemParameters({
+async function nervousSystemParameters({
   rootCanisterId: _,
   identity: __,
   certified: ___,
@@ -140,12 +118,10 @@ function nervousSystemParameters({
   identity: Identity;
   certified: boolean;
 }): Promise<NervousSystemParameters> {
-  return wrapMaybePaused(async () => {
-    return snsNervousSystemParametersMock;
-  });
+  return snsNervousSystemParametersMock;
 }
 
-function getNervousSystemFunctions({
+async function getNervousSystemFunctions({
   rootCanisterId,
   identity: _,
   certified: __,
@@ -154,12 +130,10 @@ function getNervousSystemFunctions({
   identity: Identity;
   certified: boolean;
 }): Promise<SnsNervousSystemFunction[]> {
-  return wrapMaybePaused(async () => {
-    return nervousFunctions.get(rootCanisterId.toText()) || [];
-  });
+  return nervousFunctions.get(rootCanisterId.toText()) || [];
 }
 
-function getNeuronBalance({
+async function getNeuronBalance({
   neuronId,
   rootCanisterId,
   certified,
@@ -170,35 +144,31 @@ function getNeuronBalance({
   certified: boolean;
   identity: Identity;
 }): Promise<bigint> {
-  return wrapMaybePaused(async () => {
-    const neuron = await querySnsNeuron({
-      neuronId,
-      rootCanisterId,
-      certified,
-      identity,
-    });
-    if (neuron) {
-      // In reality the neuron balance can be different from the stake if
-      // the user has made a transaction to increase the stake and the
-      // neuron is not yet refreshed. But this is not yet implemented in
-      // the fake.
-      return neuron.cached_neuron_stake_e8s;
-    }
-    return BigInt(0);
+  const neuron = await querySnsNeuron({
+    neuronId,
+    rootCanisterId,
+    certified,
+    identity,
   });
+  if (neuron) {
+    // In reality the neuron balance can be different from the stake if
+    // the user has made a transaction to increase the stake and the
+    // neuron is not yet refreshed. But this is not yet implemented in
+    // the fake.
+    return neuron.cached_neuron_stake_e8s;
+  }
+  return BigInt(0);
 }
 
-function refreshNeuron(params: {
+async function refreshNeuron(params: {
   rootCanisterId: Principal;
   identity: Identity;
   neuronId: SnsNeuronId;
 }): Promise<void> {
-  return wrapMaybePaused(async () => {
-    assertNonNullish(getNeuron(params));
-  });
+  assertNonNullish(getNeuron(params));
 }
 
-function claimNeuron({
+async function claimNeuron({
   rootCanisterId: _1,
   identity: _2,
   memo: _3,
@@ -211,12 +181,10 @@ function claimNeuron({
   controller: Principal;
   subaccount: Uint8Array;
 }): Promise<SnsNeuronId> {
-  return wrapMaybePaused(async () => {
-    return { id: subaccount };
-  });
+  return { id: subaccount };
 }
 
-function querySnsNeurons({
+async function querySnsNeurons({
   identity,
   rootCanisterId,
   certified: _,
@@ -225,12 +193,10 @@ function querySnsNeurons({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsNeuron[]> {
-  return wrapMaybePaused(async () => {
-    return neurons.get(mapKey({ identity, rootCanisterId })) || [];
-  });
+  return neurons.get(mapKey({ identity, rootCanisterId })) || [];
 }
 
-function querySnsNeuron({
+async function querySnsNeuron({
   certified: _,
   neuronId,
   ...keyParams
@@ -240,12 +206,10 @@ function querySnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron | undefined> {
-  return wrapMaybePaused(async () => {
-    return getNeuron({ ...keyParams, neuronId });
-  });
+  return getNeuron({ ...keyParams, neuronId });
 }
 
-function getSnsNeuron({
+async function getSnsNeuron({
   certified: _,
   neuronId,
   ...keyParams
@@ -255,16 +219,14 @@ function getSnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron> {
-  return wrapMaybePaused(async () => {
-    const neuron = getNeuron({ ...keyParams, neuronId });
-    if (isNullish(neuron)) {
-      throw new SnsGovernanceError("No neuron for given NeuronId.");
-    }
-    return neuron;
-  });
+  const neuron = getNeuron({ ...keyParams, neuronId });
+  if (isNullish(neuron)) {
+    throw new SnsGovernanceError("No neuron for given NeuronId.");
+  }
+  return neuron;
 }
 
-function queryProposals({
+async function queryProposals({
   identity,
   rootCanisterId,
   certified: _,
@@ -275,15 +237,13 @@ function queryProposals({
   certified: boolean;
   params: SnsListProposalsParams;
 }): Promise<SnsProposalData[]> {
-  return wrapMaybePaused(async () => {
-    return proposals.get(mapKey({ identity, rootCanisterId })) || [];
-  });
+  return proposals.get(mapKey({ identity, rootCanisterId })) || [];
 }
 
 /**
  * Throws if no proposal is found for the given proposalId.
  */
-function queryProposal({
+async function queryProposal({
   identity,
   rootCanisterId,
   certified: _,
@@ -294,48 +254,36 @@ function queryProposal({
   certified: boolean;
   proposalId: SnsProposalId;
 }): Promise<SnsProposalData> {
-  return wrapMaybePaused(async () => {
-    const proposal = proposals
-      .get(mapKey({ identity, rootCanisterId }))
-      .find(({ id }) => fromNullable(id).id === proposalId.id);
-    if (isNullish(proposal)) {
-      throw new SnsGovernanceError(
-        `No proposal for given proposalId ${proposalId.id}`
-      );
-    }
-    return proposal;
-  });
+  const proposal = proposals
+    .get(mapKey({ identity, rootCanisterId }))
+    .find(({ id }) => fromNullable(id).id === proposalId.id);
+  if (isNullish(proposal)) {
+    throw new SnsGovernanceError(
+      `No proposal for given proposalId ${proposalId.id}`
+    );
+  }
+  return proposal;
 }
 
 /////////////////////////////////
 // Functions to control the fake:
 /////////////////////////////////
 
+const {
+  pause,
+  resume,
+  reset: resetPaused,
+  pausableFunctions: implementedFunctions,
+} = makePausable(fakeFunctions);
+
 const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
-  pendingCalls.length = 0;
-  isPaused = false;
+  resetPaused();
 };
 
-export const pause = () => {
-  if (isPaused) {
-    throw new Error("The fake was already paused");
-  }
-  isPaused = true;
-};
-
-export const resume = () => {
-  if (!isPaused) {
-    throw new Error("The fake wasn't paused.");
-  }
-  for (const call of pendingCalls) {
-    call();
-  }
-  pendingCalls.length = 0;
-  isPaused = false;
-};
+export { pause, resume };
 
 const createNeuronId = ({
   identity,

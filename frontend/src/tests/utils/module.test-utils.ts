@@ -86,3 +86,80 @@ export const blockAllCallsTo = (modulePaths: string[]) => {
     installImplAndBlockRest({ modulePath, implementedFunctions: {} });
   }
 };
+
+/**
+ * Takes an object with functions keyed by name and returns a new object with
+ * the same names referring to corresponding functions that can be paused and
+ * resumed. It also returns functions `pause` and `resume` to do the pausing and
+ * resuming, and `reset` to resume and clear pending calls.
+ * The functions must return promises.
+ */
+export const makePausable = (functions: {
+  [key: string]: (...args: unknown[]) => Promise<unknown>;
+}): {
+  pause: () => void;
+  resume: () => void;
+  reset: () => void;
+  pausableFunctions: {
+    [key: string]: (...args: unknown[]) => Promise<unknown>;
+  };
+} => {
+  let isPaused = false;
+  const pendingCalls: (() => void)[] = [];
+
+  /**
+   * Calls the passed function and returns its result.  If the fake is paused,
+   * the function will be queued and an unresolved promise is returned which
+   * will resolve when the fake is resumed and the function called.
+   */
+  const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
+    if (!isPaused) {
+      return fn();
+    }
+    let resolve: (value: Promise<T>) => void;
+    const responsePromise = new Promise<T>((res) => {
+      resolve = res;
+    });
+    pendingCalls.push(() => {
+      resolve(fn());
+    });
+    return responsePromise;
+  };
+
+  const pausableFunctions = {};
+  for (const name in functions) {
+    pausableFunctions[name] = (...args: unknown[]) => {
+      return wrapMaybePaused(() => functions[name](...args));
+    };
+  }
+
+  const pause = () => {
+    if (isPaused) {
+      throw new Error("The fake was already paused");
+    }
+    isPaused = true;
+  };
+
+  const resume = () => {
+    if (!isPaused) {
+      throw new Error("The fake wasn't paused.");
+    }
+    for (const call of pendingCalls) {
+      call();
+    }
+    pendingCalls.length = 0;
+    isPaused = false;
+  };
+
+  const reset = () => {
+    pendingCalls.length = 0;
+    isPaused = false;
+  };
+
+  return {
+    pausableFunctions,
+    pause,
+    resume,
+    reset,
+  };
+};
