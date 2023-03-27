@@ -2,8 +2,8 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
 // Don't extend BasePageObject to avoid circular dependency with
-// BasePageObject.getInput().
-export class InputPo {
+// BasePageObject.getTextInput().
+export class TextInputPo {
   readonly root: PageObjectElement;
 
   private constructor(root: PageObjectElement) {
@@ -16,11 +16,11 @@ export class InputPo {
   }: {
     element: PageObjectElement;
     testId?: string;
-  }): InputPo {
+  }): TextInputPo {
     if (isNullish(testId)) {
-      return new InputPo(element.querySelector("input"));
+      return new TextInputPo(element.querySelector("input"));
     }
-    return new InputPo(element.querySelector(`input[data-tid=${testId}]`));
+    return new TextInputPo(element.querySelector(`input[data-tid=${testId}]`));
   }
 
   type(text: string): Promise<void> {

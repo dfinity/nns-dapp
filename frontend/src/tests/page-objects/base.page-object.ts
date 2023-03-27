@@ -1,5 +1,5 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { InputPo } from "$tests/page-objects/Input.page-object";
+import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class BasePageObject {
@@ -17,7 +17,7 @@ export class BasePageObject {
     return ButtonPo.under({ element: this.root, testId });
   }
 
-  getInput(testId?: string): InputPo {
-    return InputPo.under({ element: this.root, testId });
+  getTextInput(testId?: string): TextInputPo {
+    return TextInputPo.under({ element: this.root, testId });
   }
 }
