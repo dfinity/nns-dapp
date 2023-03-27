@@ -13,6 +13,15 @@ jest.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("SnsProposalSummarySection", () => {
+  const renderComponent = (props) => {
+    const { container } = render(SnsProposalSummarySection, {
+      props,
+    });
+
+    return ProposalProposerInfoSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+  };
   describe("when proposal is defined", () => {
     const title = "title";
     const summary = "# Some Summary";
@@ -31,32 +40,21 @@ describe("SnsProposalSummarySection", () => {
     const props = { proposal };
 
     it("should render title", async () => {
-      const { container } = render(SnsProposalSummarySection, {
-        props,
-      });
+      const po = renderComponent(props);
 
-      const po = ProposalProposerInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
       expect(await po.getProposalTitle()).toBe(title);
     });
 
     it("should contain summary", async () => {
-      const { getByText } = render(SnsProposalSummarySection, {
-        props,
-      });
+      const po = renderComponent(props);
 
-      await waitFor(() => expect(getByText(summary)).toBeInTheDocument());
+      await waitFor(async () =>
+        expect(await po.getProposalSummary()).toContain(summary)
+      );
     });
 
     it("should render url", async () => {
-      const { container } = render(SnsProposalSummarySection, {
-        props,
-      });
-
-      const po = ProposalProposerInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = renderComponent(props);
       expect(await po.getProposalUrlText()).toBe(url);
     });
   });
@@ -69,13 +67,7 @@ describe("SnsProposalSummarySection", () => {
     const props = { proposal };
 
     it("should not render content", async () => {
-      const { container } = render(SnsProposalSummarySection, {
-        props,
-      });
-
-      const po = ProposalProposerInfoSectionPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = renderComponent(props);
       expect(await po.hasContent()).toBe(false);
     });
   });

@@ -22,6 +22,10 @@ export class ProposalProposerInfoSectionPo extends BasePageObject {
     return this.root.byTestId("proposal-proposer-info-url").getText();
   }
 
+  getProposalSummary(): Promise<string> {
+    return this.root.byTestId("proposal-summary-component").getText();
+  }
+
   hasContent(): Promise<boolean> {
     return this.root.isPresent();
   }
