@@ -78,6 +78,63 @@ describe("SnsProposalDetail", () => {
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
 
+    it("should render system info content", async () => {
+      fakeSnsGovernanceApi.pause();
+      const proposalId = { id: BigInt(3) };
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await po.hasSystemInfoSection()).toBe(false);
+      fakeSnsGovernanceApi.resume();
+
+      await waitFor(async () =>
+        expect(await po.hasSystemInfoSection()).toBe(true)
+      );
+    });
+
+    it("should render the name of the nervous function", async () => {
+      const proposalId = { id: BigInt(3) };
+      const functionId = BigInt(12);
+      const functionName = "test function";
+      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
+        rootCanisterId,
+        id: functionId,
+        name: functionName,
+      });
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+        action: functionId,
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await waitFor(async () =>
+        expect(await po.getSystemInfoSectionTitle()).toBe(functionName)
+      );
+    });
+
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
       render(SnsProposalDetail, {
         props: {
