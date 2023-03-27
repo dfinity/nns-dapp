@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 import ProposalProposerInfoSection from "$lib/components/proposal-detail/ProposalProposerInfoSection.svelte";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ProposalProposerInfoSectionPo } from "$tests/page-objects/ProposalProposerInfoSection.page-object";
 import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/utils/html.utils", () => ({
@@ -14,13 +16,15 @@ describe("ProposalProposerInfoSection", () => {
   const url = "https://nns.internetcomputer.org/";
   const props = { title, summary, url };
 
-  it("should render title", () => {
-    const renderResult = render(ProposalProposerInfoSection, {
+  it("should render title", async () => {
+    const { container } = render(ProposalProposerInfoSection, {
       props,
     });
 
-    const { getByText } = renderResult;
-    expect(getByText(title as string)).toBeInTheDocument();
+    const po = ProposalProposerInfoSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+    expect(await po.getProposalTitle()).toBe(title);
   });
 
   it("should render summary", async () => {
@@ -33,11 +37,13 @@ describe("ProposalProposerInfoSection", () => {
   });
 
   it("should render url", async () => {
-    const renderResult = render(ProposalProposerInfoSection, {
+    const { container } = render(ProposalProposerInfoSection, {
       props,
     });
 
-    const { getByText } = renderResult;
-    await waitFor(() => expect(getByText(url)).toBeInTheDocument());
+    const po = ProposalProposerInfoSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+    expect(await po.getUrlText()).toBe(url);
   });
 });
