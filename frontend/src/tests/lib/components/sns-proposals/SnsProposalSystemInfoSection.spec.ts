@@ -15,6 +15,7 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -25,7 +26,13 @@ describe("ProposalSystemInfoSection", () => {
   fakeSnsGovernanceApi.install();
 
   const rootCanisterId = mockCanisterId;
-  const nervousFunction = nervousSystemFunctionMock;
+  const testNervousFunctionId = BigInt(1);
+  const testNervousFunctionName = "test function";
+  const nervousFunction = {
+    ...nervousSystemFunctionMock,
+    id: testNervousFunctionId,
+    name: testNervousFunctionName,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -42,7 +49,7 @@ describe("ProposalSystemInfoSection", () => {
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         proposalId: BigInt(2),
       }),
-      action: nervousFunction.id,
+      action: testNervousFunctionId,
     };
     const {
       rewardStatusString,
@@ -77,13 +84,9 @@ describe("ProposalSystemInfoSection", () => {
         new JestPageObjectElement(container)
       );
 
-      await waitFor(() =>
-        expect(
-          get(snsFunctionsStore)[rootCanisterId.toText()].nsFunctions.length
-        ).toBeGreaterThan(0)
-      );
+      await runResolvedPromises();
 
-      expect(await po.getTitleText()).toEqual(nervousFunction.name);
+      expect(await po.getTitleText()).toEqual(testNervousFunctionName);
     });
 
     it("should render type info from the nervous function", async () => {
@@ -93,13 +96,9 @@ describe("ProposalSystemInfoSection", () => {
         new JestPageObjectElement(container)
       );
 
-      await waitFor(() =>
-        expect(
-          get(snsFunctionsStore)[rootCanisterId.toText()].nsFunctions
-        ).toEqual([nervousFunction])
-      );
+      await runResolvedPromises();
 
-      expect(await po.getTypeText()).toBe(nervousFunction.name);
+      expect(await po.getTypeText()).toBe(testNervousFunctionName);
     });
 
     it("should render topic info from the nervous function", async () => {
@@ -109,13 +108,9 @@ describe("ProposalSystemInfoSection", () => {
         new JestPageObjectElement(container)
       );
 
-      await waitFor(() =>
-        expect(
-          get(snsFunctionsStore)[rootCanisterId.toText()].nsFunctions
-        ).toEqual([nervousFunction])
-      );
+      await runResolvedPromises();
 
-      expect(await po.getTopicText()).toBe(nervousFunction.name);
+      expect(await po.getTopicText()).toBe(testNervousFunctionName);
     });
 
     it("should render open status", async () => {
