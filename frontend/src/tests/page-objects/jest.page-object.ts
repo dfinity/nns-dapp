@@ -30,6 +30,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
 
+  allByTestId(tid: string): Promise<JestPageObjectElement[]> {
+    return this.querySelectorAll(`[data-tid=${tid}]`);
+  }
+
   async isPresent(): Promise<boolean> {
     return nonNullish(this.element);
   }
