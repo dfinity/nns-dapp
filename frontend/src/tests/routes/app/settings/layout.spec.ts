@@ -40,6 +40,8 @@ describe("Layout", () => {
   };
 
   it("should go back to the accounts page as fallback", async () => {
+    expect(referrer).toBeUndefined();
+
     renderSettingsAndBack();
 
     await waitFor(() => {
@@ -48,7 +50,7 @@ describe("Layout", () => {
     });
   });
 
-  it("should go back to the accounts page as fallback", async () => {
+  it("should go back to referrer", async () => {
     referrer = AppPath.Wallet;
 
     const spy = jest.spyOn(history, "back");
