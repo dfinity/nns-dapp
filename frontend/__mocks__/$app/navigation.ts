@@ -28,7 +28,12 @@ export const goto = async (
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const afterNavigate = (_callback: (navigation: Navigation) => void) => {
-  // Do nothing for test
+export const afterNavigate = (callback: (navigation: Navigation) => void) => {
+  callback({
+    from: null,
+    to: null,
+    type: "goto",
+    willUnload: true,
+    delta: undefined,
+  });
 };
