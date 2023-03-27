@@ -10,9 +10,7 @@ export class SnsProposalDetailPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): SnsProposalDetailPo | null {
-    return new SnsProposalDetailPo(
-      element.querySelector(`[data-tid=${SnsProposalDetailPo.tid}]`)
-    );
+    return new SnsProposalDetailPo(element.byTestId(SnsProposalDetailPo.tid));
   }
 
   getSkeletonDetails(): SkeletonDetailsPo {

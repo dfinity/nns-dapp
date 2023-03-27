@@ -10,7 +10,7 @@ export class TooltipPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): TooltipPo {
-    return new TooltipPo(element.querySelector(`[data-tid=${TooltipPo.tid}]`));
+    return new TooltipPo(element.byTestId(TooltipPo.tid));
   }
 
   getText(): Promise<string> {

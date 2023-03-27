@@ -11,9 +11,7 @@ export class AccountsPo extends BasePageObject {
   }
 
   static under(element: PageObjectElement): AccountsPo | null {
-    return new AccountsPo(
-      element.querySelector(`[data-tid=${AccountsPo.tid}]`)
-    );
+    return new AccountsPo(element.byTestId(AccountsPo.tid));
   }
 
   getNnsAccountsFooterPo(): NnsAccountsFooterPo {
