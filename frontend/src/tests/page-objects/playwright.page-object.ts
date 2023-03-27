@@ -24,10 +24,6 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     );
   }
 
-  querySelector(selector: string): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement(this.locator.locator(selector));
-  }
-
   byTestId(tid: string): PlaywrightPageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
