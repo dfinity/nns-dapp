@@ -13,7 +13,7 @@ export class AddSubAccountPo extends BasePageObject {
   }
 
   enterAccountName(name: string): Promise<void> {
-    return this.getTextInput().type(name);
+    return this.getTextInput().typeText(name);
   }
 
   clickCreate(): Promise<void> {

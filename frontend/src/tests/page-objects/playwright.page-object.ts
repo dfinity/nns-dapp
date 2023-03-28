@@ -52,7 +52,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click();
   }
 
-  type(text: string): Promise<void> {
+  typeText(text: string): Promise<void> {
     return this.locator.type(text);
   }
 }

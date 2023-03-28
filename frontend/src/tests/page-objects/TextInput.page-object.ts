@@ -27,7 +27,7 @@ export class TextInputPo {
     );
   }
 
-  type(text: string): Promise<void> {
-    return this.root.type(text);
+  typeText(text: string): Promise<void> {
+    return this.root.typeText(text);
   }
 }

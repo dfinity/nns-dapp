@@ -12,5 +12,5 @@ export interface PageObjectElement {
   waitForAbsent(): Promise<void>;
   getText(): Promise<string | null>;
   click(): Promise<void>;
-  type(text: string): Promise<void>;
+  typeText(text: string): Promise<void>;
 }
