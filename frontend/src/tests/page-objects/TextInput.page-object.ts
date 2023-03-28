@@ -1,8 +1,6 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
-// Don't extend BasePageObject to avoid circular dependency with
-// BasePageObject.getTextInput().
 export class TextInputPo {
   readonly root: PageObjectElement;
 
@@ -18,9 +16,15 @@ export class TextInputPo {
     testId?: string;
   }): TextInputPo {
     if (isNullish(testId)) {
-      return new TextInputPo(element.querySelector("input"));
+      return new TextInputPo(
+        element.querySelector("input[type=text], input:not([type])")
+      );
     }
-    return new TextInputPo(element.querySelector(`input[data-tid=${testId}]`));
+    return new TextInputPo(
+      element.querySelector(
+        `input[type=text][data-tid=${testId}], input:not([type])[data-tid=${testId}]`
+      )
+    );
   }
 
   type(text: string): Promise<void> {

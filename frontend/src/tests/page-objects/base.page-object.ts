@@ -1,16 +1,13 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class BasePageObject {
-  readonly root: PageObjectElement;
-
+// We have 2 layers of base classes to avoid circular dependencies with classes
+// this class depends on.
+export class BasePageObject extends SimpleBasePageObject {
   constructor(root: PageObjectElement) {
-    this.root = root;
-  }
-
-  isPresent(): Promise<boolean> {
-    return this.root.isPresent();
+    super(root);
   }
 
   getButton(testId?: string): ButtonPo {

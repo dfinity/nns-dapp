@@ -1,13 +1,10 @@
+import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
-// Don't extend BasePageObject to avoid circular dependency with
-// BasePageObject.getButton().
-export class ButtonPo {
-  readonly root: PageObjectElement;
-
+export class ButtonPo extends SimpleBasePageObject {
   private constructor(root: PageObjectElement) {
-    this.root = root;
+    super(root);
   }
 
   static under({
@@ -21,10 +18,6 @@ export class ButtonPo {
       return new ButtonPo(element.querySelector("button"));
     }
     return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
-  }
-
-  isPresent(): Promise<boolean> {
-    return this.root.isPresent();
   }
 
   click(): Promise<void> {
