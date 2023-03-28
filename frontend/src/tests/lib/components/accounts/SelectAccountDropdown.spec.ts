@@ -14,7 +14,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
@@ -51,10 +51,6 @@ describe("SelectAccountDropdown", () => {
       });
     });
 
-    afterEach(() => {
-      accountsStore.reset();
-    });
-
     const props = { rootCanisterId: OWN_CANISTER_ID };
     it("should render accounts as options", () => {
       const { container } = render(SelectAccountDropdown, { props });
@@ -84,6 +80,33 @@ describe("SelectAccountDropdown", () => {
       // main + subaccounts
       expect(container.querySelectorAll("option").length).toBe(
         1 + subAccounts.length
+      );
+    });
+
+    it("should reset selected accounts on selectable list of accounts change", async () => {
+      const { component } = render(SelectAccountDropdown, {
+        props: {
+          ...props,
+          selectedAccount: mockHardwareWalletAccount,
+        },
+      });
+
+      expect(component.$$.ctx[component.$$.props["selectedAccount"]]).toEqual(
+        mockHardwareWalletAccount
+      );
+
+      const { component: component2 } = render(SelectAccountDropdown, {
+        props: {
+          ...props,
+          selectedAccount: mockHardwareWalletAccount,
+          filterAccounts: (account) => !isAccountHardwareWallet(account),
+        },
+      });
+
+      await waitFor(() =>
+        expect(
+          component2.$$.ctx[component2.$$.props["selectedAccount"]]
+        ).toEqual(mockMainAccount)
       );
     });
 
