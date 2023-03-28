@@ -1,7 +1,6 @@
 <script lang="ts">
   import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
   import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     WizardModal,
     type WizardSteps,
@@ -86,25 +85,29 @@
   let modal: WizardModal;
 </script>
 
-<TestIdWrapper testId="add-account-modal-component">
-  <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-    <svelte:fragment slot="title"
-      >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
-    >
+<WizardModal
+  testId="add-account-modal-component"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+>
+  <svelte:fragment slot="title"
+    >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
+  >
 
-    <svelte:fragment>
-      {#if currentStep?.name === "AddAccountType"}
-        <AddAccountType />
-      {/if}
-      {#if currentStep?.name === "AddSubAccount"}
-        <AddSubAccount on:nnsClose />
-      {/if}
-      {#if currentStep?.name === "HardwareWalletName"}
-        <HardwareWalletName />
-      {/if}
-      {#if currentStep?.name === "HardwareWalletConnect"}
-        <HardwareWalletConnect on:nnsClose />
-      {/if}
-    </svelte:fragment>
-  </WizardModal>
-</TestIdWrapper>
+  <svelte:fragment>
+    {#if currentStep?.name === "AddAccountType"}
+      <AddAccountType />
+    {/if}
+    {#if currentStep?.name === "AddSubAccount"}
+      <AddSubAccount on:nnsClose />
+    {/if}
+    {#if currentStep?.name === "HardwareWalletName"}
+      <HardwareWalletName />
+    {/if}
+    {#if currentStep?.name === "HardwareWalletConnect"}
+      <HardwareWalletConnect on:nnsClose />
+    {/if}
+  </svelte:fragment>
+</WizardModal>
