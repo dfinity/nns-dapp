@@ -39,10 +39,17 @@
   // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
   let rootCanisterIdText: undefined | string;
   $: rootCanisterIdText = $snsOnlyProjectStore?.toText();
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = nonNullish(rootCanisterIdText)
+    ? Principal.fromText(rootCanisterIdText)
+    : undefined;
   $: {
     // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
-    if (nonNullish(proposalIdText) && nonNullish(rootCanisterIdText)) {
-      const rootCanisterId = Principal.fromText(rootCanisterIdText);
+    if (
+      nonNullish(proposalIdText) &&
+      nonNullish(rootCanisterIdText) &&
+      nonNullish(rootCanisterId)
+    ) {
       // We need this to be used in the handleError callback.
       // Otherwise, TS doesn't believe that the value of `rootCanisterIdText` won't change.
       const rootCanisterIdAtTimeOfRequest = rootCanisterIdText;
@@ -76,14 +83,17 @@
           replaceState: true,
         });
       }
+    } else {
+      // Reset proposal to the initial state.
+      proposal = "loading";
     }
   }
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if isLoadedProposal(proposal)}
+  {#if isLoadedProposal(proposal) && nonNullish(rootCanisterId)}
     <div class="content-a">
-      <SnsProposalSystemInfoSection {proposal} />
+      <SnsProposalSystemInfoSection {proposal} {rootCanisterId} />
     </div>
     <div class="content-b expand-content-b">
       <SnsProposalVotingSection {proposal} />

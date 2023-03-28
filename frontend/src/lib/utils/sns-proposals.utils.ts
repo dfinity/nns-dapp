@@ -64,6 +64,7 @@ export type SnsProposalDataMap = {
   topicDescription?: string;
 };
 
+// TODO: Return also a type and the type description that for now maps to the topic
 export const mapProposalInfo = ({
   proposalData,
   nsFunctions,
