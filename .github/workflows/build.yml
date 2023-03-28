@@ -36,27 +36,29 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
+          # Version from Mar 27 2023 with saved state tools
+          ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Install SNS script dependencies
         run: |
-          dfx-sns-demo-install
-          dfx cache install
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Deploy NNS and SNS canisters
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Get test environment
         run: |
-          # Note: This deploys standard NNS canisters but with:
-          # - The current code for the nns-dapp
-          # - The II version specified in dfx.json
-          # - Functional SNS canisters
-          ./scripts/dfx-nns-deploy-custom --features sns
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
+          dfx-state-install -f state.zip
+          dfx identity use snsdemo8
+          dfx-sns-demo-healthcheck
+      - name: Install nns-dapp and sns_aggregator
+        run: |
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
+          # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
+          jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
+          curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
+          dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
@@ -64,6 +66,8 @@ jobs:
           then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
+      - name: Rename nns-dapp.wasm for upload
+        run: cp nns-dapp.wasm nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
