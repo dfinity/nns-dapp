@@ -32,47 +32,32 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
+          # Version from Mar 27 2023 with saved state tools
+          ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
+      - name: Install tools
         run: |
-          dfx-sns-demo-install
-      - name: Deploy NNS and SNS canisters
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Get test environment
+        run: |
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
+          dfx-state-install -f state.zip --verbose
+          dfx identity use snsdemo8
+          dfx-sns-demo-healthcheck
+      - name: Upgrade to the current aggregator
         run: |
           cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
-          ./scripts/deploy-snsdemo-testnet --verbose
+          # Note: Pretty much any argument values will do; the canister will be reconfigured.
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
-      - name: 'Upload aggregator wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: sns_aggregator
-          path: sns_aggregator.wasm
-          retention-days: 3
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
-        run: sleep 30
-      - name: Get the latest data from the sns aggregator
-        run: |
-          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
-          expect=1
-          actual="$(jq length aggregate-1.json)"
-          (( expect == actual ))  || {
-            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
-            scripts/sns/aggregator/get_log
-          }
-      - name: Make the aggregator collect data slowly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
-      - name: Create more SNSs
-        run: |
-          dfx-sns-demo-mksns-parallel --num_sns 11 --majority snsdemo8
-      - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
-      - name: Wait for the aggregator to get data
-        run: sleep 30
+        run: sleep 120
+        # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+        # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
