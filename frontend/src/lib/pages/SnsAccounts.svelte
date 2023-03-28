@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
+  import type { Principal } from "@dfinity/principal";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
@@ -12,16 +11,18 @@
   export let goToWallet: (account: Account) => Promise<void>;
 
   let loading = false;
-  onDestroy(
-    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
-      if (selectedProjectCanisterId !== undefined) {
-        // TODO: improve loading and use in memory sns neurons or load from backend
-        loading = true;
-        await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
-        loading = false;
-      }
-    })
-  );
+  const syncSnsAccountsForProject = async (
+    selectedProjectCanisterId: Principal | undefined
+  ) => {
+    if (selectedProjectCanisterId !== undefined) {
+      // TODO: improve loading and use in memory sns neurons or load from backend
+      loading = true;
+      await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
+      loading = false;
+    }
+  };
+
+  $: syncSnsAccountsForProject($snsOnlyProjectStore);
 </script>
 
 <div class="card-grid" data-tid="sns-accounts-body">

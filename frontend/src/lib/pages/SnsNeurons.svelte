@@ -8,10 +8,9 @@
   import { i18n } from "$lib/stores/i18n";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
+  import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import type { Unsubscriber } from "svelte/store";
-  import { onDestroy } from "svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -28,23 +27,25 @@
 
   let loading = true;
 
-  onDestroy(
-    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
-      if (selectedProjectCanisterId !== undefined) {
-        loading = true;
+  const syncNeuronsForProject = async (
+    selectedProjectCanisterId: Principal | undefined
+  ): Promise<void> => {
+    if (selectedProjectCanisterId !== undefined) {
+      loading = true;
 
-        // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
-        // TODO(GIX-1197): extract that logic in a service and have a test that check that loadSnsParameters is indeed called before the calls?
-        await loadSnsParameters(selectedProjectCanisterId);
+      // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
+      // TODO(GIX-1197): extract that logic in a service and have a test that check that loadSnsParameters is indeed called before the calls?
+      await loadSnsParameters(selectedProjectCanisterId);
 
-        await Promise.all([
-          syncSnsNeurons(selectedProjectCanisterId),
-          syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
-        ]);
-        loading = false;
-      }
-    })
-  );
+      await Promise.all([
+        syncSnsNeurons(selectedProjectCanisterId),
+        syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
+      ]);
+      loading = false;
+    }
+  };
+
+  $: syncNeuronsForProject($snsOnlyProjectStore);
 
   const goToNeuronDetails = async (neuron: SnsNeuron) => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);

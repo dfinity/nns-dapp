@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStoreData } from "$lib/stores/auth.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
@@ -13,19 +11,21 @@
 
   let signedIn = false;
 
-  onDestroy(
-    authStore.subscribe(async ({ identity }: AuthStoreData) => {
-      signedIn = isSignedIn(identity);
+  const redirectWhenSignedIn = async ({
+    identity,
+  }: AuthStoreData): Promise<void> => {
+    signedIn = isSignedIn(identity);
 
-      if (!signedIn) {
-        return;
-      }
+    if (!signedIn) {
+      return;
+    }
 
-      await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
-        replaceState: true,
-      });
-    })
-  );
+    await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
+      replaceState: true,
+    });
+  };
+
+  $: redirectWhenSignedIn($authStore);
 </script>
 
 <LoginTitle />

@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
   import type { SnsNeuron } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
@@ -20,7 +20,6 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
-  import type { Unsubscriber } from "svelte/store";
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import {
     loadSnsAccounts,
@@ -62,20 +61,22 @@
   $: destinationAddress = $snsProjectMainAccountStore?.identifier;
 
   // load project accounts if not available
-  onDestroy(
-    snsOnlyProjectStore.subscribe(async (selectedProjectCanisterId) => {
-      if (
-        selectedProjectCanisterId === undefined ||
-        $snsProjectMainAccountStore !== undefined
-      ) {
-        return;
-      }
+  const syncProjectAccountIfNotAvailable = async (
+    selectedProjectCanisterId: Principal | undefined
+  ) => {
+    if (
+      selectedProjectCanisterId === undefined ||
+      $snsProjectMainAccountStore !== undefined
+    ) {
+      return;
+    }
 
-      loading = true;
-      await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
-      loading = false;
-    })
-  );
+    loading = true;
+    await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
+    loading = false;
+  };
+
+  $: syncProjectAccountIfNotAvailable($snsOnlyProjectStore);
 
   const executeTransaction = async () => {
     startBusy({
