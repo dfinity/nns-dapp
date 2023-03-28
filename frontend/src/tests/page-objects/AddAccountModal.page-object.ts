@@ -22,6 +22,24 @@ export class AddAccountModalPo extends BasePageObject {
     return AddSubAccountPo.under(this.root);
   }
 
+  chooseLinkedAccount(): Promise<void> {
+    return this.getAddAccountTypePo().chooseLinkedAccount();
+  }
+
+  enterAccountName(name: string): Promise<void> {
+    return this.getAddSubAccountPo().enterAccountName(name);
+  }
+
+  clickCreate(): Promise<void> {
+    return this.getAddSubAccountPo().clickCreate();
+  }
+
+  async addAccount(name: string): Promise<void> {
+    await this.chooseLinkedAccount();
+    await this.enterAccountName(name);
+    await this.clickCreate();
+  }
+
   waitForClosed(): Promise<void> {
     return this.root.waitForAbsent();
   }

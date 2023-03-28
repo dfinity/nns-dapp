@@ -20,4 +20,11 @@ export class NnsAddAccountPo extends BasePageObject {
   clickAddAccount(): Promise<void> {
     return this.getButton().click();
   }
+
+  async addAccount(name: string): Promise<void> {
+    await this.clickAddAccount();
+    const modal = this.getAddAccountModalPo();
+    await modal.addAccount(name);
+    await modal.waitForClosed();
+  }
 }

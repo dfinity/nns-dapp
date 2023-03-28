@@ -23,12 +23,7 @@ export class NnsAccountsPo extends BasePageObject {
     return NnsAddAccountPo.under(this.root);
   }
 
-  async addAccount(name: string): Promise<void> {
-    await this.getNnsAddAccountPo().clickAddAccount();
-    const modal = this.getNnsAddAccountPo().getAddAccountModalPo();
-    await modal.getAddAccountTypePo().chooseLinkedAccount();
-    await modal.getAddSubAccountPo().enterAccountName(name);
-    await modal.getAddSubAccountPo().clickCreate();
-    await modal.waitForClosed();
+  addAccount(name: string): Promise<void> {
+    return this.getNnsAddAccountPo().addAccount(name);
   }
 }
