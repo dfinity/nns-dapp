@@ -1,6 +1,6 @@
 //! Capture snd store performance counters.
-#![allow(dead_code)]
-use crate::StableState;
+use crate::stats::Stats;
+use crate::{StableState, STATE};
 use candid::CandidType;
 use dfn_candid::Candid;
 use ic_cdk::api::instruction_counter;
@@ -45,6 +45,10 @@ impl PerformanceCounts {
         self.instruction_counts.push_back(count);
     }
 
+    pub fn get_stats(&self, stats: &mut Stats) {
+        stats.performance_counts = self.instruction_counts.iter().cloned().collect();
+    }
+
     /// Generates sample data for use in tests
     #[cfg(test)]
     pub fn test_data() -> Self {
@@ -71,4 +75,14 @@ impl StableState for PerformanceCounts {
         let (ans,) = Candid::from_bytes(bytes).map(|c| c.0).unwrap_or_default();
         Ok(ans)
     }
+}
+
+/// Gets the value of the instruction count and saves it with the given label.
+pub fn record_instruction_count(name: &str) {
+    save_instruction_count(PerformanceCount::new(name));
+}
+
+/// Saves an instruction count; useful if the instruction count was captured independently.
+pub fn save_instruction_count(count: PerformanceCount) {
+    STATE.with(|s| s.performance.borrow_mut().save_instruction_count(count))
 }

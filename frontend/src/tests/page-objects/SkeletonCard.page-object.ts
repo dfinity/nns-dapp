@@ -1,18 +1,15 @@
-export class SkeletonCardPo {
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+export class SkeletonCardPo extends BasePageObject {
   static readonly tid = "skeleton-card";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SkeletonCardPo.tid) {
-      throw new Error(`${root} is not a SkeletonCard`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static allUnder(element: Element): SkeletonCardPo[] {
-    return Array.from(
-      element.querySelectorAll(`[data-tid=${SkeletonCardPo.tid}]`)
-    ).map((el) => new SkeletonCardPo(el));
+  static async allUnder(element: PageObjectElement): Promise<SkeletonCardPo[]> {
+    return Array.from(await element.allByTestId(SkeletonCardPo.tid)).map(
+      (el) => new SkeletonCardPo(el)
+    );
   }
 }

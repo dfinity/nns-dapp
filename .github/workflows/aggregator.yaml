@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 defaults:
   run:
-    shell: bash
+    shell: bash -euxlo pipefail {0}
 jobs:
   curl_test:
     runs-on: ubuntu-20.04
@@ -15,84 +15,49 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
-      # Cache based on the Cargo.lock
-      # The cache key is always an exact match or no match (i.e. no
-      # "restore-keys"-style matching). Because (in case of an exact match)
-      # GitHub actions won't (re-)upload the cache after the build, it means that
-      # our cache won't just grow forever.
-      - uses: actions/cache@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build sns-aggregator image
+        uses: docker/build-push-action@v3
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-      # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/ic-cdk-optimizer
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
-      - name: Install Software
-        run: |
-          ./scripts/setup --profile ~/.bashrc
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      # Helps with debugging
-      - name: Versions
-        run: |
-          set -x
-          dfx --version
-          node --version
-          npm --version
-          rustc --version
-          cargo --version
-          ic-cdk-optimizer --version
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=local
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
+          # Version from Mar 27 2023 with saved state tools
+          ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
+      - name: Install tools
         run: |
-          dfx-sns-demo-install
-      - name: Deploy NNS and SNS canisters
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Get test environment
         run: |
-          ./scripts/deploy-snsdemo-testnet --verbose
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
+          dfx-state-install -f state.zip --verbose
+          dfx identity use snsdemo8
+          dfx-sns-demo-healthcheck
+      - name: Upgrade to the current aggregator
+        run: |
+          cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
+          # Note: Pretty much any argument values will do; the canister will be reconfigured.
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
       - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
-      - name: 'Upload aggregator wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: sns_aggregator
-          path: sns_aggregator.wasm
-          retention-days: 3
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
-        run: sleep 30
-      - name: Get the latest data from the sns aggregator
-        run: |
-          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
-          expect=1
-          actual="$(jq length aggregate-1.json)"
-          (( expect == actual ))  || {
-            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
-          }
-      - name: Make the aggregator collect data slowly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000000; fast_interval_ms = 1_000_000_000; })'
-      - name: Create more SNSs
-        run: |
-          dfx-sns-demo-mksns-parallel --num_sns 11 --majority snsdemo8
-      - name: Make the aggregator collect data quickly
-        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
-      - name: Wait for the aggregator to get data
-        run: sleep 30
+        run: sleep 120
+        # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+        # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -101,15 +66,20 @@ jobs:
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the first page of data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          curl --retry 5 -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json || {
+            echo "ERROR: Failed to get data."
+            scripts/sns/aggregator/get_log
+          }
           expect=10
           actual="$(jq length aggregate-1.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
           }
       - name: Get the second page of data from the sns aggregator
         run: |

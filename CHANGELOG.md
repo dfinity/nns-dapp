@@ -1,5 +1,15 @@
 # Changelog
 
+## Proposal 114127
+* Select send and receive address by scanning a QR code.
+* "Receive" action added to main screen and "Add account" action moved as a card.
+* New settings page which displays user principal and session duration
+* New proposal payload.
+* New data in the project detail.
+* Better validations in address inputs.
+* Remove unnecessary calls when updating accounts after an action.
+
+
 ## Proposal 112386
 * Remove button to increase stake for CF SNS neurons.
 * Improve validations in address inputs.

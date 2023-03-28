@@ -3,15 +3,9 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
-import {
-  cancelPollGetOpenTicket,
-  restoreSnsSaleParticipation,
-  type ParticipateInSnsSaleParameters,
-} from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-import { SaleStep } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import {
@@ -34,18 +28,6 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/sns-sale.services", () => ({
-  restoreSnsSaleParticipation: jest
-    .fn()
-    .mockImplementation(
-      ({ updateProgress }: ParticipateInSnsSaleParameters) => {
-        updateProgress(SaleStep.INITIALIZATION);
-      }
-    ),
-  hidePollingToast: jest.fn().mockResolvedValue(undefined),
-  cancelPollGetOpenTicket: jest.fn().mockResolvedValue(undefined),
-}));
-
 describe("ParticipateButton", () => {
   const { ticket: testTicket } = snsTicketMock({
     rootCanisterId: rootCanisterIdMock,
@@ -61,7 +43,6 @@ describe("ParticipateButton", () => {
       authStoreMock.next({
         identity: mockIdentity,
       });
-      (restoreSnsSaleParticipation as jest.Mock).mockClear();
       snsTicketsStore.reset();
       jest.clearAllMocks();
     });
@@ -146,8 +127,6 @@ describe("ParticipateButton", () => {
         Component: ParticipateButton,
       });
 
-      expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
-
       await waitFor(() =>
         expect(getByTestId("connecting_sale_canister")).not.toBeNull()
       );
@@ -155,45 +134,13 @@ describe("ParticipateButton", () => {
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
-    it("should show progress modal if user has an open ticket", async () => {
-      snsTicketsStore.setTicket({
-        rootCanisterId: rootCanisterIdMock,
-        ticket: testTicket,
-      });
-
-      const { getByTestId } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ParticipateButton,
-      });
-
-      expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
-
-      await waitFor(() =>
-        expect(getByTestId("sale-in-progress-modal")).not.toBeNull()
-      );
-    });
-
-    it("should not show progress modal if user has no no ticket", async () => {
-      snsTicketsStore.setNoTicket(rootCanisterIdMock);
-
-      const { getByTestId } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ParticipateButton,
-      });
-
-      expect(() => getByTestId("sale-in-progress-modal")).toThrow();
-    });
-
-    it("should display spinner and hide button when there is loading", async () => {
+    it("should display spinner and hide button when there is loading ticket", async () => {
       const { queryByTestId, getByTestId, container } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
 
-      expect(restoreSnsSaleParticipation).toBeCalledTimes(1);
       expect(container.querySelector("svg.small")).toBeInTheDocument();
       expect(getByTestId("connecting_sale_canister")).not.toBeNull();
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
@@ -213,7 +160,6 @@ describe("ParticipateButton", () => {
       ) as HTMLButtonElement;
 
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
-      expect(restoreSnsSaleParticipation).toBeCalled();
     });
 
     it("should disable button if user has committed max already", () => {
@@ -236,20 +182,6 @@ describe("ParticipateButton", () => {
         "sns-project-participate-button"
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
-    });
-
-    it("should cancel polling open ticket on destroy", async () => {
-      const { unmount } = renderContextCmp({
-        summary: mockSnsFullProject.summary,
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ParticipateButton,
-      });
-
-      expect(cancelPollGetOpenTicket).not.toBeCalled();
-
-      unmount();
-
-      expect(cancelPollGetOpenTicket).toBeCalled();
     });
   });
 

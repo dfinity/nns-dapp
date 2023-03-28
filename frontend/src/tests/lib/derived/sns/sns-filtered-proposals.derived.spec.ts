@@ -1,5 +1,5 @@
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
-import { snsFiltesStore } from "$lib/stores/sns-filters.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
@@ -24,7 +24,7 @@ describe("snsFilteredProposalsStore", () => {
   };
 
   beforeEach(() => {
-    snsFiltesStore.reset();
+    snsFiltersStore.reset();
     snsProposalsStore.reset();
   });
   it("should return undefined if filter store is not loaded", () => {
@@ -73,7 +73,7 @@ describe("snsFilteredProposalsStore", () => {
         checked: false,
       },
     ];
-    snsFiltesStore.setDecisionStatus({
+    snsFiltersStore.setDecisionStatus({
       rootCanisterId,
       decisionStatus,
     });
@@ -122,7 +122,7 @@ describe("snsFilteredProposalsStore", () => {
         checked: false,
       },
     ];
-    snsFiltesStore.setDecisionStatus({
+    snsFiltersStore.setDecisionStatus({
       rootCanisterId,
       decisionStatus,
     });

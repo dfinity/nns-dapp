@@ -13,6 +13,7 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
 import { TokenAmount } from "@dfinity/nns";
 
@@ -90,7 +91,7 @@ describe("ProjectSwapDetails", () => {
     );
   });
 
-  it("should render total token supply if present", () => {
+  it("should render total token supply if present", async () => {
     const totalSupply = BigInt(2_000_000_000);
     const totalTokensSupply = TokenAmount.fromE8s({
       amount: totalSupply,
@@ -103,8 +104,10 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(container);
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
-    expect(po.getTotalSupply()).toMatch(formatToken({ value: totalSupply }));
+    expect(await po.getTotalSupply()).toMatch(
+      formatToken({ value: totalSupply })
+    );
   });
 });

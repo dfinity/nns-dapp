@@ -1,37 +1,35 @@
-import { SkeletonCardPo } from "./SkeletonCard.page-object";
-import { SnsNeuronCardPo } from "./SnsNeuronCard.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsNeuronsPo {
+export class SnsNeuronsPo extends BasePageObject {
   static readonly tid = "sns-neurons-component";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronsPo.tid) {
-      throw new Error(`${root} is not an SnsNeurons`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): SnsNeuronsPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronsPo.tid}]`);
-    return el && new SnsNeuronsPo(el);
+  static under(element: PageObjectElement): SnsNeuronsPo {
+    return new SnsNeuronsPo(element.byTestId(SnsNeuronsPo.tid));
   }
 
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  getNeuronCardPos(): SnsNeuronCardPo[] {
+  getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
     return SnsNeuronCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
   }
 
-  getNeuronIds(): string[] {
-    const cards = this.getNeuronCardPos();
-    return cards.map((card) => card.getNeuronId());
+  async getNeuronIds(): Promise<string[]> {
+    const cards = await this.getNeuronCardPos();
+    return Promise.all(cards.map((card) => card.getNeuronId()));
   }
 }

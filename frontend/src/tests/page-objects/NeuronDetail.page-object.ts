@@ -1,45 +1,40 @@
-import { nonNullish } from "@dfinity/utils";
-import { NnsNeuronDetailPo } from "./NnsNeuronDetail.page-object";
-import { SnsNeuronDetailPo } from "./SnsNeuronDetail.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
+import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NeuronDetailPo {
+export class NeuronDetailPo extends BasePageObject {
   static readonly tid = "neuron-detail-component";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== NeuronDetailPo.tid) {
-      throw new Error(`${root} is not a NeuronDetail`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: HTMLElement): NeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${NeuronDetailPo.tid}]`);
-    return el && new NeuronDetailPo(el);
+  static under(element: PageObjectElement): NeuronDetailPo {
+    return new NeuronDetailPo(element.byTestId(NeuronDetailPo.tid));
   }
 
-  getNnsNeuronDetailPo(): NnsNeuronDetailPo | null {
+  getNnsNeuronDetailPo(): NnsNeuronDetailPo {
     return NnsNeuronDetailPo.under(this.root);
   }
 
-  getSnsNeuronDetailPo(): SnsNeuronDetailPo | null {
+  getSnsNeuronDetailPo(): SnsNeuronDetailPo {
     return SnsNeuronDetailPo.under(this.root);
   }
 
-  hasNnsNeuronDetailPo(): boolean {
-    return nonNullish(this.getNnsNeuronDetailPo());
+  hasNnsNeuronDetailPo(): Promise<boolean> {
+    return this.getNnsNeuronDetailPo().isPresent();
   }
 
-  hasSnsNeuronDetailPo(): boolean {
-    return nonNullish(this.getSnsNeuronDetailPo());
+  hasSnsNeuronDetailPo(): Promise<boolean> {
+    return this.getSnsNeuronDetailPo().isPresent();
   }
 
-  isContentLoaded() {
-    return (
-      this.getNnsNeuronDetailPo()?.isContentLoaded() ||
-      this.getSnsNeuronDetailPo()?.isContentLoaded() ||
-      false
-    );
+  async isContentLoaded(): Promise<boolean> {
+    const [nnsLoaded, snsLoaded] = await Promise.all([
+      this.getNnsNeuronDetailPo().isContentLoaded(),
+      this.getSnsNeuronDetailPo().isContentLoaded(),
+    ]);
+    return nnsLoaded || snsLoaded;
   }
 }

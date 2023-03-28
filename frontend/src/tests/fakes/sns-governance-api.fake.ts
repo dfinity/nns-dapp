@@ -6,7 +6,10 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
+import {
+  installImplAndBlockRest,
+  makePausable,
+} from "$tests/utils/module.test-utils";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
@@ -16,17 +19,18 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuronId,
   SnsProposalData,
+  SnsProposalId,
 } from "@dfinity/sns";
 import {
   neuronSubaccount,
   SnsGovernanceError,
   type SnsNeuron,
 } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
-const implementedFunctions = {
+const fakeFunctions = {
   querySnsNeurons,
   getSnsNeuron,
   nervousSystemParameters,
@@ -35,6 +39,7 @@ const implementedFunctions = {
   refreshNeuron,
   claimNeuron,
   queryProposals,
+  queryProposal,
 };
 
 //////////////////////////////////////////////
@@ -235,15 +240,50 @@ async function queryProposals({
   return proposals.get(mapKey({ identity, rootCanisterId })) || [];
 }
 
+/**
+ * Throws if no proposal is found for the given proposalId.
+ */
+async function queryProposal({
+  identity,
+  rootCanisterId,
+  certified: _,
+  proposalId,
+}: {
+  rootCanisterId: Principal;
+  identity: Identity;
+  certified: boolean;
+  proposalId: SnsProposalId;
+}): Promise<SnsProposalData> {
+  const proposal = proposals
+    .get(mapKey({ identity, rootCanisterId }))
+    .find(({ id }) => fromNullable(id).id === proposalId.id);
+  if (isNullish(proposal)) {
+    throw new SnsGovernanceError(
+      `No proposal for given proposalId ${proposalId.id}`
+    );
+  }
+  return proposal;
+}
+
 /////////////////////////////////
 // Functions to control the fake:
 /////////////////////////////////
+
+const {
+  pause,
+  resume,
+  reset: resetPaused,
+  pausableFunctions: implementedFunctions,
+} = makePausable(fakeFunctions);
 
 const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
+  resetPaused();
 };
+
+export { pause, resume };
 
 const createNeuronId = ({
   identity,

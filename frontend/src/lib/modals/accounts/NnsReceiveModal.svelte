@@ -5,14 +5,15 @@
   import { i18n } from "$lib/stores/i18n";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let data: AccountsReceiveModalData;
 
   let account: Account | undefined;
-  let reloadAccount: (() => Promise<void>) | undefined;
+  let reload: (() => Promise<void>) | undefined;
   let canSelectAccount: boolean;
 
-  $: ({ account, reloadAccount, canSelectAccount } = data);
+  $: ({ account, reload, canSelectAccount } = data);
 </script>
 
 <ReceiveModal
@@ -21,14 +22,13 @@
   qrCodeLabel={$i18n.wallet.icp_qrcode_aria_label}
   logo={IC_LOGO}
   logoArialLabel={$i18n.core.icp}
-  {reloadAccount}
+  {reload}
   universeId={OWN_CANISTER_ID}
   {canSelectAccount}
 >
-  <svelte:fragment slot="title"
-    >{$i18n.wallet.icp_receive_note_title}</svelte:fragment
-  >
-  <svelte:fragment slot="description"
-    >{$i18n.wallet.icp_receive_note_text}</svelte:fragment
+  <svelte:fragment slot="address-label"
+    >{replacePlaceholders($i18n.wallet.token_address, {
+      $tokenSymbol: $i18n.core.icp,
+    })}</svelte:fragment
   >
 </ReceiveModal>

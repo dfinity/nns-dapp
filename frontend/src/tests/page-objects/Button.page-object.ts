@@ -1,21 +1,22 @@
-export class ButtonPo {
-  root: Element;
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-  constructor(root: Element) {
-    if (root.tagName !== "BUTTON") {
-      throw new Error(`${root} is not a button`);
-    }
-    this.root = root;
+export class ButtonPo extends BasePageObject {
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
   static under({
     element,
     testId,
   }: {
-    element: Element;
+    element: PageObjectElement;
     testId: string;
-  }): ButtonPo | null {
-    const el = element.querySelector(`button[data-tid=${testId}]`);
-    return el && new ButtonPo(el);
+  }): ButtonPo {
+    return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
+  }
+
+  click(): Promise<void> {
+    return this.root.click();
   }
 }

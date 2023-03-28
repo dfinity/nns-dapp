@@ -1,27 +1,25 @@
-import { SkeletonCardPo } from "./SkeletonCard.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsNeuronDetailPo {
+export class SnsNeuronDetailPo extends BasePageObject {
   static readonly tid = "sns-neuron-detail-component";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== SnsNeuronDetailPo.tid) {
-      throw new Error(`${root} is not an SnsNeuronDetail`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): SnsNeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`);
-    return el && new SnsNeuronDetailPo(el);
+  static under(element: PageObjectElement): SnsNeuronDetailPo {
+    return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.tid));
   }
 
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
   }
 }

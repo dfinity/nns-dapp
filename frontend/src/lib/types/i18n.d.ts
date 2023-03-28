@@ -49,6 +49,8 @@ interface I18nError {
   sns_accounts_balance_load: string;
   icrc_token_load: string;
   list_proposals: string;
+  get_proposal: string;
+  wrong_proposal_id: string;
   list_canisters: string;
   missing_identity: string;
   rename_subaccount: string;
@@ -454,10 +456,7 @@ interface I18nWallet {
   no_transactions: string;
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
-  icp_receive_note_title: string;
-  icp_receive_note_text: string;
-  sns_receive_note_title: string;
-  sns_receive_note_text: string;
+  token_address: string;
 }
 
 interface I18nBusy_screen {
@@ -808,6 +807,7 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_amount_not_enough_stake_neuron: string;
+  sns_reload_no_universe: string;
 }
 
 interface I18nAuth_accounts {
@@ -886,13 +886,10 @@ interface I18nCkbtc {
   logo: string;
   test_logo: string;
   receive: string;
-  btc_receive_note_title: string;
-  ckbtc_receive_note_title: string;
-  btc_receive_note_text: string;
-  ckbtc_receive_note_text: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;
+  test_bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
   step_initialization: string;
@@ -903,6 +900,7 @@ interface I18nCkbtc {
   estimated_receive_time: string;
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
+  loading_address: string;
 }
 
 interface I18nError__ckbtc {

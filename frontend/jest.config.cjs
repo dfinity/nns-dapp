@@ -30,4 +30,5 @@ module.exports = {
       "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },
   setupFiles: ["fake-indexeddb/auto"],
+  testPathIgnorePatterns: ["<rootDir>/src/tests/e2e/"],
 };

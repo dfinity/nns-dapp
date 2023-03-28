@@ -14,7 +14,7 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 
 describe("ReceiveModal", () => {
-  const reloadAccountSpy = jest.fn();
+  const reloadSpy = jest.fn();
 
   beforeEach(() => jest.clearAllMocks());
 
@@ -36,7 +36,7 @@ describe("ReceiveModal", () => {
         qrCodeLabel,
         logo,
         logoArialLabel,
-        reloadAccount: reloadAccountSpy,
+        reload: reloadSpy,
         universeId: OWN_CANISTER_ID,
         canSelectAccount,
       },
@@ -60,7 +60,7 @@ describe("ReceiveModal", () => {
     const { getByTestId } = await renderReceiveModal({});
 
     await waitFor(() =>
-      expect(getByTestId("logo")?.getAttribute("alt")).toEqual(logoArialLabel)
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(logoArialLabel)
     );
   });
 
@@ -69,7 +69,7 @@ describe("ReceiveModal", () => {
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 
-    await waitFor(() => expect(reloadAccountSpy).toHaveBeenCalled());
+    await waitFor(() => expect(reloadSpy).toHaveBeenCalled());
   });
 
   it("should render a dropdown to select account", async () => {

@@ -5,11 +5,13 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
 use crate::assets::{hash_bytes, insert_asset, Asset};
+use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 use candid::CandidType;
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
+use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
@@ -29,12 +31,15 @@ mod time;
 
 type Cycles = u128;
 
-#[export_name = "canister_init"]
-fn main() {
+#[init]
+fn init() {
     assets::init_assets();
 }
 
-#[export_name = "canister_pre_upgrade"]
+/// Redundant function, never called but reqired as this is main.rs.
+fn main() {}
+
+#[pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
         let bytes = s.encode();
@@ -42,8 +47,11 @@ fn pre_upgrade() {
     });
 }
 
-#[export_name = "canister_post_upgrade"]
+#[post_upgrade]
 fn post_upgrade() {
+    // Saving the instruction counter now will not have the desired effect
+    // as the storage is about to be wiped out and replaced with stable memory.
+    let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {
@@ -51,10 +59,13 @@ fn post_upgrade() {
             unreachable!();
         });
 
-        s.replace(new_state)
+        s.replace(new_state);
     });
 
+    perf::save_instruction_count(counter_before);
+    perf::record_instruction_count("post_upgrade after state_recovery");
     assets::init_assets();
+    perf::record_instruction_count("post_upgrade stop");
 }
 
 #[export_name = "canister_query http_request"]

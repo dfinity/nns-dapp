@@ -1,24 +1,21 @@
-import { assertNonNullish } from "../utils/utils.test-utils";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
-export class AmountDisplayPo {
+export class AmountDisplayPo extends BasePageObject {
   static readonly tid = "token-value-label";
 
-  root: Element;
-
-  constructor(root: Element) {
-    if (root.getAttribute("data-tid") !== AmountDisplayPo.tid) {
-      throw new Error(`${root} is not an Tooltip`);
-    }
-    this.root = root;
+  private constructor(root: PageObjectElement) {
+    super(root);
   }
 
-  static under(element: Element): AmountDisplayPo | null {
-    const el = element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`);
-    return el && new AmountDisplayPo(el);
+  static under(element: PageObjectElement): AmountDisplayPo {
+    return new AmountDisplayPo(element.byTestId(AmountDisplayPo.tid));
   }
 
-  getAmount(): string | null {
-    return assertNonNullish(this.root.querySelector(`[data-tid="token-value"]`))
-      .textContent;
+  async getAmount(): Promise<string> {
+    return assertNonNullish(
+      await this.root.querySelector(`[data-tid="token-value"]`).getText()
+    );
   }
 }

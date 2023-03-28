@@ -13,6 +13,7 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -64,42 +65,46 @@ describe("Neurons", () => {
   });
 
   it("should render NnsNeurons by default", async () => {
+    fakeGovernanceApi.pause();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neurons,
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasSnsNeuronsPo()).toBe(false);
-    expect(po.hasNnsNeuronsPo()).toBe(true);
-    expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
+    expect(await po.hasSnsNeuronsPo()).toBe(false);
+    expect(await po.hasNnsNeuronsPo()).toBe(true);
+    expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeGovernanceApi.resume();
+    await waitFor(async () => {
+      expect(await po.getNnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = testNnsNeuronId.toString();
-    expect(po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getNnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should render project page when a committed project is selected", async () => {
+    fakeSnsGovernanceApi.pause();
     page.mock({
       data: { universe: testCommittedSnsCanisterId.toText() },
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasNnsNeuronsPo()).toBe(false);
-    expect(po.hasSnsNeuronsPo()).toBe(true);
-    expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
-    await waitFor(() => {
-      expect(po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
+    expect(await po.hasNnsNeuronsPo()).toBe(false);
+    expect(await po.hasSnsNeuronsPo()).toBe(true);
+    expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
+    fakeSnsGovernanceApi.resume();
+    await waitFor(async () => {
+      expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
     });
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
-    expect(po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
+    expect(await po.getSnsNeuronsPo().getNeuronIds()).toContain(neuronIdText);
   });
 
   it("should not render neurons when an open project is selected", async () => {
@@ -108,9 +113,9 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(container);
+    const po = NeuronsPo.under(new JestPageObjectElement(container));
 
-    expect(po.hasNnsNeuronsPo()).toBe(false);
-    expect(po.hasSnsNeuronsPo()).toBe(false);
+    expect(await po.hasNnsNeuronsPo()).toBe(false);
+    expect(await po.hasSnsNeuronsPo()).toBe(false);
   });
 });

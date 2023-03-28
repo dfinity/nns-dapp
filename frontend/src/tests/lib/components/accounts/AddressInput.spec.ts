@@ -29,6 +29,13 @@ describe("AddressInput", () => {
       expect(getByTestId("address-qr-code-scanner")).not.toBeNull();
     });
 
+    it("should render a qr code scanner button with explicit type button", () => {
+      const { getByTestId } = render(AddressInput, { props });
+      expect(
+        getByTestId("address-qr-code-scanner")?.getAttribute("type")
+      ).toEqual("button");
+    });
+
     it("should not render a qr code scanner button", () => {
       const { getByTestId } = render(AddressInput, {
         props: {
