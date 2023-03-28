@@ -13,7 +13,7 @@
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
   import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
   import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
-  import SnsProposalDataSection from "$lib/components/sns-proposals/SnsProposalDataSection.svelte";
+  import SnsProposalActionSection from "$lib/components/sns-proposals/SnsProposalActionSection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 
@@ -100,7 +100,7 @@
     </div>
     <div class="content-c proposal-data-section">
       <SnsProposalSummarySection {proposal} />
-      <SnsProposalDataSection {proposal} />
+      <SnsProposalActionSection {proposal} />
       <SnsProposalPayloadSection {proposal} />
     </div>
   {:else}

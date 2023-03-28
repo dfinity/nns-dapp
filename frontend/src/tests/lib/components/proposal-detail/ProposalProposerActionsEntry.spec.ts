@@ -3,75 +3,80 @@
  */
 
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerActionsEntry", () => {
-  it("should render action key", () => {
-    const { getByText } = render(ProposalProposerActionsEntry, {
-      props: {
-        actionKey: "actionKey",
-        actionFields: [],
-      },
+  const renderComponent = (props) => {
+    const { container } = render(ProposalProposerActionsEntry, {
+      props,
     });
 
-    expect(getByText("actionKey")).toBeInTheDocument();
+    return ProposalProposerActionsEntryPo.under(
+      new JestPageObjectElement(container)
+    );
+  };
+
+  it("should render action key as title", async () => {
+    const actionKey = "actionKey";
+    const po = renderComponent({
+      actionKey,
+      actionFields: [],
+    });
+
+    expect(await po.getActionTitle()).toBe(actionKey);
   });
 
-  it("should render action fields", () => {
+  it("should render action fields", async () => {
     const key = "key";
     const value = "value";
-    const { getByText } = render(ProposalProposerActionsEntry, {
-      props: {
-        actionKey: "actionKey",
-        actionFields: [[key, value]],
-      },
+    const po = renderComponent({
+      actionKey: "actionKey",
+      actionFields: [[key, value]],
     });
 
-    expect(getByText(key)).toBeInTheDocument();
-    expect(getByText(value)).toBeInTheDocument();
+    expect(await po.getFieldsText()).toContain(key);
+    expect(await po.getFieldsText()).toContain(value);
   });
 
-  it("should render object fields as JSON", () => {
+  it("should render object fields as JSON", async () => {
     const key = "key";
     const value = { key: "value" };
     const key2 = "key2";
     const value2 = { key: "value" };
-    const nodeProviderActions = render(ProposalProposerActionsEntry, {
-      props: {
-        actionKey: "actionKey",
-        actionFields: [
-          [key, value],
-          [key2, value2],
-        ],
-      },
+    const po = renderComponent({
+      actionKey: "actionKey",
+      actionFields: [
+        [key, value],
+        [key2, value2],
+      ],
     });
 
-    expect(nodeProviderActions.queryAllByTestId("json").length).toBe(2);
+    expect((await po.getJsonPos()).length).toBe(2);
   });
 
-  it("should render text fields as plane text", () => {
+  it("should render text fields as plane text", async () => {
     const key = "key";
     const value = "value";
-    const motionActions = render(ProposalProposerActionsEntry, {
-      props: {
-        actionKey: "actionKey",
-        actionFields: [[key, value]],
-      },
+
+    const po = renderComponent({
+      actionKey: "actionKey",
+      actionFields: [[key, value]],
     });
 
-    expect(motionActions.queryAllByTestId("json").length).toBe(0);
+    expect((await po.getJsonPos()).length).toBe(0);
   });
 
-  it("should render undefined fields as 'undefined'", () => {
+  it("should render undefined fields as 'undefined' text'", async () => {
     const key = "key";
     const value = { key: "value", anotherKey: undefined };
-    const { getByText } = render(ProposalProposerActionsEntry, {
-      props: {
-        actionKey: "actionKey",
-        actionFields: [[key, value]],
-      },
+
+    const po = renderComponent({
+      actionKey: "actionKey",
+      actionFields: [[key, value]],
     });
 
-    expect(getByText("undefined")).toBeInTheDocument();
+    expect(await po.getFieldsText()).toContain("undefined");
   });
 });

@@ -20,6 +20,7 @@ import {
 import { fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
+import { keyOfOptional } from "./utils";
 
 export type SnsProposalDataMap = {
   // Mapped directly from SnsProposalData directly
@@ -263,3 +264,35 @@ export const sortSnsProposalsById = (
           ? -1
           : 1
       );
+
+const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
+  fromNullable(fromNullable(proposal?.proposal)?.action ?? []);
+
+export const proposalFirstActionKey = (
+  proposal: SnsProposalData
+): string | undefined => Object.keys(getAction(proposal) ?? {})[0];
+
+export const proposalActionFields = (
+  proposal: SnsProposalData
+): [string, unknown][] => {
+  const key = proposalFirstActionKey(proposal);
+  if (key === undefined) {
+    return [];
+  }
+  // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
+  return Object.entries(
+    keyOfOptional({ obj: getAction(proposal), key }) ?? {}
+  ).filter(([, value]) => {
+    switch (typeof value) {
+      case "object":
+        return (value && Object.keys(value).length > 0) || Array.isArray(value);
+      case "undefined":
+      case "string":
+      case "bigint":
+      case "boolean":
+      case "number":
+        return true;
+    }
+    return false;
+  });
+};

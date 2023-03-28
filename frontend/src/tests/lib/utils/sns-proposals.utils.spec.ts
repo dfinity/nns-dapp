@@ -3,12 +3,16 @@ import {
   isAccepted,
   lastProposalId,
   mapProposalInfo,
+  proposalActionFields,
+  proposalFirstActionKey,
   snsDecisionStatus,
   snsRewardStatus,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
@@ -317,6 +321,118 @@ describe("sns-proposals utils", () => {
 
     it("returns empty array when array is empty", () => {
       expect(sortSnsProposalsById([])).toEqual([]);
+    });
+  });
+
+  describe("proposalFirstActionKey", () => {
+    it("should find fist action key", () => {
+      const firstKey = "UpgradeSnsToNextVersion";
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [
+          {
+            ...mockSnsProposal.proposal[0],
+            action: [{ [firstKey]: {} }],
+          },
+        ],
+      };
+      expect(proposalFirstActionKey(proposal)).toEqual(firstKey);
+    });
+
+    it("should return undefined if no action or no proposal", () => {
+      const proposalWithoutAction: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [
+          {
+            ...mockSnsProposal.proposal[0],
+            action: [],
+          },
+        ],
+      };
+      expect(proposalFirstActionKey(proposalWithoutAction)).toBeUndefined();
+
+      const proposalWithoutProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [],
+      };
+      expect(proposalFirstActionKey(proposalWithoutProposal)).toBeUndefined();
+    });
+  });
+
+  describe("proposalActionFields", () => {
+    it("should filter action fields", () => {
+      const action = {
+        TransferSnsTreasuryFunds: {
+          from_treasury: 123,
+          to_principal: [mockPrincipal] as [Principal],
+          to_subaccount: [{ subaccount: new Uint8Array() }] as [
+            { subaccount: Uint8Array }
+          ],
+          memo: [BigInt(123333)] as [bigint],
+          amount_e8s: BigInt(10_000_000),
+        },
+      };
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [
+          {
+            ...mockSnsProposal.proposal[0],
+            action: [action],
+          },
+        ],
+      };
+      const fields = proposalActionFields(proposal);
+
+      expect(fields.map(([key]) => key).join()).toEqual(
+        Object.keys(action.TransferSnsTreasuryFunds).join()
+      );
+    });
+
+    it("should include undefined action fields", () => {
+      // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
+      // That will mean that subaccount below shuold be rendered as `undefined` instead of not being present in the final array.
+      const action = {
+        TransferSnsTreasuryFunds: {
+          from_treasury: 123,
+          to_principal: [mockPrincipal] as [Principal],
+          to_subaccount: [] as [],
+          memo: [BigInt(123333)] as [bigint],
+          amount_e8s: BigInt(10_000_000),
+        },
+      };
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [
+          {
+            ...mockSnsProposal.proposal[0],
+            action: [action],
+          },
+        ],
+      };
+      const fields = proposalActionFields(proposal);
+
+      expect(fields.map(([key]) => key).join()).toEqual(
+        Object.keys(action.TransferSnsTreasuryFunds).join()
+      );
+    });
+
+    it("should return empty array if no action or no proposal", () => {
+      const proposalWithoutAction: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [
+          {
+            ...mockSnsProposal.proposal[0],
+            action: [],
+          },
+        ],
+      };
+      expect(proposalActionFields(proposalWithoutAction)).toHaveLength(0);
+
+      const proposalWithoutProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal: [],
+      };
+      expect(proposalActionFields(proposalWithoutProposal)).toHaveLength(0);
     });
   });
 });
