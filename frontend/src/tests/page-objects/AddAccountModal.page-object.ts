@@ -4,14 +4,14 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AddAccountModalPo extends BasePageObject {
-  static readonly tid = "add-account-modal-component";
+  private static readonly TID = "add-account-modal-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): AddAccountModalPo {
-    return new AddAccountModalPo(element.byTestId(AddAccountModalPo.tid));
+    return new AddAccountModalPo(element.byTestId(AddAccountModalPo.TID));
   }
 
   getAddAccountTypePo(): AddAccountTypePo {

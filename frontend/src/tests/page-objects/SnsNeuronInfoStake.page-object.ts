@@ -4,14 +4,14 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronInfoStakePo extends BasePageObject {
-  static readonly tid = "sns-neuron-info-stake";
+  private static readonly TID = "sns-neuron-info-stake";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): SnsNeuronInfoStakePo {
-    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.tid));
+    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.TID));
   }
 
   getAmountDisplayPo(): AmountDisplayPo {

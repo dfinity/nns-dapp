@@ -2,14 +2,14 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AddSubAccountPo extends BasePageObject {
-  static readonly tid = "add-sub-account-component";
+  private static readonly TID = "add-sub-account-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): AddSubAccountPo {
-    return new AddSubAccountPo(element.byTestId(AddSubAccountPo.tid));
+    return new AddSubAccountPo(element.byTestId(AddSubAccountPo.TID));
   }
 
   enterAccountName(name: string): Promise<void> {
