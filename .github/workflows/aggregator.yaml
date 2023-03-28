@@ -32,7 +32,7 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 27 2023 with saved state
+          # Version from Mar 27 2023 with saved state tools
           ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
       - name: Add SNS scripts to the path
         run: |
