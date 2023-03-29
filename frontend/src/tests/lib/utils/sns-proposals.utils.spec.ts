@@ -9,11 +9,9 @@ import {
   snsRewardStatus,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { Principal } from "@dfinity/principal";
-import type { SnsProposalData } from "@dfinity/sns";
+import type { SnsAction, SnsProposalData } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -362,14 +360,8 @@ describe("sns-proposals utils", () => {
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
       const action = {
-        TransferSnsTreasuryFunds: {
-          from_treasury: 123,
-          to_principal: [mockPrincipal] as [Principal],
-          to_subaccount: [{ subaccount: new Uint8Array() }] as [
-            { subaccount: Uint8Array }
-          ],
-          memo: [BigInt(123333)] as [bigint],
-          amount_e8s: BigInt(10_000_000),
+        Motion: {
+          motion_text: "Test motion",
         },
       };
       const proposal: SnsProposalData = {
@@ -383,21 +375,18 @@ describe("sns-proposals utils", () => {
       };
       const fields = proposalActionFields(proposal);
 
-      expect(fields.map(([key]) => key).join()).toEqual(
-        "from_treasury,to_principal,to_subaccount,memo,amount_e8s"
-      );
+      expect(fields).toEqual([["motion_text", "Test motion"]]);
     });
 
     it("should include undefined action fields", () => {
       // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
       // That will mean that subaccount below shuold be rendered as `undefined` instead of not being present in the final array.
-      const action = {
-        TransferSnsTreasuryFunds: {
-          from_treasury: 123,
-          to_principal: [mockPrincipal] as [Principal],
-          to_subaccount: [] as [],
-          memo: [BigInt(123333)] as [bigint],
-          amount_e8s: BigInt(10_000_000),
+      const action: SnsAction = {
+        ManageSnsMetadata: {
+          url: ["www.internetcomputer.org"],
+          logo: [],
+          name: [],
+          description: [],
         },
       };
       const proposal: SnsProposalData = {
@@ -411,9 +400,12 @@ describe("sns-proposals utils", () => {
       };
       const fields = proposalActionFields(proposal);
 
-      expect(fields.map(([key]) => key).join()).toEqual(
-        "from_treasury,to_principal,to_subaccount,memo,amount_e8s"
-      );
+      expect(fields).toEqual([
+        ["url", ["www.internetcomputer.org"]],
+        ["logo", []],
+        ["name", []],
+        ["description", []],
+      ]);
     });
 
     it("should return empty array if no action or no proposal", () => {
