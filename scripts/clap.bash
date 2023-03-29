@@ -95,7 +95,7 @@ cat << XXX
 usage: \$(basename "\$0") [OPTIONS]
 
 OPTIONS:
-        $clap_usage
+        ${clap_usage:-}
 
         -? --help  :  usage
 
@@ -109,8 +109,8 @@ XXX
 [[ "\${COMP_LINE:-}" == "" ]] || [[ "\${COMP_POINT:-}" == "" ]] || {
 	COMP_CURRENT="${1:-}"
 	case "\$COMP_CURRENT" in
-	"")	compgen -W "$clap_flags" -- "\$COMP_CURRENT" ;;
-	-*)	compgen -W "$clap_flags" -- "\$COMP_CURRENT" ;;
+	"")	compgen -W "${clap_flags:-}" -- "\$COMP_CURRENT" ;;
+	-*)	compgen -W "${clap_flags:-}" -- "\$COMP_CURRENT" ;;
 	*)	compgen -f -- "\$COMP_CURRENT" ;;
 	esac
 	exit 0
@@ -127,7 +127,7 @@ while [ \$# -ne 0 ]; do
         case "\$param" in
                 $clap_flag_match
                 "-?"|--help)
-			print_help
+			[[ "$(type -t print_help)" != function ]] || print_help
 			echo
                         usage
                         exit 0;;
