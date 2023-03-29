@@ -10,8 +10,7 @@
 
   let actionKey: string | undefined;
   let actionFields: [string, unknown][] = [];
-  $: actionKey =
-    proposal !== undefined ? proposalOnlyActionKey(proposal) : undefined;
+  $: actionKey = proposal && proposalOnlyActionKey(proposal);
   $: actionFields =
     proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>

@@ -80,8 +80,9 @@ describe("SnsProposalActionSection", () => {
   it("should render action fields", async () => {
     const po = renderComponent(proposalWithTransferFunds);
 
-    expect(await po.getFieldsText()).toContain("from_treasury");
-    expect(await po.getFieldsText()).toContain("123");
+    expect(await po.getFieldsText()).toBe(
+      'from_treasury 123 to_principal  [ 0: "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"  ] to_subaccount  [ 0:  { subaccount: { }  }  ] memo  [ 0: "123333"  ] amount_e8s 10000000 '
+    );
   });
 
   it("should render object fields as JSON", async () => {

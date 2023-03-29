@@ -80,6 +80,8 @@ describe("ProposalProposerActionsEntry", () => {
       actionFields: [[key, value]],
     });
 
-    expect(await po.getFieldsText()).toContain("undefined");
+    expect(await po.getFieldsText()).toBe(
+      'key  { key: "value" anotherKey: undefined  }'
+    );
   });
 });
