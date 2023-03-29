@@ -118,9 +118,7 @@ describe("Proposal detail page when not logged in user", () => {
       await waitFor(() => expect(queryProposal).toHaveBeenCalledTimes(2));
 
       await waitFor(() =>
-        expect(
-          queryByTestId("proposal-proposer-info-title")
-        ).toBeInTheDocument()
+        expect(queryByTestId("proposal-summary-title")).toBeInTheDocument()
       );
       expect(queryByTestId("proposal-system-info-details")).toBeInTheDocument();
       await waitFor(() =>
@@ -191,7 +189,7 @@ describe("Proposal detail page when not logged in user", () => {
           queryByTestId("proposal-system-info-details")
         ).toBeInTheDocument()
       );
-      expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument();
+      expect(queryByTestId("proposal-summary-title")).toBeInTheDocument();
       expect(queryByTestId("login-button")).toBeInTheDocument();
       expect(
         queryByTestId("voting-confirmation-toolbar")
