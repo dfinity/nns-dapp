@@ -81,7 +81,7 @@ describe("ProposalProposerActionsEntry", () => {
     });
 
     expect(await po.getFieldsText()).toBe(
-      'key  { key: "value" anotherKey: undefined  }'
+      'key  { key: "value" anotherKey: undefined  } '
     );
   });
 });
