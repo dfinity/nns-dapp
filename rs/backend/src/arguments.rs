@@ -1,8 +1,10 @@
 //! Code for customizinga  particular installation
+use candid::{CandidType, Deserialize};
 use core::cell::RefCell;
+use serde::Serialize;
 
 /// Init and post_upgrade arguments
-#[derive(Debug, Default, Eq, PartialEq)]
+#[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into Javascript.
     args: Vec<(String, String)>,
