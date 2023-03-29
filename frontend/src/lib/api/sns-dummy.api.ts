@@ -97,10 +97,133 @@ const nsFunctionProposal2 = {
   ] as [SnsAction],
 };
 
+const executeNSFunctionProposal = {
+  url: "internet-computer.org",
+  title: "Execute Generic Nervoys system Function",
+  summary:
+    "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
+  action: [
+    {
+      ExecuteGenericNervousSystemFunction: {
+        function_id: BigInt(5),
+        payload: new Uint8Array(),
+      },
+    },
+  ] as [SnsAction],
+};
+
+const removeNSFunctionProposal = {
+  url: "internet-computer.org",
+  title: "Remove Generic Nervoys system Function",
+  summary:
+    "# Summary\nThis is a dummy proposal to remove a *nervous system function*.",
+  action: [
+    {
+      RemoveGenericNervousSystemFunction: BigInt(1002),
+    },
+  ] as [SnsAction],
+};
+
+const upgradeProposal = {
+  url: "internet-computer.org",
+  title: "Upgrade to next version",
+  summary:
+    "# Summary\nThis is a dummy proposal to *upgrade* to the next version.",
+  action: [
+    {
+      UpgradeSnsToNextVersion: {},
+    },
+  ] as [SnsAction],
+};
+
+const registerDappCanisterProposal = {
+  url: "internet-computer.org",
+  title: "Register Dapp Canister",
+  summary:
+    "# Summary\nThis is a dummy proposal to register a new dapp canister.",
+  action: [
+    {
+      RegisterDappCanisters: {
+        canister_ids: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+      },
+    },
+  ] as [SnsAction],
+};
+
+const transferFundsProposal = {
+  url: "internet-computer.org",
+  title: "Transfer tokens",
+  summary: "# Summary\nThis is a dummy proposal to *transfer* funds.",
+  action: [
+    {
+      TransferSnsTreasuryFunds: {
+        from_treasury: 1,
+        to_principal: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+        to_subaccount: [],
+        memo: [BigInt(33333)],
+        amount_e8s: BigInt(100_000_000_000),
+      },
+    },
+  ] as [SnsAction],
+};
+
+const upgradeControlledCanisterProposal = {
+  url: "internet-computer.org",
+  title: "Upgrade canister",
+  summary: "# Summary\nThis is a dummy proposal to *upgrade* a canister.",
+  action: [
+    {
+      UpgradeSnsControlledCanister: {
+        new_canister_wasm: new Uint8Array(),
+        canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+        canister_upgrade_arg: [],
+      },
+    },
+  ] as [SnsAction],
+};
+
+const deregisterCanisterProposal = {
+  url: "internet-computer.org",
+  title: "Deregister canister",
+  summary:
+    "# Summary\nThis is a dummy proposal to *deregister* a controlled canister.",
+  action: [
+    {
+      DeregisterDappCanisters: {
+        canister_ids: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+        new_controllers: [
+          Principal.fromText(
+            "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+          ),
+        ],
+      },
+    },
+  ] as [SnsAction],
+};
+
+const unspecifiedProposal = {
+  url: "internet-computer.org",
+  title: "Unspecified",
+  summary: "# Summary\nThis is a dummy proposal to *upgrade* a canister.",
+  action: [
+    {
+      Unspecified: {},
+    },
+  ] as [SnsAction],
+};
+
 export const snsProposals = [
   motionProposal1,
   motionProposal2,
   manageSnsMetadataproposal,
   nsFunctionProposal1,
   nsFunctionProposal2,
+  executeNSFunctionProposal,
+  removeNSFunctionProposal,
+  upgradeProposal,
+  registerDappCanisterProposal,
+  transferFundsProposal,
+  upgradeControlledCanisterProposal,
+  deregisterCanisterProposal,
+  unspecifiedProposal,
 ];
