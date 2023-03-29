@@ -2,7 +2,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsProposalPayloadSectionPo extends BasePageObject {
-  static readonly tid = "sns-proposal-payload-section-component";
+  static readonly TID = "sns-proposal-payload-section-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
@@ -10,7 +10,7 @@ export class SnsProposalPayloadSectionPo extends BasePageObject {
 
   static under(element: PageObjectElement): SnsProposalPayloadSectionPo {
     return new SnsProposalPayloadSectionPo(
-      element.byTestId(SnsProposalPayloadSectionPo.tid)
+      element.byTestId(SnsProposalPayloadSectionPo.TID)
     );
   }
 
@@ -20,9 +20,5 @@ export class SnsProposalPayloadSectionPo extends BasePageObject {
 
   getPayloadText(): Promise<string> {
     return this.root.byTestId("proposal-summary-component").getText();
-  }
-
-  hasContent(): Promise<boolean> {
-    return this.root.isPresent();
   }
 }
