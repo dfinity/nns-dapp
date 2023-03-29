@@ -353,7 +353,7 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": true,
+          "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
       },
