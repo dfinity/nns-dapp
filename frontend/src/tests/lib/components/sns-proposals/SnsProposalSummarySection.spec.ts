@@ -68,7 +68,7 @@ describe("SnsProposalSummarySection", () => {
 
     it("should not render content", async () => {
       const po = await renderComponent(props);
-      expect(await po.hasContent()).toBe(false);
+      expect(await po.isPresent()).toBe(false);
     });
   });
 });
