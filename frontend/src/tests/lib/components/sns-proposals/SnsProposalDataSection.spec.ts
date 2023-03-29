@@ -3,17 +3,17 @@
  */
 
 import SnsProposalActionSection from "$lib/components/sns-proposals/SnsProposalActionSection.svelte";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
+import { Principal } from "@dfinity/principal";
 import type { SnsAction, SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 const transferFundsAction: SnsAction = {
   TransferSnsTreasuryFunds: {
     from_treasury: 123,
-    to_principal: [mockPrincipal],
+    to_principal: [Principal.fromText("aaaaa-aa")],
     to_subaccount: [{ subaccount: new Uint8Array() }],
     memo: [BigInt(123333)],
     amount_e8s: BigInt(10_000_000),
@@ -81,7 +81,7 @@ describe("SnsProposalActionSection", () => {
     const po = renderComponent(proposalWithTransferFunds);
 
     expect(await po.getFieldsText()).toBe(
-      'from_treasury 123 to_principal  [ 0: "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"  ] to_subaccount  [ 0:  { subaccount: { }  }  ] memo  [ 0: "123333"  ] amount_e8s 10000000 '
+      'from_treasury 123 to_principal  [ 0: "aaaaa-aa"  ] to_subaccount  [ 0:  { subaccount: { }  }  ] memo  [ 0: "123333"  ] amount_e8s 10000000 '
     );
   });
 
@@ -102,7 +102,7 @@ describe("SnsProposalActionSection", () => {
     expect(await po.getJsonPos()).toHaveLength(0);
   });
 
-  it.skip("should render undefined fields as 'undefined'", async () => {
+  it("should render undefined fields as 'undefined'", async () => {
     // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
   });
 });

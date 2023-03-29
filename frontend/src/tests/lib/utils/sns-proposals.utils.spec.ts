@@ -358,7 +358,7 @@ describe("sns-proposals utils", () => {
   });
 
   describe("proposalActionFields", () => {
-    it("should filter action fields", () => {
+    it("should return the properties of the action in a list", () => {
       const action = {
         Motion: {
           motion_text: "Test motion",

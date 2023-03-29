@@ -292,6 +292,29 @@ export const proposalOnlyActionKey = (
   return actionKeys[0];
 };
 
+/**
+ * Returns a list of tuples with the properties of the action.
+ *
+ * From the proposal data:
+ *  {
+ *   id: ...
+ *   ...
+ *   proposal: [{
+ *     title: "title",
+ *     summary: "summary",
+ *     url: "...",
+ *     action: [{
+ *       Motion: {
+ *         motion_text: "Test motion"
+ *       }
+ *     }]
+ *   }]
+ *  }
+ * It returns: [["motion_text", "Test motion"]]
+ *
+ * @param {SnsProposalData} proposal
+ * @returns {[string, unknown][]}
+ */
 export const proposalActionFields = (
   proposal: SnsProposalData
 ): [string, unknown][] => {
