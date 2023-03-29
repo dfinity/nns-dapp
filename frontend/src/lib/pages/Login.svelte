@@ -28,7 +28,6 @@
   };
 
   $: redirectWhenSignedIn($authStore);
-
 </script>
 
 <LoginTitle />
