@@ -1,0 +1,28 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { PageObjectElement } from "$tests/types/page-object.types";
+
+export class SnsProposalPayloadSectionPo extends BasePageObject {
+  static readonly tid = "sns-proposal-payload-section-component";
+
+  private constructor(root: PageObjectElement) {
+    super(root);
+  }
+
+  static under(element: PageObjectElement): SnsProposalPayloadSectionPo {
+    return new SnsProposalPayloadSectionPo(
+      element.byTestId(SnsProposalPayloadSectionPo.tid)
+    );
+  }
+
+  getCardTitle(): Promise<string> {
+    return this.root.querySelector("h2").getText();
+  }
+
+  getPayloadText(): Promise<string> {
+    return this.root.byTestId("proposal-summary-component").getText();
+  }
+
+  hasContent(): Promise<boolean> {
+    return this.root.isPresent();
+  }
+}
