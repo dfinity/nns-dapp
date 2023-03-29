@@ -172,6 +172,29 @@ jobs:
                   echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
                   exit 1
           fi
+  release-templating-works:
+    needs: formatting
+    name: Release template
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Verify template creation
+        run: |
+          echo Create a fake wasm
+          mkdir -p release/ci
+          touch release/ci/nns-dapp.wasm
+          echo Create a proposal template
+          scripts/nns-dapp/release-template
+          echo Check the proposal
+          ./scripts/nns-dapp/release-check
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
     if: ${{ always() }}
