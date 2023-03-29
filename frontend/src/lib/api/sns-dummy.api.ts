@@ -98,20 +98,20 @@ const nsFunctionProposal2 = {
 };
 
 // We need to pass a proposal to add a function to the nervous system first
-// const executeNSFunctionProposal = {
-//   url: "internet-computer.org",
-//   title: "Execute Generic Nervoys system Function",
-//   summary:
-//     "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
-//   action: [
-//     {
-//       ExecuteGenericNervousSystemFunction: {
-//         function_id: BigInt(1002),
-//         payload: new Uint8Array(),
-//       },
-//     },
-//   ] as [SnsAction],
-// };
+const executeNSFunctionProposal = {
+  url: "internet-computer.org",
+  title: "Execute Generic Nervoys system Function",
+  summary:
+    "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
+  action: [
+    {
+      ExecuteGenericNervousSystemFunction: {
+        function_id: BigInt(1002),
+        payload: new Uint8Array(),
+      },
+    },
+  ] as [SnsAction],
+};
 
 // We need to pass a proposal to add a function to the nervous system first
 // const removeNSFunctionProposal = {
@@ -212,7 +212,7 @@ export const snsProposals = [
   nsFunctionProposal1,
   nsFunctionProposal2,
   // The following proposals require specific state to be set up first.
-  // executeNSFunctionProposal,
+  executeNSFunctionProposal,
   // removeNSFunctionProposal,
   // upgradeProposal,
   // upgradeControlledCanisterProposal,
