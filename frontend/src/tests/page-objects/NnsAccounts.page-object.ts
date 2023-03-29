@@ -19,6 +19,15 @@ export class NnsAccountsPo extends BasePageObject {
     return AccountCardPo.under(this.root);
   }
 
+  getAccountCardPos(): Promise<AccountCardPo[]> {
+    return AccountCardPo.allUnder(this.root);
+  }
+
+  async getAccountNames(): Promise<string[]> {
+    const cards = await this.getAccountCardPos();
+    return Promise.all(cards.map((card) => card.getAccountName()));
+  }
+
   getNnsAddAccountPo(): NnsAddAccountPo {
     return NnsAddAccountPo.under(this.root);
   }

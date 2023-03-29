@@ -15,6 +15,7 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 
 mod accounts_store;
+mod arguments;
 mod assets;
 mod canisters;
 mod constants;

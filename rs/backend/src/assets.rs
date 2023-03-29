@@ -1,14 +1,19 @@
+use crate::arguments::CANISTER_ARGUMENTS;
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
 use crate::StableState;
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
+use std::io::prelude::*;
 use std::io::Read;
 
 type HeaderField = (String, String);
@@ -365,6 +370,7 @@ pub fn init_assets() {
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
+    let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
     STATE.with(|state| {
         for entry in tar.entries().unwrap() {
             let mut entry = entry.unwrap();
@@ -387,7 +393,17 @@ pub fn init_assets() {
             let mut bytes = Vec::new();
             entry.read_to_end(&mut bytes).unwrap();
 
-            dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
+            if name.ends_with("index.html.gz") {
+                dfn_core::api::print(format!("{}: {} + arguments", &name, bytes.len()));
+                let mut html = gunzip_string(&bytes);
+                if let Some(insertion_point) = html.find("</head>") {
+                    html.insert_str(insertion_point, &arguments_html);
+                }
+                bytes = gzip(html.as_bytes());
+            } else {
+                dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
+            }
+
             insert_asset_into_state(state, name, Asset::new(bytes));
         }
         update_root_hash(&state.asset_hashes.borrow_mut());
@@ -429,4 +445,18 @@ fn encode_decode() {
             "x".to_string() => Asset::new_stable(vec![1,2,3])
         })
     );
+}
+
+/// Compress data
+pub fn gzip(uncompressed: &[u8]) -> Vec<u8> {
+    let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
+    encoder.write_all(uncompressed).unwrap_or_default();
+    encoder.finish().unwrap_or_default()
+}
+/// Uncompress data
+pub fn gunzip_string(compressed: &[u8]) -> String {
+    let mut d = GzDecoder::new(compressed);
+    let mut s = String::new();
+    d.read_to_string(&mut s).unwrap_or_default();
+    s
 }
