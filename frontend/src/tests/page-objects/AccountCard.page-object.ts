@@ -13,9 +13,9 @@ export class AccountCardPo extends BasePageObject {
   }
 
   static async allUnder(element: PageObjectElement): Promise<AccountCardPo[]> {
-    return Array.from(
-      await element.allByTestId(AccountCardPo.TID)
-    ).map((el) => new AccountCardPo(el));
+    return Array.from(await element.allByTestId(AccountCardPo.TID)).map(
+      (el) => new AccountCardPo(el)
+    );
   }
 
   getAccountName(): Promise<string> {
