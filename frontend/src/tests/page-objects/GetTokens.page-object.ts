@@ -16,12 +16,12 @@ export class GetTokensPo extends BasePageObject {
     return this.getButton("get-icp-button").click();
   }
 
-  clickSubmit(): Promise<void> {
-    return this.getButton("get-icp-submit").click();
-  }
-
   enterAmount(amount: number): Promise<void> {
     return this.getTextInput().typeText(amount.toString());
+  }
+
+  clickSubmit(): Promise<void> {
+    return this.getButton("get-icp-submit").click();
   }
 
   waitForModalClosed(): Promise<void> {
