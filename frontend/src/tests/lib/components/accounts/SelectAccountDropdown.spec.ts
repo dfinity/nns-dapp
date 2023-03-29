@@ -91,6 +91,8 @@ describe("SelectAccountDropdown", () => {
         },
       });
 
+      // We are interested in the bind value(s) not the one of the HTML element. It's the bind value that kept the wrong value in memory when we developed related fix.
+      // In addition, the select binds `selectedAccountIdentifier` and we also want to ensure that the side effect resolve the `selectedAccount` when the code reset it.
       expect(component.$$.ctx[component.$$.props["selectedAccount"]]).toEqual(
         mockHardwareWalletAccount
       );
