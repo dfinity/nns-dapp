@@ -158,24 +158,22 @@ aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
-cat <<EOF | tee "$ENV_FILE"
-VITE_DFX_NETWORK="$dfxNetwork"
-VITE_CYCLES_MINTING_CANISTER_ID="$cmcCanisterId"
-VITE_WASM_CANISTER_ID="$wasmCanisterId"
-VITE_GOVERNANCE_CANISTER_ID="$governanceCanisterId"
-VITE_GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
-VITE_LEDGER_CANISTER_ID="$ledgerCanisterId"
-VITE_LEDGER_CANISTER_URL="$ledgerCanisterUrl"
-VITE_OWN_CANISTER_ID="$ownCanisterId"
-VITE_OWN_CANISTER_URL="$ownCanisterUrl"
-VITE_FETCH_ROOT_KEY="$fetchRootKey"
+echo "VITE_DFX_NETWORK=$dfxNetwork
+VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
+VITE_WASM_CANISTER_ID=$wasmCanisterId
+VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
+VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
+VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
+VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
+VITE_OWN_CANISTER_ID=$ownCanisterId
+VITE_OWN_CANISTER_URL=$ownCanisterUrl
+VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
-VITE_HOST="$host"
-VITE_IDENTITY_SERVICE_URL="$identityServiceUrl"
-VITE_AGGREGATOR_CANISTER_URL="${aggregatorCanisterUrl:-}"
-VITE_CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
-VITE_CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
-EOF
+VITE_HOST=$host
+VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
+VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
+VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
 {
