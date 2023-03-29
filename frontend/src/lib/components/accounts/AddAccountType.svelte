@@ -17,7 +17,7 @@
   const selectNewHardwareWallet = async () => await select("hardwareWallet");
 </script>
 
-<div class="legacy">
+<div class="legacy" data-tid="add-account-type-component">
   <Card
     role="button"
     on:click={selectNewSubAccount}

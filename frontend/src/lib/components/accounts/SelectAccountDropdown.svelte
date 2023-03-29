@@ -8,6 +8,7 @@
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import { isNullish } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let rootCanisterId: Principal;
@@ -30,6 +31,23 @@
       rootCanisterId,
       universesAccounts: $universesAccountsStore,
     })?.filter(filterAccounts) ?? [];
+
+  $: selectableAccounts,
+    (() => {
+      if (isNullish(selectedAccountIdentifier)) {
+        return;
+      }
+
+      // If the list of selectable accounts has change and the selected account is not part of this updated list.
+      // Then the selected account must be reset to the first of the selectable accounts, the first of the dropdown.
+      if (
+        selectableAccounts.find(
+          ({ identifier }) => identifier === selectedAccountIdentifier
+        ) === undefined
+      ) {
+        selectedAccountIdentifier = selectableAccounts[0]?.identifier;
+      }
+    })();
 </script>
 
 {#if selectableAccounts.length === 0}
