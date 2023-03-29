@@ -2,7 +2,7 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { Proposal } from "@dfinity/nns";
-  import ProposalProposerInfoSection from "./ProposalProposerInfoSection.svelte";
+  import ProposalSummarySection from "./ProposalSummarySection.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -13,4 +13,4 @@
   $: ({ title, proposal, url } = mapProposalInfo(proposalInfo));
 </script>
 
-<ProposalProposerInfoSection {title} summary={proposal?.summary} {url} />
+<ProposalSummarySection {title} summary={proposal?.summary} {url} />
