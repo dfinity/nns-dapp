@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NnsProposalProposerInfoSection from "$lib/components/proposal-detail/NnsProposalProposerInfoSection.svelte";
+import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
 import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { render, waitFor } from "@testing-library/svelte";
@@ -11,11 +11,11 @@ jest.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
-describe("NnsProposalProposerInfoSection", () => {
+describe("NnsProposalSummarySection", () => {
   const { title, proposal, url } = mapProposalInfo(mockProposalInfo);
 
   it("should render title", () => {
-    const renderResult = render(NnsProposalProposerInfoSection, {
+    const renderResult = render(NnsProposalSummarySection, {
       props: {
         proposalInfo: mockProposalInfo,
       },
@@ -26,7 +26,7 @@ describe("NnsProposalProposerInfoSection", () => {
   });
 
   it("should render summary", async () => {
-    const renderResult = render(NnsProposalProposerInfoSection, {
+    const renderResult = render(NnsProposalSummarySection, {
       props: {
         proposalInfo: mockProposalInfo,
       },
@@ -39,7 +39,7 @@ describe("NnsProposalProposerInfoSection", () => {
   });
 
   it("should render url", async () => {
-    const renderResult = render(NnsProposalProposerInfoSection, {
+    const renderResult = render(NnsProposalSummarySection, {
       props: {
         proposalInfo: mockProposalInfo,
       },

@@ -1,21 +1,17 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronInfoStakePo extends BasePageObject {
-  static readonly tid = "sns-neuron-info-stake";
+  private static readonly TID = "sns-neuron-info-stake";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): SnsNeuronInfoStakePo {
-    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.tid));
-  }
-
-  private getButton(testId: string): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId });
+    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.TID));
   }
 
   getAmountDisplayPo(): AmountDisplayPo {
