@@ -2,14 +2,20 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AccountCardPo extends BasePageObject {
-  static readonly tid = "account-card";
+  private static readonly TID = "account-card";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): AccountCardPo {
-    return new AccountCardPo(element.byTestId(AccountCardPo.tid));
+    return new AccountCardPo(element.byTestId(AccountCardPo.TID));
+  }
+
+  static async allUnder(element: PageObjectElement): Promise<AccountCardPo[]> {
+    return Array.from(
+      await element.allByTestId(AccountCardPo.TID)
+    ).map((el) => new AccountCardPo(el));
   }
 
   getAccountName(): Promise<string> {
