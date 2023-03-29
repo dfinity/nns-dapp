@@ -35,9 +35,6 @@ fn init() {
     assets::init_assets();
 }
 
-/// Redundant function, never called but reqired as this is main.rs.
-fn main() {}
-
 #[pre_upgrade]
 fn pre_upgrade() {
     STATE.with(|s| {
