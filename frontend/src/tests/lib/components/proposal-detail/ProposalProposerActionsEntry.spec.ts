@@ -29,15 +29,14 @@ describe("ProposalProposerActionsEntry", () => {
   });
 
   it("should render action fields", async () => {
-    const key = "key";
-    const value = "value";
+    const key = "keyTest";
+    const value = "valueTest";
     const po = renderComponent({
-      actionKey: "actionKey",
+      actionKey: "testKey",
       actionFields: [[key, value]],
     });
 
-    expect(await po.getFieldsText()).toContain(key);
-    expect(await po.getFieldsText()).toContain(value);
+    expect(await po.getFieldsText()).toBe("keyTest valueTest ");
   });
 
   it("should render object fields as JSON", async () => {
