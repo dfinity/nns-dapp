@@ -19,7 +19,7 @@ describe("ProposalProposerActionsEntry", () => {
   };
 
   it("should render action key as title", async () => {
-    const actionKey = "actionKey";
+    const actionKey = "testKey";
     const po = renderComponent({
       actionKey,
       actionFields: [],

@@ -300,9 +300,8 @@ export const proposalActionFields = (
     return [];
   }
   // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
-  return Object.entries(
-    keyOfOptional({ obj: getAction(proposal), key }) ?? {}
-  ).filter(([, value]) => {
+  const actionData = keyOfOptional({ obj: getAction(proposal), key }) ?? {};
+  return Object.entries(actionData).filter(([, value]) => {
     switch (typeof value) {
       case "object":
         return (value && Object.keys(value).length > 0) || Array.isArray(value);
