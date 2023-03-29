@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+	cat <<-EOF
+	
+	Sanity checks a proposal.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+cd ""
+
+# The deployment converts the did file to bianry at the last moment, like this:
+ARG_DID="./release/nns_dapp_arg.did"
+ARG_PATH="./release/nns_dapp_arg.bin"
+test -e "$ARG_DID" || {
+  echo "ERROR: Arguments need to be provided in $ARG_DID"
+  exit 1
+} >&2
+didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+# ... Check whether that produces a valid argument
+echo "Checking binary argument:"
+cargo run --bin nns-dapp-check-args -- ./release/nns_dapp_arg.bin
+echo "Check passes"

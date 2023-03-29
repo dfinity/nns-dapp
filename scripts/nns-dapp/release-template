@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")/../.."
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+cd "$SOURCE_DIR/.."
+export DFX_NETWORK
+
 mkdir -p release/ci
 PR="$(git log -n1 tags/release-candidate --oneline | awk '{print $(NF)}' | tr -cd 0-9)"
 CI="https://github.com/dfinity/nns-dapp/pull/${PR}/checks"
@@ -55,3 +66,6 @@ git checkout "$(git rev-parse tags/release-candidate)"
 sha256sum nns-dapp.wasm
 \`\`\`
 EOF
+
+./config.sh
+cp nns-dapp-arg.did ./release/nns-dapp-arg.did
