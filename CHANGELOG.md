@@ -1,9 +1,9 @@
 # Changelog
 
 ## Proposal XXX
-* Fix back to detail from “Settings” page.
+* Fix back to detail from "Settings" page.
 * UX improvements:
-  * Transaction edit submit form with “Enter”.
+  * Transaction edit submit form with "Enter".
   * Back button from SNS Proposal Detail page keeps universe.
 * Minor bugfixes.
 
