@@ -38,6 +38,21 @@ export class JestPageObjectElement implements PageObjectElement {
     return nonNullish(this.element);
   }
 
+  waitFor(): Promise<void> {
+    // TODO:
+    // To be able to implement this, querySelector shouldn't immediately get an
+    // element but rather concattenate the selectors. If we already have a null
+    // element, it's too late to wait for it.
+    throw new Error("Not implemented");
+  }
+
+  waitForAbsent(): Promise<void> {
+    // TODO:
+    // To be able to implement this, querySelector shouldn't immediately get an
+    // element but rather concattenate the selectors.
+    throw new Error("Not implemented");
+  }
+
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
     return this.element && this.element.textContent;
@@ -45,5 +60,11 @@ export class JestPageObjectElement implements PageObjectElement {
 
   async click(): Promise<void> {
     await fireEvent.click(this.element);
+  }
+
+  async typeText(_text: string): Promise<void> {
+    throw new Error("Not implemented");
+    // Not tested:
+    // fireEvent.change(input, {target: {value: text}})
   }
 }

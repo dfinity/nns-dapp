@@ -85,7 +85,13 @@
   let modal: WizardModal;
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  testId="add-account-modal-component"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
   >
