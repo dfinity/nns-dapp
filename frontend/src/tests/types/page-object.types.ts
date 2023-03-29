@@ -8,6 +8,9 @@ export interface PageObjectElement {
   byTestId(tid: string): PageObjectElement;
   allByTestId(tid: string): Promise<PageObjectElement[]>;
   isPresent(): Promise<boolean>;
+  waitFor(): Promise<void>;
+  waitForAbsent(): Promise<void>;
   getText(): Promise<string | null>;
   click(): Promise<void>;
+  typeText(text: string): Promise<void>;
 }

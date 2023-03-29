@@ -7,8 +7,8 @@
   export let url: string | undefined;
 </script>
 
-<div class="content-cell-island" data-tid="proposal-proposer-info-component">
-  <h2 class="content-cell-title" data-tid="proposal-proposer-info-title">
+<div class="content-cell-island" data-tid="proposal-summary-section-component">
+  <h2 class="content-cell-title" data-tid="proposal-summary-title">
     {$i18n.proposal_detail.summary}
   </h2>
 
@@ -22,7 +22,7 @@
             target="_blank"
             href={url}
             rel="noopener noreferrer"
-            data-tid="proposal-proposer-info-url">{url}</a
+            data-tid="proposal-summary-url">{url}</a
           >
         {/if}
       </svelte:fragment>

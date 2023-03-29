@@ -1,16 +1,16 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ProposalProposerInfoSectionPo extends BasePageObject {
-  static readonly tid = "proposal-proposer-info-component";
+export class ProposalSummarySectionPo extends BasePageObject {
+  static readonly tid = "proposal-summary-section-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
-  static under(element: PageObjectElement): ProposalProposerInfoSectionPo {
-    return new ProposalProposerInfoSectionPo(
-      element.byTestId(ProposalProposerInfoSectionPo.tid)
+  static under(element: PageObjectElement): ProposalSummarySectionPo {
+    return new ProposalSummarySectionPo(
+      element.byTestId(ProposalSummarySectionPo.tid)
     );
   }
 
@@ -19,7 +19,7 @@ export class ProposalProposerInfoSectionPo extends BasePageObject {
   }
 
   getProposalUrlText(): Promise<string> {
-    return this.root.byTestId("proposal-proposer-info-url").getText();
+    return this.root.byTestId("proposal-summary-url").getText();
   }
 
   getProposalSummary(): Promise<string> {

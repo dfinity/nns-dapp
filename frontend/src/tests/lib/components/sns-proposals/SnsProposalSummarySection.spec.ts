@@ -4,7 +4,7 @@
 import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { ProposalProposerInfoSectionPo } from "$tests/page-objects/ProposalProposerInfoSection.page-object";
+import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -21,9 +21,7 @@ describe("SnsProposalSummarySection", () => {
 
     await runResolvedPromises();
 
-    return ProposalProposerInfoSectionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return ProposalSummarySectionPo.under(new JestPageObjectElement(container));
   };
 
   describe("when proposal is defined", () => {
