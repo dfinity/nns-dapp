@@ -1,6 +1,6 @@
 //! Code for customizinga  particular installation
-use core::cell::RefCell;
 use crate::{CandidType, Deserialize, Serialize};
+use core::cell::RefCell;
 
 /// Init and post_upgrade arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
@@ -47,8 +47,8 @@ pub fn configvalue2attributevalue(value: &str) -> String {
 
 /// Sets arguments to the default value, or the provided value if given.
 pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
-  let canister_arguments = canister_arguments.unwrap_or_default().with_own_canister_id();
-  CANISTER_ARGUMENTS.with(|args| {
-    args.replace(canister_arguments);
-  });
+    let canister_arguments = canister_arguments.unwrap_or_default().with_own_canister_id();
+    CANISTER_ARGUMENTS.with(|args| {
+        args.replace(canister_arguments);
+    });
 }
