@@ -97,44 +97,47 @@ const nsFunctionProposal2 = {
   ] as [SnsAction],
 };
 
-const executeNSFunctionProposal = {
-  url: "internet-computer.org",
-  title: "Execute Generic Nervoys system Function",
-  summary:
-    "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
-  action: [
-    {
-      ExecuteGenericNervousSystemFunction: {
-        function_id: BigInt(5),
-        payload: new Uint8Array(),
-      },
-    },
-  ] as [SnsAction],
-};
+// We need to pass a proposal to add a function to the nervous system first
+// const executeNSFunctionProposal = {
+//   url: "internet-computer.org",
+//   title: "Execute Generic Nervoys system Function",
+//   summary:
+//     "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
+//   action: [
+//     {
+//       ExecuteGenericNervousSystemFunction: {
+//         function_id: BigInt(1002),
+//         payload: new Uint8Array(),
+//       },
+//     },
+//   ] as [SnsAction],
+// };
 
-const removeNSFunctionProposal = {
-  url: "internet-computer.org",
-  title: "Remove Generic Nervoys system Function",
-  summary:
-    "# Summary\nThis is a dummy proposal to remove a *nervous system function*.",
-  action: [
-    {
-      RemoveGenericNervousSystemFunction: BigInt(1002),
-    },
-  ] as [SnsAction],
-};
+// We need to pass a proposal to add a function to the nervous system first
+// const removeNSFunctionProposal = {
+//   url: "internet-computer.org",
+//   title: "Remove Generic Nervoys system Function",
+//   summary:
+//     "# Summary\nThis is a dummy proposal to remove a *nervous system function*.",
+//   action: [
+//     {
+//       RemoveGenericNervousSystemFunction: BigInt(1002),
+//     },
+//   ] as [SnsAction],
+// };
 
-const upgradeProposal = {
-  url: "internet-computer.org",
-  title: "Upgrade to next version",
-  summary:
-    "# Summary\nThis is a dummy proposal to *upgrade* to the next version.",
-  action: [
-    {
-      UpgradeSnsToNextVersion: {},
-    },
-  ] as [SnsAction],
-};
+// We need to deploy new version of the SNS canisters first.
+// const upgradeProposal = {
+//   url: "internet-computer.org",
+//   title: "Upgrade to next version",
+//   summary:
+//     "# Summary\nThis is a dummy proposal to *upgrade* to the next version.",
+//   action: [
+//     {
+//       UpgradeSnsToNextVersion: {},
+//     },
+//   ] as [SnsAction],
+// };
 
 const registerDappCanisterProposal = {
   url: "internet-computer.org",
@@ -167,20 +170,21 @@ const transferFundsProposal = {
   ] as [SnsAction],
 };
 
-const upgradeControlledCanisterProposal = {
-  url: "internet-computer.org",
-  title: "Upgrade canister",
-  summary: "# Summary\nThis is a dummy proposal to *upgrade* a canister.",
-  action: [
-    {
-      UpgradeSnsControlledCanister: {
-        new_canister_wasm: new Uint8Array(),
-        canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
-        canister_upgrade_arg: [],
-      },
-    },
-  ] as [SnsAction],
-};
+// TODO: Find a valid new_canister_wasm
+// const upgradeControlledCanisterProposal = {
+//   url: "internet-computer.org",
+//   title: "Upgrade canister",
+//   summary: "# Summary\nThis is a dummy proposal to *upgrade* a canister.",
+//   action: [
+//     {
+//       UpgradeSnsControlledCanister: {
+//         new_canister_wasm: new Uint8Array(),
+//         canister_id: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
+//         canister_upgrade_arg: [],
+//       },
+//     },
+//   ] as [SnsAction],
+// };
 
 const deregisterCanisterProposal = {
   url: "internet-computer.org",
@@ -201,29 +205,18 @@ const deregisterCanisterProposal = {
   ] as [SnsAction],
 };
 
-const unspecifiedProposal = {
-  url: "internet-computer.org",
-  title: "Unspecified",
-  summary: "# Summary\nThis is a dummy proposal to *upgrade* a canister.",
-  action: [
-    {
-      Unspecified: {},
-    },
-  ] as [SnsAction],
-};
-
 export const snsProposals = [
   motionProposal1,
   motionProposal2,
   manageSnsMetadataproposal,
   nsFunctionProposal1,
   nsFunctionProposal2,
-  executeNSFunctionProposal,
-  removeNSFunctionProposal,
-  upgradeProposal,
+  // The following proposals require specific state to be set up first.
+  // executeNSFunctionProposal,
+  // removeNSFunctionProposal,
+  // upgradeProposal,
+  // upgradeControlledCanisterProposal,
   registerDappCanisterProposal,
   transferFundsProposal,
-  upgradeControlledCanisterProposal,
   deregisterCanisterProposal,
-  unspecifiedProposal,
 ];
