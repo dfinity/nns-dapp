@@ -2,6 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
+  import TestIdWrapper from "./TestIdWrapper.svelte";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -63,52 +64,54 @@
   const toggle = () => (collapsed = !collapsed);
 </script>
 
-{#if isExpandable && hasChildren}
-  <button
-    data-tid={testId}
-    class="key"
-    class:expanded={!collapsed}
-    class:collapsed
-    class:root
-    class:arrow={isExpandable && hasChildren}
-    aria-label={$i18n.core.toggle}
-    tabindex="0"
-    on:click|stopPropagation={toggle}
-    >{keyLabel}
-    {#if collapsed}
-      <span class="bracket">{openBracket} ... {closeBracket}</span>
-    {:else}
-      <span class="bracket open">{openBracket}</span>
+<TestIdWrapper testId={root ? "json-root-component" : "json-component"}>
+  {#if isExpandable && hasChildren}
+    <button
+      data-tid={testId}
+      class="key"
+      class:expanded={!collapsed}
+      class:collapsed
+      class:root
+      class:arrow={isExpandable && hasChildren}
+      aria-label={$i18n.core.toggle}
+      tabindex="0"
+      on:click|stopPropagation={toggle}
+      >{keyLabel}
+      {#if collapsed}
+        <span class="bracket">{openBracket} ... {closeBracket}</span>
+      {:else}
+        <span class="bracket open">{openBracket}</span>
+      {/if}
+    </button>
+    {#if !collapsed}
+      <!-- children -->
+      <ul>
+        {#each children as [key, value]}
+          <li>
+            <svelte:self
+              json={value}
+              _key={key}
+              {defaultExpandedLevel}
+              _level={_level + 1}
+            />
+          </li>
+        {/each}
+      </ul>
+      <span class="bracket close">{closeBracket}</span>
     {/if}
-  </button>
-  {#if !collapsed}
-    <!-- children -->
-    <ul>
-      {#each children as [key, value]}
-        <li>
-          <svelte:self
-            json={value}
-            _key={key}
-            {defaultExpandedLevel}
-            _level={_level + 1}
-          />
-        </li>
-      {/each}
-    </ul>
-    <span class="bracket close">{closeBracket}</span>
+  {:else if isExpandable}
+    <!-- no childre -->
+    <span data-tid={testId} class="key" class:root
+      >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
+    >
+  {:else}
+    <!-- key:value -->
+    <span data-tid={testId} class="key-value">
+      {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+        >{/if}<span class="value {valueType}" {title}>{value}</span></span
+    >
   {/if}
-{:else if isExpandable}
-  <!-- no childre -->
-  <span data-tid={testId} class="key" class:root
-    >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
-  >
-{:else}
-  <!-- key:value -->
-  <span data-tid={testId} class="key-value">
-    {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
-      >{/if}<span class="value {valueType}" {title}>{value}</span></span
-  >
-{/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";

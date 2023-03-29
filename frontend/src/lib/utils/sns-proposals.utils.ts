@@ -268,9 +268,29 @@ export const sortSnsProposalsById = (
 const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
   fromNullable(fromNullable(proposal?.proposal)?.action ?? []);
 
+/**
+ * Returns the key of the action in the proposal.
+ *
+ * An `action` is a variant of the `SnsAction` type.
+ * Reference: https://github.com/dfinity/ic-js/blob/8e9695411cab2c9480224baa968743466342ab13/packages/sns/candid/sns_governance.did#L3
+ *
+ * They variant follows this convetion: { [actionKey: string]: <action data> }
+ * Therefore, this function returns the `actionKey`.
+ *
+ * @param {SnsProposalData} proposal
+ * @returns {string} `actionKey` of the action
+ */
 export const proposalFirstActionKey = (
   proposal: SnsProposalData
-): string | undefined => Object.keys(getAction(proposal) ?? {})[0];
+): string | undefined => {
+  const actionKeys = Object.keys(getAction(proposal) ?? {});
+  // Edge case: Variant of SnsAction has always one key only.
+  // We can't test this because an `SnsProposalData` with two action keys is not a valid type.
+  if (actionKeys.length > 1) {
+    throw new Error("Actions have only have one key.");
+  }
+  return actionKeys[0];
+};
 
 export const proposalActionFields = (
   proposal: SnsProposalData

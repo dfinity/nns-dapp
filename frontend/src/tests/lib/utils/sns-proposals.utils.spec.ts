@@ -384,7 +384,7 @@ describe("sns-proposals utils", () => {
       const fields = proposalActionFields(proposal);
 
       expect(fields.map(([key]) => key).join()).toEqual(
-        Object.keys(action.TransferSnsTreasuryFunds).join()
+        "from_treasury,to_principal,to_subaccount,memo,amount_e8s"
       );
     });
 
@@ -412,7 +412,7 @@ describe("sns-proposals utils", () => {
       const fields = proposalActionFields(proposal);
 
       expect(fields.map(([key]) => key).join()).toEqual(
-        Object.keys(action.TransferSnsTreasuryFunds).join()
+        "from_treasury,to_principal,to_subaccount,memo,amount_e8s"
       );
     });
 

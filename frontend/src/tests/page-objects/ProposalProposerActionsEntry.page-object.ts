@@ -28,8 +28,4 @@ export class ProposalProposerActionsEntryPo extends BasePageObject {
   getJsonPos(): Promise<JsonPo[]> {
     return JsonPo.allUnder(this.root);
   }
-
-  hasContent(): Promise<boolean> {
-    return this.root.isPresent();
-  }
 }

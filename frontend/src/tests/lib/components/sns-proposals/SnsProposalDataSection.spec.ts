@@ -3,7 +3,6 @@
  */
 
 import SnsProposalActionSection from "$lib/components/sns-proposals/SnsProposalActionSection.svelte";
-import { proposalFirstActionKey } from "$lib/utils/sns-proposals.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -75,28 +74,28 @@ describe("SnsProposalActionSection", () => {
   it("should render action key as title", async () => {
     const po = renderComponent(proposalWithTransferFunds);
 
-    expect(await po.getActionTitle()).toBe(
-      proposalFirstActionKey(proposalWithTransferFunds)
-    );
+    expect(await po.getActionTitle()).toBe("TransferSnsTreasuryFunds");
   });
 
   it("should render action fields", async () => {
     const po = renderComponent(proposalWithTransferFunds);
 
-    const [key, value] = Object.entries(
-      transferFundsAction.TransferSnsTreasuryFunds
-    )[0];
-    expect(await po.getFieldsText()).toContain(key);
-    expect(await po.getFieldsText()).toContain(value.toString());
+    expect(await po.getFieldsText()).toContain("from_treasury");
+    expect(await po.getFieldsText()).toContain("123");
   });
 
   it("should render object fields as JSON", async () => {
     const po = renderComponent(proposalWithAddFunction);
 
-    expect(await po.getJsonPos()).toHaveLength(2);
+    const jsonPos = await po.getJsonPos();
+    expect(jsonPos.length).toBe(2);
+    expect(await jsonPos[0].getText()).toEqual(' [ 0: "test description"  ]');
+    expect(await jsonPos[1].getText()).toEqual(
+      " [ 0:  { NativeNervousSystemFunction: { }  }  ]"
+    );
   });
 
-  it("should render text fields as plane text", async () => {
+  it("should not render text fields as json", async () => {
     const po = renderComponent(proposalWithMotion);
 
     expect(await po.getJsonPos()).toHaveLength(0);

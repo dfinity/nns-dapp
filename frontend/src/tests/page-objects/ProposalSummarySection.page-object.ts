@@ -25,8 +25,4 @@ export class ProposalSummarySectionPo extends BasePageObject {
   getProposalSummary(): Promise<string> {
     return this.root.byTestId("proposal-summary-component").getText();
   }
-
-  hasContent(): Promise<boolean> {
-    return this.root.isPresent();
-  }
 }

@@ -44,7 +44,7 @@ describe("ProposalProposerActionsEntry", () => {
     const key = "key";
     const value = { key: "value" };
     const key2 = "key2";
-    const value2 = { key: "value" };
+    const value2 = { key2: "value2" };
     const po = renderComponent({
       actionKey: "actionKey",
       actionFields: [
@@ -53,10 +53,13 @@ describe("ProposalProposerActionsEntry", () => {
       ],
     });
 
-    expect((await po.getJsonPos()).length).toBe(2);
+    const jsonPos = await po.getJsonPos();
+    expect(jsonPos.length).toBe(2);
+    expect(await jsonPos[0].getText()).toEqual(' { key: "value"  }');
+    expect(await jsonPos[1].getText()).toEqual(' { key2: "value2"  }');
   });
 
-  it("should render text fields as plane text", async () => {
+  it("should not render text fields as json", async () => {
     const key = "key";
     const value = "value";
 
