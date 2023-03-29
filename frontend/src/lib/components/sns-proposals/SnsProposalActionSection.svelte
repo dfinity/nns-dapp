@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     proposalActionFields,
-    proposalFirstActionKey,
+    proposalOnlyActionKey,
   } from "$lib/utils/sns-proposals.utils";
   import type { SnsProposalData } from "@dfinity/sns";
   import ProposalProposerActionsEntry from "../proposal-detail/ProposalProposerActionsEntry.svelte";
@@ -11,7 +11,7 @@
   let actionKey: string | undefined;
   let actionFields: [string, unknown][] = [];
   $: actionKey =
-    proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
+    proposal !== undefined ? proposalOnlyActionKey(proposal) : undefined;
   $: actionFields =
     proposal !== undefined ? proposalActionFields(proposal) : [];
 </script>

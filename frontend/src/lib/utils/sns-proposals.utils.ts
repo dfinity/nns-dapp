@@ -280,7 +280,7 @@ const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
  * @param {SnsProposalData} proposal
  * @returns {string} `actionKey` of the action
  */
-export const proposalFirstActionKey = (
+export const proposalOnlyActionKey = (
   proposal: SnsProposalData
 ): string | undefined => {
   const actionKeys = Object.keys(getAction(proposal) ?? {});
@@ -295,7 +295,7 @@ export const proposalFirstActionKey = (
 export const proposalActionFields = (
   proposal: SnsProposalData
 ): [string, unknown][] => {
-  const key = proposalFirstActionKey(proposal);
+  const key = proposalOnlyActionKey(proposal);
   if (key === undefined) {
     return [];
   }

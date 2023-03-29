@@ -4,7 +4,7 @@ import {
   lastProposalId,
   mapProposalInfo,
   proposalActionFields,
-  proposalFirstActionKey,
+  proposalOnlyActionKey,
   snsDecisionStatus,
   snsRewardStatus,
   sortSnsProposalsById,
@@ -324,7 +324,7 @@ describe("sns-proposals utils", () => {
     });
   });
 
-  describe("proposalFirstActionKey", () => {
+  describe("proposalOnlyActionKey", () => {
     it("should find fist action key", () => {
       const firstKey = "UpgradeSnsToNextVersion";
       const proposal: SnsProposalData = {
@@ -336,7 +336,7 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      expect(proposalFirstActionKey(proposal)).toEqual(firstKey);
+      expect(proposalOnlyActionKey(proposal)).toEqual(firstKey);
     });
 
     it("should return undefined if no action or no proposal", () => {
@@ -349,13 +349,13 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      expect(proposalFirstActionKey(proposalWithoutAction)).toBeUndefined();
+      expect(proposalOnlyActionKey(proposalWithoutAction)).toBeUndefined();
 
       const proposalWithoutProposal: SnsProposalData = {
         ...mockSnsProposal,
         proposal: [],
       };
-      expect(proposalFirstActionKey(proposalWithoutProposal)).toBeUndefined();
+      expect(proposalOnlyActionKey(proposalWithoutProposal)).toBeUndefined();
     });
   });
 
