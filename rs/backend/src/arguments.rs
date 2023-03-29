@@ -1,8 +1,9 @@
 //! Code for customizinga  particular installation
 use core::cell::RefCell;
+use crate::{CandidType, Deserialize, Serialize};
 
 /// Init and post_upgrade arguments
-#[derive(Debug, Default, Eq, PartialEq)]
+#[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into Javascript.
     args: Vec<(String, String)>,
@@ -42,4 +43,12 @@ pub fn configname2attributename(name: &str) -> String {
 /// Escapes a configuration value
 pub fn configvalue2attributevalue(value: &str) -> String {
     serde_json::Value::String(value.to_string()).to_string()
+}
+
+/// Sets arguments to the default value, or the provided value if given.
+pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
+  let canister_arguments = canister_arguments.unwrap_or_default().with_own_canister_id();
+  CANISTER_ARGUMENTS.with(|args| {
+    args.replace(canister_arguments);
+  });
 }
