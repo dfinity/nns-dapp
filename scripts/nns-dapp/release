@@ -68,8 +68,8 @@ WASM="./release/docker/nns-dapp.wasm"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
 # Gets the canister arguments
-ARG_DID="./release/nns_dapp_arg.did"
-ARG_PATH="./release/nns_dapp_arg.bin"
+ARG_DID="./release/nns-dapp-arg.did"
+ARG_PATH="./release/nns-dapp-arg.bin"
 test -e "$ARG_DID" || {
   echo "ERROR: Arguments need to be provided in $ARG_DID"
   exit 1

@@ -185,8 +185,8 @@ echo "$json" >"$JSON_OUT"
 
 cat <<EOF >"$CANDID_ARGS_FILE"
 (record{
-  args = vec{ record{ 0= ""; 1= "bar" }
-$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | if type=="string" then tojson else (tojson | tojson) end) }"' "$JSON_OUT")
+  args = vec {
+$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | if type=="string" then tojson else (tojson | tojson) end) };"' "$JSON_OUT")
   };
 })
 EOF
