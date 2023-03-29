@@ -2,7 +2,7 @@
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
   import {
     initAppAuth,
@@ -12,12 +12,9 @@
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
-  const unsubscribeVoteInProgress = voteRegistrationStore.subscribe(
-    ({ registrations }) =>
-      syncBeforeUnload(voteRegistrationActive(registrations))
+  $: syncBeforeUnload(
+    voteRegistrationActive($voteRegistrationStore.registrations)
   );
-
-  onDestroy(() => unsubscribeVoteInProgress());
 </script>
 
 <slot />

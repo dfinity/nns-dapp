@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
+  import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
@@ -18,7 +17,10 @@
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
-  import { snsFiltersStore } from "$lib/stores/sns-filters.store";
+  import {
+    snsFiltersStore,
+    type SnsFiltersStoreData,
+  } from "$lib/stores/sns-filters.store";
   import { nonNullish } from "@dfinity/utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
@@ -33,35 +35,32 @@
   });
 
   let currentProjectCanisterId: Principal | undefined = undefined;
-  const unsubscribeProjectIdStore: Unsubscriber = snsOnlyProjectStore.subscribe(
-    async (selectedProjectCanisterId) => {
-      currentProjectCanisterId = selectedProjectCanisterId;
-      if (nonNullish(selectedProjectCanisterId)) {
-        await Promise.all([
-          loadSnsNervousSystemFunctions(selectedProjectCanisterId),
-          loadSnsFilters(selectedProjectCanisterId),
-        ]);
-      }
+  const onSnsProjectChanged = async (
+    selectedProjectCanisterId: Principal | undefined
+  ) => {
+    currentProjectCanisterId = selectedProjectCanisterId;
+    if (nonNullish(selectedProjectCanisterId)) {
+      await Promise.all([
+        loadSnsNervousSystemFunctions(selectedProjectCanisterId),
+        loadSnsFilters(selectedProjectCanisterId),
+      ]);
     }
-  );
+  };
 
-  const unsubscribeFiltersStore: Unsubscriber = snsFiltersStore.subscribe(
-    async (filters) => {
-      // First call will have `filters` as `undefined`.
-      // Once we have the initial filters, we load the proposals.
-      if (
-        nonNullish(currentProjectCanisterId) &&
-        nonNullish(filters[currentProjectCanisterId.toText()])
-      ) {
-        await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
-      }
+  $: onSnsProjectChanged($snsOnlyProjectStore);
+
+  const onSnsFiltersChanged = async (filters: SnsFiltersStoreData) => {
+    // First call will have `filters` as `undefined`.
+    // Once we have the initial filters, we load the proposals.
+    if (
+      nonNullish(currentProjectCanisterId) &&
+      nonNullish(filters[currentProjectCanisterId.toText()])
+    ) {
+      await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
     }
-  );
+  };
 
-  onDestroy(() => {
-    unsubscribeProjectIdStore();
-    unsubscribeFiltersStore();
-  });
+  $: onSnsFiltersChanged($snsFiltersStore);
 
   let loadingNextPage = false;
   let loadNextPage: () => void;

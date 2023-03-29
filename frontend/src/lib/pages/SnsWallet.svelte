@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
-  import { onDestroy, setContext } from "svelte";
-  import { writable, type Unsubscriber } from "svelte/store";
+  import { setContext } from "svelte";
+  import { writable } from "svelte/store";
   import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -29,17 +30,17 @@
 
   let showModal: "send" | undefined = undefined;
 
-  const unsubscribe: Unsubscriber = snsOnlyProjectStore.subscribe(
-    async (selectedProjectCanisterId) => {
-      if (selectedProjectCanisterId !== undefined) {
-        // Reload accounts always.
-        // Do not set to loading because we might use the account in the store.
-        await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
-      }
+  const onSnsProjectChanged = async (
+    selectedProjectCanisterId: Principal | undefined
+  ) => {
+    if (selectedProjectCanisterId !== undefined) {
+      // Reload accounts always.
+      // Do not set to loading because we might use the account in the store.
+      await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
     }
-  );
+  };
 
-  onDestroy(unsubscribe);
+  $: onSnsProjectChanged($snsOnlyProjectStore);
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,

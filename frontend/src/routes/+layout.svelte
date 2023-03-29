@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStoreData } from "$lib/stores/auth.store";
   import { initAuthWorker } from "$lib/services/worker-auth.services";
@@ -40,9 +40,7 @@
     await syncAuth($authStore);
   });
 
-  const unsubscribeAuth = authStore.subscribe(syncAuth);
-
-  onDestroy(() => unsubscribeAuth());
+  $: syncAuth($authStore);
 </script>
 
 <slot />
