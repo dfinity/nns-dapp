@@ -177,19 +177,19 @@ VITE_CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
 VITE_CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
 EOF
 
-cat <<EOF >"$CANDID_ARGS_FILE"
-(record{
-  args = vec{ record{ 0= ""; 1= "bar" }
-    $(jq -r 'to_entries | .[] | "record{ 0=\(.key | tojson); 1=\(.value | if type=="string" then tojson else (tojson | tojson) end) }"' "$JSON_OUT")
-  };
-})
-EOF
-
 echo "$json" >"$JSON_OUT"
 {
   echo "Config is available as JSON in '${JSON_OUT}'"
   echo "Frontend config has been defined in '${ENV_FILE}'"
 } >&2
+
+cat <<EOF >"$CANDID_ARGS_FILE"
+(record{
+  args = vec{ record{ 0= ""; 1= "bar" }
+$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | if type=="string" then tojson else (tojson | tojson) end) }"' "$JSON_OUT")
+  };
+})
+EOF
 
 IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
