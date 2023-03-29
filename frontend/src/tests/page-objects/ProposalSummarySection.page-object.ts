@@ -2,7 +2,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ProposalSummarySectionPo extends BasePageObject {
-  static readonly tid = "proposal-summary-section-component";
+  private static readonly TID = "proposal-summary-section-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
@@ -10,7 +10,7 @@ export class ProposalSummarySectionPo extends BasePageObject {
 
   static under(element: PageObjectElement): ProposalSummarySectionPo {
     return new ProposalSummarySectionPo(
-      element.byTestId(ProposalSummarySectionPo.tid)
+      element.byTestId(ProposalSummarySectionPo.TID)
     );
   }
 
