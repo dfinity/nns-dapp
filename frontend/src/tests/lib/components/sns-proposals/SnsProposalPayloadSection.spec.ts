@@ -44,7 +44,7 @@ describe("SnsProposalPayloadSection", () => {
     it("should contain summary", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getPayloadText()).toContain(payload);
+      expect(await (await po.getPayloadText()).trim()).toBe(payload);
     });
   });
 
