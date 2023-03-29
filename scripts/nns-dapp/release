@@ -41,7 +41,7 @@ cd "$(dirname "$0")/../../.."
 read -rp "HSM Pin: " DFX_HSM_PIN
 
 # Gets the nns-dapp  canister ID
-NNS_DAPP_CANISTER_ID="$(dfx canister id nns-dapp --network mainnet)"
+NNS_DAPP_CANISTER_ID="$(dfx canister id nns-dapp --network "$DFX_NETWORK")"
 # ... just checking...
 if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
   [[ "${NNS_DAPP_CANISTER_ID:-}" == "qoctq-giaaa-aaaaa-aaaea-cai" ]] || {
