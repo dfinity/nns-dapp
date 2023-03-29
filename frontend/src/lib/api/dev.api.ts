@@ -150,19 +150,19 @@ export const makeSnsDummyProposals = async ({
   });
   const { snsProposals } = await import("./sns-dummy.api");
 
-  await Promise.all(
-    snsProposals.map((proposal) => {
-      try {
-        return canister.manageNeuron({
+  try {
+    await Promise.all(
+      snsProposals.map((proposal) =>
+        canister.manageNeuron({
           subaccount: neuronId.id,
           command: [{ MakeProposal: proposal }],
-        });
-      } catch (error) {
-        console.error("Error while making proposal: ", proposal.title);
-        console.error(error);
-      }
-    })
-  );
+        })
+      )
+    );
+  } catch (error) {
+    console.error("Error while creating dummy proposals");
+    console.error(error);
+  }
 
   logWithTimestamp(`Making dummy proposals call complete.`);
 };
