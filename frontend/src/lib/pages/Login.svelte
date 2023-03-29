@@ -13,21 +13,22 @@
 
   let signedIn = false;
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    async ({ identity }: AuthStoreData) => {
-      signedIn = isSignedIn(identity);
+  const redirectWhenSignedIn = async ({
+    identity,
+  }: AuthStoreData): Promise<void> => {
+    signedIn = isSignedIn(identity);
 
-      if (!signedIn) {
-        return;
-      }
-
-      await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
-        replaceState: true,
-      });
+    if (!signedIn) {
+      return;
     }
-  );
 
-  onDestroy(unsubscribe);
+    await goto(buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }), {
+      replaceState: true,
+    });
+  };
+
+  $: redirectWhenSignedIn($authStore);
+
 </script>
 
 <LoginTitle />
