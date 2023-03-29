@@ -3,54 +3,86 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
+print_help() {
+  cat <<-EOF
+
+	Creates an NNS proposal to upgrade the nns-dapp.
+
+	EOF
+}
+
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define short=i long=canister_id desc="The ID of the canister" variable=DFX_CANISTER_ID
-clap.define short=N long=canister_name desc="The name of the canister" variable=DFX_CANISTER_NAME
+clap.define short=N long=neuron desc="The neuron ID to propose with" variable=DFX_NEURON_ID
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-
-
 
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
-NEURON_PATH="$HOME/.config/dfx/prod-neuron"
-if test -e "$NEURON_PATH"; then
-  NEURON="$(cat "$NEURON_PATH")"
-  echo "Neuron ID: $NEURON (from $NEURON_PATH)"
-else
-  read -rp "Please enter your Neuron ID: " NEURON
-  read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
-  [[ "$STORE_NEURON" != [yY] ]] || {
-    mkdir -p "$(dirname "$NEURON_PATH")"
-    printf "%s" "$NEURON" >"$NEURON_PATH"
-  }
-fi
+# Gets the neuron ID.
+# ... if saved in a file, get it:
+[[ "${DFX_NEURON_ID:-}" != "" ]] || {
+  DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" 2>/dev/null || true)"
+}
+# ... else ask the user:
+[[ "${DFX_NEURON_ID:-}" != "" ]] || {
+  read -rp "Please enter your Neuron ID: " DFX_NEURON_ID
+}
+[[ "${DFX_NEURON_ID:-}" != "" ]] || {
+  echo "ERROR: Neuron ID not provided."
+  exit 1
+} >&2
 
 read -rp "HSM Pin: " DFX_HSM_PIN
 
+# Gets the nns-dapp  canister ID
 NNS_DAPP_CANISTER_ID="$(dfx canister id nns-dapp --network mainnet)"
-if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]] ; then
-	[[ "${NNS_DAPP_CANISTER_ID:-}" == "qoctq-giaaa-aaaaa-aaaea-cai" ]] || {
-	echo "ERROR: Has the mainnet nns-dapp canister ID really changed?"
-	echo "       If so, please update this script: '${BASH_SOURCE[0]}'"
-	exit 1
-} >&2
+# ... just checking...
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+  [[ "${NNS_DAPP_CANISTER_ID:-}" == "qoctq-giaaa-aaaaa-aaaea-cai" ]] || {
+    echo "ERROR: Has the mainnet nns-dapp canister ID really changed?"
+    echo "       If so, please update this script: '${BASH_SOURCE[0]}'"
+    exit 1
+  } >&2
 fi
 
+# Gets the proposal URL
+DFX_NNS_URL="$(dfx-network-provider --network "$DFX_NETWORK")"
+# ... just checking...
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+  [[ "$DFX_NNS_URL" == "https://ic0.app" ]] || {
+    echo "ERROR: Is the proposal URL really correct? '$DFX_NNS_URL'"
+    echo "       If so, please update this script: '${BASH_SOURCE[0]}'"
+    exit 1
+  } >&2
+fi
+
+# Gets the wasm
+# Note: If the wasm is not provided, the SHA will fail.
 WASM="./release/docker/nns-dapp.wasm"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
+# Gets the canister arguments
 ARG_DID="./release/nns_dapp_arg.did"
 ARG_PATH="./release/nns_dapp_arg.bin"
+test -e "$ARG_DID" || {
+  echo "ERROR: Arguments need to be provided in $ARG_DID"
+  exit 1
+} >&2
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+test -e "$ARG_PATH" || {
+  echo "ERROR: Failed to create arguments in $ARG_PATH"
+  exit 1
+} >&2
 
-set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
-
+# Prepares the command
+set ic-admin --pin "$DFX_HSM_PIN" --nns-url "$DFX_NNS_URL" --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+# ... just checking...
 echo
 echo PLEASE REVIEW THIS COMMAND:
 echo
