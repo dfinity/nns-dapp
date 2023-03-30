@@ -21,6 +21,7 @@ set -euo pipefail
 pushd "$(dirname "${BASH_SOURCE[0]}")"
 ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 JSON_OUT="deployment-config.json"
+CANDID_ARGS_FILE="nns-dapp-arg.did"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
@@ -179,6 +180,14 @@ echo "$json" >"$JSON_OUT"
   echo "Config is available as JSON in '${JSON_OUT}'"
   echo "Frontend config has been defined in '${ENV_FILE}'"
 } >&2
+
+cat <<EOF >"$CANDID_ARGS_FILE"
+(record{
+  args = vec {
+$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | tojson) };"' "$JSON_OUT")
+  };
+})
+EOF
 
 IDENTITY_SERVICE_URL="$identityServiceUrl"
 export IDENTITY_SERVICE_URL
