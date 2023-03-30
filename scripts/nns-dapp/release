@@ -40,13 +40,14 @@ cd "${SOURCE_DIR}/.."
 
 # Gets the HSM key, if applicable
 [[ "${DFX_HSM_KEY_ID:-}" != "" ]] || {
-  DFX_HSM_KEY_ID="$(jq -re '.hsm.key_id // empty' "${HOME}/.config/dfx/identity/${DFX_IDENTITY}/identity.json")"
+  DFX_HSM_KEY_ID="$(jq -re '.hsm.key_id // empty' "${HOME}/.config/dfx/identity/${DFX_IDENTITY}/identity.json")" || true
 }
 # Gets the authentication mechanism
 PEM_PATH="$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.pem"
 if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]] || [[ "${DFX_HSM_KEY_ID:-}" != "" ]]; then
   # Authenticate with an HSM
   read -rp "HSM Pin: " DFX_HSM_PIN
+  export DFX_HSM_PIN # Needed for dfx canister id, for some strange reason.
   AUTH_ARGS=(--use-hsm --pin "$DFX_HSM_PIN" --key-id "${DFX_HSM_KEY_ID}" --slot 0)
 elif test -e "$PEM_PATH"; then
   # Authenticate with a pem file
