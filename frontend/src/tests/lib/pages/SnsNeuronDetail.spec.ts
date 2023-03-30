@@ -20,10 +20,7 @@ import {
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
@@ -97,7 +94,6 @@ describe("SnsNeuronDetail", () => {
       });
 
       fakeSnsGovernanceApi.addNeuronWith({
-        identity: mockIdentity,
         rootCanisterId,
         id: [validNeuronId],
       });
