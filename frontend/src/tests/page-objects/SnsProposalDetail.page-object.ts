@@ -4,14 +4,14 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { SnsProposalSystemInfoSectionPo } from "./SnsProposalSystemInfoSection.page-object";
 
 export class SnsProposalDetailPo extends BasePageObject {
-  static readonly tid = "sns-proposal-details-grid";
+  private static readonly TID = "sns-proposal-details-grid";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): SnsProposalDetailPo | null {
-    return new SnsProposalDetailPo(element.byTestId(SnsProposalDetailPo.tid));
+    return new SnsProposalDetailPo(element.byTestId(SnsProposalDetailPo.TID));
   }
 
   getSkeletonDetails(): SkeletonDetailsPo {

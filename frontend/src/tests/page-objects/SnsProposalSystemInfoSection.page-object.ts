@@ -3,13 +3,13 @@ import { BasePageObject } from "./base.page-object";
 import { KeyValuePairPo } from "./KeyValuePair.page-object";
 
 export class SnsProposalSystemInfoSectionPo extends BasePageObject {
-  static readonly tid = "proposal-system-info-details-component";
+  private static readonly TID = "proposal-system-info-details-component";
 
   static under(
     element: PageObjectElement
   ): SnsProposalSystemInfoSectionPo | null {
     const el = element.querySelector(
-      `[data-tid=${SnsProposalSystemInfoSectionPo.tid}]`
+      `[data-tid=${SnsProposalSystemInfoSectionPo.TID}]`
     );
     return el && new SnsProposalSystemInfoSectionPo(el);
   }

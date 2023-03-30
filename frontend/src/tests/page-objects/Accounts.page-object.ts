@@ -4,14 +4,14 @@ import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AccountsPo extends BasePageObject {
-  static readonly tid = "accounts-component";
+  private static readonly TID = "accounts-component";
 
   constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): AccountsPo | null {
-    return new AccountsPo(element.byTestId(AccountsPo.tid));
+    return new AccountsPo(element.byTestId(AccountsPo.TID));
   }
 
   getNnsAccountsPo(): NnsAccountsPo {
