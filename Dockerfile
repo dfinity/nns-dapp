@@ -13,7 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq npm
+        git jq npm xxd
 
 # Gets tool versions.
 #
@@ -27,6 +27,7 @@ COPY dfx.json dfx.json
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
+RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -64,8 +65,10 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL --retry 5 https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
+RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
+RUN didc --version
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
