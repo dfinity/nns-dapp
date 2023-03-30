@@ -12,6 +12,12 @@ export class AccountCardPo extends BasePageObject {
     return new AccountCardPo(element.byTestId(AccountCardPo.TID));
   }
 
+  static async allUnder(element: PageObjectElement): Promise<AccountCardPo[]> {
+    return Array.from(await element.allByTestId(AccountCardPo.TID)).map(
+      (el) => new AccountCardPo(el)
+    );
+  }
+
   getAccountName(): Promise<string> {
     return this.root.byTestId("account-name").getText();
   }
