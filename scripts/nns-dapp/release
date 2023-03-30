@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
@@ -15,16 +15,14 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define long=nns_url desc="The dfx network to use" variable=DFX_NNS_URL
+clap.define short=u long=nns_url desc="The dfx network to use" variable=DFX_NNS_URL
 clap.define short=N long=neuron desc="The neuron ID to propose with" variable=DFX_NEURON_ID
 clap.define short=k long=hsm_key_id desc="The HSM key ID" variable=DFX_HSM_KEY_ID default=""
 clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-#!/usr/bin/env bash
-set -euo pipefail
-cd "$(dirname "$0")/../../.."
+cd "${SOURCE_DIR}/.."
 
 # Gets the neuron ID.
 # ... if saved in a file, get it:
