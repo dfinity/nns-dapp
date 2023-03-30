@@ -8,25 +8,33 @@
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { nonNullish } from "@dfinity/utils";
+  import { debounce, nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
 
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
 
   let remainingTimeMilliseconds: number | undefined;
   $: remainingTimeMilliseconds = $authRemainingTimeStore;
+
+  onMount(debounce(() => layoutTitleStore.set($i18n.navigation.settings), 500));
 </script>
 
 <Island>
   <main class="legacy">
     <section>
-      <h1>{$i18n.navigation.settings}</h1>
-
       <div class="content-cell-details">
         <KeyValuePairInfo>
           <p slot="key" class="label">{$i18n.settings.your_principal}</p>
           <p slot="value" class="value principal">
-            <Hash id="principal-id" text={principalText} tagName="p" showCopy />
+            <Hash
+              id="principal-id"
+              text={principalText}
+              tagName="p"
+              className="value"
+              showCopy
+            />
           </p>
 
           <svelte:fragment slot="info">
