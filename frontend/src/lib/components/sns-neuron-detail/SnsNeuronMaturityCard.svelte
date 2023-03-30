@@ -35,7 +35,7 @@
       });
 </script>
 
-<CardInfo>
+<CardInfo testId="sns-neuron-maturity-card-component">
   <KeyValuePair testId="maturity">
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
     <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
