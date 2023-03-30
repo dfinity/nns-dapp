@@ -33,7 +33,7 @@ if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
     DFX_NEURON_ID="$(cat "$NEURON_PATH")"
     echo "Neuron ID: $DFX_NEURON_ID (from $NEURON_PATH)"
   else
-    read -rp "Please enter your Neuron ID: " NEURON
+    read -rp "Please enter your Neuron ID: " DFX_NEURON_ID
     read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
     [[ "$STORE_NEURON" != [yY] ]] || {
       mkdir -p "$(dirname "$NEURON_PATH")"
