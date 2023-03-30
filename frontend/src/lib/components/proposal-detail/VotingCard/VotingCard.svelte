@@ -5,7 +5,7 @@
     votableNeurons as getVotableNeurons,
   } from "@dfinity/nns";
 
-  import { getContext, onDestroy } from "svelte";
+  import { getContext } from "svelte";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -50,7 +50,7 @@
       (votableNeurons().length > 0 &&
         isProposalDeadlineInTheFuture(proposalInfo)));
 
-  const unsubscribe = definedNeuronsStore.subscribe(() => {
+  const updateVotingNeuronSelectedStore = () => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -58,7 +58,9 @@
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
       votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
-  });
+  };
+
+  $: $definedNeuronsStore, updateVotingNeuronSelectedStore();
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -76,8 +78,6 @@
           proposal: proposalId === proposalInfo.id ? proposalInfo : proposal,
         })),
     });
-
-  onDestroy(() => unsubscribe());
 
   // UI loader
   const neuronsStoreReady = (): boolean => {

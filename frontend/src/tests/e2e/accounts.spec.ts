@@ -19,11 +19,15 @@ test("Test accounts requirements", async ({ page, context }) => {
     mainAccountName
   );
 
-  // TODO:
-
   // AU002: The user MUST be able to create an additional account
+  const subAccountName = "My second account";
+  await nnsAccountsPo.addAccount(subAccountName);
 
-  // AU001:  The user MUST be able to see a list of all their accounts
+  // AU001: The user MUST be able to see a list of all their accounts
+  const accountNames = await nnsAccountsPo.getAccountNames();
+  expect(accountNames).toEqual([mainAccountName, subAccountName]);
+
+  // TODO:
 
   // AU004: The user MUST be able to transfer funds
 

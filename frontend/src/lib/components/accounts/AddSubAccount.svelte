@@ -33,7 +33,10 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount}>
+<form
+  on:submit|preventDefault={createNewSubAccount}
+  data-tid="add-sub-account-component"
+>
   <div>
     <p class="label">{$i18n.accounts.new_linked_account_enter_name}</p>
     <Input
@@ -51,6 +54,7 @@
     </button>
     <button
       class="primary"
+      data-tid="create-account-button"
       type="submit"
       disabled={newAccountName.length === 0 || $busy}
     >
