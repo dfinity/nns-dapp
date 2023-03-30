@@ -27,6 +27,9 @@ test("Test accounts requirements", async ({ page, context }) => {
   const accountNames = await nnsAccountsPo.getAccountNames();
   expect(accountNames).toEqual([mainAccountName, subAccountName]);
 
+  // Get some ICP to be able to transfer
+  await appPo.getIcp(20);
+
   // TODO:
 
   // AU004: The user MUST be able to transfer funds

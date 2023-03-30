@@ -148,17 +148,29 @@ export const makeSnsDummyProposals = async ({
     agent,
     canisterId: canisterIds.governanceCanisterId,
   });
-
   const { snsProposals } = await import("./sns-dummy.api");
 
-  await Promise.all(
+  const allCalls = await Promise.allSettled(
     snsProposals.map((proposal) =>
-      canister.manageNeuron({
-        subaccount: neuronId.id,
-        command: [{ MakeProposal: proposal }],
-      })
+      canister
+        .manageNeuron({
+          subaccount: neuronId.id,
+          command: [{ MakeProposal: proposal }],
+        })
+        .catch((error) => {
+          console.error(
+            "Error while creating dummy proposal: ",
+            proposal.title
+          );
+          console.error(error);
+          throw error;
+        })
     )
   );
+
+  if (allCalls.some((call) => call.status === "rejected")) {
+    throw new Error();
+  }
 
   logWithTimestamp(`Making dummy proposals call complete.`);
 };

@@ -3,14 +3,14 @@ import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsAccountsFooterPo extends BasePageObject {
-  static readonly tid = "nns-accounts-footer-component";
+  private static readonly TID = "nns-accounts-footer-component";
 
   constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): NnsAccountsFooterPo {
-    return new NnsAccountsFooterPo(element.byTestId(NnsAccountsFooterPo.tid));
+    return new NnsAccountsFooterPo(element.byTestId(NnsAccountsFooterPo.TID));
   }
 
   getSendButtonPo(): ButtonPo {
