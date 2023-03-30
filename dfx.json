@@ -18,7 +18,6 @@
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
       "build": "./build.sh",
-      "args": "nns-dapp-arg.did",
       "remote": {
         "id": {
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
