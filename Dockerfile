@@ -77,6 +77,7 @@ WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
+RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Image to build the nns-dapp frontend.
 # Args: A file with env vars at frontend/.env created by config.sh
@@ -129,6 +130,7 @@ RUN ./build-sns-aggregator.sh
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
+COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
