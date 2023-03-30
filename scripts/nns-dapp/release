@@ -25,14 +25,26 @@ source "$(clap.build)"
 cd "${SOURCE_DIR}/.."
 
 # Gets the neuron ID.
-# ... if saved in a file, get it:
-[[ "${DFX_NEURON_ID:-}" != "" ]] || {
-  DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" 2>/dev/null || true)"
-}
-# ... else ask the user:
-[[ "${DFX_NEURON_ID:-}" != "" ]] || {
-  read -rp "Please enter your Neuron ID: " DFX_NEURON_ID
-}
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+  # ... if saved in a file, get it:
+  NEURON_PATH="$HOME/.config/dfx/prod-neuron"
+  if test -e "$NEURON_PATH"; then
+    NEURON="$(cat "$NEURON_PATH")"
+    echo "Neuron ID: $NEURON (from $NEURON_PATH)"
+  else
+    read -rp "Please enter your Neuron ID: " NEURON
+    read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
+    [[ "$STORE_NEURON" != [yY] ]] || {
+      mkdir -p "$(dirname "$NEURON_PATH")"
+      printf "%s" "$NEURON" >"$NEURON_PATH"
+    }
+  fi
+else
+  # If not specified, check whether it has been provided by snsdemo:
+  [[ "${DFX_NEURON_ID:-}" != "" ]] || {
+    DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" 2>/dev/null || true)"
+  }
+fi
 [[ "${DFX_NEURON_ID:-}" != "" ]] || {
   echo "ERROR: Neuron ID not provided."
   exit 1
