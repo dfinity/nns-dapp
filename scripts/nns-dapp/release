@@ -29,14 +29,14 @@ if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
   # ... if saved in a file, get it:
   NEURON_PATH="$HOME/.config/dfx/prod-neuron"
   if test -e "$NEURON_PATH"; then
-    NEURON="$(cat "$NEURON_PATH")"
-    echo "Neuron ID: $NEURON (from $NEURON_PATH)"
+    DFX_NEURON_ID="$(cat "$NEURON_PATH")"
+    echo "Neuron ID: $DFX_NEURON_ID (from $NEURON_PATH)"
   else
     read -rp "Please enter your Neuron ID: " NEURON
     read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
     [[ "$STORE_NEURON" != [yY] ]] || {
       mkdir -p "$(dirname "$NEURON_PATH")"
-      printf "%s" "$NEURON" >"$NEURON_PATH"
+      printf "%s" "$DFX_NEURON_ID" >"$NEURON_PATH"
     }
   fi
 else
@@ -75,7 +75,7 @@ else
   } >&2
 fi
 
-# Gets the nns-dapp  canister ID
+# Gets the nns-dapp canister ID
 NNS_DAPP_CANISTER_ID="$(dfx canister id nns-dapp --network "$DFX_NETWORK")"
 # ... just checking...
 if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
@@ -119,8 +119,15 @@ test -e "$ARG_PATH" || {
   exit 1
 } >&2
 
+# Gets the proposal text
+SUMMARY_FILE=./release/PROPOSAL.md
+test -e "${SUMMARY_FILE:-}" || {
+  echo "ERROR: Proposal text not found at: ${SUMMARY_FILE}"
+  exit 1
+} >&2
+
 # Prepares the command
-set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
 # ... just checking...
 echo
 echo PLEASE REVIEW THIS COMMAND:
