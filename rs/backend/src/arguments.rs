@@ -45,9 +45,9 @@ pub fn configname2attributename(name: &str) -> String {
 /// Escapes a configuration value per the OWASP recommendation: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts
 pub fn configvalue2attributevalue(value: &str) -> String {
     value
-        .replace('&', "&amp")
+        .replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;")
         .replace('"', "&quot;")
-        .replace('\'', "&#x27")
+        .replace('\'', "&#x27;")
 }
