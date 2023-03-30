@@ -54,7 +54,7 @@ describe("Proposal", () => {
   it("should render proposer proposal info", async () => {
     const { queryByTestId } = renderProposalModern();
     await waitFor(() =>
-      expect(queryByTestId("proposal-proposer-info-title")).toBeInTheDocument()
+      expect(queryByTestId("proposal-summary-title")).toBeInTheDocument()
     );
   });
 

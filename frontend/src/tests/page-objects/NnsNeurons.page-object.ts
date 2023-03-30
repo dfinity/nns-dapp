@@ -4,14 +4,14 @@ import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsNeuronsPo extends BasePageObject {
-  static readonly tid = "nns-neurons-component";
+  private static readonly TID = "nns-neurons-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): NnsNeuronsPo {
-    return new NnsNeuronsPo(element.byTestId(NnsNeuronsPo.tid));
+    return new NnsNeuronsPo(element.byTestId(NnsNeuronsPo.TID));
   }
 
   getSkeletonCardPos(): Promise<SkeletonCardPo[]> {

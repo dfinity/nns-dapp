@@ -1,7 +1,8 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { isNullish } from "@dfinity/utils";
 
-export class ButtonPo extends BasePageObject {
+export class ButtonPo extends SimpleBasePageObject {
   private constructor(root: PageObjectElement) {
     super(root);
   }
@@ -11,8 +12,11 @@ export class ButtonPo extends BasePageObject {
     testId,
   }: {
     element: PageObjectElement;
-    testId: string;
+    testId?: string;
   }): ButtonPo {
+    if (isNullish(testId)) {
+      return new ButtonPo(element.querySelector("button"));
+    }
     return new ButtonPo(element.querySelector(`button[data-tid=${testId}]`));
   }
 

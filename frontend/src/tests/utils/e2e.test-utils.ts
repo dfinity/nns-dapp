@@ -19,7 +19,9 @@ export const signInWithNewUser = async ({
   await iiPage.locator("input#captchaInput").fill("a");
   await iiPage.getByRole("button", { name: "Next" }).click();
   await iiPage.getByRole("button", { name: "Continue" }).click();
+  await iiPage.getByText("Choose a Recovery Method").waitFor();
   await iiPage.getByRole("button", { name: /Skip/ }).click();
+  await iiPage.getByRole("button", { name: "Add another device" }).waitFor();
   await iiPage.getByRole("button", { name: /Skip/ }).click();
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);

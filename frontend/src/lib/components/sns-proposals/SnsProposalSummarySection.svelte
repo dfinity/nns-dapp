@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SnsProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
-  import ProposalProposerInfoSection from "../proposal-detail/ProposalProposerInfoSection.svelte";
+  import ProposalSummarySection from "../proposal-detail/ProposalSummarySection.svelte";
 
   export let proposal: SnsProposalData;
 
@@ -11,7 +11,7 @@
 </script>
 
 {#if nonNullish(proposalData)}
-  <ProposalProposerInfoSection
+  <ProposalSummarySection
     title={proposalData.title}
     summary={proposalData.summary}
     url={proposalData.url}

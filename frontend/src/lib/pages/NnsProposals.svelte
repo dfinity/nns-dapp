@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import {
     hasMatchingProposals,
     lastProposalId,
   } from "$lib/utils/proposals.utils";
   import {
+    type ProposalsFiltersStore,
     proposalsFiltersStore,
     proposalsStore,
   } from "$lib/stores/proposals.store";
-  import type { Unsubscriber } from "svelte/store";
   import { debounce } from "@dfinity/utils";
   import { AppPath } from "$lib/constants/routes.constants";
   import {
@@ -104,34 +104,32 @@
     initialized = true;
   });
 
-  const unsubscribe: Unsubscriber = proposalsFiltersStore.subscribe(
-    ({ lastAppliedFilter }) => {
-      // We only want to display spinner and reset the proposals store if filters are modified by the user
-      if (!initialized) {
-        return;
-      }
-
-      if (lastAppliedFilter === "excludeVotedProposals") {
-        // Make a visual feedback that the filter was applyed
-        hidden = true;
-        setTimeout(() => (hidden = false), 200);
-        return;
-      }
-
-      // We are about to fetch again, we can enable the infinite scroll observer again in case it was disabled because we would have fetched all proposals previously
-      disableInfiniteScroll = false;
-
-      // Show spinner right away avoiding debounce
-      loading = true;
-      proposalsStore.setProposals({ proposals: [], certified: undefined });
-
-      debounceFindProposals?.();
+  const applyFilter = ({ lastAppliedFilter }: ProposalsFiltersStore) => {
+    // We only want to display spinner and reset the proposals store if filters are modified by the user
+    if (!initialized) {
+      return;
     }
-  );
+
+    if (lastAppliedFilter === "excludeVotedProposals") {
+      // Make a visual feedback that the filter was applyed
+      hidden = true;
+      setTimeout(() => (hidden = false), 200);
+      return;
+    }
+
+    // We are about to fetch again, we can enable the infinite scroll observer again in case it was disabled because we would have fetched all proposals previously
+    disableInfiniteScroll = false;
+
+    // Show spinner right away avoiding debounce
+    loading = true;
+    proposalsStore.setProposals({ proposals: [], certified: undefined });
+
+    debounceFindProposals?.();
+  };
+
+  $: applyFilter($proposalsFiltersStore);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
-
-  onDestroy(unsubscribe);
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches

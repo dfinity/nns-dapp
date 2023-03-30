@@ -78,26 +78,6 @@ pub struct NamedCanister {
     canister_id: CanisterId,
 }
 
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-#[derive(CandidType, Deserialize)]
-pub enum OldOperation {
-    Burn {
-        from: AccountIdentifier,
-        amount: Tokens,
-    },
-    Mint {
-        to: AccountIdentifier,
-        amount: Tokens,
-    },
-    Transfer {
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        amount: Tokens,
-        fee: Tokens,
-    },
-}
-
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct Transaction {
     transaction_index: TransactionIndex,
@@ -106,18 +86,6 @@ struct Transaction {
     memo: Memo,
     transfer: Operation,
     transaction_type: Option<TransactionType>,
-}
-
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-#[derive(CandidType, Deserialize)]
-struct OldTransaction {
-    transaction_index: TransactionIndex,
-    block_height: BlockIndex,
-    timestamp: TimeStamp,
-    memo: Memo,
-    transfer: OldOperation,
-    transaction_type: Option<OldTransactionType>,
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -158,21 +126,6 @@ pub enum TransactionType {
     Transfer,
     Approve,
     TransferFrom,
-    StakeNeuron,
-    StakeNeuronNotification,
-    TopUpNeuron,
-    CreateCanister,
-    TopUpCanister(CanisterId),
-    ParticipateSwap(CanisterId),
-}
-
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum OldTransactionType {
-    Burn,
-    Mint,
-    Transfer,
     StakeNeuron,
     StakeNeuronNotification,
     TopUpNeuron,
@@ -1407,89 +1360,14 @@ impl AccountsStore {
     }
 }
 
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-impl TryFrom<TransactionType> for OldTransactionType {
-    type Error = &'static str;
-
-    fn try_from(value: TransactionType) -> Result<Self, Self::Error> {
-        match value {
-            TransactionType::Burn => Ok(OldTransactionType::Burn),
-            TransactionType::Mint => Ok(OldTransactionType::Mint),
-            TransactionType::Transfer => Ok(OldTransactionType::Transfer),
-            TransactionType::StakeNeuron => Ok(OldTransactionType::StakeNeuron),
-            TransactionType::StakeNeuronNotification => Ok(OldTransactionType::StakeNeuronNotification),
-            TransactionType::TopUpNeuron => Ok(OldTransactionType::TopUpNeuron),
-            TransactionType::CreateCanister => Ok(OldTransactionType::CreateCanister),
-            TransactionType::TopUpCanister(canister_id) => Ok(OldTransactionType::TopUpCanister(canister_id)),
-            TransactionType::ParticipateSwap(canister_id) => Ok(OldTransactionType::ParticipateSwap(canister_id)),
-            TransactionType::TransferFrom => Err("TransferFrom tx type not yet supported"),
-            TransactionType::Approve => Err("Approve tx type not yet supported"),
-        }
-    }
-}
-
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-impl TryFrom<Operation> for OldOperation {
-    type Error = &'static str;
-
-    fn try_from(value: Operation) -> Result<Self, Self::Error> {
-        match value {
-            Operation::Approve {
-                from: _,
-                spender: _,
-                allowance: _,
-                expires_at: _,
-                fee: _,
-            } => Err("Approve operation not yet supported"),
-            Operation::TransferFrom {
-                from: _,
-                to: _,
-                spender: _,
-                amount: _,
-                fee: _,
-            } => Err("Approve operation not yet supported"),
-            Operation::Transfer { from, to, amount, fee } => Ok(OldOperation::Transfer { from, to, amount, fee }),
-            Operation::Burn { from, amount } => Ok(OldOperation::Burn { from, amount }),
-            Operation::Mint { to, amount } => Ok(OldOperation::Mint { to, amount }),
-        }
-    }
-}
-
-// TODO: Remove after safely upgrading canister
-// This was used for the migration to a new TransactionType and new Operation
-fn convert_transactions(old_txs: &VecDeque<Transaction>) -> VecDeque<OldTransaction> {
-    old_txs
-        .iter()
-        .map(|tx| OldTransaction {
-            transaction_index: tx.transaction_index,
-            block_height: tx.block_height,
-            timestamp: tx.timestamp,
-            memo: tx.memo,
-            transfer: OldOperation::try_from(tx.transfer.clone()).unwrap(),
-            transaction_type: match tx.transaction_type {
-                Some(tx_type) => match OldTransactionType::try_from(tx_type) {
-                    Ok(t) => Some(t),
-                    Err(_) => None,
-                },
-                None => None,
-            },
-        })
-        .collect()
-}
-
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
-        // TODO: Remove after safely upgrading canister
-        // This was used for the migration to a new TransactionType and new Operation
-        let old_transactions = convert_transactions(&self.transactions);
         Candid((
             &self.accounts,
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
-            HashMap::<(AccountIdentifier, AccountIdentifier), (OldTransactionType, u64)>::new(),
-            old_transactions,
+            HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
+            &self.transactions,
             &self.neuron_accounts,
             &self.block_height_synced_up_to,
             &self.multi_part_transactions_processor,
