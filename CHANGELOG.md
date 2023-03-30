@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 115271
 * Fix back to detail from "Settings" page.
 * UX improvements:
   * Transaction edit submit form with "Enter".
