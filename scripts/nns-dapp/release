@@ -46,10 +46,12 @@ cd "$(dirname "$0")/../../.."
 }
 # Gets the authentication mechanism
 PEM_PATH="$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.pem"
-if [[ "${DFX_HSM_KEY_ID:-}" != "" ]]; then
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]] || [[ "${DFX_HSM_KEY_ID:-}" != "" ]]; then
+  # Authenticate with an HSM
   read -rp "HSM Pin: " DFX_HSM_PIN
-  AUTH_ARGS=(--pin "$DFX_HSM_PIN" --use-hsm --key-id "${DFX_HSM_KEY_ID}" --slot 0)
+  AUTH_ARGS=(--use-hsm --pin "$DFX_HSM_PIN" --key-id "${DFX_HSM_KEY_ID}" --slot 0)
 elif test -e "$PEM_PATH"; then
+  # Authenticate with a pem file
   [[ "$(jq .encryption "$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.json")" == "null" ]] || {
     echo "ERROR: ic-admin does not support encrypted pem files."
     exit 1
