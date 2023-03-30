@@ -1,6 +1,7 @@
 //! Code for customizinga  particular installation
-use crate::{CandidType, Deserialize, Serialize};
+use candid::{CandidType, Deserialize};
 use core::cell::RefCell;
+use serde::Serialize;
 
 /// Init and post_upgrade arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
