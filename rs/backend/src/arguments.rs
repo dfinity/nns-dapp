@@ -51,3 +51,11 @@ pub fn configvalue2attributevalue(value: &str) -> String {
         .replace('"', "&quot;")
         .replace('\'', "&#x27;")
 }
+
+/// Sets arguments to the default value, or the provided value if given.
+pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
+    let canister_arguments = canister_arguments.unwrap_or_default().with_own_canister_id();
+    CANISTER_ARGUMENTS.with(|args| {
+        args.replace(canister_arguments);
+    });
+}
