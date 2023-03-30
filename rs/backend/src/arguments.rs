@@ -21,8 +21,9 @@ impl CanisterArguments {
         for (key, value) in &self.args {
             ans.push(' ');
             ans.push_str(&configname2attributename(key));
-            ans.push('=');
-            ans.push_str(&configvalue2attributevalue(value));
+            ans.push_str("=\"");
+            ans.push_str(&value.replace('"', "&quot;"));
+            ans.push('"');
         }
         ans.push('>');
         ans
@@ -39,9 +40,4 @@ impl CanisterArguments {
 /// This, in turn, will appear in JavaScript & family as camel case.
 pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
-}
-
-/// Escapes a configuration value
-pub fn configvalue2attributevalue(value: &str) -> String {
-    serde_json::Value::String(value.to_string()).to_string()
 }
