@@ -54,6 +54,13 @@ fi
 [[ "${DFX_HSM_KEY_ID:-}" != "" ]] || {
   DFX_HSM_KEY_ID="$(jq -re '.hsm.key_id // empty' "${HOME}/.config/dfx/identity/${DFX_IDENTITY}/identity.json")" || true
 }
+# ... for mainnet we use an HSM and the key ID in the standard setup is 01:
+[[ "${DFX_HSM_KEY_ID:-}" != "" ]] || {
+  if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+    DFX_HSM_KEY_ID="01"
+  fi
+}
+
 # Gets the authentication mechanism
 PEM_PATH="$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.pem"
 if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]] || [[ "${DFX_HSM_KEY_ID:-}" != "" ]]; then
