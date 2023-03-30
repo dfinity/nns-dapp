@@ -46,6 +46,11 @@ describe("SnsNeuronDetail", () => {
     principal: rootCanisterId,
     lifecycle: SnsSwapLifecycle.Committed,
   });
+  const projectName = "Test SNS";
+  // Clone the summary to avoid mutating the mock
+  const summary = { ...responses[0][0] };
+  summary.metadata.name = [projectName];
+  responses[0][0] = summary;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -105,28 +110,19 @@ describe("SnsNeuronDetail", () => {
     });
 
     it("should render sns project name", async () => {
-      const { getByTestId } = render(SnsNeuronDetail, props);
+      const po = await renderComponent(props);
 
-      const titleRow = getByTestId("projects-summary");
-
-      expect(titleRow).not.toBeNull();
-    });
-    it("should render main information card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
-
-      expect(queryByTestId("sns-neuron-card-title")).toBeInTheDocument();
+      expect(await (await po.getTitle()).trim()).toBe(projectName);
     });
 
-    it("should render hotkeys card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
+    it("should render cards", async () => {
+      const po = await renderComponent(props);
 
-      expect(queryByTestId("sns-hotkeys-card")).toBeInTheDocument();
-    });
-
-    it("should render following card", async () => {
-      const { queryByTestId } = render(SnsNeuronDetail, props);
-
-      expect(queryByTestId("sns-neuron-following")).toBeInTheDocument();
+      expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
+      expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+      expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
+      expect(await po.getStakeCardPo().isPresent()).toBe(true);
+      expect(await po.getFollowingCardPo().isPresent()).toBe(true);
     });
   });
 
