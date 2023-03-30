@@ -3,7 +3,7 @@ import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.pag
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsNeuronCardPo extends BasePageObject {
-  static readonly tid = "nns-neuron-card-component";
+  private static readonly TID = "nns-neuron-card-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
@@ -12,7 +12,7 @@ export class NnsNeuronCardPo extends BasePageObject {
   static async allUnder(
     element: PageObjectElement
   ): Promise<NnsNeuronCardPo[]> {
-    return Array.from(await element.allByTestId(NnsNeuronCardPo.tid)).map(
+    return Array.from(await element.allByTestId(NnsNeuronCardPo.TID)).map(
       (el) => new NnsNeuronCardPo(el)
     );
   }

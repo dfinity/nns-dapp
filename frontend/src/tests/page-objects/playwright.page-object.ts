@@ -13,7 +13,9 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   querySelector(selector: string): PlaywrightPageObjectElement {
-    return new PlaywrightPageObjectElement(this.locator.locator(selector));
+    return new PlaywrightPageObjectElement(
+      this.locator.locator(selector).first()
+    );
   }
 
   async querySelectorAll(

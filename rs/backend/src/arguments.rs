@@ -21,8 +21,9 @@ impl CanisterArguments {
         for (key, value) in &self.args {
             ans.push(' ');
             ans.push_str(&configname2attributename(key));
-            ans.push('=');
+            ans.push_str("=\"");
             ans.push_str(&configvalue2attributevalue(value));
+            ans.push('"');
         }
         ans.push('>');
         ans
@@ -41,9 +42,14 @@ pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
 
-/// Escapes a configuration value
+/// Escapes a configuration value per the OWASP recommendation: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts
 pub fn configvalue2attributevalue(value: &str) -> String {
-    serde_json::Value::String(value.to_string()).to_string()
+    value
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&#x27;")
 }
 
 /// Sets arguments to the default value, or the provided value if given.
