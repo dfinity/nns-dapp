@@ -188,6 +188,8 @@ jobs:
           curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Verify template creation
         run: |
           echo Create a fake wasm
