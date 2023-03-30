@@ -22,7 +22,7 @@ impl CanisterArguments {
             ans.push(' ');
             ans.push_str(&configname2attributename(key));
             ans.push_str("=\"");
-            ans.push_str(&value.replace('"', "&quot;"));
+            ans.push_str(&configvalue2attributevalue(value));
             ans.push('"');
         }
         ans.push('>');
@@ -40,4 +40,14 @@ impl CanisterArguments {
 /// This, in turn, will appear in JavaScript & family as camel case.
 pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
+}
+
+/// Escapes a configuration value per the OWASP recommendation: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts
+pub fn configvalue2attributevalue(value: &str) -> String {
+    value
+        .replace('&', "&amp")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&#x27")
 }
