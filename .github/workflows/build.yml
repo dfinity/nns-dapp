@@ -53,7 +53,10 @@ jobs:
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes
+          echo "Create the nns-dapp install argument:"
+          DFX_NETWORK=local ./config.sh
+          echo "Install:"
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
           dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
           # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
           jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
@@ -122,7 +125,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."

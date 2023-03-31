@@ -56,7 +56,7 @@ if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
   upgrade_nnsdapp "$CURRENT_WASM"
 else
   dfx canister create nns-dapp
-  dfx canister install nns-dapp --wasm "$CURRENT_WASM"
+  dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg.did)"
 fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy
