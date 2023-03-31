@@ -54,28 +54,46 @@ if [ "$(uname)" = "Darwin" ]; then
   DFX_DATA_DIR="$HOME/Library/Application Support/org.dfinity.dfx/network/local"
   DFX_DATA_STATE_DIR="$STATE_DIR/Library/Application Support/org.dfinity.dfx/network/local"
 else
+  # DFX_DATA_DIR is used by get_dfx_dir.
+  # shellcheck disable=SC2034
   DFX_DATA_DIR="$HOME/.local/share/dfx/network/local"
+  # DFX_DATA_STATE_DIR is used by get_state_dir.
+  # shellcheck disable=SC2034
   DFX_DATA_STATE_DIR="$STATE_DIR/.local/share/dfx/network/local"
 fi
 
+# DFX_CONFIG_DIR is used by get_dfx_dir.
+# shellcheck disable=SC2034
 DFX_CONFIG_DIR="$HOME/.config/dfx"
+# DFX_NETWORK_DIR is used by get_dfx_dir.
+# shellcheck disable=SC2034
 DFX_NETWORK_DIR="$TOP_DIR/.dfx"
 
 BACKUP_DIR="$HOME/dfx-state-backup-$(date +"%Y%m%d_%H%M%S")"
 mkdir -p "$BACKUP_DIR"
 
+# DFX_DATA_BACKUP_DIR is used by get_backup_dir.
+# shellcheck disable=SC2034
 DFX_DATA_BACKUP_DIR="$BACKUP_DIR/data"
+# DFX_CONFIG_BACKUP_DIR is used by get_backup_dir.
+# shellcheck disable=SC2034
 DFX_CONFIG_BACKUP_DIR="$BACKUP_DIR/config"
+# DFX_NETWORK_BACKUP_DIR is used by get_backup_dir.
+# shellcheck disable=SC2034
 DFX_NETWORK_BACKUP_DIR="$BACKUP_DIR/network"
 
+# DFX_CONFIG_STATE_DIR is used by get_state_dir.
+# shellcheck disable=SC2034
 DFX_CONFIG_STATE_DIR="$STATE_DIR/.config/dfx"
+# DFX_NETWORK_STATE_DIR is used by get_state_dir.
+# shellcheck disable=SC2034
 DFX_NETWORK_STATE_DIR="$STATE_DIR/.dfx"
 
 # Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
 # $DFX_DATA_DIR, $DFX_CONFIG_DIR, or $DFX_NETWORK_DIR correspondingly.
 get_dfx_dir() {
   var_name="DFX_${1}_DIR"
-  echo ${!var_name}
+  echo "${!var_name}"
 }
 
 # Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
@@ -83,7 +101,7 @@ get_dfx_dir() {
 # correspondingly.
 get_backup_dir() {
   var_name="DFX_${1}_BACKUP_DIR"
-  echo ${!var_name}
+  echo "${!var_name}"
 }
 
 # Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
@@ -91,7 +109,7 @@ get_backup_dir() {
 # correspondingly.
 get_state_dir() {
   var_name="DFX_${1}_STATE_DIR"
-  echo ${!var_name}
+  echo "${!var_name}"
 }
 
 # Moves $2 to $3 and then $1 to $2.
