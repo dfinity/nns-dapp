@@ -231,6 +231,7 @@ mod def {
         pub name: String,
         pub wasm_module_hash: String,
         pub arg: Json,
+        pub arg_hex: String,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -250,6 +251,7 @@ mod def {
                 name: payload.name,
                 wasm_module_hash,
                 arg: candid_arg,
+                arg_hex: calculate_hash_string(&payload.arg),
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
@@ -270,6 +272,7 @@ mod def {
         pub canister_id: CanisterId,
         pub wasm_module_hash: String,
         pub arg: Json,
+        pub arg_hex: String,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -290,6 +293,7 @@ mod def {
                 canister_id: payload.canister_id,
                 wasm_module_hash,
                 arg: candid_arg,
+                arg_hex: calculate_hash_string(&payload.arg),
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
