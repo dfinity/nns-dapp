@@ -3,7 +3,6 @@
  */
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatNumber } from "$lib/utils/format.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { RenderResult } from "@testing-library/svelte";
@@ -14,15 +13,16 @@ describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;
   let yes: number, no: number;
   beforeEach(() => {
-    neuronsStore.setNeurons({ neurons: [], certified: true });
-    renderResult = render(VotesResults, {
-      props: {
-        proposalInfo: mockProposalInfo,
-      },
-    });
-
     yes = Number(mockProposalInfo.latestTally?.yes) / E8S_PER_ICP;
     no = Number(mockProposalInfo.latestTally?.no) / E8S_PER_ICP;
+
+    renderResult = render(VotesResults, {
+      props: {
+        yes,
+        no,
+        total: yes + no,
+      },
+    });
   });
 
   it('should render "Adopt" value', () => {
