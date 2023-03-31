@@ -38,9 +38,10 @@ jobs:
           path: 'snsdemo'
           # Version from Mar 27 2023 with saved state tools
           ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
-      - name: Add SNS scripts to the path
+      - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
       - name: Install SNS script dependencies
         run: |
           dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
@@ -53,12 +54,26 @@ jobs:
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes
+          echo "Create the nns-dapp install argument:"
+          DFX_NETWORK=local ./config.sh
+          echo "Install:"
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
           dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
           # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
           jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
           curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
           dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
+      - name: Verify that arguments are set in index.html
+        run: |
+          go install github.com/ericchiang/pup@latest
+          curl "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+          echo "Check a few values:"
+          for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
+            # Verify that the key is non-trivial:
+            # jq -e returns an error code if the value is missing
+            # grep ... fails if the value is implausibly short.
+            key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
+          done
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
@@ -111,7 +126,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."

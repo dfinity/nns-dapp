@@ -229,7 +229,13 @@ type HttpResponse =
         body: blob;
     };
 
-service : {
+type ConfigAtom = record { 0: text; 1: text; };
+
+type Config = record {
+  args : vec ConfigAtom;
+};
+
+service: (opt Config) -> {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
