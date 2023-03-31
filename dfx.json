@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./scripts/docker-build",
+      "build": "./build.sh",
       "remote": {
         "id": {
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",

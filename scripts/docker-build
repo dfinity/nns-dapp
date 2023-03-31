@@ -84,4 +84,3 @@ for file in "${assets[@]}"; do
 done
 
 echo FIN
-./config.sh
