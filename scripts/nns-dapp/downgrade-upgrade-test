@@ -37,7 +37,7 @@ get_prod_wasm() {
 
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
 }
 

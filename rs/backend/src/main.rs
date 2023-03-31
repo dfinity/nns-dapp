@@ -35,6 +35,7 @@ type Cycles = u128;
 
 #[init]
 fn init(args: Option<CanisterArguments>) {
+    dfn_core::api::print(format!("init with args: {args:#?}"));
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
     assets::init_assets();
@@ -54,6 +55,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade(args: Option<CanisterArguments>) {
+    dfn_core::api::print(format!("post_upgrade with args: {args:#?}"));
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
