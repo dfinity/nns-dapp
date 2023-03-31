@@ -5,8 +5,8 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import { type SnsNeuron, type SnsProposalData } from "@dfinity/sns";
-  import { mockSnsNeuron } from "../../../tests/mocks/sns-neurons.mock";
+  import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;
 
@@ -26,7 +26,7 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   // TODO: provide neurons
-  let neurons: SnsNeuron[] = [mockSnsNeuron];
+  let neurons: SnsNeuron[] = [];
 </script>
 
 <BottomSheet>
@@ -37,7 +37,7 @@
           {#if visible}
             TODO: add VotingConfirmationToolbar
           {/if}
-          TODO: add VotingNeuronSelect
+          TODO: add VotingNeuronSelect {fromDefinedNullable(proposal.id).id}
         {:else}
           <div class="loader">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
