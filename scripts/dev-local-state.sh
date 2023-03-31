@@ -166,6 +166,7 @@ trap restore_backup EXIT
 
 install_state
 
+# Change to $HOME to avoid using nns-dapp dfx.json.
 cd "$HOME"
 echo "*********************************************************************"
 echo "*                                                                   *"
