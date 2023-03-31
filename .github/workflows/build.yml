@@ -64,7 +64,7 @@ jobs:
           dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
       - name: Verify that arguments are set in index.html
         run: |
-          go install github.com/ericchiang/pup
+          go install github.com/ericchiang/pup@latest
           curl "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
           echo "Check a few values:"
           for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
