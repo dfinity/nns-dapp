@@ -11,6 +11,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
     accountsPathStore,
@@ -85,18 +86,20 @@
   ];
 </script>
 
-{#each routes as { context, label, href, icon, statusIcon, selected } (context)}
-  <MenuItem {href} testId={`menuitem-${context}`} {selected}>
-    <svelte:component this={icon} slot="icon" />
-    <svelte:fragment
-      >{keyOf({ obj: $i18n.navigation, key: label })}</svelte:fragment
-    >
-    <svelte:component this={statusIcon} slot="statusIcon" />
-  </MenuItem>
-{/each}
+<TestIdWrapper testId="menu-items-component">
+  {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
+    <MenuItem {href} testId={`menuitem-${context}`} {selected}>
+      <svelte:component this={icon} slot="icon" />
+      <svelte:fragment
+        >{keyOf({ obj: $i18n.navigation, key: label })}</svelte:fragment
+      >
+      <svelte:component this={statusIcon} slot="statusIcon" />
+    </MenuItem>
+  {/each}
 
-{#if IS_TESTNET}
-  <GetTokens />
-{/if}
+  {#if IS_TESTNET}
+    <GetTokens />
+  {/if}
 
-<MenuMetrics />
+  <MenuMetrics />
+</TestIdWrapper>

@@ -4,14 +4,14 @@ import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NeuronsPo extends BasePageObject {
-  static readonly tid = "neurons-component";
+  private static readonly TID = "neurons-component";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): NeuronsPo {
-    return new NeuronsPo(element.byTestId(NeuronsPo.tid));
+    return new NeuronsPo(element.byTestId(NeuronsPo.TID));
   }
 
   getNnsNeuronsPo(): NnsNeuronsPo {

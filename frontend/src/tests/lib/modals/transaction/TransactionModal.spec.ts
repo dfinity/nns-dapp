@@ -23,7 +23,6 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -33,8 +32,6 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { get } from "svelte/store";
-import en from "../../../mocks/i18n.mock";
 import TransactionModalTest from "./TransactionModalTest.svelte";
 
 describe("TransactionModal", () => {
@@ -440,11 +437,11 @@ describe("TransactionModal", () => {
 
       fireEvent.click(button);
 
-      await waitFor(() => expect(get(toastsStore)).not.toEqual([]));
-
-      const toasts = get(toastsStore);
-      expect(toasts[0].level).toEqual("error");
-      expect(toasts[0].text).toContain(en.error.qrcode_camera_error);
+      await waitFor(() =>
+        expect(
+          getByTestId("transaction-qrcode-button-cancel")
+        ).toBeInTheDocument()
+      );
     });
 
     it("should move back to first step", async () => {
@@ -458,7 +455,13 @@ describe("TransactionModal", () => {
 
       fireEvent.click(button);
 
-      await waitFor(() => expect(get(toastsStore)).not.toEqual([]));
+      await waitFor(() =>
+        expect(
+          getByTestId("transaction-qrcode-button-cancel")
+        ).toBeInTheDocument()
+      );
+
+      fireEvent.click(getByTestId("transaction-qrcode-button-cancel"));
 
       await waitFor(() =>
         expect(getByTestId("transaction-step-1")).toBeTruthy()

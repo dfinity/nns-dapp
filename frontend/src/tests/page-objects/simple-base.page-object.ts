@@ -11,4 +11,12 @@ export class SimpleBasePageObject {
   isPresent(): Promise<boolean> {
     return this.root.isPresent();
   }
+
+  waitFor(): Promise<void> {
+    return this.root.waitFor();
+  }
+
+  waitForAbsent(): Promise<void> {
+    return this.root.waitForAbsent();
+  }
 }

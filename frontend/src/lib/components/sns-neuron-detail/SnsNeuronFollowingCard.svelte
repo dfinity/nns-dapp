@@ -68,7 +68,7 @@
     nsFunctions.length === 0;
 </script>
 
-<CardInfo>
+<CardInfo testId="sns-neuron-following-card-component">
   <KeyValuePairInfo testId="sns-neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"

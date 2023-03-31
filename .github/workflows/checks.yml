@@ -178,6 +178,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install didc
         run: |
           USER_BIN="$HOME/.local/bin"
@@ -186,6 +188,8 @@ jobs:
           curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Verify template creation
         run: |
           echo Create a fake wasm
@@ -196,7 +200,7 @@ jobs:
           echo Check the proposal
           ./scripts/nns-dapp/release-check
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

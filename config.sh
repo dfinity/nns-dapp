@@ -181,6 +181,7 @@ echo "$json" >"$JSON_OUT"
   echo "Frontend config has been defined in '${ENV_FILE}'"
 } >&2
 
+# Creates the candid arguments passed when the canister is installed.
 cat <<EOF >"$CANDID_ARGS_FILE"
 (record{
   args = vec {
