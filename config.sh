@@ -183,9 +183,9 @@ echo "$json" >"$JSON_OUT"
 
 # Creates the candid arguments passed when the canister is installed.
 cat <<EOF >"$CANDID_ARGS_FILE"
-(record{
+(opt record{
   args = vec {
-$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | gsub("\"";"&quot;") | tojson) };"' "$JSON_OUT")
+$(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | tojson) };"' "$JSON_OUT")
   };
 })
 EOF
