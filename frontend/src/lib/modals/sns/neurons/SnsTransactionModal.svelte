@@ -13,6 +13,7 @@
   export let transactionFee: TokenAmount;
   export let currentStep: WizardStep;
   export let validateAmount: ValidateAmountFn = () => undefined;
+  export let testId: string | undefined = undefined;
 
   let transactionInit: TransactionInit = {
     destinationAddress: governanceCanisterId.toText(),
@@ -28,6 +29,7 @@
   {transactionFee}
   {validateAmount}
   {transactionInit}
+  {testId}
 >
   <slot name="title" slot="title" />
   <svelte:fragment slot="destination-info">

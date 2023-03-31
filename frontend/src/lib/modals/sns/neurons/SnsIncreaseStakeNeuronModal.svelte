@@ -108,6 +108,7 @@
     {token}
     {transactionFee}
     {governanceCanisterId}
+    testId="sns-increase-stake-neuron-modal-component"
   >
     <svelte:fragment slot="title"
       >{title ?? $i18n.accounts.send}</svelte:fragment

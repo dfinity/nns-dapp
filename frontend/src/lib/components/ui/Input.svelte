@@ -14,13 +14,14 @@
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
   export let showInfo = true;
+  export let testId: string | undefined = undefined;
 
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });
 </script>
 
 <Input
-  testId="input-ui-element"
+  testId={testId ?? "input-ui-element"}
   {inputType}
   {required}
   {spellcheck}

@@ -35,6 +35,7 @@
     {max}
     {autocomplete}
     {showInfo}
+    {testId}
     bind:value
     on:blur
     on:nnsInput

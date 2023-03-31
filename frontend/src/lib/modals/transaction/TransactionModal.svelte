@@ -16,6 +16,7 @@
 
   export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
+  export let testId: string | undefined = undefined;
 
   // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.
   let sourceAccount: Account | undefined = transactionInit.sourceAccount;
@@ -96,6 +97,7 @@
 <WizardModal
   {testId}
   {steps}
+  {testId}
   bind:currentStep
   bind:this={modal}
   on:nnsClose

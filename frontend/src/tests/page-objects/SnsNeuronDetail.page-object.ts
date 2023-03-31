@@ -56,4 +56,10 @@ export class SnsNeuronDetailPo extends BasePageObject {
   getTitle(): Promise<string> {
     return this.getSummaryPo().getTitle();
   }
+
+  async increaseStake(amount: number): Promise<void> {
+    await this.getStakeCardPo().getIncreaseStakeButtonPo().click();
+    await this.getIncreaseStakeModalPo().isPresent();
+    await this.getIncreaseStakeModalPo().increaseStake(amount);
+  }
 }
