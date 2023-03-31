@@ -3,19 +3,30 @@
  */
 
 import Settings from "$lib/routes/Settings.svelte";
-import { authStore } from "$lib/stores/auth.store";
+import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
+import { layoutTitleStore } from "$lib/stores/layout.store";
 import {
   mockAuthStoreSubscribe,
   mockPrincipalText,
 } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import { authRemainingTimeStore } from "../../../lib/stores/auth.store";
+import { get } from "svelte/store";
 
 describe("Settings", () => {
   beforeAll(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+  });
+
+  it("should set title", async () => {
+    const titleBefore = get(layoutTitleStore);
+    expect(titleBefore).toEqual("");
+
+    render(Settings);
+
+    await (() => expect(get(layoutTitleStore)).toEqual(en.navigation.settings));
   });
 
   it("should render principal", () => {
