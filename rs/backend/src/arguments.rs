@@ -25,7 +25,7 @@ impl CanisterArguments {
             ans.push_str(&configvalue2attributevalue(value));
             ans.push('"');
         }
-        ans.push('>');
+        ans.push_str(">\n");
         ans
     }
 
