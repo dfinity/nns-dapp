@@ -15,10 +15,6 @@
 
   // TODO: implement initial selection (see initialSelectionDone)
 
-  const vote = async () => {
-    // TODO: voting implementation
-  };
-
   let neuronsReady = false;
   // TODO: neuronsReady logic
 
