@@ -141,7 +141,7 @@ export const config: WebdriverIO.Config = {
   reporters: ["spec"],
 
   mochaOpts: {
-	  bail: true,
+    bail: true,
     ui: "bdd",
     timeout: 60000,
     retries: 1,
