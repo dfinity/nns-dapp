@@ -155,7 +155,7 @@ output_restore_backup_script() {
 # So if for whatever reason the script fails to restore the backup, we can
 # manually call the script to resore the backup.
 RESTORE_BACKUP_SCRIPT_FILE="$BACKUP_DIR/restore.sh"
-output_restore_backup_script > "$RESTORE_BACKUP_SCRIPT_FILE"
+output_restore_backup_script >"$RESTORE_BACKUP_SCRIPT_FILE"
 
 restore_backup() {
   sh "$RESTORE_BACKUP_SCRIPT_FILE"
