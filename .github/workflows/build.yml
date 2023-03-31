@@ -65,7 +65,10 @@ jobs:
                 curl "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
                 echo "Check a few values:"
                 for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
-                  key=key jq -e '.[0][env.key]' nns_dapp_args_in_page.json
+                  # Verify that the key is non-trivial:
+                  # jq -e returns an error code if the value is missing
+                  # grep ... fails if the value is implausibly short.
+                  key=key jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
                 done
       - name: Basic downgrade-upgrade test
         run: |
