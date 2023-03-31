@@ -19,9 +19,10 @@ jobs:
     steps:
       - name: Install cli htmlparser
         run: |
-          echo GOPATH=${GOPATH:-}
           go install github.com/ericchiang/pup@latest
+          GOPATH=$(go env GOPATH)
           echo "$GOPATH/bin" >> $GITHUB_PATH
+          ls -l "$GOPATH/bin"
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
       - name: Set up docker buildx
