@@ -121,6 +121,25 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate .env configuration for Playwright end-to-end tests
+        run: |
+          DFX_NETWORK=local ./config.sh
+      - name: Prepare for Playwright end-to-end tests
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps
+      - name: Run Playwright end-to-end tests
+        working-directory: frontend
+        run: |
+          set -o pipefail
+          npm run test-e2e |& tee -a playwright-e2e.log
+      - name: Playwright screenshot
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-screenshots
+          path: frontend/src/tests/e2e/accounts.spec.ts-snapshots/*
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
