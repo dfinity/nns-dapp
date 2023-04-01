@@ -34,6 +34,8 @@ export const signInWithNewUser = async ({
 }) => {
   const iiPagePromise = context.waitForEvent("page");
 
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  expect(page).toHaveScreenshot();
   await page.locator("[data-tid=login-button]").click();
 
   const iiPage = await iiPagePromise;
