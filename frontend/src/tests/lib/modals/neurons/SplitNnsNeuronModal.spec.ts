@@ -43,7 +43,7 @@ describe("SplitNeuronModal", () => {
   it("should have disabled button if value is 0", async () => {
     const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
 
-    const inputElement = queryByTestId("input-ui-element");
+    const inputElement = queryByTestId("amount-input");
     expect(inputElement).not.toBeNull();
 
     inputElement &&
@@ -56,7 +56,7 @@ describe("SplitNeuronModal", () => {
   it("should call split neuron service if amount is valid", async () => {
     const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
 
-    const inputElement = queryByTestId("input-ui-element");
+    const inputElement = queryByTestId("amount-input");
     expect(inputElement).not.toBeNull();
 
     inputElement &&
