@@ -87,6 +87,12 @@ jobs:
         run: |
           set -o pipefail
           npm run test-e2e |& tee -a playwright-e2e.log
+      - name: Playwright screenshot
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: wdio-logs
+          path: frontend/src/tests/e2e/accounts.spec.ts-snapshots/*
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
