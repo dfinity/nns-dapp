@@ -1,8 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { TransactionModalPo } from "./TransactionModal.page-object";
 
-export class SnsIncreaseStakeNeuronModalPo extends BasePageObject {
+export class SnsIncreaseStakeNeuronModalPo extends TransactionModalPo {
   private static readonly TID = "sns-increase-stake-neuron-modal-component";
 
   private constructor(root: PageObjectElement) {
@@ -17,10 +16,9 @@ export class SnsIncreaseStakeNeuronModalPo extends BasePageObject {
     );
   }
 
-  getTransactionModalPo(): TransactionModalPo | null {
-    return TransactionModalPo.under({
-      element: this.root,
-      testId: SnsIncreaseStakeNeuronModalPo.TID,
-    });
+  async increase(amount: number): Promise<void> {
+    await this.enterAmount(amount);
+    await this.getNextButtonPo().click();
+    await this.getConfirmButtonPo().click();
   }
 }

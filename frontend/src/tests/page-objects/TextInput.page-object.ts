@@ -30,4 +30,9 @@ export class TextInputPo {
   typeText(text: string): Promise<void> {
     return this.root.typeText(text);
   }
+
+  // TextInputPo does not extend `PageObjectElement` therefore, we need to add the methods we need here.
+  async waitFor(): Promise<void> {
+    return this.root.waitFor();
+  }
 }

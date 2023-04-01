@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SnsIncreaseStakeNeuronModalPo } from "./SnsIncreaseStakeNeuronModal.page-object";
 import { SnsNeuronFollowingCardPo } from "./SnsNeuronFollowingCard.page-object";
 import { SnsNeuronHotkeysCardPo } from "./SnsNeuronHotkeysCard.page-object";
 import { SnsNeuronInfoStakePo } from "./SnsNeuronInfoStake.page-object";
@@ -57,9 +58,12 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return this.getSummaryPo().getTitle();
   }
 
+  getIncreaseStakeModalPo(): SnsIncreaseStakeNeuronModalPo {
+    return SnsIncreaseStakeNeuronModalPo.under(this.root);
+  }
+
   async increaseStake(amount: number): Promise<void> {
     await this.getStakeCardPo().getIncreaseStakeButtonPo().click();
-    await this.getIncreaseStakeModalPo().isPresent();
-    await this.getIncreaseStakeModalPo().increaseStake(amount);
+    await this.getIncreaseStakeModalPo().increase(amount);
   }
 }

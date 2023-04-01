@@ -311,15 +311,22 @@ export const addNeuronWith = ({
   identity?: Identity;
   rootCanisterId: Principal;
 } & Partial<SnsNeuron>): SnsNeuron => {
-  const neurons = getNeurons({ identity, rootCanisterId });
-  const index = neurons.length;
+  const currentNeurons = getNeurons({ identity, rootCanisterId });
+  const index = currentNeurons.length;
   const defaultNeuronId = createNeuronId({ identity, index });
   const neuron: SnsNeuron = {
     ...mockSnsNeuron,
     id: [defaultNeuronId],
     ...neuronParams,
   };
-  neurons.push(neuron);
+  const filteredNeurons = currentNeurons.filter((currentNeuron) => {
+    const currentHexIt = snsNeuronIdToHexString(currentNeuron.id[0]);
+    const newHexIt = snsNeuronIdToHexString(neuron.id[0]);
+    return currentHexIt !== newHexIt;
+  });
+  filteredNeurons.push(neuron);
+  const key = mapKey({ identity, rootCanisterId });
+  neurons.set(key, filteredNeurons);
   return neuron;
 };
 

@@ -17,10 +17,15 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import * as fakeSnsApi from "$tests/fakes/sns-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
@@ -31,12 +36,14 @@ import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+jest.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-governance.api");
 jest.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
   fakeSnsLedgerApi.install();
+  fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
   const responses = snsResponseFor({
@@ -61,6 +68,11 @@ describe("SnsNeuronDetail", () => {
     snsQueryStore.reset();
     snsQueryStore.setData(responses);
 
+    fakeSnsLedgerApi.addAccountWith({
+      identity: mockIdentity,
+      rootCanisterId,
+    });
+
     page.mock({
       data: { universe: rootCanisterId.toText() },
       routeId: AppPath.Neuron,
@@ -82,6 +94,7 @@ describe("SnsNeuronDetail", () => {
     id: new Uint8Array([1, 5, 3, 9, 9, 3, 2]),
   };
   const validNeuronIdAsHexString = subaccountToHexString(validNeuronId.id);
+  const neuronStake = 1;
 
   describe("when neuron and projects are valid and present", () => {
     const props = {
@@ -96,6 +109,7 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
       });
     });
 
@@ -119,6 +133,36 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
       expect(await po.getStakeCardPo().isPresent()).toBe(true);
       expect(await po.getFollowingCardPo().isPresent()).toBe(true);
+    });
+  });
+
+  describe("increase stake functionality", () => {
+    const props = {
+      neuronId: validNeuronIdAsHexString,
+    };
+
+    it("should increase neuron stake", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+      });
+      const po = await renderComponent(props);
+
+      // `neuronStake` to string formatted as expected
+      expect(await po.getStakeCardPo().getStakeAmount()).toBe("1.00");
+      const amountToStake = 20;
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
+      });
+
+      await po.increaseStake(amountToStake);
+      await runResolvedPromises();
+
+      // `neuronStake` + 10 to string and formatted as expected
+      expect(await po.getStakeCardPo().getStakeAmount()).toBe("21.00");
     });
   });
 

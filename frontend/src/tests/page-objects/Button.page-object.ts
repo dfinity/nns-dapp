@@ -23,15 +23,4 @@ export class ButtonPo extends SimpleBasePageObject {
   click(): Promise<void> {
     return this.root.click();
   }
-
-  waitForEnabled(): Promise<void> {
-    return new Promise((resolve) => {
-      const intervalId = setInterval(() => {
-        if (!this.root.hasAttribute("disabled")) {
-          clearInterval(intervalId);
-          resolve();
-        }
-      });
-    });
-  }
 }
