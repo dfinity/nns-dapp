@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.." || exit
 
 list_files() {
