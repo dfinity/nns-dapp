@@ -93,6 +93,7 @@
 </script>
 
 <WizardModal
+  testId="transaction-modal-component"
   {steps}
   bind:currentStep
   bind:this={modal}

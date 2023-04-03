@@ -57,4 +57,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   typeText(text: string): Promise<void> {
     return this.locator.type(text);
   }
+
+  selectOption(text: string): Promise<void> {
+    return this.locator.selectOption(text);
+  }
 }
