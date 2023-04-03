@@ -6,7 +6,7 @@ export class DropdownPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): TransactionModalPo {
+  static under(element: PageObjectElement): DropdownPo {
     return new DropdownPo(element.querySelector("div.select"));
   }
 
