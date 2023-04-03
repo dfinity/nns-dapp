@@ -4,18 +4,16 @@
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { formatNumber } from "$lib/utils/format.utils";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
 describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;
-  let yes: number, no: number;
-  beforeEach(() => {
-    yes = Number(mockProposalInfo.latestTally?.yes) / E8S_PER_ICP;
-    no = Number(mockProposalInfo.latestTally?.no) / E8S_PER_ICP;
+  const yes = Number(E8S_PER_ICP * 2) / E8S_PER_ICP;
+  const no = Number(E8S_PER_ICP * 3) / E8S_PER_ICP;
 
+  beforeEach(() => {
     renderResult = render(VotesResults, {
       props: {
         yes,
