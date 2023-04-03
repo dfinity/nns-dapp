@@ -109,7 +109,6 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
-          #npx playwright install --with-deps
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         # TODO: Remove when Playwright end-to-end tests are stable and ready to
@@ -118,11 +117,11 @@ jobs:
         run: |
           set -o pipefail
           npm run test-e2e |& tee -a playwright-e2e.log
-      - name: Upload Playwright report on failure
-        if: ${{ failure() }}
+      - name: Upload Playwright report
         uses: actions/upload-artifact@v3
+        if: ${{ always() }}
         with:
-          name: failure-report
+          name: playwright-report
           path: |
             playwright-report/*
             # On failure we also take a screenshot.
