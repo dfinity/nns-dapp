@@ -6,7 +6,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
 
-  private constructor(root: PageObjectElement) {
+  constructor(root: PageObjectElement) {
     super(root);
   }
 

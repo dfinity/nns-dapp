@@ -48,7 +48,6 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   await appPo.goBack();
   await nnsAccountsPo.getMainAccountCardPo().getAmountDisplayPo().waitFor();
-  //await new Promise((resolve) => setTimeout(resolve, 1 * 1000));
   expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
     "15.00"
   );
