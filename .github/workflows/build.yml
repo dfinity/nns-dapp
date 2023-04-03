@@ -118,12 +118,16 @@ jobs:
         run: |
           set -o pipefail
           npm run test-e2e |& tee -a playwright-e2e.log
-      - name: Playwright screenshot
-        if: ${{ always() }}
+      - name: Upload Playwright report on failure
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
-          name: e2e-screenshots
-          path: frontend/src/tests/e2e/accounts.spec.ts-snapshots/*
+          name: failure-report
+          path: |
+            playwright-report/*
+            # On failure we also take a screenshot.
+            frontend/src/tests/e2e/accounts.spec.ts-snapshots/*
+
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
