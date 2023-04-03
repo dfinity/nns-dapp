@@ -142,7 +142,9 @@
 
   let address: string | undefined;
   $: address = bitcoin
-    ? $bitcoinAddressStore[account?.identifier]
+    ? account?.identifier !== undefined
+      ? $bitcoinAddressStore[account?.identifier]
+      : undefined
     : account?.identifier;
 </script>
 
