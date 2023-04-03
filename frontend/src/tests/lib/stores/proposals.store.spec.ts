@@ -5,9 +5,18 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "$lib/stores/proposals.store";
+import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { generateMockProposals } from "$tests/mocks/proposal.mock";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import {
+  generateMockProposals,
+  mockProposalInfo,
+} from "$tests/mocks/proposal.mock";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("proposals-store", () => {
@@ -191,7 +200,11 @@ describe("proposals-store", () => {
 
   describe("votingNeuronSelectStore", () => {
     const neuronIds = [0, 1, 2].map(BigInt);
-    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
+    const neurons = neuronIds
+      .map((neuronId) => ({ ...mockNeuron, neuronId } as NeuronInfo))
+      .map((neuron) =>
+        nnsNeuronToVotingNeuron({ neuron, proposal: mockProposalInfo })
+      );
 
     it("should set neurons", () => {
       votingNeuronSelectStore.set(neurons);
@@ -200,31 +213,35 @@ describe("proposals-store", () => {
 
     it("should select all on set", () => {
       votingNeuronSelectStore.set(neurons);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual(neuronIds);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
+        neuronIds.map(String)
+      );
     });
 
     it("should preserve user selection", () => {
       votingNeuronSelectStore.set(neurons);
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
+      votingNeuronSelectStore.toggleSelection(`${neuronIds[1]}`);
       votingNeuronSelectStore.updateNeurons([
         ...neurons,
-        { ...mockNeuron, neuronId: BigInt(3) },
+        nnsNeuronToVotingNeuron({
+          neuron: { ...mockNeuron, neuronId: BigInt(3) },
+          proposal: mockProposalInfo,
+        }),
       ]);
       expect(get(votingNeuronSelectStore).selectedIds).toEqual(
-        [0, 2, 3].map(BigInt)
+        [0, 2, 3].map(String)
       );
     });
 
     it("should toggle by neuronId", () => {
       votingNeuronSelectStore.set(neurons);
 
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
-      votingNeuronSelectStore.toggleSelection(neuronIds[2]);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual([
-        neuronIds[0],
-        neuronIds[1],
-      ]);
+      votingNeuronSelectStore.toggleSelection(`${neuronIds[1]}`);
+      votingNeuronSelectStore.toggleSelection(`${neuronIds[1]}`);
+      votingNeuronSelectStore.toggleSelection(`${neuronIds[2]}`);
+      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
+        [neuronIds[0], neuronIds[1]].map(String)
+      );
     });
   });
 
