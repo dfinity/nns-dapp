@@ -3,15 +3,11 @@ import { TransactionFormPo } from "$tests/page-objects/TransactionForm.page-obje
 import { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
+// This should not be used directly but rather as a base class for specific
+// transaction modals.
 export class TransactionModalPo extends BasePageObject {
-  private static readonly TID = "transaction-modal-component";
-
   constructor(root: PageObjectElement) {
     super(root);
-  }
-
-  static under(element: PageObjectElement): TransactionModalPo {
-    return new TransactionModalPo(element.byTestId(TransactionModalPo.TID));
   }
 
   getTransactionFormPo(): TransactionFormPo {

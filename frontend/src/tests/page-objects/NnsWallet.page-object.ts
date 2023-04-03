@@ -1,5 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
+import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsWalletPo extends BasePageObject {
@@ -13,8 +13,8 @@ export class NnsWalletPo extends BasePageObject {
     return new NnsWalletPo(element.byTestId(NnsWalletPo.TID));
   }
 
-  getTransactionModalPo(): TransactionModalPo {
-    return TransactionModalPo.under(this.root);
+  getIcpTransactionModalPo(): IcpTransactionModalPo {
+    return IcpTransactionModalPo.under(this.root);
   }
 
   clickSend(): Promise<void> {
@@ -31,7 +31,7 @@ export class NnsWalletPo extends BasePageObject {
     amount: number;
   }): Promise<void> {
     await this.clickSend();
-    const modal = this.getTransactionModalPo();
+    const modal = this.getIcpTransactionModalPo();
     return modal.transferToAccount({
       accountName,
       expectedAccountAddress,
