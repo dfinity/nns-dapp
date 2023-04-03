@@ -1,15 +1,21 @@
-import { addRawToUrl } from "$lib/utils/env.utils";
+import { addRawToUrl, getHtmlEnvVars } from "$lib/utils/env.utils";
 
-export const DFX_NETWORK = import.meta.env.VITE_DFX_NETWORK;
-export const HOST = import.meta.env.VITE_HOST as string;
+const envVarsDataset = getHtmlEnvVars();
+
+export const DFX_NETWORK =
+  envVarsDataset?.dfxNetwork ?? import.meta.env.VITE_DFX_NETWORK;
+export const HOST =
+  envVarsDataset?.host ?? (import.meta.env.VITE_HOST as string);
 export const DEV = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean =
-  import.meta.env.VITE_FETCH_ROOT_KEY === "true";
+  (envVarsDataset?.fetchRootKey ?? import.meta.env.VITE_FETCH_ROOT_KEY) ===
+  "true";
 
 export const HOST_IC0_APP = "https://ic0.app";
 
-const snsAggregatorUrlEnv = import.meta.env
-  .VITE_AGGREGATOR_CANISTER_URL as string;
+const snsAggregatorUrlEnv =
+  envVarsDataset?.snsAggregatorUrl ??
+  (import.meta.env.VITE_AGGREGATOR_CANISTER_URL as string);
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
@@ -56,7 +62,8 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  * @see feature-flags.store.ts to use feature flags
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
-  import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
+  envVarsDataset?.featureFlags ??
+    import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
     '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
 );
 
