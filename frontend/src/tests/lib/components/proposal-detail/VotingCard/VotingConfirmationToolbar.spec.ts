@@ -5,34 +5,29 @@
 import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import type { VotingNeuron } from "$lib/types/proposals";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import {
-  mockProposalInfo,
-  mockVoteRegistration,
-} from "$tests/mocks/proposal.mock";
+import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
-  const neuron = {
-    ...mockNeuron,
-    neuronId: BigInt(111),
-    votingPower,
-  };
+  const neuronIdString = `111`;
 
   beforeEach(() => {
     votingNeuronSelectStore.set([
-      nnsNeuronToVotingNeuron({ neuron, proposal: mockProposalInfo }),
+      {
+        neuronIdString,
+        votingPower,
+      } as VotingNeuron,
     ]);
   });
 
   it("should disable buttons if nothing is selected", async () => {
     const { container } = render(VotingConfirmationToolbar);
-    votingNeuronSelectStore.toggleSelection(`${neuron.neuronId}`);
+    votingNeuronSelectStore.toggleSelection(neuronIdString);
     await waitFor(() =>
       expect(
         container.querySelector('[data-tid="vote-yes"][disabled]')

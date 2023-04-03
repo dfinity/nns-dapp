@@ -5,18 +5,9 @@ import {
   proposalsStore,
   votingNeuronSelectStore,
 } from "$lib/stores/proposals.store";
-import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import {
-  generateMockProposals,
-  mockProposalInfo,
-} from "$tests/mocks/proposal.mock";
-import {
-  ProposalRewardStatus,
-  ProposalStatus,
-  Topic,
-  type NeuronInfo,
-} from "@dfinity/nns";
+import type { VotingNeuron } from "$lib/types/proposals";
+import { generateMockProposals } from "$tests/mocks/proposal.mock";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("proposals-store", () => {
@@ -199,12 +190,14 @@ describe("proposals-store", () => {
   });
 
   describe("votingNeuronSelectStore", () => {
-    const neuronIds = [0, 1, 2].map(BigInt);
-    const neurons = neuronIds
-      .map((neuronId) => ({ ...mockNeuron, neuronId } as NeuronInfo))
-      .map((neuron) =>
-        nnsNeuronToVotingNeuron({ neuron, proposal: mockProposalInfo })
-      );
+    const neuronIds = [0, 1, 2].map(String);
+    const neurons = neuronIds.map(
+      (neuronIdString) =>
+        ({
+          neuronIdString,
+          votingPower: 0n,
+        } as VotingNeuron)
+    );
 
     it("should set neurons", () => {
       votingNeuronSelectStore.set(neurons);
@@ -223,10 +216,10 @@ describe("proposals-store", () => {
       votingNeuronSelectStore.toggleSelection(`${neuronIds[1]}`);
       votingNeuronSelectStore.updateNeurons([
         ...neurons,
-        nnsNeuronToVotingNeuron({
-          neuron: { ...mockNeuron, neuronId: BigInt(3) },
-          proposal: mockProposalInfo,
-        }),
+        {
+          neuronIdString: "3",
+          votingPower: 0n,
+        } as VotingNeuron,
       ]);
       expect(get(votingNeuronSelectStore).selectedIds).toEqual(
         [0, 2, 3].map(String)
