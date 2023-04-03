@@ -27,9 +27,11 @@ clap.define short=c long=clean desc="Extract a clean state from the .zip file, e
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-# The $() causes an extra entry in the output of ps, so without any other script
+# The $() causes an extra entry in the output of `ps` so without any other script
 # running, this will be 2.
-SCRIPT_COUNT="$(ps | grep "dev-local-state.sh" | grep -v grep | wc -l)"
+# We use `ps` because pgrep doesn't include shell scripts.
+# shellcheck disable=SC2034
+SCRIPT_COUNT="$(ps | grep "dev-local-state.sh" | grep -cv grep)"
 
 if pgrep replica || [ "$SCRIPT_COUNT" -gt 2 ]; then
   echo "ERROR: There is already a replica running. Please stop it first."
