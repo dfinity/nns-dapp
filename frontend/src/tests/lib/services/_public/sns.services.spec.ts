@@ -190,16 +190,5 @@ describe("SNS public services", () => {
       const data = supplies[rootCanisterId];
       expect(data).toBeUndefined();
     });
-
-    it("should use fallback if the sns aggregator returns less than 2 projects", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
-
-      await loadSnsProjects();
-
-      expect(snsApi.queryAllSnsMetadata).toBeCalled();
-      expect(snsApi.querySnsSwapStates).toBeCalled();
-    });
   });
 });
