@@ -29,6 +29,7 @@
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 
   export let data: CkBTCReceiveModalData;
 
@@ -143,9 +144,9 @@
   });
 
   let address: string | undefined;
-  $: address = bitcoin ? btcAddress : account?.identifier;
-
-  let btcAddress: string | undefined;
+  $: address = bitcoin
+    ? $bitcoinAddressStore[account?.identifier]
+    : account?.identifier;
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>

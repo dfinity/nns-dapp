@@ -55,7 +55,8 @@
 </script>
 
 <p class="description">
-  {$i18n.ckbtc.incoming_bitcoin_network} <a
+  {$i18n.ckbtc.incoming_bitcoin_network}
+  <a
     href={`https://dashboard.internetcomputer.org/?id=${btcAddress ?? ""}`}
     aria-disabled={!btcAddressLoaded}
     >{$i18n.ckbtc.block_explorer}
