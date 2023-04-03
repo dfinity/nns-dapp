@@ -3,14 +3,14 @@ import { HashPo } from "$tests/page-objects/Hash.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronCardTitlePo extends BasePageObject {
-  static readonly tid = "sns-neuron-card-title";
+  private static readonly TID = "sns-neuron-card-title";
 
   private constructor(root: PageObjectElement) {
     super(root);
   }
 
   static under(element: PageObjectElement): SnsNeuronCardTitlePo {
-    return new SnsNeuronCardTitlePo(element.byTestId(SnsNeuronCardTitlePo.tid));
+    return new SnsNeuronCardTitlePo(element.byTestId(SnsNeuronCardTitlePo.TID));
   }
 
   getNeuronId(): Promise<string> {

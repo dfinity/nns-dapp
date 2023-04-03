@@ -25,6 +25,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { NervousSystemParameters } from "@dfinity/sns";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let parameters: NervousSystemParameters;
   export let token: Token;
@@ -64,31 +65,38 @@
   };
 </script>
 
-{#if nonNullish(neuron) && nonNullish(neuronState)}
-  <div class="content-cell-details">
-    <KeyValuePair>
-      <SnsNeuronCardTitle
-        tagName="h3"
-        {neuron}
-        slot="key"
-        on:nnsIntersecting={updateLayoutTitle}
-      />
-      <NeuronStateInfo state={neuronState} slot="value" />
-    </KeyValuePair>
+<TestIdWrapper testId="sns-neuron-meta-info-card-component">
+  {#if nonNullish(neuron) && nonNullish(neuronState)}
+    <div class="content-cell-details">
+      <KeyValuePair>
+        <SnsNeuronCardTitle
+          tagName="h3"
+          {neuron}
+          slot="key"
+          on:nnsIntersecting={updateLayoutTitle}
+        />
+        <NeuronStateInfo state={neuronState} slot="value" />
+      </KeyValuePair>
 
-    <SnsNeuronAge {neuron} />
+      <SnsNeuronAge {neuron} />
 
-    <SnsNeuronStateRemainingTime {neuron} inline={false} />
+      <SnsNeuronStateRemainingTime {neuron} inline={false} />
 
-    <div class="buttons">
-      {#if allowedToSplit}
-        <SplitSnsNeuronButton {neuron} {parameters} {token} {transactionFee} />
-      {/if}
+      <div class="buttons">
+        {#if allowedToSplit}
+          <SplitSnsNeuronButton
+            {neuron}
+            {parameters}
+            {token}
+            {transactionFee}
+          />
+        {/if}
+      </div>
     </div>
-  </div>
 
-  <Separator />
-{/if}
+    <Separator />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   .content-cell-details {
