@@ -61,6 +61,9 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
 assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm nns-dapp-arg.did nns-dapp-arg.bin)
+for file in "${assets[@]}"; do
+  rm -f "$file"
+done
 
 set -x
 DOCKER_BUILDKIT=1 docker build \
