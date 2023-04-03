@@ -21,6 +21,7 @@ import {
   anonymizeSnsTypeStore,
   anonymizeTransaction,
   anonymizeTransactionStore,
+  anonymizeVotingNeuron,
   cutAndAnonymize,
 } from "$lib/utils/anonymize.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -251,7 +252,7 @@ const anonymiseStoreState = async () => {
     votingNeuronSelect: {
       neurons: await mapPromises(
         votingNeuronSelect?.neurons,
-        anonymizeNeuronInfo
+        anonymizeVotingNeuron
       ),
       selectedIds: await mapPromises(
         votingNeuronSelect?.selectedIds,

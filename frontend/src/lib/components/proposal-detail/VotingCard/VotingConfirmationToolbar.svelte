@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type ProposalInfo, Vote } from "@dfinity/nns";
+  import { Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -10,7 +10,6 @@
 
   const dispatch = createEventDispatcher();
 
-  export let proposalInfo: ProposalInfo;
   export let voteRegistration: VoteRegistration | undefined = undefined;
 
   let total: bigint;
@@ -21,7 +20,6 @@
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
-    proposal: proposalInfo,
   });
   $: disabled =
     $votingNeuronSelectStore.selectedIds.length === 0 ||

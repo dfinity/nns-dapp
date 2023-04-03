@@ -12,3 +12,9 @@ export interface ProposalsFilterModalProps {
 }
 
 export const PROPOSAL_FILTER_UNSPECIFIED_VALUE = 0;
+
+export interface VotingNeuron {
+  /** String version of nns or sns neuron id. To simplify its storage and comparison */
+  neuronIdString: string;
+  votingPower: bigint;
+}
