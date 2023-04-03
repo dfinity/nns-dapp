@@ -16,7 +16,7 @@
   } from "$lib/types/selected-proposal.context";
   import {
     isProposalDeadlineInTheFuture,
-    neuronToVotingNeuron,
+    nnsNeuronToVotingNeuron,
   } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
@@ -37,7 +37,7 @@
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
     }).map((neuron) =>
-      neuronToVotingNeuron({ neuron, proposal: proposalInfo })
+      nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
     );
 
   let visible = false;

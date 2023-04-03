@@ -600,7 +600,7 @@ export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
       neuronIds.length > successfullyVotedNeuronIds.length
   ) !== undefined;
 
-export const neuronToVotingNeuron = ({
+export const nnsNeuronToVotingNeuron = ({
   neuron,
   proposal,
 }: {
