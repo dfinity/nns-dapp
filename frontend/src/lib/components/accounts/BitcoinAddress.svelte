@@ -10,7 +10,7 @@
   import { nonNullish } from "@dfinity/utils";
   import type { BtcAddressText } from "$lib/types/bitcoin";
   import { i18n } from "$lib/stores/i18n";
-  import { Spinner } from "@dfinity/gix-components";
+  import {IconInfo, Spinner} from "@dfinity/gix-components";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
@@ -55,7 +55,7 @@
 </script>
 
 <p class="description">
-  {$i18n.ckbtc.incoming_bitcoin_network} <a
+  <IconInfo /> {$i18n.ckbtc.incoming_bitcoin_network} <a
     href={`https://dashboard.internetcomputer.org/?id=${btcAddress ?? ""}`}
     aria-disabled={!btcAddressLoaded}
     >{$i18n.ckbtc.block_explorer}
