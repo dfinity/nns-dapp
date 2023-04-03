@@ -4,13 +4,10 @@
   import { Checkbox } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import { getVotingPower } from "$lib/utils/proposals.utils";
-  import type { ProposalInfo } from "@dfinity/nns";
 
-  export let proposalInfo: ProposalInfo;
   export let disabled: boolean;
 
-  const toggleSelection = (neuronId: bigint) =>
+  const toggleSelection = (neuronId: string) =>
     votingNeuronSelectStore.toggleSelection(neuronId);
 </script>
 
@@ -19,11 +16,11 @@
     {#each $votingNeuronSelectStore.neurons as neuron}
       <li>
         <Checkbox
-          inputId={`${neuron.neuronId}`}
+          inputId={neuron.neuronIdString}
           checked={$votingNeuronSelectStore.selectedIds.includes(
-            neuron.neuronId
+            neuron.neuronIdString
           )}
-          on:nnsChange={() => toggleSelection(neuron.neuronId)}
+          on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
           text="block"
           {disabled}
         >
@@ -32,23 +29,18 @@
             aria-label={replacePlaceholders(
               $i18n.proposal_detail__vote.cast_vote_neuronId,
               {
-                $neuronId: `${neuron.neuronId}`,
+                $neuronId: neuron.neuronIdString,
               }
-            )}>{`${neuron.neuronId}`}</span
+            )}>{neuron.neuronIdString}</span
           >
           <span
             class="voting-power value"
             aria-label={replacePlaceholders(
               $i18n.proposal_detail__vote.cast_vote_votingPower,
               {
-                $votingPower: formatVotingPower(
-                  getVotingPower({ neuron, proposal: proposalInfo })
-                ),
+                $votingPower: formatVotingPower(neuron.votingPower),
               }
-            )}
-            >{`${formatVotingPower(
-              getVotingPower({ neuron, proposal: proposalInfo })
-            )}`}</span
+            )}>{formatVotingPower(neuron.votingPower)}</span
           >
         </Checkbox>
       </li>
