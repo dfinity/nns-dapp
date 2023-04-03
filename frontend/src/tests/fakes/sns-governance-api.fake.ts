@@ -303,13 +303,15 @@ const createNeuronId = ({
 // This follows the same logic to determine neuron IDs as the real code because
 // the real code will look for neurons with these IDs without even knowing if
 // they exist.
-export const addNeuronWith = ({
-  identity = mockIdentity,
+const addNeuronToList = ({
+  identity,
   rootCanisterId,
+  overrideById,
   ...neuronParams
 }: {
   identity?: Identity;
   rootCanisterId: Principal;
+  overrideById?: boolean;
 } & Partial<SnsNeuron>): SnsNeuron => {
   const currentNeurons = getNeurons({ identity, rootCanisterId });
   const index = currentNeurons.length;
@@ -319,15 +321,51 @@ export const addNeuronWith = ({
     id: [defaultNeuronId],
     ...neuronParams,
   };
-  const filteredNeurons = currentNeurons.filter((currentNeuron) => {
-    const currentHexIt = snsNeuronIdToHexString(currentNeuron.id[0]);
-    const newHexIt = snsNeuronIdToHexString(neuron.id[0]);
-    return currentHexIt !== newHexIt;
-  });
-  filteredNeurons.push(neuron);
-  const key = mapKey({ identity, rootCanisterId });
-  neurons.set(key, filteredNeurons);
+  if (overrideById) {
+    const newHexId = snsNeuronIdToHexString(neuron.id[0]);
+    const filteredNeurons = currentNeurons.filter((currentNeuron) => {
+      const currentHexId = snsNeuronIdToHexString(currentNeuron.id[0]);
+      return currentHexId !== newHexId;
+    });
+    filteredNeurons.push(neuron);
+    const key = mapKey({ identity, rootCanisterId });
+    neurons.set(key, filteredNeurons);
+  } else {
+    currentNeurons.push(neuron);
+  }
   return neuron;
+};
+
+export const addNeuronWith = ({
+  identity = mockIdentity,
+  rootCanisterId,
+  ...neuronParams
+}: {
+  identity?: Identity;
+  rootCanisterId: Principal;
+} & Partial<SnsNeuron>): SnsNeuron => {
+  return addNeuronToList({
+    identity,
+    rootCanisterId,
+    overrideById: false,
+    ...neuronParams,
+  });
+};
+
+export const setNeuronWith = ({
+  identity = mockIdentity,
+  rootCanisterId,
+  ...neuronParams
+}: {
+  identity?: Identity;
+  rootCanisterId: Principal;
+} & Partial<SnsNeuron>): SnsNeuron => {
+  return addNeuronToList({
+    identity,
+    rootCanisterId,
+    overrideById: true,
+    ...neuronParams,
+  });
 };
 
 export const addProposalWith = ({

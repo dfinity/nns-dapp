@@ -152,7 +152,7 @@ describe("SnsNeuronDetail", () => {
       // `neuronStake` to string formatted as expected
       expect(await po.getStakeCardPo().getStakeAmount()).toBe("1.00");
       const amountToStake = 20;
-      fakeSnsGovernanceApi.addNeuronWith({
+      fakeSnsGovernanceApi.setNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
         cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
