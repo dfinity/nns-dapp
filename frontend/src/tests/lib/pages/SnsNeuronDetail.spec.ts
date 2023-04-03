@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
@@ -56,6 +57,10 @@ describe("SnsNeuronDetail", () => {
   summary.metadata.name = [projectName];
   responses[0][0] = summary;
 
+  const mainAccount = {
+    owner: mockIdentity.getPrincipal(),
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     snsParametersStore.reset();
@@ -69,8 +74,8 @@ describe("SnsNeuronDetail", () => {
     snsQueryStore.setData(responses);
 
     fakeSnsLedgerApi.addAccountWith({
-      identity: mockIdentity,
       rootCanisterId,
+      principal: mockIdentity.getPrincipal(),
     });
 
     page.mock({
@@ -163,6 +168,14 @@ describe("SnsNeuronDetail", () => {
 
       // `neuronStake` + 10 to string and formatted as expected
       expect(await po.getStakeCardPo().getStakeAmount()).toBe("21.00");
+      expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
+      expect(increaseStakeNeuron).toHaveBeenCalledWith({
+        neuronId: validNeuronId,
+        stakeE8s: numberToE8s(amountToStake),
+        rootCanisterId,
+        identity: mockIdentity,
+        source: mainAccount,
+      });
     });
   });
 
