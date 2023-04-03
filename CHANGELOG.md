@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXX
+* Add new field to NNS payload to show arguments as hex string.
+* Minor text updates and bugfixes.
+
 ## Proposal 115271
 * Fix back to detail from "Settings" page.
 * UX improvements:
