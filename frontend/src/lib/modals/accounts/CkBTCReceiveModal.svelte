@@ -13,11 +13,8 @@
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    getBTCAddress,
-    updateBalance as updateBalanceService,
-  } from "$lib/services/ckbtc-minter.services";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";

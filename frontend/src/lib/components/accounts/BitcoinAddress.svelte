@@ -36,8 +36,6 @@
       return;
     }
 
-    console.log("btcAddressLoaded", btcAddressLoaded);
-
     if (btcAddressLoaded) {
       return;
     }
