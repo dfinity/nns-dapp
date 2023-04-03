@@ -5,7 +5,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsAccountsFooterPo extends BasePageObject {
   private static readonly TID = "nns-accounts-footer-component";
 
-  constructor(root: PageObjectElement) {
+  private constructor(root: PageObjectElement) {
     super(root);
   }
 

@@ -6,11 +6,11 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
 
-  constructor(root: PageObjectElement) {
+  private constructor(root: PageObjectElement) {
     super(root);
   }
 
-  static under(element: PageObjectElement): AccountsPo | null {
+  static under(element: PageObjectElement): AccountsPo {
     return new AccountsPo(element.byTestId(AccountsPo.TID));
   }
 
