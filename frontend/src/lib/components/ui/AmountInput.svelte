@@ -20,7 +20,6 @@
   {max}
   inputType="icp"
   {errorMessage}
-  testId="amount-input"
 >
   <svelte:fragment slot="label">{$i18n.core.amount}</svelte:fragment>
   <MaxButton on:click={setMax} slot="end" />

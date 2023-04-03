@@ -119,7 +119,7 @@ export class AccountsTab extends MyNavigator {
     );
     // Enter amount
     const valueElement = await this.getElement(
-      `[data-tid="amount-input"][id="amount"]`,
+      `[data-tid="input-ui-component"][id="amount"]`,
       "ICP input field"
     );
     await valueElement.waitForEnabled({

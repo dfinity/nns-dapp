@@ -17,8 +17,10 @@ export class SnsIncreaseStakeNeuronModalPo extends TransactionModalPo {
   }
 
   async increase(amount: number): Promise<void> {
-    await this.enterAmount(amount);
-    await this.getNextButtonPo().click();
-    await this.getConfirmButtonPo().click();
+    const formPo = this.getTransactionFormPo();
+    await formPo.waitFor();
+    await formPo.enterAmount(amount);
+    await formPo.clickContinue();
+    await this.getTransactionReviewPo().clickSend();
   }
 }

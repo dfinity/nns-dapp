@@ -6,7 +6,7 @@ export class TogglePo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): TransactionModalPo {
+  static under(element: PageObjectElement): TogglePo {
     return new TogglePo(element.querySelector("div.toggle"));
   }
 
