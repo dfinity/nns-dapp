@@ -2,6 +2,9 @@
 use candid::{CandidType, Deserialize};
 use core::cell::RefCell;
 use serde::Serialize;
+use regex::Regex;
+use std::collections::HashMap;
+
 
 /// Init and post_upgrade arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
@@ -58,4 +61,24 @@ pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
     CANISTER_ARGUMENTS.with(|args| {
         args.replace(canister_arguments);
     });
+}
+
+/// Machine for doing interesting things with arguments
+pub struct TemplateEngine {
+    args: HashMap<String, String>,
+    regex: Regex,
+}
+
+impl TemplateEngine {
+    pub fn new(canister_arguments: &CanisterArguments) -> Self {
+        let args = canister_arguments.args.iter().cloned().collect();
+        let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}").expect("Invalid regex");
+        TemplateEngine {
+            args,
+            regex,
+        }
+    }
+    pub fn template(input: &str) -> String {
+        todo!()
+    }
 }
