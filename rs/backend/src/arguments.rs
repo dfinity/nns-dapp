@@ -10,7 +10,7 @@ use std::collections::HashMap;
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into Javascript.
-    args: Vec<(String, String)>,
+    pub args: Vec<(String, String)>,
 }
 
 thread_local! {
@@ -79,7 +79,7 @@ impl TemplateEngine {
         }
     }
     /// Replaces substrings of the form `${{ARG_KEY}}` with the corresponding argument value.
-    pub fn template(&self, input: &str) -> String {
+    pub fn populate(&self, input: &str) -> String {
         self.regex.replace_all(input, |cap: &Captures| {
             let key = cap.get(1).unwrap();
             let val = self.args.get(key.as_str());

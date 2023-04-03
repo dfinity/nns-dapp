@@ -1,4 +1,4 @@
-use crate::arguments::CANISTER_ARGUMENTS;
+use crate::arguments::{CANISTER_ARGUMENTS, TemplateEngine};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
@@ -371,6 +371,7 @@ pub fn init_assets() {
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
     let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
+    let template_engine = CANISTER_ARGUMENTS.with(|args| TemplateEngine::new(&args.borrow().args));
     STATE.with(|state| {
         for entry in tar.entries().unwrap() {
             let mut entry = entry.unwrap();
@@ -399,6 +400,7 @@ pub fn init_assets() {
                 if let Some(insertion_point) = html.find("</head>") {
                     html.insert_str(insertion_point, &arguments_html);
                 }
+                let html = template_engine.populate(&html);
                 bytes = gzip(html.as_bytes());
             } else {
                 dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
