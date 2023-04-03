@@ -28,7 +28,9 @@ export class NnsAccountsPo extends BasePageObject {
     const names = await Promise.all(cards.map((card) => card.getAccountName()));
     const index = names.indexOf(accountName);
     if (index === -1) {
-      throw new Error(`Account ${accountName} not found. Available accounts are ${names}`);
+      throw new Error(
+        `Account ${accountName} not found. Available accounts are ${names}`
+      );
     }
     return cards[index];
   }

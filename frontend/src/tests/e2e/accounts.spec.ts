@@ -31,7 +31,9 @@ test("Test accounts requirements", async ({ page, context }) => {
   await appPo.getIcp(20);
 
   // AU004: The user MUST be able to transfer funds
-  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual("20.00");
+  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
+    "20.00"
+  );
   expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("0");
 
   const subAccountAddress = await nnsAccountsPo.getAccountAddress(
@@ -47,7 +49,9 @@ test("Test accounts requirements", async ({ page, context }) => {
   await appPo.goBack();
   await nnsAccountsPo.getMainAccountCardPo().getAmountDisplayPo().waitFor();
   //await new Promise((resolve) => setTimeout(resolve, 1 * 1000));
-  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual("15.00");
+  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
+    "15.00"
+  );
   expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("5.00");
 
   // TODO:
