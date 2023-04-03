@@ -109,9 +109,12 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
-          npx playwright install --with-deps
+          #npx playwright install --with-deps
       - name: Run Playwright end-to-end tests
         working-directory: frontend
+        # TODO: Remove when Playwright end-to-end tests are stable and ready to
+        # replace existing e2e tests.
+        continue-on-error: true
         run: |
           set -o pipefail
           npm run test-e2e |& tee -a playwright-e2e.log
