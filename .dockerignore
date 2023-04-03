@@ -19,6 +19,7 @@ web-assets
 frontend/node_modules/
 frontend/public/build/
 frontend/public/assets/
+frontend/src/tests/
 e2e-tests
 **/*.wasm
 /deployment-config.json
