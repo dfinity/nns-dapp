@@ -14,6 +14,7 @@
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
+  export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
 
   // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.
@@ -93,7 +94,7 @@
 </script>
 
 <WizardModal
-  testId="transaction-modal-component"
+  {testId}
   {steps}
   bind:currentStep
   bind:this={modal}
