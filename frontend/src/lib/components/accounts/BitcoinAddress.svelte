@@ -66,6 +66,7 @@
 <p class="description">
   {$i18n.ckbtc.incoming_bitcoin_network}
   <a
+    data-tid="block-explorer-link"
     href={blockExplorerUrl}
     rel="noopener noreferrer external"
     target="_blank"
