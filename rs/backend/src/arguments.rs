@@ -2,7 +2,7 @@
 use candid::{CandidType, Deserialize};
 use core::cell::RefCell;
 use serde::Serialize;
-use regex::Regex;
+use regex::{Captures, Regex};
 use std::collections::HashMap;
 
 
@@ -63,22 +63,27 @@ pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
     });
 }
 
-/// Machine for doing interesting things with arguments
+/// Replaces arguments in a template
 pub struct TemplateEngine {
     args: HashMap<String, String>,
     regex: Regex,
 }
-
 impl TemplateEngine {
-    pub fn new(canister_arguments: &CanisterArguments) -> Self {
-        let args = canister_arguments.args.iter().cloned().collect();
+    /// Creates a templating engine from canister arguments
+    pub fn new(key_val_pairs: &[(String, String)]) -> Self {
+        let args = key_val_pairs.iter().cloned().collect();
         let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}").expect("Invalid regex");
         TemplateEngine {
             args,
             regex,
         }
     }
-    pub fn template(input: &str) -> String {
-        todo!()
+    /// Replaces substrings of the form `${{ARG_KEY}}` with the corresponding argument value.
+    pub fn template(&self, input: &str) -> String {
+        self.regex.replace_all(input, |cap: &Captures| {
+            let key = cap.get(1).unwrap();
+            let val = self.args.get(key.as_str());
+            val.cloned().unwrap_or_else(|| cap.get(0).unwrap().as_str().to_string())
+        }).to_string()
     }
 }
