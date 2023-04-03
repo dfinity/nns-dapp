@@ -1281,4 +1281,35 @@ describe("proposals-utils", () => {
       ).toBeFalsy();
     });
   });
+
+  describe("nnsNeuronToVotingNeuron", () => {
+    it("should generate VotingNeuron from NeuronInfo", () => {
+      const neuronId = BigInt(100);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+        votingPower: 0n,
+      };
+      const votingPower = 123456789n;
+      const ballot: Ballot = {
+        neuronId,
+        votingPower,
+        vote: Vote.Yes,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+
+      expect(
+        nnsNeuronToVotingNeuron({
+          neuron,
+          proposal,
+        })
+      ).toEqual({
+        neuronIdString: `${neuronId}`,
+        votingPower: votingPower,
+      });
+    });
+  });
 });
