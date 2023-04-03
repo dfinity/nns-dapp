@@ -14,6 +14,7 @@ import {
   isProposalDeadlineInTheFuture,
   lastProposalId,
   mapProposalInfo,
+  nnsNeuronToVotingNeuron,
   preserveNeuronSelectionAfterUpdate,
   proposalActionFields,
   proposalFirstActionKey,
@@ -78,6 +79,11 @@ const proposalWithActionWithUndefined = {
   ...mockProposalInfo.proposal,
   action: actionWithEmpty,
 } as Proposal;
+
+const toTestNnsVotingNode =
+  (proposal: ProposalInfo = mockProposalInfo) =>
+  (neuron: NeuronInfo) =>
+    nnsNeuronToVotingNeuron({ neuron, proposal });
 
 describe("proposals-utils", () => {
   it("should find no last proposal id", () =>
@@ -693,9 +699,8 @@ describe("proposals-utils", () => {
       const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons,
-          selectedIds: [1, 2, 3].map(BigInt),
-          proposal,
+          neurons: neurons.map(toTestNnsVotingNode(proposal)),
+          selectedIds: [1, 2, 3].map(String),
         })
       ).toBe(BigInt(6));
     });
@@ -705,11 +710,10 @@ describe("proposals-utils", () => {
       const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons,
-          selectedIds: [1, 3].map(BigInt),
-          proposal,
+          neurons: neurons.map(toTestNnsVotingNode(proposal)),
+          selectedIds: [1, 3].map(String),
         })
-      ).toBe(BigInt(4));
+      ).toBe(4n);
     });
 
     it("should return 0 if no selection", () => {
@@ -717,9 +721,8 @@ describe("proposals-utils", () => {
       const proposal = proposalInfo(neurons);
       expect(
         selectedNeuronsVotingPower({
-          neurons,
+          neurons: neurons.map(toTestNnsVotingNode(proposal)),
           selectedIds: [],
-          proposal,
         })
       ).toBe(BigInt(0));
     });
@@ -735,65 +738,75 @@ describe("proposals-utils", () => {
     it("should preserve old selection", () => {
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [0, 1, 2].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
-          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+          selectedIds: [0, 1, 2].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)].map(
+            toTestNnsVotingNode()
+          ),
         })
-      ).toEqual([0, 1, 2].map(BigInt));
+      ).toEqual([0, 1, 2].map(String));
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [0, 2].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
-          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+          selectedIds: [0, 2].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)].map(
+            toTestNnsVotingNode()
+          ),
         })
-      ).toEqual([0, 2].map(BigInt));
+      ).toEqual([0, 2].map(String));
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
-          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+          selectedIds: [].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)].map(
+            toTestNnsVotingNode()
+          ),
         })
-      ).toEqual([].map(BigInt));
+      ).toEqual([].map(String));
     });
 
     it("should select new neurons", () => {
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
+          selectedIds: [].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
           updatedNeurons: [
             neuron(0),
             neuron(1),
             neuron(2),
             neuron(3),
             neuron(4),
-          ],
+          ].map(toTestNnsVotingNode()),
         })
-      ).toEqual([3, 4].map(BigInt));
+      ).toEqual([3, 4].map(String));
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [0].map(BigInt),
-          neurons: [neuron(0), neuron(1)],
-          updatedNeurons: [neuron(0), neuron(1), neuron(2)],
+          selectedIds: [0].map(String),
+          neurons: [neuron(0), neuron(1)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1), neuron(2)].map(
+            toTestNnsVotingNode()
+          ),
         })
-      ).toEqual([0, 2].map(BigInt));
+      ).toEqual([0, 2].map(String));
     });
 
     it("should remove selction from not existed anymore neurons", () => {
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [0, 1, 2].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
-          updatedNeurons: [neuron(0), neuron(1)],
+          selectedIds: [0, 1, 2].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1)].map(toTestNnsVotingNode()),
         })
-      ).toEqual([0, 1].map(BigInt));
+      ).toEqual([0, 1].map(String));
       expect(
         preserveNeuronSelectionAfterUpdate({
-          selectedIds: [0, 1, 2].map(BigInt),
-          neurons: [neuron(0), neuron(1), neuron(2)],
-          updatedNeurons: [neuron(0), neuron(1), neuron(3)],
+          selectedIds: [0, 1, 2].map(String),
+          neurons: [neuron(0), neuron(1), neuron(2)].map(toTestNnsVotingNode()),
+          updatedNeurons: [neuron(0), neuron(1), neuron(3)].map(
+            toTestNnsVotingNode()
+          ),
         })
-      ).toEqual([0, 1, 3].map(BigInt));
+      ).toEqual([0, 1, 3].map(String));
     });
   });
 
@@ -1266,6 +1279,37 @@ describe("proposals-utils", () => {
           ),
         })
       ).toBeFalsy();
+    });
+  });
+
+  describe("nnsNeuronToVotingNeuron", () => {
+    it("should generate VotingNeuron from NeuronInfo", () => {
+      const neuronId = BigInt(100);
+      const neuron = {
+        ...mockNeuron,
+        neuronId,
+        votingPower: 0n,
+      };
+      const votingPower = 123456789n;
+      const ballot: Ballot = {
+        neuronId,
+        votingPower,
+        vote: Vote.Yes,
+      };
+      const proposal = {
+        ...mockProposalInfo,
+        ballots: [ballot],
+      };
+
+      expect(
+        nnsNeuronToVotingNeuron({
+          neuron,
+          proposal,
+        })
+      ).toEqual({
+        neuronIdString: `${neuronId}`,
+        votingPower: votingPower,
+      });
     });
   });
 });
