@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { HashPo } from "$tests/page-objects/Hash.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AccountCardPo extends BasePageObject {
@@ -18,7 +19,15 @@ export class AccountCardPo extends BasePageObject {
     );
   }
 
+  getHashPo(): HashPo {
+    return HashPo.under(this.root);
+  }
+
   getAccountName(): Promise<string> {
     return this.root.byTestId("account-name").getText();
+  }
+
+  getAccountAddress(): Promise<string> {
+    return this.getHashPo().getText();
   }
 }
