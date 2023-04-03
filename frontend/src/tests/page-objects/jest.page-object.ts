@@ -65,6 +65,12 @@ export class JestPageObjectElement implements PageObjectElement {
   async typeText(_text: string): Promise<void> {
     throw new Error("Not implemented");
     // Not tested:
-    // fireEvent.change(input, {target: {value: text}})
+    // fireEvent.change(this.element, {target: {value: text}});
+  }
+
+  async selectOption(_text: string): Promise<void> {
+    throw new Error("Not implemented");
+    // Not tested:
+    // userEvent.selectOption(this.element, text);
   }
 }

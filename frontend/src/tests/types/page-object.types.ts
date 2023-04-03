@@ -13,4 +13,5 @@ export interface PageObjectElement {
   getText(): Promise<string | null>;
   click(): Promise<void>;
   typeText(text: string): Promise<void>;
+  selectOption(option: string): Promise<void>;
 }
