@@ -10,6 +10,7 @@ export interface BitcoinAddressStore extends Readable<BitcoinAddressData> {
     identifier: AccountIdentifierText;
     btcAddress: BtcAddressText;
   }) => void;
+  reset: () => void;
 }
 
 /**
@@ -18,7 +19,7 @@ export interface BitcoinAddressStore extends Readable<BitcoinAddressData> {
 export const initBitcoinAddressStore = (): BitcoinAddressStore => {
   const initialBtcAddresses: BitcoinAddressData = {};
 
-  const { subscribe, update } =
+  const { subscribe, update, set } =
     writable<BitcoinAddressData>(initialBtcAddresses);
 
   return {
@@ -36,6 +37,9 @@ export const initBitcoinAddressStore = (): BitcoinAddressStore => {
         [identifier]: btcAddress,
       }));
     },
+
+    // For test purpose
+    reset: () => set({}),
   };
 };
 
