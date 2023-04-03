@@ -30,7 +30,7 @@ source "$(clap.build)"
 # The $() causes an extra entry in the output of `ps` so without any other script
 # running, this will be 2.
 # We use `ps` because pgrep doesn't include shell scripts.
-# shellcheck disable=SC2034
+# shellcheck disable=SC2009
 SCRIPT_COUNT="$(ps | grep "dev-local-state.sh" | grep -cv grep)"
 
 if pgrep replica || [ "$SCRIPT_COUNT" -gt 2 ]; then
