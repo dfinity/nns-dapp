@@ -6,6 +6,7 @@ import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/Votin
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
+import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -41,7 +42,11 @@ describe("VotingNeuronSelect", () => {
   };
 
   beforeEach(() => {
-    votingNeuronSelectStore.set(neurons);
+    votingNeuronSelectStore.set(
+      neurons.map((neuron) =>
+        nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
+      )
+    );
   });
 
   it("should render checkbox per neuron", () => {
@@ -58,14 +63,18 @@ describe("VotingNeuronSelect", () => {
 
   it("should display total voting power of ballots not of neurons", async () => {
     const { queryByText } = render(VotingNeuronSelect, { proposalInfo });
-    const neuronsVotingPower = formatVotingPower(
-      neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
-    );
     const ballotsVotingPower = formatVotingPower(
       ballots[0].votingPower + ballots[1].votingPower + ballots[2].votingPower
     );
-    expect(queryByText(neuronsVotingPower)).toBeNull();
     expect(queryByText(ballotsVotingPower)).toBeInTheDocument();
+  });
+
+  it("should not display total voting power of neurons", async () => {
+    const { queryByText } = render(VotingNeuronSelect, { proposalInfo });
+    const neuronsVotingPower = formatVotingPower(
+      neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
+    );
+    expect(queryByText(neuronsVotingPower)).toBeNull();
   });
 
   it("should toggle store state on click", async () => {
@@ -75,16 +84,15 @@ describe("VotingNeuronSelect", () => {
     fireEvent.click(checkboxes[0]);
     fireEvent.click(checkboxes[1]);
 
-    expect(get(votingNeuronSelectStore).selectedIds.sort()).toEqual([
-      neurons[0].neuronId,
-      neurons[2].neuronId,
-    ]);
+    expect(get(votingNeuronSelectStore).selectedIds.sort()).toEqual(
+      [neurons[0].neuronId, neurons[2].neuronId].map(String)
+    );
   });
 
   it("should recalculate total voting power after selection", async () => {
     const { getByText } = render(VotingNeuronSelect, { proposalInfo });
 
-    votingNeuronSelectStore.toggleSelection(neurons[1].neuronId);
+    votingNeuronSelectStore.toggleSelection(`${neurons[1].neuronId}`);
     const total = formatVotingPower(
       ballots[0].votingPower + ballots[2].votingPower
     );
@@ -117,7 +125,13 @@ describe("VotingNeuronSelect", () => {
     const neuronIds = [0, 1, 2].map(BigInt);
     const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
 
-    beforeAll(() => votingNeuronSelectStore.set(neurons));
+    beforeAll(() =>
+      votingNeuronSelectStore.set(
+        neurons.map((neuron) =>
+          nnsNeuronToVotingNeuron({ neuron, proposal: mockProposalInfo })
+        )
+      )
+    );
 
     it("should display voting power", () => {
       const { getByTestId } = render(VotingNeuronSelect, {

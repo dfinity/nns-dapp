@@ -13,6 +13,7 @@
 </script>
 
 <InputWithError
+  testId="amount-input-component"
   placeholderLabelKey="core.amount"
   name="amount"
   bind:value={amount}

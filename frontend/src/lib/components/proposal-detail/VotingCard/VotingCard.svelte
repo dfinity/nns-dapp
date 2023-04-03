@@ -14,7 +14,10 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
-  import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
+  import {
+    isProposalDeadlineInTheFuture,
+    nnsNeuronToVotingNeuron,
+  } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
@@ -33,7 +36,9 @@
     getVotableNeurons({
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
-    });
+    }).map((neuron) =>
+      nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
+    );
 
   let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
@@ -67,7 +72,7 @@
   );
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
-      neuronIds: $votingNeuronSelectStore.selectedIds,
+      neuronIds: $votingNeuronSelectStore.selectedIds.map(BigInt),
       vote: detail.voteType,
       proposalInfo,
       reloadProposalCallback: (
@@ -106,7 +111,6 @@
         {#if neuronsReady}
           {#if visible}
             <VotingConfirmationToolbar
-              {proposalInfo}
               {voteRegistration}
               on:nnsConfirm={vote}
             />

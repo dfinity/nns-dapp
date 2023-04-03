@@ -5,6 +5,7 @@ import type {
 import type { IcrcTransactions } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { VotingNeuron } from "$lib/types/proposals";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
@@ -159,6 +160,21 @@ export const anonymizeNeuronInfo = async (
     votingPower: await anonymizeAmount(votingPower),
     ageSeconds,
     fullNeuron: await anonymizeFullNeuron(fullNeuron),
+  };
+};
+
+export const anonymizeVotingNeuron = async (
+  neuron: VotingNeuron | undefined
+): Promise<undefined | { [key in keyof Required<VotingNeuron>]: unknown }> => {
+  if (neuron === undefined || neuron === null) {
+    return neuron;
+  }
+
+  const { neuronIdString, votingPower } = neuron;
+
+  return {
+    neuronIdString: await cutAndAnonymize(neuronIdString),
+    votingPower: await anonymizeAmount(votingPower),
   };
 };
 
