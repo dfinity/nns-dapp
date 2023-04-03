@@ -1,5 +1,6 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import type { VotingNeuron } from "$lib/types/proposals";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -8,8 +9,6 @@ import {
   replaceProposals,
 } from "$lib/utils/proposals.utils";
 import type {
-  NeuronId,
-  NeuronInfo,
   ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
@@ -33,8 +32,9 @@ export interface ProposalsFiltersStore {
 }
 
 export interface NeuronSelectionStore {
-  neurons: NeuronInfo[];
-  selectedIds: NeuronId[];
+  neurons: VotingNeuron[];
+  // TODO: selectedNeurons OR selectedIdStrings
+  selectedIds: string[];
 }
 
 export interface ProposalsStore {
@@ -187,14 +187,14 @@ const initNeuronSelectStore = () => {
   return {
     subscribe,
 
-    set(neurons: NeuronInfo[]) {
+    set(neurons: VotingNeuron[]) {
       set({
         neurons: [...neurons],
-        selectedIds: neurons.map(({ neuronId }) => neuronId),
+        selectedIds: neurons.map(({ neuronIdString }) => neuronIdString),
       });
     },
 
-    updateNeurons(neurons: NeuronInfo[]) {
+    updateNeurons(neurons: VotingNeuron[]) {
       update(({ neurons: currentNeurons, selectedIds }) => {
         return {
           neurons,
@@ -212,11 +212,11 @@ const initNeuronSelectStore = () => {
       this.set([]);
     },
 
-    toggleSelection(neuronId: NeuronId) {
+    toggleSelection(neuronId: string) {
       update(({ neurons, selectedIds }) => ({
         neurons,
         selectedIds: selectedIds.includes(neuronId)
-          ? selectedIds.filter((id: NeuronId) => id !== neuronId)
+          ? selectedIds.filter((id) => id !== neuronId)
           : Array.from(new Set([...selectedIds, neuronId])),
       }));
     },

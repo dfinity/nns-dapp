@@ -60,6 +60,7 @@
 </script>
 
 <TransactionModal
+  testId="icp-transaction-modal-component"
   rootCanisterId={OWN_CANISTER_ID}
   on:nnsSubmit={transfer}
   on:nnsClose

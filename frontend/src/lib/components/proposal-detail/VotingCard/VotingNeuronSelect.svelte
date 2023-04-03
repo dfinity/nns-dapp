@@ -23,7 +23,6 @@
   $: totalNeuronsVotingPower = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
-    proposal: proposalInfo,
   });
 
   let toggleContent: () => void;

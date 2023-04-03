@@ -4,15 +4,17 @@ use crate::accounts_store::{
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
+use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
-use candid::CandidType;
+pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{api::trap_with, over, over_async, stable};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
+pub use serde::Serialize;
 
 mod accounts_store;
 mod arguments;
@@ -32,8 +34,12 @@ mod time;
 type Cycles = u128;
 
 #[init]
-fn init() {
+fn init(args: Option<CanisterArguments>) {
+    dfn_core::api::print(format!("init with args: {args:#?}"));
+    set_canister_arguments(args);
+    perf::record_instruction_count("init after set_canister_arguments");
     assets::init_assets();
+    perf::record_instruction_count("init stop");
 }
 
 /// Redundant function, never called but reqired as this is main.rs.
@@ -48,7 +54,8 @@ fn pre_upgrade() {
 }
 
 #[post_upgrade]
-fn post_upgrade() {
+fn post_upgrade(args: Option<CanisterArguments>) {
+    dfn_core::api::print(format!("post_upgrade with args: {args:#?}"));
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
@@ -61,9 +68,10 @@ fn post_upgrade() {
 
         s.replace(new_state);
     });
-
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
+    set_canister_arguments(args);
+    perf::record_instruction_count("post_upgrade after set_canister_arguments");
     assets::init_assets();
     perf::record_instruction_count("post_upgrade stop");
 }
