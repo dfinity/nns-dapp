@@ -146,25 +146,6 @@
   $: address = bitcoin ? btcAddress : account?.identifier;
 
   let btcAddress: string | undefined;
-
-  const loadBtcAddress = async () => {
-    // TODO: to be removed when ckBTC with minter is live.
-    if (!isUniverseCkTESTBTC(universeId)) {
-      return;
-    }
-
-    try {
-      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      btcAddress = await getBTCAddress(canisters.minterCanisterId);
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error__ckbtc.get_btc_address",
-        err,
-      });
-    }
-  };
-
-  onMount(async () => await loadBtcAddress());
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
