@@ -854,7 +854,7 @@
     "about_thirty_minutes": "About ≈30 minutes",
     "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
     "loading_address": "Loading the address",
-    "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 72 confirmations. Check status on the",
+    "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer"
   },
   "error__ckbtc": {
