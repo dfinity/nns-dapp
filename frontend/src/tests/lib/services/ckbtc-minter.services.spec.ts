@@ -118,8 +118,6 @@ describe("ckbtc-minter-services", () => {
         throw new MinterTemporaryUnavailableError(error);
       });
 
-      const call = () => services.updateBalance(params);
-
       const err = new ApiErrorKey(
         `${en.error__ckbtc.temporary_unavailable} (${error})`
       );
@@ -134,8 +132,6 @@ describe("ckbtc-minter-services", () => {
         throw new MinterAlreadyProcessingError();
       });
 
-      const call = () => services.updateBalance(params);
-
       const err = new ApiErrorKey(en.error__ckbtc.already_process);
 
       const result = await services.updateBalance(params);
@@ -147,8 +143,6 @@ describe("ckbtc-minter-services", () => {
       jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
-
-      const call = () => services.updateBalance(params);
 
       const err = new ApiErrorKey(en.error__ckbtc.no_new_utxo);
 

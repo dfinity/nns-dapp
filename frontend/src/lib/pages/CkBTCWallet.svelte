@@ -159,10 +159,13 @@
         <Summary />
 
         <WalletSummary />
-        <CkBTCWalletActions
-          reload={reloadAccount}
-          minterCanisterId={canisters.minterCanisterId}
-        />
+
+        {#if nonNullish(canisters)}
+          <CkBTCWalletActions
+            reload={reloadAccount}
+            minterCanisterId={canisters.minterCanisterId}
+          />
+        {/if}
 
         <Separator />
 
