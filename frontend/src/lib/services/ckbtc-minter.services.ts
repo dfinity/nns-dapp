@@ -18,7 +18,6 @@ import {
   MinterTemporaryUnavailableError,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
-  type UpdateBalanceOk,
 } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
