@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class AddSubAccountPo extends BasePageObject {
   private static readonly TID = "add-sub-account-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): AddSubAccountPo {
     return new AddSubAccountPo(element.byTestId(AddSubAccountPo.TID));
   }

@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class GetTokensPo extends BasePageObject {
   static readonly TID = "get-tokens-component";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): GetTokensPo {
     return new GetTokensPo(element.byTestId(GetTokensPo.TID));
   }
