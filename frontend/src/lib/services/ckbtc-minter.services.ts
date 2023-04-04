@@ -89,10 +89,12 @@ export const updateBalance = async ({
     });
 
     return { success: true };
-  } catch (err: unknown) {
+  } catch (error: unknown) {
+    const err = mapUpdateBalanceError(error);
+
     toastsError({
       labelKey: "error__ckbtc.update_balance",
-      err: mapUpdateBalanceError(err),
+      err,
     });
 
     return { success: false, err };
