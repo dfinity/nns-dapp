@@ -14,7 +14,7 @@ export interface BitcoinAddressStore extends Readable<BitcoinAddressData> {
 }
 
 /**
- * A store that holds in memory the BTC addresses NNS-dapp fetched from the backend to improve the user experience as the backend provides the static information through updte calls.
+ * A store that holds in memory the BTC addresses NNS-dapp fetched from the backend to improve the user experience as the backend provides the static information through update calls.
  */
 export const initBitcoinAddressStore = (): BitcoinAddressStore => {
   const initialBtcAddresses: BitcoinAddressData = {};
