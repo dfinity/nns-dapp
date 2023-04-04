@@ -66,7 +66,11 @@ describe("BitcoinEstimatedFee", () => {
     expect(
       content.includes(en.accounts.estimated_bitcoin_transaction_fee)
     ).toBeTruthy();
-    expect(content.includes(`${formatEstimatedFee(result.bitcoin_fee + result.minter_fee)}`)).toBeTruthy();
+    expect(
+      content.includes(
+        `${formatEstimatedFee(result.bitcoin_fee + result.minter_fee)}`
+      )
+    ).toBeTruthy();
     expect(content.includes(en.ckbtc.btc)).toBeTruthy();
   });
 
