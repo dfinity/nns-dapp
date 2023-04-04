@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class TransactionReviewPo extends BasePageObject {
   private static readonly TID = "transaction-step-2";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): TransactionReviewPo {
     return new TransactionReviewPo(element.byTestId(TransactionReviewPo.TID));
   }

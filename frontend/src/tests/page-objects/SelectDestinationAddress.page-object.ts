@@ -6,10 +6,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SelectDestinationAddressPo extends BasePageObject {
   private static readonly TID = "select-destination";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SelectDestinationAddressPo {
     return new SelectDestinationAddressPo(
       element.byTestId(SelectDestinationAddressPo.TID)

@@ -6,10 +6,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SnsNeuronInfoStakePo extends BasePageObject {
   private static readonly TID = "sns-neuron-info-stake";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SnsNeuronInfoStakePo {
     return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.TID));
   }

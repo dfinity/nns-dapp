@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SnsNeuronMetaInfoCardPo extends BasePageObject {
   static readonly TID = "sns-neuron-meta-info-card-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SnsNeuronMetaInfoCardPo {
     return new SnsNeuronMetaInfoCardPo(
       element.byTestId(SnsNeuronMetaInfoCardPo.TID)

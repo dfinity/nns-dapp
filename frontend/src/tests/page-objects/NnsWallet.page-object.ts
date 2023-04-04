@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsWalletPo extends BasePageObject {
   private static readonly TID = "nns-wallet-component";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): NnsWalletPo {
     return new NnsWalletPo(element.byTestId(NnsWalletPo.TID));
   }
