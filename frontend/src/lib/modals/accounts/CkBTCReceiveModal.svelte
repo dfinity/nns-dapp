@@ -13,11 +13,8 @@
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    getBTCAddress,
-    updateBalance as updateBalanceService,
-  } from "$lib/services/ckbtc-minter.services";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -29,6 +26,7 @@
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 
   export let data: CkBTCReceiveModalData;
 
@@ -143,28 +141,11 @@
   });
 
   let address: string | undefined;
-  $: address = bitcoin ? btcAddress : account?.identifier;
-
-  let btcAddress: string | undefined;
-
-  const loadBtcAddress = async () => {
-    // TODO: to be removed when ckBTC with minter is live.
-    if (!isUniverseCkTESTBTC(universeId)) {
-      return;
-    }
-
-    try {
-      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      btcAddress = await getBTCAddress(canisters.minterCanisterId);
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error__ckbtc.get_btc_address",
-        err,
-      });
-    }
-  };
-
-  onMount(async () => await loadBtcAddress());
+  $: address = bitcoin
+    ? account?.identifier !== undefined
+      ? $bitcoinAddressStore[account?.identifier]
+      : undefined
+    : account?.identifier;
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
