@@ -16,7 +16,9 @@ import {
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
-  type EstimateFeeParams,
+  type EstimateWithdrawalFee,
+  type EstimateWithdrawalFeeParams,
+  type UpdateBalanceOk,
 } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
@@ -32,11 +34,11 @@ export const estimateFee = async ({
   minterCanisterId,
   callback,
 }: {
-  params: EstimateFeeParams;
+  params: EstimateWithdrawalFeeParams;
   minterCanisterId: CanisterId;
-  callback: (fee: bigint | null) => void;
+  callback: (fee: EstimateWithdrawalFee | null) => void;
 }): Promise<void> => {
-  return queryAndUpdate<bigint, unknown>({
+  return queryAndUpdate<EstimateWithdrawalFee, unknown>({
     request: ({ certified, identity }) =>
       estimateFeeAPI({
         identity,

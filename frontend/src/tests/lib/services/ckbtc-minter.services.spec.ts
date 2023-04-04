@@ -154,7 +154,7 @@ describe("ckbtc-minter-services", () => {
 
   describe("estimateFee", () => {
     it("should call estimate fee", async () => {
-      const result = 123n;
+      const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
       const spyEstimateFee = jest
         .spyOn(minterApi, "estimateFee")

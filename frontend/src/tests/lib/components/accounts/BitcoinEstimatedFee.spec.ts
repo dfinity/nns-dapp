@@ -15,7 +15,7 @@ import { render, waitFor } from "@testing-library/svelte";
 describe("BitcoinEstimatedFee", () => {
   let spyEstimateFee;
 
-  const result = 123n;
+  const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
   beforeEach(() => {
     spyEstimateFee = jest
@@ -66,7 +66,11 @@ describe("BitcoinEstimatedFee", () => {
     expect(
       content.includes(en.accounts.estimated_bitcoin_transaction_fee)
     ).toBeTruthy();
-    expect(content.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
+    expect(
+      content.includes(
+        `${formatEstimatedFee(result.bitcoin_fee + result.minter_fee)}`
+      )
+    ).toBeTruthy();
     expect(content.includes(en.ckbtc.btc)).toBeTruthy();
   });
 
