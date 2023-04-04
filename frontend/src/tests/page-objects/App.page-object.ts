@@ -68,4 +68,8 @@ export class AppPo extends BasePageObject {
     await this.getMenuItemsPo().getGetTokensPo().getIcp(amount);
     await this.closeMenu();
   }
+
+  goBack(): Promise<void> {
+    return this.getButton("back").click();
+  }
 }
