@@ -25,7 +25,9 @@ import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import type { UpdateBalanceOk } from "@dfinity/ckbtc";
 import { TokenAmount } from "@dfinity/nns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
@@ -64,10 +66,20 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
   };
 });
 
+const success: UpdateBalanceOk = [
+  {
+    Checked: {
+      height: 123,
+      value: 123n,
+      outpoint: { txid: arrayOfNumberToUint8Array([0, 0, 1]), vout: 123 },
+    },
+  },
+];
+
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
     getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: jest.fn().mockResolvedValue([]),
   };
 });
 
