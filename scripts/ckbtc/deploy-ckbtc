@@ -12,15 +12,18 @@ LEDGERID="$(dfx canister id ckbtc_test_ledger --network "$DFX_NETWORK")"
 echo "$LEDGERID"
 
 # echo "Step 2: deploying minter canister..."
-dfx deploy ckbtc_test_minter --network "$DFX_NETWORK" --argument "(record {
-    btc_network = variant { Regtest };
-    ledger_id = principal \"$LEDGERID\";
-    ecdsa_key_name = \"dfx_test_key\";
-    retrieve_btc_min_fee = 12_500;
-    kyt_fee = opt 13_333;
-    retrieve_btc_min_amount = 0;
-    mode = variant { GeneralAvailability };
-    max_time_in_queue_nanos = 420_000_000_000;
+dfx deploy ckbtc_test_minter --network "$DFX_NETWORK" --argument "(variant {
+  Init = record {
+       btc_network = variant { Regtest };
+       ledger_id = principal \"$LEDGERID\";
+       ecdsa_key_name = \"dfx_test_key\";
+       retrieve_btc_min_amount = 0;
+       max_time_in_queue_nanos = 420_000_000_000;
+       min_confirmations = opt 12;
+       mode = variant { GeneralAvailability };
+       kyt_fee = opt 13_333;
+       kyt_principal = null;
+   }
 })" --mode=reinstall
 
 echo "Step 3: deploying ledger canister..."
