@@ -16,7 +16,11 @@ print_help() {
   cat <<-EOF
 	Builds the nns-dapp wasm and artifacts in docker.
 
-	Usage: $(basename "$0") [--network <network>] [--verbose] [--help]
+	Usage: $(basename "$0") [--network <network>] [--verbose] [--help] [-- <docker flags>]
+
+	<docker flags>
+	  Any flags that are to be passed on to Docker.  A common example is --no-cache.
+	  A full list is here: https://docs.docker.com/engine/reference/commandline/build/#options
 	EOF
 }
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
@@ -35,6 +39,9 @@ while (($# > 0)); do
   --help)
     print_help
     exit 0
+    ;;
+  --)
+    break
     ;;
   *)
     {
