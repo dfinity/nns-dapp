@@ -17,6 +17,7 @@ dfx deploy ckbtc_test_minter --network "$DFX_NETWORK" --argument "(record {
     ledger_id = principal \"$LEDGERID\";
     ecdsa_key_name = \"dfx_test_key\";
     retrieve_btc_min_fee = 12_500;
+    kyt_fee = opt 13_333;
     retrieve_btc_min_amount = 0;
     mode = variant { GeneralAvailability };
     max_time_in_queue_nanos = 420_000_000_000;
