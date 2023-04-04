@@ -12,7 +12,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   // The user has a main account
-  const mainAccountName = "Mainx";
+  const mainAccountName = "Main";
   const nnsAccountsPo = appPo.getAccountsPo().getNnsAccountsPo();
   expect(
     await nnsAccountsPo.getMainAccountCardPo().getAccountName(),
