@@ -6,10 +6,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class TransactionFormPo extends BasePageObject {
   private static readonly TID = "transaction-step-1";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): TransactionFormPo {
     return new TransactionFormPo(element.byTestId(TransactionFormPo.TID));
   }

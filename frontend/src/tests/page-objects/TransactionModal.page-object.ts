@@ -1,15 +1,10 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TransactionFormPo } from "$tests/page-objects/TransactionForm.page-object";
 import { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 
 // This should not be used directly but rather as a base class for specific
 // transaction modals.
 export class TransactionModalPo extends BasePageObject {
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   getTransactionFormPo(): TransactionFormPo {
     return TransactionFormPo.under(this.root);
   }

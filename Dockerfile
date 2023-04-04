@@ -27,6 +27,7 @@ COPY dfx.json dfx.json
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
+RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN printf "%s" "0.3.1" > config/optimizer_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -61,11 +62,13 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs && touch rs/sns_aggregator/src/lib.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
+RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
+RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
+RUN didc --version
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
@@ -77,6 +80,8 @@ WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
+RUN apt -yq update && apt -yqq install --no-install-recommends xxd
+RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Image to build the nns-dapp frontend.
 # Args: A file with env vars at frontend/.env created by config.sh
@@ -129,6 +134,7 @@ RUN ./build-sns-aggregator.sh
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
+COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/frontend/.env /frontend-config.sh

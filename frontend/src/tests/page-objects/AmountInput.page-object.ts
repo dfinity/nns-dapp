@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class AmountInputPo extends BasePageObject {
   private static readonly TID = "amount-input-component";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): AmountInputPo {
     return new AmountInputPo(element.byTestId(AmountInputPo.TID));
   }
