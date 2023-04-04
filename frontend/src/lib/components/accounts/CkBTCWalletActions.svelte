@@ -18,7 +18,12 @@
 
 {#if isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore)}
   <div role="menubar">
-    <button class="secondary" type="button" on:click={updateBalance}>
+    <button
+      class="secondary"
+      type="button"
+      on:click={updateBalance}
+      data-tid="manual-refresh-balance"
+    >
       {$i18n.ckbtc.refresh_balance}
     </button>
   </div>
