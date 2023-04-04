@@ -11,7 +11,6 @@
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
