@@ -903,6 +903,7 @@ interface I18nCkbtc {
   loading_address: string;
   incoming_bitcoin_network: string;
   block_explorer: string;
+  refresh_balance: string;
 }
 
 interface I18nError__ckbtc {

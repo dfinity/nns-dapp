@@ -19,10 +19,16 @@ import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 import CkBTCAccountsTest from "./CkBTCAccountsTest.svelte";
 
+jest.mock("$lib/api/ckbtc-minter.api", () => {
+  return {
+    updateBalance: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
+    ...jest.requireActual("$lib/services/ckbtc-minter.services"),
     getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
-    updateBalance: jest.fn().mockResolvedValue(undefined),
   };
 });
 

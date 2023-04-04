@@ -67,7 +67,7 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
     getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: jest.fn().mockResolvedValue([]),
   };
 });
 

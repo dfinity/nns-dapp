@@ -34,6 +34,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -159,6 +160,13 @@
         <Summary />
 
         <WalletSummary />
+
+        {#if nonNullish(canisters)}
+          <CkBTCWalletActions
+            reload={reloadAccount}
+            minterCanisterId={canisters.minterCanisterId}
+          />
+        {/if}
 
         <Separator />
 
