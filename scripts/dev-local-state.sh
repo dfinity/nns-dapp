@@ -62,17 +62,17 @@ fi
 TOP_DIR=$(git rev-parse --show-toplevel)
 
 if [ "$(uname)" = "Darwin" ]; then
-  RELATIVE_DFX_DATA_DIR="Library/Application Support/org.dfinity.dfx/network/local"
+  RELATIVE_DFX_LOCAL_REPLICA_DATA_DIR="Library/Application Support/org.dfinity.dfx/network/local"
 else
-  RELATIVE_DFX_DATA_DIR=".local/share/dfx/network/local"
+  RELATIVE_DFX_LOCAL_REPLICA_DATA_DIR=".local/share/dfx/network/local"
 fi
 
-# DFX_DATA_DIR is used by get_dfx_dir.
+# DFX_LOCAL_REPLICA_DATA_DIR is used by get_dfx_dir.
 # shellcheck disable=SC2034
-DFX_DATA_DIR="$HOME/$RELATIVE_DFX_DATA_DIR"
-# DFX_DATA_STATE_DIR is used by get_state_dir.
+DFX_LOCAL_REPLICA_DATA_DIR="$HOME/$RELATIVE_DFX_LOCAL_REPLICA_DATA_DIR"
+# DFX_LOCAL_REPLICA_DATA_STATE_DIR is used by get_state_dir.
 # shellcheck disable=SC2034
-DFX_DATA_STATE_DIR="$STATE_DIR/$RELATIVE_DFX_DATA_DIR"
+DFX_LOCAL_REPLICA_DATA_STATE_DIR="$STATE_DIR/$RELATIVE_DFX_LOCAL_REPLICA_DATA_DIR"
 
 # DFX_CONFIG_DIR is used by get_dfx_dir.
 # shellcheck disable=SC2034
@@ -84,9 +84,9 @@ DFX_NETWORK_DIR="$TOP_DIR/.dfx"
 BACKUP_DIR="$HOME/dfx-state-backup-$(date +"%Y%m%d_%H%M%S")"
 mkdir -p "$BACKUP_DIR"
 
-# DFX_DATA_BACKUP_DIR is used by get_backup_dir.
+# DFX_LOCAL_REPLICA_DATA_BACKUP_DIR is used by get_backup_dir.
 # shellcheck disable=SC2034
-DFX_DATA_BACKUP_DIR="$BACKUP_DIR/data"
+DFX_LOCAL_REPLICA_DATA_BACKUP_DIR="$BACKUP_DIR/data"
 # DFX_CONFIG_BACKUP_DIR is used by get_backup_dir.
 # shellcheck disable=SC2034
 DFX_CONFIG_BACKUP_DIR="$BACKUP_DIR/config"
@@ -101,24 +101,25 @@ DFX_CONFIG_STATE_DIR="$STATE_DIR/.config/dfx"
 # shellcheck disable=SC2034
 DFX_NETWORK_STATE_DIR="$STATE_DIR/.dfx"
 
-# Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
-# $DFX_DATA_DIR, $DFX_CONFIG_DIR, or $DFX_NETWORK_DIR correspondingly.
+# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and returns the
+# value of $DFX_LOCAL_REPLICA_DATA_DIR, $DFX_CONFIG_DIR, or $DFX_NETWORK_DIR
+# correspondingly.
 get_dfx_dir() {
   var_name="DFX_${1}_DIR"
   echo "${!var_name}"
 }
 
-# Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
-# $DFX_DATA_BACKUP_DIR, $DFX_CONFIG_BACKUP_DIR, or $DFX_NETWORK_BACKUP_DIR
-# correspondingly.
+# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and returns the
+# value of $DFX_LOCAL_REPLICA_DATA_BACKUP_DIR, $DFX_CONFIG_BACKUP_DIR, or
+# $DFX_NETWORK_BACKUP_DIR correspondingly.
 get_backup_dir() {
   var_name="DFX_${1}_BACKUP_DIR"
   echo "${!var_name}"
 }
 
-# Takes "DATA", "CONFIG", or "NETWORK" as argument and returns the value of
-# $DFX_DATA_STATE_DIR, $DFX_CONFIG_STATE_DIR, or $DFX_NETWORK_STATE_DIR
-# correspondingly.
+# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and returns the
+# value of $DFX_LOCAL_REPLICA_DATA_STATE_DIR, $DFX_CONFIG_STATE_DIR, or
+# $DFX_NETWORK_STATE_DIR correspondingly.
 get_state_dir() {
   var_name="DFX_${1}_STATE_DIR"
   echo "${!var_name}"
@@ -142,9 +143,9 @@ mv3() {
   fi
 }
 
-# Takes "DATA", "CONFIG", or "NETWORK" as argument and moves the corresponding
-# directory to the backup location and the corresponding state directory in its
-# place.
+# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and moves the
+# corresponding directory to the backup location and the corresponding state
+# directory in its place.
 install_dir() {
   state_dir="$(get_state_dir "$1")"
   dfx_dir="$(get_dfx_dir "$1")"
@@ -152,9 +153,9 @@ install_dir() {
   mv3 "$state_dir" "$dfx_dir" "$backup_dir"
 }
 
-# Takes "DATA", "CONFIG", or "NETWORK" as argument and outputs the commands to
-# restore the corresponding directory from the backup location after moving the
-# state directory back to its original location.
+# Takes "LOCAL_REPLICA_DATA", "CONFIG", or "NETWORK" as argument and outputs the
+# commands to restore the corresponding directory from the backup location after
+# moving the state directory back to its original location.
 output_restore_dir() {
   state_dir="$(get_state_dir "$1")"
   dfx_dir="$(get_dfx_dir "$1")"
@@ -166,7 +167,7 @@ output_restore_dir() {
 # Moves all the existing directories to the backup location and moves the state
 # directories in their place.
 install_state() {
-  install_dir DATA
+  install_dir LOCAL_REPLICA_DATA
   install_dir CONFIG
   install_dir NETWORK
 }
@@ -174,7 +175,7 @@ install_state() {
 output_restore_backup_script() {
   echo "echo \"Restoring dfx state.\""
   echo set -xeu
-  output_restore_dir DATA
+  output_restore_dir LOCAL_REPLICA_DATA
   output_restore_dir CONFIG
   output_restore_dir NETWORK
   echo rm "\$0"
