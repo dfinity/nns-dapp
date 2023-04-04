@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsNeuronCardTitlePo extends BasePageObject {
   private static readonly TID = "neuron-card-title";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): NnsNeuronCardTitlePo {
     return new NnsNeuronCardTitlePo(element.byTestId(NnsNeuronCardTitlePo.TID));
   }

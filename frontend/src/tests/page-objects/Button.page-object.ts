@@ -3,10 +3,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
 export class ButtonPo extends SimpleBasePageObject {
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under({
     element,
     testId,

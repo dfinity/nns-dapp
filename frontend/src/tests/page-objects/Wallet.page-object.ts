@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class WalletPo extends BasePageObject {
   private static readonly TID = "wallet-component";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): WalletPo {
     return new WalletPo(element.byTestId(WalletPo.TID));
   }

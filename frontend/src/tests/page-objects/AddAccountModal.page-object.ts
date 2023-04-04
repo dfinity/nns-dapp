@@ -6,10 +6,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class AddAccountModalPo extends BasePageObject {
   private static readonly TID = "add-account-modal-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): AddAccountModalPo {
     return new AddAccountModalPo(element.byTestId(AddAccountModalPo.TID));
   }

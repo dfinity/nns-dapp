@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SnsNeuronCardPo extends BasePageObject {
   private static readonly TID = "sns-neuron-card-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static async allUnder(
     element: PageObjectElement
   ): Promise<SnsNeuronCardPo[]> {

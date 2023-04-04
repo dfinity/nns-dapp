@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsAddAccountPo extends BasePageObject {
   private static readonly TID = "nns-add-account-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): NnsAddAccountPo {
     return new NnsAddAccountPo(element.byTestId(NnsAddAccountPo.TID));
   }

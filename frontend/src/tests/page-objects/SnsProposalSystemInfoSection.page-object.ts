@@ -1,6 +1,6 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
-import { KeyValuePairPo } from "./KeyValuePair.page-object";
 
 export class SnsProposalSystemInfoSectionPo extends BasePageObject {
   private static readonly TID = "proposal-system-info-details-component";

@@ -5,10 +5,6 @@ import { assertNonNullish } from "$tests/utils/utils.test-utils";
 export class AmountDisplayPo extends BasePageObject {
   private static readonly TID = "token-value-label";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): AmountDisplayPo {
     return new AmountDisplayPo(element.byTestId(AmountDisplayPo.TID));
   }

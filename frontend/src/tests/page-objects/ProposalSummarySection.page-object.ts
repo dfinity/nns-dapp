@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class ProposalSummarySectionPo extends BasePageObject {
   private static readonly TID = "proposal-summary-section-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): ProposalSummarySectionPo {
     return new ProposalSummarySectionPo(
       element.byTestId(ProposalSummarySectionPo.TID)
