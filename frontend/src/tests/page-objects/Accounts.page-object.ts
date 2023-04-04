@@ -10,7 +10,7 @@ export class AccountsPo extends BasePageObject {
     super(root);
   }
 
-  static under(element: PageObjectElement): AccountsPo | null {
+  static under(element: PageObjectElement): AccountsPo {
     return new AccountsPo(element.byTestId(AccountsPo.TID));
   }
 
