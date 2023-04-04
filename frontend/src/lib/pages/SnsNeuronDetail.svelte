@@ -29,7 +29,6 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { E8s } from "@dfinity/nns";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
   import type { Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { nonNullish } from "@dfinity/utils";
@@ -37,6 +36,7 @@
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
   import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
+  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 
   export let neuronId: string | null | undefined;
 
@@ -117,7 +117,7 @@
       await Promise.all([
         loadNeuron(),
         loadSnsParameters(rootCanisterId),
-        loadSnsTransactionFee({ rootCanisterId }),
+        syncSnsAccounts({ rootCanisterId }),
       ]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo

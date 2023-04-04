@@ -1,7 +1,7 @@
 name: Populate docker cache
 on:
   push:
-    branch:
+    branches:
       - main
       # Use this branch for tests:
       - docker-main-test

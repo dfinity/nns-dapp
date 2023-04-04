@@ -1,13 +1,8 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
+import { SimpleBasePageObject } from "./simple-base.page-object";
 
-export class TextInputPo {
-  readonly root: PageObjectElement;
-
-  private constructor(root: PageObjectElement) {
-    this.root = root;
-  }
-
+export class TextInputPo extends SimpleBasePageObject {
   static under({
     element,
     testId,
