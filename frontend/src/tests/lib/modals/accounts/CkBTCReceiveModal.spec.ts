@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 
+import * as api from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
-import * as services from "$lib/services/ckbtc-minter.services";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -29,7 +29,7 @@ import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/services/ckbtc-minter.services");
+jest.mock("$lib/api/ckbtc-minter.api");
 
 describe("BtcCkBTCReceiveModal", () => {
   const reloadSpy = jest.fn();
@@ -37,7 +37,7 @@ describe("BtcCkBTCReceiveModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    jest.spyOn(services, "updateBalance").mockResolvedValue(undefined);
+    jest.spyOn(api, "updateBalance").mockResolvedValue(undefined);
   });
 
   const renderReceiveModal = ({
@@ -71,7 +71,7 @@ describe("BtcCkBTCReceiveModal", () => {
     describe("with BTC address", () => {
       beforeEach(() => {
         jest
-          .spyOn(services, "getBTCAddress")
+          .spyOn(api, "getBTCAddress")
           .mockResolvedValue(mockBTCAddressTestnet);
       });
 
@@ -166,7 +166,7 @@ describe("BtcCkBTCReceiveModal", () => {
       const shouldCallUpdateBalance = async (
         dataTid: "update-ckbtc-balance" | "backdrop"
       ) => {
-        const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+        const spyUpdateBalance = jest.spyOn(api, "updateBalance");
 
         const { getByTestId, container } = await renderReceiveModal({});
 
@@ -202,7 +202,7 @@ describe("BtcCkBTCReceiveModal", () => {
       const shouldNotCallUpdateBalance = async (
         dataTid: "reload-receive-account" | "backdrop"
       ) => {
-        const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+        const spyUpdateBalance = jest.spyOn(api, "updateBalance");
 
         const { getByTestId } = await renderReceiveModal({});
 
@@ -226,7 +226,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
     describe("without BTC address", () => {
       beforeEach(() => {
-        jest.spyOn(services, "getBTCAddress").mockResolvedValue(undefined);
+        jest.spyOn(api, "getBTCAddress").mockResolvedValue(undefined);
       });
 
       it("should render spinner while loading BTC address", async () => {
@@ -284,7 +284,7 @@ describe("BtcCkBTCReceiveModal", () => {
     });
 
     it("should only reload account", async () => {
-      const spyUpdateBalance = jest.spyOn(services, "updateBalance");
+      const spyUpdateBalance = jest.spyOn(api, "updateBalance");
 
       const { getByTestId } = await renderReceiveModal(params);
 
