@@ -27,7 +27,6 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "list",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  screenshot: "only-on-failure",
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
@@ -35,6 +34,7 @@ export default defineConfig({
     baseURL: process.env.CI
       ? process.env.VITE_OWN_CANISTER_URL
       : "http://localhost:5173",
+    screenshot: "only-on-failure",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
     /* Makes page.getByTestId() work with [data-tid] attributes. */
@@ -82,7 +82,7 @@ export default defineConfig({
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: 'playwright-report/',
+  outputDir: "playwright-results/",
 
   /* Run your local dev server before starting the tests */
   // webServer: {
