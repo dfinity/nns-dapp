@@ -5,6 +5,7 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
+import * as busyStore from "$lib/stores/busy.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
@@ -65,12 +66,27 @@ describe("ckbtc-minter-services", () => {
       expect(result).toEqual({ success: true });
     });
 
-    it("should reload after update", async () => {
+    it("should reload after update balance", async () => {
       const spyReload = jest.fn();
 
       await services.updateBalance({ ...params, reload: spyReload });
 
       await waitFor(() => expect(spyReload).toBeCalled());
+    });
+
+    it("should start and stop busy", async () => {
+      const startBusySpy = jest
+        .spyOn(busyStore, "startBusy")
+        .mockImplementation(jest.fn());
+
+      const stopBusySpy = jest
+        .spyOn(busyStore, "stopBusy")
+        .mockImplementation(jest.fn());
+
+      await services.updateBalance(params);
+
+      expect(startBusySpy).toHaveBeenCalled();
+      expect(stopBusySpy).toHaveBeenCalled();
     });
 
     it("should return generic error", async () => {
