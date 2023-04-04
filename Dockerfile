@@ -80,7 +80,7 @@ WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
-RUN apt -yqq install --no-install-recommends xxd
+RUN apt -yq update && apt -yqq install --no-install-recommends xxd
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Image to build the nns-dapp frontend.
