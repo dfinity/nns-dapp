@@ -1,7 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonDetailsPo } from "$tests/page-objects/SkeletonDetails.page-object";
+import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SnsProposalSystemInfoSectionPo } from "./SnsProposalSystemInfoSection.page-object";
 
 export class SnsProposalDetailPo extends BasePageObject {
   private static readonly TID = "sns-proposal-details-grid";
