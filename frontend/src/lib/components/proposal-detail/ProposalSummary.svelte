@@ -37,7 +37,7 @@
 
     :global(a) {
       @include fonts.standard;
-      color: var(--tertiary);
+      color: var(--value-color);
 
       &:hover,
       &:active {
