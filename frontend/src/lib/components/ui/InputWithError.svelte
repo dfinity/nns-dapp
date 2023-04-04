@@ -19,9 +19,10 @@
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
   export let showInfo = true;
+  export let testId: string | undefined = undefined;
 </script>
 
-<div class="wrapper" class:error>
+<div class="wrapper" data-tid={testId} class:error>
   <Input
     {inputType}
     {required}

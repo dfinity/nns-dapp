@@ -1,6 +1,7 @@
 <script lang="ts">
   import { setContext, onMount, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import {
     cancelPollAccounts,
@@ -146,45 +147,47 @@
   };
 </script>
 
-<Island>
-  <main class="legacy" data-tid="nns-wallet">
-    <section>
-      {#if $selectedAccountStore.account !== undefined}
-        <Summary displayUniverse={false} />
+<TestIdWrapper testId="nns-wallet-component">
+  <Island>
+    <main class="legacy" data-tid="nns-wallet">
+      <section>
+        {#if $selectedAccountStore.account !== undefined}
+          <Summary displayUniverse={false} />
 
-        <WalletSummary />
-        <WalletActions />
+          <WalletSummary />
+          <WalletActions />
 
-        <Separator />
+          <Separator />
 
-        <TransactionList {transactions} />
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-  </main>
+          <TransactionList {transactions} />
+        {:else}
+          <Spinner />
+        {/if}
+      </section>
+    </main>
 
-  <Footer>
-    <button
-      class="primary"
-      on:click={() => (showModal = "send")}
-      {disabled}
-      data-tid="new-transaction">{$i18n.accounts.send}</button
-    >
+    <Footer>
+      <button
+        class="primary"
+        on:click={() => (showModal = "send")}
+        {disabled}
+        data-tid="new-transaction">{$i18n.accounts.send}</button
+      >
 
-    <ReceiveButton
-      type="nns-receive"
-      account={$selectedAccountStore.account}
-      reload={reloadAccount}
+      <ReceiveButton
+        type="nns-receive"
+        account={$selectedAccountStore.account}
+        reload={reloadAccount}
+      />
+    </Footer>
+  </Island>
+
+  <WalletModals />
+
+  {#if showModal === "send"}
+    <IcpTransactionModal
+      on:nnsClose={() => (showModal = undefined)}
+      selectedAccount={$selectedAccountStore.account}
     />
-  </Footer>
-</Island>
-
-<WalletModals />
-
-{#if showModal === "send"}
-  <IcpTransactionModal
-    on:nnsClose={() => (showModal = undefined)}
-    selectedAccount={$selectedAccountStore.account}
-  />
-{/if}
+  {/if}
+</TestIdWrapper>

@@ -19,4 +19,12 @@ export class SimpleBasePageObject {
   waitForAbsent(): Promise<void> {
     return this.root.waitForAbsent();
   }
+
+  click(): Promise<void> {
+    return this.root.click();
+  }
+
+  getText(tid: string): Promise<string> {
+    return this.root.byTestId(tid).getText();
+  }
 }
