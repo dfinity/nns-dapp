@@ -71,7 +71,7 @@
     {$i18n.ckbtc.incoming_bitcoin_network}
     <a
       data-tid="block-explorer-link"
-      href={blockExplorerUrl}
+      href={btcAddressLoaded ? blockExplorerUrl : ""}
       rel="noopener noreferrer external"
       target="_blank"
       aria-disabled={!btcAddressLoaded}
