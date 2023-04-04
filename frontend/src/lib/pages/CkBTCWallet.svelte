@@ -33,6 +33,7 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -158,6 +159,10 @@
         <Summary />
 
         <WalletSummary />
+        <CkBTCWalletActions
+          reload={reloadAccount}
+          minterCanisterId={canisters.minterCanisterId}
+        />
 
         <Separator />
 

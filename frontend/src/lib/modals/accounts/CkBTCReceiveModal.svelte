@@ -11,7 +11,7 @@
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     getBTCAddress,
@@ -96,28 +96,16 @@
 
   // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
   const updateBalance = async () => {
-    startBusy({
-      initiator: "update-ckbtc-balance",
+    const { success } = await updateBalanceService({
+      minterCanisterId: canisters.minterCanisterId,
+      reload,
     });
 
-    try {
-      await updateBalanceService(canisters.minterCanisterId);
-
-      await reload?.();
-
-      toastsSuccess({
-        labelKey: "ckbtc.ckbtc_balance_updated",
-      });
-
-      dispatcher("nnsClose");
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error__ckbtc.update_balance",
-        err,
-      });
+    if (!success) {
+      return;
     }
 
-    stopBusy("update-ckbtc-balance");
+    dispatcher("nnsClose");
   };
 
   const reloadAccountAndClose = async () => {

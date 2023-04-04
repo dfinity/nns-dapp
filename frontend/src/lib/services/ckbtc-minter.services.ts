@@ -5,12 +5,12 @@ import {
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
-import { toastsError } from "$lib/stores/toasts.store";
+import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
-import type { UpdateBalanceOk } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -66,38 +66,61 @@ export const estimateFee = async ({
   });
 };
 
-export const updateBalance = async (
-  minterCanisterId: CanisterId
-): Promise<UpdateBalanceOk> => {
+export const updateBalance = async ({
+  minterCanisterId,
+  reload,
+}: {
+  minterCanisterId: CanisterId;
+  reload: (() => Promise<void>) | undefined;
+}): Promise<{ success: boolean; err?: unknown }> => {
+  startBusy({
+    initiator: "update-ckbtc-balance",
+  });
+
   const identity = await getAuthenticatedIdentity();
 
   try {
-    return await updateBalanceAPI({ identity, canisterId: minterCanisterId });
-  } catch (err: unknown) {
-    throwUpdateBalanceError(err);
+    await updateBalanceAPI({ identity, canisterId: minterCanisterId });
 
-    throw err;
+    await reload?.();
+
+    toastsSuccess({
+      labelKey: "ckbtc.ckbtc_balance_updated",
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__ckbtc.update_balance",
+      err: mapUpdateBalanceError(err),
+    });
+
+    return { success: false, err };
+  } finally {
+    stopBusy("update-ckbtc-balance");
   }
 };
 
-const throwUpdateBalanceError = (err: unknown) => {
+const mapUpdateBalanceError = (err: unknown): unknown => {
   const labels = get(i18n);
 
   if (err instanceof MinterTemporaryUnavailableError) {
-    throw new CkBTCErrorKey(
+    return new CkBTCErrorKey(
       `${labels.error__ckbtc.temporary_unavailable} (${err.message})`
     );
   }
 
   if (err instanceof MinterAlreadyProcessingError) {
-    throw new CkBTCErrorKey(labels.error__ckbtc.already_process);
+    return new CkBTCErrorKey(labels.error__ckbtc.already_process);
   }
 
   if (err instanceof MinterNoNewUtxosError) {
-    throw new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
+    return new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
   }
 
   if (err instanceof MinterGenericError) {
-    throw new CkBTCErrorKey(err.message);
+    return new CkBTCErrorKey(err.message);
   }
+
+  return err;
 };
