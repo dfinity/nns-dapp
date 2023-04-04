@@ -10,13 +10,14 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
-import type { UpdateBalanceOk } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
-  type EstimateFeeParams,
+  type EstimateWithdrawalFee,
+  type EstimateWithdrawalFeeParams,
+  type UpdateBalanceOk,
 } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
 
@@ -32,11 +33,11 @@ export const estimateFee = async ({
   minterCanisterId,
   callback,
 }: {
-  params: EstimateFeeParams;
+  params: EstimateWithdrawalFeeParams;
   minterCanisterId: CanisterId;
-  callback: (fee: bigint | null) => void;
+  callback: (fee: EstimateWithdrawalFee | null) => void;
 }): Promise<void> => {
-  return queryAndUpdate<bigint, unknown>({
+  return queryAndUpdate<EstimateWithdrawalFee, unknown>({
     request: ({ certified, identity }) =>
       estimateFeeAPI({
         identity,
