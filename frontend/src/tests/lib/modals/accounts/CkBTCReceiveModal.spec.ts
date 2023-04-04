@@ -9,6 +9,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -82,9 +83,10 @@ describe("BtcCkBTCReceiveModal", () => {
   describe("with btc", () => {
     describe("with BTC address", () => {
       beforeEach(() => {
-        jest
-          .spyOn(api, "getBTCAddress")
-          .mockResolvedValue(mockBTCAddressTestnet);
+        bitcoinAddressStore.set({
+          identifier: mockCkBTCMainAccount.identifier,
+          btcAddress: mockBTCAddressTestnet,
+        });
       });
 
       it("should render BTC address", async () => {
@@ -238,7 +240,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
     describe("without BTC address", () => {
       beforeEach(() => {
-        jest.spyOn(api, "getBTCAddress").mockResolvedValue(undefined);
+        bitcoinAddressStore.reset();
       });
 
       it("should render spinner while loading BTC address", async () => {
