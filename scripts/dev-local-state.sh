@@ -31,7 +31,7 @@ source "$(clap.build)"
 # running, this will be 2.
 # We use `ps` because pgrep doesn't include shell scripts.
 # shellcheck disable=SC2009
-SCRIPT_COUNT="$(ps -A -o command | grep -c "^bash .*$(basename $0)")"
+SCRIPT_COUNT="$(ps -A -o command | grep -c "^bash .*$(basename "$0")")"
 
 if pgrep replica || [ "$SCRIPT_COUNT" -gt 2 ]; then
   echo "ERROR: There is already a replica running. Please stop it first."
