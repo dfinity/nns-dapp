@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class ProjectSwapDetailsPo extends BasePageObject {
   private static readonly TID = "project-swap-details-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): ProjectSwapDetailsPo {
     return new ProjectSwapDetailsPo(element.byTestId(ProjectSwapDetailsPo.TID));
   }

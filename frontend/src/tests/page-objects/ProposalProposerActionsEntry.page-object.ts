@@ -5,10 +5,6 @@ import { JsonPo } from "./Json.page-object";
 export class ProposalProposerActionsEntryPo extends BasePageObject {
   static readonly tid = "proposal-proposer-actions-entry-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): ProposalProposerActionsEntryPo {
     return new ProposalProposerActionsEntryPo(
       element.byTestId(ProposalProposerActionsEntryPo.tid)

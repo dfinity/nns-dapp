@@ -6,10 +6,6 @@ import { SnsProposalSystemInfoSectionPo } from "./SnsProposalSystemInfoSection.p
 export class SnsProposalDetailPo extends BasePageObject {
   private static readonly TID = "sns-proposal-details-grid";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SnsProposalDetailPo | null {
     return new SnsProposalDetailPo(element.byTestId(SnsProposalDetailPo.TID));
   }

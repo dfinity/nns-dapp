@@ -5,10 +5,6 @@ import { assertNonNullish } from "$tests/utils/utils.test-utils";
 export class SummaryPo extends BasePageObject {
   static readonly TID = "projects-summary";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SummaryPo {
     return new SummaryPo(element.byTestId(SummaryPo.TID));
   }

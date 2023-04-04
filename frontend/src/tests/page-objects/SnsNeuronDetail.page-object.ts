@@ -12,10 +12,6 @@ import { SummaryPo } from "./Summary.page-object";
 export class SnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "sns-neuron-detail-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SnsNeuronDetailPo {
     return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.TID));
   }

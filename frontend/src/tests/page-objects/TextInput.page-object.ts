@@ -1,6 +1,6 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
-import { SimpleBasePageObject } from "./simple-base.page-object";
+import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 
 export class TextInputPo extends SimpleBasePageObject {
   static under({

@@ -4,10 +4,6 @@ import { TransactionModalPo } from "./TransactionModal.page-object";
 export class SnsIncreaseStakeNeuronModalPo extends TransactionModalPo {
   private static readonly TID = "sns-increase-stake-neuron-modal-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(
     element: PageObjectElement
   ): SnsIncreaseStakeNeuronModalPo | null {
