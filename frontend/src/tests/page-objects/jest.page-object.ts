@@ -41,7 +41,7 @@ export class JestPageObjectElement implements PageObjectElement {
   }: {
     selector: string;
     expectedCount: number;
-  }): Promise<PlaywrightPageObjectElement[]> {
+  }): Promise<JestPageObjectElement[]> {
     throw new Error("Not implemented");
   }
 
@@ -59,7 +59,7 @@ export class JestPageObjectElement implements PageObjectElement {
   }: {
     tid: string;
     expectedCount: number;
-  }): Promise<PlaywrightPageObjectElement[]> {
+  }): Promise<JestPageObjectElement[]> {
     throw new Error("Not implemented");
   }
 
