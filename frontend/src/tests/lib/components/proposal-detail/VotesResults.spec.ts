@@ -7,6 +7,8 @@ import { formatNumber } from "$lib/utils/format.utils";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import {VotesResultPo} from "$tests/page-objects/VotesResults.page-object";
+import {JestPageObjectElement} from "$tests/page-objects/jest.page-object";
 
 describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;
@@ -33,12 +35,13 @@ describe("VotesResults", () => {
     expect(getByText(`${formatNumber(no)}`)).toBeInTheDocument();
   });
 
-  it("should render progressbar", () => {
-    const { getByRole } = renderResult;
-    const progressbar = getByRole("progressbar");
-    expect(progressbar).toBeInTheDocument();
-    expect(progressbar.getAttribute("aria-valuemin")).toBe("0");
-    expect(progressbar.getAttribute("aria-valuemax")).toBe(`${yes + no}`);
-    expect(progressbar.getAttribute("aria-valuenow")).toBe(`${yes}`);
+  it("should render progressbar", async () => {
+    const { container } = renderResult;
+    const votesResultPo = VotesResultPo.under(new JestPageObjectElement(container));
+    expect(await votesResultPo.isPresent()).toBeTruthy();
+
+    expect(await votesResultPo.getProgressMinValue()).toBe(0n);
+    expect(await votesResultPo.getProgressMaxValue()).toBe(yes + no);
+    expect(await votesResultPo.getProgressNowValue()).toBe(yes);
   });
 });
