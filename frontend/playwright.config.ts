@@ -39,7 +39,6 @@ export default defineConfig({
     trace: "retain-on-failure",
     /* Makes page.getByTestId() work with [data-tid] attributes. */
     testIdAttribute: "data-tid",
-    //video: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */

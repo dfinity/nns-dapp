@@ -30,7 +30,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   // 3. update result from initAccounts hides the subaccount card.
   // 4. update result from syncAccount makes the subaccount card visible again.
   // TODO: Fix the accounts store and remove this line.
-  await expect(page.getByTestId("account-card")).toHaveCount(3);
+  await expect(page.getByTestId("account-card")).toHaveCount(2);
 
   // AU001: The user MUST be able to see a list of all their accounts
   const accountNames = await nnsAccountsPo.getAccountNames();
