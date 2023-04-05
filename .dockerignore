@@ -20,9 +20,6 @@ frontend/node_modules/
 frontend/public/build/
 frontend/public/assets/
 frontend/src/tests/
-frontend/playwright.config.ts
-frontend/jest*
-frontend/tsconfig.spec.json
 e2e-tests
 **/*.wasm
 /deployment-config.json
