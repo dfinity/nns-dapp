@@ -419,13 +419,13 @@
     "status_running": "Running"
   },
   "transaction_names": {
-    "receive": "Received $tokenSymbol",
-    "send": "Sent $tokenSymbol",
-    "mint": "Received $tokenSymbol",
-    "burn": "Sent $tokenSymbol",
-    "stakeNeuron": "Stake $tokenSymbol Neuron",
-    "stakeNeuronNotification": "Stake $tokenSymbol Neuron (Part 2 of 2)",
-    "topUpNeuron": "Top-up $tokenSymbol Neuron",
+    "receive": "Received",
+    "send": "Sent",
+    "mint": "Received",
+    "burn": "Sent",
+    "stakeNeuron": "Stake Neuron",
+    "stakeNeuronNotification": "Stake Neuron (Part 2 of 2)",
+    "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
     "participateSwap": "Decentralized Swap"
@@ -842,6 +842,7 @@
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",
+    "test_bitcoin": "Bitcoin Testnet",
     "btc": "BTC",
     "ckbtc_balance_updated": "Balance successfully updated.",
     "step_initialization": "Initializing transaction",
@@ -851,7 +852,11 @@
     "sending_ckbtc_to_btc": "Sending ckBTC —> BTC",
     "estimated_receive_time": "Estimated receive time",
     "about_thirty_minutes": "About ≈30 minutes",
-    "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes."
+    "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
+    "loading_address": "Loading the address",
+    "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
+    "block_explorer": "block explorer",
+    "refresh_balance": "Refresh Balance"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

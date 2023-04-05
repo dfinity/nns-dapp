@@ -6,7 +6,10 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
+import {
+  installImplAndBlockRest,
+  makePausable,
+} from "$tests/utils/module.test-utils";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
@@ -27,7 +30,7 @@ import { fromNullable, isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
-const implementedFunctions = {
+const fakeFunctions = {
   querySnsNeurons,
   getSnsNeuron,
   nervousSystemParameters,
@@ -266,11 +269,21 @@ async function queryProposal({
 // Functions to control the fake:
 /////////////////////////////////
 
+const {
+  pause,
+  resume,
+  reset: resetPaused,
+  pausableFunctions: implementedFunctions,
+} = makePausable(fakeFunctions);
+
 const reset = () => {
   neurons.clear();
   proposals.clear();
   nervousFunctions.clear();
+  resetPaused();
 };
+
+export { pause, resume };
 
 const createNeuronId = ({
   identity,
@@ -290,6 +303,39 @@ const createNeuronId = ({
 // This follows the same logic to determine neuron IDs as the real code because
 // the real code will look for neurons with these IDs without even knowing if
 // they exist.
+const addNeuronToList = ({
+  identity,
+  rootCanisterId,
+  overrideById,
+  ...neuronParams
+}: {
+  identity?: Identity;
+  rootCanisterId: Principal;
+  overrideById?: boolean;
+} & Partial<SnsNeuron>): SnsNeuron => {
+  const currentNeurons = getNeurons({ identity, rootCanisterId });
+  const index = currentNeurons.length;
+  const defaultNeuronId = createNeuronId({ identity, index });
+  const neuron: SnsNeuron = {
+    ...mockSnsNeuron,
+    id: [defaultNeuronId],
+    ...neuronParams,
+  };
+  if (overrideById) {
+    const newHexId = snsNeuronIdToHexString(neuron.id[0]);
+    const filteredNeurons = currentNeurons.filter((currentNeuron) => {
+      const currentHexId = snsNeuronIdToHexString(currentNeuron.id[0]);
+      return currentHexId !== newHexId;
+    });
+    filteredNeurons.push(neuron);
+    const key = mapKey({ identity, rootCanisterId });
+    neurons.set(key, filteredNeurons);
+  } else {
+    currentNeurons.push(neuron);
+  }
+  return neuron;
+};
+
 export const addNeuronWith = ({
   identity = mockIdentity,
   rootCanisterId,
@@ -298,16 +344,28 @@ export const addNeuronWith = ({
   identity?: Identity;
   rootCanisterId: Principal;
 } & Partial<SnsNeuron>): SnsNeuron => {
-  const neurons = getNeurons({ identity, rootCanisterId });
-  const index = neurons.length;
-  const defaultNeuronId = createNeuronId({ identity, index });
-  const neuron: SnsNeuron = {
-    ...mockSnsNeuron,
-    id: [defaultNeuronId],
+  return addNeuronToList({
+    identity,
+    rootCanisterId,
+    overrideById: false,
     ...neuronParams,
-  };
-  neurons.push(neuron);
-  return neuron;
+  });
+};
+
+export const setNeuronWith = ({
+  identity = mockIdentity,
+  rootCanisterId,
+  ...neuronParams
+}: {
+  identity?: Identity;
+  rootCanisterId: Principal;
+} & Partial<SnsNeuron>): SnsNeuron => {
+  return addNeuronToList({
+    identity,
+    rootCanisterId,
+    overrideById: true,
+    ...neuronParams,
+  });
 };
 
 export const addProposalWith = ({

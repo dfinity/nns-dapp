@@ -19,6 +19,25 @@ const config: UserConfig = {
           const folder = dirname(id);
 
           if (
+            ["html5-qrcode", "qr-creator"].find((lib) =>
+              folder.includes(lib)
+            ) !== undefined &&
+            folder.includes("node_modules")
+          ) {
+            return "qr";
+          }
+
+          // Put ledger and anything commonjs polyfill in the same chunk
+          if (
+            ["@ledgerhq", "semver", "@zondax", "buffer"].find((lib) =>
+              folder.includes(lib)
+            ) !== undefined &&
+            folder.includes("node_modules")
+          ) {
+            return "hw";
+          }
+
+          if (
             ["@sveltejs", "svelte", "@dfinity/gix-components"].find((lib) =>
               folder.includes(lib)
             ) === undefined &&
@@ -37,6 +56,7 @@ const config: UserConfig = {
               "frontend/src/lib/identities",
               "frontend/src/lib/keys",
               "frontend/src/lib/proxy",
+              "frontend/src/lib/rest",
               "frontend/src/lib/services",
               "frontend/src/lib/stores",
               "frontend/src/lib/types",

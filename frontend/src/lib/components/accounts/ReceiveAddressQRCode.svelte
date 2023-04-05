@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { QR_CODE_RENDERED } from "$lib/constants/environment.constants";
+  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
 
   export let address: string | undefined;
@@ -12,7 +12,7 @@
   // Render the QR-code when the space is available / rendered to avoid UI glitch.
   export let renderQRCode = false;
 
-  export let qrCodeRendered: boolean = QR_CODE_RENDERED;
+  export let qrCodeRendered: boolean = QR_CODE_RENDERED_DEFAULT_STATE;
 
   let addressSelected = false;
   $: addressSelected = nonNullish(address);

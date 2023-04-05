@@ -61,7 +61,14 @@ pub struct InternetIdentityInit {
     pub assigned_user_number_range: Option<(AnchorNumber, AnchorNumber)>,
     pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
-    pub upgrade_persistent_state: Option<bool>,
+    pub register_rate_limit: Option<RateLimitConfig>,
+}
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct RateLimitConfig {
+    // time it takes for a rate limiting token to be replenished.
+    pub time_per_token_ns: u64,
+    // How many tokens are at most generated (to accommodate peaks).
+    pub max_tokens: u64,
 }
 /// Configuration parameters of the archive to be used on the next deployment.
 #[derive(CandidType, Serialize, Deserialize)]
@@ -224,6 +231,7 @@ mod def {
         pub name: String,
         pub wasm_module_hash: String,
         pub arg: Json,
+        pub arg_hex: String,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -243,6 +251,7 @@ mod def {
                 name: payload.name,
                 wasm_module_hash,
                 arg: candid_arg,
+                arg_hex: hex::encode(&payload.arg),
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
@@ -263,6 +272,7 @@ mod def {
         pub canister_id: CanisterId,
         pub wasm_module_hash: String,
         pub arg: Json,
+        pub arg_hex: String,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub compute_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
@@ -283,6 +293,7 @@ mod def {
                 canister_id: payload.canister_id,
                 wasm_module_hash,
                 arg: candid_arg,
+                arg_hex: hex::encode(&payload.arg),
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,

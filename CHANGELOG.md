@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal 115271
+* Fix back to detail from "Settings" page.
+* UX improvements:
+  * Transaction edit submit form with "Enter".
+  * Back button from SNS Proposal Detail page keeps universe.
+* Minor bugfixes.
+
 ## Proposal 114127
 * Select send and receive address by scanning a QR code.
 * "Receive" action added to main screen and "Add account" action moved as a card.
@@ -8,7 +15,6 @@
 * New data in the project detail.
 * Better validations in address inputs.
 * Remove unnecessary calls when updating accounts after an action.
-
 
 ## Proposal 112386
 * Remove button to increase stake for CF SNS neurons.

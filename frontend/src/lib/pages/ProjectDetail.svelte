@@ -26,65 +26,62 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { browser } from "$app/environment";
   import {
     loadSnsSwapMetrics,
     watchSnsMetrics,
   } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+  import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
+  import {
+    cancelPollGetOpenTicket,
+    hidePollingToast,
+    restoreSnsSaleParticipation,
+  } from "$lib/services/sns-sale.services";
+  import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+  import { SaleStep } from "$lib/types/sale";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { browser } from "$app/environment";
+  import { IS_TEST_ENV } from "$lib/constants/environment.constants";
 
   export let rootCanisterId: string | undefined | null;
 
-  let unsubscribeWatchCommitment: () => void | undefined;
-  let unsubscribeWatchMetrics: () => void | undefined;
-  let enableWatchers = false;
-  $: enableWatchers =
-    $snsSummariesStore.find(
-      ({ rootCanisterId: rootCanister }) =>
-        rootCanister?.toText() === rootCanisterId
-    )?.swap.lifecycle === SnsSwapLifecycle.Open;
-
-  onDestroy(() => {
-    unsubscribeWatchCommitment?.();
-    unsubscribeWatchMetrics?.();
-  });
-
-  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
-    loadCommitment({ rootCanisterId, forceFetch: false });
-  }
-
-  $: if (nonNullish(rootCanisterId) && enableWatchers) {
-    unsubscribeWatchCommitment?.();
-    unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
-  }
-
-  const reloadSnsMetrics = async ({ forceFetch }: { forceFetch: boolean }) => {
-    const swapCanisterId = $projectDetailStore?.summary
-      ?.swapCanisterId as Principal;
-
-    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
-      return;
+  const goBack = async (): Promise<void> => {
+    // We want `goto` to be called only in the browser or in the test environment
+    // Weirdly enough, the build step failed when I didn't have the `browser` check.
+    // TODO: Find out why and fix it. It should not be needed.
+    if (browser || IS_TEST_ENV) {
+      goto(AppPath.Launchpad, { replaceState: true });
     }
-
-    await loadSnsSwapMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
-      forceFetch,
-    });
   };
 
+  /////////////////////////////////
+  // Set up and update the context
+  /////////////////////////////////
+
+  // Used to reload the data after a new swap participation
   const reload = async () => {
-    if (rootCanisterId === undefined || rootCanisterId === null) {
-      // We cannot reload data for an undefined rootCanisterd but we silent the error here because it most probably means that the user has already navigated away of the detail route
+    if (isNullish(rootCanisterId) || isNullish(swapCanisterId)) {
+      // We cannot reload data for an undefined rootCanisterd or swapCanisterId but we silent the error here because it most probably means that the user has already navigated away of the detail route
       return;
     }
 
     await Promise.all([
       loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
       loadSnsLifecycle({ rootCanisterId }),
-      loadCommitment({ rootCanisterId, forceFetch: true }),
-      reloadSnsMetrics({ forceFetch: true }),
+      loadSnsSwapCommitment({
+        rootCanisterId,
+        onError: () => {
+          // Set to not found
+          $projectDetailStore.swapCommitment = undefined;
+        },
+        forceFetch: true,
+      }),
+      loadSnsSwapMetrics({
+        forceFetch: true,
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId,
+      }),
     ]);
   };
 
@@ -93,134 +90,182 @@
     swapCommitment: null,
     totalTokensSupply: null,
   });
-
   debugSelectedProjectStore(projectDetailStore);
-
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
     reload,
   });
 
-  let swapCanisterId: Principal | undefined;
-  $: if (
-    nonNullish(swapCanisterId) &&
-    nonNullish(rootCanisterId) &&
-    enableWatchers
-  ) {
-    reloadSnsMetrics({ forceFetch: false });
-    unsubscribeWatchMetrics?.();
-
-    unsubscribeWatchMetrics = watchSnsMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId: swapCanisterId,
-    });
-  }
-
-  const loadCommitment = ({
-    rootCanisterId,
-    forceFetch,
-  }: {
-    rootCanisterId: string;
-    forceFetch: boolean;
-  }) =>
-    loadSnsSwapCommitment({
-      rootCanisterId,
-      onError: () => {
-        // Set to not found
-        $projectDetailStore.swapCommitment = undefined;
-        goBack();
-      },
-      forceFetch,
-    });
-
-  const goBack = async (): Promise<void> => {
-    if (!browser) {
-      return;
-    }
-
-    return goto(AppPath.Launchpad, { replaceState: true });
-  };
-
-  // TODO: Change to a `let` that is recalculated when the store changes
-  const setProjectStore = (rootCanisterId: string) => {
-    // Check project summaries are loaded in store
-    if ($snsSummariesStore.length === 0) {
-      return;
-    }
-    // Check valid rootCanisterId
-    try {
-      if (rootCanisterId !== undefined) {
-        Principal.fromText(rootCanisterId);
-      }
-    } catch (error: unknown) {
-      // set values as not found
-      $projectDetailStore.summary = undefined;
-      $projectDetailStore.swapCommitment = undefined;
-      $projectDetailStore.totalTokensSupply = undefined;
-      return;
-    }
-    $projectDetailStore.summary =
-      rootCanisterId !== undefined
-        ? $snsSummariesStore.find(
-            ({ rootCanisterId: rootCanister }) =>
-              rootCanister?.toText() === rootCanisterId
-          )
-        : undefined;
-
-    $projectDetailStore.swapCommitment =
-      rootCanisterId !== undefined
-        ? $snsSwapCommitmentsStore?.find(
-            (item) =>
-              item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
-          )?.swapCommitment
-        : undefined;
-
-    $projectDetailStore.totalTokensSupply =
-      rootCanisterId !== undefined
-        ? $snsTotalSupplyTokenAmountStore[rootCanisterId]
-        : undefined;
-  };
-
   /**
-   * We load all the sns summaries and swap commitments on the global scale of the app. That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
+   * Set up the projectDetailStore that lives in the context.
+   *
+   * We load all the sns summaries and swap commitments on the global scale of the app.
+   * That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
    */
   $: $snsSummariesStore,
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
     (async () => {
-      if (rootCanisterId === undefined || rootCanisterId === null) {
+      if (isNullish(rootCanisterId)) {
         await goBack();
         return;
       }
-      setProjectStore(rootCanisterId);
-
-      // TODO: Understand why this component doesn't subscribe to the store `projectDetailStore`.
-      // Is it because it's created in this same component?
-      const summary = $snsSummariesStore.find(
+      // Check project summaries are loaded in store
+      if ($snsSummariesStore.length === 0) {
+        return;
+      }
+      // Check valid rootCanisterId
+      try {
+        Principal.fromText(rootCanisterId);
+      } catch (error: unknown) {
+        // set values as not found
+        $projectDetailStore.summary = undefined;
+        $projectDetailStore.swapCommitment = undefined;
+        $projectDetailStore.totalTokensSupply = undefined;
+        return;
+      }
+      $projectDetailStore.summary = $snsSummariesStore.find(
         ({ rootCanisterId: rootCanister }) =>
           rootCanister?.toText() === rootCanisterId
       );
-      const newSwapCanisterId = summary?.swapCanisterId;
 
-      if (newSwapCanisterId?.toText() !== swapCanisterId?.toText()) {
-        swapCanisterId = newSwapCanisterId;
-      }
+      $projectDetailStore.swapCommitment = $snsSwapCommitmentsStore?.find(
+        (item) =>
+          item?.swapCommitment?.rootCanisterId?.toText() === rootCanisterId
+      )?.swapCommitment;
+
+      $projectDetailStore.totalTokensSupply =
+        $snsTotalSupplyTokenAmountStore[rootCanisterId];
     })();
+
+  /////////////////////////////////
+  // Set up watchers and load the data in stores
+  /////////////////////////////////
 
   $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
 
-  let notFound: boolean;
-  $: notFound = $projectDetailStore.summary === undefined;
+  let enableOpenProjectWatchers = false;
+  $: enableOpenProjectWatchers =
+    $projectDetailStore?.summary?.swap.lifecycle === SnsSwapLifecycle.Open;
 
-  $: (async () => {
+  let swapCanisterId: Principal | undefined;
+  $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
+
+  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
+    loadSnsSwapCommitment({
+      rootCanisterId,
+      onError: () => {
+        // Set to not found
+        $projectDetailStore.swapCommitment = undefined;
+      },
+    });
+  }
+
+  let unsubscribeWatchCommitment: () => void | undefined;
+  let unsubscribeWatchMetrics: () => void | undefined;
+  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
+    // We load the metrics to have them initially available before setInterval starts
+    loadSnsSwapMetrics({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      swapCanisterId,
+      forceFetch: false,
+    });
+
+    if (enableOpenProjectWatchers) {
+      unsubscribeWatchCommitment?.();
+      unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
+
+      unsubscribeWatchMetrics?.();
+      unsubscribeWatchMetrics = watchSnsMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId: swapCanisterId,
+      });
+    }
+  }
+
+  /////////////////////////////////
+  // Restore participation
+  /////////////////////////////////
+
+  // Flag to avoid second getOpenTicket call on same page navigation
+  let loadingTicketRootCanisterIdText: string | undefined = undefined;
+  let userCommitment: undefined | bigint;
+  $: userCommitment = getCommitmentE8s($projectDetailStore.swapCommitment);
+  let progressStep: SaleStep | undefined = undefined;
+  $: if (nonNullish(progressStep) && progressStep === SaleStep.DONE) {
+    // Leave some time to the user to see the final step being done
+    setTimeout(() => {
+      progressStep = undefined;
+    }, 1000);
+  }
+  // skip ticket update if
+  // - the sns is not open
+  // - the user is not sign in
+  // - user commitment information is not loaded
+  // - project swap canister id is not loaded, needed for the ticket call
+  // - no root canister id
+  // - ticket already in progress for the same root canister id
+  $: if (
+    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Open &&
+    isSignedIn($authStore.identity) &&
+    nonNullish(userCommitment) &&
+    nonNullish(swapCanisterId) &&
+    nonNullish(rootCanisterId) &&
+    loadingTicketRootCanisterIdText !== rootCanisterId
+  ) {
+    loadingTicketRootCanisterIdText = rootCanisterId;
+
+    const updateProgress = (step: SaleStep) => (progressStep = step);
+
+    restoreSnsSaleParticipation({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+      userCommitment,
+      swapCanisterId,
+      postprocess: reload,
+      updateProgress,
+    });
+  }
+
+  /////////////////////////////////
+  // Clean up and checks
+  /////////////////////////////////
+
+  $: {
+    const notFound = $projectDetailStore.summary === undefined;
     if (notFound) {
       toastsError({
         labelKey: "error__sns.project_not_found",
       });
 
-      await goBack();
+      goBack();
     }
-  })();
+  }
+
+  onDestroy(() => {
+    unsubscribeWatchCommitment?.();
+    unsubscribeWatchMetrics?.();
+    if (isNullish(rootCanisterId)) {
+      return;
+    }
+
+    try {
+      // remove the ticket to stop sale-participation-retry from another pages because of the non-obvious UX
+      snsTicketsStore.setTicket({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        ticket: undefined,
+      });
+    } catch (error: unknown) {
+      // ignore error
+      // it can happen if the rootCanisterId is not valid
+    }
+
+    // TODO: Improve cancellatoin of actions onDestroy
+    // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
+    cancelPollGetOpenTicket();
+
+    // Hide toasts when moving away from the page
+    hidePollingToast();
+  });
 </script>
 
 <main>
@@ -239,6 +284,10 @@
     </div>
   </div>
 </main>
+
+{#if nonNullish(progressStep)}
+  <SaleInProgressModal {progressStep} />
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

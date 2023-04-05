@@ -2,14 +2,14 @@
 # This parser aims to have similar parsing semantics as Rust's clap parser; if it doesn't look anything like clap it's not just you.
 
 clap_usage=""
-clap_flags=""
+clap_flag_match=""
 clap_defaults=""
 clap_arguments_string=""
 
 # -----------------------------------------------------------------------------------------------------------------------------
 function clap.throw_error() {
 	local message="$1"
-	echo "OPTPARSE: ERROR: $message"
+	echo "CLAP: ERROR: $message"
 	exit 1
 }
 
@@ -66,12 +66,13 @@ function clap.define() {
 	if [ "${default:-}" != "" ] && [ "${nargs:-}" != "0" ]; then
 		clap_usage="${clap_usage} [default:$default]"
 	fi
+	clap_flags="${clap_flags:-} ${long}"
 	if [ "${nargs:-}" == "" ]; then
-		clap_flags="${clap_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"\$1\"; shift 1;;"
+		clap_flag_match="${clap_flag_match}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"\$1\"; shift 1;;"
 	elif [ "${nargs:-}" == "0" ]; then
-		clap_flags="${clap_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"true\";;"
+		clap_flag_match="${clap_flag_match}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=\"true\";;"
 	else
-		clap_flags="${clap_flags}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
+		clap_flag_match="${clap_flag_match}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
 	fi
 	if [ "${default:-}" != "" ]; then
 		clap_defaults="${clap_defaults}#NL${variable}=${default}"
@@ -94,13 +95,25 @@ cat << XXX
 usage: \$(basename "\$0") [OPTIONS]
 
 OPTIONS:
-        $clap_usage
+        ${clap_usage:-}
 
         -? --help  :  usage
 
         --verbose  :  show debug info
 
 XXX
+}
+
+# Autocomplete
+# Manual: https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html
+[[ "\${COMP_LINE:-}" == "" ]] || [[ "\${COMP_POINT:-}" == "" ]] || {
+	COMP_CURRENT="${1:-}"
+	case "\$COMP_CURRENT" in
+	"")	compgen -W "${clap_flags:-}" -- "\$COMP_CURRENT" ;;
+	-*)	compgen -W "${clap_flags:-}" -- "\$COMP_CURRENT" ;;
+	*)	compgen -f -- "\$COMP_CURRENT" ;;
+	esac
+	exit 0
 }
 
 # Set default variable values
@@ -112,9 +125,9 @@ while [ \$# -ne 0 ]; do
         shift 1
 
         case "\$param" in
-                $clap_flags
+                $clap_flag_match
                 "-?"|--help)
-			print_help
+			[[ "$(type -t print_help)" != function ]] || print_help
 			echo
                         usage
                         exit 0;;
@@ -146,7 +159,7 @@ EOF
 	unset clap_usage
 	unset clap_arguments_string
 	unset clap_defaults
-	unset clap_flags
+	unset clap_flag_match
 
 	# Return file name to parent
 	echo "$build_file"

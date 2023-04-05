@@ -5,6 +5,7 @@ import {
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { VotingNeuron } from "$lib/types/proposals";
 import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
@@ -215,15 +216,13 @@ export const getVotingPower = ({
 export const selectedNeuronsVotingPower = ({
   neurons,
   selectedIds,
-  proposal,
 }: {
-  neurons: NeuronInfo[];
-  selectedIds: NeuronId[];
-  proposal: ProposalInfo;
+  neurons: VotingNeuron[];
+  selectedIds: string[];
 }): bigint =>
   neurons
-    .filter(({ neuronId }) => selectedIds.includes(neuronId))
-    .map((neuron) => getVotingPower({ neuron, proposal }))
+    .filter(({ neuronIdString }) => selectedIds.includes(neuronIdString))
+    .map(({ votingPower }) => votingPower)
     .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
 
 /**
@@ -234,12 +233,14 @@ export const preserveNeuronSelectionAfterUpdate = ({
   neurons,
   updatedNeurons,
 }: {
-  selectedIds: NeuronId[];
-  neurons: NeuronInfo[];
-  updatedNeurons: NeuronInfo[];
-}): NeuronId[] => {
-  const newIds = new Set(updatedNeurons.map(({ neuronId }) => neuronId));
-  const oldIds = new Set(neurons.map(({ neuronId }) => neuronId));
+  selectedIds: string[];
+  neurons: VotingNeuron[];
+  updatedNeurons: VotingNeuron[];
+}): string[] => {
+  const newIds = new Set(
+    updatedNeurons.map(({ neuronIdString }) => neuronIdString)
+  );
+  const oldIds = new Set(neurons.map(({ neuronIdString }) => neuronIdString));
   const preservedSelection = selectedIds.filter((id) => newIds.has(id));
   const newNeuronsSelection = Array.from(newIds).filter(
     (id) => oldIds.has(id) === false
@@ -598,3 +599,14 @@ export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
     ({ neuronIds, successfullyVotedNeuronIds }) =>
       neuronIds.length > successfullyVotedNeuronIds.length
   ) !== undefined;
+
+export const nnsNeuronToVotingNeuron = ({
+  neuron,
+  proposal,
+}: {
+  neuron: NeuronInfo;
+  proposal: ProposalInfo;
+}): VotingNeuron => ({
+  neuronIdString: `${neuron.neuronId}`,
+  votingPower: getVotingPower({ neuron, proposal }),
+});

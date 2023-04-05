@@ -3,20 +3,15 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class AmountDisplayPo extends BasePageObject {
-  static readonly tid = "token-value-label";
+  private static readonly TID = "token-value-label";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
+  static under(element: PageObjectElement): AmountDisplayPo {
+    return new AmountDisplayPo(element.byTestId(AmountDisplayPo.TID));
   }
 
-  static under(element: PageObjectElement): AmountDisplayPo | null {
-    const el = element.querySelector(`[data-tid=${AmountDisplayPo.tid}]`);
-    return el && new AmountDisplayPo(el);
-  }
-
-  getAmount(): Promise<string> {
+  async getAmount(): Promise<string> {
     return assertNonNullish(
-      this.root.querySelector(`[data-tid="token-value"]`)
-    ).getText();
+      await this.root.querySelector(`[data-tid="token-value"]`).getText()
+    );
   }
 }

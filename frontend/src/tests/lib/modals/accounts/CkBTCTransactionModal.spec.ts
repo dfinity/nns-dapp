@@ -75,7 +75,9 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest.spyOn(minterApi, "estimateFee").mockResolvedValue(123n);
+    jest
+      .spyOn(minterApi, "estimateFee")
+      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
   });
 
   it("should transfer tokens", async () => {
@@ -255,5 +257,18 @@ describe("CkBTCTransactionModal", () => {
       expect(result.getByTestId("bitcoin-estimated-fee")).not.toBeNull()
     );
     expect(result.getByTestId("bitcoin-estimated-amount")).not.toBeNull();
+  });
+
+  it("should not render btc estimation info on first step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      destinationAddress: mockCkBTCMainAccount.identifier,
+      amount: "0.002",
+    });
+
+    expect(() => result.getByTestId("bitcoin-estimated-fee")).toThrow();
   });
 });

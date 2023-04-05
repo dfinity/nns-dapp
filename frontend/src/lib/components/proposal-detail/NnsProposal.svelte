@@ -1,8 +1,7 @@
 <script lang="ts">
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
-  import NnsProposalProposerInfoSection from "./NnsProposalProposerInfoSection.svelte";
+  import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
   import ProposalVotingSection from "./ProposalVotingSection.svelte";
-  import NnsProposalProposerDataSection from "./NnsProposalProposerDataSection.svelte";
   import ProposalNavigation from "./ProposalNavigation.svelte";
   import { getContext } from "svelte";
   import {
@@ -10,6 +9,8 @@
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
+  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
+  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -26,10 +27,15 @@
     <div class="content-b expand-content-b">
       <ProposalVotingSection proposalInfo={$store.proposal} />
     </div>
-    <div class="content-c">
-      <NnsProposalProposerInfoSection proposalInfo={$store.proposal} />
+    <div class="content-c proposal-data-section">
+      <NnsProposalSummarySection proposalInfo={$store.proposal} />
 
-      <NnsProposalProposerDataSection proposalInfo={$store.proposal} />
+      <NnsProposalProposerActionsEntry proposal={$store.proposal.proposal} />
+
+      <NnsProposalProposerPayloadEntry
+        proposal={$store.proposal.proposal}
+        proposalId={$store.proposalId}
+      />
     </div>
   </div>
 {:else}
@@ -44,6 +50,12 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .proposal-data-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--row-gap);
+  }
 
   @include media.min-width(medium) {
     // If this would be use elsewhere, we can extract some utility to gix-components

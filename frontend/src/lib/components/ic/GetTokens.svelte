@@ -3,6 +3,7 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import { Modal } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import { getICPs, getTokens } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
@@ -71,52 +72,54 @@
   $: signedIn = isSignedIn($authStore.identity);
 </script>
 
-{#if signedIn}
-  <button
-    role="menuitem"
-    data-tid="get-icp-button"
-    on:click|preventDefault|stopPropagation={() => (visible = true)}
-    class="open"
-  >
-    <IconAccountBalance />
-    <span>{`Get ${token.symbol}`}</span>
-  </button>
-{/if}
+<TestIdWrapper testId="get-tokens-component">
+  {#if signedIn}
+    <button
+      role="menuitem"
+      data-tid="get-icp-button"
+      on:click|preventDefault|stopPropagation={() => (visible = true)}
+      class="open"
+    >
+      <IconAccountBalance />
+      <span>{`Get ${token.symbol}`}</span>
+    </button>
+  {/if}
 
-<Modal {visible} role="alert" on:nnsClose={onClose}>
-  <span slot="title">{`Get ${token.symbol}`}</span>
+  <Modal {visible} role="alert" on:nnsClose={onClose}>
+    <span slot="title">{`Get ${token.symbol}`}</span>
 
-  <form
-    id="get-icp-form"
-    data-tid="get-icp-form"
-    on:submit|preventDefault={onSubmit}
-  >
-    <span class="label">How much?</span>
+    <form
+      id="get-icp-form"
+      data-tid="get-icp-form"
+      on:submit|preventDefault={onSubmit}
+    >
+      <span class="label">How much?</span>
 
-    <Input
-      placeholderLabelKey="core.amount"
-      name="tokens"
-      inputType="icp"
-      bind:value={inputValue}
-      disabled={transferring}
-    />
-  </form>
+      <Input
+        placeholderLabelKey="core.amount"
+        name="tokens"
+        inputType="icp"
+        bind:value={inputValue}
+        disabled={transferring}
+      />
+    </form>
 
-  <button
-    form="get-icp-form"
-    data-tid="get-icp-submit"
-    type="submit"
-    class="primary"
-    slot="footer"
-    disabled={invalidForm || transferring}
-  >
-    {#if transferring}
-      <Spinner />
-    {:else}
-      Get tokens
-    {/if}
-  </button>
-</Modal>
+    <button
+      form="get-icp-form"
+      data-tid="get-icp-submit"
+      type="submit"
+      class="primary"
+      slot="footer"
+      disabled={invalidForm || transferring}
+    >
+      {#if transferring}
+        <Spinner />
+      {:else}
+        Get tokens
+      {/if}
+    </button>
+  </Modal>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";

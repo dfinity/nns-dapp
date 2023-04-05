@@ -33,6 +33,8 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -159,9 +161,22 @@
 
         <WalletSummary />
 
+        {#if nonNullish(canisters)}
+          <CkBTCWalletActions
+            reload={reloadAccount}
+            minterCanisterId={canisters.minterCanisterId}
+          />
+        {/if}
+
         <Separator />
 
         {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
+          <BitcoinAddress
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+            minterCanisterId={canisters.minterCanisterId}
+          />
+
           <CkBTCTransactionsList
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}

@@ -4,31 +4,28 @@ import { SnsNeuronCardPo } from "$tests/page-objects/SnsNeuronCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronsPo extends BasePageObject {
-  static readonly tid = "sns-neurons-component";
+  private static readonly TID = "sns-neurons-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
+  static under(element: PageObjectElement): SnsNeuronsPo {
+    return new SnsNeuronsPo(element.byTestId(SnsNeuronsPo.TID));
   }
 
-  static under(element: PageObjectElement): SnsNeuronsPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronsPo.tid}]`);
-    return el && new SnsNeuronsPo(el);
-  }
-
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  getNeuronCardPos(): SnsNeuronCardPo[] {
+  getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
     return SnsNeuronCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
   }
 
-  getNeuronIds(): Promise<string[]> {
-    const cards = this.getNeuronCardPos();
+  async getNeuronIds(): Promise<string[]> {
+    const cards = await this.getNeuronCardPos();
     return Promise.all(cards.map((card) => card.getNeuronId()));
   }
 }

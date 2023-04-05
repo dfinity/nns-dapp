@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh",
+      "build": "scripts/docker-build",
       "remote": {
         "id": {
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
@@ -99,9 +99,7 @@
       "type": "custom"
     },
     "sns_aggregator": {
-      "build": [
-        "./build-sns-aggregator.sh"
-      ],
+      "build": "scripts/docker-build",
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
       "type": "custom",
@@ -353,7 +351,7 @@
           "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
-          "ENABLE_CKBTC": true,
+          "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -1029,6 +1027,9 @@
       "config": {
         "NODE_VERSION": "18.14.2",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
+        "IDL2JSON_VERSION": "0.8.5",
+        "OPTIMIZER_VERSION": "0.3.6",
+        "DIDC_VERSION": "2022-11-17",
         "IC_COMMIT": "aebee24076c67a57ff638d9eb9fe4a1d7561850d"
       },
       "packtool": ""

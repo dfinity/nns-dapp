@@ -1,24 +1,65 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseStakeNeuronModal.page-object";
+import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowingCard.page-object";
+import { SnsNeuronHotkeysCardPo } from "$tests/page-objects/SnsNeuronHotkeysCard.page-object";
+import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
+import { SnsNeuronMaturityCardPo } from "$tests/page-objects/SnsNeuronMaturityCard.page-object";
+import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
+import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronDetailPo extends BasePageObject {
-  static readonly tid = "sns-neuron-detail-component";
+  private static readonly TID = "sns-neuron-detail-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
+  static under(element: PageObjectElement): SnsNeuronDetailPo {
+    return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.TID));
   }
 
-  static under(element: PageObjectElement): SnsNeuronDetailPo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronDetailPo.tid}]`);
-    return el && new SnsNeuronDetailPo(el);
-  }
-
-  getSkeletonCardPos(): SkeletonCardPo[] {
+  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
   }
 
-  isContentLoaded(): boolean {
-    return this.getSkeletonCardPos().length === 0;
+  async isContentLoaded(): Promise<boolean> {
+    return (
+      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+    );
+  }
+
+  getMetaInfoCardPo(): SnsNeuronMetaInfoCardPo {
+    return SnsNeuronMetaInfoCardPo.under(this.root);
+  }
+
+  getHotkeysCardPo(): SnsNeuronHotkeysCardPo {
+    return SnsNeuronHotkeysCardPo.under(this.root);
+  }
+
+  getMaturityCardPo(): SnsNeuronMaturityCardPo {
+    return SnsNeuronMaturityCardPo.under(this.root);
+  }
+
+  getStakeCardPo(): SnsNeuronInfoStakePo {
+    return SnsNeuronInfoStakePo.under(this.root);
+  }
+
+  getFollowingCardPo(): SnsNeuronFollowingCardPo {
+    return SnsNeuronFollowingCardPo.under(this.root);
+  }
+
+  getSummaryPo(): SummaryPo {
+    return SummaryPo.under(this.root);
+  }
+
+  getTitle(): Promise<string> {
+    return this.getSummaryPo().getTitle();
+  }
+
+  getIncreaseStakeModalPo(): SnsIncreaseStakeNeuronModalPo {
+    return SnsIncreaseStakeNeuronModalPo.under(this.root);
+  }
+
+  async increaseStake(amount: number): Promise<void> {
+    await this.getStakeCardPo().getIncreaseStakeButtonPo().click();
+    await this.getIncreaseStakeModalPo().increase(amount);
   }
 }

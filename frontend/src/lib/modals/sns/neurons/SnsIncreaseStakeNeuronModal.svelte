@@ -16,6 +16,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;
@@ -65,7 +66,7 @@
 
     if (success) {
       toastsSuccess({
-        labelKey: "sns_neurons.stake_sns_neuron_success",
+        labelKey: "accounts.transaction_success",
         substitutions: {
           $tokenSymbol: token.symbol,
         },
@@ -99,23 +100,25 @@
     })();
 </script>
 
-{#if !loading && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}
-  <SnsTransactionModal
-    {rootCanisterId}
-    on:nnsSubmit={increaseStake}
-    on:nnsClose
-    bind:currentStep
-    {token}
-    {transactionFee}
-    {governanceCanisterId}
-  >
-    <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.send}</svelte:fragment
+<TestIdWrapper testId="sns-increase-stake-neuron-modal-component">
+  {#if !loading && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}
+    <SnsTransactionModal
+      {rootCanisterId}
+      on:nnsSubmit={increaseStake}
+      on:nnsClose
+      bind:currentStep
+      {token}
+      {transactionFee}
+      {governanceCanisterId}
     >
-    <p slot="description" class="value">
-      {replacePlaceholders($i18n.accounts.sns_transaction_description, {
-        $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
-      })}
-    </p>
-  </SnsTransactionModal>
-{/if}
+      <svelte:fragment slot="title"
+        >{title ?? $i18n.accounts.send}</svelte:fragment
+      >
+      <p slot="description" class="value">
+        {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+          $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
+        })}
+      </p>
+    </SnsTransactionModal>
+  {/if}
+</TestIdWrapper>

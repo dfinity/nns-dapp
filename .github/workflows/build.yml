@@ -1,8 +1,4 @@
-# A Native build
-# XXX: This makes some of 'checks.yml' redundant. This will be fixed as soon as
-# we have end-to-end tests working.
-# https://dfinity.atlassian.net/browse/L2-191
-name: Native build
+name: E2e test
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -13,8 +9,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-env:
-  NNS_CACHING_KEY: dv-0004
+defaults:
+  run:
+    shell: bash -euxlo pipefail {0}
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -22,65 +19,61 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: set-env
-        run: ./build-config.sh >> $GITHUB_ENV
-      # Cache based on the Cargo.lock
-      # The cache key is always an exact match or no match (i.e. no
-      # "restore-keys"-style matching). Because (in case of an exact match)
-      # GitHub actions won't (re-)upload the cache after the build, it means that
-      # our cache won't just grow forever.
-      - uses: actions/cache@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build wasms
+        uses: docker/build-push-action@v3
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-      # Cache the ic-cdk-optimizer
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/ic-cdk-optimizer
-          key: ${{ runner.os }}-ic-cdk-optimizer-${{ env.IC_CDK_OPTIMIZER_VERSION }}-v2
-      - name: Install Software
-        run: |
-          ./scripts/setup --profile ~/.bashrc
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      # Helps with debugging
-      - name: Versions
-        run: |
-          set -x
-          dfx --version
-          node --version
-          npm --version
-          rustc --version
-          cargo --version
-          ic-cdk-optimizer --version
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=local
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: .
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 17 2023
-          ref: 'b9a786a8a4e4afbfede2ecc5af0c2763ee2be774'
-      - name: Add SNS scripts to the path
+          # Version from Mar 27 2023 with saved state tools
+          ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
+      - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
       - name: Install SNS script dependencies
         run: |
-          dfx-sns-demo-install
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Deploy NNS and SNS canisters
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Get test environment
         run: |
-          # Note: This deploys standard NNS canisters but with:
-          # - The current code for the nns-dapp
-          # - The II version specified in dfx.json
-          # - Functional SNS canisters
-          ./scripts/dfx-nns-deploy-custom --features sns
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
+          dfx-state-install -f state.zip
+          dfx identity use snsdemo8
+          dfx-sns-demo-healthcheck
+      - name: Install nns-dapp and sns_aggregator
+        run: |
+          echo "Create the nns-dapp install argument:"
+          DFX_NETWORK=local ./config.sh
+          echo "Install:"
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
+          # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
+          jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
+          curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
+          dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
+      - name: Verify that arguments are set in index.html
+        run: |
+          go install github.com/ericchiang/pup@latest
+          curl "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+          echo "Check a few values:"
+          for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
+            # Verify that the key is non-trivial:
+            # jq -e returns an error code if the value is missing
+            # grep ... fails if the value is implausibly short.
+            key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
+          done
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
@@ -88,6 +81,8 @@ jobs:
           then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
+      - name: Rename nns-dapp.wasm for upload
+        run: cp nns-dapp.wasm nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -124,14 +119,14 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a chrome-wdio.log
       - name: Run firefox e2e tests
         working-directory: e2e-tests
+        # Allow Firefox to fail until the source of flakiness is found and fixed.
+        continue-on-error: true
         run: |
-          # Allow Firefox to fail until the source of flakiness is found and fixed.
-          # set -o pipefail
           export WDIO_BROWSER=firefox
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."

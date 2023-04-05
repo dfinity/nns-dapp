@@ -5,7 +5,7 @@
     votableNeurons as getVotableNeurons,
   } from "@dfinity/nns";
 
-  import { getContext, onDestroy } from "svelte";
+  import { getContext } from "svelte";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
@@ -14,7 +14,10 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
-  import { isProposalDeadlineInTheFuture } from "$lib/utils/proposals.utils";
+  import {
+    isProposalDeadlineInTheFuture,
+    nnsNeuronToVotingNeuron,
+  } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
     type VoteRegistration,
@@ -33,7 +36,9 @@
     getVotableNeurons({
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
-    });
+    }).map((neuron) =>
+      nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
+    );
 
   let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
@@ -50,7 +55,7 @@
       (votableNeurons().length > 0 &&
         isProposalDeadlineInTheFuture(proposalInfo)));
 
-  const unsubscribe = definedNeuronsStore.subscribe(() => {
+  const updateVotingNeuronSelectedStore = () => {
     if (!initialSelectionDone) {
       initialSelectionDone = true;
       votingNeuronSelectStore.set(votableNeurons());
@@ -58,14 +63,16 @@
       // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
       votingNeuronSelectStore.updateNeurons(votableNeurons());
     }
-  });
+  };
+
+  $: $definedNeuronsStore, updateVotingNeuronSelectedStore();
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
     await registerVotes({
-      neuronIds: $votingNeuronSelectStore.selectedIds,
+      neuronIds: $votingNeuronSelectStore.selectedIds.map(BigInt),
       vote: detail.voteType,
       proposalInfo,
       reloadProposalCallback: (
@@ -76,8 +83,6 @@
           proposal: proposalId === proposalInfo.id ? proposalInfo : proposal,
         })),
     });
-
-  onDestroy(() => unsubscribe());
 
   // UI loader
   const neuronsStoreReady = (): boolean => {
@@ -106,7 +111,6 @@
         {#if neuronsReady}
           {#if visible}
             <VotingConfirmationToolbar
-              {proposalInfo}
               {voteRegistration}
               on:nnsConfirm={vote}
             />

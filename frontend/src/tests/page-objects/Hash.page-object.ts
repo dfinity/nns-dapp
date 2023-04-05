@@ -3,15 +3,10 @@ import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class HashPo extends BasePageObject {
-  static readonly tid = "hash-component";
+  private static readonly TID = "hash-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
-  static under(element: PageObjectElement): HashPo | null {
-    const el = element.querySelector(`[data-tid=${HashPo.tid}]`);
-    return el && new HashPo(el);
+  static under(element: PageObjectElement): HashPo {
+    return new HashPo(element.byTestId(HashPo.TID));
   }
 
   getTooltipPo(): TooltipPo {

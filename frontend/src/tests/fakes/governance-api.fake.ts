@@ -1,13 +1,16 @@
 import type { ApiQueryParams } from "$lib/api/governance.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
+import {
+  installImplAndBlockRest,
+  makePausable,
+} from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
-const implementedFunctions = {
+const fakeFunctions = {
   queryNeurons,
   queryKnownNeurons,
 };
@@ -53,9 +56,19 @@ async function queryKnownNeurons({
 // Functions to control the fake:
 /////////////////////////////////
 
+const {
+  pause,
+  resume,
+  reset: resetPaused,
+  pausableFunctions: implementedFunctions,
+} = makePausable(fakeFunctions);
+
 const reset = () => {
   neurons.clear();
+  resetPaused();
 };
+
+export { pause, resume };
 
 export const addNeuronWith = ({
   identity = mockIdentity,

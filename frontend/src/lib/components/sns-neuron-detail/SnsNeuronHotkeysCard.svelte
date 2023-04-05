@@ -30,6 +30,7 @@
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
   import type { NervousSystemParameters } from "@dfinity/sns";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let parameters: NervousSystemParameters;
 
@@ -104,55 +105,57 @@
   };
 </script>
 
-{#if neuron !== undefined && neuron !== null}
-  <CardInfo testId="sns-hotkeys-card">
-    <div class="title" slot="start">
-      <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
-      {#if showTooltip}
-        <Tooltip
-          id="sns-hotkeys-info"
-          text={$i18n.sns_neuron_detail.add_hotkey_tooltip}
-        >
-          <span>
-            <IconInfo />
-          </span>
-        </Tooltip>
-      {/if}
-    </div>
-    {#if hotkeys.length === 0}
-      {#if canManageHotkeys}
-        <div class="warning">
-          <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
-          <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
-        </div>
-      {:else}
-        <p>{$i18n.neuron_detail.no_notkeys}</p>
-      {/if}
-    {:else}
-      <ul>
-        {#each hotkeys as hotkey (hotkey)}
-          <li>
-            <Value>{hotkey}</Value>
-            {#if canManageHotkeys}
-              <button
-                class="text"
-                aria-label={$i18n.core.remove}
-                on:click={() => maybeRemove(hotkey)}
-                data-tid="remove-hotkey-button"
-                ><IconClose size="18px" /></button
-              >
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    {/if}
-    {#if canManageHotkeys && neuronId !== undefined}
-      <div class="actions">
-        <AddSnsHotkeyButton />
+<TestIdWrapper testId="sns-neuron-hotkeys-card-component">
+  {#if neuron !== undefined && neuron !== null}
+    <CardInfo testId="sns-hotkeys-card">
+      <div class="title" slot="start">
+        <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
+        {#if showTooltip}
+          <Tooltip
+            id="sns-hotkeys-info"
+            text={$i18n.sns_neuron_detail.add_hotkey_tooltip}
+          >
+            <span>
+              <IconInfo />
+            </span>
+          </Tooltip>
+        {/if}
       </div>
-    {/if}
-  </CardInfo>
-{/if}
+      {#if hotkeys.length === 0}
+        {#if canManageHotkeys}
+          <div class="warning">
+            <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
+            <p class="description">{$i18n.sns_neuron_detail.add_hotkey_info}</p>
+          </div>
+        {:else}
+          <p>{$i18n.neuron_detail.no_notkeys}</p>
+        {/if}
+      {:else}
+        <ul>
+          {#each hotkeys as hotkey (hotkey)}
+            <li>
+              <Value>{hotkey}</Value>
+              {#if canManageHotkeys}
+                <button
+                  class="text"
+                  aria-label={$i18n.core.remove}
+                  on:click={() => maybeRemove(hotkey)}
+                  data-tid="remove-hotkey-button"
+                  ><IconClose size="18px" /></button
+                >
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      {/if}
+      {#if canManageHotkeys && neuronId !== undefined}
+        <div class="actions">
+          <AddSnsHotkeyButton />
+        </div>
+      {/if}
+    </CardInfo>
+  {/if}
+</TestIdWrapper>
 
 {#if showConfirmationHotkey !== undefined}
   <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->

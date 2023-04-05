@@ -1,15 +1,11 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+
 export class NnsNeuronCardTitlePo extends BasePageObject {
-  static readonly tid = "neuron-card-title";
+  private static readonly TID = "neuron-card-title";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
-  static under(element: PageObjectElement): NnsNeuronCardTitlePo | null {
-    const el = element.querySelector(`[data-tid=${NnsNeuronCardTitlePo.tid}]`);
-    return el && new NnsNeuronCardTitlePo(el);
+  static under(element: PageObjectElement): NnsNeuronCardTitlePo {
+    return new NnsNeuronCardTitlePo(element.byTestId(NnsNeuronCardTitlePo.TID));
   }
 
   getNeuronId(): Promise<string> {

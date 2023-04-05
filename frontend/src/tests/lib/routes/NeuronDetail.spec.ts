@@ -56,14 +56,16 @@ describe("NeuronDetail", () => {
     });
 
     it("should load", async () => {
+      fakeGovernanceApi.pause();
       const { container } = render(NeuronDetail, nnsProps);
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
 
-      expect(po.hasSnsNeuronDetailPo()).toBe(false);
-      expect(po.hasNnsNeuronDetailPo()).toBe(true);
-      expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(false);
-      await waitFor(() => {
-        expect(po.getNnsNeuronDetailPo().isContentLoaded()).toBe(true);
+      expect(await po.hasSnsNeuronDetailPo()).toBe(false);
+      expect(await po.hasNnsNeuronDetailPo()).toBe(true);
+      expect(await po.getNnsNeuronDetailPo().isContentLoaded()).toBe(false);
+      fakeGovernanceApi.resume();
+      await waitFor(async () => {
+        expect(await po.getNnsNeuronDetailPo().isContentLoaded()).toBe(true);
       });
     });
   });
@@ -94,33 +96,35 @@ describe("NeuronDetail", () => {
 
     it("should load", async () => {
       await loadSnsProjects();
+      fakeSnsGovernanceApi.pause();
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
 
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
-      expect(po.isContentLoaded()).toBe(false);
-      await waitFor(() => {
-        expect(po.isContentLoaded()).toBe(true);
+      expect(await po.isContentLoaded()).toBe(false);
+      fakeSnsGovernanceApi.resume();
+      await waitFor(async () => {
+        expect(await po.isContentLoaded()).toBe(true);
       });
-      expect(po.hasNnsNeuronDetailPo()).toBe(false);
-      expect(po.hasSnsNeuronDetailPo()).toBe(true);
-      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
+      expect(await po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(await po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(await po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
 
     it("should load if sns projects are loaded after initial rendering", async () => {
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
-      expect(po.isContentLoaded()).toBe(false);
+      expect(await po.isContentLoaded()).toBe(false);
 
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
-      expect(po.isContentLoaded()).toBe(false);
-      await waitFor(() => {
-        expect(po.isContentLoaded()).toBe(true);
+      expect(await po.isContentLoaded()).toBe(false);
+      await waitFor(async () => {
+        expect(await po.isContentLoaded()).toBe(true);
       });
-      expect(po.hasNnsNeuronDetailPo()).toBe(false);
-      expect(po.hasSnsNeuronDetailPo()).toBe(true);
-      expect(po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
+      expect(await po.hasNnsNeuronDetailPo()).toBe(false);
+      expect(await po.hasSnsNeuronDetailPo()).toBe(true);
+      expect(await po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);
     });
   });
 });

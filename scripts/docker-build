@@ -16,7 +16,11 @@ print_help() {
   cat <<-EOF
 	Builds the nns-dapp wasm and artifacts in docker.
 
-	Usage: $(basename "$0") [--network <network>] [--verbose] [--help]
+	Usage: $(basename "$0") [--network <network>] [--verbose] [--help] [-- <docker flags>]
+
+	<docker flags>
+	  Any flags that are to be passed on to Docker.  A common example is --no-cache.
+	  A full list is here: https://docs.docker.com/engine/reference/commandline/build/#options
 	EOF
 }
 DFX_NETWORK=${DFX_NETWORK:-mainnet}
@@ -35,6 +39,9 @@ while (($# > 0)); do
   --help)
     print_help
     exit 0
+    ;;
+  --)
+    break
     ;;
   *)
     {
@@ -60,7 +67,10 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # In normal production builds, only these files will be generated,
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
-assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm)
+assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm nns-dapp-arg.did nns-dapp-arg.bin)
+for file in "${assets[@]}"; do
+  rm -f "$file"
+done
 
 set -x
 DOCKER_BUILDKIT=1 docker build \

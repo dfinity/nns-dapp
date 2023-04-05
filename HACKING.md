@@ -108,18 +108,18 @@ e.g. in `canisters`:
 ```
 "ckbtc_test_minter": {
   "type": "custom",
-  "candid": "tmp/minter.did",
-  "wasm": "tmp/ckbtc_minter.wasm"
+  "candid": "target/ic/ckbtc_minter.did",
+  "wasm": "target/ic/ckbtc_minter.wasm"
 },
 "ckbtc_test_ledger": {
   "type": "custom",
-  "candid": "tmp/ledger.did",
-  "wasm": "tmp/ledger_canister.wasm"
+  "candid": "target/ic/ckbtc_ledger.did",
+  "wasm": "target/ic/ckbtc_ledger.wasm"
 },
 "ckbtc_test_index": {
   "type": "custom",
-  "candid": "tmp/index.did",
-  "wasm": "tmp/index_canister.wasm"
+  "candid": "target/ic/ckbtc_index.did",
+  "wasm": "target/ic/ckbtc_index.wasm"
 }
 ```
 

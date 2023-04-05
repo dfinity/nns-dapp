@@ -3,16 +3,14 @@ import { SnsNeuronCardTitlePo } from "$tests/page-objects/SnsNeuronCardTitle.pag
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SnsNeuronCardPo extends BasePageObject {
-  static readonly tid = "sns-neuron-card-component";
+  private static readonly TID = "sns-neuron-card-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
-  static allUnder(element: PageObjectElement): SnsNeuronCardPo[] {
-    return Array.from(
-      element.querySelectorAll(`[data-tid=${SnsNeuronCardPo.tid}]`)
-    ).map((el) => new SnsNeuronCardPo(el));
+  static async allUnder(
+    element: PageObjectElement
+  ): Promise<SnsNeuronCardPo[]> {
+    return Array.from(await element.allByTestId(SnsNeuronCardPo.TID)).map(
+      (el) => new SnsNeuronCardPo(el)
+    );
   }
 
   getCardTitlePo(): SnsNeuronCardTitlePo {

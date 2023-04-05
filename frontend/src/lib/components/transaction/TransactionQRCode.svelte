@@ -3,6 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { ENABLE_QR_CODE_READER } from "$lib/constants/environment.constants";
 
   // TODO: can we improve the local development experience if the QR code needs to be used locally?
   /**
@@ -29,12 +30,14 @@
   };
 </script>
 
-<QRCodeReaderModal on:nnsQRCode on:nnsQRCodeError={onError} />
+{#if ENABLE_QR_CODE_READER}
+  <QRCodeReaderModal on:nnsQRCode on:nnsQRCodeError={onError} />
+{/if}
 
 <div class="toolbar">
   <button
     class="secondary"
-    data-tid="transaction-button-cancel"
+    data-tid="transaction-qrcode-button-cancel"
     type="button"
     on:click={cancel}>{$i18n.core.cancel}</button
   >

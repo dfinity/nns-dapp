@@ -6,7 +6,10 @@
   export let actionFields: [string, unknown][] = [];
 </script>
 
-<div class="content-cell-island">
+<div
+  class="content-cell-island"
+  data-tid="proposal-proposer-actions-entry-component"
+>
   <h2
     class="content-cell-title"
     data-tid="proposal-proposer-actions-entry-title"
@@ -14,7 +17,10 @@
     {actionKey ?? ""}
   </h2>
 
-  <div class="content-cell-details">
+  <div
+    class="content-cell-details"
+    data-tid="proposal-proposer-actions-entry-fields"
+  >
     {#each actionFields as [key, value]}
       <KeyValuePair>
         <span slot="key">{key}</span>
@@ -31,10 +37,6 @@
 </div>
 
 <style lang="scss">
-  .content-cell-island {
-    margin-top: var(--row-gap);
-  }
-
   .content-cell-details {
     overflow-x: auto;
     // get rid of vertical scroll

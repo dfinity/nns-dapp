@@ -11,8 +11,13 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import type { TransactionInit } from "$lib/types/transaction";
 
   export let selectedAccount: Account | undefined = undefined;
+
+  let transactionInit: TransactionInit = {
+    sourceAccount: selectedAccount,
+  };
 
   let currentStep: WizardStep;
 
@@ -55,11 +60,12 @@
 </script>
 
 <TransactionModal
+  testId="icp-transaction-modal-component"
   rootCanisterId={OWN_CANISTER_ID}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep
-  sourceAccount={selectedAccount}
+  {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>

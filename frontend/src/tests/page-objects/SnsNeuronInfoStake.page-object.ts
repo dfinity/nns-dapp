@@ -1,62 +1,56 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { nonNullish } from "@dfinity/utils";
 
 export class SnsNeuronInfoStakePo extends BasePageObject {
-  static readonly tid = "sns-neuron-info-stake";
+  private static readonly TID = "sns-neuron-info-stake";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
+  static under(element: PageObjectElement): SnsNeuronInfoStakePo {
+    return new SnsNeuronInfoStakePo(element.byTestId(SnsNeuronInfoStakePo.TID));
   }
 
-  static under(element: PageObjectElement): SnsNeuronInfoStakePo | null {
-    const el = element.querySelector(`[data-tid=${SnsNeuronInfoStakePo.tid}]`);
-    return el && new SnsNeuronInfoStakePo(el);
+  getAmountDisplayPo(): AmountDisplayPo {
+    return AmountDisplayPo.under(this.root);
   }
 
-  private getButton(testId: string): ButtonPo | null {
-    return ButtonPo.under({ element: this.root, testId });
+  isContentLoaded(): Promise<boolean> {
+    return this.getAmountDisplayPo().isPresent();
   }
 
-  isContentLoaded() {
-    return nonNullish(this.getStakeAmount());
+  getStakeAmount(): Promise<string> {
+    return this.getAmountDisplayPo().getAmount();
   }
 
-  getStakeAmount() {
-    return AmountDisplayPo.under(this.root)?.getAmount();
-  }
-
-  getDisburseButtonPo() {
+  getDisburseButtonPo(): ButtonPo {
     return this.getButton("disburse-button");
   }
 
-  hasDisburseButton() {
-    return nonNullish(this.getDisburseButtonPo());
+  hasDisburseButton(): Promise<boolean> {
+    return this.getDisburseButtonPo().isPresent();
   }
 
-  getIncreaseDissolveDelayButtonPo() {
+  getIncreaseDissolveDelayButtonPo(): ButtonPo {
     return this.getButton("sns-increase-dissolve-delay");
   }
 
-  hasIncreaseDissolveDelayButton() {
-    return nonNullish(this.getIncreaseDissolveDelayButtonPo());
+  hasIncreaseDissolveDelayButton(): Promise<boolean> {
+    return this.getIncreaseDissolveDelayButtonPo().isPresent();
   }
 
-  getIncreaseStakeButtonPo() {
+  getIncreaseStakeButtonPo(): ButtonPo {
     return this.getButton("sns-increase-stake");
   }
 
-  hasIncreaseStakeButton() {
-    return nonNullish(this.getIncreaseStakeButtonPo());
+  hasIncreaseStakeButton(): Promise<boolean> {
+    return this.getIncreaseStakeButtonPo().isPresent();
   }
 
-  getDissolveButtonPo() {
+  getDissolveButtonPo(): ButtonPo {
     return this.getButton("sns-dissolve-button");
   }
 
-  hasDissolveButton() {
-    return nonNullish(this.getDissolveButtonPo());
+  hasDissolveButton(): Promise<boolean> {
+    return this.getDissolveButtonPo().isPresent();
   }
 }
