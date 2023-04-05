@@ -28,7 +28,7 @@ ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
-RUN printf "%s" "0.3.1" > config/optimizer_version
+RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -50,7 +50,7 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
 # Install IC CDK optimizer
-RUN cargo install --version "$(cat config/optimizer_version)" ic-cdk-optimizer
+RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
