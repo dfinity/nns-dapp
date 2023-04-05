@@ -65,7 +65,7 @@ export class AppPo extends BasePageObject {
 
   async getTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getIcp(amount);
+    await this.getMenuItemsPo().getGetTokensPo().getTokens(amount);
     await this.closeMenu();
   }
 
