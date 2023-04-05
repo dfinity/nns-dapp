@@ -22,7 +22,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=z long=state-zip desc="The state .zip file" variable=STATE_ZIP_FILE default="state.zip"
+clap.define short=s long=snapshot desc="The snapshot .zip or .tar.xz file" variable=SNAPSHOT_ARCHIVE default="snapshot.tar.xz"
 clap.define short=c long=clean desc="Extract a clean state from the .zip file, even if a directory with extracted state exists" variable=CLEAN nargs=0 default="false"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
@@ -56,7 +56,7 @@ if [ "$CLEAN" != "false" ]; then
   CLEAN_ARG="--clean"
 fi
 
-$SOURCE_DIR/dfx-snapshot-install --backup-dir "$BACKUP_DIR" --snapshot-zip "$STATE_ZIP_FILE" "$CLEAN_ARG"
+$SOURCE_DIR/dfx-snapshot-install --backup-dir "$BACKUP_DIR" --snapshot "$SNAPSHOT_ARCHIVE" "$CLEAN_ARG"
 
 # Change to $HOME to avoid using nns-dapp dfx.json.
 cd "$HOME"
