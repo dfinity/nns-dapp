@@ -8,7 +8,7 @@
   export let total: number;
 </script>
 
-<ProposalContentCell>
+<ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
   <div class="latest-tally">
     <h4 class="label yes">

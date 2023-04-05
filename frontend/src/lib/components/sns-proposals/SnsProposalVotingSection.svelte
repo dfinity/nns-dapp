@@ -10,7 +10,10 @@
   $: tally = fromDefinedNullable(proposal.latest_tally);
 </script>
 
-<div class="content-cell-island">
+<div
+  class="content-cell-island"
+  data-tid="sns-proposal-voting-section-component"
+>
   <VotesResults
     yes={Number(tally.yes)}
     no={Number(tally.no)}
