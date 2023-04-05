@@ -22,6 +22,7 @@ clap.define short=c long=commit desc="The commit, tag or reference to find" vari
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-export DFX_COMMIT="$(git rev-parse "$DFX_COMMIT")"
+DFX_COMMIT="$(git rev-parse "$DFX_COMMIT")"
+export DFX_COMMIT
 
 gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | "https://github.com/dfinity/nns-dapp/actions/runs/\(.databaseId)"'
