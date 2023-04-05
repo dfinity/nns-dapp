@@ -901,6 +901,9 @@ interface I18nCkbtc {
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;
+  incoming_bitcoin_network: string;
+  block_explorer: string;
+  refresh_balance: string;
 }
 
 interface I18nError__ckbtc {

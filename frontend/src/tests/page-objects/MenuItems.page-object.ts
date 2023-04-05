@@ -5,10 +5,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class MenuItemsPo extends BasePageObject {
   private static readonly TID = "menu-items-component";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): MenuItemsPo {
     return new MenuItemsPo(element.byTestId(MenuItemsPo.TID));
   }

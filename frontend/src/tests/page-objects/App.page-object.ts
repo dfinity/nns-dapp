@@ -3,13 +3,8 @@ import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AppPo extends BasePageObject {
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
   }

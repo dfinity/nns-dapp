@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SnsProposalPayloadSectionPo extends BasePageObject {
   static readonly TID = "sns-proposal-payload-section-component";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): SnsProposalPayloadSectionPo {
     return new SnsProposalPayloadSectionPo(
       element.byTestId(SnsProposalPayloadSectionPo.TID)

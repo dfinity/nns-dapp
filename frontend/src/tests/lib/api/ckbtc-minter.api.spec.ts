@@ -144,10 +144,12 @@ describe("ckbtc-minter api", () => {
     };
 
     it("returns estimated fee", async () => {
-      const expectedResult = 123456n;
+      const expectedResult = { minter_fee: 123n, bitcoin_fee: 456n };
 
       const estimateFeeSpy =
-        minterCanisterMock.estimateFee.mockResolvedValue(expectedResult);
+        minterCanisterMock.estimateWithdrawalFee.mockResolvedValue(
+          expectedResult
+        );
 
       const result = await estimateFee(feeParams);
 
@@ -157,7 +159,7 @@ describe("ckbtc-minter api", () => {
     });
 
     it("bubble errors", () => {
-      minterCanisterMock.estimateFee.mockImplementation(async () => {
+      minterCanisterMock.estimateWithdrawalFee.mockImplementation(async () => {
         throw new Error();
       });
 

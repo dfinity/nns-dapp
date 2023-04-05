@@ -1,20 +1,16 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseStakeNeuronModal.page-object";
+import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowingCard.page-object";
+import { SnsNeuronHotkeysCardPo } from "$tests/page-objects/SnsNeuronHotkeysCard.page-object";
+import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
+import { SnsNeuronMaturityCardPo } from "$tests/page-objects/SnsNeuronMaturityCard.page-object";
+import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
+import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SnsIncreaseStakeNeuronModalPo } from "./SnsIncreaseStakeNeuronModal.page-object";
-import { SnsNeuronFollowingCardPo } from "./SnsNeuronFollowingCard.page-object";
-import { SnsNeuronHotkeysCardPo } from "./SnsNeuronHotkeysCard.page-object";
-import { SnsNeuronInfoStakePo } from "./SnsNeuronInfoStake.page-object";
-import { SnsNeuronMaturityCardPo } from "./SnsNeuronMaturityCard.page-object";
-import { SnsNeuronMetaInfoCardPo } from "./SnsNeuronMetaInfoCard.page-object";
-import { SummaryPo } from "./Summary.page-object";
 
 export class SnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "sns-neuron-detail-component";
-
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
 
   static under(element: PageObjectElement): SnsNeuronDetailPo {
     return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.TID));
