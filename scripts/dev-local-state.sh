@@ -73,6 +73,10 @@ echo "*  Fortunately, it did not hang. This may actually work!  *"
 echo "*                                                         *"
 echo "***********************************************************"
 
+# If there are any errors below we still want to stop the replica before
+# restoring the state.
+set +e
+
 # Run frontend development server.
 cd "$TOP_DIR"
 DFX_NETWORK=local ./config.sh

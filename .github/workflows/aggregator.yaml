@@ -32,8 +32,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Mar 27 2023 with saved state tools
-          ref: '480a86f555cc9fbee246ba0ecf8a20a4ff705dbc'
+          # Version from Apr 4 2023 with xz compressed state
+          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -43,8 +43,8 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.zip > state.zip
-          dfx-state-install -f state.zip --verbose
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.tar.xz > state.tar.xz
+          dfx-snapshot-restore --snapshot state.tar.xz --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
