@@ -43,6 +43,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.querySelectorAll(`[data-tid=${tid}]`);
   }
 
+  async byRole(role: string) {
+    return this.querySelector(`[role=${role}]`);
+  }
+
   async isPresent(): Promise<boolean> {
     return nonNullish(this.element);
   }
@@ -87,6 +91,11 @@ export class JestPageObjectElement implements PageObjectElement {
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
     return this.element && this.element.textContent;
+  }
+
+  // Resolves to null if the element is not present.
+  async getAttribute(attribute: string): Promise<string | null> {
+    return this.element && this.element.getAttribute(attribute);
   }
 
   async click(): Promise<void> {
