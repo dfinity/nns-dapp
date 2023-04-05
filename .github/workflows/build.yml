@@ -109,7 +109,7 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
-          npx playwright install
+          npx playwright install ffmpeg
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: npm run test-e2e
@@ -118,7 +118,9 @@ jobs:
         if: ${{ failure() }}
         with:
           name: playwright-failure-results
-          path: frontend/playwright-results/*
+          path: |
+            frontend/playwright-report/*
+            frontend/playwright-results/*
           retention-days: 3
       - name: Generate .env configuration for e2e-tests
         run: |

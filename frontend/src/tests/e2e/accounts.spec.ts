@@ -26,7 +26,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   // 3. update result from initAccounts hides the subaccount card.
   // 4. update result from syncAccount makes the subaccount card visible again.
   // TODO: Fix the accounts store and remove this delay.
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // AU002: The user MUST be able to create an additional account
   const subAccountName = "My second account";
