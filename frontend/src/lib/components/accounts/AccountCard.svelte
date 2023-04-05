@@ -38,7 +38,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .title {
-    @include card.stacked-title;
     @include card.title;
   }
 
