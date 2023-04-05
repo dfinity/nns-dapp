@@ -36,8 +36,8 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async querySelectorCount({
-    selector,
-    expectedCount,
+    selector: _,
+    expectedCount: __,
   }: {
     selector: string;
     expectedCount: number;
@@ -54,8 +54,8 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   countByTestId({
-    tid,
-    expectedCount,
+    tid: _,
+    expectedCount: __,
   }: {
     tid: string;
     expectedCount: number;
