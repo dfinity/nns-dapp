@@ -107,15 +107,17 @@ jobs:
           DFX_NETWORK=local ./config.sh
       - name: Prepare for Playwright end-to-end tests
         working-directory: frontend
-        run: npm ci
+        run: |
+          npm ci
+          npx playwright install
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: npm run test-e2e
-      - name: Upload Playwright screenshots
+      - name: Upload Playwright results
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
-          name: playwright-failure-screenshot
+          name: playwright-failure-results
           path: frontend/playwright-results/*
           retention-days: 3
       - name: Generate .env configuration for e2e-tests
