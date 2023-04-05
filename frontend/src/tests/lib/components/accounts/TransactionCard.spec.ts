@@ -3,6 +3,10 @@
  */
 
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import {
+  AccountTransactionType,
+  type Transaction,
+} from "$lib/types/transaction";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -15,20 +19,25 @@ import { ICPToken } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
-  const renderTransactionCard = (
-    transaction = mockTransactionSendDataFromMain
-  ) =>
+  const renderTransactionCard = ({
+    transaction = mockTransactionSendDataFromMain,
+    descriptions,
+  }: {
+    transaction?: Transaction;
+    descriptions?: Partial<I18nTransaction_names>;
+  }) =>
     render(TransactionCard, {
       props: {
         transaction,
         token: ICPToken,
+        descriptions,
       },
     });
 
   it("renders received headline", () => {
-    const { getByText } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
-    );
+    const { getByText } = renderTransactionCard({
+      transaction: mockTransactionReceiveDataFromMain,
+    });
 
     const expectedText = replacePlaceholders(en.transaction_names.receive, {
       $tokenSymbol: ICPToken.symbol,
@@ -36,10 +45,30 @@ describe("TransactionCard", () => {
     expect(getByText(expectedText)).toBeInTheDocument();
   });
 
-  it("renders sent headline", () => {
-    const { getByText } = renderTransactionCard(
-      mockTransactionSendDataFromMain
+  it("renders received description", () => {
+    const { getByText, getByTestId } = renderTransactionCard({
+      transaction: {
+        ...mockTransactionReceiveDataFromMain,
+        type: AccountTransactionType.Burn,
+      },
+      descriptions:
+        en.ckbtc_transaction_names as Partial<I18nTransaction_names>,
+    });
+
+    const expectedText = replacePlaceholders(en.transaction_names.burn, {
+      $tokenSymbol: ICPToken.symbol,
+    });
+    expect(getByText(expectedText)).toBeInTheDocument();
+
+    expect(getByTestId("transaction-description")?.textContent).toEqual(
+      "To: BTC Network"
     );
+  });
+
+  it("renders sent headline", () => {
+    const { getByText } = renderTransactionCard({
+      transaction: mockTransactionSendDataFromMain,
+    });
 
     const expectedText = replacePlaceholders(en.transaction_names.send, {
       $tokenSymbol: ICPToken.symbol,
@@ -48,9 +77,9 @@ describe("TransactionCard", () => {
   });
 
   it("renders transaction ICPs with - sign", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionSendDataFromMain
-    );
+    const { getByTestId } = renderTransactionCard({
+      transaction: mockTransactionSendDataFromMain,
+    });
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `-${formatToken({
@@ -61,9 +90,9 @@ describe("TransactionCard", () => {
   });
 
   it("renders transaction ICPs with + sign", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
-    );
+    const { getByTestId } = renderTransactionCard({
+      transaction: mockTransactionReceiveDataFromMain,
+    });
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `+${formatToken({
@@ -74,9 +103,9 @@ describe("TransactionCard", () => {
   });
 
   it("displays transaction date and time", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionSendDataFromMain
-    );
+    const { getByTestId } = renderTransactionCard({
+      transaction: mockTransactionSendDataFromMain,
+    });
 
     const div = getByTestId("transaction-date");
 
@@ -86,9 +115,9 @@ describe("TransactionCard", () => {
   });
 
   it("displays identifier for received", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionReceiveDataFromMain
-    );
+    const { getByTestId } = renderTransactionCard({
+      transaction: mockTransactionReceiveDataFromMain,
+    });
     const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockTransactionReceiveDataFromMain.from);
@@ -96,9 +125,9 @@ describe("TransactionCard", () => {
   });
 
   it("displays identifier for sent", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockTransactionSendDataFromMain
-    );
+    const { getByTestId } = renderTransactionCard({
+      transaction: mockTransactionSendDataFromMain,
+    });
     const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockTransactionSendDataFromMain.to);

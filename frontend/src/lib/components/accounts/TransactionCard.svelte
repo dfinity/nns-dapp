@@ -7,14 +7,17 @@
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
-  import type { Transaction } from "$lib/types/transaction";
-  import { AccountTransactionType } from "$lib/types/transaction";
+  import type {
+    Transaction,
+    AccountTransactionType,
+  } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
   export let token: Token;
-  export let descriptions: I18nTransaction_names | undefined = undefined;
+  export let descriptions: Partial<I18nTransaction_names> | undefined =
+    undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
@@ -72,7 +75,7 @@
     <ColumnRow>
       <div slot="start" class="identifier">
         {#if nonNullish(description)}
-          <p><Html text={description} /></p>
+          <p data-tid="transaction-description"><Html text={description} /></p>
         {/if}
 
         {#if nonNullish(identifier)}

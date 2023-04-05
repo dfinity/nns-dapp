@@ -9,6 +9,8 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
+  mockIcrcTransactionBurn,
+  mockIcrcTransactionMint,
   mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
@@ -58,5 +60,59 @@ describe("CkBTCTransactionList", () => {
     const { queryAllByTestId } = renderCkBTCTransactionList();
 
     expect(queryAllByTestId("transaction-card").length).toBe(1);
+  });
+
+  it("should render description burn to btc network", () => {
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: BigInt(123),
+              transaction: mockIcrcTransactionBurn,
+            },
+          ],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    jest
+      .spyOn(icrcTransactionsStore, "subscribe")
+      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+
+    const { getByTestId } = renderCkBTCTransactionList();
+
+    expect(getByTestId("transaction-description")?.textContent).toEqual(
+      "To: BTC Network"
+    );
+  });
+
+  it("should render description mint from btc network", () => {
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: BigInt(123),
+              transaction: mockIcrcTransactionMint,
+            },
+          ],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    jest
+      .spyOn(icrcTransactionsStore, "subscribe")
+      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+
+    const { getByTestId } = renderCkBTCTransactionList();
+
+    expect(getByTestId("transaction-description")?.textContent).toEqual(
+      "From: BTC Network"
+    );
   });
 });
