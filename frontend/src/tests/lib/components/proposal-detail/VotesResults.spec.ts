@@ -4,11 +4,11 @@
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { formatNumber } from "$lib/utils/format.utils";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import {VotesResultPo} from "$tests/page-objects/VotesResults.page-object";
-import {JestPageObjectElement} from "$tests/page-objects/jest.page-object";
 
 describe("VotesResults", () => {
   let renderResult: RenderResult<SvelteComponent>;
@@ -37,7 +37,9 @@ describe("VotesResults", () => {
 
   it("should render progressbar", async () => {
     const { container } = renderResult;
-    const votesResultPo = VotesResultPo.under(new JestPageObjectElement(container));
+    const votesResultPo = VotesResultPo.under(
+      new JestPageObjectElement(container)
+    );
     expect(await votesResultPo.isPresent()).toBeTruthy();
 
     expect(await votesResultPo.getProgressMinValue()).toBe(0n);
