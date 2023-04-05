@@ -56,7 +56,7 @@ if [ "$CLEAN" != "false" ]; then
   CLEAN_ARG="--clean"
 fi
 
-$SOURCE_DIR/dfx-snapshot-install --backup-dir "$BACKUP_DIR" --snapshot-zip "$STATE_ZIP_FILE" "$CLEAN_ARG"
+"$SOURCE_DIR/dfx-snapshot-install" --backup-dir "$BACKUP_DIR" --snapshot-zip "$STATE_ZIP_FILE" "$CLEAN_ARG"
 
 # Change to $HOME to avoid using nns-dapp dfx.json.
 cd "$HOME"
