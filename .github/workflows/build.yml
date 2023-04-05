@@ -109,7 +109,7 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
-          npx playwright install ffmpeg
+          #npx playwright install ffmpeg
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: npm run test-e2e
