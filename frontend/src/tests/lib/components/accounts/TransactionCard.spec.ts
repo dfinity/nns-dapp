@@ -24,7 +24,7 @@ describe("TransactionCard", () => {
     descriptions,
   }: {
     transaction?: Transaction;
-    descriptions?: Partial<I18nTransaction_names>;
+    descriptions?: Record<string, string>;
   }) =>
     render(TransactionCard, {
       props: {
@@ -51,8 +51,7 @@ describe("TransactionCard", () => {
         ...mockTransactionReceiveDataFromMain,
         type: AccountTransactionType.Burn,
       },
-      descriptions:
-        en.ckbtc_transaction_names as Partial<I18nTransaction_names>,
+      descriptions: en.ckbtc_transaction_names,
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.burn, {

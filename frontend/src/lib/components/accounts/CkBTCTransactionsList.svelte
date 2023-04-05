@@ -44,6 +44,12 @@
     canisterId: universeId,
     account,
   });
+
+  let descriptions: Record<string, string>;
+  $: descriptions = $i18n.ckbtc_transaction_names as unknown as Record<
+    string,
+    string
+  >;
 </script>
 
 <IcrcTransactionsList
@@ -52,5 +58,5 @@
   {transactions}
   {loading}
   {completed}
-  descriptions={$i18n.ckbtc_transaction_names}
+  {descriptions}
 />

@@ -16,8 +16,7 @@
   export let transaction: Transaction;
   export let toSelfTransaction = false;
   export let token: Token;
-  export let descriptions: Partial<I18nTransaction_names> | undefined =
-    undefined;
+  export let descriptions: Record<string, string> | undefined = undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
