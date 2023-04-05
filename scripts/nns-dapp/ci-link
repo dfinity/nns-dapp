@@ -18,10 +18,10 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
-clap.define short=c long=commit desc="The commit to find" variable=DFX_COMMIT default="$(git rev-parse HEAD)"
+clap.define short=c long=commit desc="The commit, tag or reference to find" variable=DFX_COMMIT default="HEAD"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-export DFX_COMMIT
+export DFX_COMMIT="$(git rev-parse "$DFX_COMMIT")"
 
 gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | "https://github.com/dfinity/nns-dapp/actions/runs/\(.databaseId)"'
