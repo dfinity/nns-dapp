@@ -26,12 +26,38 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     );
   }
 
+  async querySelectorCount({
+    selector,
+    expectedCount,
+  }: {
+    selector: string;
+    expectedCount: number;
+  }): Promise<PlaywrightPageObjectElement[]> {
+    await expect(this.locator.locator(selector)).toHaveCount(expectedCount);
+    const elements = await this.querySelectorAll(selector);
+    expect(elements).toHaveLength(expectedCount);
+    return elements;
+  }
+
   byTestId(tid: string): PlaywrightPageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
 
   allByTestId(tid: string): Promise<PlaywrightPageObjectElement[]> {
     return this.querySelectorAll(`[data-tid=${tid}]`);
+  }
+
+  countByTestId({
+    tid,
+    expectedCount,
+  }: {
+    tid: string;
+    expectedCount: number;
+  }): Promise<PlaywrightPageObjectElement[]> {
+    return this.querySelectorCount({
+      selector: `[data-tid=${tid}]`,
+      expectedCount,
+    });
   }
 
   getText(): Promise<string> {

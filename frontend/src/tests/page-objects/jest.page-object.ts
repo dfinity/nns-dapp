@@ -35,12 +35,32 @@ export class JestPageObjectElement implements PageObjectElement {
     );
   }
 
+  async querySelectorCount({
+    selector,
+    expectedCount,
+  }: {
+    selector: string;
+    expectedCount: number;
+  }): Promise<PlaywrightPageObjectElement[]> {
+    throw new Error("Not implemented");
+  }
+
   byTestId(tid: string): JestPageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
 
   allByTestId(tid: string): Promise<JestPageObjectElement[]> {
     return this.querySelectorAll(`[data-tid=${tid}]`);
+  }
+
+  countByTestId({
+    tid,
+    expectedCount,
+  }: {
+    tid: string;
+    expectedCount: number;
+  }): Promise<PlaywrightPageObjectElement[]> {
+    throw new Error("Not implemented");
   }
 
   async isPresent(): Promise<boolean> {
