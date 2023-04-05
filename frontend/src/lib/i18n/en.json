@@ -430,6 +430,10 @@
     "topUpCanister": "Top-up Canister",
     "participateSwap": "Decentralized Swap"
   },
+  "ckbtc_transaction_names": {
+    "burn": "To: <span class=\"value\">BTC Network</span>",
+    "mint": "From: <span class=\"value\">BTC Network</span>"
+  },
   "wallet": {
     "title": "Account",
     "address": "Address",

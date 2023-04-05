@@ -12,6 +12,7 @@
   export let loading: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
+  export let descriptions: I18nTransaction_names | undefined = undefined;
 </script>
 
 <div data-tid="transactions-list">
@@ -28,6 +29,7 @@
           {toSelfTransaction}
           {account}
           {governanceCanisterId}
+          {descriptions}
         />
       {/each}
     </InfiniteScroll>

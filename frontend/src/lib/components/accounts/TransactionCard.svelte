@@ -6,13 +6,15 @@
   import type { Token, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
-  import { KeyValuePair, IconNorthEast } from "@dfinity/gix-components";
+  import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
   import type { Transaction } from "$lib/types/transaction";
-  import type { AccountTransactionType } from "$lib/types/transaction";
+  import { AccountTransactionType } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
   export let token: Token;
+  export let descriptions: I18nTransaction_names | undefined = undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
@@ -38,8 +40,13 @@
       : isSend
       ? $i18n.wallet.direction_to
       : undefined;
+
+  let description: string | undefined;
+  $: description = descriptions?.[type];
+
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
+
   let seconds: number;
   $: seconds = date.getTime() / 1000;
 </script>
@@ -64,7 +71,11 @@
 
     <ColumnRow>
       <div slot="start" class="identifier">
-        {#if identifier !== undefined}
+        {#if nonNullish(description)}
+          <p><Html text={description} /></p>
+        {/if}
+
+        {#if nonNullish(identifier)}
           <Identifier size="medium" {label} {identifier} />
         {/if}
       </div>

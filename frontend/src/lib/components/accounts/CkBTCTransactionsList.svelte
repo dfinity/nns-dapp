@@ -11,6 +11,7 @@
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
+  import { i18n } from "$lib/stores/i18n";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -51,4 +52,5 @@
   {transactions}
   {loading}
   {completed}
+  descriptions={$i18n.ckbtc_transaction_names}
 />
