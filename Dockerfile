@@ -13,7 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq npm
+        git jq npm xxd
 
 # Gets tool versions.
 #
@@ -80,7 +80,6 @@ WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
-RUN apt -yq update && apt -yqq install --no-install-recommends xxd
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Image to build the nns-dapp frontend.
