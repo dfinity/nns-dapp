@@ -116,8 +116,8 @@ jobs:
         if: ${{ failure() }}
         with:
           name: playwright-failure-screenshot
-          path: |
-            frontend/playwright-results/*
+          path: frontend/playwright-results/*
+          retention-days: 3
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
