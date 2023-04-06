@@ -110,9 +110,10 @@ local_deployment_data="$(
   export GOVERNANCE_CANISTER_ID
 
   : "Define the robots text, if any"
-  if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]
-  then ROBOTS=''
-  else ROBOTS='<meta name="robots" content="noindex, nofollow" />'
+  if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
+    ROBOTS=''
+  else
+    ROBOTS='<meta name="robots" content="noindex, nofollow" />'
   fi
   export ROBOTS
 
