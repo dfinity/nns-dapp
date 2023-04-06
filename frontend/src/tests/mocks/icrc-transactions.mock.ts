@@ -36,7 +36,7 @@ const fakeAccount = {
   subaccount: [] as [],
 };
 
-const mockIcrcTransaction: IcrcTransaction = {
+const mockIcrcTransactionTransfer: IcrcTransaction = {
   kind: "transfer",
   timestamp: BigInt(12354),
   burn: [],
@@ -53,9 +53,39 @@ const mockIcrcTransaction: IcrcTransaction = {
   ],
 };
 
+export const mockIcrcTransactionBurn: IcrcTransaction = {
+  kind: "burn",
+  timestamp: BigInt(12354),
+  burn: [
+    {
+      amount: BigInt(33),
+      from: fakeAccount,
+      memo: [],
+      created_at_time: [BigInt(123)],
+    },
+  ],
+  mint: [],
+  transfer: [],
+};
+
+export const mockIcrcTransactionMint: IcrcTransaction = {
+  kind: "mint",
+  timestamp: BigInt(12354),
+  burn: [],
+  mint: [
+    {
+      amount: BigInt(33),
+      memo: [],
+      created_at_time: [BigInt(123)],
+      to: fakeAccount,
+    },
+  ],
+  transfer: [],
+};
+
 export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
   id: BigInt(123),
-  transaction: mockIcrcTransaction,
+  transaction: mockIcrcTransactionTransfer,
 };
 
 export const mockIcrcTransactionsStoreSubscribe =
