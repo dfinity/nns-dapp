@@ -8,7 +8,8 @@
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 
   export let minterCanisterId: CanisterId;
-  export let kytFee: bigint | undefined | null = undefined;
+
+  let kytFee: bigint | undefined | null = undefined;
 
   const loadKYTFee = async () => {
     const callback = (fee: bigint | null) => (kytFee = fee);
