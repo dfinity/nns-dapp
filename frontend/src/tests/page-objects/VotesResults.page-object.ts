@@ -13,8 +13,8 @@ export class VotesResultPo extends BasePageObject {
     return new VotesResultPo(element.byTestId(VotesResultPo.TID));
   }
 
-  async getProgressBar(): Promise<PageObjectElement> {
-    return assertNonNullish(await this.root.byRole("progressbar"));
+  getProgressBar(): PageObjectElement {
+    return assertNonNullish(this.root.byTestId("votes-progressbar"));
   }
 
   async getProgressMinValue(): Promise<bigint> {

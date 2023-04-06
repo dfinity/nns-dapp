@@ -19,6 +19,7 @@
     <div
       class="progressbar"
       role="progressbar"
+      data-tid="votes-progressbar"
       aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}

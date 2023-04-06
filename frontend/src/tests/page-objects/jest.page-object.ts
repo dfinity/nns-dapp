@@ -43,10 +43,6 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.querySelectorAll(`[data-tid=${tid}]`);
   }
 
-  async byRole(role: string) {
-    return this.querySelector(`[role=${role}]`);
-  }
-
   async isPresent(): Promise<boolean> {
     return nonNullish(this.element);
   }
