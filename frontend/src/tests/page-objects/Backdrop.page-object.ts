@@ -4,10 +4,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class BackdropPo extends BasePageObject {
   private static readonly TID = "backdrop";
 
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): BackdropPo {
     return new BackdropPo(element.byTestId(BackdropPo.TID));
   }

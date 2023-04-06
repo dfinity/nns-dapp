@@ -10,7 +10,7 @@
 </script>
 
 <div class="neurons">
-  <VotingNeuronSelectList {proposalInfo} {disabled} />
+  <VotingNeuronSelectList {disabled} />
 
   <MyVotes {proposalInfo} />
 

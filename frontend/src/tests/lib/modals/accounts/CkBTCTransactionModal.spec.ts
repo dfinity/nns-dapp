@@ -75,7 +75,9 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest.spyOn(minterApi, "estimateFee").mockResolvedValue(123n);
+    jest
+      .spyOn(minterApi, "estimateFee")
+      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
   });
 
   it("should transfer tokens", async () => {

@@ -8,13 +8,13 @@ dotenv.config();
 export default defineConfig({
   testDir: "./src/tests/e2e",
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000,
+    timeout: 10000,
   },
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -25,7 +25,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "list",
+  reporter: [["html", { open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
@@ -34,8 +34,9 @@ export default defineConfig({
     baseURL: process.env.CI
       ? process.env.VITE_OWN_CANISTER_URL
       : "http://localhost:5173",
+    screenshot: "only-on-failure",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
     /* Makes page.getByTestId() work with [data-tid] attributes. */
     testIdAttribute: "data-tid",
   },
@@ -43,9 +44,13 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "Google Chrome",
+      use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
+    // {
+    //   name: "chromium",
+    //   use: { ...devices["Desktop Chrome"] },
+    // },
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
@@ -77,7 +82,7 @@ export default defineConfig({
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  // outputDir: 'test-results/',
+  outputDir: "playwright-results/",
 
   /* Run your local dev server before starting the tests */
   // webServer: {

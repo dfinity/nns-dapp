@@ -6,10 +6,6 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class NnsAccountsPo extends BasePageObject {
   private static readonly TID = "accounts-body";
 
-  private constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   static under(element: PageObjectElement): NnsAccountsPo {
     return new NnsAccountsPo(element.byTestId(NnsAccountsPo.TID));
   }
@@ -28,7 +24,9 @@ export class NnsAccountsPo extends BasePageObject {
     const names = await Promise.all(cards.map((card) => card.getAccountName()));
     const index = names.indexOf(accountName);
     if (index === -1) {
-      throw new Error(`Account ${accountName} not found`);
+      throw new Error(
+        `Account ${accountName} not found. Available accounts are ${names}`
+      );
     }
     return cards[index];
   }
@@ -41,6 +39,11 @@ export class NnsAccountsPo extends BasePageObject {
   async getAccountAddress(accountName: string): Promise<string> {
     const card = await this.getAccountCardPo(accountName);
     return card.getAccountAddress();
+  }
+
+  async getAccountBalance(accountName: string): Promise<string> {
+    const card = await this.getAccountCardPo(accountName);
+    return card.getBalance();
   }
 
   getNnsAddAccountPo(): NnsAddAccountPo {

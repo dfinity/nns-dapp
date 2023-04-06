@@ -23,6 +23,15 @@ test("Test accounts requirements", async ({ page, context }) => {
   const subAccountName = "My second account";
   await nnsAccountsPo.addAccount(subAccountName);
 
+  // Workaround for the following scenario:
+  // 1. query result from initAccounts makes the main account card visible
+  // 2. query result from syncAccounts from addSubAccount makes the subaccount
+  //    card visible.
+  // 3. update result from initAccounts hides the subaccount card.
+  // 4. update result from syncAccount makes the subaccount card visible again.
+  // TODO: Fix the accounts store and remove this line.
+  await expect(page.getByTestId("account-card")).toHaveCount(2);
+
   // AU001: The user MUST be able to see a list of all their accounts
   const accountNames = await nnsAccountsPo.getAccountNames();
   expect(accountNames).toEqual([mainAccountName, subAccountName]);
@@ -31,6 +40,11 @@ test("Test accounts requirements", async ({ page, context }) => {
   await appPo.getIcp(20);
 
   // AU004: The user MUST be able to transfer funds
+  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
+    "20.00"
+  );
+  expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("0");
+
   const subAccountAddress = await nnsAccountsPo.getAccountAddress(
     subAccountName
   );
@@ -40,6 +54,13 @@ test("Test accounts requirements", async ({ page, context }) => {
     expectedAccountAddress: subAccountAddress,
     amount: 5,
   });
+
+  await appPo.goBack();
+  await nnsAccountsPo.getMainAccountCardPo().getAmountDisplayPo().waitFor();
+  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
+    "15.00"
+  );
+  expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("5.00");
 
   // TODO:
   // AU005: The user MUST be able to see the transactions of a specific account

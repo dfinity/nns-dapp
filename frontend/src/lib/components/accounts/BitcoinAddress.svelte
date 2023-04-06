@@ -1,0 +1,109 @@
+<script lang="ts">
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import { getBTCAddress } from "$lib/services/ckbtc-minter.services";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { onMount } from "svelte";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { CanisterId } from "$lib/types/canister";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
+  import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+  import { nonNullish } from "@dfinity/utils";
+  import type { BtcAddressText } from "$lib/types/bitcoin";
+  import { i18n } from "$lib/stores/i18n";
+  import { Spinner } from "@dfinity/gix-components";
+  import {
+    BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
+    BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
+  } from "$lib/constants/bitcoin.constants";
+
+  export let account: Account;
+  export let minterCanisterId: CanisterId;
+  export let universeId: UniverseCanisterId;
+
+  let identifier: AccountIdentifierText;
+  $: ({ identifier } = account);
+
+  let btcAddress: undefined | BtcAddressText;
+  $: btcAddress = $bitcoinAddressStore[identifier];
+
+  // We load the BTC address once per session
+  let btcAddressLoaded = false;
+  $: btcAddressLoaded = nonNullish($bitcoinAddressStore[identifier]);
+
+  // TODO: to be removed when ckBTC with minter is live.
+  let enabled = false;
+  $: enabled = isUniverseCkTESTBTC(universeId);
+
+  const loadBtcAddress = async () => {
+    if (!enabled) {
+      return;
+    }
+
+    if (btcAddressLoaded) {
+      return;
+    }
+
+    try {
+      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
+      const btcAddress = await getBTCAddress(minterCanisterId);
+
+      bitcoinAddressStore.set({ identifier, btcAddress });
+    } catch (err: unknown) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_address",
+        err,
+      });
+    }
+  };
+
+  onMount(async () => await loadBtcAddress());
+
+  let blockExplorerUrl: string;
+  $: blockExplorerUrl = `${
+    isUniverseCkTESTBTC(universeId)
+      ? BITCOIN_BLOCK_EXPLORER_TESTNET_URL
+      : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
+  }/${btcAddress ?? ""}`;
+</script>
+
+{#if enabled}
+  <p class="description">
+    {$i18n.ckbtc.incoming_bitcoin_network}
+    <a
+      data-tid="block-explorer-link"
+      href={btcAddressLoaded ? blockExplorerUrl : ""}
+      rel="noopener noreferrer external"
+      target="_blank"
+      aria-disabled={!btcAddressLoaded}
+      >{$i18n.ckbtc.block_explorer}
+      {#if !btcAddressLoaded}
+        <div class="spinner">
+          <Spinner size="tiny" inline />
+        </div>
+      {/if}
+    </a>.
+  </p>
+{/if}
+
+<style lang="scss">
+  div {
+    position: relative;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--padding-0_25x);
+
+    &[aria-disabled="true"] {
+      pointer-events: none;
+      color: var(--disable-contrast);
+      text-decoration: none;
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 0.8rem;
+  }
+</style>
