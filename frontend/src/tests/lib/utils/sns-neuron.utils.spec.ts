@@ -21,12 +21,12 @@ import {
   getSnsNeuronStake,
   getSnsNeuronState,
   hasEnoughMaturityToStake,
-  hasPermissions,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
   hasPermissionToSplit,
   hasPermissionToStakeMaturity,
   hasPermissionToVote,
+  hasPermissions,
   hasStakedMaturity,
   hasValidStake,
   isCommunityFund,
@@ -56,8 +56,8 @@ import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { NervousSystemParameters } from "@dfinity/sns";
 import {
-  neuronSubaccount,
   SnsNeuronPermissionType,
+  neuronSubaccount,
   type SnsNervousSystemFunction,
   type SnsNeuron,
 } from "@dfinity/sns";

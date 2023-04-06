@@ -11,8 +11,8 @@ import type { Identity } from "@dfinity/agent";
 import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
-  neuronSubaccount,
   SnsNeuronPermissionType,
+  neuronSubaccount,
   type SnsNeuron,
 } from "@dfinity/sns";
 import type {

@@ -13,12 +13,12 @@ import {
 } from "$lib/constants/routes.constants";
 import {
   buildAccountsUrl,
-  buildCanistersUrl,
   buildCanisterUrl,
-  buildNeuronsUrl,
+  buildCanistersUrl,
   buildNeuronUrl,
-  buildProposalsUrl,
+  buildNeuronsUrl,
   buildProposalUrl,
+  buildProposalsUrl,
   buildSwitchUniverseUrl,
   buildWalletUrl,
   isSelectedPath,

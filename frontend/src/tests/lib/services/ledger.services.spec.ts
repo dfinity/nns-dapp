@@ -30,8 +30,8 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
-  mockLedgerIdentifier,
   MockLedgerIdentity,
+  mockLedgerIdentifier,
 } from "$tests/mocks/ledger.identity.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
