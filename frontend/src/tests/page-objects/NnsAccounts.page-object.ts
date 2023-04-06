@@ -31,6 +31,10 @@ export class NnsAccountsPo extends BasePageObject {
     return cards[index];
   }
 
+  async openAccount(accountName: string): Promise<void> {
+    return (await this.getAccountCardPo(accountName)).click();
+  }
+
   async getAccountNames(): Promise<string[]> {
     const cards = await this.getAccountCardPos();
     return Promise.all(cards.map((card) => card.getAccountName()));
