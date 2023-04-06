@@ -175,9 +175,7 @@ describe("ckbtc-minter api", () => {
       const expectedResult = 789n;
 
       const depositFeeSpy =
-          minterCanisterMock.getDepositFee.mockResolvedValue(
-              expectedResult
-          );
+        minterCanisterMock.getDepositFee.mockResolvedValue(expectedResult);
 
       const result = await depositFee(params);
 
