@@ -182,7 +182,7 @@ const updateCSP = (indexHtml) => {
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
         connect-src 'self' ${cspConnectSrc()};
-        img-src 'self' data: https://nns.internetcomputer.org/ https://nns.ic0.app/ https://nns.raw.ic0.app/ \${{sns-aggregator-url}};
+        img-src 'self' data: https://nns.internetcomputer.org/ https://nns.ic0.app/ https://nns.raw.ic0.app/ \${{SNS_AGGREGATOR_URL}};
         child-src 'self';
         manifest-src 'self';
         script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(
@@ -201,15 +201,15 @@ const updateCSP = (indexHtml) => {
 const cspConnectSrc = () => {
   // TODO: Use `URL` to check if the URL is valid and not introduce a security issue
   const src = [
-    "${{VITE_IDENTITY_SERVICE_URL}}",
+    "${{IDENTITY_SERVICE_URL}}",
     // We move to internetcomputer.org, but if a user access the app with the old URL, we need to allow it
     "https://identity.ic0.app",
     // We still allow users to access the app with the old URL
     "https://nns.ic0.app",
-    "${{VITE_OWN_CANISTER_URL}}",
-    "${{VITE_HOST}}",
-    "${{VITE_GOVERNANCE_CANISTER_URL}}",
-    "${{VITE_LEDGER_CANISTER_URL}}",
+    "${{OWN_CANISTER_URL}}",
+    "${{HOST}}",
+    "${{GOVERNANCE_CANISTER_URL}}",
+    "${{LEDGER_CANISTER_URL}}",
     // TODO: solve with a worker
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
