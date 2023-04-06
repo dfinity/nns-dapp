@@ -121,5 +121,7 @@
     gap: var(--padding-0_5x);
 
     margin: var(--padding) 0;
+
+    --key-value-pair-justify-content: center;
   }
 </style>
