@@ -109,6 +109,8 @@ target/
 dist/
 node_modules/
 web-assets/
+playwright-report/
+playwright-results/
 
 **/*.rs.bk
 
