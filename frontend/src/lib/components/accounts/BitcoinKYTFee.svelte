@@ -22,7 +22,7 @@
   onMount(async () => await loadKYTFee());
 </script>
 
-<KeyValuePair>
+<KeyValuePair testId="kyt-fee">
   <span slot="key" class="label">{$i18n.ckbtc.kyt_fee}</span>
   <svelte:fragment slot="value">
     {#if nonNullish(kytFee)}
