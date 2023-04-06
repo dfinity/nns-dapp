@@ -50,6 +50,8 @@
           <Copy value={address ?? ""} />
         </div>
       </KeyValuePair>
+
+      <slot name="additional-information" />
     </div>
   {/if}
 </div>
