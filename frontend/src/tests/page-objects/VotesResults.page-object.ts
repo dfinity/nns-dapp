@@ -17,21 +17,21 @@ export class VotesResultPo extends BasePageObject {
     return assertNonNullish(this.root.byTestId("votes-progressbar"));
   }
 
-  async getProgressMinValue(): Promise<bigint> {
+  async getProgressMinValue(): Promise<number> {
     return assertNonNullish(
-      BigInt(await (await this.getProgressBar()).getAttribute("aria-valuemin"))
+      Number(await this.getProgressBar().getAttribute("aria-valuemin"))
     );
   }
 
-  async getProgressMaxValue(): Promise<bigint> {
+  async getProgressMaxValue(): Promise<number> {
     return assertNonNullish(
-      BigInt(await (await this.getProgressBar()).getAttribute("aria-valuemax"))
+      Number(await this.getProgressBar().getAttribute("aria-valuemax"))
     );
   }
 
-  async getProgressNowValue(): Promise<bigint> {
+  async getProgressNowValue(): Promise<number> {
     return assertNonNullish(
-      BigInt(await (await this.getProgressBar()).getAttribute("aria-valuenow"))
+      Number(await this.getProgressBar().getAttribute("aria-valuenow"))
     );
   }
 

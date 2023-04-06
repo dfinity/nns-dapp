@@ -52,10 +52,10 @@ describe("VotesResults", () => {
     const votesResultPo = VotesResultPo.under(
       new JestPageObjectElement(container)
     );
-    expect(await votesResultPo.isPresent()).toBeTruthy();
+    expect(await votesResultPo.isPresent()).toBe(true);
 
-    expect(await votesResultPo.getProgressMinValue()).toBe(0n);
-    expect(await votesResultPo.getProgressMaxValue()).toBe(BigInt(yes + no));
-    expect(await votesResultPo.getProgressNowValue()).toBe(BigInt(yes));
+    expect(await votesResultPo.getProgressMinValue()).toBe(0);
+    expect(await votesResultPo.getProgressMaxValue()).toBe(yes + no);
+    expect(await votesResultPo.getProgressNowValue()).toBe(yes);
   });
 });

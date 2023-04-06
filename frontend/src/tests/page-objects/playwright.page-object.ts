@@ -38,6 +38,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.textContent();
   }
 
+  getAttribute(attribute: string): Promise<string | null> {
+    throw new Error("Not implement");
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }
