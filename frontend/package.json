@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
-    "build:robots": "node scripts/build.robots.mjs",
     "build:preload": "node scripts/build.preload.mjs",
-    "build:post-process": "npm run build:robots && npm run build:csp",
+    "build:post-process": "npm run build:csp",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
     "build": "npm run i18n && vite build && npm run build:post-process",
