@@ -38,7 +38,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.textContent();
   }
 
-  getAttribute(attribute: string): Promise<string | null> {
+  getAttribute(_attribute: string): Promise<string | null> {
     throw new Error("Not implement");
   }
 
