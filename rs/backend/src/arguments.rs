@@ -21,7 +21,7 @@ impl CanisterArguments {
     pub fn to_html(&self) -> String {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
         for (key, value) in &self.args {
-            ans.push(' ');
+            ans.push_str("\n        ");
             ans.push_str(&configname2attributename(key));
             ans.push_str("=\"");
             ans.push_str(&configvalue2attributevalue(value));
