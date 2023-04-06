@@ -113,8 +113,10 @@ local_deployment_data="$(
   if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
     ROBOTS=''
   else
+    # shellcheck disable=SC2089 # yes, we really want the backslash
     ROBOTS='<meta name="robots" content="noindex, nofollow" />'
   fi
+  # shellcheck disable=SC2090 # We still want the backslash.
   export ROBOTS
 
   : "Put any values we found in JSON.  Omit any that are undefined."
