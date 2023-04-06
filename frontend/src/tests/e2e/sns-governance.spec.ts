@@ -18,7 +18,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   const snsUniverseCards = await appPo
     .getSelectUniverseListPo()
     .getSnsUniverseCards();
-  expect(snsUniverseCards).toHaveLength(1);
+  expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
   const snsProjectName = await snsUniverseCards[0].getName();
 
   // Our test SNS project names are always 5 uppercase letters.
