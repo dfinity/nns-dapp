@@ -34,4 +34,14 @@ export class VotesResultPo extends BasePageObject {
       BigInt(await (await this.getProgressBar()).getAttribute("aria-valuenow"))
     );
   }
+
+  /** @returns formatted text */
+  async getAdoptVotingPower(): Promise<string> {
+    return assertNonNullish(this.root.byTestId("adopt").getText());
+  }
+
+  /** @returns formatted text */
+  async getRejectVotingPower(): Promise<string> {
+    return assertNonNullish(this.root.byTestId("reject").getText());
+  }
 }

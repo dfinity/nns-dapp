@@ -25,14 +25,26 @@ describe("VotesResults", () => {
     });
   });
 
-  it('should render "Adopt" value', () => {
-    const { getByText } = renderResult;
-    expect(getByText(`${formatNumber(yes)}`)).toBeInTheDocument();
+  it('should render "Adopt" value', async () => {
+    const { container } = renderResult;
+    const votesResultPo = VotesResultPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await votesResultPo.getAdoptVotingPower()).toEqual(
+      `${formatNumber(yes)}`
+    );
   });
 
-  it('should render "Reject" value', () => {
-    const { getByText } = renderResult;
-    expect(getByText(`${formatNumber(no)}`)).toBeInTheDocument();
+  it('should render "Reject" value', async () => {
+    const { container } = renderResult;
+    const votesResultPo = VotesResultPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await votesResultPo.getRejectVotingPower()).toEqual(
+      `${formatNumber(no)}`
+    );
   });
 
   it("should render progressbar", async () => {
@@ -43,7 +55,7 @@ describe("VotesResults", () => {
     expect(await votesResultPo.isPresent()).toBeTruthy();
 
     expect(await votesResultPo.getProgressMinValue()).toBe(0n);
-    expect(await votesResultPo.getProgressMaxValue()).toBe(yes + no);
-    expect(await votesResultPo.getProgressNowValue()).toBe(yes);
+    expect(await votesResultPo.getProgressMaxValue()).toBe(BigInt(yes + no));
+    expect(await votesResultPo.getProgressNowValue()).toBe(BigInt(yes));
   });
 });
