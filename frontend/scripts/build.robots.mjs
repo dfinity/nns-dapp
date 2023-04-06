@@ -18,7 +18,7 @@ const updateRobots = (htmlFile) => {
   const content = readFileSync(htmlFile, "utf-8");
 
   return content.replace(
-    "<!-- ROBOTS -->",
+    "<!-- ROBOTS-NOT-ANY-MORE -->",
     ["local", "testnet"].includes(process.env.VITE_DFX_NETWORK)
       ? '<meta name="robots" content="noindex, nofollow" />'
       : ""

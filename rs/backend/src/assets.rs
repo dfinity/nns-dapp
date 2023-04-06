@@ -1,4 +1,4 @@
-use crate::arguments::{CANISTER_ARGUMENTS, TemplateEngine};
+use crate::arguments::{TemplateEngine, CANISTER_ARGUMENTS};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
