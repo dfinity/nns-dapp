@@ -13,6 +13,7 @@ import {
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import type { Principal } from "@dfinity/principal";
+import type { QueryParams } from "@dfinity/utils";
 
 const minterIdentityParams = ({
   identity,
@@ -116,6 +117,27 @@ export const estimateFee = async ({
   const result = await estimateFeeApi(params);
 
   logWithTimestamp("Bitcoin estimated fee: done");
+
+  return result;
+};
+
+export const depositFee = async ({
+  identity,
+  canisterId,
+  ...rest
+}: {
+  identity: Identity;
+  canisterId: Principal;
+} & QueryParams): Promise<bigint> => {
+  logWithTimestamp("Bitcoin deposit fee: call...");
+
+  const {
+    canister: { getDepositFee },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await getDepositFee(rest);
+
+  logWithTimestamp("Bitcoin deposit fee: done");
 
   return result;
 };

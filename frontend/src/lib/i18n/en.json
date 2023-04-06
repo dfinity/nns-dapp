@@ -860,7 +860,8 @@
     "loading_address": "Loading the address",
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
-    "refresh_balance": "Refresh Balance"
+    "refresh_balance": "Refresh Balance",
+    "kyt_fee": "Inter-network Fee"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
@@ -877,6 +878,7 @@
     "insufficient_funds": "Insufficient funds.",
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched.",
+    "deposit_fee": "Sorry, the Inter-network Fee cannot be fetched.",
     "retrieve_btc_min_amount": "The amount is below the $amount ckBTC minimum for converting to BTC."
   },
   "feature_flags_prompt": {
