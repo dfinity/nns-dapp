@@ -116,6 +116,10 @@
   }
 
   .address-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
+
     margin: var(--padding) 0;
   }
 </style>
