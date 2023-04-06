@@ -50,6 +50,8 @@
           <Copy value={address ?? ""} />
         </div>
       </KeyValuePair>
+
+      <slot name="additional-information" />
     </div>
   {/if}
 </div>
@@ -114,6 +116,14 @@
   }
 
   .address-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
     margin: var(--padding) 0;
+
+    @include media.min-width(medium) {
+      --key-value-pair-justify-content: center;
+    }
   }
 </style>
