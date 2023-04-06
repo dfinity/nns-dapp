@@ -904,6 +904,7 @@ interface I18nCkbtc {
   incoming_bitcoin_network: string;
   block_explorer: string;
   refresh_balance: string;
+  kyt_fee: string;
 }
 
 interface I18nError__ckbtc {
@@ -921,6 +922,7 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
+  deposit_fee: string;
   retrieve_btc_min_amount: string;
 }
 
