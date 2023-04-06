@@ -24,7 +24,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/card";
 
   .title {
-    @include card.stacked-title;
     @include card.title;
   }
 </style>

@@ -447,6 +447,11 @@ interface I18nTransaction_names {
   participateSwap: string;
 }
 
+interface I18nCkbtc_transaction_names {
+  burn: string;
+  mint: string;
+}
+
 interface I18nWallet {
   title: string;
   address: string;
@@ -904,6 +909,7 @@ interface I18nCkbtc {
   incoming_bitcoin_network: string;
   block_explorer: string;
   refresh_balance: string;
+  kyt_fee: string;
 }
 
 interface I18nError__ckbtc {
@@ -921,6 +927,7 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
+  deposit_fee: string;
   retrieve_btc_min_amount: string;
 }
 
@@ -1143,6 +1150,7 @@ interface I18n {
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;
+  ckbtc_transaction_names: I18nCkbtc_transaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;

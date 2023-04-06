@@ -99,10 +99,6 @@
     }
   }
 
-  .title-container {
-    @include card.stacked-title;
-  }
-
   .title-placeholder {
     flex-grow: 1;
 

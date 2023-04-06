@@ -22,8 +22,8 @@ import type {
   SnsProposalId,
 } from "@dfinity/sns";
 import {
-  neuronSubaccount,
   SnsGovernanceError,
+  neuronSubaccount,
   type SnsNeuron,
 } from "@dfinity/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
