@@ -4,7 +4,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class SkeletonCardPo extends BasePageObject {
   private static readonly TID = "skeleton-card";
 
-  static under(element: PageObjectElement): TransactionListPo {
+  static under(element: PageObjectElement): SkeletonCardPo {
     return new SkeletonCardPo(element.byTestId(SkeletonCardPo.TID));
   }
 
