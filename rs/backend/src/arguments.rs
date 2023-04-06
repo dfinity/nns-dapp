@@ -74,13 +74,16 @@ impl TemplateEngine {
         let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}|<!-- *([_0-9A-Z]+) *-->").expect("Invalid regex");
         TemplateEngine { args, regex }
     }
-    /// Replaces substrings of the form `${{ARG_KEY}}` with the corresponding argument value.
+    /// Replaces substrings of the form `${{ARG_KEY}}` and `<!-- ARG_KEY -->` with the corresponding argument value.
     pub fn populate(&self, input: &str) -> String {
         self.regex
             .replace_all(input, |cap: &Captures| {
-                let key = cap.get(1).or_else(|| cap.get(2)).expect("Should be impossible");
-                let val = self.args.get(key.as_str());
-                val.cloned().unwrap_or_else(|| cap.get(0).unwrap().as_str().to_string())
+                if let Some(key) = cap.get(1).or_else(|| cap.get(2)) {
+                    let val = self.args.get(key.as_str());
+                    val.cloned().unwrap_or_else(|| cap.get(0).unwrap().as_str().to_string())
+                } else {
+                    "REGEX ERROR".to_string()
+                }
             })
             .to_string()
     }
