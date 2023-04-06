@@ -7,7 +7,7 @@ import { sumTokenAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import { checkAccountId, TokenAmount } from "@dfinity/nns";
+import { TokenAmount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
