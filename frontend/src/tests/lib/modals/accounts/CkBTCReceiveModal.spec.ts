@@ -12,6 +12,7 @@ import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -87,6 +88,8 @@ describe("BtcCkBTCReceiveModal", () => {
           identifier: mockCkBTCMainAccount.identifier,
           btcAddress: mockBTCAddressTestnet,
         });
+
+        jest.spyOn(api, "depositFee").mockResolvedValue(789n);
       });
 
       it("should render BTC address", async () => {
@@ -97,6 +100,18 @@ describe("BtcCkBTCReceiveModal", () => {
         await selectSegmentBTC(container);
 
         expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
+      });
+
+      it("should render a KYT fee", async () => {
+        const { getByTestId, container } = await renderReceiveModal({});
+
+        await selectSegmentBTC(container);
+
+        await waitFor(() =>
+          expect(getByTestId("kyt-fee")?.textContent).toEqual(
+            `${en.ckbtc.kyt_fee} ${formatEstimatedFee(789n)} ${en.ckbtc.btc}`
+          )
+        );
       });
 
       it("should render account identifier (without being shortened)", async () => {
