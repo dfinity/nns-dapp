@@ -118,10 +118,12 @@
   .address-block {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-0_5x);
+    gap: var(--padding);
 
     margin: var(--padding) 0;
 
-    --key-value-pair-justify-content: center;
+    @include media.min-width(medium) {
+      --key-value-pair-justify-content: center;
+    }
   }
 </style>
