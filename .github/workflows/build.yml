@@ -102,6 +102,25 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate .env configuration for Playwright end-to-end tests
+        run: |
+          DFX_NETWORK=local ./config.sh
+      - name: Prepare for Playwright end-to-end tests
+        working-directory: frontend
+        run: |
+          npm ci
+      - name: Run Playwright end-to-end tests
+        working-directory: frontend
+        run: npm run test-e2e
+      - name: Upload Playwright results
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: playwright-failure-results
+          path: |
+            frontend/playwright-report/*
+            frontend/playwright-results/*
+          retention-days: 3
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
