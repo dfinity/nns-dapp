@@ -7,14 +7,12 @@ import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("VotesResults", () => {
-  const yes = 2;
-  const no = 3;
   const renderComponent = () => {
     const { container } = render(VotesResults, {
       props: {
-        yes,
-        no,
-        total: yes + no,
+        yes: 2,
+        no: 3,
+        total: 5,
       },
     });
 
@@ -35,7 +33,7 @@ describe("VotesResults", () => {
     const votesResultPo = renderComponent();
 
     expect(await votesResultPo.getProgressMinValue()).toBe(0);
-    expect(await votesResultPo.getProgressMaxValue()).toBe(yes + no);
-    expect(await votesResultPo.getProgressNowValue()).toBe(yes);
+    expect(await votesResultPo.getProgressMaxValue()).toBe(5);
+    expect(await votesResultPo.getProgressNowValue()).toBe(2);
   });
 });
