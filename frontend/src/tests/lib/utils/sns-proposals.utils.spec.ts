@@ -250,7 +250,7 @@ describe("sns-proposals utils", () => {
       );
     });
 
-    it("should use the functions passed to set topic and topic description", () => {
+    it("should use the functions passed to set type and type description", () => {
       const proposalData = {
         ...mockSnsProposal,
         action: nervousSystemFunctionMock.id,
@@ -260,8 +260,8 @@ describe("sns-proposals utils", () => {
         proposalData,
         nsFunctions: [nervousSystemFunctionMock],
       });
-      expect(mappedProposal.topic).toBe(nervousSystemFunctionMock.name);
-      expect(mappedProposal.topicDescription).toBe(
+      expect(mappedProposal.type).toBe(nervousSystemFunctionMock.name);
+      expect(mappedProposal.typeDescription).toBe(
         nervousSystemFunctionMock.description[0]
       );
     });
