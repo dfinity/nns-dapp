@@ -1,20 +1,18 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import { fireEvent } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
  */
 export class JestPageObjectElement implements PageObjectElement {
-  private static readonly MAX_RETRIES = 5;
-  private static readonly WAIT_FOR_INTERVAL_MILLIS = 500;
   private element: Element | null;
   private readonly selector: string | undefined;
-  private readonly parent: Element | undefined | null;
+  private readonly parent: JestPageObjectElement | undefined;
 
   constructor(
     element: Element | null,
-    params?: { parent: Element | null; selector: string }
+    params?: { parent: JestPageObjectElement; selector: string }
   ) {
     this.element = element;
     this.selector = params?.selector;
@@ -23,7 +21,7 @@ export class JestPageObjectElement implements PageObjectElement {
 
   querySelector(selector: string): JestPageObjectElement {
     const el = this.element && this.element.querySelector(selector);
-    return new JestPageObjectElement(el, { parent: this.element, selector });
+    return new JestPageObjectElement(el, { parent: this, selector });
   }
 
   async querySelectorAll(selector: string): Promise<JestPageObjectElement[]> {
@@ -51,30 +49,11 @@ export class JestPageObjectElement implements PageObjectElement {
     if (await this.isPresent()) {
       return;
     }
-    return new Promise((resolve, reject) => {
-      let count = 0;
-      const intervalId = setInterval(() => {
-        this.element = this.parent?.querySelector(this.selector);
-        if (nonNullish(this.element)) {
-          clearInterval(intervalId);
-          resolve();
-        } else if (count > JestPageObjectElement.MAX_RETRIES) {
-          clearInterval(intervalId);
-          reject(
-            `Element with selector ${this.selector} not found after ${
-              JestPageObjectElement.WAIT_FOR_INTERVAL_MILLIS *
-              JestPageObjectElement.MAX_RETRIES
-            } milliseconds`
-          );
-        }
-        count += 1;
-      }, JestPageObjectElement.WAIT_FOR_INTERVAL_MILLIS);
+    await this.parent.waitFor();
+    await waitFor(() => {
+      this.element = this.parent?.element.querySelector(this.selector);
+      expect(this.element).not.toBeNull();
     });
-    // TODO:
-    // To be able to implement this, querySelector shouldn't immediately get an
-    // element but rather concattenate the selectors. If we already have a null
-    // element, it's too late to wait for it.
-    throw new Error("Not implemented");
   }
 
   waitForAbsent(): Promise<void> {
@@ -87,6 +66,11 @@ export class JestPageObjectElement implements PageObjectElement {
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
     return this.element && this.element.textContent;
+  }
+
+  // Resolves to null if the element is not present.
+  async getAttribute(attribute: string): Promise<string | null> {
+    return this.element && this.element.getAttribute(attribute);
   }
 
   async click(): Promise<void> {
