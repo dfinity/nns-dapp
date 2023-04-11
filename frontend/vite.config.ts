@@ -12,6 +12,7 @@ const { version } = JSON.parse(json);
 const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
+    minify: false,
     target: "es2020",
     rollupOptions: {
       output: {
