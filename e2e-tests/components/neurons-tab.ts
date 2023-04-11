@@ -103,6 +103,8 @@ export class NeuronsTab extends MyNavigator {
       "Click to start staking neuron"
     );
 
+    await this.waitForModalWithTitle("Stake Neuron");
+
     console.log("Continue with default first account");
 
     console.log("Input the amount");
