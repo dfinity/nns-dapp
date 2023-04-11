@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal";
 import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
@@ -22,40 +21,36 @@ global.TextEncoder = TextEncoder;
 ).IntersectionObserver = IntersectionObserverPassive;
 
 // Environment Variables Setup
-jest.mock("./src/lib/constants/identity.constants.ts", () => ({
-  IDENTITY_SERVICE_URL: "http://localhost:8000/",
-  AUTH_SESSION_DURATION: BigInt(30 * 60 * 1_000_000_000),
+jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
+  getEnvVars: () => ({
+    ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
+    ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
+    cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+    dfxNetwork: "testnet",
+    featureFlags: JSON.stringify({
+      ENABLE_SNS_2: true,
+      ENABLE_SNS_VOTING: true,
+      ENABLE_SNS_AGGREGATOR: true,
+      ENABLE_CKBTC: true,
+      ENABLE_CKTESTBTC: true,
+      TEST_FLAG_EDITABLE: true,
+      TEST_FLAG_NOT_EDITABLE: true,
+    }),
+    fetchRootKey: "false",
+    host: "https://icp-api.io",
+    governanceCaniserId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    identityServiceUrl: "http://localhost:8000/",
+    ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
+    ownCanisterUrl: "nns.ic0.app",
+    // Environments without SNS aggregator are valid
+    snsAggregatorUrl:
+      "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
+    wasmCanisterId: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+  }),
 }));
 
-jest.mock("./src/lib/constants/canister-ids.constants.ts", () => ({
-  OWN_CANISTER_ID_TEXT: "qhbym-qaaaa-aaaaa-aaafq-cai",
-  OWN_CANISTER_ID: Principal.fromText("qhbym-qaaaa-aaaaa-aaafq-cai"),
-  LEDGER_CANISTER_ID: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
-  GOVERNANCE_CANISTER_ID: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
-  CYCLES_MINTING_CANISTER_ID: Principal.fromText("rkp4c-7iaaa-aaaaa-aaaca-cai"),
-  WASM_CANISTER_ID: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
-  TVL_CANISTER_ID: Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai"),
-}));
-
-jest.mock("./src/lib/constants/ckbtc-canister-ids.constants.ts", () => ({
-  CKBTC_MINTER_CANISTER_ID: Principal.fromText("q3fc5-haaaa-aaaaa-aaahq-cai"),
-  CKBTC_LEDGER_CANISTER_ID: Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai"),
-  CKBTC_INDEX_CANISTER_ID: Principal.fromText("n5wcd-faaaa-aaaar-qaaea-cai"),
-  CKBTC_UNIVERSE_CANISTER_ID: Principal.fromText("mxzaz-hqaaa-aaaar-qaada-cai"),
-  CKTESTBTC_MINTER_CANISTER_ID: Principal.fromText(
-    "ml52i-qqaaa-aaaar-qaaba-cai"
-  ),
-  CKTESTBTC_LEDGER_CANISTER_ID: Principal.fromText(
-    "mc6ru-gyaaa-aaaar-qaaaq-cai"
-  ),
-  CKTESTBTC_INDEX_CANISTER_ID: Principal.fromText(
-    "mm444-5iaaa-aaaar-qaabq-cai"
-  ),
-  CKTESTBTC_UNIVERSE_CANISTER_ID: Principal.fromText(
-    "mc6ru-gyaaa-aaaar-qaaaq-cai"
-  ),
-}));
-
+// TODO: Split the constants that depend on the environment variables and the ones that don't.
 jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   DFX_NETWORK: "testnet",
   HOST: "https://icp-api.io",

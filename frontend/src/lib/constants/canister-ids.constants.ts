@@ -1,4 +1,4 @@
-import { getEnvVars } from "$lib/utils/env.utils";
+import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { Principal } from "@dfinity/principal";
 
 const envVarsDataset = getEnvVars();

@@ -1,4 +1,5 @@
-import { addRawToUrl, getEnvVars } from "$lib/utils/env.utils";
+import { getEnvVars } from "$lib/utils/env-vars.utils";
+import { addRawToUrl } from "$lib/utils/env.utils";
 
 const envVars = getEnvVars();
 
