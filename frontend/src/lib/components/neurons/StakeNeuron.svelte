@@ -81,7 +81,7 @@
   <div class="toolbar">
     <button
       class="secondary"
-      data-tid="transaction-button-cancel"
+      data-tid="stake-neuron-button-cancel"
       type="button"
       on:click={close}>{$i18n.core.cancel}</button
     >

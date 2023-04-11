@@ -36,7 +36,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { assertNonNullish } from "$tests/utils/utils.test-utils";
+import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -383,6 +383,19 @@ describe("StakeNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("edit-followers-screen")).not.toBeNull()
       );
+    });
+
+    it("should trigger close on cancel", async () => {
+      const { component, getByTestId } = await renderModal({
+        component: StakeNeuronModal,
+      });
+
+      const onClose = jest.fn();
+      component.$on("nnsClose", onClose);
+
+      await clickByTestId(getByTestId, "stake-neuron-button-cancel");
+
+      await waitFor(() => expect(onClose).toBeCalled());
     });
   });
 
