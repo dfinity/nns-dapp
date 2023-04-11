@@ -64,7 +64,6 @@ describe("SnsProposalDetail", () => {
         new JestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
-      fakeSnsGovernanceApi.resume();
     });
 
     it("should render content once proposal is loaded", async () => {
