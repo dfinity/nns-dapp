@@ -33,12 +33,34 @@ export class JestPageObjectElement implements PageObjectElement {
     );
   }
 
+  querySelectorCount({
+    selector: _selector,
+    count: _count,
+  }: {
+    selector: string;
+    count: number;
+  }): JestPageObjectElement[] {
+    throw new Error("Not implemented");
+  }
+
   byTestId(tid: string): JestPageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
 
   allByTestId(tid: string): Promise<JestPageObjectElement[]> {
     return this.querySelectorAll(`[data-tid=${tid}]`);
+  }
+
+  countByTestId({
+    tid: _tid,
+    count: _count,
+  }: {
+    tid: string;
+    count: number;
+  }): JestPageObjectElement[] {
+    throw new Error("Not implemented");
+    // Not tested:
+    // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
   async isPresent(): Promise<boolean> {
