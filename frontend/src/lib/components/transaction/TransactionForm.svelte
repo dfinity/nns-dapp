@@ -9,10 +9,7 @@
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
-  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { NotEnoughAmountError } from "$lib/types/common.errors";

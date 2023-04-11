@@ -22,7 +22,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   onMount(() => {
     pollAccounts();
