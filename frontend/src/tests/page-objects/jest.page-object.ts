@@ -36,12 +36,12 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async querySelectorCount({
-    selector: _,
-    expectedCount: __,
+    selector: _selector,
+    count: _count,
   }: {
     selector: string;
-    expectedCount: number;
-  }): Promise<JestPageObjectElement[]> {
+    count: number;
+  }): JestPageObjectElement[] {
     throw new Error("Not implemented");
   }
 
@@ -54,13 +54,15 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   countByTestId({
-    tid: _,
-    expectedCount: __,
+    tid,
+    count,
   }: {
     tid: string;
-    expectedCount: number;
-  }): Promise<JestPageObjectElement[]> {
+    count: number;
+  }): JestPageObjectElement[] {
     throw new Error("Not implemented");
+    // Not tested:
+    // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
   async isPresent(): Promise<boolean> {

@@ -12,19 +12,19 @@ export class SelectUniverseCardPo extends BasePageObject {
     );
   }
 
-  static async countUnder({
+  static countUnder({
     element,
-    expectedCount,
+    count,
   }: {
     element: PageObjectElement;
-    expectedCount?: number | undefined;
-  }): Promise<SelectUniverseCardPo[]> {
-    return Array.from(
-      await element.countByTestId({
+    count?: number | undefined;
+  }): SelectUniverseCardPo[] {
+    return element
+      .countByTestId({
         tid: SelectUniverseCardPo.TID,
-        expectedCount,
+        count,
       })
-    ).map((el) => new SelectUniverseCardPo(el));
+      .map((el) => new SelectUniverseCardPo(el));
   }
 
   getName(): Promise<string> {

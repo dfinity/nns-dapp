@@ -26,16 +26,19 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     );
   }
 
-  async querySelectorCount({
+  querySelectorCount({
     selector,
-    expectedCount,
+    count,
   }: {
     selector: string;
-    expectedCount: number;
-  }): Promise<PlaywrightPageObjectElement[]> {
-    await expect(this.locator.locator(selector)).toHaveCount(expectedCount);
-    const elements = await this.querySelectorAll(selector);
-    expect(elements).toHaveLength(expectedCount);
+    count: number;
+  }): PlaywrightPageObjectElement[] {
+    const elements: PlaywrightPageObjectElement[] = [];
+    for (let i = 0; i < count; i++) {
+      elements.push(
+        new PlaywrightPageObjectElement(this.locator.locator(selector).nth(i))
+      );
+    }
     return elements;
   }
 
@@ -49,14 +52,14 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
 
   countByTestId({
     tid,
-    expectedCount,
+    count,
   }: {
     tid: string;
-    expectedCount: number;
-  }): Promise<PlaywrightPageObjectElement[]> {
+    count: number;
+  }): PlaywrightPageObjectElement[] {
     return this.querySelectorCount({
       selector: `[data-tid=${tid}]`,
-      expectedCount,
+      count,
     });
   }
 

@@ -7,20 +7,20 @@ export interface PageObjectElement {
   querySelectorAll(selector: string): Promise<PageObjectElement[]>;
   querySelectorCount({
     selector,
-    expectedCount,
+    count,
   }: {
     selector: string;
-    expectedCount: number;
-  }): Promise<PageObjectElement[]>;
+    count: number;
+  }): PageObjectElement[];
   byTestId(tid: string): PageObjectElement;
   allByTestId(tid: string): Promise<PageObjectElement[]>;
   countByTestId({
     tid,
-    expectedCount,
+    count,
   }: {
     tid: string;
-    expectedCount: number;
-  }): Promise<PageObjectElement[]>;
+    count: number;
+  }): PageObjectElement[];
   isPresent(): Promise<boolean>;
   waitFor(): Promise<void>;
   waitForAbsent(): Promise<void>;
