@@ -54,8 +54,8 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   countByTestId({
-    tid,
-    count,
+    tid: _tid,
+    count: _count,
   }: {
     tid: string;
     count: number;
