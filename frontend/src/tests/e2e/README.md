@@ -11,7 +11,7 @@ To run an individual test, you can do something like
 ```
 npm run test-e2e -- account
 ```
-This will run on the e2e tests which have `account` in the filename.
+This will run only the e2e tests which have `account` in the filename.
 
 If the environment variable `CI` is set, then the tests will run against
 `VITE_OWN_CANISTER_URL` instead of `http://localhost:5173`. This is configured
@@ -27,7 +27,7 @@ in ths snsdemo repository. After setting up the enviroment, it creates a
 snapshot of the replica state, which is then used for CI by the nns-dapp repo.
 
 You can run locally with such a snapshot by using `scripts/dev-local-state.sh`.
-However on Mac environments, this only seems to work if the snapshot was created
+However, on Mac environments, this only seems to work if the snapshot was created
 on the same machine.
 
 
