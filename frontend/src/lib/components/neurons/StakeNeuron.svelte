@@ -5,26 +5,33 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    formattedTransactionFeeICP,
-    getMaxTransactionAmount,
-  } from "$lib/utils/token.utils";
+  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import {
-    mainTransactionFeeStore,
-    transactionsFeesStore,
-  } from "$lib/stores/transaction-fees.store";
-  import { Value, busy } from "@dfinity/gix-components";
-  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+  import { busy } from "@dfinity/gix-components";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { isNullish } from "@dfinity/utils";
+  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
+  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import { toastsError } from "$lib/stores/toasts.store";
 
-  export let account: Account;
+  export let account: Account | undefined;
   let amount: number;
 
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
+    if (isNullish(account)) {
+      toastsError({
+        labelKey: "error__account.not_selected",
+      });
+      return;
+    }
+
     const isHardwareWallet = isAccountHardwareWallet(account);
+
     startBusy({
       initiator: "stake-neuron",
       labelKey: isHardwareWallet
@@ -51,51 +58,47 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: account.balance.toE8s(),
+    balance: account?.balance.toE8s() ?? 0n,
     fee: $transactionsFeesStore.main,
   });
 
   const stakeMaximum = () => (amount = max);
+
+  const close = () => dispatcher("nnsClose");
 </script>
 
 <form on:submit|preventDefault={createNeuron}>
-  <div class="source">
-    <TransactionSource {account} />
-  </div>
+  <TransactionFromAccount
+    bind:selectedAccount={account}
+    canSelectSource={true}
+    rootCanisterId={OWN_CANISTER_ID}
+  />
 
   <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
 
-  <div>
-    <p class="label">{$i18n.neurons.transaction_fee}</p>
-    <p>
-      <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value>
-      <span>ICP</span>
-    </p>
-  </div>
+  <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken}>
+    <svelte:fragment slot="label"
+      >{$i18n.neurons.transaction_fee}</svelte:fragment
+    >
+  </TransactionFormFee>
 
   <div class="toolbar">
     <button
       class="secondary"
+      data-tid="stake-neuron-button-cancel"
       type="button"
-      on:click={() => dispatcher("nnsBack")}
+      on:click={close}>{$i18n.core.cancel}</button
     >
-      {$i18n.neurons.change_source}
-    </button>
     <button
       class="primary"
       type="submit"
       data-tid="create-neuron-button"
-      disabled={amount === undefined || amount <= 0 || $busy}
+      disabled={amount === undefined ||
+        amount <= 0 ||
+        $busy ||
+        isNullish(account)}
     >
       {$i18n.neurons.create}
     </button>
   </div>
 </form>
-
-<style lang="scss">
-  .source {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-0_5x);
-  }
-</style>

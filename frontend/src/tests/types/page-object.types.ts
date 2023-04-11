@@ -5,8 +5,22 @@
 export interface PageObjectElement {
   querySelector(selector: string): PageObjectElement;
   querySelectorAll(selector: string): Promise<PageObjectElement[]>;
+  querySelectorCount({
+    selector,
+    count,
+  }: {
+    selector: string;
+    count: number;
+  }): PageObjectElement[];
   byTestId(tid: string): PageObjectElement;
   allByTestId(tid: string): Promise<PageObjectElement[]>;
+  countByTestId({
+    tid,
+    count,
+  }: {
+    tid: string;
+    count: number;
+  }): PageObjectElement[];
   isPresent(): Promise<boolean>;
   waitFor(): Promise<void>;
   waitForAbsent(): Promise<void>;

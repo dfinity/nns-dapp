@@ -75,7 +75,8 @@
 
     padding: var(--padding-2x) 0;
 
-    &:before, &:after {
+    &:before,
+    &:after {
       content: "";
     }
 

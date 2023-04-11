@@ -10,9 +10,9 @@
   export let id: bigint | undefined;
   export let title: string | undefined;
   export let color: ProposalStatusColor | undefined;
-  export let topic: string | undefined;
+  export let topic: string | undefined = undefined;
   export let proposer: string | undefined;
-  export let type: string | undefined = undefined;
+  export let type: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
 </script>
 
@@ -24,7 +24,7 @@
 
     <div class="meta-data">
       {#if type !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="proposal-type">
           <span slot="key">{$i18n.proposal_detail.type_prefix}</span>
           <span
             slot="value"
@@ -35,7 +35,7 @@
       {/if}
 
       {#if topic !== undefined}
-        <KeyValuePair testId="proposal-topic">
+        <KeyValuePair>
           <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
           <span slot="value" class="meta-data-value">{topic ?? ""}</span>
         </KeyValuePair>

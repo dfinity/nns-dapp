@@ -272,7 +272,6 @@ interface I18nNeurons {
   current_balance: string;
   may_take_while: string;
   create: string;
-  change_source: string;
   community_fund: string;
   hotkey_control: string;
   stake: string;
@@ -750,6 +749,7 @@ interface I18nError__account {
   create_subaccount: string;
   subaccount_not_found: string;
   rename_account_not_found: string;
+  not_selected: string;
 }
 
 interface I18nError__canister {
