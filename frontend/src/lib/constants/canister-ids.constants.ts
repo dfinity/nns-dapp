@@ -1,28 +1,20 @@
-import { getHtmlEnvVars } from "$lib/utils/env.utils";
+import { getEnvVars } from "$lib/utils/env.utils";
 import { Principal } from "@dfinity/principal";
 
-const envVarsDataset = getHtmlEnvVars();
+const envVarsDataset = getEnvVars();
 
-console.log(envVarsDataset);
-
-export const OWN_CANISTER_ID_TEXT =
-  envVarsDataset?.ownCanisterId ??
-  (import.meta.env.VITE_OWN_CANISTER_ID as string);
+export const OWN_CANISTER_ID_TEXT = envVarsDataset?.ownCanisterId ?? "";
 export const OWN_CANISTER_ID = Principal.fromText(OWN_CANISTER_ID_TEXT);
 export const LEDGER_CANISTER_ID = Principal.fromText(
-  envVarsDataset?.ledgerCanisterId ??
-    (import.meta.env.VITE_LEDGER_CANISTER_ID as string)
+  envVarsDataset.ledgerCanisterId
 );
 export const GOVERNANCE_CANISTER_ID = Principal.fromText(
-  envVarsDataset?.governanceCaniserId ??
-    (import.meta.env.VITE_GOVERNANCE_CANISTER_ID as string)
+  envVarsDataset.governanceCaniserId
 );
 export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
-  envVarsDataset?.cyclesMintingCanisterId ??
-    (import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID as string)
+  envVarsDataset.cyclesMintingCanisterId
 );
-export const WASM_CANISTER_ID =
-  envVarsDataset?.wasmCanisterId ?? import.meta.env.VITE_WASM_CANISTER_ID;
+export const WASM_CANISTER_ID = envVarsDataset.wasmCanisterId;
 
 // TVL Canister ID on mainnet. Use for readonly.
 export const TVL_CANISTER_ID = Principal.fromText(
