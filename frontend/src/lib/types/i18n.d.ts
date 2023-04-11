@@ -241,6 +241,7 @@ interface I18nAccounts {
   receive_account: string;
   sending_amount: string;
   total_deducted: string;
+  received_amount: string;
 }
 
 interface I18nNeurons {

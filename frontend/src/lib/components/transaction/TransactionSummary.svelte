@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Token } from "@dfinity/nns";
   import { TokenAmount } from "@dfinity/nns";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -34,38 +33,77 @@
   });
 </script>
 
-<Separator />
+<article class="container">
+  <KeyValuePair>
+    <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
+    <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+  </KeyValuePair>
 
-<KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
-  <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
-</KeyValuePair>
+  <KeyValuePair>
+    <span class="label" slot="key">{ledgerFeeLabel}</span>
+    <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+  </KeyValuePair>
 
-<KeyValuePair>
-  <span class="label" slot="key">{ledgerFeeLabel}</span>
-  <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
-</KeyValuePair>
+  <div class="deducted">
+    <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
-<p class="label">
-  {$i18n.accounts.total_deducted}
-</p>
+    <p>
+      <AmountDisplay inline detailed amount={tokenTotalDeducted} />
+    </p>
+  </div>
 
-<p>
-  <AmountDisplay inline detailed amount={tokenTotalDeducted} />
-</p>
+  <div class="icon">
+    <IconSouth />
+  </div>
 
-<div class="icon">
-  <IconSouth />
-</div>
+  <div>
+    <p class="label subtitle">
+      {$i18n.accounts.received_amount}
+    </p>
 
-<Separator />
+    <p>
+      <AmountDisplay inline detailed amount={tokenAmount} />
+    </p>
+  </div>
+</article>
 
 <style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-1_5x);
+
+    padding: var(--padding-2x) 0;
+
+    &:before, &:after {
+      content: "";
+    }
+
+    &:before {
+      border-top: 1px solid var(--line);
+      padding: 0 0 var(--padding);
+    }
+
+    &:after {
+      border-bottom: 1px solid var(--line);
+      padding: var(--padding) 0 0;
+    }
+  }
+
   .icon {
     color: var(--primary);
+    margin: var(--padding) 0;
+  }
 
-    :global(svg) {
-      height: var(--padding-3x);
-    }
+  p {
+    margin: 0;
+  }
+
+  .deducted {
+    margin: var(--padding) 0 0;
+  }
+
+  .subtitle {
+    margin: 0 0 var(--padding-0_5x);
   }
 </style>
