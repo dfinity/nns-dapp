@@ -25,13 +25,6 @@ export class SnsProposalSystemInfoSectionPo extends BasePageObject {
     }).getValueText();
   }
 
-  getTopicText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-topic",
-    }).getValueText();
-  }
-
   getDecisionStatusText(): Promise<string> {
     return KeyValuePairPo.under({
       element: this.root,

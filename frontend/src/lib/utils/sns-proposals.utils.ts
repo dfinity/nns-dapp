@@ -61,8 +61,8 @@ export type SnsProposalDataMap = {
   color: ProposalStatusColor | undefined;
 
   // Mapped from Nervous Functions
-  topic?: string;
-  topicDescription?: string;
+  type?: string;
+  typeDescription?: string;
 };
 
 // TODO: Return also a type and the type description that for now maps to the topic
@@ -148,8 +148,8 @@ export const mapProposalInfo = ({
     color: SNS_PROPOSAL_COLOR[decisionStatus],
 
     // Mapped from Nervous Functions
-    topic: nsFunction?.name,
-    topicDescription: nsFunction?.description[0],
+    type: nsFunction?.name,
+    typeDescription: nsFunction?.description[0],
   };
 };
 

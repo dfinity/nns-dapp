@@ -19,8 +19,8 @@
 
   $: loadSnsNervousSystemFunctions(rootCanisterId);
 
-  let topic: string | undefined;
-  let topicDescription: string | undefined;
+  let type: string | undefined;
+  let typeDescription: string | undefined;
   let statusString: string;
   let statusDescription: string | undefined;
   let rewardStatusString: string;
@@ -36,8 +36,8 @@
     $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions || [];
 
   $: ({
-    topic,
-    topicDescription,
+    type,
+    typeDescription,
     statusString,
     statusDescription,
     rewardStatusString,
@@ -54,23 +54,15 @@
   class="content-cell-island"
   data-tid="proposal-system-info-details-component"
 >
-  <h1 class="content-cell-title">{topic ?? ""}</h1>
+  <h1 class="content-cell-title">{type ?? ""}</h1>
 
   <div class="content-cell-details">
-    <!-- TODO: Confirm with product that we show both Type and Topic as the same for now -->
-    {#if nonNullish(topic)}
+    {#if nonNullish(type)}
       <ProposalSystemInfoEntry
         labelKey="type_prefix"
         testId="proposal-system-info-type"
-        value={topic}
-        description={topicDescription}
-      />
-
-      <ProposalSystemInfoEntry
-        labelKey="topic_prefix"
-        testId="proposal-system-info-topic"
-        value={topic}
-        description={topicDescription}
+        value={type}
+        description={typeDescription}
       />
     {/if}
 
