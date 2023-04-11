@@ -19,8 +19,8 @@
 </p>
 
 <KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.balance}: </span>
-  <AmountDisplay slot="value" singleLine amount={account.balance} />
+  <span class="label" slot="key">{$i18n.accounts.balance}</span>
+  <AmountDisplay slot="value" singleLine detailed amount={account.balance} />
 </KeyValuePair>
 
 <style lang="scss">

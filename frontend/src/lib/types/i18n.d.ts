@@ -201,6 +201,7 @@ interface I18nAccounts {
   source: string;
   destination: string;
   hardware_wallet_text: string;
+  token_transaction_fee: string;
   transaction_fee: string;
   new_transaction_fee: string;
   review_transaction: string;
@@ -238,6 +239,8 @@ interface I18nAccounts {
   estimated_bitcoin_transaction_fee: string;
   estimated_amount_received: string;
   receive_account: string;
+  sending_amount: string;
+  total_deducted: string;
 }
 
 interface I18nNeurons {

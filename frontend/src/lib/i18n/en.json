@@ -157,7 +157,7 @@
   },
   "accounts": {
     "main": "Main",
-    "balance": "Available balance",
+    "balance": "Available Balance",
     "send": "Send",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
@@ -192,6 +192,7 @@
     "source": "From",
     "destination": "Destination",
     "hardware_wallet_text": "Hardware Wallet",
+    "token_transaction_fee": "$tokenSymbol Ledger Fee",
     "transaction_fee": "Transaction Fee (billed to source)",
     "new_transaction_fee": "(transaction fee)",
     "review_transaction": "Review Transaction",
@@ -228,7 +229,9 @@
     "select_network": "Select network",
     "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network fee (deducted)",
     "estimated_amount_received": "Estimated amount received",
-    "receive_account": "Account"
+    "receive_account": "Account",
+    "sending_amount": "Sending Amount",
+    "total_deducted": "Total Deducted"
   },
   "neurons": {
     "title": "Neurons",
