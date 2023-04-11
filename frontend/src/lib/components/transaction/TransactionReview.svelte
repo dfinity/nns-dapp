@@ -41,7 +41,7 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <TransactionSource account={sourceAccount} />
+    <TransactionSource account={sourceAccount} balance={false} />
 
     <div class="highlight">
       <span class="icon">
@@ -126,6 +126,6 @@
   .info {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-0_5x);
   }
 </style>
