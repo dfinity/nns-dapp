@@ -264,6 +264,7 @@ interface I18nNeurons {
   follow_neurons_screen: string;
   stake_neuron: string;
   source: string;
+  transaction_fee: string;
   current_balance: string;
   may_take_while: string;
   create: string;
