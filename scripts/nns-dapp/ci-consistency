@@ -28,12 +28,13 @@ export DFX_COMMIT
 echo "Commit: $DFX_COMMIT"
 
 build_hash_from_logs() {
-  sed -nr 's&.*\<([a-z0-9]{64}) +(\/build\/)?'"$DFX_ASSET"'.*&\1&g;ta;b;:a;p'
+  sed -nr 's&.*\<([a-z0-9]{64}) +(\/build\/)?'"$DFX_ASSET"'.*&\1&g;ta;b;:a;p' | tail -n1 | grep .
 }
 
 echo "Build hashes for $DFX_ASSET:"
 : CI builds:
-logfile=",ci-builds-of-${DFX_COMMIT}.txt"
+LOG_END="$(($(date +%s) / 3600))"
+logfile=",ci-builds-of-${DFX_LIMIT}-${LOG_END}.txt"
 test -e "$logfile" || gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | .databaseId' >"$logfile"
 readarray -t runs <"$logfile"
 for run in "${runs[@]}"; do
