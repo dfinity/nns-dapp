@@ -39,13 +39,9 @@ import {
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
-import {
-  fireEvent,
-  waitFor,
-  type BoundFunction,
-  type queries,
-} from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
+import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
@@ -90,9 +86,6 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("StakeNeuronModal", () => {
-  const getAccountCard = (container) =>
-    container.querySelector('article[role="button"]');
-
   beforeEach(() => {
     cancelPollAccounts();
     jest.clearAllMocks();
@@ -131,52 +124,20 @@ describe("StakeNeuronModal", () => {
       expect(container.querySelector("div.modal")).not.toBeNull();
     });
 
-    it("should display accounts as cards", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
-
-      expect(getAccountCard(container)).not.toBeNull();
-    });
-
-    it("should be able to select an account and move to the next view", async () => {
-      const { container, queryByText } = await renderModal({
+    it("should display accounts with dropdown", async () => {
+      const { queryByTestId } = await renderModal({
         component: StakeNeuronModal,
       });
 
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
-
-      expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
-    });
-
-    it("should be able to select a subaccount and move to the next view", async () => {
-      const { container, queryByText } = await renderModal({
-        component: StakeNeuronModal,
-      });
-
-      const accountCards = container.querySelectorAll('article[role="button"]');
-      expect(accountCards.length).toBe(2);
-
-      const subAccountCard = queryByText(mockSubAccount.name as string, {
-        exact: false,
-      });
-
-      subAccountCard && (await fireEvent.click(subAccountCard));
-
-      expect(queryByText(en.neurons.stake_neuron)).toBeInTheDocument();
-      expect(queryByText(mockSubAccount.identifier)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
+      );
     });
 
     it("should have disabled Create neuron button", async () => {
       const { container, queryByText } = await renderModal({
         component: StakeNeuronModal,
       });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
@@ -188,11 +149,6 @@ describe("StakeNeuronModal", () => {
       const { container, queryByText } = await renderModal({
         component: StakeNeuronModal,
       });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
 
@@ -208,11 +164,6 @@ describe("StakeNeuronModal", () => {
     it("should be able to create a new neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
 
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
-
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
@@ -227,11 +178,6 @@ describe("StakeNeuronModal", () => {
 
     it("should move to update dissolve delay after creating a neuron", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -251,11 +197,6 @@ describe("StakeNeuronModal", () => {
 
     it("should have the update delay button disabled", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -279,11 +220,6 @@ describe("StakeNeuronModal", () => {
 
     it("should have disabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -316,11 +252,6 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
-
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
@@ -344,11 +275,6 @@ describe("StakeNeuronModal", () => {
       const { container } = await renderModal({
         component: StakeNeuronModal,
       });
-
-      const accountCard = getAccountCard(container);
-      const nonNullishCard = assertNonNullish(accountCard);
-
-      await fireEvent.click(nonNullishCard);
 
       const input = container.querySelector('input[name="amount"]');
       const nonNullishInput = assertNonNullish(input);
@@ -383,11 +309,6 @@ describe("StakeNeuronModal", () => {
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
       const { container } = await renderModal({ component: StakeNeuronModal });
-
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -439,12 +360,6 @@ describe("StakeNeuronModal", () => {
         component: StakeNeuronModal,
       });
 
-      // SCREEN: Select Account
-      const accountCard = getAccountCard(container);
-      expect(accountCard).not.toBeNull();
-
-      accountCard && (await fireEvent.click(accountCard));
-
       // SCREEN: Create Neuron
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -485,22 +400,16 @@ describe("StakeNeuronModal", () => {
     });
 
     const createNeuron = async ({
-      queryByText,
+      getByTestId,
       container,
-    }: {
-      queryByText: BoundFunction<queries.QueryByText>;
-      container: HTMLElement;
-    }) => {
+    }: RenderResult<SvelteComponent>) => {
       // SCREEN: Select Hardware Wallet Account
-      const hardwareWalletAccount = queryByText(
-        mockHardwareWalletAccount.name as string,
-        {
-          exact: false,
-        }
-      );
-      expect(hardwareWalletAccount).not.toBeNull();
+      const selectElement = getByTestId("select-account-dropdown");
 
-      hardwareWalletAccount && (await fireEvent.click(hardwareWalletAccount));
+      selectElement &&
+        fireEvent.change(selectElement, {
+          target: { value: mockHardwareWalletAccount.identifier },
+        });
 
       // SCREEN: Create Neuron
       const input = container.querySelector('input[name="amount"]');
@@ -514,12 +423,13 @@ describe("StakeNeuronModal", () => {
     };
 
     it("should create neuron for hardwareWallet and close modal if hotkey is not added", async () => {
-      const { container, queryByTestId, queryByText, component } =
-        await renderModal({
-          component: StakeNeuronModal,
-        });
+      const result = await renderModal({
+        component: StakeNeuronModal,
+      });
 
-      await createNeuron({ queryByText, container });
+      await createNeuron(result);
+
+      const { queryByTestId, component } = result;
 
       // SCREEN: Add NNS App Principal as Hotkey
       await waitFor(() =>
@@ -537,11 +447,13 @@ describe("StakeNeuronModal", () => {
 
     it("should create neuron for hardwareWallet and add dissolve delay", async () => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      const { container, queryByTestId, queryByText } = await renderModal({
+      const result = await renderModal({
         component: StakeNeuronModal,
       });
 
-      await createNeuron({ queryByText, container });
+      await createNeuron(result);
+
+      const { container, queryByTestId } = result;
 
       // SCREEN: Add NNS App Principal as Hotkey
       await waitFor(() =>
@@ -613,7 +525,7 @@ describe("StakeNeuronModal", () => {
 
       // Component is rendered after the accounts are loaded
       await waitFor(() =>
-        expect(queryByTestId("account-card")).toBeInTheDocument()
+        expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
     });
   });

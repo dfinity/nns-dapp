@@ -11,7 +11,7 @@
   export let selectedAccount: Account | undefined = undefined;
 </script>
 
-<div class="select-account">
+<div class="select-account" data-tid="transaction-from-account">
   <KeyValuePair>
     <span slot="key" class="label">{$i18n.accounts.source}</span>
     <!-- svelte:fragment needed to avoid warnings -->
