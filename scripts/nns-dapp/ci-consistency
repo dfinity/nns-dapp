@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Finds CI builds of the current commit.
+
+	Note: This searches through gihub logs.  Only fairly recent logs are readily accessible.
+	      Older runs may be found using high velues for the '--limit' flag but this is very slow.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+DFX_COMMIT="$(git rev-parse "HEAD")"
+export DFX_COMMIT
+
+echo "Commit: $DFX_COMMIT"
+
+readarray runs <(gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | .databaseId')
+
+echo Build hashes for assets.tar.xz:
+for run in "${runs[@]}" ; do
+	hash="$(gh run view "$run" --log | grep 'Build mainnet nns-dapp Docker image' | sed -nr 's&.* ([a-z0-9]{64}) +\/build\/assets.tar.xz.*&\1&g;ta;b;:a;p')"
+	echo -- "$hash $run"
+done
+docker_hash="$(./scripts/docker-build |& sed -nr 's&.* ([a-z0-9]{64}) +\/build\/assets.tar.xz.*&\1&g;ta;b;:a;p' || printf "% -64s" FAILED)"
+echo "$docker_hash Local docker build"
+native_hash="$({ rm -f assets.tar.xz && DFX_NETWORK=mainnet ./config.sh && ./build-frontend.sh ; } &>/dev/null && sha256sum assets.tar.xz)"
+echo "$native_hash Local native build"
