@@ -8,15 +8,18 @@
   export let total: number;
 </script>
 
-<ProposalContentCell>
+<ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
   <div class="latest-tally">
     <h4 class="label yes">
-      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
+      {$i18n.proposal_detail.adopt}<span data-tid="adopt"
+        >{formatNumber(yes)}</span
+      >
     </h4>
     <div
       class="progressbar"
       role="progressbar"
+      data-tid="votes-progressbar"
       aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}
@@ -25,7 +28,9 @@
       <div class="progressbar-value" style="width: {(yes / total) * 100}%" />
     </div>
     <h4 class="label no">
-      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
+      {$i18n.proposal_detail.reject}<span data-tid="reject"
+        >{formatNumber(no)}</span
+      >
     </h4>
   </div>
 </ProposalContentCell>
