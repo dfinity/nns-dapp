@@ -15,6 +15,7 @@ const config: UserConfig = {
     target: "es2020",
     rollupOptions: {
       output: {
+	chunkFileNames: "[name].js",
         manualChunks: (id) => {
           const folder = dirname(id);
 
