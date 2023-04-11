@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
-import { formatNumber } from "$lib/utils/format.utils";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
@@ -13,11 +12,16 @@ import { render } from "@testing-library/svelte";
 describe("SnsProposalVotingSection", () => {
   const proposal: SnsProposalData = {
     ...mockSnsProposal,
+    latest_tally: [
+      {
+        ...fromDefinedNullable(mockSnsProposal.latest_tally),
+        yes: 10n,
+        no: 20n,
+      },
+    ],
   };
 
   it("should render vote results", async () => {
-    const tally = fromDefinedNullable(mockSnsProposal.latest_tally);
-    const { yes, no } = tally;
     const { container } = render(SnsProposalVotingSection, {
       props: {
         proposal: {
@@ -31,11 +35,7 @@ describe("SnsProposalVotingSection", () => {
     const votesResultsPo = await po.getVotingsResultsPo();
 
     expect(await votesResultsPo.isPresent()).toBeTruthy();
-    expect(await votesResultsPo.getAdoptVotingPower()).toEqual(
-      `${formatNumber(Number(yes))}`
-    );
-    expect(await votesResultsPo.getRejectVotingPower()).toEqual(
-      `${formatNumber(Number(no))}`
-    );
+    expect(await votesResultsPo.getAdoptVotingPower()).toEqual("10.00");
+    expect(await votesResultsPo.getRejectVotingPower()).toEqual("20.00");
   });
 });

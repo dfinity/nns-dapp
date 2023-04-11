@@ -2,15 +2,13 @@
  * @jest-environment jsdom
  */
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { formatNumber } from "$lib/utils/format.utils";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("VotesResults", () => {
-  const yes = Number(E8S_PER_ICP * 2) / E8S_PER_ICP;
-  const no = Number(E8S_PER_ICP * 3) / E8S_PER_ICP;
+  const yes = 2;
+  const no = 3;
   const renderComponent = () => {
     const { container } = render(VotesResults, {
       props: {
@@ -25,18 +23,12 @@ describe("VotesResults", () => {
 
   it('should render "Adopt" value', async () => {
     const votesResultPo = renderComponent();
-
-    expect(await votesResultPo.getAdoptVotingPower()).toEqual(
-      `${formatNumber(yes)}`
-    );
+    expect(await votesResultPo.getAdoptVotingPower()).toEqual("2.00");
   });
 
   it('should render "Reject" value', async () => {
     const votesResultPo = renderComponent();
-
-    expect(await votesResultPo.getRejectVotingPower()).toEqual(
-      `${formatNumber(no)}`
-    );
+    expect(await votesResultPo.getRejectVotingPower()).toEqual("3.00");
   });
 
   it("should render progressbar", async () => {
