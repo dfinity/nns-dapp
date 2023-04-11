@@ -93,7 +93,7 @@ describe("SnsProposalDetail", () => {
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
 
-    it("should render the name of the nervous function", async () => {
+    it("should render the name of the nervous function as title", async () => {
       const functionId = BigInt(12);
       const functionName = "test function";
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
