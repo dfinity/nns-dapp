@@ -68,6 +68,11 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && this.element.textContent;
   }
 
+  // Resolves to null if the element is not present.
+  async getAttribute(attribute: string): Promise<string | null> {
+    return this.element && this.element.getAttribute(attribute);
+  }
+
   async click(): Promise<void> {
     await fireEvent.click(this.element);
   }
