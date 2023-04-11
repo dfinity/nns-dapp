@@ -66,6 +66,8 @@ const config: UserConfig = {
           ) {
             return "dapp";
           }
+
+	  return "etc";
         },
       },
       // Polyfill Buffer for production build. The hardware wallet needs Buffer.
