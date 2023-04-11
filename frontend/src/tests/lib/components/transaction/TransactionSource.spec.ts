@@ -28,14 +28,6 @@ describe("TransactionSource", () => {
     );
   });
 
-  it("should not render balance", () => {
-    const { getByTestId } = render(TransactionSource, {
-      props: { account: mockMainAccount, balance: false },
-    });
-
-    expect(() => getByTestId("transaction-review-balance")).toThrow();
-  });
-
   it("should render identifier", () => {
     const { getByTestId } = render(TransactionSource, {
       props: { account: mockMainAccount },

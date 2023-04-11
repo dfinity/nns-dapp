@@ -157,7 +157,7 @@
   },
   "accounts": {
     "main": "Main",
-    "balance": "Balance",
+    "balance": "Available balance",
     "send": "Send",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
@@ -189,7 +189,7 @@
     "enter_address_or_select": "Enter a destination address or select an account.",
     "my_accounts": "My Accounts",
     "enter_icp_amount": "Enter ICP amount",
-    "source": "Source",
+    "source": "From",
     "destination": "Destination",
     "hardware_wallet_text": "Hardware Wallet",
     "transaction_fee": "Transaction Fee (billed to source)",

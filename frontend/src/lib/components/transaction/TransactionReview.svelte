@@ -41,7 +41,7 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <TransactionSource account={sourceAccount} balance={false} />
+    <TransactionSource account={sourceAccount} />
 
     <div class="highlight">
       <span class="icon">
