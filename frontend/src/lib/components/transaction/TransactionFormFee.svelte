@@ -7,7 +7,7 @@
 </script>
 
 <p class="fee description">
-  {$i18n.accounts.transaction_fee}: <AmountDisplay
+  <slot name="label">{$i18n.accounts.transaction_fee}</slot>: <AmountDisplay
     amount={transactionFee}
     singleLine
   />
