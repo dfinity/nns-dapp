@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
   import StakeNeuron from "$lib/components/neurons/StakeNeuron.svelte";
   import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
@@ -23,6 +22,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
+  import { nonNullish } from "@dfinity/utils";
 
   onMount(() => {
     pollAccounts();
@@ -52,16 +52,12 @@
     title: $i18n.neurons.add_user_as_hotkey,
   };
 
-  let steps: WizardSteps = [
-    {
-      name: "SelectAccount",
-      title: $i18n.accounts.select_source,
-    },
-    {
-      name: "StakeNeuron",
-      title: $i18n.neurons.stake_neuron,
-    },
-  ];
+  const firstStep: WizardStep = {
+    name: "StakeNeuron",
+    title: $i18n.neurons.stake_neuron,
+  };
+
+  let steps: WizardSteps = [firstStep, ...lastSteps];
 
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
@@ -86,10 +82,6 @@
     isAccountInvalid?: (a?: Account) => boolean;
   };
   const invalidStates: InvalidState[] = [
-    {
-      stepName: "StakeNeuron",
-      isAccountInvalid: (account?: Account) => account === undefined,
-    },
     {
       stepName: "AddUserToHotkeys",
       isAccountInvalid: (account?: Account) => account === undefined,
@@ -119,7 +111,8 @@
         );
       }
     );
-    if (invalidState !== undefined) {
+
+    if (nonNullish(invalidState)) {
       toastsError({
         labelKey: "error.unknown",
       });
@@ -128,33 +121,37 @@
   }
   let delayInSeconds = 0;
 
-  const chooseAccount = async ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    selectedAccount = detail.selectedAccount;
-    if (isAccountHardwareWallet(selectedAccount)) {
-      steps.push(extraStepHW);
-    }
-    steps.push(...lastSteps);
-    // Wait steps to be applied - components to be updated - before being able to navigate to next step
+  // If source account is a hardware wallet, ask user to add a hotkey
+  const extendWizardSteps = async () => {
+    steps = [
+      firstStep,
+      ...(isAccountHardwareWallet(selectedAccount) ? [extraStepHW] : []),
+      ...lastSteps,
+    ];
     await tick();
-    modal.next();
   };
+
   const goNext = () => {
     modal.next();
   };
+
   const onNeuronCreated = async ({
     detail,
   }: CustomEvent<{ neuronId: NeuronId }>) => {
     newNeuronId = detail.neuronId;
+
     if (isAccountHardwareWallet(selectedAccount)) {
       toastsShow({
         labelKey: "neurons.neuron_create_success",
         level: "success",
       });
+
+      await extendWizardSteps();
     }
+
     modal.next();
   };
+
   const goEditFollowers = () => {
     modal.set(wizardStepIndex({ name: "EditFollowNeurons", steps }));
   };
@@ -164,18 +161,12 @@
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
   >
-  {#if currentStep?.name === "SelectAccount"}
-    <SelectAccount on:nnsSelectAccount={chooseAccount} />
-  {/if}
   {#if currentStep?.name === "StakeNeuron"}
-    <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
-    {#if selectedAccount !== undefined}
-      <StakeNeuron
-        account={selectedAccount}
-        on:nnsNeuronCreated={onNeuronCreated}
-        on:nnsBack={modal.back}
-      />
-    {/if}
+    <StakeNeuron
+      bind:account={selectedAccount}
+      on:nnsNeuronCreated={onNeuronCreated}
+      on:nnsClose
+    />
   {/if}
   {#if currentStep?.name === "AddUserToHotkeys"}
     <!-- we spare a spinner for the selectedAccount and newNeuron within AddUserToHotkeys -->

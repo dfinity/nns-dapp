@@ -103,15 +103,11 @@ export class NeuronsTab extends MyNavigator {
       "Click to start staking neuron"
     );
 
-    console.log("Choose account");
-    await this.waitForModalWithTitle("Select Source Account");
-    await this.click(
-      NeuronsTab.STAKE_NEURON_ACCOUNT_SELECTOR,
-      "Choose to pay with the first account"
-    );
+    await this.waitForModalWithTitle("Stake Neuron");
+
+    console.log("Continue with default first account");
 
     console.log("Input the amount");
-    await this.waitForModalWithTitle("Stake Neuron");
     await this.getElement(
       NeuronsTab.STAKE_NEURON_AMOUNT_INPUT_SELECTOR,
       "Get stake amount input field"
