@@ -18,6 +18,7 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
+clap.define short=f long=file desc="The file to compare" variable=DFX_ASSET default="nns-dapp.wasm"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -26,14 +27,32 @@ export DFX_COMMIT
 
 echo "Commit: $DFX_COMMIT"
 
-readarray runs <(gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | .databaseId')
 
-echo Build hashes for assets.tar.xz:
+build_hash_from_logs() {
+	sed -nr 's&.*\<([a-z0-9]{64}) +(\/build\/)?'"$DFX_ASSET"'.*&\1&g;ta;b;:a;p'
+}
+
+echo "Build hashes for $DFX_ASSET:"
+: CI builds:
+logfile=",ci-builds-of-${DFX_COMMIT}.txt"
+test -e "$logfile" || gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha --jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | .databaseId' > "$logfile"
+readarray -t runs < "$logfile"
 for run in "${runs[@]}" ; do
-	hash="$(gh run view "$run" --log | grep 'Build mainnet nns-dapp Docker image' | sed -nr 's&.* ([a-z0-9]{64}) +\/build\/assets.tar.xz.*&\1&g;ta;b;:a;p')"
-	echo -- "$hash $run"
+	: Cache the logfile:
+	logfile=",ci-log-${DFX_LIMIT}-$run.log"
+	test -e "$logfile" || gh run view "$run" --log > "$logfile"
+	hash="$(grep 'Build mainnet nns-dapp Docker image' "$logfile" | build_hash_from_logs)"
+	echo "$hash $run"
 done
-docker_hash="$(./scripts/docker-build |& sed -nr 's&.* ([a-z0-9]{64}) +\/build\/assets.tar.xz.*&\1&g;ta;b;:a;p' || printf "% -64s" FAILED)"
-echo "$docker_hash Local docker build"
-native_hash="$({ rm -f assets.tar.xz && DFX_NETWORK=mainnet ./config.sh && ./build-frontend.sh ; } &>/dev/null && sha256sum assets.tar.xz)"
-echo "$native_hash Local native build"
+
+: Local docker build
+docker_hash="$(./scripts/docker-build |& build_hash_from_logs)"
+printf "% 64s Local docker build\n" "${docker_hash:-}"
+
+: Native build
+case "$DFX_ASSET" in
+assets.tar.xz)
+native_hash="$({ rm -f "$DFX_ASSET" && DFX_NETWORK=mainnet ./config.sh && ./build-frontend.sh ; } &>/dev/null && sha256sum "$DFX_ASSET")"
+;;
+esac
+printf "% 64s Local native build\n" "${native_hash:-}"
