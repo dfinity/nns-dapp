@@ -46,7 +46,7 @@ npx playwright show-report
 after it failed. It will show a screenshot of the moment it failed and a trace
 with a lot of screenshots and information about what happened during the test.
 
-If an end-to-end test failed on CI, you can download an extract
+If an end-to-end test failed on CI, you can download and extract
 `playwright-failure-results.zip` from GitHub and then use the report inside it
 with `playwright show-report`:
 ```
