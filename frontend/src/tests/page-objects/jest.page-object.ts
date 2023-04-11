@@ -35,7 +35,7 @@ export class JestPageObjectElement implements PageObjectElement {
     );
   }
 
-  async querySelectorCount({
+  querySelectorCount({
     selector: _selector,
     count: _count,
   }: {
