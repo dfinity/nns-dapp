@@ -13,7 +13,7 @@
   {destinationAddress}
 </p>
 
-<p class="label no-margin">{$i18n.accounts.description}</p>
+<p class="label desc">{$i18n.accounts.description}</p>
 <slot name="description" />
 
 {#if nonNullish(selectedNetwork)}
@@ -29,7 +29,7 @@
     margin: 0 0 var(--padding);
   }
 
-  .network {
+  .network, .desc {
     margin: var(--padding) 0 0;
   }
 </style>
