@@ -61,17 +61,19 @@ describe("BitcoinEstimatedFee", () => {
     // Query + update
     expect(spyEstimateFee).toHaveBeenCalledTimes(2);
 
-    const content = getByTestId("bitcoin-estimated-fee")?.textContent ?? "";
+    const content =
+      getByTestId("bitcoin-estimated-fee-label")?.textContent ?? "";
+
+    expect(content).toEqual(en.accounts.estimated_bitcoin_transaction_fee);
+
+    const fee = getByTestId("bitcoin-estimated-fee")?.textContent ?? "";
 
     expect(
-      content.includes(en.accounts.estimated_bitcoin_transaction_fee)
-    ).toBeTruthy();
-    expect(
-      content.includes(
+      fee.includes(
         `${formatEstimatedFee(result.bitcoin_fee + result.minter_fee)}`
       )
     ).toBeTruthy();
-    expect(content.includes(en.ckbtc.btc)).toBeTruthy();
+    expect(fee.includes(en.ckbtc.btc)).toBeTruthy();
   });
 
   it("should call service with amount E8s", async () => {

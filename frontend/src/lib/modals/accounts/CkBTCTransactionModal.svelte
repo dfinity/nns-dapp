@@ -18,12 +18,14 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
-  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
+  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
+  import BitcoinEstimatedTransactionTime from "$lib/components/accounts/BitcoinEstimatedTransactionTime.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -152,7 +154,7 @@
   bind:amount={userAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
-  <p slot="description" class="value">
+  <p slot="description" class="value no-margin">
     {#if networkBtc}
       {$i18n.accounts.ckbtc_to_btc_transaction_description}
     {:else}
@@ -168,24 +170,17 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-
+  </svelte:fragment>
+  <BitcoinEstimatedTransactionTime {networkBtc} slot="additional-info-review" />
+  <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
+        {universeId}
         amount={userAmount}
       />
-    {/if}
-  </svelte:fragment>
-  <svelte:fragment slot="additional-info-review">
-    <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
-
-    {#if networkBtc}
-      <div>
-        <p class="label">{$i18n.ckbtc.estimated_receive_time}</p>
-        <p class="value">
-          {$i18n.ckbtc.about_thirty_minutes}
-        </p>
-      </div>
+    {:else if nonNullish(userAmount)}
+      <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>
   <ConvertBtcInProgress slot="in_progress" {progressStep} />

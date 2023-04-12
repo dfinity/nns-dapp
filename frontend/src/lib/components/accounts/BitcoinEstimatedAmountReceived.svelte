@@ -1,10 +1,28 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+  import { numberToE8s } from "$lib/utils/token.utils";
+  import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
+  import { TokenAmount } from "@dfinity/nns";
+  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
+  import type { Token } from "@dfinity/nns/dist/types/token";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+  export let universeId: UniverseCanisterId;
+
+  let bitcoinLabel: string;
+  $: bitcoinLabel = isUniverseCkTESTBTC(universeId)
+    ? $i18n.ckbtc.test_bitcoin
+    : $i18n.ckbtc.bitcoin;
+
+  let token: Token;
+  $: token = {
+    symbol: $i18n.ckbtc.btc,
+    name: bitcoinLabel,
+  };
 
   let amountE8s = BigInt(0);
   $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : BigInt(0);
@@ -14,19 +32,18 @@
     nonNullish(bitcoinEstimatedFee) && amountE8s > bitcoinEstimatedFee
       ? amountE8s - bitcoinEstimatedFee
       : BigInt(0);
+
+  let tokenEstimatedAmount: TokenAmount;
+  $: tokenEstimatedAmount = TokenAmount.fromE8s({
+    amount: estimatedAmount,
+    token,
+  });
 </script>
 
-<p data-tid="bitcoin-estimated-amount" class="description">
-  {$i18n.accounts.estimated_amount_received}:
-  <span class="value" data-tid="bitcoin-estimated-amount-value"
-    >{formatToken({ value: estimatedAmount, detailed: true })}</span
-  >
-  <span class="label">{$i18n.ckbtc.btc}</span>
-</p>
+<TransactionReceivedTokenAmount
+  amount={tokenEstimatedAmount}
+  testId="bitcoin-estimated-amount-value"
+  estimation
+/>
 
-<style lang="scss">
-  p {
-    text-align: right;
-    padding-top: var(--padding-0_5x);
-  }
-</style>
+<BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />

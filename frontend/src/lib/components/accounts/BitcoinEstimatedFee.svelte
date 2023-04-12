@@ -43,8 +43,11 @@
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}
-  <p class="fee description" data-tid="bitcoin-estimated-fee">
-    {$i18n.accounts.estimated_bitcoin_transaction_fee}:
+  <p class="fee description no-margin" data-tid="bitcoin-estimated-fee-label">
+    {$i18n.accounts.estimated_bitcoin_transaction_fee}
+  </p>
+
+  <p class="no-margin" data-tid="bitcoin-estimated-fee">
     <span class="value">{formatEstimatedFee(bitcoinEstimatedFee)}</span>
     <span class="label">{$i18n.ckbtc.btc}</span>
   </p>
@@ -52,7 +55,6 @@
 
 <style lang="scss">
   .fee {
-    text-align: right;
-    padding-top: var(--padding-0_5x);
+    padding: var(--padding-2x) 0 var(--padding-0_5x);
   }
 </style>

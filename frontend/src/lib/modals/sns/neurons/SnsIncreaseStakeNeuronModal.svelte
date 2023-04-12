@@ -114,7 +114,7 @@
       <svelte:fragment slot="title"
         >{title ?? $i18n.accounts.send}</svelte:fragment
       >
-      <p slot="description" class="value">
+      <p slot="description" class="value no-margin">
         {replacePlaceholders($i18n.accounts.sns_transaction_description, {
           $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
         })}
