@@ -4,7 +4,7 @@ import {
 } from "$lib/constants/proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
-import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
 import type { Identity } from "@dfinity/agent";
 import type {
@@ -594,7 +594,9 @@ export const registerVoteErrorDetails = ({
 };
 
 /** There are neurons in a queue whose vote is not yet been registered */
-export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
+export const voteRegistrationActive = (
+  votes: VoteRegistrationStoreEntry[]
+): boolean =>
   votes.find(
     ({ neuronIds, successfullyVotedNeuronIds }) =>
       neuronIds.length > successfullyVotedNeuronIds.length

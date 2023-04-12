@@ -1,4 +1,5 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { i18n } from "$lib/stores/i18n";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
@@ -10,7 +11,7 @@ import {
 } from "$lib/stores/toasts.store";
 import {
   voteRegistrationStore,
-  type VoteRegistration,
+  type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -58,6 +59,7 @@ export const registerVotes = async ({
       vote,
       proposalInfo,
       neuronIds,
+      canisterId: OWN_CANISTER_ID,
     });
 
     // make register vote calls (one per neuron)
@@ -72,6 +74,7 @@ export const registerVotes = async ({
     voteRegistrationStore.updateStatus({
       proposalId,
       status: "post-update",
+      canisterId: OWN_CANISTER_ID,
     });
 
     // update the toast state (voting -> updating the data)
@@ -96,7 +99,7 @@ export const registerVotes = async ({
 
     // cleanup
     toastsHide(toastId);
-    voteRegistrationStore.remove(proposalId);
+    voteRegistrationStore.remove({ proposalId, canisterId: OWN_CANISTER_ID });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
@@ -144,10 +147,10 @@ const createRegisterVotesToast = ({
 
 const voteRegistrationByProposal = (
   proposalId: ProposalId
-): VoteRegistration => {
-  const registration = get(voteRegistrationStore).registrations.find(
-    ({ proposalInfo: { id } }) => id === proposalId
-  );
+): VoteRegistrationStoreEntry => {
+  const registration = get(voteRegistrationStore).registrations[
+    OWN_CANISTER_ID.toText()
+  ].find(({ proposalInfo: { id } }) => id === proposalId);
 
   assertNonNullish(registration);
 
@@ -178,6 +181,7 @@ const neuronRegistrationComplete = ({
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalId,
     neuronId,
+    canisterId: OWN_CANISTER_ID,
   });
 
   // Optimistically update neuron vote state

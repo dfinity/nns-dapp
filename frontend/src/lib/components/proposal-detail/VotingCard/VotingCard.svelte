@@ -20,7 +20,7 @@
   } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
-    type VoteRegistration,
+    type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
   import { registerVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
@@ -29,6 +29,7 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   export let proposalInfo: ProposalInfo;
 
@@ -43,11 +44,11 @@
   let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteRegistration: VoteRegistration | undefined = undefined;
+  let voteRegistration: VoteRegistrationStoreEntry | undefined = undefined;
 
-  $: voteRegistration = $voteRegistrationStore.registrations.find(
-    ({ proposalInfo: { id } }) => proposalInfo.id === id
-  );
+  $: voteRegistration = (
+    $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
+  ).find(({ proposalInfo: { id } }) => proposalInfo.id === id);
 
   $: $definedNeuronsStore,
     (visible =
