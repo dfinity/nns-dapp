@@ -32,7 +32,7 @@ impl CanisterArguments {
     /// let mut args: Vec<(String, String)> = CanisterArguments::args_from_str(&[("ROBOTS", r#"<meta name="robots" content="noindex, nofollow" />"#)]);
     ///
     /// // The OWN_CANISTER_ID is normally populated from the environment; we will set it directly
-    /// for the purposes of this demonstration:
+    /// // for the purposes of this demonstration:
     /// args.push(("OWN_CANISTER_ID".to_string(), "aeiouy".to_string()));
     ///
     /// // We now have complete arguments:
@@ -59,13 +59,20 @@ impl CanisterArguments {
         ans
     }
 
+    /// Looks at the environment to get the canister ID and add it to the list of arguments.
     pub fn with_own_canister_id(mut self) -> Self {
         self.args
             .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
         self
     }
 
-    /// Utility to convert &[(str, str)] to Vec<String, String>
+    /// Utility to convert static strings to an args field.
+    ///
+    /// ```
+    /// use nns_dapp::arguments::CanisterArguments;
+    /// let args = CanisterArguments::args_from_str(&[("FOO", "bar"), ("BAT", "man")]);
+    /// let canister_arguments = CanisterArguments{args};
+    /// ```
     #[allow(dead_code)]
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
        str_args.iter().map(|(key, val)| (key.to_string(), val.to_string())).collect()
@@ -74,6 +81,12 @@ impl CanisterArguments {
 
 /// Converts an upper-snake-case configuration variable to a lower-kebab-case name prefixed with data-.
 /// This, in turn, will appear in JavaScript & family as camel case.
+///
+/// ```
+/// use nns_dapp::arguments::configname2attributename;
+/// assert_eq!(configname2attributename("FOO"), "data-foo");
+/// assert_eq!(configname2attributename("TERMINATOR_2"), "data-terminator-2");
+/// ```
 pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
