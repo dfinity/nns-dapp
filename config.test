@@ -5,11 +5,10 @@ JSON_CONFIG="deployment-config.json"
 ENV_CONFIG="frontend/.env"
 ARG_CONFIG="nns-dapp-arg.did"
 
-ALL_CONFIG=( "$JSON_CONFIG" "$ENV_CONFIG" "$ARG_CONFIG" )
+ALL_CONFIG=("$JSON_CONFIG" "$ENV_CONFIG" "$ARG_CONFIG")
 clean_config() {
-	rm -f "${ALL_CONFIG[@]}"
+  rm -f "${ALL_CONFIG[@]}"
 }
-
 
 (
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
