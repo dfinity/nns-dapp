@@ -88,12 +88,13 @@
   {#if $sortedSnsCFNeuronsStore.length > 0}
     <h2
       data-tid="community-fund-title"
-      class={`bottom-margin ${
-        $sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""
-      }`}
+      class={$sortedSnsUserNeuronsStore.length > 0 ? "top-margin" : ""}
     >
       {$i18n.sns_neuron_detail.community_fund_section}
     </h2>
+    <p data-tid="community-fund-description" class="bottom-margin">
+      {$i18n.sns_neuron_detail.community_fund_section_description}
+    </p>
     <div class="card-grid">
       {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
         <SnsNeuronCard

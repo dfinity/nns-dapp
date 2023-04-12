@@ -154,6 +154,16 @@ describe("SnsNeurons", () => {
       );
     });
 
+    it("should render Community Fund neurons text", async () => {
+      const { getByText } = render(SnsNeurons);
+
+      await waitFor(() =>
+        expect(
+          getByText(en.sns_neuron_detail.community_fund_section_description)
+        ).toBeInTheDocument()
+      );
+    });
+
     it("should render two grids", async () => {
       const { container } = render(SnsNeurons);
 
