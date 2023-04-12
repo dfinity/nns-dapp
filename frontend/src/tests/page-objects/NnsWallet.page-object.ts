@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
+import { TransactionListPo } from "$tests/page-objects/TransactionList.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsWalletPo extends BasePageObject {
@@ -11,6 +12,10 @@ export class NnsWalletPo extends BasePageObject {
 
   getIcpTransactionModalPo(): IcpTransactionModalPo {
     return IcpTransactionModalPo.under(this.root);
+  }
+
+  getTransactionListPo(): TransactionListPo {
+    return TransactionListPo.under(this.root);
   }
 
   clickSend(): Promise<void> {

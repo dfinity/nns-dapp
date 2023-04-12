@@ -192,8 +192,31 @@ jobs:
           scripts/nns-dapp/release-template
           echo Check the proposal
           ./scripts/nns-dapp/release-check
+  config-check:
+    name: Config check
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install tools
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from Apr 4 2023 with xz compressed state
+          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+      - name: Add SNS scripts to the path
+        run: |
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install tools
+        run: |
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Check config script
+        run: bash -x ./config.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

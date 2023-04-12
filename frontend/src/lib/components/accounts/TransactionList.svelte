@@ -2,6 +2,7 @@
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import type { Account } from "$lib/types/account";
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import NnsTransactionCard from "./NnsTransactionCard.svelte";
   import { getContext } from "svelte";
@@ -25,12 +26,14 @@
   $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
 </script>
 
-{#if account === undefined || transactions === undefined}
-  <SkeletonCard cardType="info" />
-{:else if transactions.length === 0}
-  {$i18n.wallet.no_transactions}
-{:else}
-  {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
-    <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
-  {/each}
-{/if}
+<TestIdWrapper testId="transaction-list-component">
+  {#if account === undefined || transactions === undefined}
+    <SkeletonCard cardType="info" />
+  {:else if transactions.length === 0}
+    {$i18n.wallet.no_transactions}
+  {:else}
+    {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
+      <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
+    {/each}
+  {/if}
+</TestIdWrapper>

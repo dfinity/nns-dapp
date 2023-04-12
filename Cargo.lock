@@ -3208,6 +3208,7 @@ dependencies = [
  "lzma-rs",
  "maplit",
  "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=21d3a113dc765b5e5803d9ad4dc68e14880ae6a0)",
+ "regex",
  "registry-canister",
  "serde",
  "serde_bytes",
