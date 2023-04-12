@@ -211,6 +211,7 @@ jobs:
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
       - name: Install tools
         run: |
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check config script
         run: bash -x ./config.test
