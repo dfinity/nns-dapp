@@ -2,45 +2,43 @@
  * @jest-environment jsdom
  */
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { neuronsStore } from "$lib/stores/neurons.store";
-import { formatNumber } from "$lib/utils/format.utils";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { RenderResult } from "@testing-library/svelte";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { render } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 
 describe("VotesResults", () => {
-  let renderResult: RenderResult<SvelteComponent>;
-  let yes: number, no: number;
-  beforeEach(() => {
-    neuronsStore.setNeurons({ neurons: [], certified: true });
-    renderResult = render(VotesResults, {
+  const yesCount = 2;
+  const yesFormatted = "2.00";
+  const noCount = 3;
+  const noFormatted = "3.00";
+  const totalValue = 5;
+  const renderComponent = () => {
+    const { container } = render(VotesResults, {
       props: {
-        proposalInfo: mockProposalInfo,
+        yes: yesCount,
+        no: noCount,
+        total: totalValue,
       },
     });
 
-    yes = Number(mockProposalInfo.latestTally?.yes) / E8S_PER_ICP;
-    no = Number(mockProposalInfo.latestTally?.no) / E8S_PER_ICP;
+    return VotesResultPo.under(new JestPageObjectElement(container));
+  };
+
+  it('should render "Adopt" value', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getAdoptVotingPower()).toEqual(yesFormatted);
   });
 
-  it('should render "Adopt" value', () => {
-    const { getByText } = renderResult;
-    expect(getByText(`${formatNumber(yes)}`)).toBeInTheDocument();
+  it('should render "Reject" value', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getRejectVotingPower()).toEqual(noFormatted);
   });
 
-  it('should render "Reject" value', () => {
-    const { getByText } = renderResult;
-    expect(getByText(`${formatNumber(no)}`)).toBeInTheDocument();
-  });
+  it("should render progressbar", async () => {
+    const votesResultPo = renderComponent();
 
-  it("should render progressbar", () => {
-    const { getByRole } = renderResult;
-    const progressbar = getByRole("progressbar");
-    expect(progressbar).toBeInTheDocument();
-    expect(progressbar.getAttribute("aria-valuemin")).toBe("0");
-    expect(progressbar.getAttribute("aria-valuemax")).toBe(`${yes + no}`);
-    expect(progressbar.getAttribute("aria-valuenow")).toBe(`${yes}`);
+    expect(await votesResultPo.getProgressMinValue()).toBe(0);
+    expect(await votesResultPo.getProgressNowValue()).toBe(yesCount);
+    expect(await votesResultPo.getProgressMaxValue()).toBe(totalValue);
   });
 });

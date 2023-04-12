@@ -3,8 +3,11 @@ import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 
 export type AccountType = "main" | "subAccount" | "hardwareWallet";
+
+export type AccountIdentifierText = string;
+
 export interface Account {
-  identifier: string;
+  identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
   /**

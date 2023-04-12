@@ -2,14 +2,10 @@ import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
+import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
-import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class AppPo extends BasePageObject {
-  constructor(root: PageObjectElement) {
-    super(root);
-  }
-
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
   }
@@ -20,6 +16,10 @@ export class AppPo extends BasePageObject {
 
   getMenuItemsPo(): MenuItemsPo {
     return MenuItemsPo.under(this.root);
+  }
+
+  getSelectUniverseListPo(): SelectUniverseListPo {
+    return SelectUniverseListPo.under(this.root);
   }
 
   // Note that the universe selector and the main content have separate
@@ -63,9 +63,9 @@ export class AppPo extends BasePageObject {
     }
   }
 
-  async getIcp(amount: number): Promise<void> {
+  async getTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getIcp(amount);
+    await this.getMenuItemsPo().getGetTokensPo().getTokens(amount);
     await this.closeMenu();
   }
 

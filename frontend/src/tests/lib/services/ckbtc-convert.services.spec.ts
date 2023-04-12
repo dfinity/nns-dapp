@@ -20,9 +20,9 @@ import {
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import {
+  IcrcLedgerCanister,
   decodeIcrcAccount,
   encodeIcrcAccount,
-  IcrcLedgerCanister,
 } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
 

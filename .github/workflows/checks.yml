@@ -31,7 +31,6 @@ jobs:
                   exit 1
           }
   cargo-tests:
-    needs: formatting
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -54,7 +53,6 @@ jobs:
         env:
           RUST_BACKTRACE: 1
   svelte-tests:
-    needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -86,7 +84,6 @@ jobs:
         run: npm run test
         working-directory: ./frontend
   svelte-lint:
-    needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -115,7 +112,6 @@ jobs:
         run: npm run check
         working-directory: ./frontend
   e2e-lint:
-    needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -141,7 +137,6 @@ jobs:
         run: npm run lint
         working-directory: ./e2e-tests
   shell-checks:
-    needs: formatting
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
@@ -151,7 +146,6 @@ jobs:
         env:
           SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
   ic-commit-consistency:
-    needs: formatting
     name: IC Commit
     runs-on: ubuntu-20.04
     steps:
@@ -173,7 +167,6 @@ jobs:
                   exit 1
           fi
   release-templating-works:
-    needs: formatting
     name: Release template
     runs-on: ubuntu-20.04
     steps:

@@ -1,6 +1,6 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
-import { KeyValuePairPo } from "./KeyValuePair.page-object";
 
 export class SnsProposalSystemInfoSectionPo extends BasePageObject {
   private static readonly TID = "proposal-system-info-details-component";
@@ -22,13 +22,6 @@ export class SnsProposalSystemInfoSectionPo extends BasePageObject {
     return KeyValuePairPo.under({
       element: this.root,
       testId: "proposal-system-info-type",
-    }).getValueText();
-  }
-
-  getTopicText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-topic",
     }).getValueText();
   }
 

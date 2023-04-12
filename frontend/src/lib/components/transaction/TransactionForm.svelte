@@ -9,10 +9,7 @@
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
-  import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { TokenAmount, type Token } from "@dfinity/nns";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
@@ -24,6 +21,8 @@
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -115,31 +114,11 @@
 </script>
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
-  <div class="select-account">
-    <KeyValuePair>
-      <span slot="key" class="label">{$i18n.accounts.source}</span>
-      <!-- svelte:fragment needed to avoid warnings -->
-      <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
-      <svelte:fragment slot="value">
-        {#if selectedAccount !== undefined}
-          <AmountDisplay singleLine amount={selectedAccount?.balance} />
-        {/if}
-      </svelte:fragment>
-    </KeyValuePair>
-
-    {#if canSelectSource}
-      <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
-    {:else}
-      <div class="given-source">
-        <p>
-          {selectedAccount?.name ?? $i18n.accounts.main}
-        </p>
-        <p class="account-identifier">
-          {selectedAccount?.identifier}
-        </p>
-      </div>
-    {/if}
-  </div>
+  <TransactionFromAccount
+    bind:selectedAccount
+    {canSelectSource}
+    {rootCanisterId}
+  />
 
   {#if canSelectDestination}
     <SelectDestinationAddress
@@ -164,12 +143,7 @@
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
     <slot name="additional-info" />
 
-    <p class="fee description">
-      {$i18n.accounts.transaction_fee}: <AmountDisplay
-        amount={transactionFee}
-        singleLine
-      />
-    </p>
+    <TransactionFormFee {transactionFee} />
   </div>
 
   <div class="toolbar">
@@ -194,29 +168,8 @@
     gap: var(--padding-2x);
   }
 
-  .select-account {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
   .amount {
     margin-top: var(--padding);
     --input-error-wrapper-padding: 0 0 var(--padding-2x);
-  }
-
-  .account-identifier {
-    word-break: break-all;
-  }
-
-  .given-source {
-    p {
-      margin: 0;
-    }
-  }
-
-  .fee {
-    text-align: right;
-    padding-top: var(--padding-0_5x);
   }
 </style>

@@ -10,6 +10,7 @@
   export let account: Account;
   export let toSelfTransaction: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
+  export let descriptions: Record<string, string> | undefined = undefined;
 
   let transactionData: Transaction | undefined;
   $: transactionData = mapIcrcTransaction({
@@ -25,5 +26,6 @@
     {toSelfTransaction}
     transaction={transactionData}
     token={account.balance.token}
+    {descriptions}
   />
 {/if}

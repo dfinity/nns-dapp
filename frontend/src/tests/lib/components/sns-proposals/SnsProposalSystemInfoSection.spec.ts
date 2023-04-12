@@ -88,7 +88,7 @@ describe("ProposalSystemInfoSection", () => {
       );
     });
 
-    it("should render topic as title", async () => {
+    it("should render type as title", async () => {
       const po = await renderComponent(props);
 
       expect(await po.getTitleText()).toEqual(testNervousFunctionName);
@@ -98,12 +98,6 @@ describe("ProposalSystemInfoSection", () => {
       const po = await renderComponent(props);
 
       expect(await po.getTypeText()).toBe(testNervousFunctionName);
-    });
-
-    it("should render topic info from the nervous function", async () => {
-      const po = await renderComponent(props);
-
-      expect(await po.getTopicText()).toBe(testNervousFunctionName);
     });
 
     it("should render open status", async () => {

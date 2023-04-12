@@ -51,10 +51,11 @@ describe("NnsNeurons", () => {
         );
     });
 
-    it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
+    it("should open stake neuron modal", async () => {
       // To avoid that the modal requests the accounts
       accountsStore.set(mockAccountsStoreData);
-      const { queryByTestId, queryByText } = render(NnsNeuronsFooter);
+      const { queryByTestId, queryByText, getByTestId } =
+        render(NnsNeuronsFooter);
 
       const toolbarButton = queryByTestId("stake-neuron-button");
       expect(toolbarButton).not.toBeNull();
@@ -62,7 +63,9 @@ describe("NnsNeurons", () => {
 
       toolbarButton !== null && (await fireEvent.click(toolbarButton));
 
-      expect(queryByText(en.accounts.select_source)).not.toBeNull();
+      await waitFor(() =>
+        expect(getByTestId("transaction-from-account")).not.toBeNull()
+      );
     });
 
     it("should disable Stake Neurons button during voting process", async () => {

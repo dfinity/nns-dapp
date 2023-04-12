@@ -1,39 +1,36 @@
 <script lang="ts">
-  import type { ProposalInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { formatNumber } from "$lib/utils/format.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
 
-  export let proposalInfo: ProposalInfo;
-
-  let yes: number;
-  let no: number;
-  let sum: number;
-
-  $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
-  $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
-  $: sum = yes + no;
+  export let yes: number;
+  export let no: number;
+  export let total: number;
 </script>
 
-<ProposalContentCell>
+<ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
   <div class="latest-tally">
     <h4 class="label yes">
-      {$i18n.proposal_detail.adopt}<span>{formatNumber(yes)}</span>
+      {$i18n.proposal_detail.adopt}<span data-tid="adopt"
+        >{formatNumber(yes)}</span
+      >
     </h4>
     <div
       class="progressbar"
       role="progressbar"
+      data-tid="votes-progressbar"
       aria-label={$i18n.proposal_detail__vote.vote_progress}
       aria-valuenow={yes}
       aria-valuemin={0}
-      aria-valuemax={sum}
+      aria-valuemax={total}
     >
-      <div class="progressbar-value" style="width: {(yes / sum) * 100}%" />
+      <div class="progressbar-value" style="width: {(yes / total) * 100}%" />
     </div>
     <h4 class="label no">
-      {$i18n.proposal_detail.reject}<span>{formatNumber(no)}</span>
+      {$i18n.proposal_detail.reject}<span data-tid="reject"
+        >{formatNumber(no)}</span
+      >
     </h4>
   </div>
 </ProposalContentCell>

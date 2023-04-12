@@ -7,6 +7,7 @@
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import type { CanisterId } from "$lib/types/canister";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+  import type { EstimateWithdrawalFee } from "@dfinity/ckbtc";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;
@@ -21,7 +22,10 @@
       return;
     }
 
-    const callback = (fee: bigint | null) => (bitcoinEstimatedFee = fee);
+    const callback = (fee: EstimateWithdrawalFee | null) =>
+      (bitcoinEstimatedFee = nonNullish(fee)
+        ? fee.bitcoin_fee + fee.minter_fee
+        : null);
 
     await estimateFeeService({
       minterCanisterId,

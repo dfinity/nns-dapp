@@ -66,7 +66,7 @@
 
     if (success) {
       toastsSuccess({
-        labelKey: "sns_neurons.stake_sns_neuron_success",
+        labelKey: "accounts.transaction_success",
         substitutions: {
           $tokenSymbol: token.symbol,
         },
