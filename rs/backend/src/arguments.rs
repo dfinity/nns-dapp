@@ -1,4 +1,11 @@
-//! Code for customizinga  particular installation
+//! Code for customizing a particular installation
+
+#![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
+#![deny(clippy::panic)]
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
+
 use candid::{CandidType, Deserialize};
 use core::cell::RefCell;
 use regex::{Captures, Regex};
