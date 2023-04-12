@@ -42,7 +42,7 @@
 
 <TransactionReceivedTokenAmount
   amount={tokenEstimatedAmount}
-  testId="bitcoin-estimated-amount"
+  testId="bitcoin-estimated-amount-value"
   estimation
 />
 

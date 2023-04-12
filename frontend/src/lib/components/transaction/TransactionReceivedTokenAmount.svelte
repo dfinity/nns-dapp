@@ -8,7 +8,7 @@
   export let testId: string | undefined = undefined;
 </script>
 
-<div data-tid={testId}>
+<div>
   <p class="label">
     {#if estimation}
       {$i18n.accounts.estimated_amount_received}
@@ -17,7 +17,7 @@
     {/if}
   </p>
 
-  <p class="no-margin">
+  <p class="no-margin" data-tid={testId}>
     {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay
       inline
       detailed

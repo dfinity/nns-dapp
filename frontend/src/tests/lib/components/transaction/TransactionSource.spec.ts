@@ -14,7 +14,7 @@ describe("TransactionSource", () => {
       props: { account: mockMainAccount },
     });
 
-    expect(getByText(en.accounts.source, { exact: false })).toBeInTheDocument();
+    expect(getByText(en.accounts.from, { exact: false })).toBeInTheDocument();
     expect(getByText(en.accounts.balance)).toBeInTheDocument();
   });
 
@@ -24,7 +24,10 @@ describe("TransactionSource", () => {
     });
 
     expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({
+        value: mockMainAccount.balance.toE8s(),
+        detailed: true,
+      })}`
     );
   });
 
