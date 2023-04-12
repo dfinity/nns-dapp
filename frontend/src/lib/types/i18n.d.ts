@@ -200,6 +200,8 @@ interface I18nAccounts {
   enter_icp_amount: string;
   source: string;
   destination: string;
+  from: string;
+  to_address: string;
   hardware_wallet_text: string;
   token_transaction_fee: string;
   transaction_fee: string;

@@ -8,7 +8,7 @@
 </script>
 
 <p class="label account-name" data-tid="transaction-review-source-account-name">
-  {$i18n.accounts.source}: {account.name ?? $i18n.accounts.main}
+  {$i18n.accounts.from}: {account.name ?? $i18n.accounts.main}
 </p>
 
 <p

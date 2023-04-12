@@ -7,7 +7,7 @@
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 </script>
 
-<p class="label no-margin">{$i18n.accounts.destination}</p>
+<p class="label no-margin">{$i18n.accounts.to_address}</p>
 <p class="account-identifier value no-margin" data-tid="destination">
   <slot name="destination-info" />
   {destinationAddress}
