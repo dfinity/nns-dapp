@@ -19,14 +19,23 @@ thread_local! {
 impl CanisterArguments {
     /// HTML meta tag to be included in every index.html
     ///
+    /// Canister arguments are included in the meta tag as data attributes.  Thus:
+    /// - Arguments are upper snake case with digits: `SAMPLE_ARG2`
+    /// - In the tag, arguments are lower kebab case data attributes: `data-sample-arg2`
+    /// - In Javascript the tag can be read as camel case with:
+    ///   `document.querySelector('meta[name="nns-dapp-vars"]').dataset.sampleArg2`
+    ///
+    /// In Rust, the substitution is as follows:
     /// ```
     /// use nns_dapp::arguments::CanisterArguments;
-    /// // Args typically include ROBOTS and similar values:
+    /// // The canister receives arguments when it is created.  The arguments typically include ROBOTS and similar values:
     /// let mut args: Vec<(String, String)> = CanisterArguments::args_from_str(&[("ROBOTS", r#"<meta name="robots" content="noindex, nofollow" />"#)]);
     ///
-    /// // The OWN_CANISTER_ID is normally populated from the environment; we will set it directly:
+    /// // The OWN_CANISTER_ID is normally populated from the environment; we will set it directly
+    /// for the purposes of this demonstration:
     /// args.push(("OWN_CANISTER_ID".to_string(), "aeiouy".to_string()));
     ///
+    /// // We now have complete arguments:
     /// let args = CanisterArguments{args};
     ///
     /// // The arguments are encoded as a meta tag like this:
@@ -34,6 +43,8 @@ impl CanisterArguments {
     ///         data-robots="&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;"
     ///         data-own-canister-id="aeiouy">
     /// "#);
+    ///
+    /// // The meta tag is then inserted into HTML HEAD tags.
     /// ```
     pub fn to_html(&self) -> String {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
