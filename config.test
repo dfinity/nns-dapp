@@ -9,7 +9,7 @@ ARG_CONFIG="nns-dapp-arg.did"
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
 
-  DFX_NETWORK=mainnet ./config.sh &>/dev/null
+  DFX_NETWORK=mainnet chronic ./config.sh
   json_diff="$(
     diff "$JSON_CONFIG" <(
       cat <<-EOF
@@ -117,7 +117,7 @@ ARG_CONFIG="nns-dapp-arg.did"
 (
   echo "Network parameter is in config"
   for DFX_NETWORK in mainnet local; do
-    DFX_NETWORK="$DFX_NETWORK" ./config.sh &>/dev/null
+    DFX_NETWORK="$DFX_NETWORK" chronic ./config.sh
     : "Check value in JSON"
     JSON_NETWORK="$(jq -r .DFX_NETWORK "$JSON_CONFIG")"
     [[ "$DFX_NETWORK" == "$JSON_NETWORK" ]] || {
