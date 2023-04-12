@@ -559,7 +559,7 @@ export const updateProposalVote = ({
 
 /** Returns `registerVote` error reason text or undefined if not an error */
 const registerVoteErrorReason = (
-  neuronId: NeuronId,
+  neuronIdString: string,
   result: PromiseSettledResult<void>
 ): string | undefined => {
   if (result.status === "fulfilled") {
@@ -570,7 +570,7 @@ const registerVoteErrorReason = (
     result.reason instanceof Error ? errorToString(result.reason) : undefined;
   // detail text
   return replacePlaceholders(get(i18n).error.register_vote_neuron, {
-    $neuronId: neuronId.toString(),
+    $neuronId: neuronIdString,
     $reason:
       reason === undefined || reason?.length === 0
         ? get(i18n).error.fail
@@ -581,13 +581,13 @@ const registerVoteErrorReason = (
 /** Returns `registerVote` error details (neuronId and the reason by error) */
 export const registerVoteErrorDetails = ({
   responses,
-  neuronIds,
+  neuronIdStrings,
 }: {
   responses: PromiseSettledResult<void>[];
-  neuronIds: bigint[];
+  neuronIdStrings: string[];
 }): string[] => {
   const details: string[] = responses
-    .map((response, i) => registerVoteErrorReason(neuronIds[i], response))
+    .map((response, i) => registerVoteErrorReason(neuronIdStrings[i], response))
     .filter(isDefined);
 
   return details;

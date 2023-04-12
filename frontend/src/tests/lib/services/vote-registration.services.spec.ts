@@ -17,13 +17,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import {
-  GovernanceError,
-  Topic,
-  Vote,
-  type NeuronId,
-  type ProposalInfo,
-} from "@dfinity/nns";
+import { GovernanceError, Topic, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -399,16 +393,18 @@ describe("vote-registration-services", () => {
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
+      expect(spyOnToastsError).toBeCalledTimes(0);
+
       await registerNnsVotes({
-        neuronIds: null as unknown as NeuronId[],
-        proposalInfo: null as unknown as ProposalInfo,
+        neuronIds: [],
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
-          // do nothing
+          throw new Error("test");
         },
       });
 
-      expect(spyOnToastsError).toBeCalled();
+      expect(spyOnToastsError).toBeCalledTimes(1);
 
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({ labelKey: "error.register_vote_unknown" })
