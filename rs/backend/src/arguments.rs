@@ -18,6 +18,11 @@ thread_local! {
 
 impl CanisterArguments {
     /// HTML to be appended onto _every_ index.html
+    ///
+    /// ```
+    /// use nns_dapp::arguments::CanisterArguments;
+    /// let args: Vec<(String, String)> = CanisterArguments::args_from_str(&[("ROBOTS", r#"<meta name="robots" content="noindex, nofollow" />"#)]);
+    /// ```
     pub fn to_html(&self) -> String {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
         for (key, value) in &self.args {
@@ -35,6 +40,12 @@ impl CanisterArguments {
         self.args
             .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
         self
+    }
+
+    /// Utility to convert &[(str, str)] to Vec<String, String>
+    #[allow(dead_code)]
+    pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
+       str_args.iter().map(|(key, val)| (key.to_string(), val.to_string())).collect()
     }
 }
 
@@ -76,13 +87,13 @@ impl TemplateEngine {
     }
     /// Replaces substrings of the form `${{ARG_KEY}}` and `<!-- ARG_KEY -->` with the corresponding argument value.
     /// ```
-    /// use nns_dapp::arguments::TemplateEngine;
-    /// let values: Vec<(String, String)> = vec![("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER_MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")].iter().map(|(key, val)| (key.to_string(), val.to_string())).collect();
+    /// use nns_dapp::arguments::{TemplateEngine, CanisterArguments};
+    /// let values: Vec<(String, String)> = CanisterArguments::args_from_str(&[("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER-MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")]);
     /// let template_engine = TemplateEngine::new(&values[..]);
     /// assert_eq!(template_engine.populate("${{FOO}}"), "bar");
     /// assert_eq!(template_engine.populate("<!--FOO-->"), "bar");
-    /// assert_eq!(template_engine.populate("They say that <!--SUPERMAN--> is ${{SUPER-MAN}}"), "They say that Peter Parker is ${{SUPER-MAN}}");
-    /// assert_eq!(template_engine.populate("${{lowercase}} variables are not replaced"), "${{lowercase}} variables are not replaced");
+    /// assert_eq!(template_engine.populate("They say that <!--SUPERMAN--> is ${{SUPER-MAN}}"), "They say that Peter Parker is ${{SUPER-MAN}}", "Hyphens are not supported");
+    /// assert_eq!(template_engine.populate("${{lowercase}}"), "${{lowercase}}", "Only uppercase, digits and underscore are valid");
     /// ```
     pub fn populate(&self, input: &str) -> String {
         self.regex
