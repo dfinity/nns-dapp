@@ -24,6 +24,14 @@ test("Test SNS governance", async ({ page, context }) => {
   await snsUniverseCard.click();
   await appPo.getTokens(20);
 
+  expect(
+    await appPo
+      .getAccountsPo()
+      .getSnsAccountsPo()
+      .getMainAccountCardPo()
+      .getBalance()
+  ).toEqual("20.00");
+
   // TODO:
   // SN001: User can see the list of neurons
 
