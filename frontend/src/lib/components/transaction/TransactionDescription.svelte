@@ -7,33 +7,29 @@ export let destinationAddress: string;
 export let selectedNetwork: TransactionNetwork | undefined = undefined;
 </script>
 
-<p class="label">{$i18n.accounts.destination}</p>
-<p class="account-identifier value" data-tid="destination">
+<p class="label no-margin">{$i18n.accounts.destination}</p>
+<p class="account-identifier value no-margin" data-tid="destination">
     <slot name="destination-info" />
     {destinationAddress}
 </p>
 
+<p class="label no-margin">{$i18n.accounts.description}</p>
+<slot name="description" />
+
 {#if nonNullish(selectedNetwork)}
-    <p class="label">{$i18n.accounts.network}</p>
-    <p class="value">
+    <p class="label network no-margin">{$i18n.accounts.network}</p>
+    <p class="value no-margin">
         {$i18n.accounts[selectedNetwork]}
     </p>
 {/if}
 
-<p class="label">{$i18n.accounts.description}</p>
-
-
-<slot name="description" />
-
 <style lang="scss">
-
   .account-identifier {
     word-break: break-all;
     margin: 0 0 var(--padding);
   }
 
-  p {
-    margin: 0;
+  .network {
+    margin: var(--padding) 0 0;
   }
-
 </style>

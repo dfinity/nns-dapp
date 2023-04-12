@@ -180,12 +180,10 @@
     <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
 
     {#if networkBtc}
-      <div>
-        <p class="label">{$i18n.ckbtc.estimated_receive_time}</p>
-        <p class="value">
-          {$i18n.ckbtc.about_thirty_minutes}
-        </p>
-      </div>
+      <p class="label no-margin">{$i18n.ckbtc.estimated_receive_time}</p>
+      <p class="value no-margin">
+        {$i18n.ckbtc.about_thirty_minutes}
+      </p>
     {/if}
   </svelte:fragment>
   <ConvertBtcInProgress slot="in_progress" {progressStep} />

@@ -66,4 +66,8 @@
     flex-direction: column;
     gap: var(--padding-0_5x);
   }
+
+  .toolbar {
+    margin: var(--padding-2x) 0 0;
+  }
 </style>
