@@ -10,7 +10,7 @@ on:
       network:
         description: 'Network'
         required: true
-        default: 'mainnet'
+        default: 'local'
         type: string
       no_cache:
         description: 'no-cache'
