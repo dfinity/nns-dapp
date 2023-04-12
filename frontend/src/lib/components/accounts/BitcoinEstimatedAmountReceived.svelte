@@ -26,7 +26,6 @@
 
 <style lang="scss">
   p {
-    text-align: right;
     padding-top: var(--padding-0_5x);
   }
 </style>

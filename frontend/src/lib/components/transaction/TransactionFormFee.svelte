@@ -15,7 +15,6 @@
 
 <style lang="scss">
   .fee {
-    text-align: right;
     padding-top: var(--padding-0_5x);
   }
 </style>
