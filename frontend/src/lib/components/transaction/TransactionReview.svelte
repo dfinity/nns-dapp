@@ -38,7 +38,7 @@
 
     <TransactionSummary {amount} {token} {transactionFee} />
 
-    <TransactionDescription {selectedNetwork} {destinationAddress} >
+    <TransactionDescription {selectedNetwork} {destinationAddress}>
       <slot name="description" slot="description" />
     </TransactionDescription>
 
