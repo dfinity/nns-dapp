@@ -84,7 +84,7 @@ export const registerNnsVotes = async ({
  * Reflects vote registration status with a toast messages
  * (regardless of neuron type nns/sns)
  */
-export const registerVotes = async ({
+const registerVotes = async ({
   neuronIdStrings,
   proposalIdString,
   proposalTopic,
