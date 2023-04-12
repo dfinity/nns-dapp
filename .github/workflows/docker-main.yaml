@@ -37,7 +37,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
-          cache-from: type=gha,scope=cached-stage
+          #cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
           target: scratch
