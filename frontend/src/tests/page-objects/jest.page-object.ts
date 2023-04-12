@@ -63,26 +63,33 @@ export class JestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
+  private getRootAndFullSelector(): { rootElement: Element; fullSelector: string } {
+    if (isNullish(this.parent)) {
+      return { rootElement: this.element, fullSelector: ":scope" };
+    }
+    const { rootElement, fullSelector } = this.parent.getRootAndFullSelector();
+    return {
+      rootElement,
+      fullSelector: `${fullSelector} ${this.selector}`,
+    };
+  }
+
   async isPresent(): Promise<boolean> {
+    const {rootElement, fullSelector} = this.getRootAndFullSelector();
+    this.element = rootElement.querySelector(fullSelector);
     return nonNullish(this.element);
   }
 
-  async waitFor(): Promise<void> {
-    if (await this.isPresent()) {
-      return;
-    }
-    await this.parent.waitFor();
-    await waitFor(() => {
-      this.element = this.parent?.element.querySelector(this.selector);
-      expect(this.element).not.toBeNull();
+  waitFor(): Promise<void> {
+    return waitFor(async () => {
+      expect(await this.isPresent()).toBe(true);
     });
   }
 
   waitForAbsent(): Promise<void> {
-    // TODO:
-    // To be able to implement this, querySelector shouldn't immediately get an
-    // element but rather concattenate the selectors.
-    throw new Error("Not implemented");
+    return waitFor(async () => {
+      expect(await this.isPresent()).toBe(false);
+    });
   }
 
   // Resolves to null if the element is not present.
