@@ -83,7 +83,10 @@ impl CanisterArguments {
     /// ```
     #[allow(dead_code)]
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
-       str_args.iter().map(|(key, val)| (key.to_string(), val.to_string())).collect()
+        str_args
+            .iter()
+            .map(|(key, val)| (key.to_string(), val.to_string()))
+            .collect()
     }
 }
 
@@ -155,7 +158,8 @@ impl TemplateEngine {
             .replace_all(input, |cap: &Captures| {
                 if let Some(key) = cap.get(1).or_else(|| cap.get(2)) {
                     let val = self.args.get(key.as_str());
-                    val.cloned().unwrap_or_else(|| cap.get(0).map(|x| x.as_str().to_string()).unwrap_or_default())
+                    val.cloned()
+                        .unwrap_or_else(|| cap.get(0).map(|x| x.as_str().to_string()).unwrap_or_default())
                 } else {
                     "REGEX ERROR".to_string()
                 }
