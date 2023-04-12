@@ -175,8 +175,8 @@
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
+        {universeId}
         amount={userAmount}
-        {token}
       />
     {:else}
       <TransactionReceivedAmount amount={userAmount} {token} />
