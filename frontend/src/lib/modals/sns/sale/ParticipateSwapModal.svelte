@@ -230,7 +230,7 @@
     >
       {$projectDetailStore.summary?.metadata.name}
     </p>
-    <p slot="description" class="value">
+    <p slot="description" class="value no-margin">
       {$i18n.sns_project_detail.participate_swap_description}
     </p>
     <SaleInProgress slot="in_progress" {progressStep} />

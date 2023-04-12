@@ -152,7 +152,7 @@
   bind:amount={userAmount}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
-  <p slot="description" class="value">
+  <p slot="description" class="value no-margin">
     {#if networkBtc}
       {$i18n.accounts.ckbtc_to_btc_transaction_description}
     {:else}

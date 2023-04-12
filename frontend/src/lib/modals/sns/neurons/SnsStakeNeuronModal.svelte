@@ -104,7 +104,7 @@
   validateAmount={checkMinimumStake}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
-  <p slot="description" class="value">
+  <p slot="description" class="value no-margin">
     {stakeNeuronText}
   </p>
 </SnsTransactionModal>

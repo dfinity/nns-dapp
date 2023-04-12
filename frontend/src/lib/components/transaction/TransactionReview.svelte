@@ -8,8 +8,8 @@
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import { nonNullish } from "@dfinity/utils";
   import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
+  import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
@@ -38,27 +38,9 @@
 
     <TransactionSummary {amount} {token} {transactionFee} />
 
-    <div>
-      <p class="label">{$i18n.accounts.destination}</p>
-      <p class="account-identifier value" data-tid="destination">
-        <slot name="destination-info" />
-        {destinationAddress}
-      </p>
-    </div>
-
-    {#if nonNullish(selectedNetwork)}
-      <div>
-        <p class="label">{$i18n.accounts.network}</p>
-        <p class="value">
-          {$i18n.accounts[selectedNetwork]}
-        </p>
-      </div>
-    {/if}
-
-    <div>
-      <p class="label">{$i18n.accounts.description}</p>
-      <slot name="description" />
-    </div>
+    <TransactionDescription {selectedNetwork} {destinationAddress} >
+      <slot name="description" slot="description" />
+    </TransactionDescription>
 
     <slot name="additional-info" />
   </div>
@@ -79,10 +61,6 @@
 </div>
 
 <style lang="scss">
-  .account-identifier {
-    word-break: break-all;
-  }
-
   .info {
     display: flex;
     flex-direction: column;
