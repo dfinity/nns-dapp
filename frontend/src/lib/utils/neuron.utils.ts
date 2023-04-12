@@ -799,15 +799,15 @@ export const updateNeuronsVote = ({
 /** Is a neuron currently in a vote registration process */
 export const neuronVoting = ({
   store: { registrations },
-  neuronId,
+  neuronIdString,
 }: {
   store: VoteRegistrationStoreData;
-  neuronId: NeuronId;
+  neuronIdString: string;
 }): boolean =>
   (registrations[OWN_CANISTER_ID_TEXT] ?? []).find(
-    ({ neuronIds, successfullyVotedNeuronIds }) =>
-      neuronIds.includes(neuronId) &&
-      !successfullyVotedNeuronIds.includes(neuronId)
+    ({ neuronIdStrings, successfullyVotedNeuronIdStrings }) =>
+      neuronIdStrings.includes(`${neuronIdString}`) &&
+      !successfullyVotedNeuronIdStrings.includes(neuronIdString)
   ) !== undefined;
 
 // Check whether the amount to top up is valid.

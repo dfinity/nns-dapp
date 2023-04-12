@@ -598,8 +598,8 @@ export const voteRegistrationActive = (
   votes: VoteRegistrationStoreEntry[]
 ): boolean =>
   votes.find(
-    ({ neuronIds, successfullyVotedNeuronIds }) =>
-      neuronIds.length > successfullyVotedNeuronIds.length
+    ({ neuronIdStrings, successfullyVotedNeuronIdStrings }) =>
+      neuronIdStrings.length > successfullyVotedNeuronIdStrings.length
   ) !== undefined;
 
 export const nnsNeuronToVotingNeuron = ({

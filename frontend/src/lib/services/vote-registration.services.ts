@@ -59,7 +59,7 @@ export const registerNnsVotes = async ({
     voteRegistrationStore.add({
       vote,
       proposalIdString,
-      neuronIds,
+      neuronIdStrings: neuronIds.map(String),
       canisterId: OWN_CANISTER_ID,
     });
 
@@ -79,14 +79,14 @@ export const registerNnsVotes = async ({
     });
 
     // update the toast state (voting -> updating the data)
-    const { successfullyVotedNeuronIds } =
+    const { successfullyVotedNeuronIdStrings } =
       voteRegistrationByProposal(proposalIdString);
     updateVoteRegistrationToastMessage({
       toastId,
       proposalIdString,
       proposalTopic: proposalInfo.topic,
-      neuronIds,
-      successfullyVotedNeuronIds,
+      neuronIdStrings: neuronIds.map(String),
+      successfullyVotedNeuronIdStrings,
       registrationDone: true,
       vote,
     });
@@ -175,7 +175,8 @@ const nnsNeuronRegistrationComplete = ({
   toastId: symbol;
 }) => {
   const proposalIdString = `${proposalId}`;
-  const { vote, neuronIds } = voteRegistrationByProposal(proposalIdString);
+  const { vote, neuronIdStrings } =
+    voteRegistrationByProposal(proposalIdString);
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
     ({ neuronId: id }) => id === neuronId
@@ -190,7 +191,7 @@ const nnsNeuronRegistrationComplete = ({
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalIdString,
-    neuronId,
+    neuronIdString: `${neuronId}`,
     canisterId: OWN_CANISTER_ID,
   });
 
@@ -218,11 +219,12 @@ const nnsNeuronRegistrationComplete = ({
     toastId,
     proposalIdString: `${proposalInfo.id}`,
     proposalTopic: proposalInfo.topic,
-    neuronIds,
+    neuronIdStrings,
     registrationDone: false,
     // use the most actual value
-    successfullyVotedNeuronIds:
-      voteRegistrationByProposal(proposalIdString).successfullyVotedNeuronIds,
+    successfullyVotedNeuronIdStrings:
+      voteRegistrationByProposal(proposalIdString)
+        .successfullyVotedNeuronIdStrings,
     vote,
   });
 };
@@ -232,22 +234,22 @@ const updateVoteRegistrationToastMessage = ({
   toastId,
   proposalIdString,
   proposalTopic,
-  neuronIds,
-  successfullyVotedNeuronIds,
+  neuronIdStrings,
+  successfullyVotedNeuronIdStrings,
   registrationDone,
   vote,
 }: {
   toastId: symbol;
   proposalIdString: string;
   proposalTopic: Topic;
-  neuronIds: NeuronId[];
-  successfullyVotedNeuronIds: NeuronId[];
+  neuronIdStrings: string[];
+  successfullyVotedNeuronIdStrings: string[];
   registrationDone: boolean;
   vote: Vote;
 }) => {
   const $i18n = get(i18n);
-  const totalNeurons = neuronIds.length;
-  const completeNeurons = successfullyVotedNeuronIds.length;
+  const totalNeurons = neuronIdStrings.length;
+  const completeNeurons = successfullyVotedNeuronIdStrings.length;
   const status = registrationDone
     ? $i18n.proposal_detail__vote.vote_status_updating
     : replacePlaceholders($i18n.proposal_detail__vote.vote_status_registering, {

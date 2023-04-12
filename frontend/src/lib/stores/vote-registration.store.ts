@@ -2,7 +2,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import type { NeuronId, Vote } from "@dfinity/nns";
+import type { Vote } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
@@ -14,8 +14,8 @@ export interface VoteRegistrationStoreEntry {
   status: VoteRegistrationStatus;
   /** Text version of nns or sns proposal id. */
   proposalIdString: string;
-  neuronIds: NeuronId[];
-  successfullyVotedNeuronIds: NeuronId[];
+  neuronIdStrings: string[];
+  successfullyVotedNeuronIdStrings: string[];
   vote: Vote;
 }
 
@@ -30,11 +30,14 @@ export interface VoteRegistrationStoreData {
 
 export type VoteRegistrationStoreAddData = {
   canisterId: UniverseCanisterId;
-} & Omit<VoteRegistrationStoreEntry, "status" | "successfullyVotedNeuronIds">;
+} & Omit<
+  VoteRegistrationStoreEntry,
+  "status" | "successfullyVotedNeuronIdStrings"
+>;
 
 export type VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData = {
   proposalIdString: string;
-  neuronId: NeuronId;
+  neuronIdString: string;
   canisterId: UniverseCanisterId;
 };
 
@@ -75,14 +78,14 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
     add({
       vote,
       proposalIdString,
-      neuronIds,
+      neuronIdStrings,
       canisterId,
     }: VoteRegistrationStoreAddData): void {
       const newEntry: VoteRegistrationStoreEntry = {
         status: "vote-registration",
         proposalIdString: proposalIdString,
-        neuronIds,
-        successfullyVotedNeuronIds: [],
+        neuronIdStrings,
+        successfullyVotedNeuronIdStrings: [],
         vote,
       };
 
@@ -119,7 +122,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
 
     addSuccessfullyVotedNeuronId({
       proposalIdString,
-      neuronId,
+      neuronIdString,
       canisterId,
     }: VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData) {
       update(({ registrations }) => {
@@ -153,10 +156,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
               {
                 ...proposalRegistration,
                 // store only unique ids
-                successfullyVotedNeuronIds: Array.from(
+                successfullyVotedNeuronIdStrings: Array.from(
                   new Set([
-                    ...proposalRegistration.successfullyVotedNeuronIds,
-                    neuronId,
+                    ...proposalRegistration.successfullyVotedNeuronIdStrings,
+                    neuronIdString,
                   ])
                 ),
               },
