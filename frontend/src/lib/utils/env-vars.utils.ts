@@ -1,4 +1,5 @@
 import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+import { isNullish } from "@dfinity/utils";
 
 const localDev = import.meta.env.DEV;
 
@@ -53,7 +54,7 @@ const getHtmlEnvVars = (): EnvironmentVars => {
   const dataElement: HTMLElement | null = window.document.querySelector(
     ENV_VARS_ELEMENT_SELECTOR
   );
-  if (!dataElement) {
+  if (isNullish(dataElement)) {
     throw new Error(
       `Missing environment variables element with selector ${ENV_VARS_ELEMENT_SELECTOR} in HTML page.`
     );
@@ -116,7 +117,8 @@ export const getEnvVars = (): EnvironmentVars => {
   if (isBrowser && !localDev) {
     try {
       return getHtmlEnvVars();
-    } catch (_) {
+    } catch (e) {
+      console.error(e);
       // Fallback to build env vars
       return getBuildEnvVars();
     }
