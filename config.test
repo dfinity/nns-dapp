@@ -5,10 +5,17 @@ JSON_CONFIG="deployment-config.json"
 ENV_CONFIG="frontend/.env"
 ARG_CONFIG="nns-dapp-arg.did"
 
+ALL_CONFIG=( "$JSON_CONFIG" "$ENV_CONFIG" "$ARG_CONFIG" )
+clean_config() {
+	rm -f "${ALL_CONFIG[@]}"
+}
+
+
 (
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
 
+  clean_config
   DFX_NETWORK=mainnet chronic ./config.sh
   json_diff="$(
     diff "$JSON_CONFIG" <(
@@ -117,6 +124,7 @@ ARG_CONFIG="nns-dapp-arg.did"
 (
   echo "Network parameter is in config"
   for DFX_NETWORK in mainnet local; do
+    clean_config
     DFX_NETWORK="$DFX_NETWORK" chronic ./config.sh
     : "Check value in JSON"
     JSON_NETWORK="$(jq -r .DFX_NETWORK "$JSON_CONFIG")"
