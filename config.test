@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-JSON_CONFIG=deployment-config.json
+JSON_CONFIG="deployment-config.json"
 ENV_CONFIG="frontend/.env"
+ARG_CONFIG="nns-dapp-arg.did"
+
 (
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
@@ -45,6 +47,7 @@ ENV_CONFIG="frontend/.env"
     printf "%s\n" "$json_diff"
     exit 1
   } >&2
+
   env_diff="$(
     diff "$ENV_CONFIG" <(
       cat <<-EOF
@@ -67,17 +70,54 @@ ENV_CONFIG="frontend/.env"
 		EOF
     )
   )"
-  [[ "${json_diff:-}" == "" ]] || {
+  [[ "${env_diff:-}" == "" ]] || {
     printf "ERROR: %s\n" "Unexpected difference in $ENV_CONFIG:"
     printf "%s\n" "$env_diff"
     exit 1
   } >&2
+
+  arg_diff="$(
+    diff "$ARG_CONFIG" <(
+      cat <<-EOF
+		(opt record{
+		  args = vec {
+		    record{ 0="API_HOST"; 1="https://icp-api.io" };
+		    record{ 0="CKBTC_INDEX_CANISTER_ID"; 1="n5wcd-faaaa-aaaar-qaaea-cai" };
+		    record{ 0="CKBTC_LEDGER_CANISTER_ID"; 1="mxzaz-hqaaa-aaaar-qaada-cai" };
+		    record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
+		    record{ 0="DFX_NETWORK"; 1="mainnet" };
+		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SNS_2\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}" };
+		    record{ 0="FETCH_ROOT_KEY"; 1="false" };
+		    record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
+		    record{ 0="GOVERNANCE_CANISTER_URL"; 1="https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io" };
+		    record{ 0="HOST"; 1="https://icp-api.io" };
+		    record{ 0="IDENTITY_SERVICE_URL"; 1="https://identity.internetcomputer.org/" };
+		    record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
+		    record{ 0="LEDGER_CANISTER_URL"; 1="https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io" };
+		    record{ 0="OWN_CANISTER_ID"; 1="qoctq-giaaa-aaaaa-aaaea-cai" };
+		    record{ 0="OWN_CANISTER_URL"; 1="https://nns.internetcomputer.org" };
+		    record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
+		    record{ 0="SNS_AGGREGATOR_URL"; 1="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io" };
+		    record{ 0="STATIC_HOST"; 1="https://icp0.io" };
+		    record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
+		  };
+		})
+		EOF
+    )
+  )"
+  [[ "${arg_diff:-}" == "" ]] || {
+    printf "ERROR: %s\n" "Unexpected difference in $ARG_CONFIG:"
+    printf "%s\n" "$arg_diff"
+    exit 1
+  } >&2
+
 )
 
 (
   echo "Network parameter is in config"
   for DFX_NETWORK in mainnet local; do
     DFX_NETWORK="$DFX_NETWORK" ./config.sh &>/dev/null
+    : "Check value in JSON"
     JSON_NETWORK="$(jq -r .DFX_NETWORK "$JSON_CONFIG")"
     [[ "$DFX_NETWORK" == "$JSON_NETWORK" ]] || {
       printf "ERROR: %s\n" "Unexpected DFX_NETWORK value in $JSON_CONFIG:" \
@@ -85,6 +125,15 @@ ENV_CONFIG="frontend/.env"
         "Actual:   $JSON_NETWORK"
       exit 1
     } >&2
+    : "Check value in arg"
+    ARG_NETWORK="$(idl2json <nns-dapp-arg.did | jq -r '.[0].args[]|select(.["0"] == "DFX_NETWORK")|.["1"]')"
+    [[ "$DFX_NETWORK" == "$ARG_NETWORK" ]] || {
+      printf "ERROR: %s\n" "Unexpected DFX_NETWORK value in $ARG_CONFIG:" \
+        "Expected: $DFX_NETWORK" \
+        "Actual:   $ARG_NETWORK"
+      exit 1
+    } >&2
+
   done
 
 )
